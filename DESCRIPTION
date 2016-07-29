@@ -1,0 +1,11 @@
+Package: glatos
+Type: Package
+Title: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System (www.data.glos.us/glatos); many more broadly relevant for simulation, processing, analysing, and visualizing acoustic telemetry data.
+Version: 1.2
+Date: 2016-03-17
+Authors: Chris Holbrook, Todd Hayden, Tom Binder
+Maintainer: Chris Holbrook <cholbrook@usgs.gov>
+Description: The package is currently under development. 
+Depends: R (>= 3.1.1)
+License: GPL (2.0 or later)
+LazyLoad: yes
