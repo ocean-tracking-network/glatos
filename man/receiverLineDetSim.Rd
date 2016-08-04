@@ -47,9 +47,6 @@ p.
 \value{
 a data frame with
   \item{detProb}{proportion of simulated fish that were detected more than once on any single receiver}
-  \item{meanDet}{mean number of maximum detections for any fish on any single receiver}
-  \item{minDet}{minimum number of maximum detections for any fish on any single receiver}
-  \item{maxDet}{maximum number of maximum detections for any fish on any single receiver}
 }
 \references{
 None
