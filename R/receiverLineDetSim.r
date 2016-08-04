@@ -52,5 +52,5 @@ receiverLineDetSim <- function(vel=1,delayRng=c(120,360),burstDur=5.0,recSpc=100
       maxDet <- apply(nDets, 1, max) #max detects on any receiver
       detProb <-  mean(maxDet>1)
       
-      return(detProb=detProb)
+      return(data.frame(detProb=detProb))
   }

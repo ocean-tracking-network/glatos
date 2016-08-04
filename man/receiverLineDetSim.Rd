@@ -112,12 +112,12 @@ TBD
   #two receivers only
   spacing <- seq(100,5000, 100) #every 100 m from 100 to 5000 m
   for(i in 1:length(spacing)){
-    if(i==1) resAll <- receiverLineDetSim(recSpc=spacing[i], rngFun=pdrf)
-    if(i>1) resAll[i,] <- receiverLineDetSim(recSpc=spacing[i], rngFun=pdrf)
-    if(i==length(spacing)) resAll$spacing <- spacing
+    if(i==1) detProb <- receiverLineDetSim(recSpc=spacing[i], rngFun=pdrf)
+    if(i>1) detProb[i] <- receiverLineDetSim(recSpc=spacing[i], rngFun=pdrf)
+    if(i==length(spacing)) detProb$spacing <- spacing
   }
 
-  plot(detProb~spacing, resAll, type="b")
+  plot(detProb~spacing, detProb, type="b")
 
 
   #summarize detection probability as a function of fish swim speed
