@@ -4,6 +4,8 @@ receiverLineDetSim <- function(vel=1,delayRng=c(120,360),burstDur=5.0,recSpc=100
       #outerLim is allowable space the left of first receiver and right of second receiver
       #maxDist is the maximum distance away from (perpendicular to) receiver line
   
+	  if(is.na(recSpc)) recSpc <- 0 #to simulate one receiver
+  
       xLim <- c(0,sum(recSpc)+sum(outerLim))
       recLoc <- c(outerLim[1], outerLim[1] + cumsum(recSpc))
       yLim <-  c(-maxDist, maxDist)

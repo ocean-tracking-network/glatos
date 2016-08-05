@@ -18,7 +18,7 @@ receiverLineDetSim(vel=1,delayRng=c(120,360),burstDur=5.0,recSpc=100,
   \item{vel}{numeric (scalar); fish velocity in meters per second}
   \item{delayRng}{numeric (2-element vector); acoustic tag delay (i.e., interval between coded bursts) range in seconds}
   \item{burstDur}{numeric (scalar); duration of coded burst (i.e., pulse train) in seconds; default is for Vemco Global Coding }
-  \item{recSpc}{numeric (vector); distance in meters between receivers; length of vector is N-1, where N is number of receivers}
+  \item{recSpc}{numeric (vector); distance in meters between receivers; length of vector is N-1, where N is number of receivers; will simulate one receiver if recSpc = NA}
   \item{maxDist}{numeric (scalar); maximum distance between tagged fish and receiver during simulation}
   \item{rngFun}{function; returns detection probability for a given distance between tag and receiver}
   \item{outerLim}{numeric (2-element vector); space (in meters) to left (first element) and right (last element) of receiver line in which simulated fish can pass line}
@@ -30,7 +30,8 @@ Virtual tagged fish (N=nsim) are "swum" through a virtual receiver line. The
 first element of 'recSpc' determines spacing between first two receivers in the
 line, and each subsequent element of 'recSpc' determine spacing of subsequent
 receivers along the line, such that the number of receivers is equal to
-length(recSpc) + 1. Each fish moves at constant velocity (vel) along a line
+length(recSpc) + 1. Only one receiver will be simulated if recSpc = NA. 
+Each fish moves at constant velocity (vel) along a line
 perpendicular to the receiver line. The location of each fish path along the
 receiver line is random (drawn from uniform distribution), and fish can pass
 outside the receiver line (to the left of the first receiver or right of last
@@ -66,7 +67,7 @@ TBD
 
  library(glatos)
 
- #empirical detection range data
+ #EXAMPLE 1 - empirical detection range data
   edr <- data.frame(
     x=c(0,363,444,530,636,714,794,889,920), #tag-receiver distance
     p=c(1,1,0.96,0.71,0.67,0.75,0.88,0.21,0)) # detection prob
@@ -89,7 +90,7 @@ TBD
     outerLim=c(1000, 1000), nsim=10, showPlot=T)
 
 
-  #define parametric (logistic) range curve
+  #EXAMPLE 2 - define parametric (logistic) range curve
   # b = intercept and slope
   pdrf <- function(dm, b=c(5.5, -1/120)){
     p <- 1/(1+exp(-(b[1]+b[2]*dm)))
@@ -136,7 +137,18 @@ TBD
   for(i in 1:length(swim)){
     if(i==1) resAll <- receiverLineDetSim(vel=swim[i], recSpc = rep(1000,9), rngFun=pdrf)
     if(i>1) resAll[i,] <- receiverLineDetSim(vel=swim[i], recSpc =  rep(1000,9), rngFun=pdrf)
-    if(i==length(spacing)) resAll$swim <- swim
+    if(i==length(swim)) resAll$swim <- swim
+  }
+
+  plot(detProb~swim, resAll, type="b", col="red")
+
+  
+  #summarize detection probability as a function of fish swim speed; ONE receiver
+  swim <- seq(0.1, 5.0, 0.1)
+  for(i in 1:length(swim)){
+    if(i==1) resAll <- receiverLineDetSim(vel=swim[i], recSpc = NA, rngFun=pdrf)
+    if(i>1) resAll[i,] <- receiverLineDetSim(vel=swim[i], recSpc = NA, rngFun=pdrf)
+    if(i==length(swim)) resAll$swim <- swim
   }
 
   plot(detProb~swim, resAll, type="b", col="red")
