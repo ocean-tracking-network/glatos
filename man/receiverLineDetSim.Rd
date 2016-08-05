@@ -65,94 +65,98 @@ TBD
 }
 \examples{
 
- library(glatos)
+library(glatos)
 
- #EXAMPLE 1 - empirical detection range data
+ #EXAMPLE 1 - simulate detection on line of ten receivers
+   
+  #Define detection range function (to pass as rngFun) 
+  # that returns detection probability for given distance
+   # assume logistic form of detection range curve where 
+   #   dm = distance in meters
+   #   b = intercept and slope
+  pdrf <- function(dm, b=c(5.5, -1/120)){
+     p <- 1/(1+exp(-(b[1]+b[2]*dm)))
+     return(p)
+  }
+ 
+  #preview detection range curve
+  plot(pdrf(0:2000),type="l",ylab="Probability of detecting each coded burst", 
+	xlab="Distance between receiver and transmitter")
+ 
+  #Simulate detection using pdrf; default values otherwise
+  dp <- receiverLineDetSim(rngFun=pdrf)
+  dp
+ 
+  #Again with only 10 virtual fish and optional plot to see simulated data
+  dp <- receiverLineDetSim(rngFun=pdrf, nsim=10, showPlot=T) #with optional plot
+  dp
+ 
+  #Again but six receivers and allow fish to pass to left and right of line
+  dp <- receiverLineDetSim(rngFun=pdrf, recSpc=rep(1000,5),
+ 	outerLim=c(1000, 1000), nsim=10, showPlot=T)
+  dp
+ 
+  #Again but four receivers with irregular spacing
+  dp <- receiverLineDetSim(rngFun=pdrf, recSpc=c(2000,4000,2000),
+  	outerLim=c(1000, 1000), nsim=10, showPlot=T)
+  dp
+ 
+ 
+ #EXAMPLE 2 - summarize detection probability as a function of receiver spacing
+  
+  #two receivers only, spaced 'spc' m apart
+  #define scenarious where two receiver are spaced 
+  spc <- seq(100,5000, 100) #two receivers spaced 100, 200, ... 5000 m
+  #loop through scenarious, estimate detection probability for each
+  for(i in 1:length(spc)){
+    if(i==1) dp <- numeric(length(spc)) #preallocate
+    dp[i] <- receiverLineDetSim(recSpc=spc[i], rngFun=pdrf)
+  }
+  cbind(spc,dp) #view results  
+  #plot results
+  plot(spc, dp, type="o",ylim=c(0,1), xlab="distance between receivers in meters",
+	ylab="proportion of virtual fish detected") 
+  # e.g., >95% virtual fish detected up to 1400 m spacing in this example
+ 
+ 
+ #EXAMPLE 3 - summarize detection probability as a function of fish swim speed
+  
+  #define scenarios of fish movement rate
+  swim <- seq(0.1, 5.0, 0.1) #constant velocity
+  for(i in 1:length(swim)){
+    if(i==1) dp <- numeric(length(swim)) #preallocate
+    dp[i] <- receiverLineDetSim(vel=swim[i], rngFun=pdrf)
+  }
+  cbind(swim,dp) #view results
+  #plot results
+  plot(swim, dp, type="o", ylim=c(0,1), xlab="fish movement rate, m/s",
+	ylab="proportion of virtual fish detected")
+  # e.g., >95% virtual fish detected up to 1.7 m/s rate in this example
+  # e.g., declines linearly above 1.7 m/s
+ 
+
+ #EXAMPLE 4 - empirical detection range curve instead of logistic
+  
+  #create data frame with observed detection efficiency (p) at each distance (x)
   edr <- data.frame(
     x=c(0,363,444,530,636,714,794,889,920), #tag-receiver distance
     p=c(1,1,0.96,0.71,0.67,0.75,0.88,0.21,0)) # detection prob
 
   #now create a function to return the detection probability
   # based on distance and linear interpolation within edr
+  # i.e., estimate p at given x by "connecting the dots" 
   edrf <- function(dm, my.edr=edr) {
     p <- approx(x=my.edr$x,y=my.edr$p,xout=dm, rule=2)$y
     return(p)
   }
 
-  #take a look at the detection range curve
-  plot(edrf(0:2000),type="l")
+  #preview empirical detection range curve
+  plot(edrf(0:2000),type="l",ylab="probability of detecting each coded burst", 
+	xlab="distance between receiver and transmitter, meters")
 
-  #two receivers; only 10 fish with plot "just to visualize the simulation"
-  resAll1 <- receiverLineDetSim(rngFun=edrf,nsim=10, showPlot=T)
-
-  #same but more receivers and allow fish to pass to left and right of line
-  resAll2 <- receiverLineDetSim(rngFun=edrf, recSpc=rep(1000,5),
-    outerLim=c(1000, 1000), nsim=10, showPlot=T)
-
-
-  #EXAMPLE 2 - define parametric (logistic) range curve
-  # b = intercept and slope
-  pdrf <- function(dm, b=c(5.5, -1/120)){
-    p <- 1/(1+exp(-(b[1]+b[2]*dm)))
-    return(p)
-  }
-
-  #take a look at the detection range curve
-  plot(pdrf(0:2000),type="l")
-
-  #two receivers; default values otherwise
-  resAll3 <- receiverLineDetSim(rngFun=pdrf)
-
-  #two receivers; allow fish to pass 1000 m to left and 2000 m to right of line
-  resAll4 <- receiverLineDetSim(rngFun=pdrf,outerLim=c(1000, 2000))
-
-  #four receivers; irregular spacing
-  resAll5 <- receiverLineDetSim(recSpc=c(2000,4000,2000), rngFun=pdrf)
-
-  #summarize detection probability as a function of receiver spacing
-  #two receivers only
-  spacing <- seq(100,5000, 100) #every 100 m from 100 to 5000 m
-  for(i in 1:length(spacing)){
-    if(i==1) detProb <- receiverLineDetSim(recSpc=spacing[i], rngFun=pdrf)
-    if(i>1) detProb[i] <- receiverLineDetSim(recSpc=spacing[i], rngFun=pdrf)
-    if(i==length(spacing)) detProb$spacing <- spacing
-  }
-
-  plot(detProb~spacing, detProb, type="b")
-
-
-  #summarize detection probability as a function of fish swim speed
-  swim <- seq(0.1, 5.0, 0.1)
-  for(i in 1:length(swim)){
-    if(i==1) resAll <- receiverLineDetSim(vel=swim[i], rngFun=pdrf)
-    if(i>1) resAll[i,] <- receiverLineDetSim(vel=swim[i], rngFun=pdrf)
-    if(i==length(spacing)) resAll$swim <- swim
-  }
-
-  plot(detProb~swim, resAll, type="b")
-
-
-  #summarize detection probability as a function of fish swim speed; TEN receivers
-  swim <- seq(0.1, 5.0, 0.1)
-  for(i in 1:length(swim)){
-    if(i==1) resAll <- receiverLineDetSim(vel=swim[i], recSpc = rep(1000,9), rngFun=pdrf)
-    if(i>1) resAll[i,] <- receiverLineDetSim(vel=swim[i], recSpc =  rep(1000,9), rngFun=pdrf)
-    if(i==length(swim)) resAll$swim <- swim
-  }
-
-  plot(detProb~swim, resAll, type="b", col="red")
-
-  
-  #summarize detection probability as a function of fish swim speed; ONE receiver
-  swim <- seq(0.1, 5.0, 0.1)
-  for(i in 1:length(swim)){
-    if(i==1) resAll <- receiverLineDetSim(vel=swim[i], recSpc = NA, rngFun=pdrf)
-    if(i>1) resAll[i,] <- receiverLineDetSim(vel=swim[i], recSpc = NA, rngFun=pdrf)
-    if(i==length(swim)) resAll$swim <- swim
-  }
-
-  plot(detProb~swim, resAll, type="b", col="red")
-
+  #use empirical curve (edrf) in simulation
+  dp <- receiverLineDetSim(rngFun=edrf, nsim=10, showPlot=T) #with optional plot
+  dp
 
 }
 

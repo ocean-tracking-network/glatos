@@ -22,3 +22,7 @@ library(devtools)
 # download the package and install
 install_git("https://USERNAME:PASSWORD@gitlab.oceantrack.org/chrisholbrook/glatos.git")
 ```
+
+
+## Help wanted!
+This package is early in development. Suggestions or requests for new functions, enhancements, bug fixes etc. are needed. If you are interested in contributing (even just ideas), feel free to start a new issue or branch. Or email cholbrook@usgs.gov.
