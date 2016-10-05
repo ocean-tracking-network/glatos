@@ -1,1 +1,1 @@
-export(vrl2csv,calcCollisionProb,crw,crwInPolygon,detectTransmissions,kmlWorkbook,receiverLineDetSim,rotatePoints,transmitAlongPath,vectorHeading)
+export(vrl2ulfx,vrl2csv,calcCollisionProb,crw,crwInPolygon,detectTransmissions,kmlWorkbook,receiverLineDetSim,rotatePoints,transmitAlongPath,vectorHeading)
