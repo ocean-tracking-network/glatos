@@ -37,8 +37,10 @@ C. Holbrook
 
 
 \seealso{
-vrl2csv
+vrl2csv, ulfx2csv
 }
 \examples{
+myVRL <- system.file("extdata", "VR2W_109924_20110718_1.vrl",package="glatos")
+vrl2ulfx(dirname(myVRL)) #output ULFx
 }
 

@@ -12,44 +12,85 @@ ulfx2csv <- function(ulfxFile){
 		 id=xpathSApply(xml,"//definitions/device/@id"), 
 		 short=xpathSApply(xml,"//definitions/device/display_id/text/@short"), 
 		 transmitter=grepl("transmitter",xmlSApply(dev.nodes,names)),
-		 receiver=grepl("receiver",xmlSApply(dev.nodes,names)))
+		 receiver=grepl("receiver",xmlSApply(dev.nodes,names)),
+		 sensor=grepl("sensor",xmlSApply(dev.nodes,names)),
+		 stringsAsFactors=F)
 
 	#make detection dataframe
 	detects <- data.frame(
 			src=xpathSApply(xml, "//log/records/detection/@src"),
-			time=xpathSApply(xml,"//log/records/detection/@time"), 
+			time=xpathSApply(xml,"//log/records/detection/@time"),
+			latitude=xpathSApply(xml,"//log/records/detection/@latitude"),
+			longitude=xpathSApply(xml,"//log/records/detection/@longitude"),
+			stringsAsFactors=F,
 			check.names=F) #allow special characters per default Vemco format
 	detects <- merge(detects,devs,by.x="src",by.y="id",all.x=T)
 	detects$receiver <- devs$short[devs$receiver]
-	detects <- detects[,c("time","receiver","short")]
-	names(detects)[c(1,3)] <- c("detection_timestamp_utc","transmitter")
+	detects <- detects[,c("time","receiver","short","latitude","longitude")]
+	names(detects)[c(3)] <- c("transmitter")
 	#drop T and Z from timestamps
-	detects$detection_timestamp_utc <- gsub("T"," ",detects$detection_timestamp_utc)
-	detects$detection_timestamp_utc <- gsub("Z","",detects$detection_timestamp_utc)
+
 
 	
-	#get sensor data
+	#get data about sensors
+	sensors <- data.frame(
+		idx=xpathSApply(xml,"//definitions/device/sensor/@idx"),
+		device=xpathSApply(xml,"//definitions/device/sensor/@device"),
+		unit=xpathSApply(xml,"//definitions/device/sensor/@unit"),
+		resolution=xpathSApply(xml,"//definitions/device/sensor/@resolution"),
+		 stringsAsFactors=F)
+	
+	sensorAttr <- data.frame(
+		gid=xpathSApply(xml,"//definitions/unit[display_id/text/@lang]/@gid"),
+		dimension=xpathSApply(xml,"//definitions/unit[display_id/text/@lang]/@dimension"),
+		lang=xpathSApply(xml,"//definitions/unit/display_id/text/@lang"),
+		short=xpathSApply(xml,"//definitions/unit/display_id/text/@short"),
+		long=xpathSApply(xml,"//definitions/unit/display_id/text/@long"),
+		 stringsAsFactors=F
+		)
+	
+	sensors <- merge(sensors, sensorAttr, by.x="unit",by.y="gid")
+ 
+	#get detections with sensor data
 	sns <- data.frame(
 		 device=xpathSApply(xml, "//log/records/detection/sample/@device"), 
 		 sensor=xpathSApply(xml,"//log/records/detection/sample/@sensor"), 
-		 sensor_value=xpathSApply(xml,"//log/records/detection/sample/@value"))
+		 sensor_value=xpathSApply(xml,"//log/records/detection/sample/@value"),
+		 time=xpathSApply(xml, "//log/records/detection[sample/@sensor]/@time"),
+		 stringsAsFactors=F)
 	
+	sns <- merge(sns,sensors, by="device")
+		
 	detects$transmitter_name <- ''
 	detects$transmitter_serial <- ''
 	detects$sensor_value <- ''
+	detects$sensor_value[match(sns$time,detects$time)] <- sns$sensor_value
 	detects$sensor_units <- ''
+	detects$sensor_units[match(sns$time,detects$time)] <- sns$short
 	detects$station_name <- ''
-	detects$latitude <- ''
-	detects$sensor_longtidue <- ''
+	detects$latitude[detects$latitude == 0] <- ''
+	detects$longitude[detects$longitude == 0] <- ''
 	
 	#sort by timestamp
-	detects <- detects[order(as.POSIXct(detects$detection_timestamp_utc,tz="GMT")),]
-
-	#rename columns to be consistent with Vemco default format
+	detects$time <- gsub("T"," ",detects$time)
+	detects$time <- gsub("Z","",detects$time)	
+	detects <- detects[order(as.POSIXct(detects$time,tz="GMT")),]
+	
+	#order and rename columns to be consistent with Vemco default format
+	detects <- detects[,c("time","receiver","transmitter","transmitter_name","transmitter_serial","sensor_value","sensor_units",
+		"station_name","latitude","longitude")]	
 	names(detects) <- c("Date and Time (UTC)","Receiver","Transmitter","Transmitter Name",
 		"Transmitter Serial","Sensor Value","Sensor Unit","Station Name","Latitude","Longitude")
+		
+	#format latitude and longitude to be consistent with Vemco default format
+	if(any(detects$Latitude != '')) detects$Latitude[as.numeric(detects$Latitude) > 0] <- 
+		paste0("+",detects$Latitude[as.numeric(detects$Latitude) >= 0])
+	if(any(detects$Longitude != '')) detects$Longitude[as.numeric(detects$Longitude) > 0] <- 
+		paste0("+",detects$Longitude[as.numeric(detects$Longitude) >= 0])
+	
+	
 	#write to csv
-	write.csv(detects,gsub(".ulfx","_detections.csv",xmlFile),row.names=F,quote=F)
+	write.csv(detects,gsub(".ulfx$|.ULFx$","_detections.csv",xmlFile),row.names=F,quote=F)
 	
 	
 
@@ -59,15 +100,16 @@ ulfx2csv <- function(ulfxFile){
 	   #intermediate values
 	   mem.x <- data.frame(
 			 # - memory used
-			 end_ptr=as.numeric(xpathSApply(xml,"//log/records/memory_stats/segment/@end_ptr")),
+			 #end_ptr=as.numeric(xpathSApply(xml,"//log/records/memory_stats/segment/@end_ptr")),
+			 end_ptr=as.numeric(xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled']/segment/@end_ptr")),
 			 # - max memory
-			 memory_size=as.numeric(xpathSApply(xml,"//log/records/memory_stats/segment/@memory_size")),
+			 memory_size=as.numeric(xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled']/segment/@memory_size")),
 			 # - class
-			 class=xpathSApply(xml,"//log/records/memory_stats/segment/@class"))
+			 class=xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled']/segment/@class"))
 	   mem.x$percent_used <- with(mem.x, end_ptr/memory_size)
 	   
 	   mem <- data.frame(
-			event_timestamp_utc=xpathSApply(xml,"//log/records/memory_stats/@time"),
+			event_timestamp_utc=xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled']/@time"),
 			receiver=devs$short[devs$receiver],
 			description="Memory Capacity",
 			data=round(mem.x$percent_used[mem.x$class=="main_log"]*100,1),
@@ -119,7 +161,7 @@ ulfx2csv <- function(ulfxFile){
 			event_timestamp_utc=xpathSApply(xml,"//log/records/data_offload/@time"),
 			receiver=devs$short[devs$receiver],
 			description="Data Upload",
-			data="VRL file name missing from *.ulfx file",
+			data=xpathSApply(xml,"//log/records/data_offload/offload/@original_file"),
 			units="",
 			stringsAsFactors=F)  
 			
@@ -141,6 +183,7 @@ ulfx2csv <- function(ulfxFile){
 			id=xpathSApply(xml,"//definitions/code_space/@id"),
 			short=xpathSApply(xml,"//definitions/code_space/display_id/text/@short"),
 			stringsAsFactors=F)        
+		codespaces <- codespaces[order(codespaces$short),]
 		
 		codespace.x <- xpathSApply(xml,"//log/records/decoder_stats/@code_space")
 		codespace.x <- codespaces$short[match(as.character(codespace.x), codespaces$id)]
@@ -231,27 +274,31 @@ ulfx2csv <- function(ulfxFile){
 		map,
 		blanking)
 		
+	logOut <- as.data.frame(logOut, check.names=F, stringsAsFactors=F)
+		
 	logOut$event_timestamp_utc <- gsub("T"," ",logOut$event_timestamp_utc) #replace T with space
 	logOut$event_timestamp_utc <- gsub("Z","",logOut$event_timestamp_utc) #drop Z
 	 
 
 	#enforce same order as VUE export
 	event.order <- c(   "Initialization",
-						"PC Time",
-						"Map",
-						"Blanking",
 						"Memory Capacity",
 						"Battery",
 						"Daily Pings",
 						"Daily Syncs",
 						"Daily Rejects",
-						paste0("Daily Detections on ",codespaces$short),
-						paste0("Last Detection on ",codespaces$short),
-						"Data Upload")
+						c(paste0("Daily Detections on ",codespaces$short),
+						paste0("Last Detection on ",codespaces$short))[order(c(codespaces$short,codespaces$short))],
+						"Data Upload",
+						"PC Time",
+						"Map",
+						"Blanking")
 	ord <- match(logOut$description, event.order)                    
 
 	logOut <- logOut[order(as.POSIXct(logOut$event_timestamp_utc,tz="GMT"),ord),]      
+	
+	names(logOut) <- c("Date/Time","Receiver","Description","Data","Units")
 
-	write.csv(logOut,gsub(".ulfx","_receiverEvents.csv",xmlFile),row.names=F,quote=F)
+	write.csv(logOut,gsub(".ulfx$|.ULFx$","_receiverEvents.csv",xmlFile),row.names=F,quote=F)
 }
 
