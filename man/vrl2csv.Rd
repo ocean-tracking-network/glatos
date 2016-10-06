@@ -38,8 +38,11 @@ Receiver event data are not exported. That functionality is not supported by the
 
 
 \seealso{
-vrl2ulfx
+vrl2ulfx, ulfx2csv
 }
 \examples{
+#get path to example VRL
+myVRL <- system.file("extdata", "VR2W_109924_20110718_1.vrl",package="glatos")
+vrl2csv(dirname(myVRL)) #output CSV
 }
 
