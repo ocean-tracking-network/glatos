@@ -296,36 +296,52 @@ ulfx2csv <- function(ulfx){
 
 		#reset
 		resets.list <- xpathSApply(xml,"//log/records/event[@code='8']/display_desc/text/text()")
-		resets.vec <- character(length(resets.list))
-		for(j in 1:length(resets.list)) resets.vec[j] <- xmlValue(resets.list[[j]]) 
-		
-		reset <- data.frame(
-				event_timestamp_utc=xpathSApply(xml,"//log/records/event[@code='8']/@time"),
-				receiver=devs$short[devs$receiver],
-				description="Reset",
-				data=resets.vec,
-				units="",
-				stringsAsFactors=F)  
+		if(length(resets.list) > 0){
+			resets.vec <- character(length(resets.list))
+			for(j in 1:length(resets.list)) resets.vec[j] <- xmlValue(resets.list[[j]]) 
+			
+			reset <- data.frame(
+					event_timestamp_utc=xpathSApply(xml,"//log/records/event[@code='8']/@time"),
+					receiver=devs$short[devs$receiver],
+					description="Reset",
+					data=resets.vec,
+					units="",
+					stringsAsFactors=F)  
+		} else {
+			reset <- data.frame(
+					event_timestamp_utc=NA,
+					receiver=NA,
+					description=NA,
+					data=NA,
+					units=NA,
+					stringsAsFactors=F)[0,] 
+		}
 		
 		
 		#comment
 		comments.list <- xpathSApply(xml,"//log/records/event[@code='4']/display_desc/text/text()")
-		comments.vec <- character(length(comments.list))
-		for(j in 1:length(comments.list)) comments.vec[j] <- xmlValue(comments.list[[j]]) 
-		
-		comments <- data.frame(
-				event_timestamp_utc=xpathSApply(xml,"//log/records/event[@code='4']/@time"),
-				receiver=devs$short[devs$receiver],
-				description="Comment",
-				data=comments.vec,
-				units="",
-				stringsAsFactors=F)  		
-
-		#last detection
-		
-						
-		
+		if(length(comments.list) > 0){		
+			comments.vec <- character(length(comments.list))
+			for(j in 1:length(comments.list)) comments.vec[j] <- xmlValue(comments.list[[j]]) 
 			
+			comments <- data.frame(
+					event_timestamp_utc=xpathSApply(xml,"//log/records/event[@code='4']/@time"),
+					receiver=devs$short[devs$receiver],
+					description="Comment",
+					data=comments.vec,
+					units="",
+					stringsAsFactors=F)  		
+		} else {
+			comments <- data.frame(
+					event_timestamp_utc=NA,
+					receiver=NA,
+					description=NA,
+					data=NA,
+					units=NA,
+					stringsAsFactors=F)[0,] 
+		}
+
+					
 		#append all parts and export
 
 		logOut <- rbind(
