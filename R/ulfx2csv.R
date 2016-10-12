@@ -392,7 +392,7 @@ ulfx2csv <- function(ulfx){
 		
 			#VR2W180
 			rows_vr2w180 <- grepl("^VR2W180",logOut$receiver) #identify 180 rows
-			logOut <- within(logOut[rows_vr2w180,],{
+			logOut[rows_vr2w180,] <- within(logOut[rows_vr2w180,],{
 				description <- gsub("^Map$","180 kHz decoding map", description)
 				description <- gsub("^Blanking$","180 kHz blanking interval", description) 
 				description <- gsub("^Study Pings$","Study Pings on 180 kHz", description)
@@ -401,10 +401,6 @@ ulfx2csv <- function(ulfx){
 				description <- gsub("^Daily Rejects$","Daily Rejects on 180 kHz", description)
 			})			
 				
-			
-			
-		
-		
 		#-------------------------------------		
 		
 		#rename columns to Vemco default
