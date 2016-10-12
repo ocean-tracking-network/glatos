@@ -2,10 +2,10 @@
 \Rdversion{1.1}
 \alias{vrl2csv}
 \title{
-Convert Vemco VRL file to CSV
+Convert Vemco VRL file(s) to CSV format
 }
 \description{
-Create a comma separate values (CSV) text file from a Vemco VRL file. 
+Convert Vemco VRL file(s) to CSV format by invoking a system command in VUE (> 2.06; courtesy of Tim Stone, Vemco). 
 }
 \usage{
 vrl2csv(vrl, vueExePath="C:\\Program Files (x86)\\Vemco\\VUE")
@@ -21,7 +21,7 @@ Path to VUE.exe (default may not always be correct)
 
 }
 \details{
-If VLR is a directory, then all VRL files in that directory will be converted to CSV. Otherwise, only those files specified in VRL will be converted. Each output CSV file will have same name as the VRL file. This invokes a system command in VUE (> 2.06; courtesy of Tim Stone, Vemco).  To get the path to VUE.exe, right click on the icon, select "Properties", and then copy text in "Target" box.
+If 'vrl' is a directory, then all VRL files in that directory will be converted to CSV. Otherwise, only those files specified in 'vrl' will be converted. Each output CSV file will have same name as its source VRL file. 
 }
 \value{
 Vector of csv file names.
@@ -35,6 +35,8 @@ C. Holbrook
 \note{
 Receiver event data are not exported because that functionality is not supported by the VUE system command.
 
+To get the path to VUE.exe, right click on the icon, select "Properties", and then copy text in "Target" box.
+ 
 To create a CSV for each time-corrected VRL file, first time-correct the files using the VRL editor in VUE (under Tools menu).  To speed up that process, uncheck the "Import" checkbox next to each filename, then run vrl2csv to create a CSV for each edited (e.g. time corrected) VRL.
 }
 
