@@ -68,7 +68,7 @@ ulfx2csv <- function(ulfx){
 		detects$longitude[dets$lon] <- as.character(xpathSApply(xml,"//log/records/detection/@longitude"))
 		
 		
-		#sensor data
+		#sensor data - transmitters only
 		
 		if(sum(dets$sensor) > 0){	
 			#get data about sensors
@@ -76,7 +76,6 @@ ulfx2csv <- function(ulfx){
 				idx=xpathSApply(xml,"//definitions/device/sensor/@idx"),
 				device=xpathSApply(xml,"//definitions/device/sensor/@device"),
 				unit=xpathSApply(xml,"//definitions/device/sensor/@unit"),
-				resolution=xpathSApply(xml,"//definitions/device/sensor/@resolution"),
 				 stringsAsFactors=F)
 			
 			sensAttr <- data.frame(
@@ -147,14 +146,26 @@ ulfx2csv <- function(ulfx){
 				
 				
 		#- battery stats
-		   bat <- data.frame(
-				event_timestamp_utc=xpathSApply(xml,"//log/records/battery_stats/@time"),
-				receiver=devs$short[devs$receiver],
-				description="Battery",
-				data=xpathSApply(xml,"//log/records/battery_stats/@volts"),
-				units="V",
-				stringsAsFactors=F)
-		   bat$data <- round(as.numeric(bat$data),1)
+		
+		   #check for battery stats
+		   bat.nodes <- getNodeSet(xml,"//log/records/battery_stats")
+		   if(length(bat.nodes)>0){
+			   bat <- data.frame(
+					event_timestamp_utc=xpathSApply(xml,"//log/records/battery_stats/@time"),
+					receiver=devs$short[devs$receiver],
+					description="Battery",
+					data=xpathSApply(xml,"//log/records/battery_stats/@volts"),
+					units="V",
+					stringsAsFactors=F)
+			   bat$data <- round(as.numeric(bat$data),1)
+		   } else { bat <- data.frame(
+					event_timestamp_utc=NA,
+					receiver=NA,
+					description=NA,
+					data=NA,
+					units=NA,
+					stringsAsFactors=F)[0,]
+		   }
 			  
 
 		#- receiver stats - scheduled
@@ -186,28 +197,37 @@ ulfx2csv <- function(ulfx){
 		#- receiver stats - recording paused
 		   rec.paus.nodes <- getNodeSet(xml, 
 			"//log/records/receiver_stats[@trigger='recording_pause']")
-		   		   
-		   paus.pings <- data.frame(
-				event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
-				receiver=devs$short[devs$receiver],
-				description="Pings",
-				data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"pulse_count")),
-				units="",
-				stringsAsFactors=F)
-		   paus.syncs <- data.frame(
-				event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
-				receiver=devs$short[devs$receiver],
-				description="Syncs",
-				data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"sync_count")),
-				units="",
-				stringsAsFactors=F)
-		   paus.rejects <- data.frame(
-				event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
-				receiver=devs$short[devs$receiver],
-				description="Rejects",
-				data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"reject_count")),
-				units="",
-				stringsAsFactors=F)
+		   if(length(rec.paus.nodes)>0){	   
+			   paus.pings <- data.frame(
+					event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
+					receiver=devs$short[devs$receiver],
+					description="Pings",
+					data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"pulse_count")),
+					units="",
+					stringsAsFactors=F)
+			   paus.syncs <- data.frame(
+					event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
+					receiver=devs$short[devs$receiver],
+					description="Syncs",
+					data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"sync_count")),
+					units="",
+					stringsAsFactors=F)
+			   paus.rejects <- data.frame(
+					event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
+					receiver=devs$short[devs$receiver],
+					description="Rejects",
+					data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"reject_count")),
+					units="",
+					stringsAsFactors=F)
+		   } else {
+			   paus.rejects <- paus.syncs <- paus.pings <- data.frame(
+					event_timestamp_utc=NA,
+					receiver=NA,
+					description=NA,
+					data=NA,
+					units=NA,
+					stringsAsFactors=F)[0,]
+		   }
 				
 		#receiver stats - requested
 		   rec.reque.nodes <- getNodeSet(xml, "//log/records/receiver_stats[@trigger='requested']")
@@ -270,6 +290,53 @@ ulfx2csv <- function(ulfx){
 			
 			lastdecode$data <- gsub("T"," ",lastdecode$data) #replace T with space
 			lastdecode$data <- gsub("Z","",lastdecode$data) #drop Z
+			
+
+		#measurements
+			meas.nodes <- getNodeSet(xml,"//log/records/measurement")
+			if(length(meas.nodes)>0){
+				meas <- data.frame(
+					time=xpathSApply(xml,"//log/records/measurement/@time"),
+					device=xpathSApply(xml,"//log/records/measurement/sample/@device"),
+					sensor=xpathSApply(xml,"//log/records/measurement/sample/@sensor"),
+					value=xpathSApply(xml,"//log/records/measurement/sample/@value"),
+					stringsAsFactors=F
+				)
+				#add sensor attributes
+				meas <- merge(meas,sens,by.x=c("device","sensor"),by.y=c("device","idx"))
+				measures <- data.frame(
+						event_timestamp_utc=meas$time,
+						receiver=devs$short[devs$receiver],
+						description=NA,
+						data=meas$value,
+						units=meas$short,
+						stringsAsFactors=F)  
+				#eliminate odd symbol (probably a better way)
+				measures$units <- gsub("Â","",measures$units) 
+				#conditional descriptions
+				measures$description[measures$units == "°C"] <- "Temperature"
+				measures$description[measures$units == "V"] <- "Noise"
+				#conversion
+				noiseRows <- measures$description == "Noise" & !is.na(measures$description)
+				measures$data[noiseRows] <- as.numeric(measures$data[noiseRows])*1000
+				measures$units[noiseRows] <- "mV"
+				#rounding
+				tempRows <- measures$description == "Temperature" & !is.na(measures$description) 
+				measures$data[tempRows] <- 
+					round(as.numeric(measures$data[tempRows]),1)
+			
+				
+			} else {
+				meas <- data.frame(
+e						vent_timestamp_utc=NA,
+						receiver=NA,
+						description=NA,
+						data=NA,
+						units=NA,
+						stringsAsFactors=F)[0,]  
+			}
+			
+			
 			
 			
 		#initialization
@@ -389,7 +456,8 @@ ulfx2csv <- function(ulfx){
 			blanking,
 			reque.pings,
 			reset,
-			comments)
+			comments,
+			measures)
 			
 		logOut <- as.data.frame(logOut, check.names=F, stringsAsFactors=F)
 			
@@ -415,7 +483,10 @@ ulfx2csv <- function(ulfx){
 							"Blanking",
 							"Study Pings",
 							"Reset",
-							"Comment")
+							"Comment",
+							"Noise",
+							"Temperature",
+							"Unknown")
 		ord <- match(logOut$description, event.order)           
 		logOut <- logOut[order(as.POSIXct(logOut$event_timestamp_utc,tz="GMT"),ord),]   
 
@@ -435,6 +506,21 @@ ulfx2csv <- function(ulfx){
 				description <- gsub("^Syncs$","Syncs on 180 kHz", description)
 				description <- gsub("^Rejects$","Rejects on 180 kHz", description)
 			})			
+			
+			#VR2Tx
+			rows_vr2tx <- grepl("^VR2Tx",logOut$receiver) #identify 180 rows
+			logOut[rows_vr2tx,] <- within(logOut[rows_vr2tx,],{
+				description <- gsub("^Map$","69 kHz decoding map", description)
+				description <- gsub("^Blanking$","69 kHz blanking interval", description) 
+				description <- gsub("^Study Pings$","Study Pings on 69 kHz", description)
+				description <- gsub("^Daily Pings$","Pings on 69 kHz", description)
+				description <- gsub("^Daily Syncs$","Syncs on 69 kHz", description)
+				description <- gsub("^Daily Rejects$","Rejects on 69 kHz", description)
+				description <- gsub("^Pings$","Pings on 69 kHz", description)
+				description <- gsub("^Syncs$","Syncs on 69 kHz", description)
+				description <- gsub("^Rejects$","Rejects on 69 kHz", description)
+				description <- gsub("^Daily Detections on","Detections on", description)
+			})		
 				
 		#-------------------------------------		
 		
