@@ -157,40 +157,66 @@ ulfx2csv <- function(ulfx){
 		   bat$data <- round(as.numeric(bat$data),1)
 			  
 
-		#- receiver stats - daily
-		   rec.nodes.daily <- getNodeSet(xml, 
-			"//log/records/receiver_stats[@trigger='scheduled' or @trigger='recording_pause']")
+		#- receiver stats - scheduled
+		   rec.sched.nodes <- getNodeSet(xml, 
+			"//log/records/receiver_stats[@trigger='scheduled']")
 		   		   
-		   daily.pings <- data.frame(
-				event_timestamp_utc=sapply(rec.nodes.daily,function(x) xmlGetAttr(x,"time")),
+		   sched.pings <- data.frame(
+				event_timestamp_utc=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"time")),
 				receiver=devs$short[devs$receiver],
 				description="Daily Pings",
-				data=sapply(rec.nodes.daily,function(x) xmlGetAttr(x,"pulse_count")),
+				data=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"pulse_count")),
 				units="",
 				stringsAsFactors=F)
-		   daily.syncs <- data.frame(
-				event_timestamp_utc=sapply(rec.nodes.daily,function(x) xmlGetAttr(x,"time")),
+		   sched.syncs <- data.frame(
+				event_timestamp_utc=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"time")),
 				receiver=devs$short[devs$receiver],
 				description="Daily Syncs",
-				data=sapply(rec.nodes.daily,function(x) xmlGetAttr(x,"sync_count")),
+				data=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"sync_count")),
 				units="",
 				stringsAsFactors=F)
-		   daily.rejects <- data.frame(
-				event_timestamp_utc=sapply(rec.nodes.daily,function(x) xmlGetAttr(x,"time")),
+		   sched.rejects <- data.frame(
+				event_timestamp_utc=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"time")),
 				receiver=devs$short[devs$receiver],
 				description="Daily Rejects",
-				data=sapply(rec.nodes.daily,function(x) xmlGetAttr(x,"reject_count")),
+				data=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"reject_count")),
+				units="",
+				stringsAsFactors=F)
+
+		#- receiver stats - recording paused
+		   rec.paus.nodes <- getNodeSet(xml, 
+			"//log/records/receiver_stats[@trigger='recording_pause']")
+		   		   
+		   paus.pings <- data.frame(
+				event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
+				receiver=devs$short[devs$receiver],
+				description="Pings",
+				data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"pulse_count")),
+				units="",
+				stringsAsFactors=F)
+		   paus.syncs <- data.frame(
+				event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
+				receiver=devs$short[devs$receiver],
+				description="Syncs",
+				data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"sync_count")),
+				units="",
+				stringsAsFactors=F)
+		   paus.rejects <- data.frame(
+				event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
+				receiver=devs$short[devs$receiver],
+				description="Rejects",
+				data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"reject_count")),
 				units="",
 				stringsAsFactors=F)
 				
-		#receiver stats - study
-		   rec.nodes.study <- getNodeSet(xml, "//log/records/receiver_stats[@trigger='requested']")
+		#receiver stats - requested
+		   rec.reque.nodes <- getNodeSet(xml, "//log/records/receiver_stats[@trigger='requested']")
 			
-		   study.pings <- data.frame(
-				event_timestamp_utc=sapply(rec.nodes.study,function(x) xmlGetAttr(x,"time")),
+		   reque.pings <- data.frame(
+				event_timestamp_utc=sapply(rec.reque.nodes,function(x) xmlGetAttr(x,"time")),
 				receiver=devs$short[devs$receiver],
 				description="Study Pings",
-				data=sapply(rec.nodes.study,function(x) xmlGetAttr(x,"pulse_count")),
+				data=sapply(rec.reque.nodes,function(x) xmlGetAttr(x,"pulse_count")),
 				units="",
 				stringsAsFactors=F)
 
@@ -347,9 +373,12 @@ ulfx2csv <- function(ulfx){
 		logOut <- rbind(
 			bat,
 			mem,
-			daily.pings,
-			daily.syncs,
-			daily.rejects,
+			sched.pings,
+			sched.syncs,
+			sched.rejects,
+			paus.pings,
+			paus.syncs,
+			paus.rejects,
 			offload,
 			pctime,
 			dailydets,
@@ -358,7 +387,7 @@ ulfx2csv <- function(ulfx){
 			init.pctime,
 			map,
 			blanking,
-			study.pings,
+			reque.pings,
 			reset,
 			comments)
 			
@@ -376,6 +405,9 @@ ulfx2csv <- function(ulfx){
 							"Daily Pings",
 							"Daily Syncs",
 							"Daily Rejects",
+							"Pings",
+							"Syncs",
+							"Rejects",
 							c(paste0("Daily Detections on ",codespaces$short),
 							paste0("Last Detection on ",codespaces$short))[order(c(codespaces$short,codespaces$short))],
 							"PC Time",
@@ -399,6 +431,9 @@ ulfx2csv <- function(ulfx){
 				description <- gsub("^Daily Pings$","Daily Pings on 180 kHz", description)
 				description <- gsub("^Daily Syncs$","Daily Syncs on 180 kHz", description)
 				description <- gsub("^Daily Rejects$","Daily Rejects on 180 kHz", description)
+				description <- gsub("^Pings$","Pings on 180 kHz", description)
+				description <- gsub("^Syncs$","Syncs on 180 kHz", description)
+				description <- gsub("^Rejects$","Rejects on 180 kHz", description)
 			})			
 				
 		#-------------------------------------		
