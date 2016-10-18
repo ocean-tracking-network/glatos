@@ -45,13 +45,19 @@ ulfx2csv <- function(ulfx){
 			 stringsAsFactors=F)
 
 		#Add required detection fields
-		det.nodes <- getNodeSet(xml, "//log/records/detection")
 		dets <- data.frame(
 				src=xpathSApply(xml, "//log/records/detection/@src"),
 				time=xpathSApply(xml,"//log/records/detection/@time"),
-				lat=grepl("latitude",xmlSApply(det.nodes,names)),
-				lon=grepl("longitude",xmlSApply(det.nodes,names))
+				stringsAsFactors=F
 				)
+				
+		#check if detection node contains lat or lon attributes
+		det.nodes <- getNodeSet(xml, "//log/records/detection")
+		detAttrNames <- sapply(det.nodes, simplify=F, function(x) names(xmlAttrs(x)))
+		dets$lat <- grepl("latitude",detAttrNames)
+		dets$lon <- grepl("longitude",detAttrNames)
+		
+		
 		dets <- merge(dets,devs,by.x="src",by.y="id",all.x=T) #add device data
 		dets$receiver <- devs$short[devs$receiver] #add receiver
 		
@@ -68,40 +74,68 @@ ulfx2csv <- function(ulfx){
 		detects$longitude[dets$lon] <- as.character(xpathSApply(xml,"//log/records/detection/@longitude"))
 		
 		
-		#sensor data - transmitters only
+		#sensor data
 		
 		if(sum(dets$sensor) > 0){	
 			#get data about sensors
+			sens.nodes <- getNodeSet(xml, "//definitions/device/sensor")
 			sens <- data.frame(
 				idx=xpathSApply(xml,"//definitions/device/sensor/@idx"),
 				device=xpathSApply(xml,"//definitions/device/sensor/@device"),
 				unit=xpathSApply(xml,"//definitions/device/sensor/@unit"),
 				 stringsAsFactors=F)
 			
+			sensAttr.nodes <- getNodeSet(xml, "//definitions/unit/display_id/text")
 			sensAttr <- data.frame(
 				gid=xpathSApply(xml,"//definitions/unit[display_id/text/@lang]/@gid"),
 				dimension=xpathSApply(xml,"//definitions/unit[display_id/text/@lang]/@dimension"),
-				lang=xpathSApply(xml,"//definitions/unit/display_id/text/@lang"),
-				short=xpathSApply(xml,"//definitions/unit/display_id/text/@short"),
-				long=xpathSApply(xml,"//definitions/unit/display_id/text/@long"),
+				lang_unit=xpathSApply(xml,"//definitions/unit/display_id/text/@lang"),
+				short_unit=xpathSApply(xml,"//definitions/unit/display_id/text/@short"),
+				long_unit=xpathSApply(xml,"//definitions/unit/display_id/text/@long"),
+				detail_unit='', #preallocate
 				 stringsAsFactors=F
 				)
+				
+			#check if sensor unit contains 'detail' attribute
+			sensAttrNames <- sapply(sensAttr.nodes, simplify=F, function(x) names(xmlAttrs(x)))
+			detailRows <- grepl("detail",sensAttrNames)
+			sensAttr$detail_unit[detailRows] <- xpathSApply(xml,"//definitions/unit/display_id/text/@detail")
 			
+			#merge
 			sens <- merge(sens, sensAttr, by.x="unit",by.y="gid")
 		 
+			#get dimension data
+			dimen.nodes <- getNodeSet(xml, "//definitions/dimension")
+			dimenAttr.nodes <- getNodeSet(xml, "//definitions/dimension/display_id/text")
+			dimen <- data.frame(
+				gid=xpathSApply(xml,"//definitions/dimension/@gid"),
+				lang_dimen=xpathSApply(xml,"//definitions/dimension/display_id/text/@lang"),
+				short_dimen=xpathSApply(xml,"//definitions/dimension/display_id/text/@short"),
+				long_dimen='', #preallocate
+				 stringsAsFactors=F
+				)			
+			#check if dimension contains 'long' attribute
+			dimenAttrNames <- sapply(dimenAttr.nodes, function(x) names(xmlAttrs(x)))
+			longRows <- grepl("long",dimenAttrNames)
+			dimen$long_dimen[longRows] <- xpathSApply(xml,"//definitions/dimension/display_id/text/@long")			
+
+			#merge
+			sens <- merge(sens, dimen, by.x="dimension",by.y="gid")
+		 			
+		 
 			#get detections with sensor data
-			sns <- data.frame(
+			snsDet <- data.frame(
 				 device=xpathSApply(xml, "//log/records/detection/sample/@device"), 
 				 sensor=xpathSApply(xml,"//log/records/detection/sample/@sensor"), 
 				 sensor_value=xpathSApply(xml,"//log/records/detection/sample/@value"),
 				 time=xpathSApply(xml, "//log/records/detection[sample/@sensor]/@time"),
 				 stringsAsFactors=F)
 			
-			sns <- merge(sns,sens, by="device")
+			snsDet <- merge(snsDet,sens, by="device")
 				
 			#add to detects
-				detects$sensor_value[match(sns$time,detects$time)] <- sns$sensor_value
-				detects$sensor_units[match(sns$time,detects$time)] <- sns$short
+			detects$sensor_value[match(snsDet$time,detects$time)] <- snsDet$sensor_value
+			detects$sensor_units[match(snsDet$time,detects$time)] <- snsDet$short_unit
 		} #end if
 		
 		#drop T and Z from timestamps
@@ -228,7 +262,7 @@ ulfx2csv <- function(ulfx){
 					units=NA,
 					stringsAsFactors=F)[0,]
 		   }
-				
+		
 		#receiver stats - requested
 		   rec.reque.nodes <- getNodeSet(xml, "//log/records/receiver_stats[@trigger='requested']")
 			
@@ -239,6 +273,7 @@ ulfx2csv <- function(ulfx){
 				data=sapply(rec.reque.nodes,function(x) xmlGetAttr(x,"pulse_count")),
 				units="",
 				stringsAsFactors=F)
+										   
 
 		#offload
 			offload <- data.frame(
@@ -307,28 +342,42 @@ ulfx2csv <- function(ulfx){
 				measures <- data.frame(
 						event_timestamp_utc=meas$time,
 						receiver=devs$short[devs$receiver],
-						description=NA,
+						description='',
 						data=meas$value,
-						units=meas$short,
+						units=meas$short_unit,
 						stringsAsFactors=F)  
+				#add placeholder descriptions
+				measures$description <- meas$detail_unit
+				measures$description[measures$description == ''] <- meas$long_dimen[measures$description == '']
 				#eliminate odd symbol (probably a better way)
 				measures$units <- gsub("Â","",measures$units) 
 				#conditional descriptions
-				measures$description[measures$units == "°C"] <- "Temperature"
-				measures$description[measures$units == "V"] <- "Noise"
+				measures$description[measures$description == "temperature"] <- "Temperature"
+				measures$description[measures$description == "noise"] <- "Noise"
+				measures$description[measures$description == "voltage"] <- "Voltage"
+				measures$description[measures$description == "tilt angle"] <- "Tilt angle"
+				measures$description[measures$description == "rotation angle"] <- "Rotation angle"
 				#conversion
 				noiseRows <- measures$description == "Noise" & !is.na(measures$description)
 				measures$data[noiseRows] <- as.numeric(measures$data[noiseRows])*1000
 				measures$units[noiseRows] <- "mV"
+				angleRows <- measures$description %in% c("Tilt angle","Rotation angle") & !is.na(measures$description)
+				measures$data[angleRows] <- as.numeric(measures$data[angleRows])*180/pi #convert rad to deg
+				measures$units[angleRows] <- "°"				
 				#rounding
 				tempRows <- measures$description == "Temperature" & !is.na(measures$description) 
+				voltageRows <- measures$description == "Voltage" & !is.na(measures$description) 
 				measures$data[tempRows] <- 
-					round(as.numeric(measures$data[tempRows]),1)
-			
-				
+					sprintf("%1.1f", round(as.numeric(measures$data[tempRows]),1))
+				measures$data[noiseRows] <- 
+					sprintf("%1.1f", round(as.numeric(measures$data[noiseRows]),1))	
+				measures$data[voltageRows] <- 
+					sprintf("%1.2f", round(as.numeric(measures$data[voltageRows]),1))	
+				measures$data[angleRows] <- 
+					sprintf("%1.0f", round(as.numeric(measures$data[angleRows]),1))	
 			} else {
-				meas <- data.frame(
-e						vent_timestamp_utc=NA,
+				measures <- data.frame(
+						event_timestamp_utc=NA,
 						receiver=NA,
 						description=NA,
 						data=NA,
@@ -336,8 +385,65 @@ e						vent_timestamp_utc=NA,
 						stringsAsFactors=F)[0,]  
 			}
 			
-			
-			
+		#sensor stats	
+		   senStats.nodes <- getNodeSet(xml, "//log/records/sensor_stats")
+			if(length(senStats.nodes)>0){
+				senStats <- data.frame(
+					time=xpathSApply(xml,"//log/records/sensor_stats/@time"),
+					stat=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/@stat"),
+					span=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/@span"),
+					period=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/@period"),
+					device=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/sensor_stat/@device"),
+					sensor=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/sensor_stat/@sensor"),
+					value=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/sensor_stat/@value"),
+					stringsAsFactors=F
+				)
+				#add sensor attributes
+				senStats <- merge(senStats,sens,by.x=c("device","sensor"),by.y=c("device","idx"))
+				sensorStats <- data.frame(
+						event_timestamp_utc=senStats$time,
+						receiver=devs$short[devs$receiver],
+						description='',
+						data=senStats$value,
+						units=senStats$short_unit,
+						stringsAsFactors=F)  
+				#add placeholder descriptions
+				sensorStats$description <- senStats$detail_unit
+				sensorStats$description[sensorStats$description == ''] <- senStats$long_dimen[sensorStats$description == '']
+				voltageRows <- sensorStats$description == "voltage" & 
+					!is.na(sensorStats$description) 
+				sensorStats$description[voltageRows] <- paste0(senStats$stat[voltageRows]," ",
+					sensorStats$description[voltageRows])
+				#eliminate odd symbol (probably a better way)
+				sensorStats$units <- gsub("Â","",sensorStats$units) 
+				#conditional descriptions
+				sensorStats$description[sensorStats$description == "temperature"] <- "Temperature"
+				sensorStats$description[sensorStats$description == "noise"] <- "Noise"
+				sensorStats$description[sensorStats$description == "min voltage"] <- "Minimum voltage"
+				sensorStats$description[sensorStats$description == "max voltage"] <- "Maximum voltage"
+				sensorStats$description[sensorStats$description == "avg voltage"] <- "Average voltage"
+				#conversion
+				noiseRows <- sensorStats$description == "Noise" & !is.na(sensorStats$description)
+				sensorStats$data[noiseRows] <- as.numeric(sensorStats$data[noiseRows])*1000
+				sensorStats$units[noiseRows] <- "mV"				
+				#rounding
+				tempRows <- sensorStats$description == "Temperature" & !is.na(sensorStats$description) 
+				sensorStats$data[tempRows] <- 
+					sprintf("%1.1f", round(as.numeric(sensorStats$data[tempRows]),1))
+				sensorStats$data[noiseRows] <- 
+					sprintf("%1.1f", round(as.numeric(sensorStats$data[noiseRows]),1))	
+				sensorStats$data[voltageRows] <- 
+					sprintf("%1.2f", round(as.numeric(sensorStats$data[voltageRows]),2))
+
+			} else {
+				sensorStats <- data.frame(
+						vent_timestamp_utc=NA,
+						receiver=NA,
+						description=NA,
+						data=NA,
+						units=NA,
+						stringsAsFactors=F)[0,]  
+			}		   			
 			
 		#initialization
 			init <- data.frame(
@@ -457,7 +563,8 @@ e						vent_timestamp_utc=NA,
 			reque.pings,
 			reset,
 			comments,
-			measures)
+			measures,
+			sensorStats)
 			
 		logOut <- as.data.frame(logOut, check.names=F, stringsAsFactors=F)
 			
@@ -484,8 +591,14 @@ e						vent_timestamp_utc=NA,
 							"Study Pings",
 							"Reset",
 							"Comment",
+							"Tilt angle",
+							"Rotation angle",
 							"Noise",
 							"Temperature",
+							"Minimum voltage",
+							"Maximum voltage",
+							"Average voltage",
+							"Voltage",
 							"Unknown")
 		ord <- match(logOut$description, event.order)           
 		logOut <- logOut[order(as.POSIXct(logOut$event_timestamp_utc,tz="GMT"),ord),]   
@@ -521,6 +634,9 @@ e						vent_timestamp_utc=NA,
 				description <- gsub("^Rejects$","Rejects on 69 kHz", description)
 				description <- gsub("^Daily Detections on","Detections on", description)
 			})		
+			#omit battery voltage measurements
+			dropRows <- rows_vr2tx & logOut$description == "Voltage"	
+			logOut <- logOut[!dropRows,]
 				
 		#-------------------------------------		
 		
