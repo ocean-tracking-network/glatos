@@ -30,7 +30,7 @@ C. Holbrook
 }
 \note{
 The following fields in detection data are not yet supported: transmitter_name, transmitter_serial, station_name.
-This was developed and tested for VR2W receivers. No other receivers are supported, but if it is attempted, feedback is appreciated.
+This was developed and tested for VR2W (69 kHz), VR2W180, VR2Tx, and VR2AR receivers. No other receivers are supported, but if it is attempted, feedback is appreciated.
 }
 
 
