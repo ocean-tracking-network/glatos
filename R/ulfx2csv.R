@@ -1,304 +1,696 @@
 #convert Vemco xml file to csv 
-ulfx2csv <- function(ulfxFile){
+ulfx2csv <- function(ulfx){
 	library('XML')
-	xmlFile <- ulfxFile
-	xml <- xmlTreeParse(xmlFile, useInternal=T)
 
+    #if ulfx is single directory, get list of ulfx file names
+    if(all(file.info(ulfx)$isdir)) {
+  	  if(!file.exists(ulfx)) stop(paste0("File or folder not found: ",ulfx))
+	  if(length(ulfx) > 1) stop("input argument 'ulfx' cannot include more than one directory")
+	  if(length(ulfx) == 0) stop(paste0("No ULFx files found at ",ulfx))
+	  if(length(ulfx) == 1) ulfx <- list.files(ulfx,full.names=T, pattern=".ulfx$|.ULFX$|.ULFx$")
+    } #end if
 
-	#get device definitions
-	dev.nodes <- getNodeSet(xml, "//definitions/device")
-
-	devs <- data.frame(
-		 id=xpathSApply(xml,"//definitions/device/@id"), 
-		 short=xpathSApply(xml,"//definitions/device/display_id/text/@short"), 
-		 transmitter=grepl("transmitter",xmlSApply(dev.nodes,names)),
-		 receiver=grepl("receiver",xmlSApply(dev.nodes,names)),
-		 sensor=grepl("sensor",xmlSApply(dev.nodes,names)),
-		 stringsAsFactors=F)
-
-	#make detection dataframe
-	detects <- data.frame(
-			src=xpathSApply(xml, "//log/records/detection/@src"),
-			time=xpathSApply(xml,"//log/records/detection/@time"),
-			latitude=xpathSApply(xml,"//log/records/detection/@latitude"),
-			longitude=xpathSApply(xml,"//log/records/detection/@longitude"),
-			stringsAsFactors=F,
-			check.names=F) #allow special characters per default Vemco format
-	detects <- merge(detects,devs,by.x="src",by.y="id",all.x=T)
-	detects$receiver <- devs$short[devs$receiver]
-	detects <- detects[,c("time","receiver","short","latitude","longitude")]
-	names(detects)[c(3)] <- c("transmitter")
-	#drop T and Z from timestamps
-
-
+	#progress bar
+	if(Sys.info()['sysname'] == "Windows") {
+	    pb <- winProgressBar(title = "Parsing ULFx...", 
+			label = paste0("Processing file ",1," of ",length(ulfx)),
+               min = 0, max = length(ulfx), initial = 0, width = 300)
+	} else {
+		pb <- txtProgressBar(min=1, max=length(ulfx),width=50)
+	} #end if else
 	
-	#get data about sensors
-	sensors <- data.frame(
-		idx=xpathSApply(xml,"//definitions/device/sensor/@idx"),
-		device=xpathSApply(xml,"//definitions/device/sensor/@device"),
-		unit=xpathSApply(xml,"//definitions/device/sensor/@unit"),
-		resolution=xpathSApply(xml,"//definitions/device/sensor/@resolution"),
-		 stringsAsFactors=F)
-	
-	sensorAttr <- data.frame(
-		gid=xpathSApply(xml,"//definitions/unit[display_id/text/@lang]/@gid"),
-		dimension=xpathSApply(xml,"//definitions/unit[display_id/text/@lang]/@dimension"),
-		lang=xpathSApply(xml,"//definitions/unit/display_id/text/@lang"),
-		short=xpathSApply(xml,"//definitions/unit/display_id/text/@short"),
-		long=xpathSApply(xml,"//definitions/unit/display_id/text/@long"),
-		 stringsAsFactors=F
-		)
-	
-	sensors <- merge(sensors, sensorAttr, by.x="unit",by.y="gid")
- 
-	#get detections with sensor data
-	sns <- data.frame(
-		 device=xpathSApply(xml, "//log/records/detection/sample/@device"), 
-		 sensor=xpathSApply(xml,"//log/records/detection/sample/@sensor"), 
-		 sensor_value=xpathSApply(xml,"//log/records/detection/sample/@value"),
-		 time=xpathSApply(xml, "//log/records/detection[sample/@sensor]/@time"),
-		 stringsAsFactors=F)
-	
-	sns <- merge(sns,sensors, by="device")
+	#loop through ulfx files and convert each to csv files
+	for(i in 1:length(ulfx)){
+
+		xmlFile <- ulfx[i]
+		xml <- xmlTreeParse(xmlFile, useInternal=T)
+
+		#preallocate detection fields
+		detects <- data.frame(
+			time=NA, #vemco name: Date and Time (UTC)
+			receiver=NA, #vemco name: Receiver
+			transmitter=NA, #vemco name: Transmitter
+			transmitter_name=NA, #vemco name: Transmitter Name
+			transmitter_serial=NA, #vemco name: Transmitter Serial
+			sensor_value=NA, #vemco name: Sensor Value
+			sensor_units=NA, #vemco name: Sensor Unit
+			station_name=NA, #vemco name: Station Name
+			latitude=NA, #vemco name: Latitude
+			longitude=NA, #vemco name: Longitude
+			stringsAsFactors=F, #do not convert character to character
+			check.names=F)[0,] #allow special characters per default Vemco format)[0,]		
+
+		#get device definitions
+		dev.nodes <- getNodeSet(xml, "//definitions/device")
+
+		devs <- data.frame(
+			 id=xpathSApply(xml,"//definitions/device/@id"), 
+			 short=xpathSApply(xml,"//definitions/device/display_id/text/@short"), 
+			 transmitter=grepl("transmitter",xmlSApply(dev.nodes,names)),
+			 receiver=grepl("receiver",xmlSApply(dev.nodes,names)),
+			 sensor=grepl("sensor",xmlSApply(dev.nodes,names)),
+			 stringsAsFactors=F)
+			 
+			 
+		#Add required detection fields
+		dets <- data.frame(
+				src=xpathSApply(xml, "//log/records/detection/@src"),
+				time=xpathSApply(xml,"//log/records/detection/@time"),
+				stringsAsFactors=F
+				)
+				
+		#check if detection node contains lat or lon attributes
+		det.nodes <- getNodeSet(xml, "//log/records/detection")
+		detAttrNames <- sapply(det.nodes, simplify=F, function(x) names(xmlAttrs(x)))
+		dets$lat <- grepl("latitude",detAttrNames)
+		dets$lon <- grepl("longitude",detAttrNames)
 		
-	detects$transmitter_name <- ''
-	detects$transmitter_serial <- ''
-	detects$sensor_value <- ''
-	detects$sensor_value[match(sns$time,detects$time)] <- sns$sensor_value
-	detects$sensor_units <- ''
-	detects$sensor_units[match(sns$time,detects$time)] <- sns$short
-	detects$station_name <- ''
-	detects$latitude[detects$latitude == 0] <- ''
-	detects$longitude[detects$longitude == 0] <- ''
-	
-	#sort by timestamp
-	detects$time <- gsub("T"," ",detects$time)
-	detects$time <- gsub("Z","",detects$time)	
-	detects <- detects[order(as.POSIXct(detects$time,tz="GMT")),]
-	
-	#order and rename columns to be consistent with Vemco default format
-	detects <- detects[,c("time","receiver","transmitter","transmitter_name","transmitter_serial","sensor_value","sensor_units",
-		"station_name","latitude","longitude")]	
-	names(detects) <- c("Date and Time (UTC)","Receiver","Transmitter","Transmitter Name",
-		"Transmitter Serial","Sensor Value","Sensor Unit","Station Name","Latitude","Longitude")
 		
-	#format latitude and longitude to be consistent with Vemco default format
-	if(any(detects$Latitude != '')) detects$Latitude[as.numeric(detects$Latitude) > 0] <- 
-		paste0("+",detects$Latitude[as.numeric(detects$Latitude) >= 0])
-	if(any(detects$Longitude != '')) detects$Longitude[as.numeric(detects$Longitude) > 0] <- 
-		paste0("+",detects$Longitude[as.numeric(detects$Longitude) >= 0])
-	
-	
-	#write to csv
-	write.csv(detects,gsub(".ulfx$|.ULFx$","_detections.csv",xmlFile),row.names=F,quote=F)
-	
-	
+		dets <- merge(dets,devs,by.x="src",by.y="id",all.x=T) #add device data
+		dets$receiver <- unique(devs$short[devs$receiver]) #add receiver
+		
+		detects[1:nrow(dets),] <- '' #preallocate
+		
+		#append to detects
+		detects[,c("time","receiver","transmitter")] <- dets[,c("time","receiver","short")]
+		
 
-	#receiver events
+		#Add optional detection fields
+		
+		#add station name, latitude and longitude
+		detects$latitude[dets$lat] <- as.character(xpathSApply(xml,"//log/records/detection/@latitude"))
+		detects$longitude[dets$lon] <- as.character(xpathSApply(xml,"//log/records/detection/@longitude"))
+		
+		
+		#sensor data
+		
+		if(sum(dets$sensor) > 0){	
+			#get data about sensors
+			sens.nodes <- getNodeSet(xml, "//definitions/device/sensor")
+			sens <- data.frame(
+				idx=xpathSApply(xml,"//definitions/device/sensor/@idx"),
+				device=xpathSApply(xml,"//definitions/device/sensor/@device"),
+				unit=xpathSApply(xml,"//definitions/device/sensor/@unit"),
+				 stringsAsFactors=F)
+			#identify VR2AR Motor Voltage sensor
+			sens$arMotor <- grepl("display_pos",sapply(sens.nodes, simplify=F, function(x) names(x)))
+			
+			sensAttr.nodes <- getNodeSet(xml, "//definitions/unit/display_id/text")
+			sensAttr <- data.frame(
+				gid=xpathSApply(xml,"//definitions/unit[display_id/text/@lang]/@gid"),
+				dimension=xpathSApply(xml,"//definitions/unit[display_id/text/@lang]/@dimension"),
+				lang_unit=xpathSApply(xml,"//definitions/unit/display_id/text/@lang"),
+				short_unit=xpathSApply(xml,"//definitions/unit/display_id/text/@short"),
+				long_unit=xpathSApply(xml,"//definitions/unit/display_id/text/@long"),
+				detail_unit='', #preallocate
+				 stringsAsFactors=F
+				)
+				
+			#check if sensor unit contains 'detail' attribute
+			sensAttrNames <- sapply(sensAttr.nodes, simplify=F, function(x) names(xmlAttrs(x)))
+			detailRows <- grepl("detail",sensAttrNames)
+			sensAttr$detail_unit[detailRows] <- xpathSApply(xml,"//definitions/unit/display_id/text/@detail")
+						
+			#merge
+			sens <- merge(sens, sensAttr, by.x="unit",by.y="gid")
+		 
+			#get dimension data
+			dimen.nodes <- getNodeSet(xml, "//definitions/dimension")
+			dimenAttr.nodes <- getNodeSet(xml, "//definitions/dimension/display_id/text")
+			dimen <- data.frame(
+				gid=xpathSApply(xml,"//definitions/dimension/@gid"),
+				lang_dimen=xpathSApply(xml,"//definitions/dimension/display_id/text/@lang"),
+				short_dimen=xpathSApply(xml,"//definitions/dimension/display_id/text/@short"),
+				long_dimen='', #preallocate
+				 stringsAsFactors=F
+				)			
+			#check if dimension contains 'long' attribute
+			dimenAttrNames <- sapply(dimenAttr.nodes, function(x) names(xmlAttrs(x)))
+			longRows <- grepl("long",dimenAttrNames)
+			dimen$long_dimen[longRows] <- xpathSApply(xml,"//definitions/dimension/display_id/text/@long")			
 
-	#- memory stats
-	   #intermediate values
-	   mem.x <- data.frame(
-			 # - memory used
-			 #end_ptr=as.numeric(xpathSApply(xml,"//log/records/memory_stats/segment/@end_ptr")),
-			 end_ptr=as.numeric(xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled']/segment/@end_ptr")),
-			 # - max memory
-			 memory_size=as.numeric(xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled']/segment/@memory_size")),
-			 # - class
-			 class=xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled']/segment/@class"))
-	   mem.x$percent_used <- with(mem.x, end_ptr/memory_size)
-	   
-	   mem <- data.frame(
-			event_timestamp_utc=xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled']/@time"),
-			receiver=devs$short[devs$receiver],
-			description="Memory Capacity",
-			data=round(mem.x$percent_used[mem.x$class=="main_log"]*100,1),
-			units="%",
-			stringsAsFactors=F)
-	   mem$data <- format(mem$data,digits=1) #so always exports one decimal point
+			#merge
+			sens <- merge(sens, dimen, by.x="dimension",by.y="gid")
+		 			
+			#if VR2AR motor voltage, update
+			display_pos_armotor <- xpathSApply(xml,"//definitions/device/sensor/display_pos/text")
+			sens$detail_unit[sens$arMotor] <- xmlValue(display_pos_armotor[[1]])
+		 
+			#get detections with sensor data
+			snsDet <- data.frame(
+				 device=xpathSApply(xml, "//log/records/detection/sample/@device"), 
+				 sensor=xpathSApply(xml,"//log/records/detection/sample/@sensor"), 
+				 sensor_value=xpathSApply(xml,"//log/records/detection/sample/@value"),
+				 time=xpathSApply(xml, "//log/records/detection[sample/@sensor]/@time"),
+				 stringsAsFactors=F)
+			
+			snsDet <- merge(snsDet,sens, by="device")
+				
+			#add to detects
+			detects$sensor_value[match(snsDet$time,detects$time)] <- snsDet$sensor_value
+			detects$sensor_units[match(snsDet$time,detects$time)] <- snsDet$short_unit
+		} #end if
+		
+		#drop T and Z from timestamps
+		detects$time <- gsub("T"," ",detects$time)
+		detects$time <- gsub("Z","",detects$time)	
+		
+		#sort by timestamp
+		detects <- detects[order(as.POSIXct(detects$time,tz="GMT")),]
+		
+		#rename columns to be consistent with Vemco default format
+		names(detects) <- c("Date and Time (UTC)","Receiver","Transmitter","Transmitter Name",
+			"Transmitter Serial","Sensor Value","Sensor Unit","Station Name","Latitude","Longitude")
+		
+		#write to csv
+		write.csv(detects,gsub(".ulfx$|.ULFX$|.ULFx$","_detections.csv",xmlFile),row.names=F,quote=F)
+		
+		
+
+		
+		#Receiver events
+
+		#- memory stats
+		   #intermediate values
+		   mem.x <- data.frame(
+				 # - memory used
+				 #end_ptr=as.numeric(xpathSApply(xml,"//log/records/memory_stats/segment/@end_ptr")),
+				 end_ptr=as.numeric(xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled' or @trigger = 'recording_pause' or @trigger = 'requested']/segment/@end_ptr")),
+				 # - max memory
+				 memory_size=as.numeric(xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled' or @trigger = 'recording_pause' or @trigger = 'requested']/segment/@memory_size")),
+				 # - class
+				 class=xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled' or @trigger = 'recording_pause' or @trigger = 'requested']/segment/@class"))
+		   mem.x$percent_used <- with(mem.x, end_ptr/memory_size)
+		   
+		   mem <- data.frame(
+				event_timestamp_utc=xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled' or @trigger = 'recording_pause' or @trigger = 'requested']/@time"),
+				receiver=unique(devs$short[devs$receiver]),
+				description="Memory Capacity",
+				data=round(mem.x$percent_used[mem.x$class=="main_log"]*100,1),
+				units="%",
+				stringsAsFactors=F)
+		   mem$data <- format(mem$data,digits=1) #so always exports one decimal point
+				
+				
+		#- battery stats
+		
+		   #check for battery stats
+		   bat.nodes <- getNodeSet(xml,"//log/records/battery_stats")
+		   if(length(bat.nodes)>0){
+			   bat <- data.frame(
+					event_timestamp_utc=xpathSApply(xml,"//log/records/battery_stats/@time"),
+					receiver=unique(devs$short[devs$receiver]),
+					description="Battery",
+					data=xpathSApply(xml,"//log/records/battery_stats/@volts"),
+					units="V",
+					stringsAsFactors=F)
+			   bat$data <- round(as.numeric(bat$data),1)
+		   } else { bat <- data.frame(
+					event_timestamp_utc=NA,
+					receiver=NA,
+					description=NA,
+					data=NA,
+					units=NA,
+					stringsAsFactors=F)[0,]
+		   }
+			  
+
+		#- receiver stats - scheduled
+		   rec.sched.nodes <- getNodeSet(xml, 
+			"//log/records/receiver_stats[@trigger='scheduled']")
+		   		   
+		   sched.pings <- data.frame(
+				event_timestamp_utc=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"time")),
+				receiver=unique(devs$short[devs$receiver]),
+				description="Daily Pings",
+				data=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"pulse_count")),
+				units="",
+				stringsAsFactors=F)
+		   sched.syncs <- data.frame(
+				event_timestamp_utc=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"time")),
+				receiver=unique(devs$short[devs$receiver]),
+				description="Daily Syncs",
+				data=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"sync_count")),
+				units="",
+				stringsAsFactors=F)
+		   sched.rejects <- data.frame(
+				event_timestamp_utc=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"time")),
+				receiver=unique(devs$short[devs$receiver]),
+				description="Daily Rejects",
+				data=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"reject_count")),
+				units="",
+				stringsAsFactors=F)
+
+		#- receiver stats - recording paused
+		   rec.paus.nodes <- getNodeSet(xml, 
+			"//log/records/receiver_stats[@trigger='recording_pause']")
+		   if(length(rec.paus.nodes)>0){	   
+			   paus.pings <- data.frame(
+					event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
+					receiver=unique(devs$short[devs$receiver]),
+					description="Pings",
+					data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"pulse_count")),
+					units="",
+					stringsAsFactors=F)
+			   paus.syncs <- data.frame(
+					event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
+					receiver=unique(devs$short[devs$receiver]),
+					description="Syncs",
+					data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"sync_count")),
+					units="",
+					stringsAsFactors=F)
+			   paus.rejects <- data.frame(
+					event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
+					receiver=unique(devs$short[devs$receiver]),
+					description="Rejects",
+					data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"reject_count")),
+					units="",
+					stringsAsFactors=F)
+		   } else {
+			   paus.rejects <- paus.syncs <- paus.pings <- data.frame(
+					event_timestamp_utc=NA,
+					receiver=NA,
+					description=NA,
+					data=NA,
+					units=NA,
+					stringsAsFactors=F)[0,]
+		   }
+		
+		#receiver stats - requested
+		   rec.reque.nodes <- getNodeSet(xml, "//log/records/receiver_stats[@trigger='requested']")
+			
+		   reque.pings <- data.frame(
+				event_timestamp_utc=sapply(rec.reque.nodes,function(x) xmlGetAttr(x,"time")),
+				receiver=unique(devs$short[devs$receiver]),
+				description="Study Pings",
+				data=sapply(rec.reque.nodes,function(x) xmlGetAttr(x,"pulse_count")),
+				units="",
+				stringsAsFactors=F)
+										   
+
+		#offload
+			offload <- data.frame(
+				event_timestamp_utc=xpathSApply(xml,"//log/records/data_offload/@time"),
+				receiver=unique(devs$short[devs$receiver]),
+				description="Data Upload",
+				data=xpathSApply(xml,"//log/records/data_offload/offload/@original_file"),
+				units="",
+				stringsAsFactors=F)  
+				
+		#pc time
+			pctime <- data.frame(
+				event_timestamp_utc=xpathSApply(xml,"//log/records/data_offload/offload/@time"),
+				receiver=unique(devs$short[devs$receiver]),
+				description="PC Time",
+				data=xpathSApply(xml,"//log/records/data_offload/offload/initiator/@time"),
+				units="",
+				stringsAsFactors=F)
+			#reformat to be consistent with VUE default
+			pctime$data <- gsub("T"," ",pctime$data)
+			pctime$data <- paste0(substr(pctime$data,1,19)," UTC",substr(pctime$data,20,28))
+		 
+		 
+		#daily detections and last decode
+			codespaces <- data.frame(
+				id=xpathSApply(xml,"//definitions/code_space/@id"),
+				short=xpathSApply(xml,"//definitions/code_space/display_id/text/@short"),
+				stringsAsFactors=F)        
+			codespaces <- codespaces[order(codespaces$short),]
+			
+			codespace.x <- xpathSApply(xml,"//log/records/decoder_stats/@code_space")
+			codespace.x <- codespaces$short[match(as.character(codespace.x), codespaces$id)]
+			
+			dailydets <- data.frame(
+				event_timestamp_utc=xpathSApply(xml,"//log/records/decoder_stats/@time"),
+				receiver=unique(devs$short[devs$receiver]),
+				description=paste0("Daily Detections on ",codespace.x),
+				data=xpathSApply(xml,"//log/records/decoder_stats/@decode_count"),
+				units="",
+				stringsAsFactors=F)              
+				
+			lastdecode <- data.frame(
+				event_timestamp_utc=xpathSApply(xml,"//log/records/decoder_stats/@time"),
+				receiver=unique(devs$short[devs$receiver]),
+				description=paste0("Last Detection on ",codespace.x),
+				data=xpathSApply(xml,"//log/records/decoder_stats/@last_decode"),
+				units="UTC",
+				stringsAsFactors=F) 
+			
+			lastdecode$data <- gsub("T"," ",lastdecode$data) #replace T with space
+			lastdecode$data <- gsub("Z","",lastdecode$data) #drop Z
+			
+
+		#measurements
+			meas.nodes <- getNodeSet(xml,"//log/records/measurement")
+			if(length(meas.nodes)>0){
+				meas <- data.frame(
+					time=xpathSApply(xml,"//log/records/measurement/@time"),
+					device=xpathSApply(xml,"//log/records/measurement/sample/@device"),
+					sensor=xpathSApply(xml,"//log/records/measurement/sample/@sensor"),
+					value=xpathSApply(xml,"//log/records/measurement/sample/@value"),
+					stringsAsFactors=F
+				)
+				#add sensor attributes
+				meas <- merge(meas,sens,by.x=c("device","sensor"),by.y=c("device","idx"))
+				measures <- data.frame(
+						event_timestamp_utc=meas$time,
+						receiver=unique(devs$short[devs$receiver]),
+						description='',
+						data=meas$value,
+						units=meas$short_unit,
+						stringsAsFactors=F)  
+				#add placeholder descriptions
+				measures$description <- meas$detail_unit
+				measures$description[measures$description == ''] <- meas$long_dimen[measures$description == '']
+				#eliminate odd symbol (probably a better way)
+				measures$units <- gsub("Â","",measures$units) 
+				#conditional descriptions
+				measures$description[measures$description == "temperature"] <- "Temperature"
+				measures$description[measures$description == "noise"] <- "Noise"
+				measures$description[measures$description == "voltage"] <- "Voltage"
+				measures$description[measures$description == "tilt angle"] <- "Tilt angle"
+				measures$description[measures$description == "rotation angle"] <- "Rotation angle"
+				measures$description[measures$description == "seawater depth"] <- "Seawater depth"
+				measures$description[measures$description == "motor battery"] <- "Motor battery voltage"
+				#conversion
+				noiseRows <- measures$description == "Noise" & !is.na(measures$description)
+				measures$data[noiseRows] <- as.numeric(measures$data[noiseRows])*1000
+				measures$units[noiseRows] <- "mV"
+				angleRows <- measures$description %in% c("Tilt angle","Rotation angle") & !is.na(measures$description)
+				measures$data[angleRows] <- as.numeric(measures$data[angleRows])*180/pi #convert rad to deg
+				measures$units[angleRows] <- "°"				
+				#rounding
+				tempRows <- measures$description == "Temperature" & !is.na(measures$description) 
+				voltageRows <- measures$description %in% c("Voltage", "Motor battery voltage") & !is.na(measures$description) 
+				measures$data[tempRows] <- 
+					sprintf("%1.1f", round(as.numeric(measures$data[tempRows]),1))
+				measures$data[noiseRows] <- 
+					sprintf("%1.1f", round(as.numeric(measures$data[noiseRows]),1))	
+				measures$data[voltageRows] <- 
+					sprintf("%1.1f", round(as.numeric(measures$data[voltageRows]),1))	
+				measures$data[angleRows] <- 
+					sprintf("%1.0f", round(as.numeric(measures$data[angleRows]),1))	
+			} else {
+				measures <- data.frame(
+						event_timestamp_utc=NA,
+						receiver=NA,
+						description=NA,
+						data=NA,
+						units=NA,
+						stringsAsFactors=F)[0,]  
+			}
+			
+		#sensor stats	
+		   senStats.nodes <- getNodeSet(xml, "//log/records/sensor_stats")
+			if(length(senStats.nodes)>0){
+				senStats <- data.frame(
+					time=xpathSApply(xml,"//log/records/sensor_stats/@time"),
+					stat=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/@stat"),
+					span=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/@span"),
+					period=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/@period"),
+					device=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/sensor_stat/@device"),
+					sensor=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/sensor_stat/@sensor"),
+					value=xpathSApply(xml,"//log/records/sensor_stats/sensor_stat/sensor_stat/@value"),
+					stringsAsFactors=F
+				)
+				#add sensor attributes
+				senStats <- merge(senStats,sens,by.x=c("device","sensor"),by.y=c("device","idx"))
+				sensorStats <- data.frame(
+						event_timestamp_utc=senStats$time,
+						receiver=unique(devs$short[devs$receiver]),
+						description='',
+						data=senStats$value,
+						units=senStats$short_unit,
+						stringsAsFactors=F)  
+				#add placeholder descriptions
+				sensorStats$description <- senStats$detail_unit
+				sensorStats$description[sensorStats$description == ''] <- 
+					senStats$long_dimen[sensorStats$description == '']
+				voltageRows <- sensorStats$description == "voltage" & 
+					!is.na(sensorStats$description) 
+				sensorStats$description[voltageRows] <- paste0(senStats$stat[voltageRows]," ",
+					sensorStats$description[voltageRows])
+				#eliminate odd symbol (probably a better way)
+				sensorStats$units <- gsub("Â","",sensorStats$units) 
+				#conditional descriptions
+				sensorStats$description[sensorStats$description == "temperature"] <- "Temperature"
+				sensorStats$description[sensorStats$description == "noise"] <- "Noise"
+				sensorStats$description[sensorStats$description == "min voltage"] <- "Minimum voltage"
+				sensorStats$description[sensorStats$description == "max voltage"] <- "Maximum voltage"
+				sensorStats$description[sensorStats$description == "avg voltage"] <- "Average voltage"
+				#conversion
+				noiseRows <- sensorStats$description == "Noise" & !is.na(sensorStats$description)
+				sensorStats$data[noiseRows] <- as.numeric(sensorStats$data[noiseRows])*1000
+				sensorStats$units[noiseRows] <- "mV"				
+				#rounding
+				tempRows <- sensorStats$description == "Temperature" & !is.na(sensorStats$description) 
+				sensorStats$data[tempRows] <- 
+					sprintf("%1.1f", round(as.numeric(sensorStats$data[tempRows]),1))
+				sensorStats$data[noiseRows] <- 
+					sprintf("%1.1f", round(as.numeric(sensorStats$data[noiseRows]),1))	
+				sensorStats$data[voltageRows] <- 
+					sprintf("%1.2f", round(as.numeric(sensorStats$data[voltageRows]),2))
+
+			} else {
+				sensorStats <- data.frame(
+						vent_timestamp_utc=NA,
+						receiver=NA,
+						description=NA,
+						data=NA,
+						units=NA,
+						stringsAsFactors=F)[0,]  
+			}		   			
+			
+		#initialization
+			init <- data.frame(
+				event_timestamp_utc=xpathSApply(xml,"//log/records/clock_change/@time"),
+				receiver=unique(devs$short[devs$receiver]),
+				description="Initialization",
+				data="",
+				units="",
+				stringsAsFactors=F)  
+
+			init.pctime <- data.frame(
+				event_timestamp_utc=xpathSApply(xml,"//log/records/clock_change/@time"),
+				receiver=unique(devs$short[devs$receiver]),
+				description="PC Time",
+				data=xpathSApply(xml,"//log/records/clock_change/initiator/@time"),
+				units="",
+				stringsAsFactors=F) 
+			#reformat to be consistent with VUE default
+			init.pctime$data <- gsub("T"," ",init.pctime$data)
+			init.pctime$data <- paste0(substr(init.pctime$data,1,19)," UTC",substr(init.pctime$data,20,28))
 			
 			
-	#- battery stats
-	   bat <- data.frame(
-			event_timestamp_utc=xpathSApply(xml,"//log/records/battery_stats/@time"),
-			receiver=devs$short[devs$receiver],
-			description="Battery",
-			data=xpathSApply(xml,"//log/records/battery_stats/@volts"),
-			units="V",
-			stringsAsFactors=F)
-	   bat$data <- round(as.numeric(bat$data),1)
-		  
-
-	#- receiver stats
-	   rec.nodes <- getNodeSet(xml, "//log/records/receiver_stats")
-	   keep <- sapply(rec.nodes,function(x) all(c("device","receiver","pulse_count","sync_count","reject_count","time") %in% names(xmlAttrs(x))))
-	   rec.nodes <- rec.nodes[keep] #subset
-	   
-	   rec.pings <- data.frame(
-			event_timestamp_utc=sapply(rec.nodes,function(x) xmlGetAttr(x,"time")),
-			receiver=devs$short[devs$receiver],
-			description="Daily Pings",
-			data=sapply(rec.nodes,function(x) xmlGetAttr(x,"pulse_count")),
-			units="",
-			stringsAsFactors=F)
-	   rec.syncs <- data.frame(
-			event_timestamp_utc=sapply(rec.nodes,function(x) xmlGetAttr(x,"time")),
-			receiver=devs$short[devs$receiver],
-			description="Daily Syncs",
-			data=sapply(rec.nodes,function(x) xmlGetAttr(x,"sync_count")),
-			units="",
-			stringsAsFactors=F)
-	   rec.rejects <- data.frame(
-			event_timestamp_utc=sapply(rec.nodes,function(x) xmlGetAttr(x,"time")),
-			receiver=devs$short[devs$receiver],
-			description="Daily Rejects",
-			data=sapply(rec.nodes,function(x) xmlGetAttr(x,"reject_count")),
-			units="",
-			stringsAsFactors=F)
-
-	#offload
-		offload <- data.frame(
-			event_timestamp_utc=xpathSApply(xml,"//log/records/data_offload/@time"),
-			receiver=devs$short[devs$receiver],
-			description="Data Upload",
-			data=xpathSApply(xml,"//log/records/data_offload/offload/@original_file"),
-			units="",
-			stringsAsFactors=F)  
+		#receiver map
+		   
+			which.map <- xpathSApply(xml,"//log/device_config/receiver_config/@map")
+			map.id <- xpathSApply(xml,paste0("//definitions/map[@id=",which.map,"]/display_id/text/@short")) 
+			map.codespaceids <- xpathSApply(xml,paste0("//definitions/map[@id=",which.map,"]/decoder/@code_space"))
+			map.codespaces <- paste(codespaces$short[match(map.codespaceids,codespaces$id)],collapse="; ") 
+			map.codespaces <- paste0(map.id," (",map.codespaces,")")
 			
-	#pc time
-		pctime <- data.frame(
-			event_timestamp_utc=xpathSApply(xml,"//log/records/data_offload/offload/@time"),
-			receiver=devs$short[devs$receiver],
-			description="PC Time",
-			data=xpathSApply(xml,"//log/records/data_offload/offload/initiator/@time"),
-			units="",
-			stringsAsFactors=F)
-		#reformat to be consistent with VUE default
-		pctime$data <- gsub("T"," ",pctime$data)
-		pctime$data <- paste0(substr(pctime$data,1,19)," UTC",substr(pctime$data,20,28))
-	 
-	 
-	#daily detections and last decode
-		codespaces <- data.frame(
-			id=xpathSApply(xml,"//definitions/code_space/@id"),
-			short=xpathSApply(xml,"//definitions/code_space/display_id/text/@short"),
-			stringsAsFactors=F)        
-		codespaces <- codespaces[order(codespaces$short),]
-		
-		codespace.x <- xpathSApply(xml,"//log/records/decoder_stats/@code_space")
-		codespace.x <- codespaces$short[match(as.character(codespace.x), codespaces$id)]
-		
-		dailydets <- data.frame(
-			event_timestamp_utc=xpathSApply(xml,"//log/records/decoder_stats/@time"),
-			receiver=devs$short[devs$receiver],
-			description=paste0("Daily Detections on ",codespace.x),
-			data=xpathSApply(xml,"//log/records/decoder_stats/@decode_count"),
-			units="",
-			stringsAsFactors=F)              
+			map <- data.frame(
+				event_timestamp_utc=xpathSApply(xml,"//log/device_config/study_config/@init"),
+				receiver=unique(devs$short[devs$receiver]),
+				description="Map",
+				data=map.codespaces,
+				units="",
+				stringsAsFactors=F)  
+
+		#blanking
+			map.blanking <- xpathSApply(xml,paste0("//definitions/map[@id=",which.map,"]/@blanking")) 
 			
-		lastdecode <- data.frame(
-			event_timestamp_utc=xpathSApply(xml,"//log/records/decoder_stats/@time"),
-			receiver=devs$short[devs$receiver],
-			description=paste0("Last Detection on ",codespace.x),
-			data=xpathSApply(xml,"//log/records/decoder_stats/@last_decode"),
-			units="UTC",
-			stringsAsFactors=F) 
-		
-		lastdecode$data <- gsub("T"," ",lastdecode$data) #replace T with space
-		lastdecode$data <- gsub("Z","",lastdecode$data) #drop Z
-		
-		
-	#initialization
-		init <- data.frame(
-			event_timestamp_utc=xpathSApply(xml,"//log/records/clock_change/@time"),
-			receiver=devs$short[devs$receiver],
-			description="Initialization",
-			data="",
-			units="",
-			stringsAsFactors=F)  
+			blanking <- data.frame(
+				event_timestamp_utc=xpathSApply(xml,"//log/device_config/study_config/@init"),
+				receiver=unique(devs$short[devs$receiver]),
+				description="Blanking",
+				data=as.numeric(map.blanking)*0.001,
+				units="ms",
+				stringsAsFactors=F) 
 
-		init.pctime <- data.frame(
-			event_timestamp_utc=xpathSApply(xml,"//log/records/clock_change/@time"),
-			receiver=devs$short[devs$receiver],
-			description="PC Time",
-			data=xpathSApply(xml,"//log/records/clock_change/initiator/@time"),
-			units="",
-			stringsAsFactors=F) 
-		#reformat to be consistent with VUE default
-		init.pctime$data <- gsub("T"," ",init.pctime$data)
-		init.pctime$data <- paste0(substr(init.pctime$data,1,19)," UTC",substr(init.pctime$data,20,28))
+		#reset
+		resets.list <- xpathSApply(xml,"//log/records/event[@code='8']/display_desc/text/text()")
+		if(length(resets.list) > 0){
+			resets.vec <- character(length(resets.list))
+			for(j in 1:length(resets.list)) resets.vec[j] <- xmlValue(resets.list[[j]]) 
+			
+			reset <- data.frame(
+					event_timestamp_utc=xpathSApply(xml,"//log/records/event[@code='8']/@time"),
+					receiver=unique(devs$short[devs$receiver]),
+					description="Reset",
+					data=resets.vec,
+					units="",
+					stringsAsFactors=F)  
+		} else {
+			reset <- data.frame(
+					event_timestamp_utc=NA,
+					receiver=NA,
+					description=NA,
+					data=NA,
+					units=NA,
+					stringsAsFactors=F)[0,] 
+		}
 		
 		
-	#receiver map
-	   
-		which.map <- xpathSApply(xml,"//log/device_config/receiver_config/@map")
-		map.id <- xpathSApply(xml,paste0("//definitions/map[@id=",which.map,"]/display_id/text/@short")) 
-		map.codespaceids <- xpathSApply(xml,paste0("//definitions/map[@id=",which.map,"]/decoder/@code_space"))
-		map.codespaces <- paste(codespaces$short[match(map.codespaceids,codespaces$id)],collapse="; ") 
-		map.codespaces <- paste0(map.id," (",map.codespaces,")")
-		
-		map <- data.frame(
-			event_timestamp_utc=xpathSApply(xml,"//log/device_config/study_config/@init"),
-			receiver=devs$short[devs$receiver],
-			description="Map",
-			data=map.codespaces,
-			units="",
-			stringsAsFactors=F)  
+		#comment
+		comments.list <- xpathSApply(xml,"//log/records/event[@code='4']/display_desc/text/text()")
+		if(length(comments.list) > 0){		
+			comments.vec <- character(length(comments.list))
+			for(j in 1:length(comments.list)) comments.vec[j] <- xmlValue(comments.list[[j]]) 
+			
+			comments <- data.frame(
+					event_timestamp_utc=xpathSApply(xml,"//log/records/event[@code='4']/@time"),
+					receiver=unique(devs$short[devs$receiver]),
+					description="Comment",
+					data=comments.vec,
+					units="",
+					stringsAsFactors=F)  		
+		} else {
+			comments <- data.frame(
+					event_timestamp_utc=NA,
+					receiver=NA,
+					description=NA,
+					data=NA,
+					units=NA,
+					stringsAsFactors=F)[0,] 
+		}
 
-	#blanking
-		map.blanking <- xpathSApply(xml,paste0("//definitions/map[@id=",which.map,"]/@blanking")) 
-		
-		blanking <- data.frame(
-			event_timestamp_utc=xpathSApply(xml,"//log/device_config/study_config/@init"),
-			receiver=devs$short[devs$receiver],
-			description="Blanking",
-			data=as.numeric(map.blanking)*0.001,
-			units="ms",
-			stringsAsFactors=F) 
+					
+		#append all parts and export
 
-		
-	#append all parts and export
+		logOut <- rbind(
+			bat,
+			mem,
+			sched.pings,
+			sched.syncs,
+			sched.rejects,
+			paus.pings,
+			paus.syncs,
+			paus.rejects,
+			offload,
+			pctime,
+			dailydets,
+			lastdecode,
+			init,
+			init.pctime,
+			map,
+			blanking,
+			reque.pings,
+			reset,
+			comments,
+			measures,
+			sensorStats)
+			
+		logOut <- as.data.frame(logOut, check.names=F, stringsAsFactors=F)
+			
+		logOut$event_timestamp_utc <- gsub("T"," ",logOut$event_timestamp_utc) #replace T with space
+		logOut$event_timestamp_utc <- gsub("Z","",logOut$event_timestamp_utc) #drop Z
+		 
 
-	logOut <- rbind(
-		bat,
-		mem,
-		rec.pings,
-		rec.syncs,
-		rec.rejects,
-		offload,
-		pctime,
-		dailydets,
-		lastdecode,
-		init,
-		init.pctime,
-		map,
-		blanking)
-		
-	logOut <- as.data.frame(logOut, check.names=F, stringsAsFactors=F)
-		
-	logOut$event_timestamp_utc <- gsub("T"," ",logOut$event_timestamp_utc) #replace T with space
-	logOut$event_timestamp_utc <- gsub("Z","",logOut$event_timestamp_utc) #drop Z
-	 
+		#enforce same order as VUE export
+		event.order <- c(   "Initialization",
+							"Data Upload",
+							"Memory Capacity",
+							"Battery",
+							"Daily Pings",
+							"Daily Syncs",
+							"Daily Rejects",
+							"Pings",
+							"Syncs",
+							"Rejects",
+							c(paste0("Daily Detections on ",codespaces$short),
+							paste0("Last Detection on ",codespaces$short))[order(c(codespaces$short,codespaces$short))],
+							"PC Time",
+							"Map",
+							"Blanking",
+							"Study Pings",
+							"Reset",
+							"Comment",
+							"Motor battery voltage",
+							"Tilt angle",
+							"Rotation angle",
+							"Noise",
+							"Seawater depth",
+							"Temperature",
+							"Minimum voltage",
+							"Maximum voltage",
+							"Average voltage",
+							"Voltage",
+							"Unknown")
+		ord <- match(logOut$description, event.order)           
+		logOut <- logOut[order(as.POSIXct(logOut$event_timestamp_utc,tz="GMT"),ord),]   
 
-	#enforce same order as VUE export
-	event.order <- c(   "Initialization",
-						"Memory Capacity",
-						"Battery",
-						"Daily Pings",
-						"Daily Syncs",
-						"Daily Rejects",
-						c(paste0("Daily Detections on ",codespaces$short),
-						paste0("Last Detection on ",codespaces$short))[order(c(codespaces$short,codespaces$short))],
-						"Data Upload",
-						"PC Time",
-						"Map",
-						"Blanking")
-	ord <- match(logOut$description, event.order)                    
+		#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		#Apply model-specific edits
+		
+			#VR2W180
+			rows_vr2w180 <- grepl("^VR2W180",logOut$receiver) #identify 180 rows
+			logOut[rows_vr2w180,] <- within(logOut[rows_vr2w180,],{
+				description <- gsub("^Map$","180 kHz decoding map", description)
+				description <- gsub("^Blanking$","180 kHz blanking interval", description) 
+				description <- gsub("^Study Pings$","Study Pings on 180 kHz", description)
+				description <- gsub("^Daily Pings$","Daily Pings on 180 kHz", description)
+				description <- gsub("^Daily Syncs$","Daily Syncs on 180 kHz", description)
+				description <- gsub("^Daily Rejects$","Daily Rejects on 180 kHz", description)
+				description <- gsub("^Pings$","Pings on 180 kHz", description)
+				description <- gsub("^Syncs$","Syncs on 180 kHz", description)
+				description <- gsub("^Rejects$","Rejects on 180 kHz", description)
+			})			
+			
+			#VR2Tx
+			rows_vr2tx <- grepl("^VR2Tx",logOut$receiver) #identify 180 rows
+			logOut[rows_vr2tx,] <- within(logOut[rows_vr2tx,],{
+				description <- gsub("^Map$","69 kHz decoding map", description)
+				description <- gsub("^Blanking$","69 kHz blanking interval", description) 
+				description <- gsub("^Study Pings$","Study Pings on 69 kHz", description)
+				description <- gsub("^Daily Pings$","Pings on 69 kHz", description)
+				description <- gsub("^Daily Syncs$","Syncs on 69 kHz", description)
+				description <- gsub("^Daily Rejects$","Rejects on 69 kHz", description)
+				description <- gsub("^Pings$","Pings on 69 kHz", description)
+				description <- gsub("^Syncs$","Syncs on 69 kHz", description)
+				description <- gsub("^Rejects$","Rejects on 69 kHz", description)
+				description <- gsub("^Daily Detections on","Detections on", description)
+			})		
+			#omit battery voltage measurements
+			dropRows <- rows_vr2tx & logOut$description == "Voltage"	
+			logOut <- logOut[!dropRows,]
 
-	logOut <- logOut[order(as.POSIXct(logOut$event_timestamp_utc,tz="GMT"),ord),]      
+			#VR2AR
+			rows_vr2ar <- grepl("^VR2AR",logOut$receiver) #identify 180 rows
+			logOut[rows_vr2ar,] <- within(logOut[rows_vr2ar,],{
+				description <- gsub("^Map$","69 kHz decoding map", description)
+				description <- gsub("^Blanking$","69 kHz blanking interval", description) 
+				description <- gsub("^Study Pings$","Study Pings on 69 kHz", description)
+				description <- gsub("^Daily Pings$","Pings on 69 kHz", description)
+				description <- gsub("^Daily Syncs$","Syncs on 69 kHz", description)
+				description <- gsub("^Daily Rejects$","Rejects on 69 kHz", description)
+				description <- gsub("^Pings$","Pings on 69 kHz", description)
+				description <- gsub("^Syncs$","Syncs on 69 kHz", description)
+				description <- gsub("^Rejects$","Rejects on 69 kHz", description)
+				description <- gsub("^Daily Detections on","Detections on", description)
+			})		
+			#omit battery voltage measurements
+			dropRows <- rows_vr2ar & logOut$description == "Voltage"	
+			logOut <- logOut[!dropRows,]
+			
+		#-------------------------------------		
+		
+		#rename columns to Vemco default
+		names(logOut) <- c("Date/Time","Receiver","Description","Data","Units")
+
+		write.csv(logOut,gsub(".ulfx$|.ULFX$|.ULFx$","_receiverEvents.csv",xmlFile),row.names=F,quote=F)
+		
+		#progress bar
+		if(class(pb) == "winProgressBar") {
+			setWinProgressBar(pb, value=i, 
+				label = paste0("Processing file ",i," of ",length(ulfx)))
+		} else {
+			setTxtProgressBar(pb, i) #update progress bar
+		} #end if else
+		
+	} #end i
 	
-	names(logOut) <- c("Date/Time","Receiver","Description","Data","Units")
-
-	write.csv(logOut,gsub(".ulfx$|.ULFx$","_receiverEvents.csv",xmlFile),row.names=F,quote=F)
+	close(pb) #close progress bar
 }
 
