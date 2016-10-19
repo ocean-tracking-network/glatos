@@ -10,7 +10,14 @@ ulfx2csv <- function(ulfx){
 	  if(length(ulfx) == 1) ulfx <- list.files(ulfx,full.names=T, pattern=".ulfx$|.ULFX$|.ULFx$")
     } #end if
 
-	pb <- txtProgressBar(min=1, max=length(ulfx),width=50)
+	#progress bar
+	if(Sys.info()['sysname'] == "Windows") {
+	    pb <- winProgressBar(title = "Parsing ULFx...", 
+			label = paste0("Processing file ",1," of ",length(ulfx)),
+               min = 0, max = length(ulfx), initial = 0, width = 300)
+	} else {
+		pb <- txtProgressBar(min=1, max=length(ulfx),width=50)
+	} #end if else
 	
 	#loop through ulfx files and convert each to csv files
 	for(i in 1:length(ulfx)){
@@ -43,7 +50,8 @@ ulfx2csv <- function(ulfx){
 			 receiver=grepl("receiver",xmlSApply(dev.nodes,names)),
 			 sensor=grepl("sensor",xmlSApply(dev.nodes,names)),
 			 stringsAsFactors=F)
-
+			 
+			 
 		#Add required detection fields
 		dets <- data.frame(
 				src=xpathSApply(xml, "//log/records/detection/@src"),
@@ -59,7 +67,7 @@ ulfx2csv <- function(ulfx){
 		
 		
 		dets <- merge(dets,devs,by.x="src",by.y="id",all.x=T) #add device data
-		dets$receiver <- devs$short[devs$receiver] #add receiver
+		dets$receiver <- unique(devs$short[devs$receiver]) #add receiver
 		
 		detects[1:nrow(dets),] <- '' #preallocate
 		
@@ -84,6 +92,8 @@ ulfx2csv <- function(ulfx){
 				device=xpathSApply(xml,"//definitions/device/sensor/@device"),
 				unit=xpathSApply(xml,"//definitions/device/sensor/@unit"),
 				 stringsAsFactors=F)
+			#identify VR2AR Motor Voltage sensor
+			sens$arMotor <- grepl("display_pos",sapply(sens.nodes, simplify=F, function(x) names(x)))
 			
 			sensAttr.nodes <- getNodeSet(xml, "//definitions/unit/display_id/text")
 			sensAttr <- data.frame(
@@ -100,7 +110,7 @@ ulfx2csv <- function(ulfx){
 			sensAttrNames <- sapply(sensAttr.nodes, simplify=F, function(x) names(xmlAttrs(x)))
 			detailRows <- grepl("detail",sensAttrNames)
 			sensAttr$detail_unit[detailRows] <- xpathSApply(xml,"//definitions/unit/display_id/text/@detail")
-			
+						
 			#merge
 			sens <- merge(sens, sensAttr, by.x="unit",by.y="gid")
 		 
@@ -122,6 +132,9 @@ ulfx2csv <- function(ulfx){
 			#merge
 			sens <- merge(sens, dimen, by.x="dimension",by.y="gid")
 		 			
+			#if VR2AR motor voltage, update
+			display_pos_armotor <- xpathSApply(xml,"//definitions/device/sensor/display_pos/text")
+			sens$detail_unit[sens$arMotor] <- xmlValue(display_pos_armotor[[1]])
 		 
 			#get detections with sensor data
 			snsDet <- data.frame(
@@ -171,7 +184,7 @@ ulfx2csv <- function(ulfx){
 		   
 		   mem <- data.frame(
 				event_timestamp_utc=xpathSApply(xml,"//log/records/memory_stats[@trigger = 'scheduled' or @trigger = 'recording_pause' or @trigger = 'requested']/@time"),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description="Memory Capacity",
 				data=round(mem.x$percent_used[mem.x$class=="main_log"]*100,1),
 				units="%",
@@ -186,7 +199,7 @@ ulfx2csv <- function(ulfx){
 		   if(length(bat.nodes)>0){
 			   bat <- data.frame(
 					event_timestamp_utc=xpathSApply(xml,"//log/records/battery_stats/@time"),
-					receiver=devs$short[devs$receiver],
+					receiver=unique(devs$short[devs$receiver]),
 					description="Battery",
 					data=xpathSApply(xml,"//log/records/battery_stats/@volts"),
 					units="V",
@@ -208,21 +221,21 @@ ulfx2csv <- function(ulfx){
 		   		   
 		   sched.pings <- data.frame(
 				event_timestamp_utc=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"time")),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description="Daily Pings",
 				data=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"pulse_count")),
 				units="",
 				stringsAsFactors=F)
 		   sched.syncs <- data.frame(
 				event_timestamp_utc=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"time")),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description="Daily Syncs",
 				data=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"sync_count")),
 				units="",
 				stringsAsFactors=F)
 		   sched.rejects <- data.frame(
 				event_timestamp_utc=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"time")),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description="Daily Rejects",
 				data=sapply(rec.sched.nodes,function(x) xmlGetAttr(x,"reject_count")),
 				units="",
@@ -234,21 +247,21 @@ ulfx2csv <- function(ulfx){
 		   if(length(rec.paus.nodes)>0){	   
 			   paus.pings <- data.frame(
 					event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
-					receiver=devs$short[devs$receiver],
+					receiver=unique(devs$short[devs$receiver]),
 					description="Pings",
 					data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"pulse_count")),
 					units="",
 					stringsAsFactors=F)
 			   paus.syncs <- data.frame(
 					event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
-					receiver=devs$short[devs$receiver],
+					receiver=unique(devs$short[devs$receiver]),
 					description="Syncs",
 					data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"sync_count")),
 					units="",
 					stringsAsFactors=F)
 			   paus.rejects <- data.frame(
 					event_timestamp_utc=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"time")),
-					receiver=devs$short[devs$receiver],
+					receiver=unique(devs$short[devs$receiver]),
 					description="Rejects",
 					data=sapply(rec.paus.nodes,function(x) xmlGetAttr(x,"reject_count")),
 					units="",
@@ -268,7 +281,7 @@ ulfx2csv <- function(ulfx){
 			
 		   reque.pings <- data.frame(
 				event_timestamp_utc=sapply(rec.reque.nodes,function(x) xmlGetAttr(x,"time")),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description="Study Pings",
 				data=sapply(rec.reque.nodes,function(x) xmlGetAttr(x,"pulse_count")),
 				units="",
@@ -278,7 +291,7 @@ ulfx2csv <- function(ulfx){
 		#offload
 			offload <- data.frame(
 				event_timestamp_utc=xpathSApply(xml,"//log/records/data_offload/@time"),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description="Data Upload",
 				data=xpathSApply(xml,"//log/records/data_offload/offload/@original_file"),
 				units="",
@@ -287,7 +300,7 @@ ulfx2csv <- function(ulfx){
 		#pc time
 			pctime <- data.frame(
 				event_timestamp_utc=xpathSApply(xml,"//log/records/data_offload/offload/@time"),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description="PC Time",
 				data=xpathSApply(xml,"//log/records/data_offload/offload/initiator/@time"),
 				units="",
@@ -309,7 +322,7 @@ ulfx2csv <- function(ulfx){
 			
 			dailydets <- data.frame(
 				event_timestamp_utc=xpathSApply(xml,"//log/records/decoder_stats/@time"),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description=paste0("Daily Detections on ",codespace.x),
 				data=xpathSApply(xml,"//log/records/decoder_stats/@decode_count"),
 				units="",
@@ -317,7 +330,7 @@ ulfx2csv <- function(ulfx){
 				
 			lastdecode <- data.frame(
 				event_timestamp_utc=xpathSApply(xml,"//log/records/decoder_stats/@time"),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description=paste0("Last Detection on ",codespace.x),
 				data=xpathSApply(xml,"//log/records/decoder_stats/@last_decode"),
 				units="UTC",
@@ -341,7 +354,7 @@ ulfx2csv <- function(ulfx){
 				meas <- merge(meas,sens,by.x=c("device","sensor"),by.y=c("device","idx"))
 				measures <- data.frame(
 						event_timestamp_utc=meas$time,
-						receiver=devs$short[devs$receiver],
+						receiver=unique(devs$short[devs$receiver]),
 						description='',
 						data=meas$value,
 						units=meas$short_unit,
@@ -357,6 +370,8 @@ ulfx2csv <- function(ulfx){
 				measures$description[measures$description == "voltage"] <- "Voltage"
 				measures$description[measures$description == "tilt angle"] <- "Tilt angle"
 				measures$description[measures$description == "rotation angle"] <- "Rotation angle"
+				measures$description[measures$description == "seawater depth"] <- "Seawater depth"
+				measures$description[measures$description == "motor battery"] <- "Motor battery voltage"
 				#conversion
 				noiseRows <- measures$description == "Noise" & !is.na(measures$description)
 				measures$data[noiseRows] <- as.numeric(measures$data[noiseRows])*1000
@@ -366,13 +381,13 @@ ulfx2csv <- function(ulfx){
 				measures$units[angleRows] <- "°"				
 				#rounding
 				tempRows <- measures$description == "Temperature" & !is.na(measures$description) 
-				voltageRows <- measures$description == "Voltage" & !is.na(measures$description) 
+				voltageRows <- measures$description %in% c("Voltage", "Motor battery voltage") & !is.na(measures$description) 
 				measures$data[tempRows] <- 
 					sprintf("%1.1f", round(as.numeric(measures$data[tempRows]),1))
 				measures$data[noiseRows] <- 
 					sprintf("%1.1f", round(as.numeric(measures$data[noiseRows]),1))	
 				measures$data[voltageRows] <- 
-					sprintf("%1.2f", round(as.numeric(measures$data[voltageRows]),1))	
+					sprintf("%1.1f", round(as.numeric(measures$data[voltageRows]),1))	
 				measures$data[angleRows] <- 
 					sprintf("%1.0f", round(as.numeric(measures$data[angleRows]),1))	
 			} else {
@@ -402,14 +417,15 @@ ulfx2csv <- function(ulfx){
 				senStats <- merge(senStats,sens,by.x=c("device","sensor"),by.y=c("device","idx"))
 				sensorStats <- data.frame(
 						event_timestamp_utc=senStats$time,
-						receiver=devs$short[devs$receiver],
+						receiver=unique(devs$short[devs$receiver]),
 						description='',
 						data=senStats$value,
 						units=senStats$short_unit,
 						stringsAsFactors=F)  
 				#add placeholder descriptions
 				sensorStats$description <- senStats$detail_unit
-				sensorStats$description[sensorStats$description == ''] <- senStats$long_dimen[sensorStats$description == '']
+				sensorStats$description[sensorStats$description == ''] <- 
+					senStats$long_dimen[sensorStats$description == '']
 				voltageRows <- sensorStats$description == "voltage" & 
 					!is.na(sensorStats$description) 
 				sensorStats$description[voltageRows] <- paste0(senStats$stat[voltageRows]," ",
@@ -448,7 +464,7 @@ ulfx2csv <- function(ulfx){
 		#initialization
 			init <- data.frame(
 				event_timestamp_utc=xpathSApply(xml,"//log/records/clock_change/@time"),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description="Initialization",
 				data="",
 				units="",
@@ -456,7 +472,7 @@ ulfx2csv <- function(ulfx){
 
 			init.pctime <- data.frame(
 				event_timestamp_utc=xpathSApply(xml,"//log/records/clock_change/@time"),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description="PC Time",
 				data=xpathSApply(xml,"//log/records/clock_change/initiator/@time"),
 				units="",
@@ -476,7 +492,7 @@ ulfx2csv <- function(ulfx){
 			
 			map <- data.frame(
 				event_timestamp_utc=xpathSApply(xml,"//log/device_config/study_config/@init"),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description="Map",
 				data=map.codespaces,
 				units="",
@@ -487,7 +503,7 @@ ulfx2csv <- function(ulfx){
 			
 			blanking <- data.frame(
 				event_timestamp_utc=xpathSApply(xml,"//log/device_config/study_config/@init"),
-				receiver=devs$short[devs$receiver],
+				receiver=unique(devs$short[devs$receiver]),
 				description="Blanking",
 				data=as.numeric(map.blanking)*0.001,
 				units="ms",
@@ -501,7 +517,7 @@ ulfx2csv <- function(ulfx){
 			
 			reset <- data.frame(
 					event_timestamp_utc=xpathSApply(xml,"//log/records/event[@code='8']/@time"),
-					receiver=devs$short[devs$receiver],
+					receiver=unique(devs$short[devs$receiver]),
 					description="Reset",
 					data=resets.vec,
 					units="",
@@ -525,7 +541,7 @@ ulfx2csv <- function(ulfx){
 			
 			comments <- data.frame(
 					event_timestamp_utc=xpathSApply(xml,"//log/records/event[@code='4']/@time"),
-					receiver=devs$short[devs$receiver],
+					receiver=unique(devs$short[devs$receiver]),
 					description="Comment",
 					data=comments.vec,
 					units="",
@@ -591,9 +607,11 @@ ulfx2csv <- function(ulfx){
 							"Study Pings",
 							"Reset",
 							"Comment",
+							"Motor battery voltage",
 							"Tilt angle",
 							"Rotation angle",
 							"Noise",
+							"Seawater depth",
 							"Temperature",
 							"Minimum voltage",
 							"Maximum voltage",
@@ -637,7 +655,25 @@ ulfx2csv <- function(ulfx){
 			#omit battery voltage measurements
 			dropRows <- rows_vr2tx & logOut$description == "Voltage"	
 			logOut <- logOut[!dropRows,]
-				
+
+			#VR2AR
+			rows_vr2ar <- grepl("^VR2AR",logOut$receiver) #identify 180 rows
+			logOut[rows_vr2ar,] <- within(logOut[rows_vr2ar,],{
+				description <- gsub("^Map$","69 kHz decoding map", description)
+				description <- gsub("^Blanking$","69 kHz blanking interval", description) 
+				description <- gsub("^Study Pings$","Study Pings on 69 kHz", description)
+				description <- gsub("^Daily Pings$","Pings on 69 kHz", description)
+				description <- gsub("^Daily Syncs$","Syncs on 69 kHz", description)
+				description <- gsub("^Daily Rejects$","Rejects on 69 kHz", description)
+				description <- gsub("^Pings$","Pings on 69 kHz", description)
+				description <- gsub("^Syncs$","Syncs on 69 kHz", description)
+				description <- gsub("^Rejects$","Rejects on 69 kHz", description)
+				description <- gsub("^Daily Detections on","Detections on", description)
+			})		
+			#omit battery voltage measurements
+			dropRows <- rows_vr2ar & logOut$description == "Voltage"	
+			logOut <- logOut[!dropRows,]
+			
 		#-------------------------------------		
 		
 		#rename columns to Vemco default
@@ -645,7 +681,16 @@ ulfx2csv <- function(ulfx){
 
 		write.csv(logOut,gsub(".ulfx$|.ULFX$|.ULFx$","_receiverEvents.csv",xmlFile),row.names=F,quote=F)
 		
-		setTxtProgressBar(pb, i) #update progress bar
+		#progress bar
+		if(class(pb) == "winProgressBar") {
+			setWinProgressBar(pb, value=i, 
+				label = paste0("Processing file ",i," of ",length(ulfx)))
+		} else {
+			setTxtProgressBar(pb, i) #update progress bar
+		} #end if else
+		
 	} #end i
+	
+	close(pb) #close progress bar
 }
 
