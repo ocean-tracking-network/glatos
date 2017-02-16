@@ -1,5 +1,47 @@
+#' @title Simulate detection of transmitter signals in a receiver network
+#' 
+#' @description
+#' Simulates detection of transmitter signals in a receiver network based on
+#'   detection range curve (detection probability as a function of distance),
+#'   location of transmitter, and location of receivers.
+#'
+#' @param trnsLoc A three-column data frame with locations (numeric columns 
+#'   named 'x' and 'y') and timestamps (numeric or POSIXct column named 'et')
+#'   where signals were transmitted.
+#' @param recLoc A two-column data frame with receiver locations (numeric 
+#'   columns named 'x' and 'y')
+#' @param detRngFun A function that defines detection range curve;
+#'   must accept a numeric vector of distances and return a numeric vector of 
+#'   detection probabilities at each distance.
+#'
+#' @details
+#' Distances between each signal transmission location and receiver are 
+#' calculated using pythagorean theorem. The probability of detecting each 
+#' signal on each receiver is determined from the detection range curve. 
+#' Detection of each signal on each receiver is determined stochastically by 
+#' draws from a Bernoulli distribution with probability p (detection prob).  
+#'  
+#' This function was written to be used along with 
+#'   \code{\link{transmitAlongPath}}.
+#' 
+#' @return A data frame containing:
+#' \item{trns_id}{Unique signal transmission ID}
+#' \item{recv_id}{Unique receiver ID}
+#' \item{recv_x}{Receiver x coordinate}
+#' \item{recv_y}{Receiver y coordinate}
+#' \item{trns_x}{Transmitter x coordinate}
+#' \item{trns_y}{Transmitter y coordinate}
+#' \item{etime}{Elapsed time}
+#'
+#' @seealso \code{\link{transmitAlongPath}} to simulate transmissions along a 
+#' path (i.e., create \code{trnsLoc}).
+#'
+#' @author C. Holbrook (cholbrook@usgs.gov) 
+#'
+#' @examples
+#' #none yet
+#'
 #' @export
-#simulate tag signal detections
 detectTransmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
 	 
 	 #preallocate detection data frame

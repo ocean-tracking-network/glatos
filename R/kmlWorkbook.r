@@ -1,6 +1,46 @@
+#' @title Make a KML (or KMZ) file for viewing receiver and animal release 
+#'   locations in Google Earth.
+#' 
+#' @description
+#' Receiver data (deployment location, deployment timestamp, and 
+#' recovery timestamp) and tagging data (release location, release timestamp) 
+#' are imported from a zipped GLATOS Workbook archive and used to make a KML 
+#' (and optionally, KMZ) for viewing receiver deployments  and release 
+#' locations in Google Earth.
+#'
+#' @param zipfile A character vector with the full path and filename of zipped 
+#'   GLATOS workbook (this is the **ZIPPED** archive that gets uploaded to 
+#'   GLATOSWeb)
+#' @param browse A logical scalar. If TRUE, user is asked to select zipfile 
+#'   using windows explorer. Default value is FALSE.
+#' @param kmz A logical scalar; If TRUE, a KMZ file (zipped KML file) will also 
+#'   be created. Default value is FALSE.
+#' @param labelSize A numeric scalar with the size of placemark labels 
+#'   (only shown when placemark is highlighted by user).
+#' @param iconSize A numeric scalar with the size of placemark icons.
+#' @param showOngoing A logicalscalar that indicates if ongoing stations 
+#'   (missing recovery timestamp) should be included in result.
+#' @param endDate End date (e.g. "YYYY-MM-DD") to be used for any ongoing 
+#'   stations (if showOngoing == T)
+#'
+#' @details
+#' Receiver locations will be visible between deployment and recovery 
+#' timestamps at each location. Release locations will be displayed when the 
+#' display window includes the date of release.
+#' 
+#' @return A KML (and optionally, KMZ) file, written to the directory that 
+#'   contains the zipped GLATOS workbook. Nothing is returned to the R console.
+#'
+#' @author C. Holbrook (cholbrook@usgs.gov) 
+#'
+#' @examples
+#' library(glatos)
+#' 
+#' #get path to example GLATOS Data Workbook
+#' zipFile <- system.file("extdata", "SMRSL_GLATOS_20140828.xlsm.zip",package="glatos")
+#' kmlWorkbook(zipFile,browse=F,kmz=T,labelSize=0.6,iconSize=0.6,showOngoing=T,endDate="2020-01-01")
+#'
 #' @export
-#input arguments
-#-zipFile is the full path to the glatos workbook zip archive (submitted to GLATOSWeb)
 kmlWorkbook <- function(zipFile,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
 	showOngoing=T,endDate="2020-01-01") {
 

@@ -1,5 +1,35 @@
+#' Simulate a correlated random walk
+#' 
+#' Simulate a random walk as series of equal-length steps with turning angles 
+#'   drawn from a normal distribution.
+#'
+#' @param theta A 2-element numeric vector with turn angle parameters 
+#'   (theta[1] = mean; theta[2] = sd) from normal distribution.
+#' @param stepLen A numeric scalar with total distance moved in each step.
+#' @param initPos A 2-element numeric vector with nital position (initPos[1]=x, 
+#'   initPos[2]=y).
+#' @param initHeading A numeric scalar with initial heading in degrees.
+#' @param nsteps A numeric scalar with number of steps to simulate.
+#'
+#' @details
+#' First, nsteps turn angles are drawn from a normal distribution. Second, the 
+#' cumulative sum of the vector of turn angles defines the heading within each 
+#' step. The x and y component vectors in each are then calculated and summed 
+#' to obtain the simualted path.
+#' 
+#' @return A two-column data frame containing:
+#' \item{x}{x coordinates}
+#' \item{y}{y coordinates}
+#'
+#' @author C. Holbrook (cholbrook@usgs.gov) 
+#'
+#' @note Adapted from code provided by Tom Binder.
+#'
+#' @examples
+#' foo <- crw(theta=c(0,5), stepLen=10, initPos=c(0,0), initHeading=0, nsteps=10)
+#' plot(foo,type="b",pch=20,cex=0.2,asp=c(1,1)) 
+#'
 #' @export
-#simulate a random walk; parameterized by turn angle (change in heading) 
 crw <- function(theta=c(0,5), stepLen=10, initPos=c(0,0), initHeading=0,nsteps=10000){
       #generate turn angles
       heading <- rnorm(nsteps, mean=theta[1],sd=theta[2])

@@ -1,5 +1,36 @@
+#' @title Rotate points in a 2-d plane
+#' 
+#' @description
+#' Rotate points around a point in a 2-d plane
+#'
+#' @param x A numeric vector of x coordinates; minimum of 2.
+#' @param y A numeric vector of y coordinates; minimum of 2.
+#' @param theta A numeric scalar with the angle of rotation in degrees; 
+#'   positive is clockwise.
+#' @param focus A numeric vector of x (first element) and y (second element) 
+#' coordinates for the point around which \code{x} and \code{y} will rotate.
+#'
+#' @details
+#' Points are shifted to be centered at the focus, then rotated using a
+#' rotation matrix, then shifted back to original focus.
+#' 
+#' @return A two-column data frame containing:
+#' \item{x}{x coordinates}
+#' \item{y}{y coordinates}
+#'
+#' @note
+#' This function is called from \code{\link{crwInPolygon}}
+#' 
+#' @author C. Holbrook (cholbrook@usgs.gov) 
+#'
+#' @examples
+#' x <- runif(10,0,10)
+#' y <- runif(10,0,10)
+#' plot(x,y,type="b",pch=20)
+#' foo <- rotatePoints(x, y, 20, c(5, 5))
+#' points(foo$x,foo$y,type="b",pch=20,col="red")
+#'
 #' @export
-#function to rotate points
 rotatePoints <- function(x, y, theta, focus){
 	pos <- cbind(x,y) #original points
 	theta.rad <- theta*(pi/(180)) #convert to radians
