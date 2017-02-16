@@ -3,8 +3,7 @@
 glatos is an R package with functions useful to members of the Great Lakes Acoustic Telemetry Observation System (www.data.glos.us/glatos). Functions may be generally useful for processing, analysing, simulating, and visualizing acoustic telemetry data, but are not strictly limited to acoustic telemetry applications.
 
 ### Functions in the package can (and have) be used to:
-1. Convert a Vemco VRL file to a comma separated values (CSV) file or ULFx (Vemco XML) file [see `vrl2csv` and `vrl2ulfx`]
-2. Convert a Vemco ULFx file to two CSV files; one with detection data and one with receiver event data; both in default VUE export format [see `ulfx2csv`]
+1. Convert a Vemco VRL file to a comma separated values (CSV) file [see `vrl2csv`]
 2. Estimate probability of collision for PPM-type co-located telemetry transmitters [see `clacCollisionProb`]
 3. Simulate detection of acoustic-tagged fish crossing a receiver line (or single receiver) [see `receiverLineDetSim`]
 4. Make a KML (or KMZ) file (e.g., for viewing GLATOS receiver and release locations in Google Earth) from an existing GLATOS Data Workbook. [see `kmlWorkbook`]
@@ -13,7 +12,7 @@ glatos is an R package with functions useful to members of the Great Lakes Acous
 
 ## Installation
 
-1. install devtoools for R (if you haven't already
+1. install devtoools for R (if you haven't already)
 ```R
  install.packages("devtools")
 ```
@@ -26,5 +25,5 @@ install_git("https://USERNAME:PASSWORD@gitlab.oceantrack.org/chrisholbrook/glato
 ```
 
 
-## Help wanted!
-Suggestions or requests for new functions, enhancements, bug fixes etc. are needed. If you are interested in contributing (even just ideas), feel free to start a new issue or branch. Or email cholbrook@usgs.gov.
+## Help wanted
+If you encounter problems or have questions or suggestions, please post a new issue. If you have code to contribute, feel free to start a new branch. Any questions or comments can be sent to cholbrook@usgs.gov.

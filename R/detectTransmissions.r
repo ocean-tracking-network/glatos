@@ -1,3 +1,4 @@
+#' @export
 #simulate tag signal detections
 detectTransmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
 	 

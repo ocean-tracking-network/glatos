@@ -1,3 +1,4 @@
+#' @export
 #function to rotate points
 rotatePoints <- function(x, y, theta, focus){
 	pos <- cbind(x,y) #original points

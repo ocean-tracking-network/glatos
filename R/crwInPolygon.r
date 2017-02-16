@@ -1,3 +1,4 @@
+#' @export
 #function to simulate crw within a polygon
  crwInPolygon <- function(polyg=data.frame(x=c(0,0,150000,150000),y=c(0,50000,50000,0)),
               theta=c(0,10), 

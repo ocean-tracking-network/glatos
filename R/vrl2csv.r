@@ -1,3 +1,4 @@
+#' @export
 vrl2csv <- function(vrl, vueExePath="C:\\Program Files (x86)\\Vemco\\VUE"){
   #check path to VUE.exe
   if( !("VUE.exe" %in% list.files(vueExePath))) stop("VUE.exe not found at specified path.")

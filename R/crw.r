@@ -1,3 +1,4 @@
+#' @export
 #simulate a random walk; parameterized by turn angle (change in heading) 
 crw <- function(theta=c(0,5), stepLen=10, initPos=c(0,0), initHeading=0,nsteps=10000){
       #generate turn angles

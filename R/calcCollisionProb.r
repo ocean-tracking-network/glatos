@@ -1,3 +1,4 @@
+#' @export
 calcCollisionProb = function(delayRng = c(60, 180), burstDur = 5.0, maxTags = 50, nTrans = 10000)
     {
 

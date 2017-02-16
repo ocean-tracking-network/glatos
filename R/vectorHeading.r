@@ -1,3 +1,4 @@
+#' @export
 #function to calculate ordinal direction for vector
 vectorHeading <- function (x, y) {
     theta.rad <- atan2(diff(x), diff(y))

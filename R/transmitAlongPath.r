@@ -1,3 +1,4 @@
+#' @export
 #simulate tag signal transmissions along a path
 transmitAlongPath <- function(path=NA,vel=0.5,delayRng=c(60,180),burstDur=5.0){
     #cumulative distance travelled in meters 

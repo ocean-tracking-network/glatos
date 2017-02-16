@@ -9,3 +9,4 @@ Description: The package is currently under development.
 Depends: R (>= 3.1.1)
 License: GPL (2.0 or later)
 LazyLoad: yes
+RoxygenNote: 6.0.0

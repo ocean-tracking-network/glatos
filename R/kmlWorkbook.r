@@ -1,3 +1,4 @@
+#' @export
 #input arguments
 #-zipFile is the full path to the glatos workbook zip archive (submitted to GLATOSWeb)
 kmlWorkbook <- function(zipFile,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
