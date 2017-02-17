@@ -4,10 +4,10 @@ glatos is an R package with functions useful to members of the Great Lakes Acous
 
 ### Functions in the package can be (and have been) used to:
 1. Convert a Vemco VRL file to a comma separated values (CSV) file [see [`vrl2csv`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/vrl2csv.r)]
-2. Estimate probability of collision for PPM-type co-located telemetry transmitters [see `clacCollisionProb`]
-3. Simulate detection of acoustic-tagged fish crossing a receiver line (or single receiver) [see `receiverLineDetSim`]
-4. Make a KML (or KMZ) file (e.g., for viewing GLATOS receiver and release locations in Google Earth) from an existing GLATOS Data Workbook. [see `kmlWorkbook`]
-5. Simulate movement, tag signal transmissions, and detection of fish in a user-defined array [e.g., using `crwInPolygon`, `transmitAlongPath`, and `detectTransmissions`]
+2. Estimate probability of collision for PPM-type co-located telemetry transmitters [see [`clacCollisionProb`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/calcCollisionProb.r)]
+3. Simulate detection of acoustic-tagged fish crossing a receiver line (or single receiver) [see [`receiverLineDetSim`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/receiverLineDetSim.r)]
+4. Make a KML (or KMZ) file (e.g., for viewing GLATOS receiver and release locations in Google Earth) from an existing GLATOS Data Workbook. [see [`kmlWorkbook`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/kmlWorkbook.r)]
+5. Simulate movement, tag signal transmissions, and detection of fish in a user-defined array [e.g., using [`crwInPolygon`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/crwInPolygon.r), [`transmitAlongPath`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/transmitAlongPath.r), and [`detectTransmissions`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/detectTransmissions.r)]
 
 
 ## Installation
@@ -26,4 +26,4 @@ install_git("https://USERNAME:PASSWORD@gitlab.oceantrack.org/chrisholbrook/glato
 
 
 ## Help wanted
-If you encounter problems or have questions or suggestions, please post a new issue. If you have code to contribute, feel free to start a new branch. Any questions or comments can be sent to cholbrook@usgs.gov.
+This package is in early development. If you encounter problems or have questions or suggestions, please post a new issue. If you have code to contribute, feel free to start a new branch. Any questions or comments can be sent to cholbrook@usgs.gov.
