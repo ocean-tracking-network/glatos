@@ -1,9 +1,9 @@
 # glatos
 
-glatos is an R package with functions useful to members of the Great Lakes Acoustic Telemetry Observation System (www.data.glos.us/glatos). Functions may be generally useful for processing, analysing, simulating, and visualizing acoustic telemetry data, but are not strictly limited to acoustic telemetry applications.
+glatos is an R package with functions useful to members of the Great Lakes Acoustic Telemetry Observation System ([http://glatos.glos.us](http://glatos.glos.us)). Functions may be generally useful for processing, analysing, simulating, and visualizing acoustic telemetry data, but are not strictly limited to acoustic telemetry applications.
 
-### Functions in the package can (and have) be used to:
-1. Convert a Vemco VRL file to a comma separated values (CSV) file [see `vrl2csv`]
+### Functions in the package can be (and have been) used to:
+1. Convert a Vemco VRL file to a comma separated values (CSV) file [see [`vrl2csv`]https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/vrl2csv.r)]
 2. Estimate probability of collision for PPM-type co-located telemetry transmitters [see `clacCollisionProb`]
 3. Simulate detection of acoustic-tagged fish crossing a receiver line (or single receiver) [see `receiverLineDetSim`]
 4. Make a KML (or KMZ) file (e.g., for viewing GLATOS receiver and release locations in Google Earth) from an existing GLATOS Data Workbook. [see `kmlWorkbook`]
