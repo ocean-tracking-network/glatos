@@ -24,6 +24,8 @@
 #'   away from the x-axis).
 #' @param plotTitle An optional character scalar that will apear at the top of 
 #'   the plot. Default is no title.
+#' @param Ylab A character scalar indicating the y-axis label that will appear 
+#'   on the figure (default will match \code{detColNames$locationCol}).
 #' @param outFile An optional character scalar with the name of the png file 
 #'   created (including file extension; default = "AbacusPlot.png").
 #' @param ... Other plotting arguments that pass to "plot" function 
@@ -74,11 +76,17 @@
 #' 	 plotTitle = "TagID: 32123", outFile="AbacusPlot_tag32123_control.png", 
 #' 	 col = "red")
 #'
+#' #plot with custom y-axis label and lines connecting symbols
+#' abacusPlot(walleye_detections, controlTable=walleye_controlTable, 
+#' 	 plotTitle = "TagID: 32123", Ylab="Location (GLATOS Array)",
+#' 	 outFile="AbacusPlot_tag32123_control.png", 
+#' 	 col = "red", type="o")
+#' 
 #' @export
 
 abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array", 
 	timestampCol="detection_timestamp_utc"), controlTable = NULL, 
-	  plotTitle = "", outFile = "AbacusPlot.png", ...){
+	  plotTitle = "", Ylab=NA, outFile = "AbacusPlot.png", ...){
 		
 	# Check that the specified columns appear in the detections dataframe
 	missingCols <- setdiff(unlist(detColNames), names(detections))
@@ -112,6 +120,9 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 			"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
 			call.=FALSE)
 	}		
+	
+	#update Ylab value
+	if(is.na(Ylab)) Ylab <- detColNames$locationCol
 		
 	# Merge detections and controlTable dataframes
 	# Keep only locations that appear in the controlTable dataframe
@@ -132,7 +143,7 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	# Create a png file containing the events plot
 	png(outFile, height = pngHeight, width = 1000, pointsize = 22)
 			# Set inner and outer margins
-			par(mar = c(1,1,1,2), oma = c(3,4 + YlabOffset,0,0))
+			par(mar = c(1,1,1.5,2), oma = c(3,4 + YlabOffset,0,0))
 			# Plot detection data
 			plot(detections[[detColNames$timestampCol]], detections$y_order, 
 				xlim = c(min(detections[[detColNames$timestampCol]], na.rm = TRUE), 
@@ -152,7 +163,7 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 				las = 1)
 			# Add axes titles
 			mtext("Date", side = 1, line = 2.2, cex = 1.2)
-			mtext(detColNames$locationCol, side = 2, line = 3.5 + YlabOffset, cex = 1.2)
+			mtext(Ylab, side = 2, line = 3.5 + YlabOffset, cex = 1.2)
 	dev.off()
 
 	message(paste0("Output file is located in the following directory:\n", 

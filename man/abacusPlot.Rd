@@ -6,7 +6,7 @@
 \usage{
 abacusPlot(detections, detColNames = list(locationCol = "glatos_array",
   timestampCol = "detection_timestamp_utc"), controlTable = NULL,
-  plotTitle = "", outFile = "AbacusPlot.png", ...)
+  plotTitle = "", Ylab = NA, outFile = "AbacusPlot.png", ...)
 }
 \arguments{
 \item{detections}{A data frame containing at least two columns with names 
@@ -25,6 +25,9 @@ away from the x-axis).}
 
 \item{plotTitle}{An optional character scalar that will apear at the top of 
 the plot. Default is no title.}
+
+\item{Ylab}{A character scalar indicating the y-axis label that will appear 
+on the figure (default will match \code{detColNames$locationCol}).}
 
 \item{outFile}{An optional character scalar with the name of the png file 
 created (including file extension; default = "AbacusPlot.png").}
