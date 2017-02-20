@@ -36,14 +36,14 @@
 #' the plot and in what order they will appear. If no controlTable is 
 #' supplied, the function will plot only those locations that appear in the 
 #' detections dataframe. The order of locations on the y-axis will correspond 
-#' to the order in which each location appears in the dataframe.\cr
+#' to the order in which each location appears in the dataframe.\cr\cr
 #' By default, the function does not distinguish detections from different 
 #' transmitters and will therefore plot all transmitters the same color. 
 #' If more than one fish is desired in a single plot, a vector of colors must 
 #' be passed to the function using the 'col =' argument. The color vector must 
 #' be the same length as the number of rows in the detections dataframe. 
 #' Alternatively, plots for multiple individual fish can be created by looping 
-#' through and creating a separate plot on subsetted detections data.\cr
+#' through and creating a separate plot on subsetted detections data.\cr\cr
 #' Plotting options (i.e., symbol size, plotting symbol, lines, and symbol 
 #' colors) can be changed using optional graphical parameters 
 #' (http://www.statmethods.net/advgraphs/parameters.html) that are passed to 
@@ -52,7 +52,14 @@
 #' @author T. R. Binder
 #'
 #' @examples
-#' abacusPlot()
+#' data("walleye_detections") #xample data
+#'
+#' #subset one transmitter
+#' walleye_detections <- 
+#'   walleye_detections[walleye_detections$transmitter_id == 32123,  ]
+#'
+#' abacusPlot(walleye_detections, controlTable=NULL, plotTitle = "TagID: 32123", 
+#'  	outFile="AbacusPlot_tag32123.png", col = "red")
 #'
 #' @export
 
