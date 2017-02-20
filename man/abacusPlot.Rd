@@ -15,15 +15,6 @@ locations (typically 'glatos_array' or 'station' for GLATOS data) that
 will be plotted on the y-axis. The 'timestamp' column contains the 
 datetime stamps for the detections (MUST be of class 'POSIXct').}
 
-\item{detColNames}{A list of column names: 
-\item{locationCol}{A character scalar with the name (in quotes) of the 
-column containing the location codes to be plotted on the y-axis.
-The default value ("glatos_array") is consistent with GLATOS standard.} 
- \item{timestampCol}{A character scalar with the name (in quotes) of the 
-column containing the timestamp data to be plotted on the x-axis.
-The default value ("detection_timestamp_utc") is is consistent with 
-GLATOS standard.}}
-
 \item{controlTable}{Optional dataframe with two columns, c('location', and 
 'y_order). The 'location' column is a character vector of locations to be 
 plotted on the y-axis and the name of the 'location' column must match the 
@@ -67,14 +58,27 @@ colors) can be changed using optional graphical parameters
 "plot" (see ?plot for more information).
 }
 \examples{
-data("walleye_detections") #xample data
+library(glatos)
+data("walleye_detections") #example data
+
+head(walleye_detections)
 
 #subset one transmitter
-walleye_detections <- 
-  walleye_detections[walleye_detections$transmitter_id == 32123,  ]
+walleye_detections <-
+	 walleye_detections[walleye_detections$transmitter_id == 32123, ]
+	
+#plot without control table
+abacusPlot(walleye_detections, controlTable=NULL, plotTitle = "TagID: 32123",
+	 outFile="AbacusPlot_tag32123.png", col = "red")
+	
+#get example control table
+data("walleye_controlTable") #example dataset
+walleye_controlTable
 
-abacusPlot(walleye_detections, controlTable=NULL, plotTitle = "TagID: 32123", 
- 	outFile="AbacusPlot_tag32123.png", col = "red")
+#plot with control table
+abacusPlot(walleye_detections, controlTable=walleye_controlTable, 
+	 plotTitle = "TagID: 32123", outFile="AbacusPlot_tag32123_control.png", 
+	 col = "red")
 
 }
 \author{
