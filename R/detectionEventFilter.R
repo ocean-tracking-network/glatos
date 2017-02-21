@@ -71,7 +71,7 @@ detectionEventFilter <- function(detections, detColNames = list(
 	longCol="deploy_long"), 
 	timeSep=Inf){
 	
-	library(plyr)
+	library(plyr) #for ddply
 
 	# Check that the specified columns appear in the detections dataframe
 	missingCols <- setdiff(unlist(detColNames), names(detections))
@@ -80,21 +80,27 @@ detectionEventFilter <- function(detections, detColNames = list(
 			"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
 			call.=FALSE)
 	}
-    
+	
+	# Subset detections with only user-defined columns and change names
+	# this makes code more easy to understand (esp. ddply)
+	detections <- detections[,unlist(detColNames)] #subset
+	names(detections) <- c("location","animal","timestamp","lat","long")
+	
+    	
 	# Check that timestamp is of class 'POSIXct'
-	if(!('POSIXct' %in% class(detections[[detColNames$timestampCol]]))){
+	if(!('POSIXct' %in% class(detections$timestamp))){
 		stop(paste0("Column '",detColNames$timestampCol,
 			"' in the detections dataframe must be of class 'POSIXct'."),
 			call.=FALSE)
 	} 
         
 	# Sort detections by tranmitter id and then by detection timestamp.
-	detections <- detections[order(detections[[detColNames$animalCol]], 
-		detections[[detColNames$timestampCol]]),]
+	detections <- detections[order(detections$animal, 
+		detections$timestamp),]
 
 	# Add a column indicating the time between a given detection and the detection
 	#  before it. The first detection in the dataset is assigned a value of NA.
-	detections$TimeDiff <- c(NA, diff(detections[[detColNames$timestampCol]]))
+	detections$TimeDiff <- c(NA, diff(detections$timestamp))
 	
 	# Insert new columns indicating whether transmitter_id or location changed 
 	#  sequentially between rows in the dataframe and whether the time between 
@@ -103,13 +109,11 @@ detectionEventFilter <- function(detections, detColNames = list(
 	
 	# flag if animal changed
 	detections$IndividComparison <- c(NA, 
-		as.numeric(detections[[detColNames$animalCol]][-1] != 
-			head(detections[[detColNames$animalCol]],-1)))
+		as.numeric(detections$animal[-1] != head(detections$animal,-1)))
 				
 	# flag if location changed
 	detections$GroupComparison <- c(NA, 
-		as.numeric(detections[[detColNames$locationCol]][-1] != 
-			head(detections[[detColNames$locationCol]],-1)))
+		as.numeric(detections$location[-1] != head(detections$location,-1)))
 	
 	# flag if interval exceeded time threshold
 	detections$TimeThreshold <- as.numeric(detections$TimeDiff > timeSep)
@@ -123,18 +127,16 @@ detectionEventFilter <- function(detections, detColNames = list(
 	detections$Event <- cumsum(detections$NewEvent)
 	
 	# Summarize the event data using the ddply function in the plyr package.
-	Results <- ddply(detections, .(Event), summarise, 
-		Individual = get(detColNames$animalCol)[1], 
-		Location = get(detColNames$locationCol)[1], 
-		MeanLatiude = mean(get(detColNames$latCol)), 
-		MeanLongitude = mean(get(detColNames$longCol)), 
-		FirstDetection = get(detColNames$timestampCol)[1], 
-		LastDetection = get(detColNames$timestampCol)[length(
-			get(detColNames$timestampCol))], 
-		NumDetections = length(Event), 
-		ResTime_sec = as.numeric(get(detColNames$timestampCol)[
-			length(get(detColNames$timestampCol))]) - 
-				as.numeric(get(detColNames$timestampCol)[1]))
+	Results <- ddply(detections, .(Event), summarise,
+				Individual = animal[1], 
+				Location = location[1], 
+				MeanLatiude = mean(lat, na.rm=T), 
+				MeanLongitude = mean(long, na.rm=T), 
+				FirstDetection = timestamp[1], 
+				LastDetection = timestamp[length(timestamp)], 
+				NumDetections = length(Event), 
+				ResTime_sec = as.numeric(timestamp[length(timestamp)]) - 
+						as.numeric(timestamp)[1])
 
 	# Returns dataframe containing summarized detection event data
 	message(paste0("The eventFilter distilled ", nrow(detections), 
