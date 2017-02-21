@@ -15,6 +15,15 @@ locations (typically 'glatos_array' or 'station' for GLATOS data) that
 will be plotted on the y-axis. The 'timestamp' column contains the 
 datetime stamps for the detections (MUST be of class 'POSIXct').}
 
+\item{detColNames}{A list of column names: \cr\cr
+\code{locationCol} A character scalar with the name (in quotes) of the 
+column containing the location codes to be plotted on the y-axis. The 
+default value ("glatos_array") is consistent with GLATOS standard.\cr\cr
+ \code{timestampCol}A character scalar with the name (in quotes) of the 
+column containing the timestamp data to be plotted on the x-axis.
+The default value ("detection_timestamp_utc") is is consistent with 
+GLATOS standard.}
+
 \item{controlTable}{Optional dataframe with two columns, c('location', and 
 'y_order). The 'location' column is a character vector of locations to be 
 plotted on the y-axis and the name of the 'location' column must match the 
@@ -82,6 +91,12 @@ walleye_controlTable
 abacusPlot(walleye_detections, controlTable=walleye_controlTable, 
 	 plotTitle = "TagID: 32123", outFile="AbacusPlot_tag32123_control.png", 
 	 col = "red")
+
+#plot with custom y-axis label and lines connecting symbols
+abacusPlot(walleye_detections, controlTable=walleye_controlTable, 
+	 plotTitle = "TagID: 32123", Ylab="Location (GLATOS Array)",
+	 outFile="AbacusPlot_tag32123_control.png", 
+	 col = "red", type="o")
 
 }
 \author{

@@ -14,7 +14,7 @@
 #'   	\code{timestampCol}A character scalar with the name (in quotes) of the 
 #'      column containing the timestamp data to be plotted on the x-axis.
 #'      The default value ("detection_timestamp_utc") is is consistent with 
-#'      GLATOS standard.}
+#'      GLATOS standard.
 #' @param controlTable Optional dataframe with two columns, c('location', and 
 #'   'y_order). The 'location' column is a character vector of locations to be 
 #'   plotted on the y-axis and the name of the 'location' column must match the 
