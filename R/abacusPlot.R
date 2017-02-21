@@ -96,8 +96,14 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 			call.=FALSE)
 	}
 	
+	# Subset detections with only user-defined columns and change names
+	# this makes code more easy to understand (esp. ddply)
+	detections <- detections[,unlist(detColNames)] #subset
+	names(detections) <- c("location","timestamp")
+	
+	
 	# Check that timestamp is of class 'POSIXct'
-	if(!('POSIXct' %in% class(detections[[detColNames$timestampCol]]))){
+	if(!('POSIXct' %in% class(detections$timestamp))){
 		stop(paste0("Column '",detColNames$timestampCol,
 			"' in the detections dataframe must be of class 'POSIXct'."),
 			call.=FALSE)
@@ -107,29 +113,35 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	#  appear in the detections dataframe	
 	if(is.null(controlTable)){
 		controlTable <- data.frame(
-			unique(detections[[detColNames$locationCol]]), 
-			1:length(unique(detections[[detColNames$locationCol]])), 
+			unique(detections$location), 
+			1:length(unique(detections$location)), 
 			stringsAsFactors = FALSE)
-		names(controlTable) <- c(detColNames$locationCol, "y_order")
-	}
+		names(controlTable) <- c("location", "y_order")
+	} else {
     
-	# Check that the specified columns are in the control table dataframe
-	missingCols <- setdiff(c(detColNames$locationCol, "y_order"), names(controlTable))
-	if (length(missingCols) > 0){
-		stop(paste0("Control table dataframe is missing the following ",
-			"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-			call.=FALSE)
-	}		
+		# Check that the specified columns are in the control table dataframe
+		missingCols <- setdiff(c(detColNames$locationCol, "y_order"), names(controlTable))
+		if (length(missingCols) > 0){
+			stop(paste0("Control table dataframe is missing the following ",
+				"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
+				call.=FALSE)
+		}
+		
+		#change name of location column in control table
+		controlTable <- controlTable[,c(detColNames[[1]],"y_order")] #order columns
+		names(controlTable)[1] <- "location"
+	}
 	
-	#update Ylab value
+	
+	#update Ylab value if NA
 	if(is.na(Ylab)) Ylab <- detColNames$locationCol
 		
 	# Merge detections and controlTable dataframes
 	# Keep only locations that appear in the controlTable dataframe
-	detections <- merge(detections, controlTable, by = detColNames$locationCol, 
+	detections <- merge(detections, controlTable, by = "location", 
 		all.y = TRUE)
 	#sort by timestamp
-	detections <- detections[order(detections[[detColNames$timestampCol]]),] 
+	detections <- detections[order(detections$timestamp),] 
    
 	# Variable which scales the height of the y-axis depending on the number of 
 	# labels to appear. 
@@ -138,34 +150,32 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	
 	# Calculate a y-axis label offset to accomodate grouping variables with 
 	# different string lengths (e.g., "DRM" vs "DRM-001").
-	YlabOffset <- (max(nchar(detections[[detColNames$locationCol]]))-3)/3
+	YlabOffset <- (max(nchar(detections$location))-3)/3
 	
 	# Create a png file containing the events plot
 	png(outFile, height = pngHeight, width = 1000, pointsize = 22)
 			# Set inner and outer margins
 			par(mar = c(1,1,1.5,2), oma = c(3,4 + YlabOffset,0,0))
 			# Plot detection data
-			plot(detections[[detColNames$timestampCol]], detections$y_order, 
-				xlim = c(min(detections[[detColNames$timestampCol]], na.rm = TRUE), 
-					max(detections[[detColNames$timestampCol]], na.rm = TRUE)), 
-				ylim = c(1,length(unique(detections[[detColNames$locationCol]]))), 
-				pch = 16, main = plotTitle, yaxt = "n", xaxt = "n", ylab = "", 
-				xlab = "", ...)
+			with(detections, 
+				plot(timestamp, y_order, 
+					xlim = range(timestamp, na.rm = TRUE), 
+					ylim = c(1,length(unique(location))), 
+					pch = 16, main = plotTitle, yaxt = "n", xaxt = "n", ylab = "", 
+					xlab = "", ...))
 			# Add custom axes
 			axis(2, at = controlTable$y_order, 
-				labels = controlTable[[detColNames$locationCol]], las = 1)
-			axis(1, at = seq(from = min(detections[[detColNames$timestampCol]], 
-				na.rm = TRUE), to = max(detections[[detColNames$timestampCol]], 
-					na.rm = TRUE), length.out = 5), 
-				labels = format(seq(from = min(detections[[detColNames$timestampCol]], 
-					na.rm = TRUE), to = max(detections[[detColNames$timestampCol]], 
-					na.rm = TRUE), length.out = 5), "%Y-%m-%d"), 
-				las = 1)
+				labels = controlTable$location, las = 1)
+			xmaj <- seq(from = min(detections$timestamp, na.rm = TRUE), 
+				to = max(detections$timestamp, na.rm = TRUE), length.out = 5)
+			axis(1, at = xmaj, labels = format(xmaj, "%Y-%m-%d"), las = 1)
 			# Add axes titles
 			mtext("Date", side = 1, line = 2.2, cex = 1.2)
 			mtext(Ylab, side = 2, line = 3.5 + YlabOffset, cex = 1.2)
 	dev.off()
 
+	#get output directory
+	outDir <- ifelse(dirname(outFile)==".", getwd(), dirname(outFile)) 
 	message(paste0("Output file is located in the following directory:\n", 
-		getwd()))	
+		outDir))	
 }
