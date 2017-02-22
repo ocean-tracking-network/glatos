@@ -7,7 +7,7 @@
 \title{glatos: A package for the Great Lakes Acoustic Telemetry Observation System}
 \description{
 The glatos package provides three categories of important functions:
-simulation, visualization, and random utility functions.
+simulation, processing and summarization, visualization and exploration, and random utility functions.
 }
 \section{Simulation functions}{
 
@@ -20,10 +20,23 @@ The functios \code{\link{crwInPolygon}}, \code{\link{transmitAlongPath}}, and
   performance of custom receiver network arrangements. \cr\cr
 }
 
-\section{Visualization functions}{
+\section{Processing and Summarization functions}{
+
+The function \code{\link{falseDetectionFilter}} identifies potential 
+  false detections using the GLATOS min_lag column. \cr\cr
+The function \code{\link{detectionEventFilter}} distills detection data
+  down to a much smaller number of discrete detection events. \cr\cr
+}
+
+\section{Visualization and Exploration functions}{
 
 The function \code{\link{kmlWorkbook}} is useful for exploring receiver and 
   animal release locations in Google Earth. \cr\cr
+The functions \code{\link{abacusPlot}} and \code{\link{detectionEventPlot}} 
+  are useful for exploring movement patterns of individual tagged animals.
+\cr\cr
+The function \code{\link{detectionBubblePlot}} is useful for exploring  
+  distribution of tagged individuals among receivers. \cr\cr
 }
 
 \section{Random Utility functions}{
