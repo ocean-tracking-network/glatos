@@ -45,29 +45,33 @@ created (including file extension; default = "AbacusPlot.png").}
 (e.g., col, lwd, type).}
 }
 \value{
-A png file containing the abacus plot (called "AbacusPlot.png") is 
-  written to the working directory.
+A png file containing the abacus plot (default name "AbacusPlot.png")
+is written to the working directory.
 }
 \description{
 Plot detection locations of acoustic transmitters over time
 }
 \details{
+NAs are not allowed in any of the three required columns of 
+  \code{events}.
+
 The control table is used to control which locations will appear in 
 the plot and in what order they will appear. If no controlTable is 
 supplied, the function will plot only those locations that appear in the 
-detections dataframe. The order of locations on the y-axis will correspond 
-to the order in which each location appears in the dataframe.\cr\cr
-By default, the function does not distinguish detections from different 
-transmitters and will therefore plot all transmitters the same color. 
-If more than one fish is desired in a single plot, a vector of colors must 
-be passed to the function using the 'col =' argument. The color vector must 
-be the same length as the number of rows in the detections dataframe. 
-Alternatively, plots for multiple individual fish can be created by looping 
-through and creating a separate plot on subsetted detections data.\cr\cr
-Plotting options (i.e., symbol size, plotting symbol, lines, and symbol 
-colors) can be changed using optional graphical parameters 
-(http://www.statmethods.net/advgraphs/parameters.html) that are passed to 
-"plot" (see ?plot for more information).
+\code{detections} data frame and the order of locations on the y-axis will  
+correspond to the order in which each location appears in the data frame.
+
+By default, the function does not distinguish detections from  
+different transmitters and will therefore plot all transmitters the same  
+color. If more than one fish is desired in a single plot, a vector of colors  
+must be passed to the function using the 'col =' argument. The color vector  
+must be the same length as the number of rows in the detections data frame.
+
+#' Alternatively, plots for multiple individual fish can be created 
+by looping through and creating a separate plot on subsetted detections data.
+Plotting options (i.e., line width and color) can be changed using optional 
+graphical parameters \url{http://www.statmethods.net/advgraphs/parameters.html} 
+that are passed to "segments" (see ?segments).
 }
 \examples{
 library(glatos)

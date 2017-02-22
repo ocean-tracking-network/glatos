@@ -31,25 +31,29 @@
 #' @param ... Other plotting arguments that pass to "plot" function 
 #'   (e.g., col, lwd, type).
 #'
-#' @return A png file containing the abacus plot (called "AbacusPlot.png") is 
-#'   written to the working directory.
+#' @details NAs are not allowed in any of the three required columns of 
+#'   \code{events}.
 #'
 #' @details The control table is used to control which locations will appear in 
 #' the plot and in what order they will appear. If no controlTable is 
 #' supplied, the function will plot only those locations that appear in the 
-#' detections dataframe. The order of locations on the y-axis will correspond 
-#' to the order in which each location appears in the dataframe.\cr\cr
-#' By default, the function does not distinguish detections from different 
-#' transmitters and will therefore plot all transmitters the same color. 
-#' If more than one fish is desired in a single plot, a vector of colors must 
-#' be passed to the function using the 'col =' argument. The color vector must 
-#' be the same length as the number of rows in the detections dataframe. 
-#' Alternatively, plots for multiple individual fish can be created by looping 
-#' through and creating a separate plot on subsetted detections data.\cr\cr
-#' Plotting options (i.e., symbol size, plotting symbol, lines, and symbol 
-#' colors) can be changed using optional graphical parameters 
-#' (http://www.statmethods.net/advgraphs/parameters.html) that are passed to 
-#' "plot" (see ?plot for more information).
+#' \code{detections} data frame and the order of locations on the y-axis will  
+#' correspond to the order in which each location appears in the data frame.
+#'
+#' @details By default, the function does not distinguish detections from  
+#' different transmitters and will therefore plot all transmitters the same  
+#' color. If more than one fish is desired in a single plot, a vector of colors  
+#' must be passed to the function using the 'col =' argument. The color vector  
+#' must be the same length as the number of rows in the detections data frame. 
+#'
+#' @details #' Alternatively, plots for multiple individual fish can be created 
+#' by looping through and creating a separate plot on subsetted detections data.
+#' Plotting options (i.e., line width and color) can be changed using optional 
+#' graphical parameters \url{http://www.statmethods.net/advgraphs/parameters.html} 
+#' that are passed to "segments" (see ?segments).
+#'
+#' @return A png file containing the abacus plot (default name "AbacusPlot.png")
+#' is written to the working directory.
 #'
 #' @author T. R. Binder
 #'
@@ -85,8 +89,9 @@
 #' @export
 
 abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array", 
-	timestampCol="detection_timestamp_utc"), controlTable = NULL, 
-	  plotTitle = "", Ylab=NA, outFile = "AbacusPlot.png", ...){
+	timestampCol="detection_timestamp_utc"), 
+	controlTable = NULL, 
+	plotTitle = "", Ylab=NA, outFile = "AbacusPlot.png", ...){
 		
 	# Check that the specified columns appear in the detections dataframe
 	missingCols <- setdiff(unlist(detColNames), names(detections))
@@ -100,8 +105,7 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	# this makes code more easy to understand (esp. ddply)
 	detections <- detections[,unlist(detColNames)] #subset
 	names(detections) <- c("location","timestamp")
-	
-	
+		
 	# Check that timestamp is of class 'POSIXct'
 	if(!('POSIXct' %in% class(detections$timestamp))){
 		stop(paste0("Column '",detColNames$timestampCol,
@@ -113,10 +117,9 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	#  appear in the detections dataframe	
 	if(is.null(controlTable)){
 		controlTable <- data.frame(
-			unique(detections$location), 
-			1:length(unique(detections$location)), 
+			location = unique(detections$location), 
+			y_order = 1:length(unique(detections$location)), 
 			stringsAsFactors = FALSE)
-		names(controlTable) <- c("location", "y_order")
 	} else {
     
 		# Check that the specified columns are in the control table dataframe
@@ -132,14 +135,13 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 		names(controlTable)[1] <- "location"
 	}
 	
-	
 	#update Ylab value if NA
 	if(is.na(Ylab)) Ylab <- detColNames$locationCol
 		
 	# Merge detections and controlTable dataframes
 	# Keep only locations that appear in the controlTable dataframe
-	detections <- merge(detections, controlTable, by = "location", 
-		all.y = TRUE)
+	detections <- merge(detections, controlTable, by = "location", all.y = TRUE)
+	
 	#sort by timestamp
 	detections <- detections[order(detections$timestamp),] 
    
@@ -152,26 +154,29 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	# different string lengths (e.g., "DRM" vs "DRM-001").
 	YlabOffset <- (max(nchar(detections$location))-3)/3
 	
-	# Create a png file containing the events plot
+	# Create a png file containing the detections plot
 	png(outFile, height = pngHeight, width = 1000, pointsize = 22)
-			# Set inner and outer margins
-			par(mar = c(1,1,1.5,2), oma = c(3,4 + YlabOffset,0,0))
-			# Plot detection data
-			with(detections, 
-				plot(timestamp, y_order, 
-					xlim = range(timestamp, na.rm = TRUE), 
-					ylim = c(1,length(unique(location))), 
-					pch = 16, main = plotTitle, yaxt = "n", xaxt = "n", ylab = "", 
-					xlab = "", ...))
-			# Add custom axes
-			axis(2, at = controlTable$y_order, 
-				labels = controlTable$location, las = 1)
-			xmaj <- seq(from = min(detections$timestamp, na.rm = TRUE), 
-				to = max(detections$timestamp, na.rm = TRUE), length.out = 5)
-			axis(1, at = xmaj, labels = format(xmaj, "%Y-%m-%d"), las = 1)
-			# Add axes titles
-			mtext("Date", side = 1, line = 2.2, cex = 1.2)
-			mtext(Ylab, side = 2, line = 3.5 + YlabOffset, cex = 1.2)
+		# Set inner and outer margins
+		par(mar = c(1,1,1.5,2), oma = c(3,4 + YlabOffset,0,0))
+		
+		# Plot detection data
+		with(detections, 
+			plot(timestamp, y_order, 
+				xlim = range(timestamp, na.rm = TRUE), 
+				ylim = c(1,length(unique(location))), 
+				pch = 16, main = plotTitle, yaxt = "n", xaxt = "n", ylab = "", 
+				xlab = "", ...))
+		
+		# Add custom axes
+		axis(2, at = controlTable$y_order, 
+			labels = controlTable$location, las = 1)
+		xmaj <- seq(from = min(detections$timestamp, na.rm = TRUE), 
+			to = max(detections$timestamp, na.rm = TRUE), length.out = 5)
+		axis(1, at = xmaj, labels = format(xmaj, "%Y-%m-%d"), las = 1)
+		
+		# Add axes titles
+		mtext("Date", side = 1, line = 2.2, cex = 1.2)
+		mtext(Ylab, side = 2, line = 3.5 + YlabOffset, cex = 1.2)
 	dev.off()
 
 	#get output directory

@@ -10,7 +10,7 @@ detectionEventFilter(detections, detColNames = list(locationCol =
   timeSep = Inf)
 }
 \arguments{
-\item{detections}{A dataframe containing detection data with at least 
+\item{detections}{A data frame containing detection data with at least 
 5 columns containing 'location', 'animal', 'timestamp', 'latitude', 
 and 'longitude'. Column names are specified with \code{detColNames}.}
 

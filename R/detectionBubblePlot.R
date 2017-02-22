@@ -87,18 +87,18 @@
 #'   as character strings.
 #' 
 #' @return A list containing the following data frames and columns: 
-#'   \item{summaryNumFish}
+#'   \item{summaryNumFish}{
 #'     \itemize{
 #' 		 	 \item \code{location}: user-specified 'location' labels
 #' 		 	 \item \code{Summary}: number of unique 'animals' detected at 'location'
 #'       \item \code{meanLat}: mean latitude of receivers at 'location'
-#'       \item \code{meanLon}: mean longitude of receivers at 'location'}
-#'   \item{summaryNumDetections}
+#'       \item \code{meanLon}: mean longitude of receivers at 'location'}}
+#'   \item{summaryNumDetections}{
 #'     \itemize{
 #' 		 	 \item \code{location}: user-specified 'location' labels
 #' 		 	 \item \code{Summary}: number of unique detections at 'location'
 #'       \item \code{meanLat}: mean latitude of receivers at 'location'
-#'       \item \code{meanLon}: mean longitude of receivers at 'location'}
+#'       \item \code{meanLon}: mean longitude of receivers at 'location'}}
 #'
 #' @return Two png files containing bubble plots for number of unique fish 
 #'   detected ("BubblePlot_summaryNumFish.png") and total detections 

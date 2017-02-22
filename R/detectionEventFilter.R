@@ -5,7 +5,7 @@
 #'   groups, depending on location), or sequential detections at the same 
 #'   location that are separated by a user-defined threshold period of time.
 #'
-#' @param detections A dataframe containing detection data with at least 
+#' @param detections A data frame containing detection data with at least 
 #'   5 columns containing 'location', 'animal', 'timestamp', 'latitude', 
 #'   and 'longitude'. Column names are specified with \code{detColNames}.
 #' @param detColNames A list with names of required columns in 
