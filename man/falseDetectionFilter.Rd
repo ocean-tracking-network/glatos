@@ -51,6 +51,7 @@ data("walleye_detections") #example data
 head(walleye_detections)
 
 dtx <- falseDetectionFilter(walleye_detections, 3600)
+head(dtx)
 
 }
 \references{

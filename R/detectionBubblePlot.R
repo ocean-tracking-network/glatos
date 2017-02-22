@@ -28,14 +28,14 @@
 #'     containing longitude of the receiver (typically 'deploy_lat' for 
 #'     GLATOS standard detection export data).
 #' }
-#' @param map An optional \code{SpatialPolygonsdata frame} or other 
+#' @param map An optional SpatialPolygonsDataFrame or other 
 #'   geo-referenced object to be plotted as the background for the plot. The 
-#'   default is a \code{SpatialPolygonsdata frame} of the Great Lakes (e.g., 
+#'   default is a SpatialPolygonsDataFrame of the Great Lakes (e.g., 
 #'   \code{data(greatLakesPoly)}.
 #' @param receiverLocs An optional data frame containing at least 5 columns with 
 #'   receiver 'location', 'lat', 'lon', 'deploy_timestamp', and 
 #'   'recover_timestamp'. Default column names match GLATOS standard receiver 
-#'   location file (e.g., 'GLATOS_receiverLocations_yyyymmdd.csv'), but 
+#'   location file \cr(e.g., 'GLATOS_receiverLocations_yyyymmdd.csv'), but 
 #'   column names can also be specified with \code{recColNames}.
 #' @param recColNames A list with names of required columns in 
 #'   \code{receiverLocs}: 
@@ -58,8 +58,8 @@
 #'     class 'POSIXct'; typically 'recover_date_time'for GLATOS standard 
 #'     detection export data). 
 #' }
-#' @param mapPars A list of mapping parameters (with exact names matching
-#'   below) including:
+#' @param mapPars A list of optional mapping parameters (with exact names 
+#'   matching below) including:
 #' \itemize{
 #'   \item \code{xLimits} is a two-element numeric vector that defines 
 #'     minimum and maximum extents of the viewable plot area along the x-axis.
@@ -85,19 +85,50 @@
 #' @details "ColGrad" is used in a call to \code{colorRampPalette()}, which 
 #'   will accept a vector containing any two colors return by \code{colors()} 
 #'   as character strings.
+#' 
+#' @return A list containing the following data frames and columns: 
+#'   \item{summaryNumFish}
+#'     \itemize{
+#' 		 	 \item \code{location}: user-specified 'location' labels
+#' 		 	 \item \code{Summary}: number of unique 'animals' detected at 'location'
+#'       \item \code{meanLat}: mean latitude of receivers at 'location'
+#'       \item \code{meanLon}: mean longitude of receivers at 'location'}
+#'   \item{summaryNumDetections}
+#'     \itemize{
+#' 		 	 \item \code{location}: user-specified 'location' labels
+#' 		 	 \item \code{Summary}: number of unique detections at 'location'
+#'       \item \code{meanLat}: mean latitude of receivers at 'location'
+#'       \item \code{meanLon}: mean longitude of receivers at 'location'}
 #'
 #' @return Two png files containing bubble plots for number of unique fish 
 #'   detected ("BubblePlot_summaryNumFish.png") and total detections 
-#'   ("BubblePlot_summaryNumDetections.png") are written to the working 
-#'   directory. Summary data are also written to CSV and placed in the 
-#'   working directory.
+#'   ("BubblePlot_summaryNumDetections.png") are also written to the working 
+#'   directory. Summary data for each plot are also written to CSV files 
+#'   in the working directory.
 #'
+#' @author T. R. Binder
+#' 
 #' @examples
 #' library(glatos)
-#' data(walleye_detections) #example detection data
-#' data(recLoc_example) #example receiver locations data
-#' data(greatLakesPoly) #example map background
-#' detectionBubblePlot(walleye_detections,map=greatLakesPoly)
+#'
+#' #example detection data
+#' data(walleye_detections) 
+#' head(walleye_detections)
+#'
+#' #call with defaults
+#' detectionBubblePlot(walleye_detections)
+#' 
+#' #example receiver location data
+#' data(recLoc_example) 
+#' head(recLoc_example)
+#' 
+#' #view example map background
+#' library(sp) #to avoid errors plotting SpatialPolygonsDataFrame
+#' data(greatLakesPoly)
+#' plot(greatLakesPoly)
+#' 
+#' detectionBubblePlot(walleye_detections, receiverLocs=recLoc_example,
+#'   mapParms=list(symbolRadius = 1.4,colGrad = c("white", "blue"), showAll=T))
 #'
 #' @export
 
@@ -125,6 +156,7 @@ detectionBubblePlot <- function(detections,
  
 	library(plyr) # for 'ddply' function
 	library(plotrix)# for 'color.legend' function
+	library(sp) # for plotting SpatialPolygonsDataFrame
  
   # Assign mapping parameter object default values (independent of mapPars)
 		xLimits <- c(-94.5, -75) 
@@ -262,7 +294,8 @@ detectionBubblePlot <- function(detections,
 	figRatio <- (yLimits[2] - yLimits[1])/(xLimits[2] - xLimits[1])*1.4
 	
 	if(is.null(map)){
-		greatLakesPoly <- data(greatLakesPoly) #read example file from package
+		#read example file from package
+		data(greatLakesPoly)
 		map <- greatLakesPoly
 	}
     
