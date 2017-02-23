@@ -1,7 +1,7 @@
-#' Classify discrete events in detection data
+#' Classify and summarize discrete events in time series data
 #'
-#' Reduce detection data from an acoustic telemetry receiver into discrete 
-#'   detection events, defined by movement between receivers (or receiver 
+#' Reduce times series data into discrete events. E.g., Classify events  
+#'   in telemetry data defined by movement between receivers (or receiver 
 #'   groups, depending on location), or sequential detections at the same 
 #'   location that are separated by a user-defined threshold period of time.
 #'
@@ -58,14 +58,14 @@
 #' 
 #' head(walleye_detections)
 #' 
-#' filt0 <- detectionEventFilter(walleye_detections) #no time filter
+#' filt0 <- eventFilter(walleye_detections) #no time filter
 #' 
 #' #7-day filter
-#' filt_7d <- detectionEventFilter(walleye_detections , timeSep = 604800) 
+#' filt_7d <- eventFilter(walleye_detections , timeSep = 604800) 
 #'
 #' @export
 
-detectionEventFilter <- function(detections, detColNames = list(
+eventFilter <- function(detections, detColNames = list(
 	locationCol="glatos_array",animalCol="animal_id",
 	timestampCol="detection_timestamp_utc",latCol="deploy_lat",
 	longCol="deploy_long"), 
