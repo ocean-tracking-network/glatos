@@ -131,7 +131,7 @@ detectionEventFilter <- function(detections, detColNames = list(
 				Individual = animal[1], 
 				Location = location[1], 
 				MeanLatiude = mean(lat, na.rm=T), 
-				MeanLongitude = mean(long, na.rm=T), 
+				MeanLongitude = mean(lon, na.rm=T), 
 				FirstDetection = timestamp[1], 
 				LastDetection = timestamp[length(timestamp)], 
 				NumDetections = length(Event), 
