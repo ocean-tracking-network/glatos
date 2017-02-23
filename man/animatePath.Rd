@@ -97,9 +97,12 @@ head(recLoc_example)
 pos1 <- interpolatePath(walleye_detections)
 
 #make sure ffmpeg is installed before calling animatePath
-# and add path to 'ffmpeg' on next line (or add path to PATH VAR)
-animatePath(pos1, recs=recLoc_example, ffmpeg=NA)
-
+# and if you have not added path to 'ffmpeg.exe' to your Windows PATH 
+# environment variable then you'll need to do that  
+# or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
+myDir <- paste0(getwd(),"/frames")
+animatePath(pos1, recs=recLoc_example, outDir=myDir)
+ 
 }
 \author{
 Todd Hayden
