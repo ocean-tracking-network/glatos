@@ -34,7 +34,7 @@ for determining optimal spacing of receviers in a line and tag specifications (e
 
 The following functions were needed by other functions in this package but might be useful for other things too.
 
-1. [`vrl2csv`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/vrl2csv.r)] converts a Vemco VRL file to a comma separated values (CSV) file using a system call to VEMCO VUE convert command.
+1. [`vrl2csv`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/vrl2csv.r) converts a Vemco VRL file to a comma separated values (CSV) file using a system call to VEMCO VUE convert command.
 2. [`rotatePoints`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/rotatePoints.r) will rotate a set of 2-d points about another point. 
 3. [`crw`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/crw.r) will simulate an unconstrained correlated random walk.
 4. [`vectorHeading`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/vectorHeading.r) will calculate (in degrees) the heading of the vector between adjacent point-pairs in a set of positions (e.g., along a track).  
