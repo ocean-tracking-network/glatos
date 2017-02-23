@@ -27,7 +27,8 @@ across each cell within the map extent. Must be of class
 \code{TransitionLayer}. See \code{gdistance} package.}
 
 \item{iThresh}{A numeric threshold for determining if linear or non-linear 
-interpolation is used. See \code{\link{animate}}}
+interpolation will be used based on the ratio of linear-to-non-linear
+shortest path distances.}
 }
 \value{
 Dataframe with interpolated timestamp, lat, and lon
@@ -66,28 +67,32 @@ plot(greatLakesPoly)
 #make up two points
 x <- c(-87,-82.5)
 y <- c(44, 44.5)
+
+#coerce to SpatialPoints object and plot
 pts <- SpatialPoints(cbind(x,y))
 points(pts, pch=20, col='red', cex=3)
 
 #interpolate path using linear method
 path <- movePath(startX=x[1], startY=y[1], endX=x[2], endY=y[2],
-  iTime=as.POSIXct("2000-01-01 00:00") + 1:10,
+  iTime=as.POSIXct("2000-01-01 00:00") + 1:30,
   iThresh=0.9)
 
+#coerce to SpatialPoints object and plot
 pts2 <- SpatialPoints(path[,c("lon","lat")])
 points(pts2, pch=20, col='blue', lwd=2, cex=1.5) 
 
 #interpolate path using non-linear method (requires 'trans')
 path2 <- movePath(startX=x[1], startY=y[1], endX=x[2], endY=y[2],
-  iTime=as.POSIXct("2000-01-01 00:00") + 1:10,
+  iTime=as.POSIXct("2000-01-01 00:00") + 1:30,
   trans=greatLakesTrLayer, iThresh=0.9)
 
+#coerce to SpatialPoints object and plot
 pts3 <- SpatialPoints(path2[,c("lon","lat")])
 points(pts3, pch=20, col='green', lwd=2, cex=1.5) 
 
 }
 \seealso{
-
+\code{\link{animate}}
 }
 \author{
 Todd Hayden

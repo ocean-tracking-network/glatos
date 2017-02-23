@@ -84,7 +84,7 @@ detectionEventFilter <- function(detections, detColNames = list(
 	# Subset detections with only user-defined columns and change names
 	# this makes code more easy to understand (esp. ddply)
 	detections <- detections[,unlist(detColNames)] #subset
-	names(detections) <- c("location","animal","timestamp","lat","long")
+	names(detections) <- c("location","animal","timestamp","lat","lon")
 	
     	
 	# Check that timestamp is of class 'POSIXct'

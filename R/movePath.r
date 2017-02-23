@@ -20,7 +20,8 @@
 #'   across each cell within the map extent. Must be of class 
 #'   \code{TransitionLayer}. See \code{gdistance} package.
 #' @param iThresh A numeric threshold for determining if linear or non-linear 
-#'   interpolation is used. See \code{\link{animate}}
+#'   interpolation will be used based on the ratio of linear-to-non-linear
+#'   shortest path distances.
 #' 
 #' @details 
 #' This function operates on a single pair of geographic (start and end) 
@@ -38,7 +39,7 @@
 #' 
 #' @return Dataframe with interpolated timestamp, lat, and lon
 #'
-#' @seealso
+#' @seealso \code{\link{animate}}
 #'
 #' @author Todd Hayden
 #' 
