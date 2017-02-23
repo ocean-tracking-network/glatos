@@ -1,6 +1,6 @@
-#' Plot detection event data
+#' Plot time series event data
 #'
-#' Create an abacus-like plot for discrete detection event data with start 
+#' Create an abacus-like plot for discrete event data with start 
 #' and end times. Suitable for data like detection events 
 #' (i.e., output from the glatos package \code{glatos::detectionEventFilter} 
 #' function) and receiver histories (i.e., based on receiverLocations.csv 
@@ -79,7 +79,7 @@
 #'	 timeSep = 604800)
 #'
 #' #plot with defaults
-#' detectionEventPlot(walleye_events_7d)
+#' eventPlot(walleye_events_7d)
 #'
 #' #example control table
 #' data(walleye_controlTable)
@@ -87,11 +87,11 @@
 #' names(walleye_controlTable)[1] <- "Location" #to match events
 #'
 #' #plot with controlTable and customized axes
-#' detectionEventPlot(walleye_events_7d, controlTable = walleye_controlTable, 
+#' eventPlot(walleye_events_7d, controlTable = walleye_controlTable, 
 #'   plotTitle = "Receiver History", Ylab = "Location", col = "red", lwd = 3)
 #' @export
 
-detectionEventPlot <- function(events, 
+eventPlot <- function(events, 
 	eventColNames = list(locationCol="Location", eventStartCol="FirstDetection", 
 		eventEndCol="LastDetection"),
 	controlTable = NULL, 
