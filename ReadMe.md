@@ -28,7 +28,7 @@ for determining optimal spacing of receviers in a line and tag specifications (e
 
 3. [`detectionBubblePlot`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/detectionBubblePlot.r) is useful for exploring distribution of tagged individuals among receivers. 
 
-4. [`movePath`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/movePath.r), [`interpolatePath`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/animate.r), and [`animatePath`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/animateFrames.r) can be used together to interpolate movement paths between detections and save animated movement paths to a video file (mp4).
+4. [`movePath`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/movePath.r), [`interpolatePath`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/interpolatePath.r), and [`animatePath`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/animatePath.r) can be used together to interpolate movement paths between detections and save animated movement paths to a video file (mp4).
 
 #### Random utility functions
 
