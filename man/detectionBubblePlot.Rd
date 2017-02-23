@@ -117,6 +117,14 @@ Make bubble plots showing the number of fish detected and number of
   detections across a telemetry receiver network.
 }
 \details{
+If \code{mapPars$showAll} is TRUE then the plot will show all 
+  receivers, including those that detected none of the transmitters in 
+  \code{detections}. In that case, it will first be determined if a receiver 
+  (or group of receivers, as defined by 'location') was in the water during 
+  the time interval between the first and last detection in \code{detections}
+  data frame. Receivers for which deployment-recovery intervals do not 
+  with the time coverage of detections will not be included in the plot.
+
 "ColGrad" is used in a call to \code{colorRampPalette()}, which 
   will accept a vector containing any two colors return by \code{colors()} 
   as character strings.

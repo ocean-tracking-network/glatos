@@ -75,7 +75,7 @@
 #'     which the fish were detected (FALSE).
 #' }
 #' 
-#' @detail If \code{mapPars$showAll} is TRUE then the plot will show all 
+#' @details If \code{mapPars$showAll} is TRUE then the plot will show all 
 #'   receivers, including those that detected none of the transmitters in 
 #'   \code{detections}. In that case, it will first be determined if a receiver 
 #'   (or group of receivers, as defined by 'location') was in the water during 
