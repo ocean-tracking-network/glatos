@@ -13,8 +13,10 @@
 #'   column names can also be specified with \code{recColNames}.
 #' @param outDir A character string with file path to directory where 
 #'   individual frames for animations will be written.
-#' @param background object of class \code{SpatialPolygonsDataFrame} 
-#'   to be used as background of each frame.
+#' @param background An optional object of class \code{SpatialPolygonsDataFrame} 
+#'   to be used as background of each frame. Default is a simple polygon
+#'   of the Great Lakes (\code{greatLakesPoly}) included in the 'glatos' 
+#'   package.
 #' @param backgroundYlim vector of two values specifying the min/max values 
 #' 	 for y-scale of plot. Units are same as background argument.
 #' @param backgroundXlim vector of two values specifying the min/max values 
@@ -25,7 +27,7 @@
 #'   to ffmpeg.exe.  For example 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'
 #' @param plotControl An optional data frame with four columns ('id', 'what', 
 #'   'color', and 'marker') that specify the plot symbols and colors for 
-#'   each animal and position type. 
+#'   each animal and position type. See examples below for an example.
 #' \itemize{
 #'   \item \code{id} contains the unique identifer of individual animals and 
 #'   	 corresponds to 'id' column in 'dtc'. 
@@ -72,7 +74,8 @@
 #'     detection export data). 
 #' }
 #'
-#' @return video animation and individual frames, numbered sequentially
+#' @return Sequentially-numbered png files (one for each frame) and 
+#'   one mp4 file will be written to \code{outDir}.
 #' 
 #' @author Todd Hayden
 #'

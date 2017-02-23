@@ -26,8 +26,10 @@ column names can also be specified with \code{recColNames}.}
 \item{outDir}{A character string with file path to directory where 
 individual frames for animations will be written.}
 
-\item{background}{object of class \code{SpatialPolygonsDataFrame} 
-to be used as background of each frame.}
+\item{background}{An optional object of class \code{SpatialPolygonsDataFrame} 
+to be used as background of each frame. Default is a simple polygon
+of the Great Lakes (\code{greatLakesPoly}) included in the 'glatos' 
+package.}
 
 \item{backgroundYlim}{vector of two values specifying the min/max values 
 for y-scale of plot. Units are same as background argument.}
@@ -42,7 +44,7 @@ to ffmpeg.exe.  For example 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'}
 
 \item{plotControl}{An optional data frame with four columns ('id', 'what', 
   'color', and 'marker') that specify the plot symbols and colors for 
-  each animal and position type. 
+  each animal and position type. See examples below for an example.
 \itemize{
   \item \code{id} contains the unique identifer of individual animals and 
        corresponds to 'id' column in 'dtc'. 
@@ -75,7 +77,8 @@ to ffmpeg.exe.  For example 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'}
 }}
 }
 \value{
-video animation and individual frames, numbered sequentially
+Sequentially-numbered png files (one for each frame) and 
+  one mp4 file will be written to \code{outDir}.
 }
 \description{
 Create a set of frames (png image files) showing geographic location data
