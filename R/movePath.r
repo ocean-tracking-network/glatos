@@ -82,7 +82,8 @@
 #'
 #' @export
 
-movePath <- function (startX, startY, endX, endY, iTime, trans=NULL, iThresh = 0.9){
+movePath <- function (startX, startY, endX, endY, iTime, trans=NULL, 
+	iThresh=0.9){
 
 	#check if iTime is of class POSIXct 
 	if(!("POSIXct" %in% class(iTime))) stop("'iTime' must be of class POSIXct.")

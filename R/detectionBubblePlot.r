@@ -342,7 +342,8 @@ detectionBubblePlot <- function(detections,
 		mtext("Longitude", side = 1, line = 2.5, cex = 1)
 		
 		# Add y-axis and title
-		axis(2, at = ylabs, labels = paste0(format(ylabs,4), "°"), cex.axis = 1, las = 1)
+		axis(2, at = ylabs, labels = paste0(format(ylabs,4), "°"), cex.axis = 1, 
+			las = 1)
 		mtext("Latitude", side = 2, line = 4, cex = 1)
 
 		box()
