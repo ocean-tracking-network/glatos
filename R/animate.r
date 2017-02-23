@@ -226,9 +226,12 @@ animate <- function(dtc, rast=NULL, intTimeStamp=86400, relRecapCtl=NULL,
 	# create dataframe to hold interpolated data
 	res <- dtc[0,]
 
-	## loop through fish, interpolate data.
+	## loop through fish, interpolate data
 	for(i in 1:length(fish)){
-		if(i==1) pb <- txtProgressBar(style=3)
+		if(i==1) {
+			message("Interpolating positions...")
+			pb <- txtProgressBar(style=3)
+		}
 		
 		#initialize progress bar
 		dtc.i <- dtc[dtc$id == fish[i],] #subset ith fish
