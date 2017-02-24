@@ -17,8 +17,10 @@
 #'   '_n' (i.e., _1, _2, etc.) will be appended to names of output files that
 #'   already exist in \{outDir}.
 #'   
-#' @param vueExePath A character string with path to VUE.exe (default may not 
-#'   always be correct).
+#' @param vueExePath An optional character string with directory containing
+#'   VUE.exe. If NA (default) then the path to VUE.exe must be added to the 
+#'   PATH environment variable of your system. See Note below.
+#'   
 #'
 #' @details
 #' If \code{vrl} is a directory, then all VRL files in that directory will be 
@@ -33,8 +35,10 @@
 #' supported by the VUE system command at time of writing. 
 #' 
 #' @note
-#' To get the path to VUE.exe, right click on the icon, select "Properties", 
-#' and then copy text in "Target" box. 
+#' The path to VUE.exe must either be specified by \code{vueExePath} or 
+#' added to the PATH environment variable of your system. To get the path to 
+#' VUE.exe in Windows, right click on the icon, select "Properties", and 
+#' then copy text in "Target" box. 
 #' 
 #' @note
 #' To create a CSV for time-corrected VRL files, first time-correct each 
@@ -59,10 +63,15 @@
 #' vrl2csv(myVRL, overwrite=F)
 #'
 #' @export
-vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath="C:\\Program Files (x86)\\Vemco\\VUE"){
-  #check path to VUE.exe 
-  if( !("VUE.exe" %in% list.files(vueExePath))) 
-    stop("VUE.exe not found at specified path.")
+vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath=NA){
+  #check path to VUE.exe if given
+  if(!is.na(vueExePath)){
+    if( !("VUE.exe" %in% list.files(vueExePath))) 
+      stop("VUE.exe not found at specified path.")
+    vuePath <- paste0(vueExePath,"\\VUE.exe")
+  } else {
+    vuePath <- "VUE" #if vueExePath not set
+  }
   
   #if vrl is single directory, get list of vrl file names
   if(all(file.info(vrl)$isdir)) {
@@ -84,8 +93,12 @@ vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath="C:\\Program File
   overwrite_file <- ifelse(overwrite,"--overwrite-file","")
   
   #invoke vue command
-  system2(paste0(vueExePath,"\\VUE.exe"),c("--convert-files",
+  foo <- system2(vuePath,c("--convert-files",
     paste0("--output-path ",outDir),overwrite_file,paste0(" --output-format csv ",vrl)))
+  if(foo == '127') stop(paste0("\nVUE.exe was not found.\n",
+    "Ensure that VUE is installed on your system and that either the \n",
+    "PATH environment variable was set (see ?vrl2csv).\n",
+    "or specify the path to VUE.exe using the 'vueExePath' argument.\n"))
   
   #return output path(s) and file name(s)
   return(gsub(".vrl|.VRL|.Vrl",".csv",vrl))
