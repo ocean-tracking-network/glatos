@@ -7,14 +7,14 @@
 vrl2csv(vrl, vueExePath = "C:\\\\Program Files (x86)\\\\Vemco\\\\VUE")
 }
 \arguments{
-\item{vrl}{A character scalar or vector with names of VRL files (or single 
-file if scalar) or a single directory containing VRL files.}
+\item{vrl}{A character string or vector with names of VRL file(s) or a 
+single directory containing VRL files.}
 
-\item{vueExePath}{A character scalar with path to VUE.exe (default may not 
+\item{vueExePath}{A character string with path to VUE.exe (default may not 
 always be correct).}
 }
 \value{
-A character vector with output file names.
+A character vector with output directory and file name(s).
 }
 \description{
 Convert detection data from a VEMCO VRL file(s) to comma-separated-values 
@@ -32,15 +32,17 @@ Receiver event data are not exported because that functionality was not
 supported by the VUE system command at time of writing.
 
 To get the path to VUE.exe, right click on the icon, select "Properties", 
-and then copy text in "Target" box. \cr\cr
-To create a CSV for each time-corrected VRL file, first time-correct each 
+and then copy text in "Target" box.
+
+To create a CSV for time-corrected VRL files, first time-correct each 
 file using the VRL editor in VUE (under Tools menu). To speed up that 
 process, uncheck the "Import" checkbox next to each filename, then run 
-\code{vrl2csv} to create a CSV for each edited (e.g. time corrected) VRL.
+\code{vrl2csv} to create a CSV for each edited (e.g. time-corrected) VRL.
 }
 \examples{
 #get path to example VRL in this package
-myVRL <- system.file("extdata", "VR2W_109924_20110718_1.vrl",package="glatos")
+myVRL <- system.file("extdata", "VR2W_109924_20110718_1.vrl",
+ package="glatos")
 vrl2csv(dirname(myVRL)) #directory input
 vrl2csv(myVRL) #file name input
 
