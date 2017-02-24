@@ -4,8 +4,7 @@
 \alias{vrl2csv}
 \title{Convert Vemco VRL file(s) to CSV format (detection data only)}
 \usage{
-vrl2csv(vrl, outDir = NA, overwrite = TRUE,
-  vueExePath = "C:\\\\Program Files (x86)\\\\Vemco\\\\VUE")
+vrl2csv(vrl, outDir = NA, overwrite = TRUE, vueExePath = NA)
 }
 \arguments{
 \item{vrl}{A character string or vector with names of VRL file(s) or a 
@@ -15,8 +14,9 @@ single directory containing VRL files.}
 If \code{NA} (default) then file(s) will be written to the current working 
 directory (e.g., \code{getwd()}).}
 
-\item{vueExePath}{A character string with path to VUE.exe (default may not 
-always be correct).}
+\item{vueExePath}{An optional character string with directory containing
+VUE.exe. If NA (default) then the path to VUE.exe must be added to the 
+PATH environment variable of your system. See Note below.}
 }
 \value{
 A character vector with output directory and file name(s).
@@ -36,8 +36,10 @@ file.
 Receiver event data are not exported because that functionality was not 
 supported by the VUE system command at time of writing.
 
-To get the path to VUE.exe, right click on the icon, select "Properties", 
-and then copy text in "Target" box.
+The path to VUE.exe must either be specified by \code{vueExePath} or 
+added to the PATH environment variable of your system. To get the path to 
+VUE.exe in Windows, right click on the icon, select "Properties", and 
+then copy text in "Target" box.
 
 To create a CSV for time-corrected VRL files, first time-correct each 
 file using the VRL editor in VUE (under Tools menu). To speed up that 
