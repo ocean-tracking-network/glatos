@@ -74,8 +74,7 @@ points(pts, pch=20, col='red', cex=3)
 
 #interpolate path using linear method
 path <- movePath(startX=x[1], startY=y[1], endX=x[2], endY=y[2],
-  iTime=as.POSIXct("2000-01-01 00:00") + 1:30,
-  iThresh=0.9)
+  iTime=as.POSIXct("2000-01-01 00:00") + 1:30)
 
 #coerce to SpatialPoints object and plot
 pts2 <- SpatialPoints(path[,c("lon","lat")])
