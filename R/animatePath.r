@@ -105,8 +105,9 @@
 animatePath <- function(procObj, recs, outDir, background=NULL, 
 	backgroundYlim = c(41.48, 45.90), backgroundXlim = c(-84.0, -79.5), 
 	ffmpeg = NA, plotControl=NULL,
-	procObjColNames=list(animalCol="animal_id",binCol="bin",timestampCol="detection_timestamp_utc",
-		 latitudeCol="deploy_lat", longitudeCol="deploy_long", typeCol="record_type"),
+	procObjColNames=list(animalCol="animal_id",binCol="bin",
+	  timestampCol="detection_timestamp_utc", latitudeCol="deploy_lat", 
+	  longitudeCol="deploy_long", typeCol="record_type"),
   recColNames=list(latitudeCol="deploy_lat", 
 		longitudeCol="deploy_long", deploy_timestampCol="deploy_date_time", 
 		recover_timestampCol="recover_date_time")){
