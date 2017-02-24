@@ -20,7 +20,9 @@
 #'
 #' @note
 #' Receiver event data are not exported because that functionality was not 
-#' supported by the VUE system command at time of writing. \cr\cr
+#' supported by the VUE system command at time of writing. 
+#' 
+#' @note
 #' To get the path to VUE.exe, right click on the icon, select "Properties", 
 #' and then copy text in "Target" box. \cr\cr
 #' To create a CSV for each time-corrected VRL file, first time-correct each 
@@ -33,8 +35,8 @@
 #' @examples
 #' #get path to example VRL in this package
 #' myVRL <- system.file("extdata", "VR2W_109924_20110718_1.vrl",package="glatos")
-#' vrl2csv(dirname(myVRL)) #file name input
-#' vrl2csv(myVRL) #directory input
+#' vrl2csv(dirname(myVRL)) #directory input
+#' vrl2csv(myVRL) #file name input
 #'
 #' @export
 vrl2csv <- function(vrl, vueExePath="C:\\Program Files (x86)\\Vemco\\VUE"){
@@ -54,6 +56,6 @@ vrl2csv <- function(vrl, vueExePath="C:\\Program Files (x86)\\Vemco\\VUE"){
 	paste(vrl,collapse=" "))
   shell(shelltxt)
   
-  #return output vrl path(s) and file name(s)
-  return(gsub(".vrl|.VRL|.Vrl",".ulfx",vrl))
+  #return output path(s) and file name(s)
+  return(gsub(".vrl|.VRL|.Vrl",".csv",vrl))
 }
