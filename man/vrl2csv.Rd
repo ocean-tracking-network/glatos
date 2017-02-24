@@ -4,11 +4,16 @@
 \alias{vrl2csv}
 \title{Convert Vemco VRL file(s) to CSV format (detection data only)}
 \usage{
-vrl2csv(vrl, vueExePath = "C:\\\\Program Files (x86)\\\\Vemco\\\\VUE")
+vrl2csv(vrl, outDir = NA, overwrite = TRUE,
+  vueExePath = "C:\\\\Program Files (x86)\\\\Vemco\\\\VUE")
 }
 \arguments{
 \item{vrl}{A character string or vector with names of VRL file(s) or a 
 single directory containing VRL files.}
+
+\item{outDir}{A character string directory where CSV files will be written. 
+If \code{NA} (default) then file(s) will be written to the current working 
+directory (e.g., \code{getwd()}).}
 
 \item{vueExePath}{A character string with path to VUE.exe (default may not 
 always be correct).}
@@ -38,6 +43,9 @@ To create a CSV for time-corrected VRL files, first time-correct each
 file using the VRL editor in VUE (under Tools menu). To speed up that 
 process, uncheck the "Import" checkbox next to each filename, then run 
 \code{vrl2csv} to create a CSV for each edited (e.g. time-corrected) VRL.
+
+When using versions of VUE before 2.3, VUE can return an error code or 
+warning message even if conversion was successful.
 }
 \examples{
 #get path to example VRL in this package
@@ -45,6 +53,9 @@ myVRL <- system.file("extdata", "VR2W_109924_20110718_1.vrl",
  package="glatos")
 vrl2csv(dirname(myVRL)) #directory input
 vrl2csv(myVRL) #file name input
+
+#setting 'overwrite=FALSE' will make new file with '_n'added to name
+vrl2csv(myVRL, overwrite=F)
 
 }
 \author{

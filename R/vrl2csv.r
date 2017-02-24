@@ -7,6 +7,16 @@
 #'
 #' @param vrl A character string or vector with names of VRL file(s) or a 
 #'   single directory containing VRL files. 
+#'   
+#' @param outDir A character string directory where CSV files will be written. 
+#'   If \code{NA} (default) then file(s) will be written to the current working 
+#'   directory (e.g., \code{getwd()}).
+#'   
+#' @param overwrite Logical. If TRUE (default), output CSV file(s) will 
+#'   overwrite existing CSV file(s) with same name in \{outDir}. When FALSE,
+#'   '_n' (i.e., _1, _2, etc.) will be appended to names of output files that
+#'   already exist in \{outDir}.
+#'   
 #' @param vueExePath A character string with path to VUE.exe (default may not 
 #'   always be correct).
 #'
@@ -16,7 +26,7 @@
 #' be converted. Each output CSV file will have same name as its source VRL 
 #' file. 
 #' 
-#' @return A character vector with output directory and file name(s).
+#' @return A character vector with output directory and file name(s). 
 #'
 #' @note
 #' Receiver event data are not exported because that functionality was not 
@@ -25,11 +35,16 @@
 #' @note
 #' To get the path to VUE.exe, right click on the icon, select "Properties", 
 #' and then copy text in "Target" box. 
+#' 
 #' @note
 #' To create a CSV for time-corrected VRL files, first time-correct each 
 #' file using the VRL editor in VUE (under Tools menu). To speed up that 
 #' process, uncheck the "Import" checkbox next to each filename, then run 
 #' \code{vrl2csv} to create a CSV for each edited (e.g. time-corrected) VRL.
+#' 
+#' @note 
+#' When using versions of VUE before 2.3, VUE can return an error code or 
+#' warning message even if conversion was successful.
 #' 
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'
@@ -40,9 +55,12 @@
 #' vrl2csv(dirname(myVRL)) #directory input
 #' vrl2csv(myVRL) #file name input
 #'
+#' #setting 'overwrite=FALSE' will make new file with '_n'added to name
+#' vrl2csv(myVRL, overwrite=F)
+#'
 #' @export
-vrl2csv <- function(vrl, vueExePath="C:\\Program Files (x86)\\Vemco\\VUE"){
-  #check path to VUE.exe
+vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath="C:\\Program Files (x86)\\Vemco\\VUE"){
+  #check path to VUE.exe 
   if( !("VUE.exe" %in% list.files(vueExePath))) 
     stop("VUE.exe not found at specified path.")
   
@@ -56,11 +74,18 @@ vrl2csv <- function(vrl, vueExePath="C:\\Program Files (x86)\\Vemco\\VUE"){
 	                                       pattern=".vrl$|.VRL$|.Vrl$")
   } #end if
   
+  #combine multiple vrl files into one string
+  if(length(vrl) > 0) vrl <- paste(vrl,collapse=" ")
+  
+  #set output directory to working directory if not specified
+  if(is.na(outDir)) outDir <- getwd()
+  
+  #set --overwrite-files option
+  overwrite_file <- ifelse(overwrite,"--overwrite-file","")
+  
   #invoke vue command
-  shelltxt <- paste0("cd \"",
-            vueExePath,"\\\"", " & VUE --convert-files --output-format csv ", 
-	paste(vrl,collapse=" "))
-  shell(shelltxt)
+  system2(paste0(vueExePath,"\\VUE.exe"),c("--convert-files",
+    paste0("--output-path ",outDir),overwrite_file,paste0(" --output-format csv ",vrl)))
   
   #return output path(s) and file name(s)
   return(gsub(".vrl|.VRL|.Vrl",".csv",vrl))
