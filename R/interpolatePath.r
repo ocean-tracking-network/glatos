@@ -18,7 +18,8 @@
 #'   \code{trans} in \code{\link{movePath}}. 
 #' @param lnlThresh A numeric threshold for determining if linear or non-linear 
 #'   interpolation will be used based on the ratio of linear-to-non-linear
-#'   shortest path distances. Passed to \code{trans} in \code{\link{movePath}}.
+#'   shortest path distances. Passed to \code{ithresh} in 
+#'   \code{\link{movePath}}.
 #' @param detColNames A list with names of columns in \code{dtc}:
 #' \itemize{
 #'   \item \code{individualCol} is a character string that uniquely identies an

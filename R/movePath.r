@@ -102,7 +102,7 @@ movePath <- function (startX, startY, endX, endY, iTime, trans=NULL,
 	
 	#use linear interpolation if lcd is NA or if linear-non-linear distance
 	# ratio exceeds iThresh
-	if (is.na(lcd) | gcd/lcd >= iThresh ){
+	if (is.na(lcd) | (gcd/lcd) >= iThresh ){
 		#linear interpolation	
 		x <- approx(c(startTS, endTS), c(startX, endX), xout = iTime)$y
 		y <- approx(c(startTS, endTS), c(startY, endY), xout = iTime)$y
