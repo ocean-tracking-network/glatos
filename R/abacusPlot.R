@@ -49,7 +49,8 @@
 #' @details #' Alternatively, plots for multiple individual fish can be created 
 #' by looping through and creating a separate plot on subsetted detections data.
 #' Plotting options (i.e., line width and color) can be changed using optional 
-#' graphical parameters \url{http://www.statmethods.net/advgraphs/parameters.html} 
+#' graphical parameters 
+#' \url{http://www.statmethods.net/advgraphs/parameters.html} 
 #' that are passed to "segments" (see ?segments).
 #'
 #' @return A png file containing the abacus plot (default name "AbacusPlot.png")
@@ -58,7 +59,6 @@
 #' @author T. R. Binder
 #'
 #' @examples
-#' library(glatos)
 #' data("walleye_detections") #example data
 #' 
 #' head(walleye_detections)
@@ -123,7 +123,8 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	} else {
     
 		# Check that the specified columns are in the control table dataframe
-		missingCols <- setdiff(c(detColNames$locationCol, "y_order"), names(controlTable))
+		missingCols <- 
+		  setdiff(c(detColNames$locationCol, "y_order"), names(controlTable))
 		if (length(missingCols) > 0){
 			stop(paste0("Control table dataframe is missing the following ",
 				"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
@@ -148,7 +149,7 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	# Variable which scales the height of the y-axis depending on the number of 
 	# labels to appear. 
 	# Assumes 24 labels is the perfect spacing for height = 1000 px.
-	pngHeight <- c(nrow(controlTable)/24*1000)
+	pngHeight <- max((nrow(controlTable)/24)*1000, 500)
 	
 	# Calculate a y-axis label offset to accomodate grouping variables with 
 	# different string lengths (e.g., "DRM" vs "DRM-001").
