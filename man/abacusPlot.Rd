@@ -15,14 +15,17 @@ locations (typically 'glatos_array' or 'station' for GLATOS data) that
 will be plotted on the y-axis. The 'timestamp' column contains the 
 datetime stamps for the detections (MUST be of class 'POSIXct').}
 
-\item{detColNames}{A list of column names: \cr\cr
-\code{locationCol} A character scalar with the name (in quotes) of the 
-column containing the location codes to be plotted on the y-axis. The 
-default value ("glatos_array") is consistent with GLATOS standard.\cr\cr
- \code{timestampCol}A character scalar with the name (in quotes) of the 
-column containing the timestamp data to be plotted on the x-axis.
-The default value ("detection_timestamp_utc") is is consistent with 
-GLATOS standard.}
+\item{detColNames}{An optional list of character strings with names of
+  required columns in \code{detections}:
+\itemize{
+  \item \code{locationCol} A character scalar with the name (in quotes) of the 
+     column containing the location codes to be plotted on the y-axis. The 
+     default value ("glatos_array") is consistent with GLATOS standard.
+  \item \code{timestampCol}A character scalar with the name (in quotes) of the 
+     column containing the timestamp data to be plotted on the x-axis.
+     The default value ("detection_timestamp_utc") is is consistent with 
+     GLATOS standard.
+}}
 
 \item{controlTable}{Optional dataframe with two columns, c('location', and 
 'y_order). The 'location' column is a character vector of locations to be 
@@ -70,11 +73,11 @@ must be the same length as the number of rows in the detections data frame.
 #' Alternatively, plots for multiple individual fish can be created 
 by looping through and creating a separate plot on subsetted detections data.
 Plotting options (i.e., line width and color) can be changed using optional 
-graphical parameters \url{http://www.statmethods.net/advgraphs/parameters.html} 
+graphical parameters 
+\url{http://www.statmethods.net/advgraphs/parameters.html} 
 that are passed to "segments" (see ?segments).
 }
 \examples{
-library(glatos)
 data("walleye_detections") #example data
 
 head(walleye_detections)
