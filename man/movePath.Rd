@@ -66,14 +66,12 @@ non-linear interpolation will be used for all points when
 when \code{iThresh} = 0.
 }
 \examples{
-library(glatos)
-
 #example transition matrix
 data(greatLakesTrLayer)
  
 #example map background
 data(greatLakesPoly)
-library(sp)
+library(sp) #to plot SpatialPolygon without error
 plot(greatLakesPoly)
 
 #make up two points

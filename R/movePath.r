@@ -8,17 +8,23 @@
 #' (e.g., over land for fish). 
 #' 
 #' @param startX start longitude, vector of length 1
+#' 
 #' @param startY start latitude, vector of length 1 
+#' 
 #' @param endX end longitude, vector of length 1
+#' 
 #' @param endY end latitude, vector of length 1
+#' 
 #' @param iTime A vector of datetime stamps (MUST be of class POSIXct) at which 
 #'   to interpolate geographic positions between start and end locations. The 
 #'   first element must correspond with the position at \code{startX} and 
 #'   \code{startY} and the last element must correspond with the position at 
 #'   \code{startX} and \code{startY}. 
+#'   
 #' @param trans An optional transition matrix with the "cost" of moving across 
 #'   across each cell within the map extent. Must be of class 
 #'   \code{TransitionLayer}. See \code{gdistance} package.
+#'   
 #' @param iThresh A numeric threshold for determining if linear or non-linear 
 #'   interpolation will be used based on the ratio of linear-to-non-linear
 #'   shortest path distances.
@@ -57,14 +63,12 @@
 #' @author Todd Hayden
 #' 
 #' @examples
-#' library(glatos)
-#' 
 #' #example transition matrix
 #' data(greatLakesTrLayer)
 #'  
 #' #example map background
 #' data(greatLakesPoly)
-#' library(sp)
+#' library(sp) #to plot SpatialPolygon without error
 #' plot(greatLakesPoly)
 #' 
 #' #make up two points
