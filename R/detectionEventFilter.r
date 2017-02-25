@@ -8,6 +8,7 @@
 #' @param detections A data frame containing detection data with at least 
 #'   5 columns containing 'location', 'animal', 'timestamp', 'latitude', 
 #'   and 'longitude'. Column names are specified with \code{detColNames}.
+#'   
 #' @param detColNames A list with names of required columns in 
 #'   \code{detections}: 
 #' \itemize{
@@ -24,6 +25,7 @@
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longititude of the receiver.
 #' }
+#' 
 #' @param timeSep Amount of time (in seconds) that must pass between 
 #'   sequential detections on the same receiver (or group of receivers, 
 #'   depending on specified location) before that detection is considered to 
@@ -70,8 +72,6 @@ detectionEventFilter <- function(detections, detColNames = list(
 	timestampCol="detection_timestamp_utc",latCol="deploy_lat",
 	longCol="deploy_long"), 
 	timeSep=Inf){
-	
-	library(plyr) #for ddply
 
 	# Check that the specified columns appear in the detections dataframe
 	missingCols <- setdiff(unlist(detColNames), names(detections))
@@ -127,7 +127,7 @@ detectionEventFilter <- function(detections, detColNames = list(
 	detections$Event <- cumsum(detections$NewEvent)
 	
 	# Summarize the event data using the ddply function in the plyr package.
-	Results <- ddply(detections, .(Event), summarise,
+	Results <- plyr::ddply(detections, .(Event), summarise,
 				Individual = animal[1], 
 				Location = location[1], 
 				MeanLatiude = mean(lat, na.rm=T), 
