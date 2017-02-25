@@ -52,7 +52,7 @@ simplify/smooth polygon boundary.
 mypolygon <- data.frame(x=c(-50,-50, 50, 50),y=c(-50,50,50,-50))
 foo <- crwInPolygon(mypolygon,theta=c(0,5), stepLen=10, initPos=c(0,0),
   initHeading=0, nsteps=50)
-plot(foo,type="b",pch=20,cex=0.2,asp=c(1,1),xlim=range(mypolygon$x),
+plot(foo,type="o",pch=20,asp=c(1,1),xlim=range(mypolygon$x),
   ylim=range(mypolygon$y))
 polygon(mypolygon)
 
