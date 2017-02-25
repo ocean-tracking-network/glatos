@@ -14,6 +14,11 @@ single directory containing VRL files.}
 If \code{NA} (default) then file(s) will be written to the current working 
 directory (e.g., \code{getwd()}).}
 
+\item{overwrite}{Logical. If TRUE (default), output CSV file(s) will 
+overwrite existing CSV file(s) with same name in \code{outDir}. When FALSE,
+'_n' (i.e., _1, _2, etc.) will be appended to names of output files that
+already exist in \code{outDir}.}
+
 \item{vueExePath}{An optional character string with directory containing
 VUE.exe. If NA (default) then the path to VUE.exe must be added to the 
 PATH environment variable of your system. See Note below.}
