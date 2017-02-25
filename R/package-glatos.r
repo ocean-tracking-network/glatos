@@ -1,36 +1,81 @@
-#' glatos: A package for the Great Lakes Acoustic Telemetry Observation System
-#'
-#' The glatos package provides three categories of important functions:
-#' simulation, processing and summarization, visualization and exploration, and random utility functions.
+#' An R package for the Great Lakes Acoustic Telemetry Observation System
 #' 
-#' @section Simulation functions:
-#' The function \code{\link{calcCollisionProb}} is useful for determing the
-#'   number of fish to release or tag specifications (e.g., delay).\cr\cr
-#' The function \code{\link{receiverLineDetSim}} is useful for determining
-#'   optimal spacing of receviers in a line. \cr\cr
-#' The functios \code{\link{crwInPolygon}}, \code{\link{transmitAlongPath}}, and 
-#'   \code{\link{detectTransmissions}} can be used to explore theoretical 
-#'   performance of custom receiver network arrangements. \cr\cr
+#' \code{glatos} is an R package with functions useful to members of the 
+#' Great Lakes Acoustic Telemetry Observation System 
+#' ([http://glatos.glos.us](http://glatos.glos.us)). Functions may be 
+#' generally useful for processing, analysing, simulating, and visualizing 
+#' acoustic telemetry data, but are not strictly limited to acoustic telemetry
+#' applications.
 #'
-#' @section Processing and Summarization functions:
-#' The function \code{\link{falseDetectionFilter}} identifies potential 
-#'   false detections using the GLATOS min_lag column. \cr\cr
-#' The function \code{\link{detectionEventFilter}} distills detection data
-#'   down to a much smaller number of discrete detection events. \cr\cr
+#' @section Package status:
+#' This package is in early development. If you encounter problems or have 
+#' questions or suggestions, please post a new issue. If you have code to 
+#' contribute, feel free to start a new branch. Any questions or comments can 
+#' be sent to cholbrook@usgs.gov (maintainer: Chris Holbrook).
 #'
-#' @section Visualization and Exploration functions:
-#' The function \code{\link{kmlWorkbook}} is useful for exploring receiver and 
-#'   animal release locations in Google Earth. \cr\cr
-#' The functions \code{\link{abacusPlot}} and \code{\link{detectionEventPlot}} 
-#'   are useful for exploring movement patterns of individual tagged animals.
-#' \cr\cr
-#' The function \code{\link{detectionBubblePlot}} is useful for exploring  
-#'   distribution of tagged individuals among receivers. \cr\cr
+#' @section Simulation functions for system design and evaluation:
+#' \describe{\item{\link{clacCollisionProb}}{estimates the probability of collisions 
+#' for PPM-type co-located telemetry transmitters. This is useful for 
+#' determining the number of fish to release or tag specifications (e.g., 
+#' delay).}
+#' 
+#' \item{\link{receiverLineDetSim}}{simulates detection of acoustic-tagged 
+#' fish crossing a receiver line (or single receiver). This is useful 
+#' for determining optimal spacing of receviers in a line and tag 
+#' specifications (e.g., delay).}
+#' 
+#' \item{\link{crwInPolygonR}, \link{transmitAlongPath}, 
+#' and \link{detectTransmissions}}{individually simulate random fish movement 
+#' paths within a water body (\link{crwInPolygonR}: a random walk in a 
+#' polygon), tag signal transmissions along those paths 
+#' (\link{transmitAlongPath}: time series and locations of transmissions 
+#' based on tag specs), and detection of those transmittions by receivers 
+#' in a user-defined receiver network (\link{detectTransmissions}: time 
+#' series and locations of detections based on detection range curve). 
+#' Collectively, these functions can be used to explore, compare, and 
+#' contrast theoretical performance of a wide range of transmitter and 
+#' receiver network designs.}} 
+#'
+#' @section Data processing and summarization:
+#' \describe{\item{\link{falseDetectionFilter}}{identifies potential false 
+#' detections in the GLATOS standard data export package using "short interval"
+#'  criteria (GLATOS min_lag column).}
+#' \item{\link{detectionEventFilter}}{distills detection data down to a much 
+#' smaller number of discrete detection events, defined as a change in 
+#' location (defined by user) or time gap that exceeds a threshold 
+#' (defined by user).}}
+#'
+#' @section Visualization and data exploration:
+#' \describe{\item{\link{kmlWorkbook}}{is useful for exploring receiver and 
+#'   animal release locations in Google Earth.}
+#' \item{\link{abacusPlot} and \link{detectionEventPlot}}{ 
+#'   are useful for exploring movement patterns of individual tagged animals.}
+#' \item{\link{detectionBubblePlot}}{is useful for exploring  
+#'   distribution of tagged individuals among receivers.}
+#' \item{\link{movePath},\link{interpolatePath},and\link{animatePath}}{can
+#' be used together to interpolate movement paths between detections and 
+#' save animated movement paths to a video file (mp4).}}
 #'
 #' @section Random Utility functions:
-#' The functions \code{\link{vrl2csv}}, \code{\link{rotatePoints}},
-#'   \code{\link{crw}}, and \code{\link{vectorHeading}} were needed to in
-#'   functions in this package but might ve useful for other things too. 
+#' \describe{\item{\link{vrl2csv}}{converts a Vemco VRL file to a comma separated 
+#'   values (CSV) file using a system call to VEMCO VUE convert command.}
+#' \item{\link{rotatePoints}}{will rotate a set of 2-d points about 
+#'   another point.}
+#' \item{\link{crw}}{will simulate an unconstrained correlated random walk.}
+#' \item{\link{vectorHeading}}{will calculate (in degrees) the heading of the 
+#'   vector between adjacent point-pairs in a set of positions (e.g., along 
+#'   a track).}}
+#' 
+#' @section Installation:
+#' The R package GLATOS is availabed from the Ocean Tracking Network's 
+#' gitlab \url{https://gitlab.oceantrack.org/chrisholbrook/glatos}.\cr\cr
+#' To install:\cr\cr
+#' 1. install devtoools for R (if you haven't already)\cr
+#' > \code{install.packages("devtools")}\cr\cr
+#' 2.replace USERNAME and PASSWORD in the R code below with your own \cr
+#' > \code{library(devtools)}\cr\cr
+#' 3. download the package and install\cr
+#' > \code{install_git("https://USERNAME:PASSWORD@gitlab.oceantrack.org/chrisholbrook/glatos.git")}
 #'
 #' @docType package
 #' @name glatos
