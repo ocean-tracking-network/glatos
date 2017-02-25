@@ -72,8 +72,6 @@
 #' @author T. R. Binder
 #' 
 #' @examples
-#' library(glatos)
-#'
 #' #make detection event file using detectionEventFilter function
 #' data(walleye_detections)
 #' #subset one transmitter
