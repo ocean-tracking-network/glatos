@@ -41,7 +41,35 @@
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'
 #' @examples
-#' #none yet
+#' #make a simple path in polygon
+#' mypath <- crwInPolygon(data.frame(x = c(0, 0, 1000, 1000), 
+#'   y = c(0, 1000, 1000, 0)), stepLen=100, nsteps=50)
+#' plot(mypath,type='l',xlim=c(0,1000),ylim=c(0,1000)) #view path
+#' 
+#' #add receivers
+#' recs <- expand.grid(c(250,750),c(250,750))
+#' names(recs) <- c("x","y") #needed by detectTransmissions
+#' points(recs, pch=15, col="blue")
+#' 
+#' #simulate tag transmissions
+#' mytrns <- transmitAlongPath(mypath,vel=2.0,delayRng=c(60,180),burstDur=5.0)
+#' points(mytrns,pch=21) #add to plot
+#' 
+#' #Define detection range function (to pass as detRngFun) 
+#' # that returns detection probability for given distance
+#' # assume logistic form of detection range curve where 
+#' #   dm = distance in meters
+#' #   b = intercept and slope
+#' pdrf <- function(dm, b=c(0.5, -1/120)){
+#'   p <- 1/(1+exp(-(b[1]+b[2]*dm)))
+#'   return(p)
+#' }
+#' pdrf(c(100,200,300,400,500)) #view detection probs. at some distances
+#' 
+#' #simulate detection
+#' mydtc <- detectTransmissions(trnsLoc=mytrns, recLoc=recs, detRngFun=pdrf)
+#' #view transmissions that were detected
+#' points(trns_y~trns_x, data=mydtc,pch=21, bg="red")
 #'
 #' @export
 detectTransmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
