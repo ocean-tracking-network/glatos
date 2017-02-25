@@ -43,6 +43,9 @@ shortest path distances. Passed to \code{ithresh} in
  \item \code{typeCol} is a character string with the name of the optional 
     column that identifies the type of record. Default is 'record_type'.}}
 }
+\value{
+A dataframe with id, timestamp, lat, lon, and record type.
+}
 \description{
 Interpolate new positions within a spatiotemporal path data set 
   (e.g., detections of tagged fish) at regularly-spaced time intervals   
@@ -68,7 +71,7 @@ if the two points are exactly the same and when the ratio of linear-to-non-
 can be used to control whether non-linear or linear interpolation is used
 for all points. For example, non-linear interpolation will be used for all
 points when \code{lnlThresh} = 1 and linear interpolation will be used for 
-all points \code{lnlThresh} = 0.
+all points when \code{lnlThresh} = 0.
 }
 \examples{
 
@@ -97,13 +100,13 @@ pts <- SpatialPoints(pos[,c("x","y")])
 points(pts, pch=20, col='red', cex=3)
 
 #interpolate path using linear method
-path <- interpolatePath(pos, 
+path1 <- interpolatePath(pos, 
   detColNames=list(individualCol="id", timestampCol="time", 
 		 longitudeCol="x", latitudeCol="y"))
 
 #coerce to SpatialPoints object and plot
-pts2 <- SpatialPoints(path[,c("x","y")])
-points(pts2, pch=20, col='blue', lwd=2, cex=1.5) 
+pts1 <- SpatialPoints(path[,c("x","y")])
+points(pts1, pch=20, col='blue', lwd=2, cex=1.5) 
 
 #example transition matrix
 data(greatLakesTrLayer)
@@ -115,8 +118,18 @@ path2 <- interpolatePath(pos,
   longitudeCol="x", latitudeCol="y"))
 
 #coerce to SpatialPoints object and plot
-pts3 <- SpatialPoints(path2[,c("x","y")])
-points(pts3, pch=20, col='green', lwd=2, cex=1.5) 
+pts2 <- SpatialPoints(path2[,c("x","y")])
+points(pts2, pch=20, col='green', lwd=2, cex=1.5) 
+
+#can also force linear-interpolation with lnlThresh=0
+path3 <- interpolatePath(pos, 
+  rast=greatLakesTrLayer, lnlThresh=0,
+  detColNames=list(individualCol="id", timestampCol="time",
+  longitudeCol="x", latitudeCol="y"))
+
+#coerce to SpatialPoints object and plot
+pts3 <- SpatialPoints(path3[,c("x","y")])
+points(pts3, pch=20, col='magenta', lwd=2, cex=1.5) 
 
 --------------------------------------------------
 #EXAMPLE #2 - GLATOS detection data
@@ -132,8 +145,8 @@ library(sp)
 plot(greatLakesPoly)
 
 #coerce to SpatialPoints object and plot
-pts <- SpatialPoints(pos1[pos1$animal_id==3,c("deploy_long","deploy_lat")])
-points(pts, pch=20, col='red', cex=0.5)
+pts1 <- SpatialPoints(pos1[pos1$animal_id==3,c("deploy_long","deploy_lat")])
+points(pts1, pch=20, col='red', cex=0.5)
 
 #example transition matrix
 data(greatLakesTrLayer)
