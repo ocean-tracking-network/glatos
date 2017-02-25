@@ -3,6 +3,9 @@
 ### Description  
 glatos is an R package with functions useful to members of the Great Lakes Acoustic Telemetry Observation System ([http://glatos.glos.us](http://glatos.glos.us)). Functions may be generally useful for processing, analysing, simulating, and visualizing acoustic telemetry data, but are not strictly limited to acoustic telemetry applications.
 
+### Package status
+This package is in early development. If you encounter problems or have questions or suggestions, please post a new issue. If you have code to contribute, feel free to start a new branch. Any questions or comments can be sent to cholbrook@usgs.gov (maintainer).
+
 ### Contents  
 #### Simulation functions for system design and evaluation
 
@@ -59,5 +62,3 @@ install_git("https://USERNAME:PASSWORD@gitlab.oceantrack.org/chrisholbrook/glato
 ```
 
 
-### Package status
-This package is in early development. If you encounter problems or have questions or suggestions, please post a new issue. If you have code to contribute, feel free to start a new branch. Any questions or comments can be sent to cholbrook@usgs.gov (maintainer).
