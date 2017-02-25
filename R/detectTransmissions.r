@@ -8,8 +8,10 @@
 #' @param trnsLoc A three-column data frame with locations (numeric columns 
 #'   named 'x' and 'y') and timestamps (numeric or POSIXct column named 'et')
 #'   where signals were transmitted.
+#'   
 #' @param recLoc A two-column data frame with receiver locations (numeric 
 #'   columns named 'x' and 'y')
+#'   
 #' @param detRngFun A function that defines detection range curve;
 #'   must accept a numeric vector of distances and return a numeric vector of 
 #'   detection probabilities at each distance.
@@ -57,13 +59,16 @@ detectTransmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
 	 #loop through receivers (because should be much smaller than transmissions)
 	 for(g in 1:nrow(recLoc)){
 		#initialize progress bar
-	     if(g==1)  pb <- winProgressBar(title=paste0("Simulating detections for current track"), label="0% done", min=0, max=    nrow(recLoc), initial=0)
+	     if(g==1)  pb <- winProgressBar(
+	       title=paste0("Simulating detections for current track"), 
+	       label="0% done", min=0, max=    nrow(recLoc), initial=0)
 	  
 	    #distance between gth receiver and each transmission
 	    distM.g <- sqrt((trnsLoc$x-recLoc$x[g])^2 +
                     (trnsLoc$y-recLoc$y[g])^2)
         detP.g <- detRngFun(distM.g) #calculate probability of detection
-        succ.g <- as.logical(rbinom(length(detP.g), 1, detP.g)) #simulate detection
+        #simulate detection
+        succ.g <- as.logical(rbinom(length(detP.g), 1, detP.g)) 
 	 
 	    #output detection data
       if(sum(succ.g) > 0){
@@ -84,7 +89,7 @@ detectTransmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
 		setWinProgressBar(pb, g, label=info)
 		if(g==nrow(recLoc)) close(pb)
 	 } #end g
-      dtc <- dtc[order(dtc$etime),]#sort by time	 
+  dtc <- dtc[order(dtc$etime),]#sort by time	 
              
-      return(dtc)
+  return(dtc)
 }
