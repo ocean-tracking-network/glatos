@@ -50,6 +50,7 @@ default is a SpatialPolygonsDataFrame of the Great Lakes (e.g.,
 
 \item{detColNames}{A list with names of required columns in 
   \code{detections}: 
+  
 \itemize{
   \item \code{locationCol} is a character string with the name of the column 
        containing the locations that will be plotted (typically 'glatos_array'  
@@ -130,8 +131,6 @@ If \code{mapPars$showAll} is TRUE then the plot will show all
   as character strings.
 }
 \examples{
-library(glatos)
-
 #example detection data
 data(walleye_detections) 
 head(walleye_detections)

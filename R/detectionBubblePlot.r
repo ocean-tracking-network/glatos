@@ -8,8 +8,10 @@
 #'   and 'longitude' data. Default column names match GLATOS standard detection 
 #'   export file (e.g., '_detectionsWithLocs.csv'), but column names can also 
 #'   be specified with \code{detColNames}.
+#'   
 #' @param detColNames A list with names of required columns in 
 #'   \code{detections}: 
+#'   
 #' \itemize{
 #'   \item \code{locationCol} is a character string with the name of the column 
 #'   	 containing the locations that will be plotted (typically 'glatos_array'  
@@ -28,15 +30,18 @@
 #'     containing longitude of the receiver (typically 'deploy_lat' for 
 #'     GLATOS standard detection export data).
 #' }
+#' 
 #' @param map An optional SpatialPolygonsDataFrame or other 
 #'   geo-referenced object to be plotted as the background for the plot. The 
 #'   default is a SpatialPolygonsDataFrame of the Great Lakes (e.g., 
 #'   \code{data(greatLakesPoly)}.
+#'   
 #' @param receiverLocs An optional data frame containing at least 5 columns with 
 #'   receiver 'location', 'lat', 'lon', 'deploy_timestamp', and 
 #'   'recover_timestamp'. Default column names match GLATOS standard receiver 
 #'   location file \cr(e.g., 'GLATOS_receiverLocations_yyyymmdd.csv'), but 
 #'   column names can also be specified with \code{recColNames}.
+#'   
 #' @param recColNames A list with names of required columns in 
 #'   \code{receiverLocs}: 
 #' \itemize{
@@ -58,6 +63,7 @@
 #'     class 'POSIXct'; typically 'recover_date_time'for GLATOS standard 
 #'     detection export data). 
 #' }
+#' 
 #' @param mapPars A list of optional mapping parameters (with exact names 
 #'   matching below) including:
 #' \itemize{
@@ -82,6 +88,7 @@
 #'   the time interval between the first and last detection in \code{detections}
 #'   data frame. Receivers for which deployment-recovery intervals do not 
 #'   with the time coverage of detections will not be included in the plot.
+#'   
 #' @details "ColGrad" is used in a call to \code{colorRampPalette()}, which 
 #'   will accept a vector containing any two colors return by \code{colors()} 
 #'   as character strings.
@@ -109,8 +116,6 @@
 #' @author T. R. Binder
 #' 
 #' @examples
-#' library(glatos)
-#'
 #' #example detection data
 #' data(walleye_detections) 
 #' head(walleye_detections)
@@ -153,9 +158,7 @@ detectionBubblePlot <- function(detections,
 		longCol="deploy_long",
 		deploy_timestampCol="deploy_date_time",
 		recover_timestampCol="recover_date_time")){
- 
-	library(plyr) # for 'ddply' function
-	library(plotrix)# for 'color.legend' function
+
 	library(sp) # for plotting SpatialPolygonsDataFrame
  
   # Assign mapping parameter object default values (independent of mapPars)
@@ -234,7 +237,7 @@ detectionBubblePlot <- function(detections,
 			
 		# Determine mean location of receiver groups that were available to for 
 		#  detecting fish but did not
-		summaryReceivers <- ddply(receiverLocs, .(location), summarise, 
+		summaryReceivers <- plyr::ddply(receiverLocs, .(location), summarise, 
 			Summary = 0, meanLat = mean(lat), meanLon = mean(long), .drop = FALSE)
 					
 		# Retain only those receiver groups that do not already appear in the 
@@ -245,7 +248,7 @@ detectionBubblePlot <- function(detections,
     
 	# Summarize number of unique fish detected and mean lat and lon for each 
 	#  receiver group
-	summaryNumFish <- ddply(detections, .(location), summarise, 
+	summaryNumFish <- plyr::ddply(detections, .(location), summarise, 
 		Summary = length(unique(animal)), meanLat = mean(lat), meanLon = mean(long), 
 		.drop = FALSE)
     
@@ -258,7 +261,7 @@ detectionBubblePlot <- function(detections,
 
 	
 	# Summarize number of detections and mean lat and lon for each receiver group
-	summaryNumDetections <- ddply(detections, .(location), summarize, 
+	summaryNumDetections <- plyr::ddply(detections, .(location), summarize, 
 		Summary = length(timestamp), meanLat = mean(lat), meanLon = mean(long), 
 		.drop = FALSE)
     
@@ -333,7 +336,7 @@ detectionBubblePlot <- function(detections,
 			max(temp$Summary)*100, 0) + 1], fg = "black", lwd = 3)
 		
 		# Add color legend
-		color.legend(scaleLoc[1], scaleLoc[2], scaleLoc[3], scaleLoc[4], 
+		plotrix::color.legend(scaleLoc[1], scaleLoc[2], scaleLoc[3], scaleLoc[4], 
 			paste0(" ", round(seq(from = 1, to = max(temp$Summary), length.out = 6), 
 				0)), color, gradient="y", family = "sans", cex = 0.5, align = 'rb')
 		

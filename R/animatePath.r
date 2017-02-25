@@ -6,25 +6,32 @@
 #' 
 #' @param procObj A data frame created by \code{\link{interpolatePath}} 
 #'   function.
+#'   
 #' @param recs A data frame containing at least four columns with 
 #'   receiver 'lat', 'lon', 'deploy_timestamp', and 
 #'   'recover_timestamp'. Default column names match GLATOS standard receiver 
 #'   location file \cr(e.g., 'GLATOS_receiverLocations_yyyymmdd.csv'), but 
 #'   column names can also be specified with \code{recColNames}.
+#'   
 #' @param outDir A character string with file path to directory where 
 #'   individual frames for animations will be written.
+#'   
 #' @param background An optional object of class \code{SpatialPolygonsDataFrame} 
 #'   to be used as background of each frame. Default is a simple polygon
 #'   of the Great Lakes (\code{greatLakesPoly}) included in the 'glatos' 
 #'   package.
+#'   
 #' @param backgroundYlim vector of two values specifying the min/max values 
 #' 	 for y-scale of plot. Units are same as background argument.
+#' 	 
 #' @param backgroundXlim vector of two values specifying the min/max values 
 #'   for x-scale of plot. Units are same as background argument.
+#'   
 #' @param ffmpeg A character string with path to install directory for ffmpeg. 
 #'   This argument is only needed if ffmpeg has not been added to your 
 #'   path variable on your computer.  For Windows machines, path must point 
 #'   to ffmpeg.exe.  For example 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'
+#'   
 #' @param plotControl An optional data frame with four columns ('id', 'what', 
 #'   'color', and 'marker') that specify the plot symbols and colors for 
 #'   each animal and position type. See examples below for an example.
@@ -39,6 +46,7 @@
 #'   \item \code{marker} contains the marker style to be plotted for each
 #'     animal and position type.
 #' } 
+#' 
 #' @param procObjColNames A list with names of required columns in 
 #'   \code{procObj}: 
 #' \itemize{
@@ -53,8 +61,9 @@
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longititude of the receiver.
 #'	 \item \code{typeCol} is a character string with the name of the optional 
-#'     column that identifies the type of record. Default is 'record_type'.} 
+#'     column that identifies the type of record. Default is 'record_type'. 
 #' }
+#' 
 #' @param recColNames A list with names of required columns in 
 #'   \code{recs}: 
 #' \itemize{

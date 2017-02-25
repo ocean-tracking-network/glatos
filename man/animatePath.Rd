@@ -57,6 +57,23 @@ to ffmpeg.exe.  For example 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'}
     animal and position type.
 }}
 
+\item{procObjColNames}{A list with names of required columns in 
+  \code{procObj}: 
+\itemize{
+  \item \code{animalCol} is a character string with the name of the column 
+         containing the individual animal identifier.
+ \item \code{binCol} contains timestamps that define each frame.
+ \item \code{timestampCol} is a character string with the name of the column 
+         containing datetime stamps for the detections (MUST be of class 
+    'POSIXct').
+ \item \code{latitudeCol} is a character string with the name of the column
+    containing latititude of the receiver.
+ \item \code{longitudeCol} is a character string with the name of the column
+    containing longititude of the receiver.
+ \item \code{typeCol} is a character string with the name of the optional 
+    column that identifies the type of record. Default is 'record_type'. 
+}}
+
 \item{recColNames}{A list with names of required columns in 
   \code{recs}: 
 \itemize{
