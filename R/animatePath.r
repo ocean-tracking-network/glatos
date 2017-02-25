@@ -80,8 +80,6 @@
 #' @author Todd Hayden
 #'
 #' @examples
-#' library(glatos)
-#' 
 #' #example detection data
 #' data(walleye_detections) 
 #' head(walleye_detections)
@@ -111,8 +109,6 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
   recColNames=list(latitudeCol="deploy_lat", 
 		longitudeCol="deploy_long", deploy_timestampCol="deploy_date_time", 
 		recover_timestampCol="recover_date_time")){
-	
-	library(sp) #for plotting SpatialPolygonsDataFrame
 	
 	#try calling ffmpeg
 	fftest <- ifelse(is.na(ffmpeg), "ffmpeg -version", paste(ffmpeg,"-version"))		
