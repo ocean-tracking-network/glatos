@@ -42,7 +42,7 @@ to prevent interpolation of movement paths through inaccessible locations
 }
 \details{
 This function operates on a single pair of geographic (start and end) 
-positions and is the primary function in \code{\link{animate}}.
+positions and is the primary function in \code{\link{interpolatePath}}.
 
 If \code{trans} is not specified, or if the start and end positions are 
 the same, then new positions are calculated using linear interpolation 
@@ -91,7 +91,7 @@ points(pts3, pch=20, col='green', lwd=2, cex=1.5)
 
 }
 \seealso{
-\code{\link{animate}}
+\code{\link{interpolatePath}}
 }
 \author{
 Todd Hayden

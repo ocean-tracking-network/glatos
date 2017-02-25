@@ -25,7 +25,7 @@
 #' 
 #' @details 
 #' This function operates on a single pair of geographic (start and end) 
-#' positions and is the primary function in \code{\link{animate}}. 
+#' positions and is the primary function in \code{\link{interpolatePath}}. 
 #'
 #' @details
 #' If \code{trans} is not specified, or if the start and end positions are 
@@ -39,7 +39,7 @@
 #' 
 #' @return Dataframe with interpolated timestamp, lat, and lon
 #'
-#' @seealso \code{\link{animate}}
+#' @seealso \code{\link{interpolatePath}}
 #'
 #' @author Todd Hayden
 #' 
