@@ -46,6 +46,17 @@
 #' @export
 detectTransmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
 	 
+  #check names of trnsLoc columns
+  missingCols <- setdiff(c("x","y","et"),names(trnsLoc))
+  if(length(missingCols) > 0) stop(paste0("'trnsLoc' must contain the ",
+    "following columns: \n",paste(missingCols,collapse="\n")))
+  
+  #check names of recLoc columns
+  missingCols <- setdiff(c("x","y"),names(recLoc))
+  if(length(missingCols) > 0) stop(paste0("'recLoc' must contain the ",
+    "following columns: \n",paste(missingCols,collapse="\n")))
+  
+  
 	 #preallocate detection data frame
 	 dtc <- data.frame(
           trns_id = NA,
@@ -59,9 +70,7 @@ detectTransmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
 	 #loop through receivers (because should be much smaller than transmissions)
 	 for(g in 1:nrow(recLoc)){
 		#initialize progress bar
-	     if(g==1)  pb <- winProgressBar(
-	       title=paste0("Simulating detections for current track"), 
-	       label="0% done", min=0, max=    nrow(recLoc), initial=0)
+	     if(g==1)  pb <- txtProgressBar(min=0,max=nrow(recLoc),style=3)
 	  
 	    #distance between gth receiver and each transmission
 	    distM.g <- sqrt((trnsLoc$x-recLoc$x[g])^2 +
@@ -86,7 +95,7 @@ detectTransmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
 	 
 		#update progress bar
 		info <- sprintf("%d%% done", round(g/nrow(recLoc)*100))
-		setWinProgressBar(pb, g, label=info)
+		setTxtProgressBar(pb, g)
 		if(g==nrow(recLoc)) close(pb)
 	 } #end g
   dtc <- dtc[order(dtc$etime),]#sort by time	 
