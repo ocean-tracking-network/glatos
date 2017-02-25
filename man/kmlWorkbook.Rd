@@ -47,11 +47,11 @@ timestamps at each location. Release locations will be displayed when the
 display window includes the date of release.
 }
 \examples{
-library(glatos)
-
 #get path to example GLATOS Data Workbook
-zipFile <- system.file("extdata", "SMRSL_GLATOS_20140828.xlsm.zip",package="glatos")
-kmlWorkbook(zipFile,browse=F,kmz=T,labelSize=0.6,iconSize=0.6,showOngoing=T,endDate="2020-01-01")
+zipFile <- system.file("extdata", 
+  "SMRSL_GLATOS_20140828.xlsm.zip",package="glatos")
+kmlWorkbook(zipFile,browse=F,kmz=T,labelSize=0.6,iconSize=0.6,
+  showOngoing=T,endDate="2020-01-01")
 
 }
 \author{

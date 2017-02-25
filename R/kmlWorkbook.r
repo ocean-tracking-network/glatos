@@ -11,15 +11,21 @@
 #' @param zipfile A character vector with the full path and filename of zipped 
 #'   GLATOS workbook (this is the **ZIPPED** archive that gets uploaded to 
 #'   GLATOSWeb)
+#'   
 #' @param browse A logical scalar. If TRUE, user is asked to select zipfile 
 #'   using windows explorer. Default value is FALSE.
+#'   
 #' @param kmz A logical scalar; If TRUE, a KMZ file (zipped KML file) will also 
 #'   be created. Default value is FALSE.
+#'   
 #' @param labelSize A numeric scalar with the size of placemark labels 
 #'   (only shown when placemark is highlighted by user).
+#'   
 #' @param iconSize A numeric scalar with the size of placemark icons.
+#' 
 #' @param showOngoing A logicalscalar that indicates if ongoing stations 
 #'   (missing recovery timestamp) should be included in result.
+#'   
 #' @param endDate End date (e.g. "YYYY-MM-DD") to be used for any ongoing 
 #'   stations (if showOngoing == T)
 #'
@@ -34,11 +40,11 @@
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'
 #' @examples
-#' library(glatos)
-#' 
 #' #get path to example GLATOS Data Workbook
-#' zipFile <- system.file("extdata", "SMRSL_GLATOS_20140828.xlsm.zip",package="glatos")
-#' kmlWorkbook(zipFile,browse=F,kmz=T,labelSize=0.6,iconSize=0.6,showOngoing=T,endDate="2020-01-01")
+#' zipFile <- system.file("extdata", 
+#'   "SMRSL_GLATOS_20140828.xlsm.zip",package="glatos")
+#' kmlWorkbook(zipFile,browse=F,kmz=T,labelSize=0.6,iconSize=0.6,
+#'   showOngoing=T,endDate="2020-01-01")
 #'
 #' @export
 kmlWorkbook <- function(zipFile,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
@@ -51,9 +57,12 @@ kmlWorkbook <- function(zipFile,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
 
   #Receiver stations
 	  #import deployment and recovery data
-	  dpl <- read.csv(glatosFiles[grep("_GLATOS_Deployment.csv",glatosFiles)],as.is=T)
-	  rcv <- read.csv(glatosFiles[grep("_GLATOS_Recovery.csv",glatosFiles)],as.is=T)
-	  loc <- read.csv(glatosFiles[grep("_GLATOS_Locations.csv",glatosFiles)],as.is=T)
+	  dpl <- read.csv(glatosFiles[grep("_GLATOS_Deployment.csv",glatosFiles)],
+	    as.is=T)
+	  rcv <- read.csv(glatosFiles[grep("_GLATOS_Recovery.csv",glatosFiles)],
+	    as.is=T)
+	  loc <- read.csv(glatosFiles[grep("_GLATOS_Locations.csv",glatosFiles)],
+	    as.is=T)
 
 	  recLoc <- merge(dpl,rcv,
 		by.x=c("GLATOS_ARRAY","STATION_NO","CONSECUTIVE_DEPLOY_NO","INS_SERIAL_NO"),

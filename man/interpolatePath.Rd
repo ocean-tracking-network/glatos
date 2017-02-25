@@ -77,14 +77,13 @@ all points when \code{lnlThresh} = 0.
 
 --------------------------------------------------
 EXAMPLE #1 - simple example
-library(glatos)
 
 #example transition matrix
 data(greatLakesTrLayer)
  
 #example map background
 data(greatLakesPoly)
-library(sp) #for SpatialPoints
+library(sp) #to plot SpatialPolygon without error
 plot(greatLakesPoly)
 
 #make up points points
@@ -141,7 +140,7 @@ pos1 <- interpolatePath(walleye_detections)
 
 #plot on example map background
 data(greatLakesPoly)
-library(sp)
+library(sp) #to plot SpatialPolygon without error
 plot(greatLakesPoly)
 
 #coerce to SpatialPoints object and plot

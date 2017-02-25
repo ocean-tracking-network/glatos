@@ -45,7 +45,6 @@ A common rule of thumb for choosing tf for VEMCO PPM encoded transmitters
   120 s nominal delay) - see Pincock (2012).
 }
 \examples{
-library(glatos)
 data("walleye_detections") #example data
 
 head(walleye_detections)

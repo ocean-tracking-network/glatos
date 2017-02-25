@@ -82,8 +82,6 @@ graphical parameters \url{http://www.statmethods.net/advgraphs/parameters.html}
 that are passed to "segments" (see ?segments).
 }
 \examples{
-library(glatos)
-
 #make detection event file using detectionEventFilter function
 data(walleye_detections)
 #subset one transmitter
