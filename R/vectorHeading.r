@@ -8,7 +8,8 @@
 #'
 #' @details
 #' Calculates direction (in degrees) for each of k-1 vectors, where 
-#' k = length(x) - 1 = length(y). Lenghts of \code{x} and \code{y} must be equal.
+#' k = length(x) - 1 = length(y). Lenghts of \code{x} and \code{y} must be 
+#' equal.
 #' 
 #' @return A numeric scalar with heading in degrees or a numeric vector of 
 #' headings if \code{length(x) > 2}.

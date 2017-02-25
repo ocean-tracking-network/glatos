@@ -20,7 +20,8 @@ Calculate direction (heading) of a vector (in degrees)
 }
 \details{
 Calculates direction (in degrees) for each of k-1 vectors, where 
-k = length(x) - 1 = length(y). Lenghts of \code{x} and \code{y} must be equal.
+k = length(x) - 1 = length(y). Lenghts of \code{x} and \code{y} must be 
+equal.
 }
 \note{
 This function is called from within \code{\link{crwInPolygon}}
