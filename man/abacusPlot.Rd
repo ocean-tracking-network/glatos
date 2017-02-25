@@ -21,7 +21,7 @@ datetime stamps for the detections (MUST be of class 'POSIXct').}
   \item \code{locationCol} A character scalar with the name (in quotes) of the 
      column containing the location codes to be plotted on the y-axis. The 
      default value ("glatos_array") is consistent with GLATOS standard.
-  \item \code{timestampCol}A character scalar with the name (in quotes) of the 
+  \item \code{timestampCol} A character scalar with the name (in quotes) of the 
      column containing the timestamp data to be plotted on the x-axis.
      The default value ("detection_timestamp_utc") is is consistent with 
      GLATOS standard.

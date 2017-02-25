@@ -38,7 +38,7 @@ simulated fish are allowed to pass to left (first element) and right
 and fish paths?}
 }
 \value{
-A data frame with:
+A data frame with one column:
   \item{detProb}{The proportion of simulated fish that were detected more  
   than once on any single receiver.}
 }
@@ -48,17 +48,18 @@ fish on a receiver line, given constant fish velocity (ground speed),
 receiver spacing, number of receivers, and detection range curve.
 }
 \details{
-Virtual tagged fish (N=\code{nsim}) are "swum" through a virtual receiver line. The
-first element of \code{recSpc} determines spacing between first two receivers
-in the line, and each subsequent element of \code{recSpc} determine spacing 
-of subsequent receivers along the line, such that the number of receivers is 
-equal to \code{length(recSpc) + 1}. Each fish moves at constant velocity 
-(\code{vel}) along a line perpendicular to the receiver line. The location 
-of each fish path along the receiver line is random (drawn from uniform 
-distribution), and fish can pass outside the receiver line (to the left of 
-the first receiver or right of last receiver) if \code{outerLim[1]} or 
-\code{outerLim[2]} are greater than 0 meters. Each fish starts and ends 
-about \code{maxDist} meters from the receiver line.  
+Virtual tagged fish (N=\code{nsim}) are "swum" through a virtual receiver 
+line. The first element of \code{recSpc} determines spacing between first 
+two receivers in the line, and each subsequent element of \code{recSpc} 
+determine spacing of subsequent receivers along the line, such that the 
+number of receivers is equal to \code{length(recSpc) + 1}. Each fish moves 
+at constant velocity (\code{vel}) along a line perpendicular to the 
+receiver line. The location of each fish path along the receiver line is 
+random (drawn from uniform distribution), and fish can pass outside the 
+receiver line (to the left of the first receiver or right of last receiver) 
+if \code{outerLim[1]} or \code{outerLim[2]} are greater than 0 meters. 
+Each fish starts and ends about \code{maxDist} meters from the receiver 
+line.
 
 A simulated tag signal is transmitted every \code{delayRng[1]} to 
 \code{delayRng[2]} seconds. At time of each transmission, the distance is 
@@ -68,8 +69,6 @@ Detection or non-detection on each receiver is determined by a draw from a
 Bernoulli distribution with probability p.
 }
 \examples{
-library(glatos)
-
 #EXAMPLE 1 - simulate detection on line of ten receivers
   
  #Define detection range function (to pass as rngFun) 
@@ -91,7 +90,7 @@ xlab="Distance between receiver and transmitter")
  dp
 
  #Again with only 10 virtual fish and optional plot to see simulated data
- dp <- receiverLineDetSim(rngFun=pdrf, nsim=10, showPlot=T) #with optional plot
+ dp <- receiverLineDetSim(rngFun=pdrf, nsim=10, showPlot=T) #w/ optional plot
  dp
 
  #Again but six receivers and allow fish to pass to left and right of line
@@ -105,7 +104,7 @@ xlab="Distance between receiver and transmitter")
  dp
 
 
-#EXAMPLE 2 - summarize detection probability as a function of receiver spacing
+#EXAMPLE 2 - summarize detection probability vs. receiver spacing
  
  #two receivers only, spaced 'spc' m apart
  #define scenarious where two receiver are spaced 
@@ -117,12 +116,13 @@ xlab="Distance between receiver and transmitter")
  }
  cbind(spc,dp) #view results  
  #plot results
- plot(spc, dp, type="o",ylim=c(0,1), xlab="distance between receivers in meters",
-ylab="proportion of virtual fish detected") 
+ plot(spc, dp, type="o",ylim=c(0,1), 
+   xlab="distance between receivers in meters",
+  ylab="proportion of virtual fish detected") 
  # e.g., >95\% virtual fish detected up to 1400 m spacing in this example
 
 
-#EXAMPLE 3 - summarize detection probability as a function of fish swim speed
+#EXAMPLE 3 - summarize detection probability vs. fish swim speed
  
  #define scenarios of fish movement rate
  swim <- seq(0.1, 5.0, 0.1) #constant velocity
@@ -133,14 +133,14 @@ ylab="proportion of virtual fish detected")
  cbind(swim,dp) #view results
  #plot results
  plot(swim, dp, type="o", ylim=c(0,1), xlab="fish movement rate, m/s",
-ylab="proportion of virtual fish detected")
+  ylab="proportion of virtual fish detected")
  # e.g., >95\% virtual fish detected up to 1.7 m/s rate in this example
  # e.g., declines linearly above 1.7 m/s
 
 
 #EXAMPLE 4 - empirical detection range curve instead of logistic
  
- #create data frame with observed detection efficiency (p) at each distance (x)
+ #create data frame with observed det. efficiency (p) at each distance (x)
  edr <- data.frame(
    x=c(0,363,444,530,636,714,794,889,920), #tag-receiver distance
    p=c(1,1,0.96,0.71,0.67,0.75,0.88,0.21,0)) # detection prob
@@ -154,11 +154,12 @@ ylab="proportion of virtual fish detected")
  }
 
  #preview empirical detection range curve
- plot(edrf(0:2000),type="l",ylab="probability of detecting each coded burst", 
-xlab="distance between receiver and transmitter, meters")
+ plot(edrf(0:2000),type="l",
+   ylab="probability of detecting each coded burst", 
+  xlab="distance between receiver and transmitter, meters")
 
  #use empirical curve (edrf) in simulation
- dp <- receiverLineDetSim(rngFun=edrf, nsim=10, showPlot=T) #with optional plot
+ dp <- receiverLineDetSim(rngFun=edrf, nsim=10, showPlot=T) #w/ optional plot
  dp
 
 }
