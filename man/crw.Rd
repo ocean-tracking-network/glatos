@@ -39,8 +39,9 @@ to obtain the simualted path.
 Adapted from code provided by Tom Binder.
 }
 \examples{
-foo <- crw(theta=c(0,5), stepLen=10, initPos=c(0,0), initHeading=0, nsteps=10)
-plot(foo,type="b",pch=20,cex=0.2,asp=c(1,1)) 
+foo <- crw(theta=c(0,5), stepLen=10, initPos=c(0,0), initHeading=0, 
+  nsteps=10)
+plot(foo,type="o",pch=20,asp=c(1,1))
 
 }
 \author{

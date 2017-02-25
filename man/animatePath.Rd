@@ -86,8 +86,6 @@ Create a set of frames (png image files) showing geographic location data
 points in time and stitch frames into a video animation (mp4 file).
 }
 \examples{
-library(glatos)
-
 #example detection data
 data(walleye_detections) 
 head(walleye_detections)
