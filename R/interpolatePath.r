@@ -10,16 +10,20 @@
 #'   (e.g., detection). Default column names match the GLATOS 
 #'   detection export file but other names can be specified with 
 #'   \code{detColNames}.
+#'   
 #' @param intTimeStamp The time step size (in seconds) of interpolated 
 #'   positions. Default is 86400 (one day).
+#'   
 #' @param rast An optional transition matrix with the "cost" of moving across 
 #'   each cell within the map extent. Must be of class 
 #'   \code{TransitionLayer} (See \code{gdistance} package). Passed to  
 #'   \code{trans} in \code{\link{movePath}}. 
+#'   
 #' @param lnlThresh A numeric threshold for determining if linear or non-linear 
 #'   interpolation will be used based on the ratio of linear-to-non-linear
 #'   shortest path distances. Passed to \code{ithresh} in 
 #'   \code{\link{movePath}}.
+#'   
 #' @param detColNames A list with names of columns in \code{dtc}:
 #' \itemize{
 #'   \item \code{individualCol} is a character string that uniquely identies an
@@ -68,14 +72,13 @@
 #'
 #' --------------------------------------------------
 #' EXAMPLE #1 - simple example
-#' library(glatos)
 #'
 #' #example transition matrix
 #' data(greatLakesTrLayer)
 #'  
 #' #example map background
 #' data(greatLakesPoly)
-#' library(sp) #for SpatialPoints
+#' library(sp) #to plot SpatialPolygon without error
 #' plot(greatLakesPoly)
 #' 
 #' #make up points points
@@ -132,7 +135,7 @@
 #' 
 #' #plot on example map background
 #' data(greatLakesPoly)
-#' library(sp)
+#' library(sp) #to plot SpatialPolygon without error
 #' plot(greatLakesPoly)
 #'
 #' #coerce to SpatialPoints object and plot
