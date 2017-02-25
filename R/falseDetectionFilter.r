@@ -10,9 +10,11 @@
 #'   (GLATOS), it is defined for each detection as the shortest interval 
 #'   (in seconds) between either the previous or next detection (whichever 
 #'   is closest) of the same transmitter on the same receiver.
+#'   
 #' @param tf A numeric scalar indicating the time threshold (in seconds; e.g., 
 #'   Pincock's (2012) "short interval") for identifying possible false 
 #'   detections.
+#'   
 #' @param minLagCol A character string containing the name of the column 
 #'   in \code{detections} that contains 'min_lag'.
 #'
@@ -47,7 +49,6 @@
 #'     \cr \url{https://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-015-0094-z}
 #'
 #' @examples
-#' library(glatos)
 #' data("walleye_detections") #example data
 #' 
 #' head(walleye_detections)
