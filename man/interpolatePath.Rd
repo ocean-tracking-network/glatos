@@ -76,7 +76,7 @@ all points when \code{lnlThresh} = 0.
 \examples{
 
 --------------------------------------------------
-EXAMPLE #1 - simple example
+#EXAMPLE #1 - simple example
 
 #example transition matrix
 data(greatLakesTrLayer)

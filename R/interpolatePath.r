@@ -71,7 +71,7 @@
 #' @examples
 #'
 #' --------------------------------------------------
-#' EXAMPLE #1 - simple example
+#' #EXAMPLE #1 - simple example
 #'
 #' #example transition matrix
 #' data(greatLakesTrLayer)
@@ -181,12 +181,7 @@ interpolatePath <- function(dtc, intTimeStamp=86400, rast=NULL, lnlThresh=0.9,
 	
 	#check for optional type column and add if needed
 	missingCols <- setdiff(defaultColNames$typeCol, names(dtc))
-	if (length(missingCols) > 0){
-		message(paste0("Column '",missingCols,"' was not found in 'dtc', ", 
-			" so it was created."))
-		#make record_type column
-		dtc[,defaultColNames$typeCol] <- "detection"
-	}	
+	if (length(missingCols) > 0) dtc[,defaultColNames$typeCol] <- "detection"
 	
 	# Subset detections with only user-defined columns and change names
 	# this makes code more easy to understand (esp. ddply)
