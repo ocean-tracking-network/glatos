@@ -261,7 +261,7 @@ detectionBubblePlot <- function(detections,
 
 	
 	# Summarize number of detections and mean lat and lon for each receiver group
-	summaryNumDetections <- plyr::ddply(detections, .(location), summarize, 
+	summaryNumDetections <- plyr::ddply(detections, .(location), summarise, 
 		Summary = length(timestamp), meanLat = mean(lat), meanLon = mean(long), 
 		.drop = FALSE)
     
