@@ -240,6 +240,5 @@ receiverLineDetSim <- function(vel=1,delayRng=c(120,360),burstDur=5.0,
     #proportion of transmitters detected more than once on any receiver
     detProb <-  mean(maxDet>1) 
     
-    #return data frame so that other variables easily added
-    return(data.frame(detProb=detProb)) 
+    return(detProb) 
   }
