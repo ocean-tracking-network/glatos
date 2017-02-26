@@ -99,7 +99,7 @@
 #' 		 longitudeCol="x", latitudeCol="y"))
 #' 
 #' #coerce to SpatialPoints object and plot
-#' pts1 <- SpatialPoints(path[,c("x","y")])
+#' pts1 <- SpatialPoints(path1[,c("x","y")])
 #' points(pts1, pch=20, col='blue', lwd=2, cex=1.5) 
 #'
 #' #example transition matrix
