@@ -4,12 +4,12 @@
 glatos is an R package with functions useful to members of the Great Lakes Acoustic Telemetry Observation System ([http://glatos.glos.us](http://glatos.glos.us)). Functions may be generally useful for processing, analyzing, simulating, and visualizing acoustic telemetry data, but are not strictly limited to acoustic telemetry applications.
 
 ### Package status
-This package is in early development. If you encounter problems or have questions or suggestions, please post a new issue. If you have code to contribute, feel free to start a new branch. Any questions or comments can be sent to cholbrook@usgs.gov (maintainer).
+This package is in early development. To access the package or contribute code, join the project at ([https://gitlab.oceantrack.org/chrisholbrook/glatos](https://gitlab.oceantrack.org/chrisholbrook/glatos)). If you encounter problems or have questions or suggestions, please post a new issue or email cholbrook@usgs.gov (maintainer: Chris Holbrook).
 
 ### Contents  
 #### Simulation functions for system design and evaluation
 
-1. [`clacCollisionProb`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/calcCollisionProb.r) estimates the probability of collisions for PPM-type co-located telemetry transmitters. This is useful for determining the number of fish to release or tag specifications (e.g., delay). 
+1. [`clacCollisionProb`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/calcCollisionProb.r) estimates the probability of collisions for pulse-position-modulation type co-located telemetry transmitters. This is useful for determining the number of fish to release or tag specifications (e.g., delay). 
 
 2. [`receiverLineDetSim`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/receiverLineDetSim.r) simulates detection of acoustic-tagged fish crossing a receiver line (or single receiver). This is useful 
 for determining optimal spacing of receviers in a line and tag specifications (e.g., delay). 
@@ -37,7 +37,7 @@ for determining optimal spacing of receviers in a line and tag specifications (e
 
 The following functions were needed by other functions in this package but might be useful for other things too.
 
-1. [`vrl2csv`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/vrl2csv.r) converts a Vemco VRL file to a comma separated values (CSV) file using a system call to VEMCO VUE convert command.
+1. [`vrl2csv`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/vrl2csv.r) converts a Vemco VRL file to a comma separated values (CSV) file using a system call to VEMCO VUE `convert` command.
 2. [`rotatePoints`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/rotatePoints.r) will rotate a set of 2-d points about another point. 
 3. [`crw`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/crw.r) will simulate an unconstrained correlated random walk.
 4. [`vectorHeading`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/vectorHeading.r) will calculate (in degrees) the heading of the vector between adjacent point-pairs in a set of positions (e.g., along a track).  

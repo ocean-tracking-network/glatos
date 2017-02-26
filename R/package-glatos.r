@@ -8,14 +8,15 @@
 #' applications.
 #'
 #' @section Package status:
-#' This package is in early development. If you encounter problems or have 
-#' questions or suggestions, please post a new issue. If you have code to 
-#' contribute, feel free to start a new branch. Any questions or comments can 
-#' be sent to cholbrook@usgs.gov (maintainer: Chris Holbrook).
+#' This package is in early development. To access the package or contribute 
+#' code, join the project at (
+#' [https://gitlab.oceantrack.org/chrisholbrook/glatos](https://gitlab.oceantrack.org/chrisholbrook/glatos)). If you encounter problems or have 
+#' questions or suggestions, please post a new issue or email 
+#' cholbrook@usgs.gov (maintainer: Chris Holbrook).
 #'
 #' @section Simulation functions for system design and evaluation:
 #' \describe{\item{\link{clacCollisionProb}}{estimates the probability of collisions 
-#' for PPM-type co-located telemetry transmitters. This is useful for 
+#' for pulse-position-modulation type co-located telemetry transmitters. This is useful for 
 #' determining the number of fish to release or tag specifications (e.g., 
 #' delay).}
 #' 
@@ -58,7 +59,7 @@
 #'
 #' @section Random Utility functions:
 #' \describe{\item{\link{vrl2csv}}{converts a Vemco VRL file to a comma separated 
-#'   values (CSV) file using a system call to VEMCO VUE convert command.}
+#'   values (CSV) file using a system call to VEMCO VUE \code{convert} command.}
 #' \item{\link{rotatePoints}}{will rotate a set of 2-d points about 
 #'   another point.}
 #' \item{\link{crw}}{will simulate an unconstrained correlated random walk.}
