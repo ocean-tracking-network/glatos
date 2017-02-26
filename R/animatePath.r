@@ -30,7 +30,7 @@
 #' @param ffmpeg A character string with path to install directory for ffmpeg. 
 #'   This argument is only needed if ffmpeg has not been added to your 
 #'   path variable on your computer.  For Windows machines, path must point 
-#'   to ffmpeg.exe.  For example 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'
+#'   to ffmpeg.exe.  For example, 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'
 #'   
 #' @param plotControl An optional data frame with four columns ('id', 'what', 
 #'   'color', and 'marker') that specify the plot symbols and colors for 
@@ -68,18 +68,18 @@
 #'   \code{recs}: 
 #' \itemize{
 #'	 \item \code{latitudeCol} is a character string with the name of the column
-#'     containing latitude of the receiver (typically 'deploy_lat' for 
+#'     containing latitude of the receiver (typically, 'deploy_lat' for 
 #'     GLATOS standard detection export data). 
 #'	 \item \code{longitudeCol} is a character string with the name of the column
-#'     containing longitude of the receiver (typically 'deploy_long' for 
+#'     containing longitude of the receiver (typically, 'deploy_long' for 
 #'     GLATOS standard detection export data).
 #'	 \item \code{deploy_timestampCol} is a character string with the name of 
 #'     the column containing datetime stamps for receier deployments (MUST be 
-#'     of class 'POSIXct'; typically 'deploy_date_time'for GLATOS standard 
+#'     of class 'POSIXct'; typically, 'deploy_date_time' for GLATOS standard 
 #'     detection export data). 
 #'	 \item \code{recover_timestampCol} is a character string with the name of 
 #'     the column containing datetime stamps for receier recover (MUST be of 
-#'     class 'POSIXct'; typically 'recover_date_time'for GLATOS standard 
+#'     class 'POSIXct'; typically, 'recover_date_time' for GLATOS standard 
 #'     detection export data). 
 #' }
 #'

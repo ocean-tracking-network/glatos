@@ -40,7 +40,7 @@
 #' two locations is calculated using a 'transition matrix layer' (\code{trans}) 
 #' that represents the 'cost' of an animal moving between adjacent grid cells. 
 #' For example, each cell in \code{trans} may be coded as water (1) or land (0)
-#' to represent possible (1) and impossible(0) movement path. 
+#' to represent possible (1) and impossible (0) movement path. 
 #' 
 #' @details
 #' If \code{trans} is not specified, or if the start and end positions are 

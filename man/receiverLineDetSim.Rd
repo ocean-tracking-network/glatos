@@ -107,7 +107,7 @@ xlab="Distance between receiver and transmitter")
 #EXAMPLE 2 - summarize detection probability vs. receiver spacing
  
  #two receivers only, spaced 'spc' m apart
- #define scenarious where two receiver are spaced 
+ #define scenarios where two receiver are spaced 
  spc <- seq(100,5000, 100) #two receivers spaced 100, 200, ... 5000 m
  #loop through scenarious, estimate detection probability for each
  for(i in 1:length(spc)){

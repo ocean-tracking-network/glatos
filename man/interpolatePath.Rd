@@ -62,12 +62,12 @@ movements (e.g., over land for fish). The shortest non-linear path between
 two locations is calculated using a 'transition matrix layer' (\code{rast}) 
 that represents the 'cost' of an animal moving between adjacent grid cells. 
 For example, each cell in \code{rast} may be coded as water (1) or land (0)
-to represent possible (1) and impossible(0) movement path.
+to represent possible (1) and impossible (0) movement path.
 
 Linear interpolation is used for all points when \code{rast} is not supplied.
-When \code{rast} is supplied, then interpolation method is determined for 
-pair of observed positions. For example, linear interpolaton will be used
-if the two points are exactly the same and when the ratio of linear-to-non-
+When \code{rast} is supplied, then interpolation method is determined for
+each pair of observed positions. For example, linear interpolaton will be 
+used if the two points are exactly the same and when the ratio of linear-to-
 can be used to control whether non-linear or linear interpolation is used
 for all points. For example, non-linear interpolation will be used for all
 points when \code{lnlThresh} = 1 and linear interpolation will be used for 

@@ -3,7 +3,7 @@
 #' \code{glatos} is an R package with functions useful to members of the 
 #' Great Lakes Acoustic Telemetry Observation System 
 #' ([http://glatos.glos.us](http://glatos.glos.us)). Functions may be 
-#' generally useful for processing, analysing, simulating, and visualizing 
+#' generally useful for processing, analyzing, simulating, and visualizing 
 #' acoustic telemetry data, but are not strictly limited to acoustic telemetry
 #' applications.
 #'
