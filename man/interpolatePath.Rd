@@ -32,8 +32,8 @@ shortest path distances. Passed to \code{ithresh} in
 
 \item{detColNames}{A list with names of columns in \code{dtc}:
 \itemize{
-  \item \code{individualCol} is a character string that uniquely identies an
-    an indvidual (e.g., tagged animal). Default is 'animal_id'.
+  \item \code{individualCol} is a character string that uniquely identifies 
+    an individual (e.g., tagged animal). Default is 'animal_id'.
  \item \code{timestampCol} is a character string with the name of the column 
          containing datetime stamps. Default is 'detection_timestamp_utc'.
  \item \code{latitudeCol} is a character string with the name of the column
@@ -66,7 +66,7 @@ to represent possible (1) and impossible (0) movement path.
 
 Linear interpolation is used for all points when \code{rast} is not supplied.
 When \code{rast} is supplied, then interpolation method is determined for
-each pair of observed positions. For example, linear interpolaton will be 
+each pair of observed positions. For example, linear interpolation will be 
 used if the two points are exactly the same and when the ratio of linear-to-
 can be used to control whether non-linear or linear interpolation is used
 for all points. For example, non-linear interpolation will be used for all
@@ -86,7 +86,7 @@ data(greatLakesPoly)
 library(sp) #to plot SpatialPolygon without error
 plot(greatLakesPoly)
 
-#make up points points
+#make up points
 pos <- data.frame(
   id=1,
   x=c(-87,-82.5, -78),

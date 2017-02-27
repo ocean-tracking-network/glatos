@@ -24,8 +24,8 @@ detections.}
 in \code{detections} that contains 'min_lag'.}
 }
 \value{
-A dataframe consisting of \code{detections} with an additional 
-  column 'passedFilted' indicating if each detection did (1) or did not (0) 
+A data frame consisting of \code{detections} with an additional 
+  column 'passedFilter' indicating if each detection did (1) or did not (0) 
   pass the criteria.
 }
 \description{

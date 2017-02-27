@@ -26,9 +26,9 @@ and 'longitude'. Column names are specified with \code{detColNames}.}
          containing datetime stamps for the detections (MUST be of class 
     'POSIXct').
  \item \code{latitudeCol} is a character string with the name of the column
-    containing latititude of the receiver.
+    containing latitude of the receiver.
  \item \code{longitudeCol} is a character string with the name of the column
-    containing longititude of the receiver.
+    containing longitude of the receiver.
 }}
 
 \item{timeSep}{Amount of time (in seconds) that must pass between 

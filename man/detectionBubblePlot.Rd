@@ -60,7 +60,7 @@ default is a SpatialPolygonsDataFrame of the Great Lakes (e.g.,
     or 'animal_id' for GLATOS standard detection export data).
  \item \code{timestampCol} is a character string with the name of the column 
          containing datetime stamps for detections (MUST be of class 
-    'POSIXct'; typically 'detection_timestamp_utc'for GLATOS standard 
+    'POSIXct'; typically 'detection_timestamp_utc' for GLATOS standard 
     detection export data).  
  \item \code{latitudeCol} is a character string with the name of the column
     containing latitude of the receiver (typically 'deploy_lat' for 
@@ -83,7 +83,7 @@ default is a SpatialPolygonsDataFrame of the Great Lakes (e.g.,
     containing longitude of the receiver (typically 'deploy_long' for 
     GLATOS standard detection export data).
  \item \code{deploy_timestampCol} is a character string with the name of 
-    the column containing datetime stamps for receier deployments (MUST be 
+    the column containing datetime stamps for receiver deployments (MUST be 
     of class 'POSIXct'; typically 'deploy_date_time'for GLATOS standard 
     detection export data). 
  \item \code{recover_timestampCol} is a character string with the name of 

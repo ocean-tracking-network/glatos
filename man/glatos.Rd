@@ -16,18 +16,18 @@ applications.
 \section{Package status}{
 
 This package is in early development. To access the package or contribute 
-code, join the project at (
-[https://gitlab.oceantrack.org/chrisholbrook/glatos](https://gitlab.oceantrack.org/chrisholbrook/glatos)). If you encounter problems or have 
-questions or suggestions, please post a new issue or email 
+code, join the project at \url{
+https://gitlab.oceantrack.org/chrisholbrook/glatos}. If you encounter 
+problems or have questions or suggestions, please post a new issue or email 
 cholbrook@usgs.gov (maintainer: Chris Holbrook).
 }
 
 \section{Simulation functions for system design and evaluation}{
 
-\describe{\item{\link{clacCollisionProb}}{estimates the probability of collisions 
-for pulse-position-modulation type co-located telemetry transmitters. This is useful for 
-determining the number of fish to release or tag specifications (e.g., 
-delay).}
+\describe{\item{\link{calcCollisionProb}}{estimates the probability of 
+collisions for pulse-position-modulation type co-located telemetry 
+transmitters. This is useful for determining the number of fish to 
+release or tag specifications (e.g., delay).}
 
 \item{\link{receiverLineDetSim}}{simulates detection of acoustic-tagged 
 fish crossing a receiver line (or single receiver). This is useful 
@@ -66,15 +66,16 @@ location (defined by user) or time gap that exceeds a threshold
   are useful for exploring movement patterns of individual tagged animals.}
 \item{\link{detectionBubblePlot}}{is useful for exploring  
   distribution of tagged individuals among receivers.}
-\item{\link{movePath},\link{interpolatePath},and\link{animatePath}}{can
+\item{\link{movePath}, \link{interpolatePath} ,and \link{animatePath}}{can
 be used together to interpolate movement paths between detections and 
 save animated movement paths to a video file (mp4).}}
 }
 
 \section{Random Utility functions}{
 
-\describe{\item{\link{vrl2csv}}{converts a Vemco VRL file to a comma separated 
-  values (CSV) file using a system call to VEMCO VUE \code{convert} command.}
+\describe{\item{\link{vrl2csv}}{converts a Vemco VRL file to a comma 
+  separated values (CSV) file using a system call to VEMCO VUE 
+  \code{convert} command.}
 \item{\link{rotatePoints}}{will rotate a set of 2-d points about 
   another point.}
 \item{\link{crw}}{will simulate an unconstrained correlated random walk.}
@@ -85,14 +86,14 @@ save animated movement paths to a video file (mp4).}}
 
 \section{Installation}{
 
-The R package GLATOS is availabed from the Ocean Tracking Network's 
-gitlab \url{https://gitlab.oceantrack.org/chrisholbrook/glatos}.\cr\cr
+The R package GLATOS is available from the Ocean Tracking Network's 
+gitlab (\url{https://gitlab.oceantrack.org/chrisholbrook/glatos}).\cr\cr
 To install:\cr\cr
 1. install devtoools for R (if you haven't already)\cr
 > \code{install.packages("devtools")}\cr\cr
-2.replace USERNAME and PASSWORD in the R code below with your own \cr
-> \code{library(devtools)}\cr\cr
-3. download the package and install\cr
+2. replace USERNAME and PASSWORD in the R code below with your own download 
+the package and install \cr
+> \code{library(devtools)}\cr
 > \code{install_git("https://USERNAME:PASSWORD@gitlab.oceantrack.org/chrisholbrook/glatos.git")}
 }
 

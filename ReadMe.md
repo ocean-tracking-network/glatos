@@ -45,7 +45,7 @@ The following functions were needed by other functions in this package but might
 
 ### Installation
 
-The R package GLATOS is availabed from the Ocean Tracking Network's [gitlab](https://gitlab.oceantrack.org/chrisholbrook/glatos).  
+The R package GLATOS is available from the Ocean Tracking Network's [gitlab](https://gitlab.oceantrack.org/chrisholbrook/glatos).  
   
 To install:  
 

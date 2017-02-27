@@ -23,19 +23,19 @@ datetime stamps for the detections (MUST be of class 'POSIXct').}
      default value ("glatos_array") is consistent with GLATOS standard.
   \item \code{timestampCol} A character scalar with the name (in quotes) of the 
      column containing the timestamp data to be plotted on the x-axis.
-     The default value ("detection_timestamp_utc") is is consistent with 
+     The default value ("detection_timestamp_utc") is consistent with 
      GLATOS standard.
 }}
 
-\item{controlTable}{Optional dataframe with two columns, c('location', and 
+\item{controlTable}{Optional data frame with two columns, c('location', and 
 'y_order). The 'location' column is a character vector of locations to be 
 plotted on the y-axis and the name of the 'location' column must match the 
-'location' colum in \code{detections} dataframe 
+'location' column in \code{detections} data frame 
 (set by \code{detColNames}). The 'y_order' column specifies what order the 
 grouping variable will appear on the y-axis (y_order increases as you move 
 away from the x-axis).}
 
-\item{plotTitle}{An optional character scalar that will apear at the top of 
+\item{plotTitle}{An optional character scalar that will appear at the top of 
 the plot. Default is no title.}
 
 \item{Ylab}{A character scalar indicating the y-axis label that will appear 

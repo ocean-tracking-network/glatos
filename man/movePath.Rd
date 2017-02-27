@@ -31,7 +31,7 @@ interpolation will be used based on the ratio of linear-to-non-linear
 shortest path distances.}
 }
 \value{
-Dataframe with interpolated timestamp, lat, and lon
+Data frame with interpolated timestamp, lat, and lon
 }
 \description{
 \code{movePath} calculates interpolated positions between a pair of 

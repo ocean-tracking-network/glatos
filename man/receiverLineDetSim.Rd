@@ -109,9 +109,9 @@ xlab="Distance between receiver and transmitter")
  #two receivers only, spaced 'spc' m apart
  #define scenarios where two receiver are spaced 
  spc <- seq(100,5000, 100) #two receivers spaced 100, 200, ... 5000 m
- #loop through scenarious, estimate detection probability for each
+ #loop through scenarios, estimate detection probability for each
  for(i in 1:length(spc)){
-   if(i==1) dp <- numeric(length(spc)) #preallocate
+   if(i==1) dp <- numeric(length(spc)) #pre-allocate
    dp[i] <- receiverLineDetSim(recSpc=spc[i], rngFun=pdrf)
  }
  cbind(spc,dp) #view results  
@@ -127,7 +127,7 @@ xlab="Distance between receiver and transmitter")
  #define scenarios of fish movement rate
  swim <- seq(0.1, 5.0, 0.1) #constant velocity
  for(i in 1:length(swim)){
-   if(i==1) dp <- numeric(length(swim)) #preallocate
+   if(i==1) dp <- numeric(length(swim)) #pre-allocate
    dp[i] <- receiverLineDetSim(vel=swim[i], rngFun=pdrf)
  }
  cbind(swim,dp) #view results
