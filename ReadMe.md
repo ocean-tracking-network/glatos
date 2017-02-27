@@ -9,7 +9,7 @@ This package is in early development. To access the package or contribute code, 
 ### Contents  
 #### Simulation functions for system design and evaluation
 
-1. [`clacCollisionProb`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/calcCollisionProb.r) estimates the probability of collisions for pulse-position-modulation type co-located telemetry transmitters. This is useful for determining the number of fish to release or tag specifications (e.g., delay). 
+1. [`calcCollisionProb`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/calcCollisionProb.r) estimates the probability of collisions for pulse-position-modulation type co-located telemetry transmitters. This is useful for determining the number of fish to release or tag specifications (e.g., delay). 
 
 2. [`receiverLineDetSim`](https://gitlab.oceantrack.org/chrisholbrook/glatos/blob/master/R/receiverLineDetSim.r) simulates detection of acoustic-tagged fish crossing a receiver line (or single receiver). This is useful 
 for determining optimal spacing of receviers in a line and tag specifications (e.g., delay). 
