@@ -36,7 +36,7 @@
 #'   'color', and 'marker') that specify the plot symbols and colors for 
 #'   each animal and position type. See examples below for an example.
 #' \itemize{
-#'   \item \code{id} contains the unique identifer of individual animals and 
+#'   \item \code{id} contains the unique identifier of individual animals and 
 #'   	 corresponds to 'id' column in 'dtc'. 
 #'   \item \code{what} indicates if the options should be applied to observed
 #'     positions (detections; 'detected') or interpolated positions 
@@ -57,9 +57,9 @@
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct').
 #'	 \item \code{latitudeCol} is a character string with the name of the column
-#'     containing latititude of the receiver.
+#'     containing latitude of the receiver.
 #'	 \item \code{longitudeCol} is a character string with the name of the column
-#'     containing longititude of the receiver.
+#'     containing longitude of the receiver.
 #'	 \item \code{typeCol} is a character string with the name of the optional 
 #'     column that identifies the type of record. Default is 'record_type'. 
 #' }
@@ -134,7 +134,7 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 			call.=FALSE)
 	}
     
-	# Subset procObjwith only required columns and change names
+	# Subset procObj with only required columns and change names
 	# this makes the code more easy to understand.
 	procObj <- procObj[,unlist(procObjColNames)] #subset in order
 	

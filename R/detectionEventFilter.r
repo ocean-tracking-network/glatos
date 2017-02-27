@@ -21,9 +21,9 @@
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct').
 #'	 \item \code{latitudeCol} is a character string with the name of the column
-#'     containing latititude of the receiver.
+#'     containing latitude of the receiver.
 #'	 \item \code{longitudeCol} is a character string with the name of the column
-#'     containing longititude of the receiver.
+#'     containing longitude of the receiver.
 #' }
 #' 
 #' @param timeSep Amount of time (in seconds) that must pass between 
@@ -94,7 +94,7 @@ detectionEventFilter <- function(detections, detColNames = list(
 			call.=FALSE)
 	} 
         
-	# Sort detections by tranmitter id and then by detection timestamp.
+	# Sort detections by transmitter id and then by detection timestamp.
 	detections <- detections[order(detections$animal, 
 		detections$timestamp),]
 
@@ -139,7 +139,7 @@ detectionEventFilter <- function(detections, detColNames = list(
 						as.numeric(timestamp)[1])
 
 	# Returns dataframe containing summarized detection event data
-	message(paste0("The eventFilter distilled ", nrow(detections), 
+	message(paste0("The event filter distilled ", nrow(detections), 
 		" detections down to ", nrow(Results), " distinct detection events."))
 
 	return(Results)

@@ -16,19 +16,19 @@
 #'      default value ("glatos_array") is consistent with GLATOS standard.
 #'   \item \code{timestampCol} A character scalar with the name (in quotes) of the 
 #'      column containing the timestamp data to be plotted on the x-axis.
-#'      The default value ("detection_timestamp_utc") is is consistent with 
+#'      The default value ("detection_timestamp_utc") is consistent with 
 #'      GLATOS standard.
 #' }
 #'    
-#' @param controlTable Optional dataframe with two columns, c('location', and 
+#' @param controlTable Optional data frame with two columns, c('location', and 
 #'   'y_order). The 'location' column is a character vector of locations to be 
 #'   plotted on the y-axis and the name of the 'location' column must match the 
-#'   'location' colum in \code{detections} dataframe 
+#'   'location' column in \code{detections} data frame 
 #'   (set by \code{detColNames}). The 'y_order' column specifies what order the 
 #'   grouping variable will appear on the y-axis (y_order increases as you move 
 #'   away from the x-axis).
 #'   
-#' @param plotTitle An optional character scalar that will apear at the top of 
+#' @param plotTitle An optional character scalar that will appear at the top of 
 #'   the plot. Default is no title.
 #'   
 #' @param Ylab A character scalar indicating the y-axis label that will appear 
@@ -102,10 +102,10 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	controlTable = NULL, 
 	plotTitle = "", Ylab=NA, outFile = "AbacusPlot.png", ...){
 		
-	# Check that the specified columns appear in the detections dataframe
+	# Check that the specified columns appear in the detections data frame
 	missingCols <- setdiff(unlist(detColNames), names(detections))
 	if (length(missingCols) > 0){
-		stop(paste0("Detections dataframe is missing the following ",
+		stop(paste0("Detections data frame is missing the following ",
 			"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
 			call.=FALSE)
 	}
@@ -118,12 +118,12 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	# Check that timestamp is of class 'POSIXct'
 	if(!('POSIXct' %in% class(detections$timestamp))){
 		stop(paste0("Column '",detColNames$timestampCol,
-			"' in the detections dataframe must be of class 'POSIXct'."),
+			"' in the detections data frame must be of class 'POSIXct'."),
 			call.=FALSE)
 	} 
 
 	# If controlTable not supplied, create one - plotted in order locations 
-	#  appear in the detections dataframe	
+	#  appear in the detections data frame	
 	if(is.null(controlTable)){
 		controlTable <- data.frame(
 			location = unique(detections$location), 
@@ -131,11 +131,11 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 			stringsAsFactors = FALSE)
 	} else {
     
-		# Check that the specified columns are in the control table dataframe
+		# Check that the specified columns are in the control table data frame
 		missingCols <- 
 		  setdiff(c(detColNames$locationCol, "y_order"), names(controlTable))
 		if (length(missingCols) > 0){
-			stop(paste0("Control table dataframe is missing the following ",
+			stop(paste0("Control table data frame is missing the following ",
 				"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
 				call.=FALSE)
 		}
@@ -148,8 +148,8 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	#update Ylab value if NA
 	if(is.na(Ylab)) Ylab <- detColNames$locationCol
 		
-	# Merge detections and controlTable dataframes
-	# Keep only locations that appear in the controlTable dataframe
+	# Merge detections and controlTable data frames
+	# Keep only locations that appear in the controlTable data frame
 	detections <- merge(detections, controlTable, by = "location", all.y = TRUE)
 	
 	#sort by timestamp
@@ -160,7 +160,7 @@ abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array",
 	# Assumes 24 labels is the perfect spacing for height = 1000 px.
 	pngHeight <- max((nrow(controlTable)/24)*1000, 500)
 	
-	# Calculate a y-axis label offset to accomodate grouping variables with 
+	# Calculate a y-axis label offset to accommodate grouping variables with 
 	# different string lengths (e.g., "DRM" vs "DRM-001").
 	YlabOffset <- (max(nchar(detections$location))-3)/3
 	

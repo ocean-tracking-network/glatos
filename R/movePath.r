@@ -56,7 +56,7 @@
 #' \code{iThresh} = 1 and linear interpolation will be used for all points 
 #' when \code{iThresh} = 0.
 #' 
-#' @return Dataframe with interpolated timestamp, lat, and lon
+#' @return Data frame with interpolated timestamp, lat, and lon
 #'
 #' @seealso \code{\link{interpolatePath}}
 #'
@@ -156,7 +156,7 @@ movePath <- function (startX, startY, endX, endY, iTime, trans=NULL,
 		pathLon <- approx(out, path$x, xout = iTime)$y
 		pathLat <- approx(out, path$y, xout = iTime)$y
 		z <- data.frame(lon = pathLon, lat = pathLat, timestamp = iTime)
-		z <- z[c(-1, -(nrow(z))),] #remove frist and last
+		z <- z[c(-1, -(nrow(z))),] #remove first and last
 		return(z)
 	}
 }

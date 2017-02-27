@@ -15,7 +15,7 @@
 #' cholbrook@usgs.gov (maintainer: Chris Holbrook).
 #'
 #' @section Simulation functions for system design and evaluation:
-#' \describe{\item{\link{clacCollisionProb}}{estimates the probability of collisions 
+#' \describe{\item{\link{calcCollisionProb}}{estimates the probability of collisions 
 #' for pulse-position-modulation type co-located telemetry transmitters. This is useful for 
 #' determining the number of fish to release or tag specifications (e.g., 
 #' delay).}

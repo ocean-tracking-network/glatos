@@ -26,8 +26,8 @@
 #'   
 #' @param detColNames A list with names of columns in \code{dtc}:
 #' \itemize{
-#'   \item \code{individualCol} is a character string that uniquely identies an
-#'     an indvidual (e.g., tagged animal). Default is 'animal_id'.
+#'   \item \code{individualCol} is a character string that uniquely identifies 
+#'     an individual (e.g., tagged animal). Default is 'animal_id'.
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps. Default is 'detection_timestamp_utc'.
 #'	 \item \code{latitudeCol} is a character string with the name of the column
@@ -54,7 +54,7 @@
 #' @details
 #' Linear interpolation is used for all points when \code{rast} is not supplied.
 #' When \code{rast} is supplied, then interpolation method is determined for
-#' each pair of observed positions. For example, linear interpolaton will be 
+#' each pair of observed positions. For example, linear interpolation will be 
 #' used if the two points are exactly the same and when the ratio of linear-to-
 #  non-linear shortest path distances exceeds \code{lnlThresh}. \code{lnlThresh} 
 #' can be used to control whether non-linear or linear interpolation is used
@@ -81,7 +81,7 @@
 #' library(sp) #to plot SpatialPolygon without error
 #' plot(greatLakesPoly)
 #' 
-#' #make up points points
+#' #make up points
 #' pos <- data.frame(
 #'   id=1,
 #'   x=c(-87,-82.5, -78),
@@ -197,7 +197,7 @@ interpolatePath <- function(dtc, intTimeStamp=86400, rast=NULL, lnlThresh=0.9,
 			call.=FALSE)
 	} 	
 	
-	# Sort detections by tranmitter id and then by detection timestamp
+	# Sort detections by transmitter id and then by detection timestamp
 	dtc <- dtc[order(dtc$individual,dtc$timestamp),]
 	
 	# create sequence of timestamps based on min/max timestamps in data

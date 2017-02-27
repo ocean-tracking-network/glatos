@@ -30,8 +30,8 @@
 #'   is 30 times the nominal delay (e.g., 3600 s for a transmitter with a 
 #'   120 s nominal delay) - see Pincock (2012).
 #'
-#' @return A dataframe consisting of \code{detections} with an additional 
-#'   column 'passedFilted' indicating if each detection did (1) or did not (0) 
+#' @return A data frame consisting of \code{detections} with an additional 
+#'   column 'passedFilter' indicating if each detection did (1) or did not (0) 
 #'   pass the criteria.
 #'
 #' @author T. R. Binder
@@ -65,7 +65,7 @@ falseDetectionFilter <- function(detections, tf, minLagCol = "min_lag"){
 					"' must appear in the detections data frame."), call.=FALSE)
     }
 
-    # Identify possible false detections by comparing "min_lag" cloumn to 
+    # Identify possible false detections by comparing "min_lag" column to 
 		#  threshold defined in object "tf".
     detections$passedFilter <- ifelse(!is.na(detections[,minLagCol]) & 
 			detections[,minLagCol] <= tf, 1, 0)
