@@ -101,5 +101,6 @@ vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath=NA){
     "or specify the path to VUE.exe using the 'vueExePath' argument.\n"))
   
   #return output path(s) and file name(s)
-  return(gsub(".vrl|.VRL|.Vrl",".csv",vrl))
+  outFName <- gsub(".vrl|.VRL|.Vrl",".csv",basename(vrl))
+  return(paste0(outDir,"/",outFName))
 }
