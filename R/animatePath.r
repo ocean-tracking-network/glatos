@@ -214,7 +214,8 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 			data(greatLakesPoly) #example in glatos package
 			background <- greatLakesPoly 
 		}
-		plot(background, ylim = c(backgroundYlim) , xlim = c(backgroundXlim), 
+		#note call to plot with sp
+		sp::plot(background, ylim = c(backgroundYlim) , xlim = c(backgroundXlim), 
 			axes = FALSE, lwd = 2)
 
 		# plot fish locations, receivers, clock
