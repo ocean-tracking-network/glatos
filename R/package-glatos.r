@@ -10,7 +10,7 @@
 #' @section Package status:
 #' This package is in early development. To access the package or contribute 
 #' code, join the project at \url{
-#' https://gitlab.oceantrack.org/chrisholbrook/glatos}. If you encounter 
+#' https://gitlab.oceantrack.org/GreatLakes/glatos}. If you encounter 
 #' problems or have questions or suggestions, please post a new issue or email 
 #' cholbrook@usgs.gov (maintainer: Chris Holbrook).
 #'
@@ -70,14 +70,14 @@
 #' 
 #' @section Installation:
 #' The R package GLATOS is available from the Ocean Tracking Network's 
-#' gitlab (\url{https://gitlab.oceantrack.org/chrisholbrook/glatos}).\cr\cr
+#' gitlab (\url{https://gitlab.oceantrack.org/GreatLakes/glatos}).\cr\cr
 #' To install:\cr\cr
 #' 1. install devtoools for R (if you haven't already)\cr
 #' > \code{install.packages("devtools")}\cr\cr
 #' 2. replace USERNAME and PASSWORD in the R code below with your own download 
 #' the package and install \cr
 #' > \code{library(devtools)}\cr
-#' > \code{install_git("https://USERNAME:PASSWORD@gitlab.oceantrack.org/chrisholbrook/glatos.git")}
+#' > \code{install_git("https://gitlab.oceantrack.org/GreatLakes/glatos.git")}
 #'
 #' @docType package
 #' @name glatos

@@ -58,7 +58,7 @@ To install:
 ``` R
 library(devtools)
 # download the package and install
-install_git("https://USERNAME:PASSWORD@gitlab.oceantrack.org/chrisholbrook/glatos.git")
+install_git("https://gitlab.oceantrack.org/GreatLakes/glatos.git")
 ```
 
 
