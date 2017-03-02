@@ -239,7 +239,7 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 	message("Compiling video file (mp4)...")
 			
 	#specify a call to ffmpeg
-	ffcall <- sprintf('-framerate 30 -y -i %s/%%d.png -c:v libx264 -vf "fps=30, 
+	ffcall <- sprintf('-framerate 30 -y -i "%s/%%d.png" -c:v libx264 -vf "fps=30, 
 		format=yuv420p" animation.mp4', outDir)
 	system2(cmd, ffcall, stdout=F)	
   
