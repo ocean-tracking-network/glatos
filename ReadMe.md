@@ -27,7 +27,7 @@ for determining optimal spacing of receviers in a line and tag specifications (e
 
 1. [`kmlWorkbook`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/kmlWorkbook.r) is useful for exploring receiver and animal release locations in Google Earth. 
 
-2. [`abacusPlot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/abacusPlot.r) and [`eventPlot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/eventPlot.r) are useful for exploring movement patterns of individual tagged animals. 
+2. [`abacusPlot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/abacusPlot.R) and [`eventPlot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/eventPlot.r) are useful for exploring movement patterns of individual tagged animals. 
 
 3. [`detectionBubblePlot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/detectionBubblePlot.r) is useful for exploring distribution of tagged individuals among receivers. 
 
@@ -54,7 +54,7 @@ To install:
  install.packages("devtools")
 ```
 
-2. replace USERNAME and PASSWORD in the R code below with your own 
+2. download the package from git repository and install
 ``` R
 library(devtools)
 # download the package and install

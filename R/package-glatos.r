@@ -74,8 +74,7 @@
 #' To install:\cr\cr
 #' 1. install devtoools for R (if you haven't already)\cr
 #' > \code{install.packages("devtools")}\cr\cr
-#' 2. replace USERNAME and PASSWORD in the R code below with your own download 
-#' the package and install \cr
+#' 2. download the package and install \cr
 #' > \code{library(devtools)}\cr
 #' > \code{install_git("https://gitlab.oceantrack.org/GreatLakes/glatos.git")}
 #'
