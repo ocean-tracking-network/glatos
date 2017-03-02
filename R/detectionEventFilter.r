@@ -127,7 +127,7 @@ detectionEventFilter <- function(detections, detColNames = list(
 	detections$Event <- cumsum(detections$NewEvent)
 	
 	# Summarize the event data using the ddply function in the plyr package.
-	Results <- plyr::ddply(detections, .(Event), summarise,
+	Results <- plyr::ddply(detections, plyr::.(Event), plyr::summarise,
 				Individual = animal[1], 
 				Location = location[1], 
 				MeanLatiude = mean(lat, na.rm=T), 
