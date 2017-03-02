@@ -120,11 +120,15 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 		recover_timestampCol="recover_date_time")){
 	
 	#try calling ffmpeg
-	fftest <- ifelse(is.na(ffmpeg), "ffmpeg -version", paste(ffmpeg,"-version"))		
-	ffVers <- try(system(fftest, intern= TRUE)) #if path was not given
-	if(inherits(ffVers, "try-error")) stop(paste0('The command "ffmpeg" is not ',
-			'available in your system. Please install FFmpeg or add path.\n\n',
-			'FFmpeg is available from:\n https://ffmpeg.org/'), call.=FALSE)
+  # add exe if ffmpeg is directory
+  cmd <- ifelse(grepl("ffmpeg.exe$",ffmpeg) | is.na(ffmpeg), ffmpeg, 
+    paste0(ffmpeg,"\\ffmpeg.exe"))
+  cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', cmd)	
+  ffVers <- suppressWarnings(system2(cmd, "-version",stdout=F)) #call ffmpeg
+  if(ffVers == 127) stop(paste0('"ffmpeg.exe" was not found.\n',
+    'Ensure it is installed add added to system PATH variable\n',
+    "or specify path using input argument 'ffmpeg'\n\n",
+    'FFmpeg is available from:\n https://ffmpeg.org/'), call.=FALSE)
 		
 	# Check that required columns appear in the procObj data frame
 	missingCols <- setdiff(procObjColNames, names(procObj))
@@ -235,10 +239,9 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 	message("Compiling video file (mp4)...")
 			
 	#specify a call to ffmpeg
-	ffcall <- '-framerate 30 -i %d.png -c:v libx264 -vf "fps=30, 
-		format=yuv420p" animation.mp4'
-	ffcall <- ifelse(is.na(ffmpeg), paste("ffmpeg",ffcall), paste(ffmpeg,ffcall))
-	system(ffcall)	
+	ffcall <- sprintf('-framerate 30 -y -i %s/%%d.png -c:v libx264 -vf "fps=30, 
+		format=yuv420p" animation.mp4', outDir)
+	system2(cmd, ffcall, stdout=F)	
   
 	message("\n\nVideo and frames have been created at:\n", outDir)
 }
