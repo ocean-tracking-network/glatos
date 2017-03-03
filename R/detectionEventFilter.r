@@ -73,14 +73,17 @@ detectionEventFilter <- function(detections, detColNames = list(
 	longCol="deploy_long"), 
 	timeSep=Inf){
 
-	# Check that the specified columns appear in the detections dataframe
-	missingCols <- setdiff(unlist(detColNames), names(detections))
-	if (length(missingCols) > 0){
-		stop(paste0("Detections dataframe is missing the following ",
-			"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-			call.=FALSE)
-	}
-	
+  # Check that the specified columns appear in the detections dataframe
+  # Fail w/ helpful error otherwise.
+  colCheck = unlist(colNames %in% names(detections))
+  if ! all(colCheck) {
+    missingCols <- colNames[!colCheck]
+    stop(paste0("Detections dataframe is missing the following required fields:",
+                paste0("\n       ", names(missingCols),": '", missingCols 
+                       ,"' not found in dataframe", collapse="\n")), 
+         call.=FALSE)
+  }
+  
 	# Subset detections with only user-defined columns and change names
 	# this makes code more easy to understand (esp. ddply)
 	detections <- detections[,unlist(detColNames)] #subset
