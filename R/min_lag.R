@@ -3,7 +3,9 @@
 #' Calculate minimum time interval between successive detections for identifying false detections
 #' 
 #' Calculates minimum time interval between detections for each tag on
-#' a receiver ' @param detections A data frame containing detection
+#' a receiver
+#'
+#' @param detections A data frame containing detection
 #' data (e.g., from the standard GLATOS detection export file
 #' '*_detectionsWithLocs.csv').  Must contain the columns
 #' \code{detection_timestamp}, \code{transmitter_id}, and
@@ -15,7 +17,8 @@
 #' shortest interval (in seconds) between either the previous or next
 #' detection (whichever is closest) of the same transmitter on the
 #' same receiver.
-##' @param detColNames @param detColNames An optional list of
+#' 
+#' @param detColNames @param detColNames An optional list of
 #'     character strings with names of required columns in
 #'     \code{detections}:
 #' \itemize{
