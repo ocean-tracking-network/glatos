@@ -18,8 +18,7 @@
 #' detection (whichever is closest) of the same transmitter on the
 #' same receiver.
 #' 
-#' @param detColNames @param detColNames An optional list of
-#'     character strings with names of required columns in
+#' @param detColNames An optional list of character strings with names of required columns in
 #'     \code{detections}:
 #' \itemize{
 #'    \item \code{transmitter_id} A character scalar with the name (in quotes) of the column
@@ -33,7 +32,7 @@
 #' \item \code{receiver_sn} A character scalar with the name (in quotes) of the column
 #'     containing receiver_id.  The default value
 #'     ('receiver_id') is consistent with the GLATOS standard.
-#'
+#'}
 #' @details A new column (\code{min_lag}) is added to the input
 #'     dataframe that represents the time (in seconds) between the
 #'     current detection and the next detection (either before or
