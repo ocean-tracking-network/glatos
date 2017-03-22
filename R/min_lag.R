@@ -44,7 +44,8 @@
 #'
 #' 
 #' @author Todd Hayden
-#'
+#' @export
+#' 
 #' @examples
 #' data('walleye_detections') # example data
 #'
