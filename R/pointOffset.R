@@ -1,0 +1,35 @@
+#' @title pointOffset function
+#'
+#' @description \code{pointOffset} calculates latitude and longitude for new point that is x meters away at bearing y from a geographic location (Longitude, Latitude).
+#' uses "destPoint" function from "geosphere" package and calculations are based on great circle distances.
+#'
+#' @param lon vector of longitudes (dd) to calculate offset points for
+#' @param lat vector of latitudes (dd) to calculate offset points for
+#' @param offsetDist vector of distances to calculate offset point for (meters or feet)
+#' @param offsetDir vector of directions to calculate point from starting point.  Options are NA,"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"
+#' @param distUnit specify meters or ft ("m" or "ft")
+#' @export
+#' @examples
+#' lat <- rep(44.0, 17)
+#' lon <- rep(-83.0, 17)
+#' offsetDir <- c(NA,"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW")
+#' offsetDist <- seq(100, 1700, by = 100)
+#' distUnit <- 'm'
+#' pointOffset(lon, lat, offsetDist, offsetDir, distUnit)
+
+pointOffset <- function(lon=NA, lat=NA, offsetDist=NA, offsetDir=NA, distUnit="m"){
+ #require(geosphere) #for spatialPoints
+
+  if(distUnit == "ft") offsetDist <- 0.3048*offsetDist #conver to m if needed
+  if(!(distUnit) %in% c("ft","m")) stop ("Input attribute 'dirUnit' must be either 'm' (meters) or 'ft' (feet).")
+
+ dirKey <- data.frame(
+    txt=    c(NA,"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"),
+    deg=c(NA, 0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5),
+    stringsAsFactors=F)
+
+ bearing <- dirKey$deg[match(offsetDir, dirKey$txt)]
+
+pos <- geosphere::destPoint(cbind(lon,lat), bearing, offsetDist)
+return(pos)
+}
