@@ -3,6 +3,7 @@
 export(abacusPlot)
 export(animatePath)
 export(calcCollisionProb)
+export(condense_events)
 export(crw)
 export(crwInPolygon)
 export(detectTransmissions)
