@@ -90,7 +90,10 @@ combinations (absolute) or mean number of unique fish x interval
 combinations per fish (relative).
 }
 \examples{
-
+data(lamprey_tracks)
+#rename columns to match input arguments
+names(lamprey_tracks)[c(1,2,6,7)] <- c("ID","timestamp","lat","lon")
+positionHeatMap(lamprey_tracks)
 
 }
 \author{

@@ -80,7 +80,10 @@
 #' @author T. R. Binder
 #' 
 #' @examples
-#' 
+#' data(lamprey_tracks)
+#' #rename columns to match input arguments
+#' names(lamprey_tracks)[c(1,2,6,7)] <- c("ID","timestamp","lat","lon")
+#' positionHeatMap(lamprey_tracks)
 #' 
 #' @export
 
@@ -89,135 +92,225 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
   AbsOrRelInt="absolute", folder="PositionHeatMaps") {
 	
 	# Check that the require columns appear in the detections dataframe
-    if (sum(c("location", "ID", "timestamp", "lat", "lon") %in% names(positions)) != 4){
-        stop(paste0("Error: The columns 'ID', 'timestamp', 'lat', and 'lon' must appear in the positions dataframe."))
+    if (sum(c("location", "ID", "timestamp", "lat", "lon") %in% 
+      names(positions)) != 4){
+        stop(paste0("The columns 'ID', 'timestamp', 'lat', and ",
+          "'lon' must appear in the positions dataframe."))
     }
     
     # Check that timestamp is of class 'POSIXct'
     if(!('POSIXct' %in% class(positions$timestamp))){
-        stop(paste0("Error: Column 'timestamp' in the positions dataframe must be of class 'POSIXct'."))
+        stop(paste0("Column 'timestamp' in the positions dataframe ",
+          "must be of class 'POSIXct'."))
     } 
-    
-	# Loads required packages.
-	library(geosphere)
-	library(raster)
-	library(SDMTools)
-	library(plotrix)
 
-	
-	# Creates a new directory to contain the results based on the folder name chosen by the user.
-	filePath <- file.path(paste(getwd(), folder,sep="/"))
+	# Create new directory for results based on user-defined 'folder' 
+	filePath <- file.path(paste(getwd(), folder, sep="/"))
 	dir.create(filePath, showWarnings = FALSE) 
 		
-	# Determine the total number of unique transmitters positioned.	
+	# Total number of unique transmitters positioned
 	totalFish <- length(unique(positions$ID))
 	
-	# Creates a sequence using the inputted interval and first and last position times in the positions dataframe.
-    intervalSeq <- seq(from = as.POSIXct(as.Date(min(positions$timestamp))), to = as.POSIXct(as.Date(max(positions$timestamp) + 86400)), by = interval)
+	# Create a sequence from user-defined 'interval' and first and last position 
+	# times in the positions dataframe.
+  intervalSeq <- seq(from = as.POSIXct(as.Date(min(positions$timestamp))), 
+                     to = as.POSIXct(as.Date(max(positions$timestamp) + 86400)), 
+                     by = interval)
     
-    # Determine during which time interval each position occurred.
-    positions$Interval = findInterval(positions$timestamp, intervalSeq)
+  # Identify time interval in which each position occurred.
+  positions$Interval <- findInterval(positions$timestamp, intervalSeq)
 
 	
-	# Determines bin size for latitude and longitude based on the resolution (in meters) chosen by the user.		
-	binSizeLongitude <- (max(positions$lon) - min(positions$lon))/distMeeus(c(max(positions$lon), max(positions$lat)), c(min(positions$lon), max(positions$lat))) * resolution
-	binSizeLatitude <- (max(positions$lat) - min(positions$lat))/distMeeus(c(max(positions$lon), max(positions$lat)), c(max(positions$lon), min(positions$lat))) * resolution
+	# Determine bin size for latitude and longitude based on user-specified 
+  # resolution (in meters) chosen by the user		
+	binSizeLongitude <- (max(positions$lon) - min(positions$lon)) / 
+	  geosphere::distMeeus(
+	    c(max(positions$lon), max(positions$lat)), 
+	    c(min(positions$lon), max(positions$lat))) * resolution
+	binSizeLatitude <- (max(positions$lat) - min(positions$lat)) /
+	  geosphere::distMeeus(
+	    c(max(positions$lon), max(positions$lat)), 
+	    c(max(positions$lon), min(positions$lat))) * resolution
 	
-	# Defines the grid locations.
-	seqLongitude <- seq(min(positions$lon), max(positions$lon), by = binSizeLongitude)
-	seqLatitude <- seq(min(positions$lat), max(positions$lat), by = binSizeLatitude)
+	# Define grid locations
+	seqLongitude <- seq(min(positions$lon), max(positions$lon), 
+	  by = binSizeLongitude)
+	seqLatitude <- seq(min(positions$lat), max(positions$lat), 
+	  by = binSizeLatitude)
 	
 	# Determines in which grid number each position resides.
 	positions$BinLon <- findInterval(positions$lon, seqLongitude)
 	positions$BinLat <- findInterval(positions$lat, seqLatitude)
 	
-	# Calculate NumPositions
-	# Creates a matrix of the number of positions in each grid. Used to plot NumPositions when AbsOrRelPos == "absolute".
-	NumPositions <- as.matrix(unclass(table(factor(positions$BinLat, levels=max(positions$BinLat):1), factor(positions$BinLon, levels=1:max(positions$BinLon)))))	
-	# Sets all grids with no positions to NA so they will appear transparent in the png file.
-	NumPositions[NumPositions == 0] <- NA
-	# Convert NumPositions to NumPositions/fish. Used to plot NumPositions when AbsOrRelPos == "relative".	
-	if (AbsOrRelPos == "relative") {NumPositions = NumPositions/totalFish}
+	# Calculate NumPositions -------------------------------------------------
 	
-    # Calculate NumFish
-    # Create a new dataframe containing only no-duplicated combinations of ID, BinLat, and BinLon - required for determining the number of unique fish positioned in each grid.
-    positions2 <- positions[!(duplicated(positions[, c("ID", "BinLat", "BinLon")])),]
-    # Create a matrix of the number of unique transmitters positioned in each grid. Used to plot NumFish when AbsOrRelFish == "absolute".
-    NumFish <- as.matrix(unclass(table(factor(positions2$BinLat, levels=max(positions2$BinLat):1), factor(positions2$BinLon, levels=1:max(positions2$BinLon)))))
-    # Sets all grids with no fish positions to NA so they will appear transparent in the png file.
-    NumFish[NumFish == 0] <- NA    
-    # Convert NumFish matrix to %NumFish, relative to the total number of unique transmitters positioned in the system.	Used to plot NumFish when AbsOrRelFish == "relative".
+	# Create a matrix of the number of positions in each grid. 
+	# - used to plot NumPositions when AbsOrRelPos == "absolute"
+	NumPositions <- as.matrix(unclass(table(
+	    factor(positions$BinLat, levels = max(positions$BinLat):1), 
+	    factor(positions$BinLon, levels = 1:max(positions$BinLon)))))	
+
+	# Sets cells with no positions to NA so they will be transparent in png file
+	NumPositions[NumPositions == 0] <- NA
+	
+	# Convert NumPositions to NumPositions/fish. 
+	# - used to plot NumPositions when AbsOrRelPos == "relative"
+	if (AbsOrRelPos == "relative") NumPositions <- NumPositions/totalFish
+	
+  # Calculate NumFish ------------------------------------------------------
+    
+	# Create a new dataframe containing only no-duplicated combinations of 
+	# ID, BinLat, and BinLon 
+	# - required for determining the number of unique fish positioned in each grid
+  positions2 <- positions[!(duplicated(
+    positions[, c("ID", "BinLat", "BinLon")])),]
+  
+	# Create a matrix of the number of unique transmitters positioned in each grid
+	# - used to plot NumFish when AbsOrRelFish == "absolute"
+  NumFish <- as.matrix(unclass(table(
+    factor(positions2$BinLat, levels=max(positions2$BinLat):1), 
+    factor(positions2$BinLon, levels=1:max(positions2$BinLon)))))
+  
+  # Set cells with no positions to NA so they will be transparent in png file
+  NumFish[NumFish == 0] <- NA    
+  
+  # Convert NumFish matrix to %NumFish, relative to the total number of 
+  # unique transmitters positioned in the system
+  # - used to plot NumFish when AbsOrRelFish == "relative"
 	if (AbsOrRelFish == "relative") {NumFish = NumFish/totalFish*100}
 	
-	# Calculate NumIntervals
-	# Create a new dataframe containing only no-duplicated combinations of ID, BinLat, BinLon, and Interval - required for determining the number of unique fish positioned in each grid.
-	positions3 <- positions[!(duplicated(positions[, c("ID", "BinLat", "BinLon", "Interval")])),]
-	# Create a matrix containing the number of unique fish x interval combinations in each grid. Used to plot NumIntervals when AbsOrRelInt == "absolute".
-	NumIntervals <- as.matrix(unclass(table(factor(positions3$BinLat, levels = max(positions3$BinLat):1), factor(positions3$BinLon, levels = 1:max(positions3$BinLon)))))
+	# Calculate NumIntervals -----------------------------------------------
+  
+	# Create a new dataframe containing only no-duplicated combinations of 
+  # ID, BinLat, BinLon, and Interval 
+  # - required to determine the number of unique fish positioned in each grid
+	positions3 <- positions[!(duplicated(
+	  positions[, c("ID", "BinLat", "BinLon", "Interval")])),]
+	
+  # Create a matrix containing the number of unique fish x interval 
+  # combinations in each grid
+  # - Used to plot NumIntervals when AbsOrRelInt == "absolute"
+	NumIntervals <- as.matrix(unclass(table(
+	  factor(positions3$BinLat, levels = max(positions3$BinLat):1), 
+	  factor(positions3$BinLon, levels = 1:max(positions3$BinLon)))))
 	NumIntervals[NumIntervals == 0] <- NA
-	# Convert NumIntervals matrix to NumIntervals per fish (i.e., divides by the total number of fish detected). Used to plot NumIntervals when AbsOrRelInt == "relative".
-	if (AbsOrRelInt == "relative") {NumIntervals = NumIntervals/totalFish}
 
-	# Loop through the three matrices (NumPositions, NumFish, NumIntervals), converting each matrix to a raster and writing it to png file - files are written to the working directory and placed in a folder corresponding to the folder name chosen by the user.
+	# Convert NumIntervals matrix to NumIntervals per fish 
+	# (i.e., divide by the total number of fish detected) 
+	# - used to plot NumIntervals when AbsOrRelInt == "relative"
+	if (AbsOrRelInt == "relative") NumIntervals = NumIntervals / totalFish
+
+	# Loop through the three matrices (NumPositions, NumFish, NumIntervals)
+	# convert each matrix to raster and write it to png file 
+	# - files are written to the working directory and placed in a folder 
+	# - corresponding to the folder name chosen by the user.
 	for (j in c(1:3)) {
-		# Required for determining file names.
-		SummaryMatrixName = c("NumPositions", "NumFish", "NumIntervals")[j]
+		# Required for determining file names
+		SummaryMatrixName <- c("NumPositions", "NumFish", "NumIntervals")[j]
 		AbsOrRel <- get(c("AbsOrRelPos", "AbsOrRelFish", "AbsOrRelInt")[j])
         
-        # Read in the summary matrix for plotting.
-        nm <- get(SummaryMatrixName)
-		png(file = file.path(paste0(filePath, "/", SummaryMatrixName, "_", AbsOrRel, ".png")), bg = 'transparent', height = 2400, width = 2400)
-			par(mar = c(0,0,0,0))
-			image(raster(nm), col = c(rev(rainbow(100, end = 0.7))), axes = FALSE)
+    # Read in the summary matrix for plotting
+    nm <- get(SummaryMatrixName)
+		png(file = file.path(paste0(filePath, "/", SummaryMatrixName, "_", 
+		  AbsOrRel, ".png")), bg = 'transparent', height = 2400, width = 2400)
+		par(mar = c(0,0,0,0))
+			raster::image(raster::raster(nm), col = c(rev(rainbow(100, end = 0.7))), 
+			              axes = FALSE)
 			if (legendPos == "bottom"){
-				color.legend(0.4, 0.01, 0.8, 0.02, round(seq(min(nm, na.rm = TRUE), max(nm, na.rm = TRUE), by = (max(nm, na.rm = TRUE) - min(nm, na.rm = TRUE))/4), 0),rev(rainbow(100, end = 0.7)), gradient = "x", font = 2, family = "sans", cex = 3)
-			}else{
-				color.legend(0.99, 0.4, 1.0, 0.8, round(seq(min(nm, na.rm = TRUE), max(nm, na.rm = TRUE), by = (max(nm, na.rm = TRUE) - min(nm, na.rm = TRUE))/4), 0), rev(rainbow(100, end = 0.7)), gradient = "y", font = 2, family = "sans", cex = 3)
+				plotrix::color.legend(0.4, 0.01, 0.8, 0.02, 
+				             round(seq(min(nm, na.rm = TRUE), 
+				                       max(nm, na.rm = TRUE), 
+				                       by = (max(nm, na.rm = TRUE) - 
+				                             min(nm, na.rm = TRUE))/4), 0),
+				             rev(rainbow(100, end = 0.7)), 
+				             gradient = "x", font = 2, family = "sans", cex = 3)
+			} else {
+				plotrix::color.legend(0.99, 0.4, 1.0, 0.8, 
+				             round(seq(min(nm, na.rm = TRUE), 
+				                       max(nm, na.rm = TRUE), 
+				                       by = (max(nm, na.rm = TRUE) - 
+				                             min(nm, na.rm = TRUE))/4), 0), 
+				             rev(rainbow(100, end = 0.7)), 
+				             gradient = "y", font = 2, family = "sans", cex = 3)
 			}	
 		dev.off()
 	}
 	
 		
-	# Change row and column names for summary data to corresponding longitudes and latitudes for the corresponding grids. 
+	# Change row and column names for summary data to corresponding 
+	# longitudes and latitudes for the corresponding grids. 
 	rownames(NumFish) <- round(rev(seqLatitude), 6)
 	colnames(NumFish) <- round(seqLongitude, 6)
 	rownames(NumPositions) <- round(rev(seqLatitude), 6)
 	colnames(NumPositions) <- round(seqLongitude, 6)
-    rownames(NumIntervals) <- round(rev(seqLatitude), 6)
-    colnames(NumIntervals) <- round(seqLongitude, 6)
+  rownames(NumIntervals) <- round(rev(seqLatitude), 6)
+  colnames(NumIntervals) <- round(seqLongitude, 6)
     
-    # Write csv files containing the summary data used to make the plots.
-    write.csv(NumFish, paste0(filePath, "/NumFish_", AbsOrRelFish, ".csv"))
-    write.csv(NumPositions, paste0(filePath, "/NumPositions_", AbsOrRelPos,".csv"))
-    write.csv(NumIntervals, paste0(filePath, "/NumIntervals_", AbsOrRelInt,".csv"))
+  # Write csv files containing the summary data used to make the plots.
+  write.csv(NumFish, paste0(filePath, "/NumFish_", AbsOrRelFish, ".csv"))
+  write.csv(NumPositions, paste0(filePath, "/NumPositions_", 
+            AbsOrRelPos,".csv"))
+  write.csv(NumIntervals, paste0(filePath, "/NumIntervals_", 
+            AbsOrRelInt,".csv"))
     
-	# Write a text file containing the information required to output a kml file. This is where the N, S, E, and W bounds of the image are defined for rendering the image in Google Earth.
+	# Write a text file containing the information required to output a kml file. 
+  # This is where the N, S, E, and W bounds of the image are defined for 
+  # rendering the image in Google Earth.
 	
-    kml <- paste0('<?xml version="1.0" encoding="UTF-8"?>','<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">',
+    kml <- paste0('<?xml version="1.0" encoding="UTF-8"?>',
+                  '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">',
     '<Folder>',
         '<name>',folder,'</name>',
             '<open>',1,'</open>',
             '<GroundOverlay>',
                 paste0('<name>NumPositions_',AbsOrRelPos,'</name>'),
-                '<Icon>',paste0('<href>',file.path(paste0(filePath, "/NumPositions_", AbsOrRelPos,".png")),'</href>'),'<viewBoundScale>0.75</viewBoundScale>','</Icon>',
-                '<LatLonBox>',paste0('<north>',max(positions$lat),'</north>'), paste0('<south>',min(positions$lat),'</south>'),paste0('<east>',max(positions$lon),'</east>'),paste0('<west>',min(positions$lon),'</west>'),'</LatLonBox>',
+                '<Icon>',
+                   paste0('<href>',file.path(paste0(filePath, 
+                   "/NumPositions_", AbsOrRelPos,".png")),'</href>'),
+                   '<viewBoundScale>0.75</viewBoundScale>',
+                '</Icon>',
+                '<LatLonBox>',
+                   paste0('<north>',max(positions$lat),'</north>'), 
+                   paste0('<south>',min(positions$lat),'</south>'),
+                   paste0('<east>',max(positions$lon),'</east>'),
+                   paste0('<west>',min(positions$lon),'</west>'),
+                '</LatLonBox>',
             '</GroundOverlay>',
             '<GroundOverlay>',
                 paste0('<name>NumFish_',AbsOrRelFish,'</name>'),
-                '<Icon>',paste0('<href>',file.path(paste0(filePath, "/NumFish_", AbsOrRelFish, ".png")),'</href>'),'<viewBoundScale>0.75</viewBoundScale>','</Icon>',
-                '<LatLonBox>',paste0('<north>',max(positions$lat),'</north>'), paste0('<south>',min(positions$lat),'</south>'),paste0('<east>',max(positions$lon),'</east>'),paste0('<west>',min(positions$lon),'</west>'),'</LatLonBox>',
+                '<Icon>',
+                   paste0('<href>',file.path(paste0(filePath, 
+                     "/NumFish_", AbsOrRelFish, ".png")),'</href>'),
+                   '<viewBoundScale>0.75</viewBoundScale>','</Icon>',
+                '<LatLonBox>',
+                   paste0('<north>',max(positions$lat),'</north>'), 
+                   paste0('<south>',min(positions$lat),'</south>'),
+                   paste0('<east>',max(positions$lon),'</east>'),
+                   paste0('<west>',min(positions$lon),'</west>'),
+                '</LatLonBox>',
             '</GroundOverlay>',
             '<GroundOverlay>',
                 paste0('<name>NumIntervals_',AbsOrRelInt,'</name>'),
-                '<Icon>',paste0('<href>',file.path(paste0(filePath, "/NumIntervals_", AbsOrRelInt,".png")),'</href>'),'<viewBoundScale>0.75</viewBoundScale>','</Icon>',
-                '<LatLonBox>',paste0('<north>',max(positions$lat),'</north>'),	paste0('<south>',min(positions$lat),'</south>'),paste0('<east>',max(positions$lon),'</east>'),paste0('<west>',min(positions$lon),'</west>'),'</LatLonBox>',
+                '<Icon>',
+                  paste0('<href>',file.path(paste0(filePath, "/NumIntervals_", 
+                    AbsOrRelInt,".png")),'</href>'),
+                  '<viewBoundScale>0.75</viewBoundScale>','</Icon>',
+                '<LatLonBox>',
+                  paste0('<north>',max(positions$lat),'</north>'),	
+                  paste0('<south>',min(positions$lat),'</south>'),
+                  paste0('<east>',max(positions$lon),'</east>'),
+                  paste0('<west>',min(positions$lon),'</west>'),
+                '</LatLonBox>',
             '</GroundOverlay>',
         '</Folder>',
     '</kml>')
 
-	# Write the kml object to kml text file and places it in the folder containing the three png files.
-	write.table(kml, file = file.path(paste0(filePath, "/", folder, ".kml")), col.names = FALSE, row.names = FALSE, quote = FALSE)
+	# Write the kml object to kml text file and places it in the folder 
+  # containing the three png files.
+	write.table(kml, file = file.path(paste0(filePath, "/", folder, ".kml")), 
+	  col.names = FALSE, row.names = FALSE, quote = FALSE)
 	
-	return(paste0("Output file are located in a folder named '", folder, "' located in the following directory: ", getwd()))
+	message(paste0("Output file are located in a folder named '", 
+	  folder, "' located in the following directory: ", getwd()))
 }	
 
