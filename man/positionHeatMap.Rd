@@ -7,7 +7,7 @@
 positionHeatMap(positions, resolution = 10, interval = 3600,
   legendPos = "right", AbsOrRelFish = "absolute",
   AbsOrRelPos = "absolute", AbsOrRelInt = "absolute",
-  folder = "PositionHeatMaps", ...)
+  folder = "PositionHeatMaps", x_limits = NULL, y_limits = NULL, ...)
 }
 \arguments{
 \item{positions}{A dataframe containing detection data with at least 4 
@@ -47,15 +47,15 @@ intervals in each grid) or as relative number (i.e., mean number of
 intervals per fish detected ). Valid arguments are c("absolute", 
 "relative"). Default is "absolute".}
 
-\item{folder}{A character string indicating the name of the output folder 
-(placed in the working directory). This will also be the name of the kml 
-file for viewing the heat maps in Google Earth. Default is 
-"PositionsHeatMaps".}
+\item{folder}{A character string indicating the output folder. 
+If path is not specified then \code{folder} will be created in the 
+working directory. The base name (\code{basename(folder)}) will also be 
+used as the name of the kml file for viewing the heat maps in 
+Google Earth. Default is "PositionsHeatMaps".}
 
-\item{...}{Other parameters passed to plot (e.g., \code{xlim})}
+\item{x_limits}{An optional 2-element numeric with limits of x axis.}
 
-\item{inputTZ}{A character string specifying the timezone of the timestamps 
-in the positions dataframe (default = "GMT").}
+\item{y_limits}{An optional 2-element numeric with limits of y axis.}
 }
 \value{
 3 png files (one for each of number of positions, number of fish, 
@@ -64,7 +64,7 @@ in the positions dataframe (default = "GMT").}
 3 CSV files containing summary data used to create the plots.
 }
 \description{
-Function for creating heat maps to display the spatial distribution of 
+Create heat maps to display the spatial distribution of 
  acoustic telemetry positions.
 }
 \details{
@@ -99,5 +99,5 @@ positionHeatMap(lamprey_tracks)
 
 }
 \author{
-T. R. Binder
+Thomas R. Binder
 }
