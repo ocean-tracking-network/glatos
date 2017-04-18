@@ -1,6 +1,6 @@
 #' Position Heat Maps
 #'
-#' Function for creating heat maps to display the spatial distribution of 
+#' Create heat maps to display the spatial distribution of 
 #'  acoustic telemetry positions. 
 #'
 #' @param positions A dataframe containing detection data with at least 4 
@@ -40,13 +40,15 @@
 #'  intervals per fish detected ). Valid arguments are c("absolute", 
 #'  "relative"). Default is "absolute".
 #'  
-#' @param folder A character string indicating the name of the output folder 
-#'  (placed in the working directory). This will also be the name of the kml 
-#'  file for viewing the heat maps in Google Earth. Default is 
-#'  "PositionsHeatMaps".
+#' @param folder A character string indicating the output folder. 
+#'  If path is not specified then \code{folder} will be created in the 
+#'  working directory. The base name (\code{basename(folder)}) will also be 
+#'  used as the name of the kml file for viewing the heat maps in 
+#'  Google Earth. Default is "PositionsHeatMaps".
 #'  
-#' @param inputTZ A character string specifying the timezone of the timestamps 
-#'  in the positions dataframe (default = "GMT").
+#' @param x_limits An optional 2-element numeric with limits of x axis.
+#'  
+#' @param y_limits An optional 2-element numeric with limits of y axis.
 #'  
 #' @details NumIntervals is the number of unique fish x interval 
 #' combinations that occurred each grid cell. For example, in 4 hours there 
@@ -77,7 +79,7 @@
 #' 1 kml file for viewing the heat maps in Google Earth.
 #' 3 CSV files containing summary data used to create the plots.
 #' 
-#' @author T. R. Binder
+#' @author Thomas R. Binder
 #' 
 #' @examples
 #' data(lamprey_tracks)
@@ -89,9 +91,10 @@
 
 positionHeatMap <- function (positions, resolution=10, interval=3600, 
   legendPos="right", AbsOrRelFish="absolute", AbsOrRelPos="absolute", 
-  AbsOrRelInt="absolute", folder="PositionHeatMaps") {
+  AbsOrRelInt="absolute", folder="PositionHeatMaps", x_limits=NULL,
+  y_limits=NULL,...) {
 	
-	# Check that the require columns appear in the detections dataframe
+	# Check that the required columns appear in the detections dataframe
     if (sum(c("location", "ID", "timestamp", "lat", "lon") %in% 
       names(positions)) != 4){
         stop(paste0("The columns 'ID', 'timestamp', 'lat', and ",
@@ -105,9 +108,10 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
     } 
 
 	# Create new directory for results based on user-defined 'folder' 
-	filePath <- file.path(paste(getwd(), folder, sep="/"))
-	dir.create(filePath, showWarnings = FALSE) 
-		
+  dir.create(folder, showWarnings = FALSE) 
+  filePath <- normalizePath(folder)
+  folder <- basename(folder)
+
 	# Total number of unique transmitters positioned
 	totalFish <- length(unique(positions$ID))
 	
@@ -123,19 +127,23 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
 	
 	# Determine bin size for latitude and longitude based on user-specified 
   # resolution (in meters) chosen by the user		
-	binSizeLongitude <- (max(positions$lon) - min(positions$lon)) / 
+	if(is.null(x_limits)) x_limits <- range(positions$lon)
+	if(is.null(y_limits)) y_limits <- range(positions$lat)
+  
+  binSizeLongitude <- (x_limits[2] - x_limits[1]) / 
 	  geosphere::distMeeus(
-	    c(max(positions$lon), max(positions$lat)), 
-	    c(min(positions$lon), max(positions$lat))) * resolution
-	binSizeLatitude <- (max(positions$lat) - min(positions$lat)) /
+	    c(x_limits[2], y_limits[2]), 
+	    c(x_limits[1], y_limits[2])) * resolution
+	binSizeLatitude <- (y_limits[2] - y_limits[1]) /
 	  geosphere::distMeeus(
-	    c(max(positions$lon), max(positions$lat)), 
-	    c(max(positions$lon), min(positions$lat))) * resolution
-	
+	    c(x_limits[2], y_limits[2]), 
+	    c(x_limits[2], y_limits[1])) * resolution
+
+  
 	# Define grid locations
-	seqLongitude <- seq(min(positions$lon), max(positions$lon), 
+	seqLongitude <- seq(x_limits[1], x_limits[2], 
 	  by = binSizeLongitude)
-	seqLatitude <- seq(min(positions$lat), max(positions$lat), 
+	seqLatitude <- seq(y_limits[1], y_limits[2], 
 	  by = binSizeLatitude)
 	
 	# Determines in which grid number each position resides.
@@ -147,8 +155,8 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
 	# Create a matrix of the number of positions in each grid. 
 	# - used to plot NumPositions when AbsOrRelPos == "absolute"
 	NumPositions <- as.matrix(unclass(table(
-	    factor(positions$BinLat, levels = max(positions$BinLat):1), 
-	    factor(positions$BinLon, levels = 1:max(positions$BinLon)))))	
+	    factor(positions$BinLat, levels = length(seqLatitude):1), 
+	    factor(positions$BinLon, levels = 1:length(seqLongitude)))))	
 
 	# Sets cells with no positions to NA so they will be transparent in png file
 	NumPositions[NumPositions == 0] <- NA
@@ -168,8 +176,8 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
 	# Create a matrix of the number of unique transmitters positioned in each grid
 	# - used to plot NumFish when AbsOrRelFish == "absolute"
   NumFish <- as.matrix(unclass(table(
-    factor(positions2$BinLat, levels=max(positions2$BinLat):1), 
-    factor(positions2$BinLon, levels=1:max(positions2$BinLon)))))
+    factor(positions2$BinLat, levels=length(seqLatitude):1), 
+    factor(positions2$BinLon, levels=1:length(seqLongitude)))))
   
   # Set cells with no positions to NA so they will be transparent in png file
   NumFish[NumFish == 0] <- NA    
@@ -191,8 +199,8 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
   # combinations in each grid
   # - Used to plot NumIntervals when AbsOrRelInt == "absolute"
 	NumIntervals <- as.matrix(unclass(table(
-	  factor(positions3$BinLat, levels = max(positions3$BinLat):1), 
-	  factor(positions3$BinLon, levels = 1:max(positions3$BinLon)))))
+	  factor(positions3$BinLat, levels = length(seqLatitude):1), 
+	  factor(positions3$BinLon, levels = 1:length(seqLongitude)))))
 	NumIntervals[NumIntervals == 0] <- NA
 
 	# Convert NumIntervals matrix to NumIntervals per fish 
@@ -214,8 +222,9 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
 		png(file = file.path(paste0(filePath, "/", SummaryMatrixName, "_", 
 		  AbsOrRel, ".png")), bg = 'transparent', height = 2400, width = 2400)
 		par(mar = c(0,0,0,0))
-			raster::image(raster::raster(nm), col = c(rev(rainbow(100, end = 0.7))), 
-			              axes = FALSE)
+			rast <- raster::raster(nm) #coerce to raster
+			raster::image(rast, col = c(rev(rainbow(100, end = 0.7))), axes = FALSE)
+
 			if (legendPos == "bottom"){
 				plotrix::color.legend(0.4, 0.01, 0.8, 0.02, 
 				             round(seq(min(nm, na.rm = TRUE), 
@@ -270,10 +279,10 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
                    '<viewBoundScale>0.75</viewBoundScale>',
                 '</Icon>',
                 '<LatLonBox>',
-                   paste0('<north>',max(positions$lat),'</north>'), 
-                   paste0('<south>',min(positions$lat),'</south>'),
-                   paste0('<east>',max(positions$lon),'</east>'),
-                   paste0('<west>',min(positions$lon),'</west>'),
+                   paste0('<north>',y_limits[2],'</north>'), 
+                   paste0('<south>',y_limits[1],'</south>'),
+                   paste0('<east>',x_limits[2],'</east>'),
+                   paste0('<west>',x_limits[1],'</west>'),
                 '</LatLonBox>',
             '</GroundOverlay>',
             '<GroundOverlay>',
@@ -283,10 +292,10 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
                      "/NumFish_", AbsOrRelFish, ".png")),'</href>'),
                    '<viewBoundScale>0.75</viewBoundScale>','</Icon>',
                 '<LatLonBox>',
-                   paste0('<north>',max(positions$lat),'</north>'), 
-                   paste0('<south>',min(positions$lat),'</south>'),
-                   paste0('<east>',max(positions$lon),'</east>'),
-                   paste0('<west>',min(positions$lon),'</west>'),
+                   paste0('<north>',y_limits[2],'</north>'), 
+                   paste0('<south>',y_limits[1],'</south>'),
+                   paste0('<east>',x_limits[2],'</east>'),
+                   paste0('<west>',x_limits[1],'</west>'),
                 '</LatLonBox>',
             '</GroundOverlay>',
             '<GroundOverlay>',
@@ -296,10 +305,10 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
                     AbsOrRelInt,".png")),'</href>'),
                   '<viewBoundScale>0.75</viewBoundScale>','</Icon>',
                 '<LatLonBox>',
-                  paste0('<north>',max(positions$lat),'</north>'),	
-                  paste0('<south>',min(positions$lat),'</south>'),
-                  paste0('<east>',max(positions$lon),'</east>'),
-                  paste0('<west>',min(positions$lon),'</west>'),
+                  paste0('<north>',y_limits[2],'</north>'),	
+                  paste0('<south>',y_limits[1],'</south>'),
+                  paste0('<east>',x_limits[2],'</east>'),
+                  paste0('<west>',x_limits[1],'</west>'),
                 '</LatLonBox>',
             '</GroundOverlay>',
         '</Folder>',
@@ -310,7 +319,6 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
 	write.table(kml, file = file.path(paste0(filePath, "/", folder, ".kml")), 
 	  col.names = FALSE, row.names = FALSE, quote = FALSE)
 	
-	message(paste0("Output file are located in a folder named '", 
-	  folder, "' located in the following directory: ", getwd()))
+	message(paste0("Output file are located in:\n", filePath))
 }	
 

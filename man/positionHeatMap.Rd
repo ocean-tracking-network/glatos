@@ -7,7 +7,7 @@
 positionHeatMap(positions, resolution = 10, interval = 3600,
   legendPos = "right", AbsOrRelFish = "absolute",
   AbsOrRelPos = "absolute", AbsOrRelInt = "absolute",
-  folder = "PositionHeatMaps")
+  folder = "PositionHeatMaps", ...)
 }
 \arguments{
 \item{positions}{A dataframe containing detection data with at least 4 
@@ -51,6 +51,8 @@ intervals per fish detected ). Valid arguments are c("absolute",
 (placed in the working directory). This will also be the name of the kml 
 file for viewing the heat maps in Google Earth. Default is 
 "PositionsHeatMaps".}
+
+\item{...}{Other parameters passed to plot (e.g., \code{xlim})}
 
 \item{inputTZ}{A character string specifying the timezone of the timestamps 
 in the positions dataframe (default = "GMT").}
