@@ -52,8 +52,8 @@ workbook_specs$v1.3$deployment <- read.table(text = "
   intend_lat                numeric
   intend_long               numeric
   otn_mission_id            text
-  deploy_date_time          date
-  glatos_deploy_date_time   date
+  deploy_date_time          timestamp
+  glatos_deploy_date_time   timestamp
   glatos_timezone           text
   deploy_lat                numeric
   deploy_long               numeric
@@ -66,7 +66,7 @@ workbook_specs$v1.3$deployment <- read.table(text = "
   glatos_ins_frequency      text
   ins_serial_no             text
   rcv_modem_address         text
-  sync_date_time            date
+  sync_date_time            timestamp
   memory_erased_at_deploy   text
   rcv_battery_install_date  date
   rcv_expected_battery_life text
@@ -92,7 +92,7 @@ workbook_specs$v1.3$recovery <- read.table(text= "
   ins_serial_number         text
   recovered                 text
   recover_date_time         text
-  glatos_recover_date_time  date
+  glatos_recover_date_time  timestamp
   glatos_timezone           text
   recover_lat               numeric
   recover_long              numeric
@@ -134,8 +134,8 @@ workbook_specs$v1.3$tagging <- read.table(text="
   release_location                          text
   release_latitude                          numeric
   release_longitude                         numeric
-  utc_release_date_time                     date
-  glatos_release_date_time                  date
+  utc_release_date_time                     timestamp
+  glatos_release_date_time                  timestamp
   glatos_timezone                           text
   capture_depth                             numeric
   temperature_change                        numeric
