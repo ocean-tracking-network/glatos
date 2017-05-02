@@ -81,6 +81,7 @@ workbook_specs$v1.3$deployment <- read.table(text = "
   stringsAsFactors = FALSE)
 
 workbook_specs$v1.3$recovery <- read.table(text= "
+  name                      type
   glatos_array              text
   otn_array                 text
   station_no                text
