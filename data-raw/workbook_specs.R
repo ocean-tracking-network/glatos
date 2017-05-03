@@ -92,7 +92,7 @@ workbook_specs$v1.3$recovery <- read.table(text= "
   ins_model_number          text
   ins_serial_number         text
   recovered                 text
-  recover_date_time         text
+  recover_date_time         timestamp
   glatos_recover_date_time  timestamp
   glatos_timezone           text
   recover_lat               numeric
