@@ -8,8 +8,8 @@ read_glatos_workbook(workbook, wb_version = NULL, read_all = FALSE)
 }
 \arguments{
 \item{workbook}{A character string with path and name of workbook in 
-standard GLATOS format (*.xlsm). If only file name is given, then it is 
-assumed that file is located in the working directory.}
+standard GLATOS format (*.xlsm). If only file name is given, then the 
+file must be located in the working directory.}
 
 \item{wb_version}{An optional character string with 
 the workbook version number. If NULL (default value) then version will be
@@ -23,18 +23,16 @@ standard GLATOS workbook will be imported (project-specific columns will
 be ignored.)}
 }
 \value{
-A list of class \code{glatos_workbook} with three elements::
+A list of class \code{glatos_workbook} with six elements:
 \describe{
-  \item{metadata}{A list (project code, principal investigator, contact)}
-  \item{instruments}{A data frame with instrument data (receivers, 
-    transmitters)}
-  \item{animals}{A data frame with animal data}
+  \item{metadata}{A list with data about the project.}
+  \item{instruments}{A data frame with information about stations.}
+  \item{animals}{A data frame with data about animals.}
 }
 }
 \description{
-Read data from a GLATOS workbook (xlsm file) and save it as a glatos_workbook object--
-a named list with data about the workbook (metadata), receivers and 
-transmitters (instruments), and tagged animals.
+Read data from a GLATOS workbook (xlsm file) and return a list of class 
+\code{glatos_workbook}.
 }
 \details{
 If \code{read_all = TRUE} then the type of data in each user-defined 
@@ -44,7 +42,7 @@ column will be 'guessed' by read_excel; this may throw some warnings.
 #get path to example GLATOS Data Workbook
 wb_file <- system.file("extdata", 
   "SMRSL_GLATOS_20140828.xlsm",package="glatos")
-read_glatos_workbook(wb_file)
+wb <- read_glatos_workbook(wb_file)
 
 }
 \author{

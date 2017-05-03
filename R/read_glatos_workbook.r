@@ -2,13 +2,12 @@
 #' Read data from a GLATOS workbook
 #' 
 #' @description
-#' Read data from a GLATOS workbook (xlsm file) and save it as a glatos_workbook object--
-#' a named list with data about the workbook (metadata), receivers and 
-#' transmitters (instruments), and tagged animals.
+#' Read data from a GLATOS workbook (xlsm file) and return a list of class 
+#' \code{glatos_workbook}.
 #'
 #' @param workbook A character string with path and name of workbook in 
-#'  standard GLATOS format (*.xlsm). If only file name is given, then it is 
-#'  assumed that file is located in the working directory.
+#'  standard GLATOS format (*.xlsm). If only file name is given, then the 
+#'  file must be located in the working directory.
 #'  
 #' @param wb_version An optional character string with 
 #'  the workbook version number. If NULL (default value) then version will be
@@ -25,12 +24,11 @@
 #' If \code{read_all = TRUE} then the type of data in each user-defined 
 #' column will be 'guessed' by read_excel; this may throw some warnings.
 #' 
-#' @return A list of class \code{glatos_workbook} with three elements::
+#' @return A list of class \code{glatos_workbook} with six elements:
 #' \describe{
-#'   \item{metadata}{A list (project code, principal investigator, contact)}
-#'   \item{instruments}{A data frame with instrument data (receivers, 
-#'     transmitters)}
-#'   \item{animals}{A data frame with animal data}
+#'   \item{metadata}{A list with data about the project.}
+#'   \item{instruments}{A data frame with information about stations.}
+#'   \item{animals}{A data frame with data about animals.}
 #' }
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) 
@@ -107,97 +105,121 @@ read_glatos_workbook <- function(workbook, wb_version=NULL, read_all=FALSE) {
   wb <- list() #preallocate
   
   if(read_all)  wb[sheets] <- NA #add element for each sheet
-  
+
+  #-Workbook v1.3----------------------------------------------------------------  
   if (wb_version == "1.3") {
-      wb[names(workbook_specs$v1.3)] <- NA
-      
-      #Get project data
-      tmp <- readxl::read_excel(workbook, sheet = "Project", skip = 1, 
-                                col_names=FALSE, col_types = "text")
-      tmp <- data.frame(tmp, stringsAsFactors=F)
-      
-      wb$project <- list(project_code = tmp[1,2],
-                          principle_investigator = tmp[2,2],
-                          pi_email = tmp[3,2],
-                          source_file=basename(workbook),
-                          wb_version="1.3",
-                          created=Sys.time())      
-  
-      #Read all sheets except project
-      if(read_all) { 
-        sheets_to_read <- sheets
-      } else {
-        sheets_to_read <- names(workbook_specs[[paste0("v", wb_version)]])
-      }
-      sheets_to_read <- setdiff(sheets_to_read, "project") #exclude project
-      
-      for(i in 1:length(sheets_to_read)){
-        spec_i <- workbook_specs[[paste0("v", wb_version)]][[sheets_to_read[i]]]
-        if(read_all) {
-          #read one row to get dimension
-          tmp <- readxl::read_excel(workbook, 
-            sheet = match(sheets_to_read[i], tolower(sheets)), 
-            skip = 1, n_max = 1, 
-            range = col_range[[sheets_to_read[i]]])
-          #identify new columns to add
-          if (ncol(tmp) > nrow(spec_i)) {
-            new_cols <- (nrow(spec_i) + 1):ncol(tmp)
-            spec_i[new_cols,] <- NA #add new
-            spec_i$type[new_cols] <- rep("guess", length(new_cols))
-            spec_i$name[new_cols] <- names(tmp)[new_cols]
-          }
-        }
-      
-        # - note 'date' substituted for 'timestamp' in type column
+    wb[names(workbook_specs$v1.3)] <- NA
+    
+    #Get project data
+    tmp <- readxl::read_excel(workbook, sheet = "Project", skip = 1, 
+                              col_names=FALSE, col_types = "text")
+    tmp <- data.frame(tmp, stringsAsFactors=F)
+    
+    wb$project <- list(project_code = tmp[1,2],
+                        principle_investigator = tmp[2,2],
+                        pi_email = tmp[3,2],
+                        source_file=basename(workbook),
+                        wb_version="1.3",
+                        created=Sys.time())      
+
+    #Read all sheets except project
+    if(read_all) { 
+      sheets_to_read <- sheets
+    } else {
+      sheets_to_read <- names(workbook_specs[[paste0("v", wb_version)]])
+    }
+    sheets_to_read <- setdiff(sheets_to_read, "project") #exclude project
+    
+    for(i in 1:length(sheets_to_read)){
+      spec_i <- workbook_specs[[paste0("v", wb_version)]][[sheets_to_read[i]]]
+      if(read_all) {
+        #read one row to get dimension
         tmp <- readxl::read_excel(workbook, 
           sheet = match(sheets_to_read[i], tolower(sheets)), 
-          skip = 1, 
-          range = col_range[[sheets_to_read[i]]],
-          col_types = gsub("timestamp","date", spec_i$type))
-        date_cols <- which(spec_i$type == "date")
-        for(j in date_cols) tmp[,j] <- as.Date(data.frame(tmp)[,j])
-        names(tmp) <- tolower(names(tmp))
-        wb[[sheets_to_read[i]]] <- data.frame(tmp)
-   
+          skip = 1, n_max = 1, 
+          range = col_range[[sheets_to_read[i]]])
+        #identify new columns to add
+        if (ncol(tmp) > nrow(spec_i)) {
+          new_cols <- (nrow(spec_i) + 1):ncol(tmp)
+          spec_i[new_cols,] <- NA #add new
+          spec_i$type[new_cols] <- rep("guess", length(new_cols))
+          spec_i$name[new_cols] <- names(tmp)[new_cols]
+        }
       }
-      
-      #fix time zone errors in deployment
-      dep_timezones <- unique(wb$deployment$glatos_timezone)
-      for(i in 1:length(dep_timezones)){ 
-        rows_i <- which(wb$deployment$glatos_timezone == dep_timezones[i])
-        
-        #glatos_deploy_date_time
-        wb$deployment$glatos_deploy_date_time[rows_i] <- 
-            fix_tz( wb$deployment$glatos_deploy_date_time[rows_i],
-            paste0("US/",dep_timezones[i]))
-      }
+    
+      # - note 'date' substituted for 'timestamp' in type column
+      tmp <- readxl::read_excel(workbook, 
+        sheet = match(sheets_to_read[i], tolower(sheets)), 
+        skip = 1, 
+        range = col_range[[sheets_to_read[i]]],
+        col_types = gsub("timestamp","date", spec_i$type))
+      date_cols <- which(spec_i$type == "date")
+      for(j in date_cols) tmp[,j] <- as.Date(data.frame(tmp)[,j])
+      names(tmp) <- tolower(names(tmp))
+      wb[[sheets_to_read[i]]] <- data.frame(tmp)
  
-      #fix time zone errors in recovery
-      rec_timezones <- unique(wb$recovery$glatos_timezone)
-      for(i in 1:length(rec_timezones)){ 
-        rows_i <- which(wb$recovery$glatos_timezone == rec_timezones[i])
-        
-        #glatos_recover_date_time 
-        wb$recovery$glatos_recover_date_time[rows_i] <- 
-          fix_tz( wb$recovery$glatos_recover_date_time[rows_i],
-            paste0("US/",rec_timezones[i]))
-      }     
+    }
+    
+    #fix time zone errors in deployment
+    dep_timezones <- unique(wb$deployment$glatos_timezone)
+    for(i in 1:length(dep_timezones)){ 
+      rows_i <- which(wb$deployment$glatos_timezone == dep_timezones[i])
+      
+      #glatos_deploy_date_time
+      wb$deployment$glatos_deploy_date_time[rows_i] <- 
+          fix_tz( wb$deployment$glatos_deploy_date_time[rows_i],
+          paste0("US/",dep_timezones[i]))
+    }
 
-      #fix time zone errors in tagging
-      tag_timezones <- unique(wb$tagging$glatos_timezone)
-      for(i in 1:length(tag_timezones)){ 
-        rows_i <- which(wb$tagging$glatos_timezone == tag_timezones[i])
-        
-        #glatos_release_date_time
-        wb$tagging$glatos_release_date_time[rows_i] <- 
-          fix_tz( wb$tagging$glatos_release_date_time[rows_i],
-            paste0("US/",tag_timezones[i]))
-      }          
+    #fix time zone errors in recovery
+    rec_timezones <- unique(wb$recovery$glatos_timezone)
+    for(i in 1:length(rec_timezones)){ 
+      rows_i <- which(wb$recovery$glatos_timezone == rec_timezones[i])
+      
+      #glatos_recover_date_time 
+      wb$recovery$glatos_recover_date_time[rows_i] <- 
+        fix_tz( wb$recovery$glatos_recover_date_time[rows_i],
+          paste0("US/",rec_timezones[i]))
+    }     
+
+    #fix time zone errors in tagging
+    tag_timezones <- unique(wb$tagging$glatos_timezone)
+    for(i in 1:length(tag_timezones)){ 
+      rows_i <- which(wb$tagging$glatos_timezone == tag_timezones[i])
+      
+      #glatos_release_date_time
+      wb$tagging$glatos_release_date_time[rows_i] <- 
+        fix_tz( wb$tagging$glatos_release_date_time[rows_i],
+          paste0("US/",tag_timezones[i]))
+    }          
+    
+    #merge to glatos_workbook list object
+    ins_key <- list(by.x = c("glatos_project", "glatos_array", "station_no",
+        "consecutive_deploy_no", "ins_serial_no"), 
+      by.y = c("glatos_project", "glatos_array", "station_no", 
+        "consecutive_deploy_no", "ins_serial_number"))
+    wb2 <- with(wb, list(
+                  metadata = project,
+                  instruments = merge(deployment,
+                    recovery[, unique(c(ins_key$by.y, 
+                      setdiff(names(recovery), names(deployment))))],
+                    by.x = c("glatos_project", "glatos_array", "station_no",
+                      "consecutive_deploy_no", "ins_serial_no"), 
+                    by.y = c("glatos_project", "glatos_array", "station_no", 
+                      "consecutive_deploy_no", "ins_serial_number"), 
+                    all.x=TRUE, all.y=TRUE),
+                  animals = tagging))
+    #add location descriptions
+    wb2$instruments <- with(wb2, merge(instruments, wb$locations,
+        by = "glatos_array"))
+      
   }
 
-  #TO DO: cerce to glatos_workbook (e.g., as_glatos_workbook) instead of next
-  class(wb) <- c("glatos_workbook","list")
+  #-end v1.3----------------------------------------------------------------
   
-  return(wb)
+  #TO DO: cerce to glatos_workbook (e.g., as_glatos_workbook) instead of next
+  class(wb2) <- c("glatos_workbook","list")
+  
+  return(wb2)
 }
 
