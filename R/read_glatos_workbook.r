@@ -39,7 +39,7 @@
 #' #get path to example GLATOS Data Workbook
 #' wb_file <- system.file("extdata", 
 #'   "SMRSL_GLATOS_20140828.xlsm",package="glatos")
-#' read_glatos_workbook(wb_file)
+#' wb <- read_glatos_workbook(wb_file)
 #'
 #' @export
 read_glatos_workbook <- function(workbook, wb_version=NULL, read_all=FALSE) {
@@ -196,7 +196,8 @@ read_glatos_workbook <- function(workbook, wb_version=NULL, read_all=FALSE) {
   }
 
   #TO DO: cerce to glatos_workbook (e.g., as_glatos_workbook) instead of next
-
+  class(wb) <- c("glatos_workbook","list")
+  
   return(wb)
 }
 
