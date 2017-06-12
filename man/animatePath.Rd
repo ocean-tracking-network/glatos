@@ -11,7 +11,7 @@ animatePath(procObj, recs, outDir, background = NULL,
   latitudeCol = "deploy_lat", longitudeCol = "deploy_long", typeCol =
   "record_type"), recColNames = list(latitudeCol = "deploy_lat", longitudeCol
   = "deploy_long", deploy_timestampCol = "deploy_date_time",
-  recover_timestampCol = "recover_date_time"))
+  recover_timestampCol = "recover_date_time"), tail_dur = 0)
 }
 \arguments{
 \item{procObj}{A data frame created by \code{\link{interpolatePath}} 
@@ -54,7 +54,11 @@ to ffmpeg.exe.  For example, 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'}
   \item \code{color} contains the marker color to be plotted for each 
     animal and position type.  
   \item \code{marker} contains the marker style to be plotted for each
+    animal and position type. Equivalent to \code{pch}.
+  \item \code{marker_cex} contains the marker size to be plotted for each
     animal and position type.
+  \item \code{line_color} contains the line color.
+  \item \code{line_width} contains the line width.
 }}
 
 \item{procObjColNames}{A list with names of required columns in 
@@ -90,8 +94,11 @@ to ffmpeg.exe.  For example, 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'}
  \item \code{recover_timestampCol} is a character string with the name of 
     the column containing datetime stamps for receier recover (MUST be of 
     class 'POSIXct'; typically, 'recover_date_time' for GLATOS standard 
-    detection export data). 
+    detection export data).
 }}
+
+\item{tail_dur}{contains the duration (in seconds) of trailing
+points, lines, or both. Default value is 0 (no trailing points).}
 }
 \value{
 Sequentially-numbered png files (one for each frame) and 

@@ -44,7 +44,11 @@
 #'   \item \code{color} contains the marker color to be plotted for each 
 #'     animal and position type.  
 #'   \item \code{marker} contains the marker style to be plotted for each
+#'     animal and position type. Equivalent to \code{pch}.
+#'   \item \code{marker_cex} contains the marker size to be plotted for each
 #'     animal and position type.
+#'   \item \code{line_color} contains the line color.
+#'   \item \code{line_width} contains the line width.
 #' } 
 #' 
 #' @param procObjColNames A list with names of required columns in 
@@ -80,8 +84,11 @@
 #'	 \item \code{recover_timestampCol} is a character string with the name of 
 #'     the column containing datetime stamps for receier recover (MUST be of 
 #'     class 'POSIXct'; typically, 'recover_date_time' for GLATOS standard 
-#'     detection export data). 
+#'     detection export data).
 #' }
+#' 
+#' @param tail_dur contains the duration (in seconds) of trailing
+#'     points, lines, or both. Default value is 0 (no trailing points).
 #'
 #' @return Sequentially-numbered png files (one for each frame) and 
 #'   one mp4 file will be written to \code{outDir}.
@@ -117,7 +124,8 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 	  longitudeCol="deploy_long", typeCol="record_type"),
   recColNames=list(latitudeCol="deploy_lat", 
 		longitudeCol="deploy_long", deploy_timestampCol="deploy_date_time", 
-		recover_timestampCol="recover_date_time")){
+		recover_timestampCol="recover_date_time"),
+  tail_dur = 0){
 	
 	#try calling ffmpeg
   # add exe if ffmpeg is directory
@@ -187,7 +195,7 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 	#make output directory if it does not already exist
 	if(!dir.exists(outDir))	dir.create(outDir)
 
-  setwd(outDir)
+  #setwd(outDir)
     
 	#get sequence of time breaks
   tSeq <- sort(unique(procObj$bin))
@@ -210,7 +218,7 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 			'recover_date_time')][recs$recBin >= i & recs$depBin <= i,]
 
 		# plot GL outline and movement points
-		png(paste(i, '.png', sep = ''), width = 3200, height = 2400, units = 'px', res = 300)
+		png(paste(outDir,"/",i, '.png', sep = ''), width = 3200, height = 2400, units = 'px', res = 300)
 		
 		# plot background image
 		par(oma=c(0,0,0,0), mar=c(0,0,0,0))  #no margins
@@ -225,7 +233,7 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 		# plot fish locations, receivers, clock
 		points(x = recs.i$lon, y = recs.i$lat, pch = 21, cex = 2, col = 'tan2', 
 			bg = 'tan2')
-		points(x = procObj.i$lon, y = procObj.i$lat, pch = procObj.i$marker , 
+		points(x = procObj.i$lon, y = procObj.i$lat, pch = procObj.i$marker, 
 			cex = 2.0, col = procObj.i$color)
 		text(x = -84.0, y = 42.5, as.Date(tSeq[i]), cex = 2.5)
 		dev.off()
@@ -240,7 +248,7 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 			
 	#specify a call to ffmpeg
 	ffcall <- sprintf('-framerate 30 -y -i "%s/%%d.png" -c:v libx264 -vf "fps=30, 
-		format=yuv420p" animation.mp4', outDir)
+		format=yuv420p" "%s/animation.mp4"', outDir, outDir)
 	system2(cmd, ffcall, stdout=F)	
   
 	message("\n\nVideo and frames have been created at:\n", outDir)
