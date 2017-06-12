@@ -44,11 +44,13 @@
 #'   \item \code{color} contains the marker color to be plotted for each 
 #'     animal and position type.  
 #'   \item \code{marker} contains the marker style to be plotted for each
-#'     animal and position type. Equivalent to \code{pch}.
+#'     animal and position type. Passed to \code{par()$pch}.
 #'   \item \code{marker_cex} contains the marker size to be plotted for each
-#'     animal and position type.
-#'   \item \code{line_color} contains the line color.
-#'   \item \code{line_width} contains the line width.
+#'     animal and position type. Passed to \code{par()$cex}.
+#'   \item \code{line_color} contains the line color. Passed to 
+#'     \code{par()$col}.
+#'   \item \code{line_width} contains the line width. Passed to 
+#'     \code{par()$lwd}.
 #' } 
 #' 
 #' @param procObjColNames A list with names of required columns in 
@@ -87,8 +89,10 @@
 #'     detection export data).
 #' }
 #' 
-#' @param tail_dur contains the duration (in seconds) of trailing
-#'     points, lines, or both. Default value is 0 (no trailing points).
+#' @param tail_dur contains the duration (in same units as \code{procObj$bin}; 
+#'     see \code{\link{interpolatePath}}) of trailing points in each frame. 
+#'     Default value is 0 (no trailing points). A value
+#'     of \code{Inf} will show all points from start.
 #'
 #' @return Sequentially-numbered png files (one for each frame) and 
 #'   one mp4 file will be written to \code{outDir}.
@@ -96,6 +100,7 @@
 #' @author Todd Hayden
 #'
 #' @examples
+#' library(glatos)
 #' #example detection data
 #' data(walleye_detections) 
 #' head(walleye_detections)
@@ -113,6 +118,14 @@
 #' # or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
 #' myDir <- paste0(getwd(),"/frames")
 #' animatePath(pos1, recs=recLoc_example, outDir=myDir)
+#' 
+#' 
+#' #add trailing points to include last 15 bins (in this case, days)
+#' data(walleye_plotControl)
+#' walleye_plotControl$line_color <- "grey60"
+#' walleye_plotControl$line_width <- 5
+#' animatePath(procObj = pos1, recs = recLoc_example, 
+#'   plotControl = walleye_plotControl, outDir=myDir, tail_dur = 15)
 #'  
 #' @export
 
@@ -189,6 +202,9 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 		#otherwise, assign default colors and symbols
     procObj$color = 'black'
     procObj$marker = 21
+    procObj$marker_cex = 1
+    procObj$line_color = NA
+    procObj$line_width = NA
 	}		
 
 			
@@ -211,7 +227,8 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 		}
 		
 		# subset for plotting
-		procObj.i <- procObj[procObj$bin == tSeq[i],]
+	  tail_start <- max(i - tail_dur, 1) #so always 1 or larger
+		procObj.i <- procObj[procObj$bin %in% tSeq[tail_start:i],]
 		
 		# extract receivers active during time interval
 		recs.i <- recs[,c('lat', 'lon', 'deploy_date_time', 
@@ -233,8 +250,17 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 		# plot fish locations, receivers, clock
 		points(x = recs.i$lon, y = recs.i$lat, pch = 21, cex = 2, col = 'tan2', 
 			bg = 'tan2')
+		#make lines if specified
+		if(any(!is.na(procObj.i$line_color)) | any(!is.na(procObj.i$line_width))){
+  		ids <- sort(unique(procObj.i$id))
+  		for(j in 1:length(ids)){
+  		  procObj.ij <- procObj.i[procObj.i$id == ids[j],]
+  		  lines(x = procObj.ij$lon, y = procObj.ij$lat, lwd = procObj.ij$line_width, 
+    		  col = procObj.ij$line_color)
+  		}
+		}
 		points(x = procObj.i$lon, y = procObj.i$lat, pch = procObj.i$marker, 
-			cex = 2.0, col = procObj.i$color)
+			cex = procObj.i$marker_cex, col = procObj.i$color)
 		text(x = -84.0, y = 42.5, as.Date(tSeq[i]), cex = 2.5)
 		dev.off()
 		
