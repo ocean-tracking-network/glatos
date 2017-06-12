@@ -44,7 +44,13 @@
 #'   \item \code{color} contains the marker color to be plotted for each 
 #'     animal and position type.  
 #'   \item \code{marker} contains the marker style to be plotted for each
-#'     animal and position type.
+#'     animal and position type. Passed to \code{par()$pch}.
+#'   \item \code{marker_cex} contains the marker size to be plotted for each
+#'     animal and position type. Passed to \code{par()$cex}.
+#'   \item \code{line_color} contains the line color. Passed to 
+#'     \code{par()$col}.
+#'   \item \code{line_width} contains the line width. Passed to 
+#'     \code{par()$lwd}.
 #' } 
 #' 
 #' @param procObjColNames A list with names of required columns in 
@@ -80,8 +86,13 @@
 #'	 \item \code{recover_timestampCol} is a character string with the name of 
 #'     the column containing datetime stamps for receier recover (MUST be of 
 #'     class 'POSIXct'; typically, 'recover_date_time' for GLATOS standard 
-#'     detection export data). 
+#'     detection export data).
 #' }
+#' 
+#' @param tail_dur contains the duration (in same units as \code{procObj$bin}; 
+#'     see \code{\link{interpolatePath}}) of trailing points in each frame. 
+#'     Default value is 0 (no trailing points). A value
+#'     of \code{Inf} will show all points from start.
 #'
 #' @return Sequentially-numbered png files (one for each frame) and 
 #'   one mp4 file will be written to \code{outDir}.
@@ -89,6 +100,7 @@
 #' @author Todd Hayden
 #'
 #' @examples
+#' library(glatos)
 #' #example detection data
 #' data(walleye_detections) 
 #' head(walleye_detections)
@@ -106,6 +118,14 @@
 #' # or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
 #' myDir <- paste0(getwd(),"/frames")
 #' animatePath(pos1, recs=recLoc_example, outDir=myDir)
+#' 
+#' 
+#' #add trailing points to include last 15 bins (in this case, days)
+#' data(walleye_plotControl)
+#' walleye_plotControl$line_color <- "grey60"
+#' walleye_plotControl$line_width <- 5
+#' animatePath(procObj = pos1, recs = recLoc_example, 
+#'   plotControl = walleye_plotControl, outDir=myDir, tail_dur = 15)
 #'  
 #' @export
 
@@ -117,7 +137,8 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 	  longitudeCol="deploy_long", typeCol="record_type"),
   recColNames=list(latitudeCol="deploy_lat", 
 		longitudeCol="deploy_long", deploy_timestampCol="deploy_date_time", 
-		recover_timestampCol="recover_date_time")){
+		recover_timestampCol="recover_date_time"),
+  tail_dur = 0){
 	
 	#try calling ffmpeg
   # add exe if ffmpeg is directory
@@ -181,13 +202,16 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 		#otherwise, assign default colors and symbols
     procObj$color = 'black'
     procObj$marker = 21
+    procObj$marker_cex = 1
+    procObj$line_color = NA
+    procObj$line_width = NA
 	}		
 
 			
 	#make output directory if it does not already exist
 	if(!dir.exists(outDir))	dir.create(outDir)
 
-  setwd(outDir)
+  #setwd(outDir)
     
 	#get sequence of time breaks
   tSeq <- sort(unique(procObj$bin))
@@ -203,14 +227,15 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 		}
 		
 		# subset for plotting
-		procObj.i <- procObj[procObj$bin == tSeq[i],]
+	  tail_start <- max(i - tail_dur, 1) #so always 1 or larger
+		procObj.i <- procObj[procObj$bin %in% tSeq[tail_start:i],]
 		
 		# extract receivers active during time interval
 		recs.i <- recs[,c('lat', 'lon', 'deploy_date_time', 
 			'recover_date_time')][recs$recBin >= i & recs$depBin <= i,]
 
 		# plot GL outline and movement points
-		png(paste(i, '.png', sep = ''), width = 3200, height = 2400, units = 'px', res = 300)
+		png(paste(outDir,"/",i, '.png', sep = ''), width = 3200, height = 2400, units = 'px', res = 300)
 		
 		# plot background image
 		par(oma=c(0,0,0,0), mar=c(0,0,0,0))  #no margins
@@ -225,8 +250,17 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 		# plot fish locations, receivers, clock
 		points(x = recs.i$lon, y = recs.i$lat, pch = 21, cex = 2, col = 'tan2', 
 			bg = 'tan2')
-		points(x = procObj.i$lon, y = procObj.i$lat, pch = procObj.i$marker , 
-			cex = 2.0, col = procObj.i$color)
+		#make lines if specified
+		if(any(!is.na(procObj.i$line_color)) | any(!is.na(procObj.i$line_width))){
+  		ids <- sort(unique(procObj.i$id))
+  		for(j in 1:length(ids)){
+  		  procObj.ij <- procObj.i[procObj.i$id == ids[j],]
+  		  lines(x = procObj.ij$lon, y = procObj.ij$lat, lwd = procObj.ij$line_width, 
+    		  col = procObj.ij$line_color)
+  		}
+		}
+		points(x = procObj.i$lon, y = procObj.i$lat, pch = procObj.i$marker, 
+			cex = procObj.i$marker_cex, col = procObj.i$color)
 		text(x = -84.0, y = 42.5, as.Date(tSeq[i]), cex = 2.5)
 		dev.off()
 		
@@ -240,7 +274,7 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 			
 	#specify a call to ffmpeg
 	ffcall <- sprintf('-framerate 30 -y -i "%s/%%d.png" -c:v libx264 -vf "fps=30, 
-		format=yuv420p" animation.mp4', outDir)
+		format=yuv420p" "%s/animation.mp4"', outDir, outDir)
 	system2(cmd, ffcall, stdout=F)	
   
 	message("\n\nVideo and frames have been created at:\n", outDir)

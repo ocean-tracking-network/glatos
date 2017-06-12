@@ -11,7 +11,7 @@ animatePath(procObj, recs, outDir, background = NULL,
   latitudeCol = "deploy_lat", longitudeCol = "deploy_long", typeCol =
   "record_type"), recColNames = list(latitudeCol = "deploy_lat", longitudeCol
   = "deploy_long", deploy_timestampCol = "deploy_date_time",
-  recover_timestampCol = "recover_date_time"))
+  recover_timestampCol = "recover_date_time"), tail_dur = 0)
 }
 \arguments{
 \item{procObj}{A data frame created by \code{\link{interpolatePath}} 
@@ -54,7 +54,13 @@ to ffmpeg.exe.  For example, 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'}
   \item \code{color} contains the marker color to be plotted for each 
     animal and position type.  
   \item \code{marker} contains the marker style to be plotted for each
-    animal and position type.
+    animal and position type. Passed to \code{par()$pch}.
+  \item \code{marker_cex} contains the marker size to be plotted for each
+    animal and position type. Passed to \code{par()$cex}.
+  \item \code{line_color} contains the line color. Passed to 
+    \code{par()$col}.
+  \item \code{line_width} contains the line width. Passed to 
+    \code{par()$lwd}.
 }}
 
 \item{procObjColNames}{A list with names of required columns in 
@@ -90,8 +96,13 @@ to ffmpeg.exe.  For example, 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'}
  \item \code{recover_timestampCol} is a character string with the name of 
     the column containing datetime stamps for receier recover (MUST be of 
     class 'POSIXct'; typically, 'recover_date_time' for GLATOS standard 
-    detection export data). 
+    detection export data).
 }}
+
+\item{tail_dur}{contains the duration (in same units as \code{procObj$bin}; 
+see \code{\link{interpolatePath}}) of trailing points in each frame. 
+Default value is 0 (no trailing points). A value
+of \code{Inf} will show all points from start.}
 }
 \value{
 Sequentially-numbered png files (one for each frame) and 
@@ -103,6 +114,7 @@ Create a set of frames (png image files) showing geographic location data
 points in time and stitch frames into a video animation (mp4 file).
 }
 \examples{
+library(glatos)
 #example detection data
 data(walleye_detections) 
 head(walleye_detections)
@@ -120,6 +132,14 @@ pos1 <- interpolatePath(walleye_detections)
 # or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
 myDir <- paste0(getwd(),"/frames")
 animatePath(pos1, recs=recLoc_example, outDir=myDir)
+
+
+#add trailing points to include last 15 bins (in this case, days)
+data(walleye_plotControl)
+walleye_plotControl$line_color <- "grey60"
+walleye_plotControl$line_width <- 5
+animatePath(procObj = pos1, recs = recLoc_example, 
+  plotControl = walleye_plotControl, outDir=myDir, tail_dur = 15)
  
 }
 \author{
