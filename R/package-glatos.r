@@ -25,7 +25,7 @@
 #' for determining optimal spacing of receviers in a line and tag 
 #' specifications (e.g., delay).}
 #' 
-#' \item{\link{crwInPolygonR}, \link{transmitAlongPath}, 
+#' \item{\link{crwInPolygon}, \link{transmitAlongPath}, 
 #' and \link{detectTransmissions}}{individually simulate random fish movement 
 #' paths within a water body (\link{crwInPolygonR}: a random walk in a 
 #' polygon), tag signal transmissions along those paths 
