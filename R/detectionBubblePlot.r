@@ -237,7 +237,7 @@ detectionBubblePlot <- function(detections,
 			
 		# Determine mean location of receiver groups that were available to for 
 		#  detecting fish but did not
-		summaryReceivers <- plyr::ddply(receiverLocs, .(location), summarise, 
+		summaryReceivers <- plyr::ddply(receiverLocs, plyr::.(location), plyr::summarise, 
 			Summary = 0, meanLat = mean(lat), meanLon = mean(long), .drop = FALSE)
 					
 		# Retain only those receiver groups that do not already appear in the 
@@ -248,7 +248,7 @@ detectionBubblePlot <- function(detections,
     
 	# Summarize number of unique fish detected and mean lat and lon for each 
 	#  receiver group
-	summaryNumFish <- plyr::ddply(detections, .(location), summarise, 
+	summaryNumFish <- plyr::ddply(detections, plyr::.(location), plyr::summarise, 
 		Summary = length(unique(animal)), meanLat = mean(lat), meanLon = mean(long), 
 		.drop = FALSE)
     
@@ -261,7 +261,7 @@ detectionBubblePlot <- function(detections,
 
 	
 	# Summarize number of detections and mean lat and lon for each receiver group
-	summaryNumDetections <- plyr::ddply(detections, .(location), summarise, 
+	summaryNumDetections <- plyr::ddply(detections, plyr::.(location), plyr::summarise, 
 		Summary = length(timestamp), meanLat = mean(lat), meanLon = mean(long), 
 		.drop = FALSE)
     
