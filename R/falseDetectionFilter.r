@@ -85,39 +85,29 @@ falseDetectionFilter <- function(detections, tf=3600, colnames=list(
   
   out <- detections %>%
     group_by_(colnames$animalCol, colnames$stationCol) %>%  # TODO: still compares end of one to start of next. Do we need group_by if we aren't calcing by group?
-    do(arrange_(.,colnames$timestampCol) %>%  # Just this animal, should just arrange by time.
-    mutate_(
-      this.date = colnames$timestampCol
-    ) %>% 
-    mutate(   # Snappy way to peek ahead and behind
-      last.date = lag(this.date),
-      next.date = lead(this.date)
-    ) %>%
-    mutate( # Less-snappy way to run a bunch of conditional logic on what's ahead and behind.
-      last.diff = ifelse(animal_id == lag(animal_id) & station_no == lag(station_no), suppressWarnings(difftime(this.date, last.date, units="secs")), NA),
-      next.diff = ifelse(animal_id == lead(animal_id) & station_no == lead(station_no), suppressWarnings(difftime(next.date, this.date, units="secs")), NA)
-    ) %>%  # now need to make the first/last detection calc not-NA and not-true, so for these we'll evaluate only if other side within timebounds.
-           # TODO: get smarter about handling NAs as acceptable values of last.diff and next.diff
-    replace_na(list(last.diff=tf+as.difftime(1, units="secs"), next.diff=tf+as.difftime(1,units="secs"))
-    ) %>% # Now can run the filter step to evaluate
-    mutate( 
+    do(
+      arrange_(.,colnames$timestampCol) %>%  # Just this animal, should just arrange by time.
+      mutate_(
+        this.date = colnames$timestampCol
+      ) %>% 
+      mutate(   # Snappy way to peek ahead and behind
+        last.date = lag(this.date),
+        next.date = lead(this.date)
+      ) %>%
+      mutate( # Less-snappy way to run a bunch of conditional logic on what's ahead and behind.
+        last.diff = ifelse(animal_id == lag(animal_id) & station_no == lag(station_no), suppressWarnings(difftime(this.date, last.date, units="secs")), NA),
+        next.diff = ifelse(animal_id == lead(animal_id) & station_no == lead(station_no), suppressWarnings(difftime(next.date, this.date, units="secs")), NA),
+      ) %>% # Now can run the filter step to evaluate
+      mutate( 
             # Filter out the duplicated detection events due to double-loading .vrls?
             # NB: This is probably not the place for this extra-step.
             # Manually manipulated this value based on contents of min_lag in source data.
-      calc_min_lag = ifelse(pmin(last.diff, next.diff) < 55, pmax(last.diff, next.diff), pmin(last.diff, next.diff)),
-      
-      # Diagnostic printing: ensuring we aren't comparing different stations or animals as we traverse the list.
-      # Couldn't get an exact match to min_lag, something going on that I'm not catching. Sometimes it's max-lag, apparently.
-      my_next_station = lead(station_no),
-      my_station = station_no,
-      my_last_station = lag(station_no),
-      my_next_animal = lead(animal_id),
-      my_animal = animal_id,
-      my_last_animal = lag(animal_id),
-      
+        calc_min_lag = ifelse(pmin(last.diff, next.diff) < 55, pmax(last.diff, next.diff), pmin(last.diff, next.diff)),
+
       # Finally, check filter against min_lag
-      passedFilter = calc_min_lag <= tf
-    ))
+        passedFilter = calc_min_lag <= tf
+      )
+    )
   
     if (!verbose){
       # TODO: trim out the columns other than passedFilter
