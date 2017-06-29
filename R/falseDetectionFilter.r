@@ -60,6 +60,7 @@
 
 require(lubridate)
 require(dplyr)
+require(tidyr)
 
 falseDetectionFilter <- function(detections, tf=3600, colnames=list(
               locationCol="glatos_array",
@@ -84,7 +85,7 @@ falseDetectionFilter <- function(detections, tf=3600, colnames=list(
   
   out <- detections %>%
     group_by_(colnames$animalCol, colnames$stationCol) %>%  # TODO: still compares end of one to start of next. Do we need group_by if we aren't calcing by group?
-    arrange_(colnames$animalCol, colnames$timestampCol) %>%  # Arrange by animal and time.
+    do(arrange_(.,colnames$timestampCol) %>%  # Just this animal, should just arrange by time.
     mutate_(
       this.date = colnames$timestampCol
     ) %>% 
@@ -108,13 +109,15 @@ falseDetectionFilter <- function(detections, tf=3600, colnames=list(
       # Diagnostic printing: ensuring we aren't comparing different stations or animals as we traverse the list.
       # Couldn't get an exact match to min_lag, something going on that I'm not catching. Sometimes it's max-lag, apparently.
       my_next_station = lead(station_no),
+      my_station = station_no,
       my_last_station = lag(station_no),
       my_next_animal = lead(animal_id),
+      my_animal = animal_id,
       my_last_animal = lag(animal_id),
       
       # Finally, check filter against min_lag
       passedFilter = calc_min_lag <= tf
-    )
+    ))
   
     if (!verbose){
       # TODO: trim out the columns other than passedFilter
