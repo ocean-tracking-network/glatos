@@ -142,7 +142,7 @@ detectionEventFilter <- function(detections, type, timeSep = Inf) {
   # Summarize the event data using the ddply function in the plyr package.
   Results <- plyr::ddply(detections, plyr::.(Event), plyr::summarise,
                          Individual = animal[1], 
-                         Location = location[1], 
+                         Location = as.character(location[1]), 
                          MeanLatiude = mean(lat, na.rm=T), 
                          MeanLongitude = mean(lon, na.rm=T), 
                          FirstDetection = timestamp[1], 
