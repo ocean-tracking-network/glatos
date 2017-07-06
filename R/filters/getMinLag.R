@@ -14,6 +14,7 @@ getMinLag <- function(detections, type) {
   }else { #Other
     detColNames <- {}
   }
+  
   # Check that the specified columns above appear in the detections dataframe
   missingCols <- setdiff(unlist(detColNames), names(detections))
   if (length(missingCols) > 0){
@@ -27,7 +28,6 @@ getMinLag <- function(detections, type) {
   detections2 <- detections[,unlist(detColNames)] #subset
   names(detections2) <- c("transmitters","receivers","timestamp")
   detections2$num <- as.numeric(detections2$timestamp) #Add another column
-  
   
   #Check that timestamp is of class 'POSIXct'
   if(!('POSIXct' %in% class(detections2$timestamp))){
@@ -48,7 +48,7 @@ getMinLag <- function(detections, type) {
   list2 <- lapply(li, function(x) {
     if(nrow(x)==1) {
       #Set data frames in list with 1 entry to have a minimum lag of NA
-      minLag2<-NA
+      minLag2 <- NA
     } else {
       n <- as.numeric(x$timestamp)
       #Calculate time between current and previous entry for each entry
@@ -67,7 +67,7 @@ getMinLag <- function(detections, type) {
   detections2 <- do.call("rbind", li)
   #Add min lag column to detections data frame
   detections2$mLag <- mL
-  detections2 <- detections2[order(detections2$num),]
+  detections2 <- detections2[order(detections2$num),] #Put them back in the original order to be able to append the answers to detections
   detections$min_lag <- detections2$mLag
   
   #Return original dataset with "min_lag" column attached to it
