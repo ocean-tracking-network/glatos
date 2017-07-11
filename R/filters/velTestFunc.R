@@ -3,7 +3,7 @@
 # Can work with OTN or GLATOS data
 # To use:
 # For glatos data, velTest(glatos, "GLATOS")
-# For OTN gata, velTest(otn, "OTN")
+# For OTN data, velTest(otn, "OTN")
 #
 # To test this, I used the sample data:
 # id  time                  tr   rec  long      lat
