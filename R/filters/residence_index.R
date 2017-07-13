@@ -1,7 +1,5 @@
 #This is an R file form res-index-R in GitLab
-
 #This will be tested using the following sample data:
-
 # id  startdate             enddate
 # 1   2010/10/11 11:11:11   2010/10/12 13:14:15
 # 2   2010/10/11 07:23:16   2010/10/13 17:12:11
@@ -13,22 +11,18 @@
 # 8   2010/10/12 21:24:24   2010/10/15 21:19:02
 # 9   2010/10/12 22:22:22   2010/10/13 11:24:16
 #10   2010/10/13 11:11:11   2010/10/13 14:21:33
-
 # which can be constructed using: 
-
 # id <- 1:10
 # sd <- c("2010/10/11 11:11:11", "2010/10/11 07:23:16", "2010/10/11 15:24:19", "2010/10/12 17:16:16", "2010/10/12 18:01:11", "2010/10/11 06:16:24", "2010/10/12 07:52:13", "2010/10/12 21:24:24", "2010/10/12 22:22:22", "2010/10/13 11:11:11")
 # ed <- c("2010/10/12 13:14:15", "2010/10/13 17:12:11", "2010/10/15 08:54:23", "2010/10/12 17:16:17", "2010/10/13 09:17:12", "2010/10/12 20:21:22", "2010/10/13 17:26:17", "2010/10/15 21:19:02", "2010/10/13 11:24:16", "2010/10/13 14:21:33")
 # sd <- as.POSIXct(sd, tz="UCT")
 # ed <- as.POSIXct(ed, tz="UCT")
-# dataS <- data.frame(id=id, startdate=sd, enddate=ed)
+# sample <- data.frame(id=id, startdate=sd, enddate=ed)
 
 
 library("dplyr")
 library("lubridate")
 library("plotly")
-
-
 # total_days_diff()
 # -----------------
 # The function below determines the total days difference.
@@ -45,15 +39,12 @@ total_diff_days <- function(detections) {
   total <- as.double(difftime(last, first, units="secs"))/86400.0
   return(total)
 }
-
 #For GLATOS/OTN/sample detections data:
-
 #To work with OTN/GLATOS/sample data
 # To use:
 # For glatos data, total_diff_days(glatos, "GLATOS")
 # For OTN detections data, total_diff_days(otnDet, "OTNDet")
 # For OTN compressed data, total_diff_days(otnComp, "OTNComp")
-
 total_diff_days <- function(detections, type) {
   if(type == "GLATOS") {
     detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
@@ -79,7 +70,7 @@ total_diff_days <- function(detections, type) {
   # this makes code more easy to understand (esp. ddply)
   detections <- detections[,unlist(detColNames)] #subset
   names(detections) <- c("startdate", "enddate")
-  print(head(detections))
+  #print(head(detections))
   
   # Check that startdate and enddate are of class 'POSIXct'
   if(!('POSIXct' %in% class(detections$startdate))){
@@ -125,16 +116,11 @@ total_days_count <- function(detections) {
   daycount <- as.double(count(distinct(select(days,days ))))
   return(daycount)
 }
-
-
-
 #To work with OTN/GLATOS/sample data
-
 # To use:
 # For glatos data, total_days_count(glatos, "GLATOS")
 # For OTN detections data, total_days_count(otnDet, "OTNDet")
 # For OTN compressed data, total_days_count(otnComp, "OTNComp")
-
 total_days_count <- function(detections, type) {
   if(type == "GLATOS") {
     detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
@@ -181,6 +167,7 @@ total_days_count <- function(detections, type) {
 }
 
 
+
 # aggregate_total_with_overlap()
 # ----------------------------------------
 #
@@ -195,14 +182,11 @@ aggregate_total_with_overlap <- function(detections) {
   total <- as.double(sum(detections$timedelta))/86400.0
   return(total)
 }
-
 #To work with OTN/GLATOS/sample data:
-
 # To use:
 # For glatos data, aggregate_total_with_overlap(glatos, "GLATOS")
 # For OTN detections data, aggregate_total_with_overlap(otnDet, "OTNDet")
 # For OTN compressed data, aggregate_total_with_overlap(otnComp, "OTNComp")
-
 aggregate_total_with_overlap <- function(detections, type) {
   if(type == "GLATOS") {
     detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
@@ -245,8 +229,6 @@ aggregate_total_with_overlap <- function(detections, type) {
   total <- as.double(sum(detections$timedelta))/86400.0
   return(total)
 }
-
-
 # aggregate_total_no_overlap()
 # --------------------------------------
 #
@@ -259,7 +241,7 @@ aggregate_total_with_overlap <- function(detections, type) {
 aggregate_total_no_overlap <- function(detections) {
   total <- 0.0
   detections <- arrange(detections, startdate)
-  detcount <- as.integer(count(detections))
+  detcount <- as.integer(count(detections)) 
   detections <- mutate(detections, interval = interval(startdate,enddate))
   detections <- mutate(detections, timedelta = as.double(difftime(as.Date(enddate),as.Date(startdate), units="secs")))
   detections <- mutate(detections, timedelta = recode(detections$timedelta, `0` = 1))
@@ -295,6 +277,99 @@ aggregate_total_no_overlap <- function(detections) {
   total <- total/86400.0
   return(total)
 }
+
+
+
+
+
+
+
+#To work with OTN/GLATOS/sample data:
+# To use:
+# For glatos data, aggregate_total_no_overlap(glatos, "GLATOS")
+# For OTN detections data, aggregate_total_no_overlap(otnDet, "OTNDet")
+# For OTN compressed data, aggregate_total_no_overlap(otnComp, "OTNComp")
+aggregate_total_no_overlap <- function(detections, type) {
+  if(type == "GLATOS") {
+    detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
+  } else if (type == "OTNDet") {
+    detColNames = list(startDate="datecollected", endDate="datecollected")
+  } else if (type == "OTNComp") {
+    detColNames = list(startDate="startdate", endDate="enddate")
+  } else if (type == "sample") {
+    detColNames = list(startDate="startdate", endDate="enddate")
+  } else {
+    detColNames = {}
+  }
+  
+  # Check that the specified columns appear in the detections dataframe
+  missingCols <- setdiff(unlist(detColNames), names(detections))
+  if (length(missingCols) > 0){
+    stop(paste0("Detections dataframe is missing the following ",
+                "column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
+         call.=FALSE)
+  }
+  
+  # Subset detections with only user-defined columns and change names
+  # this makes code more easy to understand (esp. ddply)
+  detections <- detections[,unlist(detColNames)] #subset
+  names(detections) <- c("startdate", "enddate")
+  
+  # Check that startdate and enddate are of class 'POSIXct'
+  if(!('POSIXct' %in% class(detections$startdate))){
+    stop(paste0("Column '",detColNames$startdate,
+                "' in the detections dataframe must be of class 'POSIXct'."),
+         call.=FALSE)
+  } 
+  if(!('POSIXct' %in% class(detections$enddate))) {
+    stop(paste0("Column '",detColNames$enddate,
+                "' in the detections dataframe must be of class 'POSIXct'."),
+         call.=FALSE)
+  }
+  
+  total <- 0.0
+  detections <- arrange(detections, startdate)
+  detcount <- nrow(detections) #Changed to nrow
+  detections <- mutate(detections, interval = interval(startdate,enddate)) #'interval' is from lubridate #getting interval column
+  detections <- mutate(detections, timedelta = as.double(difftime(as.Date(enddate),as.Date(startdate), units="secs"))) #calculate time difference between startdate and enddate
+  detections <- mutate(detections, timedelta = recode(detections$timedelta, `0` = 1)) #change time difference of 0 to 1s (startdate = enddate)
+  next_block <- 2
+  start_block <- 1
+  end_block <- 1
+  while(next_block <= detcount) {
+    # if it overlaps
+    if(next_block < detcount && int_overlaps(nth(detections$interval, end_block), nth(detections$interval, next_block))) { #'int_overlaps' is from lubridate #first block of time overlaps with second block of time
+      if(nth(detections$interval, next_block) >= nth(detections$interval, end_block)) {
+        end_block <- next_block
+      }
+      if(end_block == detcount) {
+        tdiff <- as.double(difftime(nth(detections$enddate,end_block), nth(detections$startdate, start_block), units="secs"))
+        if(tdiff == 0.0) {
+          tdiff <- 1
+        }
+        start_block <- next_block
+        end_block <- next_block + 1
+        total <- total + as.double(tdiff)
+      }
+    } else {
+      #if it doesn't overlap
+      tdiff <- 0.0
+      # Generate the time difference between the start of the start block and the end of the end block
+      tdiff <- as.double(difftime(nth(detections$enddate,end_block), nth(detections$startdate, start_block), units="secs"))
+      start_block <- next_block
+      end_block <- next_block
+      total <- total + as.double(tdiff)
+    }
+    next_block <- next_block + 1
+  }
+  total <- total/86400.0
+  return(total)
+}
+
+
+
+
+
 # get_days()
 # ----------
 # Determines which calculation method to use for the residency index.
@@ -316,6 +391,33 @@ get_days <- function(dets, calculation_method='kessel') {
   }
   return(days)
 }
+
+
+
+#To work with OTN/GLATOS/sample data:
+# To use:
+#For sample data, get_days(sample, "sample") or with calculation method
+# For glatos data, get_days(glatos, "GLATOS") or with calculation method
+# For OTN detections data,get_days(otnDet, "OTNDet") or with calculation method
+# For OTN compressed data, get_days(otnComp, "OTNComp") or with calculation method
+
+# @var calculation_method - determines which method above will be used to count total time and station time
+get_days <- function(dets, type, calculation_method='kessel') {
+  days <- 0
+  if (calculation_method == 'aggregate_with_overlap') {
+    days = aggregate_total_with_overlap(dets, type)
+  } else if(calculation_method == 'aggregate_no_overlap') {
+    days = aggregate_total_no_overlap(dets, type)
+  } else if(calculation_method == 'timedelta') {
+    days <- total_diff_days(dets, type)
+  } else {
+    days <- total_days_count(dets, type)
+  }
+  return(days)
+}
+
+
+
 # residence_index()
 # -----------------
 #
