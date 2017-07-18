@@ -98,7 +98,7 @@
 #' @export
 
 # My changes: 
-# Entered column names to make it work with OTN data as well as GLATOS data
+# Entered column names to make it work with OTN and GLATOS data
 
 # To test this, I used the sample data:
 # id  location  time
@@ -130,17 +130,12 @@
 # For OTN data, abacusPlot(otn, "OTN")
 
 abacusPlot <- function(detections, type, controlTable = NULL, plotTitle = "", Ylab=NA, outFile = "AbacusPlot.png", ...) {
-# abacusPlot <- function(detections, detColNames=list(locationCol="glatos_array", 
-# 	timestampCol="detection_timestamp_utc"), 
-# 	controlTable = NULL, 
-# 	plotTitle = "", Ylab=NA, outFile = "AbacusPlot.png", ...){
-# 	
   if(type=="sample") {
     detColNames = list(locationCol="location", timestampCol="time")
   } else if(type=="GLATOS") {
     detColNames=list(locationCol="glatos_array", timestampCol="detection_timestamp_utc")
   } else if(type=="OTN"){
-    detColNames = list(locationCol="tagname", timestampCol="datecollected")
+    detColNames = list(locationCol="station", timestampCol="datecollected")
   } else {
     detColNames = {}
   }
