@@ -11,7 +11,9 @@ getMinLag <- function(detections, type) {
     detections$minLag <- detections$min_lag
   } else if (type == "OTN"){ #Set column names for OTN data
     detColNames <- list(transmitters = "tagname", receivers = "receiver_group", timestamp = "datecollected")
-  }else { #Other
+  } else if (type == "sample") { #Set column names for sample data
+    detColNames <- list(transmitters = "transmitter", receivers = "receiver", timestamp="date")
+  } else { #Other
     detColNames <- {}
   }
   

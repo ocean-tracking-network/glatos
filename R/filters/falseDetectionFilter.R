@@ -63,8 +63,8 @@
 
 falseDetectionFilter <- function(detections, type, tf, minLagCol = "min_lag"){
   # Check that the minLag column is in the detections dataframe
+  # If not, add it in using getMinLag method
   if (!(minLagCol %in% names(detections))){
-    #stop(paste0("The column '",minLagCol, "' must appear in the detections data frame."), call.=FALSE)
     detections <- getMinLag(detections, type) #Get min_lag column
   }
   
