@@ -33,7 +33,7 @@ minLagSample <- data.frame(id=id, time=time, transmitter=trans, receiver=rec)
 #10   2010/10/11 11:59:45   121           4           2089
 
 
-# Sample code for getMinLag.R:
+# Sample code for falseDetectionFilter.R:
 # id  time                  transmitter   receiver
 # 1   2010/10/11 08:14:22   121           4
 # 2   2010/10/11 08:15:22   151           2
@@ -157,7 +157,6 @@ time <- as.POSIXct(time, tz="UCT")
 trans <- c(11, 12, 11, 11, 12, 12, 12, 11, 11, 12, 11, 11, 11, 11, 12)
 rec <- c(21, 22, 21, 22, 21, 22, 22, 22, 21, 22, 22, 22, 22, 21, 22)
 NDAITSample <- data.frame(id=id, time=time, transmitter=trans, receiver=rec)
-
 # From this data sample, we can expect the following results:
 # id  time                  transmitter   receiver  valid
 # 1   2010/10/11 11:11:11   11            21        1
@@ -195,7 +194,7 @@ sd <- c("2010/10/11 11:11:11", "2010/10/11 07:23:16", "2010/10/11 15:24:19", "20
 ed <- c("2010/10/12 13:14:15", "2010/10/13 17:12:11", "2010/10/15 08:54:23", "2010/10/12 17:16:17", "2010/10/13 09:17:12", "2010/10/12 20:21:22", "2010/10/13 17:26:17", "2010/10/15 21:19:02", "2010/10/13 11:24:16", "2010/10/13 14:21:33")
 sd <- as.POSIXct(sd, tz="UCT")
 ed <- as.POSIXct(ed, tz="UCT")
-NDAITSample <- data.frame(id=id, startDate=sd, endDate=ed)
+resSample <- data.frame(id=id, startdate=sd, enddate=ed)
 # From this data sample, we can expect the following results:
 # total_diff_days = get_days("timedelta") = 4.6268
 # total_days_count = get_days("daycount") = 4
@@ -244,7 +243,7 @@ time <- as.POSIXct(time, tz="UCT")
 lat <- c(43.392, 43.387, 41.571, 41.574, 41.576, 43.610, 43.612, 41.635, 41.644, 44.145)
 long <- c(-83.993, -83.987, -83.618, -83.607, -83.611, -83.887, -83.861, -83.531, -83.534, -83.466)
 detSampleDBP <- data.frame(location=loc, animal=anId, time=time, latitude=lat, longitude=long)
-detSample$locationDBP <- as.character(detSampleDBP$location)
+detSampleDBP$locationDBP <- as.character(detSampleDBP$location)
 
 # Sample receiver data:
 # location  lat     long      deploy_time           recover_time
@@ -269,3 +268,16 @@ rt <- as.POSIXct(rt, tz="UCT")
 recSampleDBP <- data.frame(location=loc, latitude=lat, longitude=long, deploy_time=dt, recover_time=rt)
 recSampleDBP$location <- as.character(recSampleDBP$location)
 
+# From this data sample, we can expect the following results:
+# A list consisting of summaryNumFish and summaryNumDetections
+# where summaryNumFish is:
+# location  Summary   meanLat   meanLon
+# OSC       1         42.67050  -83.66775
+# PRS       1         42.27267  -83.67000
+# TTB       1         42.88200  -83.80467   
+
+# and summaryNumDetections is:
+# location  Summary meanLat   meanLon
+# PRS       3       42.27267  -83.67000
+# TTB       3       42.88200  -83.80467
+# OSC       4       42.67050  -83.66775

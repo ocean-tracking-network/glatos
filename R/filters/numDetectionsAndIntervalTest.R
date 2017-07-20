@@ -14,7 +14,7 @@ numIntervalTest <- function(detections, type) {
   } else if (type == "OTN"){ #Set column names for OTN data
     detColNames <- list(transmitters = "tagname", receivers = "receiver_group", timestamp = "datecollected")
   }else if (type == "sample") { #Set column names for sample data described above
-    detColNames <- list(transmitters = "tr", receivers = "rec", timestamp = "time")
+    detColNames <- list(transmitters = "transmitter", receivers = "receiver", timestamp = "time")
   }else { #Other
     detColNames <- {}
   }
