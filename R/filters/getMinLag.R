@@ -12,7 +12,7 @@ getMinLag <- function(detections, type) {
   } else if (type == "OTN"){ #Set column names for OTN data
     detColNames <- list(transmitters = "tagname", receivers = "receiver_group", timestamp = "datecollected")
   } else if (type == "sample") { #Set column names for sample data
-    detColNames <- list(transmitters = "transmitter", receivers = "receiver", timestamp="date")
+    detColNames <- list(transmitters = "transmitter", receivers = "receiver", timestamp="time")
   } else { #Other
     detColNames <- {}
   }

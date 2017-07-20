@@ -61,7 +61,7 @@
 # My changes:
 # Added getMinLag to be able to get the min_lag column
 
-falseDetectionFilter <- function(detections, type, tf, minLagCol = "min_lag"){
+falseDetectionFilter <- function(detections, type, tf=3600, minLagCol = "min_lag"){
   # Check that the minLag column is in the detections dataframe
   # If not, add it in using getMinLag method
   if (!(minLagCol %in% names(detections))){
