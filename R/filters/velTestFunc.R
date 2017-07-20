@@ -4,32 +4,7 @@
 # To use:
 # For glatos data, velTest(glatos, "GLATOS")
 # For OTN data, velTest(otn, "OTN")
-#
-# To test this, I used the sample data:
-# id  time                  tr   rec  long      lat
-# 1   2010/10/10 10:52:07   111   11  -63.5949  44.6358 (Steele Ocean Science building)
-# 2   2010/10/10 10:59:23   111   22  -63.5931  44.6362 (Henry Hicks building)
-# 3   2010/10/10 11:03:26   111   33  -63.5912  44.6373 (Killam Library)
-# 4   2010/10/10 11:06:15   111   44  -63.5890  44.6368 (Student Union Building)
-# 5   2010/10/10 11:07:15   111   55  -63.5882  44.6371 (Kenneth Rowe building)
-# 6   2010/10/10 11:09:10   111   66  -63.5873  44.6375 (Goldberg Computer Science building)
-# 7   2010/10/10 11:11:11   111   77  -63.5885  44.6380 (Rebecca Cohn)
-# 8   2010/10/10 11:16:16   111   33  -63.5912  44.6373 (Killam Library)
-# 9   2010/10/10 11:19:27   111   44  -63.5890  44.6368 (Student Union Building)
-# 10  2010/10/10 11:28:17   111   11  -63.5949  44.6358 (Steele Ocean Science building)
-#
-# You can use the following code to make this data:
-
-# d <- c("2010/10/10 10:52:07", "2010/10/10 10:59:23", "2010/10/10 11:03:26", "2010/10/10 11:06:15", "2010/10/10 11:07:15", "2010/10/10 11:09:10", "2010/10/10 11:11:11", "2010/10/10 11:16:16", "2010/10/10 11:19:27", "2010/10/10 11:28:17")
-# d <- as.POSIXct(d, tz="UCT")
-# tr <- c(111, 111, 111, 111, 111, 111, 111, 111, 111,111)
-# rec <- c(11, 22, 33, 44,55, 66, 77, 33, 44, 11)
-# lat <- c(44.6358, 44.6362, 44.6373, 44.6368, 44.6371, 44.6375, 44.6380, 44.6373, 44.6368, 44.6358) 
-# long <- c(-63.5949, -63.5931, -63.5912, -63.5890, -63.5882, -63.5873, -63.5885, -63.5912, -63.5890, -63.5949)
-# 
-# dataS <- data.frame(id=c(1,2,3,4,5,6,7,8,9,10),time=d, tr=tr, rec=rec, long=long, lat=lat)
-
-# and check it against a minimum velocity of 1 to see if it is valid
+# For sample data, velTest(sampleVel, "sample")
 
 # Similar wording in method headers to detectionEventFilter from glatos
 velTest <- function(data, type) {
@@ -37,7 +12,7 @@ velTest <- function(data, type) {
   #Different column names from different types of data
   #Set different minimum velocity values to test against
   if(type == "sample") {
-    dataColNames <- list(timestamp = "time", transmitters = "tr", receivers = "rec", long = "long", lat = "lat")
+    dataColNames <- list(timestamp = "time", transmitters = "transmitter", receivers = "receiver", long = "longitude", lat = "latitude")
     minVelValue <- 1
   } else if (type == "GLATOS") {
     dataColNames <- list(timestamp = "detection_timestamp_utc", transmitters = "transmitter_id", receivers = "receiver_sn", long = "deploy_long", lat = "deploy_lat")

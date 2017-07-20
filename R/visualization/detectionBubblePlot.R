@@ -141,56 +141,8 @@
 # Changed the column names to work with OTN, GLATOS, and sample data
 # Changed map parameters to use OTN area
 
-# To test this, I used the sample detection data:
-# id  location  animal  time                  lat      long
-# 1   TTB       7       2010/10/11 11:11:11   43.392    -83.993
-# 2   OSC       7       2010/10/11 23:12:53   43.387  -83.987
-# 3   PRS       7       2010/10/12 14:23:12   41.571  -83.618
-# 4   OSC       7       2010/10/13 07:24:52   41.574  -83.607
-# 5   OSC       7       2010/10/13 13:17:13   41.576  -83.611
-# 6   TTB       7       2010/10/13 20:20:20   43.610  -83.887
-# 7   PRS       7       2010/10/14 17:43:22   43.612  -83.861
-# 8   PRS       7       2010/10/15 18:19:23   41.635  -83.531
-# 9   TTB       7       2010/10/16 10:56:56   41.644  -83.534
-# 10  OSC       7       2010/10/16 22:11:33   44.145  -83.466
-#
-# which can be constructed using:
-
-# loc <- c("TTB", "OSC", "PRS", "OSC", "OSC", "TTB", "PRS", "PRS", "TTB", "OSC")
-# anId <- rep(x=7, times=10)
-# time <- c("2010/10/11 11:11:11", "2010/10/11 23:12:53", "2010/10/12 14:23:12", "2010/10/13 07:24:52", "2010/10/13 13:17:13", "2010/10/13 20:20:20", "2010/10/14 17:43:22", "2010/10/15 18:19:23", "2010/10/16 10:56:56", "2010/10/16 22:11:33")
-# time <- as.POSIXct(time)
-# lat <- c(43.392, 43.387, 41.571, 41.574, 41.576, 43.610, 43.612, 41.635, 41.644, 44.145)
-# long <- c(-83.993, -83.987, -83.618, -83.607, -83.611, -83.887, -83.861, -83.531, -83.534, -83.466)
-# detSample <- data.frame(location=loc, animal=anId, time=time, latitude=lat, longitude=long)
-# detSample$location <- as.character(detSample$location)
-
-# and I used the sample receiver data:
-# location  lat     long      deploy_time           recover_time
-# TTB       45.103  -87.626   2010/10/11 10:11:11   2010/10/16 11:56:56
-# OSC       45.097  -87.604   2010/10/11 22:12:53   2010/10/16 23:11:33
-# PRS       44.988  -87.665   2010/10/12 13:23:12   2010/10/15 19:19:23
-# OSC       45.047  -87.745   2010/10/11 22:11:53   2010/10/16 23:12:33
-# PRS       45.884  -87.864   2010/10/12 13:22:12   2010/10/16 19:20:23
-# TTB       44.862  -87.968   2010/10/11 10:10:11   2010/10/16 11:57:56
-# OSC       45.414  -87.350   2010/10/11 22:11:53   2010/10/16 23:12:33
-# PRS       44.498  -88.023   2010/10/12 13:21:12   2010/10/15 19:21:23
-# TTB       45.490  -84.060   2010/10/11 10:09:11   2010/10/16 11:58:56
-# TTB       45.493  -84.081   2010/10/11 10:08:11   2010/10/16 11:59:56
-# which can be constructed using:
-
-# loc <- c("TTB", "OSC", "PRS", "OSC", "PRS", "TTB", "OSC", "PRS", "TTB", "TTB")
-# lat <- c(45.103, 45.097, 44.988, 45.047, 45.884, 44.862, 45.414, 44.498, 45.490, 45.493)
-# long <- c(-87.626, -87.604, -87.665, -87.745, -87.864, -87.968, -87.350, -88.023, -84.060, -84.081)
-# dt <- c("2010/10/11 10:11:11", "2010/10/11 22:12:53", "2010/10/12 13:23:12", "2010/10/11 22:11:53", "2010/10/12 13:22:12", "2010/10/11 10:10:11", "2010/10/11 22:11:53", "2010/10/12 13:21:12", "2010/10/11 10:09:11", "2010/10/11 10:08:11")
-# dt <- as.POSIXct(dt)
-# rt <- c("2010/10/16 11:56:56", "2010/10/16 23:11:33", "2010/10/15 19:19:23", "2010/10/16 23:12:33", "2010/10/16 19:20:23", "2010/10/16 11:57:56", "2010/10/16 23:12:33", "2010/10/15 19:21:23", "2010/10/16 11:58:56", "2010/10/16 11:59:56")
-# rt <- as.POSIXct(rt)
-# recSample <- data.frame(location=loc, latitude=lat, longitude=long, deploy_time=dt, recover_time=rt)
-# recSample$location <- as.character(recSample$location)
-
 # To use:
-# For sample data, detectionBubble(dataDBP, dataRP, "sample")
+# For sample data, detectionBubble(detSampleDBP, recSampleDBP, "sample")
 # For glatos data, abacusPlot(glatos, glatosR "GLATOS")
 # For OTN data, abacusPlot(otn, otnR, "OTN")
 

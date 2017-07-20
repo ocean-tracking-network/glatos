@@ -71,11 +71,18 @@
 # Entered column names to make it work with OTN data as well as GLATOS data
 # Added dplyr methods to check if different columns have changed between the current row and its previous row
 
+# To use:
+# For glatos data, detectionEventFilter(glatos, "GLATOS")
+# For OTN gata, detectionEventFilter(otn, "OTN")
+# For sample data, detectionEventFilter(sampleDEF, "sample")
+
 detectionEventFilter <- function(detections, type, timeSep = Inf) {
   if(type == "GLATOS") {
     detColNames = list(locationCol="glatos_array",animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
   } else if (type == "OTN") {
     detColNames = list(locationCol="station",animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
+  } else if (type == "sample") {
+    detColNames = list(locationCol="location", animalCol="animal", timestampCol="time", latCol="latitude", longCol="longitude")
   } else {
     detColNames = {}
   }
@@ -107,7 +114,7 @@ detectionEventFilter <- function(detections, type, timeSep = Inf) {
   
   # Add a column indicating the time between a given detection and the detection
   #  before it. The first detection in the dataset is assigned a value of NA.
-  #Use dplyr's lag method to do this
+  # Use dplyr's lag method to do this
   # Original: detections$TimeDiff <- c(NA, diff(detections$timestamp))
   n <- as.numeric(detections$timestamp)
   detections$TimeDiff <- n-dplyr::lag(n)

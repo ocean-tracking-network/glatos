@@ -100,30 +100,6 @@
 # My changes: 
 # Entered column names to make it work with OTN and GLATOS data
 
-# To test this, I used the sample data:
-# id  location  time
-# 1   TTB       2010/10/11 11:11:11
-# 2   OSC       2010/10/11 23:12:53
-# 3   PRS       2010/10/12 14:23:12
-# 4   OSC       2010/10/13 07:24:52
-# 5   OSC       2010/10/13 13:17:13
-# 6   TTB       2010/10/13 20:20:20
-# 7   PRS       2010/10/14 17:43:22
-# 8   PRS       2010/10/15 18:19:23
-# 9   TTB       2010/10/16 10:56:56
-# 10  OSC       2010/10/16 22:11:33
-#
-# which can be constructed using:
-
-# id <- 1:10
-# loc <- c("TTB", "OSC", "PRS", "OSC", "OSC", "TTB", "PRS", "PRS", "TTB", "OSC")
-# d <- c("2010/10/11 11:11:11", "2010/10/11 23:12:53", "2010/10/12 14:23:12", "2010/10/13 07:24:52", "2010/10/13 13:17:13", "2010/10/13 20:20:20", "2010/10/14 17:43:22", "2010/10/15 18:19:23", "2010/10/16 10:56:56", "2010/10/16 22:11:33")
-# d <- as.POSIXct(d, tz="UCT")
-# 
-# dataAP <- data.frame(id=id, location=loc, time=d)
-# dataAP$location <- as.character(dataAP$location)
-
-
 # To use:
 # For sample data, abacusPlot(dataAP, "sample")
 # For glatos data, abacusPlot(glatos, "GLATOS")
