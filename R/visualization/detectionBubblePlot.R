@@ -31,9 +31,11 @@
 #'     GLATOS standard detection export data).
 #' }
 #' 
-#' @param map An optional SpatialPolygonsDataFrame or other 
-#'   geo-referenced object to be plotted as the background for the plot. The 
-#'   default is a SpatialPolygonsDataFrame of the Great Lakes (e.g., 
+#' #Should be removed
+#' 
+#' @param map An optional SpatialPolygonsDataFrame or other
+#'   geo-referenced object to be plotted as the background for the plot. The
+#'   default is a SpatialPolygonsDataFrame of the Great Lakes (e.g.,
 #'   \code{data(greatLakesPoly)}.
 #'   
 #' @param receiverLocs An optional data frame containing at least 5 columns with 
@@ -128,9 +130,7 @@
 #' head(recLoc_example)
 #' 
 #' #view example map background
-#' library(sp) #to avoid errors plotting SpatialPolygonsDataFrame
-#' data(greatLakesPoly)
-#' plot(greatLakesPoly)
+#' plot(ocean_poly)
 #' 
 #' detectionBubblePlot(walleye_detections, receiverLocs=recLoc_example,
 #'   mapParms=list(symbolRadius = 1.4,colGrad = c("white", "blue"), showAll=T))
@@ -140,14 +140,14 @@
 # My changes:
 # Changed the column names to work with OTN, GLATOS, and sample data
 # Changed map parameters to use OTN area
+# Changed map (SpatialPolygonDataFrame) to use data from NaturalEarthData
 
 # To use:
-# For sample data, detectionBubble(detSampleDBP, recSampleDBP, "sample")
-# For glatos data, abacusPlot(glatos, glatosR "GLATOS")
-# For OTN data, abacusPlot(otn, otnR, "OTN")
+# For sample data, detectionBubble(detSampleDBP, recSampleDBP, "sample", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
+# For glatos data, abacusPlot(glatos, glatosR "GLATOS", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
+# For OTN data, abacusPlot(otn, otnR, "OTN", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
 
-detectionBubblePlot <- function(detections, receiverLocs = NULL, type,
-  map = NULL
+detectionBubblePlot <- function(detections, receiverLocs = NULL, type, ocean_shapefile="/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp"
   #mapPars ...,
   #detColNames,
   #recColNames,
@@ -175,35 +175,76 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type,
 # 		deploy_timestampCol="deploy_date_time",
 # 		recover_timestampCol="recover_date_time")){
 # 
+  
+  #Libraries used for SpatialPolygonDataFrame
+  library(maptools)
+  library(rgdal)
+  library(raster)
+  library(maps)
+  library(mapdata)
+  library(marmap)
+  library(lattice)
+  
+  #Map
+  #The file that stores shp data from http://www.naturalearthdata.com/ with Ocean polygon (at 110 m) is at "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp"
+  layer <- ogrListLayers(ocean_shapefile)
+  ogrInfo(ocean_shapefile, layer=layer)
+  ocean_poly <- readOGR(ocean_shapefile, layer=layer) #SpatialPolygonDataFrame object
+  
   if(type == "GLATOS") {
     detColNames = list(locationCol="glatos_array", animalCol="animal_id", timestampCol="detection_timestamp_utc", latCol="deploy_lat", longCol="deploy_long")
     recColNames = list(locationCol="glatos_array", latCol="deploy_lat", longCol="deploy_long", deploy_timestampCol="deploy_date_time", recover_timestampCol="recover_date_time")
+    mapPars = list(
+      xLimits = c(-94.5, -75), 
+      yLimits = c(41, 49.5), 
+      symbolRadius = 1, 
+      colGrad = c("white", "red"), 
+      showAll = FALSE
+    )
+    # Assign mapping parameter object default values (independent of mapPars)
+    xLimits = c(-94.5, -75)
+    yLimits = c(41, 49.5)
+    symbolRadius = 1
+    colGrad = c("white", "red")
+    showAll = FALSE
   } else if (type == "OTN") {
     detColNames = list(locationCol="station", animalCol="catalognumber", timestampCol="datecollected", latCol="latitude", longCol="longitude")
     recColNames = list(locationCol="station", latCol="latitude", longCol="longitude", deploy_timestampCol="deploy_date_time", recover_timestampCol="recover_date_time")
+    mapPars = list(
+      xLimits = c(-69.4, -59.3), 
+      yLimits = c(42.8, 47.6), 
+      symbolRadius = 1, 
+      colGrad = c("white", "red"), 
+      showAll = FALSE
+    )
+    # Assign mapping parameter object default values (independent of mapPars)
+    xLimits = c(-69.4, -59.3) 
+    yLimits = c(42.8, 47.6)
+    symbolRadius = 1
+    colGrad = c("white", "red")
+    showAll = FALSE
   } else if (type == "sample") {
     detColNames = list(locationCol="location", animalCol="animal", timestampCol="time", latCol="latitude", longCol="longitude")
     recColNames = list(locationCol="location", latCol="latitude", longCol="longitude", deploy_timestampCol="deploy_time", recover_timestampCol="recover_date_time")
+    mapPars = list(
+      xLimits = c(-69.4, -59.3), 
+      yLimits = c(42.8, 47.6), 
+      symbolRadius = 1, 
+      colGrad = c("white", "red"), 
+      showAll = FALSE
+    )
+    # Assign mapping parameter object default values (independent of mapPars)
+    xLimits = c(-69.4, -59.3)
+    yLimits = c(42.8, 47.6)
+    symbolRadius = 1
+    colGrad = c("white", "red")
+    showAll = FALSE
   } else {
-    detColNames = {}
-    recColNames = {}
+    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
   }
-  
-	library(sp) # for plotting SpatialPolygonsDataFrame
- 
-  #Define mapPars
-  mapPars = list(xLimits = c(-94.5, -75), yLimits = c(41, 49.5), symbolRadius = 1, colGrad = c("white", "red"), showAll = FALSE)
-    
-  # Assign mapping parameter object default values (independent of mapPars)
-	xLimits <- c(-94.5, -75) 
-	yLimits <- c(41, 49.5) 
-	symbolRadius <- 1
-	colGrad <- c("white", "red") 
-	showAll <- FALSE
-		
   # Update mapping parameter objects based on user-specified in mapPars	
-    for(i in 1:length(mapPars)) 
-      assign(names(mapPars)[i], mapPars[[i]]) 
+  for(i in 1:length(mapPars)) 
+    assign(names(mapPars)[i], mapPars[[i]]) 
  
 	# Check that the specified columns appear in the detections data frame
 	missingCols <- setdiff(unlist(detColNames), names(detections))
@@ -329,12 +370,6 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type,
 	
 	# Calculate the aspect ratio for the figure
 	figRatio <- (yLimits[2] - yLimits[1])/(xLimits[2] - xLimits[1])*1.4
-	
-	if(is.null(map)){
-		#read example file from package
-		data(greatLakesPoly)
-		map <- greatLakesPoly
-	}
     
 	# Make two plots, one for each number of unique fish and number of detections    
 	for(i in c("summaryNumFish", "summaryNumDetections")){
@@ -349,7 +384,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type,
 		par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))	    
 		
 		# Plot background image
-		plot(map, xlim = xLimits, ylim = yLimits, axes = T, asp = 1.4, xaxs = "i", 
+		plot(ocean_poly, xlim = xLimits, ylim = yLimits, axes = T, asp = 1.4, xaxs = "i", 
 			lwd = 1.5, xaxt = 'n', yaxt = 'n', col = "White", bg="WhiteSmoke")
 		
 		if(showAll){
