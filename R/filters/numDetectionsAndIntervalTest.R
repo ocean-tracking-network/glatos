@@ -1,15 +1,54 @@
-# General method to do the number of detections and interval ratio test, a new tool
-# Uses dplyr package
-# Can work with OTN or GLATOS data
-# To use:
-# For glatos data, numIntervalTest(glatos, "GLATOS")
-# For OTN gata, numIntervalTest(otn, "OTN")
-# For sample data, numIntervalTest(sample, "sample")
+#' Perform number of detections and interval test (Steckenreuter et al., 2016), which checks if the minimum velocity is above a threshold
+#'   and returns a validity column using the geosphere and dplyr libraries
+#'
+#' @param detections A data frame containing detection data with at least 
+#'   3 columns containing 'transmitters', 'receivers', and 'timestamp'. 
+#'   Column names are specified by \code{type}.
+#'   
+#' @param type A character string that contains the type of data that is being passed in,
+#'   for example, "OTN", "GLATOS", or "sample".
+#'   
+#' @details detColNames is defined as a list with the names of the required columns in
+#' \code{detections}, defined by \code{type}:
+#'  \itemize{
+#'    \item \code{transmittersCol} is a character string with the name of the column
+#'     containing the ids of the transmitters
+#'     ('transmission_id' for GLATOS data, 'tagname' for OTN data, or 'transmitter'
+#'                                                 for sample data).
+#'     \item \code{receiversCol} is a character string with the name of the column
+#'     containing the ids of the receivers
+#'     ('receiver_sn' for GLATOS data, 'receiver_group' for OTN data, or 'receiver'
+#'                                                 for sample data).
+#'    \item \code{timestampCol} is a character string with the name of the column
+#'    containing datetime stamps for the detections (MUST be of class 'POSIXct')
+#'    ('detection_timestamp_utc' for GLATOS data, 'datecollected' for OTN data, or
+#'                                                 'time' for sample data).
+#'   }
+#'
+#' @details An instance is invalid (0) if it is the only detection with its transmitter id and receiver id
+#' @details An instance is valid (1) if for its transmitter id and receiver id, it has more short 
+#'   intervals (<=2 hours) than long intervals (>=24 hours)
+#' 
+#' @return A data frame containing the data with a valid column appended to it which appears as 1 if it is
+#'   valid and 0 if not
+#'
+#' @references (in APA) Steckenreuter, A., Hoenner, X., Huveneers, C., Simpfendorfer, C., Buscot, M.J., 
+#'   Tattersall, K., ... Harcourt, R. (2016). Optimising the design of large-scale acoustic telemetry
+#'   curtains. Marine and Freshwater Research. doi: 10.1071/mf/16126
+#' 
+#' @author A. Dini
+#'
+#' @usage To use:
+#'   For GLATOS data, numIntervalTest(glatos, "GLATOS")
+#'   For OTN gata, numIntervalTest(otn, "OTN")
+#'   For sample data, numIntervalTest(sample, "sample")
+#'
+#' @export
 
 # Similar wording in method headers to detectionEventFilter from GLATOS
 numIntervalTest <- function(detections, type) {
-  if(type=="GLATOS") { #Set column names for Glatos data
-    detColNames <- list(transmitters = "transmitter_id", receivers = "receiver_sn", timestamp = "detection_timestamp_utc")
+  if(type=="GLATOS") { #Set column names for GLATOS data
+    detColNames <- list(transmittersCol = "transmitter_id", receiversCol = "receiver_sn", timestamp = "detection_timestamp_utc")
     detections$minLag <- detections$min_lag
   } else if (type == "OTN"){ #Set column names for OTN data
     detColNames <- list(transmitters = "tagname", receivers = "receiver_group", timestamp = "datecollected")

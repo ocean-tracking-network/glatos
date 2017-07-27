@@ -5,68 +5,67 @@
 #'
 #' @param detections A data frame containing detection data with at least 
 #'   5 columns containing 'location', 'animal', 'timestamp', 'latitude', 
-#'   and 'longitude' data. Default column names match GLATOS standard detection 
-#'   export file (e.g., '_detectionsWithLocs.csv'), but column names can also 
-#'   be specified with \code{detColNames}.
-#'   
-#' @param detColNames A list with names of required columns in 
-#'   \code{detections}: 
-#'   
-#' \itemize{
-#'   \item \code{locationCol} is a character string with the name of the column 
-#'   	 containing the locations that will be plotted (typically 'glatos_array'  
-#'     or 'station' for GLATOS standard detection export data).
-#'   \item \code{animalCol} is a character string with the name of the column 
-#' 		 containing the individual animal identifier (typically 'transmitter_id' 
-#'     or 'animal_id' for GLATOS standard detection export data).
-#'	 \item \code{timestampCol} is a character string with the name of the column 
-#' 		 containing datetime stamps for detections (MUST be of class 
-#'     'POSIXct'; typically 'detection_timestamp_utc' for GLATOS standard 
-#'     detection export data).  
-#'	 \item \code{latitudeCol} is a character string with the name of the column
-#'     containing latitude of the receiver (typically 'deploy_lat' for 
-#'     GLATOS standard detection export data). 
-#'	 \item \code{longitudeCol} is a character string with the name of the column
-#'     containing longitude of the receiver (typically 'deploy_lat' for 
-#'     GLATOS standard detection export data).
-#' }
+#'   and 'longitude' data.
 #' 
-#' #Should be removed
-#' 
-#' @param map An optional SpatialPolygonsDataFrame or other
-#'   geo-referenced object to be plotted as the background for the plot. The
-#'   default is a SpatialPolygonsDataFrame of the Great Lakes (e.g.,
-#'   \code{data(greatLakesPoly)}.
-#'   
 #' @param receiverLocs An optional data frame containing at least 5 columns with 
 #'   receiver 'location', 'lat', 'lon', 'deploy_timestamp', and 
-#'   'recover_timestamp'. Default column names match GLATOS standard receiver 
-#'   location file \cr(e.g., 'GLATOS_receiverLocations_yyyymmdd.csv'), but 
-#'   column names can also be specified with \code{recColNames}.
+#'   'recover_timestamp'.
 #'   
-#' @param recColNames A list with names of required columns in 
-#'   \code{receiverLocs}: 
+#' @param type A character string that contains the type of data that is being 
+#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#'   
+#' @param ocean_shapefile A pathname for a file that contains data to make the 
+#'   SpatialPolygonsDataFrame for the bubble plot. (from NaturalEarthData)
+#' @references http://www.naturalearthdata.com
+#'   
+#' @details detColNames is defined as a list with names of required columns in 
+#'   \code{detections}, defined by \code{type}: 
 #' \itemize{
 #'   \item \code{locationCol} is a character string with the name of the column 
-#'   	 containing the locations that will be plotted (typically 'glatos_array' 
-#'     or 'station' for GLATOS standard detection export data).
+#'   	 containing locations you wish to filter to ('glatos_array' for GLATOS data, 
+#' 		 'station' for OTN data, or 'location' for sample data).
+#'   \item \code{animalCol} is a character string with the name of the column 
+#' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
+#' 		 'catalognumber' for OTN data, or 'animal' for sample data).
+#'	 \item \code{timestampCol} is a character string with the name of the column 
+#' 		 containing datetime stamps for the detections (MUST be of class 
+#'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
+#'     OTN data, or 'time' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
-#'     containing latitude of the receiver (typically 'deploy_lat' for 
-#'     GLATOS standard detection export data). 
+#'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
+#'     for OTN data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
-#'     containing longitude of the receiver (typically 'deploy_long' for 
-#'     GLATOS standard detection export data).
-#'	 \item \code{deploy_timestampCol} is a character string with the name of 
-#'     the column containing datetime stamps for receiver deployments (MUST be 
-#'     of class 'POSIXct'; typically 'deploy_date_time'for GLATOS standard 
-#'     detection export data). 
-#'	 \item \code{recover_timestampCol} is a character string with the name of 
-#'     the column containing datetime stamps for receier recover (MUST be of 
-#'     class 'POSIXct'; typically 'recover_date_time'for GLATOS standard 
-#'     detection export data). 
+#'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
+#'     for OTN data, or 'longitude' for sample data).
 #' }
 #' 
-#' @param mapPars A list of optional mapping parameters (with exact names 
+#' @details map is an optional SpatialPolygonsDataFrame or other
+#'   geo-referenced object to be plotted as the background for the plot. It is 
+#'   defined by \code{type}.
+#' 
+#' @details recColNames is a list with names of required columns in 
+#'   \code{receiverLocs}, defined by \code{type}: 
+#' \itemize{
+#'   \item \code{locationCol} is a character string with the name of the column 
+#'   	 containing the locations that will be plotted ('glatos_array' for GLATOS data, 
+#' 		 'station' for OTN data, or 'location' for sample data).
+#'	 \item \code{latitudeCol} is a character string with the name of the column
+#'     containing the latitude of the receiver ('deploy_lat' for 
+#'     GLATOS data, 'latitude' for OTN data, or 'latitude' for sample data). 
+#'	 \item \code{longitudeCol} is a character string with the name of the column
+#'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'latitude'
+#'     for OTN data, or 'latitude' for sample data).
+#'	 \item \code{deploy_timestampCol} is a character string with the name of 
+#'     the column containing datetime stamps for receiver deployments (MUST be 
+#'     of class 'POSIXct') ('deploy_date_time'for GLATOS data, 'deploy_date_time' for OTN
+#'     data, or 'deploy_time' for sample data). 
+#'	 \item \code{recover_timestampCol} is a character string with the name of 
+#'     the column containing datetime stamps for receier recover (MUST be of 
+#'     class 'POSIXct') ('recover_date_time'for GLATOS data, 'recover_date_time' for OTN data,
+#'     or 'recover_time' for sample data). 
+#' }
+#' 
+#' @details mapPars is a list of mapping parameters (with exact names 
 #'   matching below) including:
 #' \itemize{
 #'   \item \code{xLimits} is a two-element numeric vector that defines 
@@ -81,7 +80,7 @@
 #'   \item \code{showAll} A logical (default = FALSE) indicating whether to 
 #'     plot all receiver groups (TRUE) or only those receiver groups on 
 #'     which the fish were detected (FALSE).
-#' }
+#' } which are defined by \code{type}
 #' 
 #' @details If \code{mapPars$showAll} is TRUE then the plot will show all 
 #'   receivers, including those that detected none of the transmitters in 
@@ -115,26 +114,9 @@
 #'   directory. Summary data for each plot are also written to CSV files 
 #'   in the working directory.
 #'
-#' @author T. R. Binder
+#' @author T. R. Binder, edited by A. Dini
 #' 
-#' @examples
-#' #example detection data
-#' data(walleye_detections) 
-#' head(walleye_detections)
-#'
-#' #call with defaults
-#' detectionBubblePlot(walleye_detections)
 #' 
-#' #example receiver location data
-#' data(recLoc_example) 
-#' head(recLoc_example)
-#' 
-#' #view example map background
-#' plot(ocean_poly)
-#' 
-#' detectionBubblePlot(walleye_detections, receiverLocs=recLoc_example,
-#'   mapParms=list(symbolRadius = 1.4,colGrad = c("white", "blue"), showAll=T))
-#'
 #' @export
 
 # My changes:
@@ -147,11 +129,7 @@
 # For glatos data, abacusPlot(glatos, glatosR "GLATOS", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
 # For OTN data, abacusPlot(otn, otnR, "OTN", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
 
-detectionBubblePlot <- function(detections, receiverLocs = NULL, type, ocean_shapefile="/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp"
-  #mapPars ...,
-  #detColNames,
-  #recColNames,
-){
+detectionBubblePlot <- function(detections, receiverLocs = NULL, type, ocean_shapefile="/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp"){
   
 # detectionBubblePlot <- function(detections, 
 # 	receiverLocs = NULL, 
@@ -191,7 +169,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type, ocean_sha
   ogrInfo(ocean_shapefile, layer=layer)
   ocean_poly <- readOGR(ocean_shapefile, layer=layer) #SpatialPolygonDataFrame object
   
-  if(type == "GLATOS") {
+  if(type == "GLATOS") { #Sets different attributes for GLATOS data
     detColNames = list(locationCol="glatos_array", animalCol="animal_id", timestampCol="detection_timestamp_utc", latCol="deploy_lat", longCol="deploy_long")
     recColNames = list(locationCol="glatos_array", latCol="deploy_lat", longCol="deploy_long", deploy_timestampCol="deploy_date_time", recover_timestampCol="recover_date_time")
     mapPars = list(
@@ -225,7 +203,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type, ocean_sha
     showAll = FALSE
   } else if (type == "sample") {
     detColNames = list(locationCol="location", animalCol="animal", timestampCol="time", latCol="latitude", longCol="longitude")
-    recColNames = list(locationCol="location", latCol="latitude", longCol="longitude", deploy_timestampCol="deploy_time", recover_timestampCol="recover_date_time")
+    recColNames = list(locationCol="location", latCol="latitude", longCol="longitude", deploy_timestampCol="deploy_time", recover_timestampCol="recover_time")
     mapPars = list(
       xLimits = c(-69.4, -59.3), 
       yLimits = c(42.8, 47.6), 

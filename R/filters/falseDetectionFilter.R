@@ -17,14 +17,14 @@
 #'   
 #' @param minLagCol A character string containing the name of the column 
 #'   in \code{detections} that contains 'min_lag'.
-#'
+#'   
+#' @details The min_lag column should be in \code{detections} but if not, program
+#'   will add in using getMinLag() function.
 #' @details Detections are identified as potentially false when 
 #'   \code{min_lag > tf}.
 #' @details 
 #' A new column (\code{passedFilter}), indicating if each record (row) passed 
-#' the filter, is added to the input data frame. This function was written
-#' specifically with GLATOS standard detection export in mind, so it requires
-#' \code{min_lag} or equivalent. 
+#' the filter, is added to the input data frame. 
 #' @details  
 #' A common rule of thumb for choosing tf for VEMCO PPM encoded transmitters 
 #'   is 30 times the nominal delay (e.g., 3600 s for a transmitter with a 
@@ -34,7 +34,7 @@
 #'   column 'passedFilter' indicating if each detection did (1) or did not (0) 
 #'   pass the criteria.
 #'
-#' @author T. R. Binder
+#' @author T. R. Binder, edited by A. Dini
 #'
 #' @references
 #'   Pincock, D.G., 2012. False detections: what they are and how to remove them 
@@ -47,19 +47,13 @@
 #'     false detections in VEMCO pulse position modulation acoustic telemetry 
 #'     monitoring equipment. Animal Biotelemetry, 3(1), p.55.
 #'     \cr \url{https://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-015-0094-z}
-#'
-#' @examples
-#' data("walleye_detections") #example data
 #' 
-#' head(walleye_detections)
-#'
-#' dtx <- falseDetectionFilter(walleye_detections, 3600)
-#' head(dtx)
-#' 
+#' @usage To use:
+#'   For glatos data, falseDetectionFilter(data, "GLATOS")
+#'   For OTN data, falseDetectionFilter(data, "OTN")
+#'   For sample data, falseDetectionFilter(data, "sample")
+#'   
 #' @export
-
-# My changes:
-# Added getMinLag to be able to get the min_lag column
 
 falseDetectionFilter <- function(detections, type, tf=3600, minLagCol = "min_lag"){
   # Check that the minLag column is in the detections dataframe
@@ -73,11 +67,11 @@ falseDetectionFilter <- function(detections, type, tf=3600, minLagCol = "min_lag
   detections$passedFilter <- ifelse(!is.na(detections[,minLagCol]) & 
                                       detections[,minLagCol] <= tf, 1, 0)
   nr <- nrow(detections)
-  with(detections,
-       message(paste0("The filter identified ", 
-                      nr - sum(passedFilter), " (", 
-                      round((nr - sum(passedFilter))/
-                              nr*100, 2), "%) of ", nr, 
-                      " detections as potentially false.")))
+  
+  message(paste0("The filter identified ",
+                 nr - sum(detections$passedFilter), " (",
+                 round((nr - sum(detections$passedFilter))/
+                         nr*100, 2), "%) of ", nr,
+                 " detections as potentially false."))
   return(detections)
 }
