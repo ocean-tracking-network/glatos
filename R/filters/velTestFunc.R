@@ -21,8 +21,7 @@ velTest <- function(data, type) {
     dataColNames <- list(timestamp = "datecollected", transmitters = "tagname", receivers = "receiver_group", long = "longitude", lat = "latitude")
     minVelValue <- 10
   } else {
-    detColNames <- {}
-    minVelValue <- 0
+    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
   }
   
   # Check that the specified columns appear in the detections dataframe

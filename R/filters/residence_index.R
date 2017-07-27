@@ -13,12 +13,7 @@ library("plotly")
 # returns a floating point number of days (i.e. 503.76834).
 #
 # @var Detections - data frame pulled from the compressed detections CSV
-total_diff_days <- function(detections) {
-  first <- detections$startdate[which.min(detections$startdate)]
-  last <- detections$enddate[which.max(detections$enddate)]
-  total <- as.double(difftime(last, first, units="secs"))/86400.0
-  return(total)
-}
+
 #For GLATOS/OTN/sample detections data:
 #To work with OTN/GLATOS/sample data
 # To use:
@@ -35,7 +30,7 @@ total_diff_days <- function(detections, type) {
   } else if (type == "sample") {
     detColNames = list(startDate="startdate", endDate="enddate")
   } else {
-    detColNames = {}
+    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
   }
   
   # Check that the specified columns appear in the detections dataframe
@@ -89,13 +84,7 @@ total_diff_days <- function(detections, type) {
 #
 #
 # @var Detections - data frame pulled from the compressed detections CSV
-total_days_count <- function(detections) {
-  startdays <- distinct(select(mutate(detections, days = as.Date(startdate)), days))
-  enddays <- distinct(select(mutate(detections, days = as.Date(enddate)), days))
-  days <- bind_rows(startdays,enddays)
-  daycount <- as.double(count(distinct(select(days,days ))))
-  return(daycount)
-}
+
 #To work with OTN/GLATOS/sample data
 # To use:
 # For glatos data, total_days_count(glatos, "GLATOS")
@@ -111,7 +100,7 @@ total_days_count <- function(detections, type) {
   } else if (type == "sample") {
     detColNames = list(startDate="startdate", endDate="enddate")
   } else {
-    detColNames = {}
+    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
   }
   
   # Check that the specified columns appear in the detections dataframe
@@ -156,12 +145,7 @@ total_days_count <- function(detections, type) {
 # are the same, a timedelta of one second is assumed.
 #
 # @var Detections -data frame pulled from the compressed detections CSV
-aggregate_total_with_overlap <- function(detections) {
-  detections <- mutate(detections, timedelta = as.double(difftime(as.Date(enddate),as.Date(startdate), units="secs")))
-  detections <- mutate(detections, timedelta = recode(detections$timedelta, `0` = 1))
-  total <- as.double(sum(detections$timedelta))/86400.0
-  return(total)
-}
+
 #To work with OTN/GLATOS/sample data:
 # To use:
 # For glatos data, aggregate_total_with_overlap(glatos, "GLATOS")
@@ -177,7 +161,7 @@ aggregate_total_with_overlap <- function(detections, type) {
   } else if (type == "sample") {
     detColNames = list(startDate="startdate", endDate="enddate")
   } else {
-    detColNames = {}
+    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
   }
   
   # Check that the specified columns appear in the detections dataframe
@@ -218,51 +202,6 @@ aggregate_total_with_overlap <- function(detections, type) {
 # second is assumed.
 #
 # @var Detections - data frame pulled from the compressed detections CSV
-aggregate_total_no_overlap <- function(detections) {
-  total <- 0.0
-  detections <- arrange(detections, startdate)
-  detcount <- as.integer(count(detections)) 
-  detections <- mutate(detections, interval = interval(startdate,enddate))
-  detections <- mutate(detections, timedelta = as.double(difftime(as.Date(enddate),as.Date(startdate), units="secs")))
-  detections <- mutate(detections, timedelta = recode(detections$timedelta, `0` = 1))
-  next_block <- 2
-  start_block <- 1
-  end_block <- 1
-  while(next_block <= detcount) {
-    # if it overlaps
-    if(next_block < detcount && int_overlaps(nth(detections$interval, end_block), nth(detections$interval, next_block))) {
-      if(nth(detections$interval, next_block) >= nth(detections$interval, end_block)) {
-        end_block <- next_block
-      }
-      if(end_block == detcount) {
-        tdiff <- as.double(difftime(nth(detections$enddate,end_block), nth(detections$startdate, start_block), units="secs"))
-        if(tdiff == 0.0) {
-          tdiff <- 1
-        }
-        start_block <- next_block
-        end_block <- next_block + 1
-        total <- total + as.double(tdiff)
-      }
-    } else {
-      #if it doesn't overlap
-      tdiff <- 0.0
-      # Generate the time difference between the start of the start block and the end of the end block
-      tdiff <- as.double(difftime(nth(detections$enddate,end_block), nth(detections$startdate, start_block), units="secs"))
-      start_block <- next_block
-      end_block <- next_block
-      total <- total + as.double(tdiff)
-    }
-    next_block <- next_block + 1
-  }
-  total <- total/86400.0
-  return(total)
-}
-
-
-
-
-
-
 
 #To work with OTN/GLATOS/sample data:
 # To use:
@@ -279,7 +218,7 @@ aggregate_total_no_overlap <- function(detections, type) {
   } else if (type == "sample") {
     detColNames = list(startDate="startdate", endDate="enddate")
   } else {
-    detColNames = {}
+    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
   }
   
   # Check that the specified columns appear in the detections dataframe
@@ -358,21 +297,6 @@ aggregate_total_no_overlap <- function(detections, type) {
 #
 # @var dets - data frame pulled from the compressed detections CSV
 # @var calculation_method - determines which method above will be used to count total time and station time
-get_days <- function(dets, calculation_method='kessel') {
-  days <- 0
-  if (calculation_method == 'aggregate_with_overlap') {
-    days = aggregate_total_with_overlap(dets)
-  } else if(calculation_method == 'aggregate_no_overlap') {
-    days = aggregate_total_no_overlap(dets)
-  } else if(calculation_method == 'timedelta') {
-    days <- total_diff_days(dets)
-  } else {
-    days <- total_days_count(dets)
-  }
-  return(days)
-}
-
-
 
 #To work with OTN/GLATOS/sample data:
 # To use:

@@ -84,7 +84,7 @@ detectionEventFilter <- function(detections, type, timeSep = Inf) {
   } else if (type == "sample") {
     detColNames = list(locationCol="location", animalCol="animal", timestampCol="time", latCol="latitude", longCol="longitude")
   } else {
-    detColNames = {}
+    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
   }
   
   # Check that the specified columns appear in the detections dataframe

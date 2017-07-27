@@ -16,7 +16,7 @@ numIntervalTest <- function(detections, type) {
   }else if (type == "sample") { #Set column names for sample data described above
     detColNames <- list(transmitters = "transmitter", receivers = "receiver", timestamp = "time")
   }else { #Other
-    detColNames <- {}
+    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
   }
   
   # Check that the specified columns above appear in the detections dataframe
