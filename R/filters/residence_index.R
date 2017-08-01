@@ -306,7 +306,7 @@ aggregate_total_no_overlap <- function(detections, type) {
 # For OTN compressed data, get_days(otnComp, "OTNComp") or with calculation method
 
 # @var calculation_method - determines which method above will be used to count total time and station time
-get_days <- function(dets, type, calculation_method='kessel') {
+get_days <- function(dets, type='OTN', calculation_method='kessel') {
   days <- 0
   if (calculation_method == 'aggregate_with_overlap') {
     days = aggregate_total_with_overlap(dets, type)
@@ -326,7 +326,7 @@ get_days <- function(dets, type, calculation_method='kessel') {
 # -----------------
 #
 # This function takes in a commpressed detections CSV and determines the residency
-# index for reach station.
+# index for each station.
 #
 # Residence Index (RI) was calculated as the number of days an individual fish was
 # detected at each receiver station divided by the total number of days the fish was
@@ -335,16 +335,24 @@ get_days <- function(dets, type, calculation_method='kessel') {
 # @var Detections - CSV Path
 # @var stations_file - CSV path
 # @var calculation_method - string
-residence_index <- function(filename, stations_file, calculation_method='kessel') {
+residence_index <- function(filename, stations_file, type, calculation_method='kessel') {
   data <- read.csv(filename)
-  data <- filter(data, !grepl('release', startunqdetecid))
-  total_days = get_days(data, calculation_method)
+  if(type=="OTNComp") { #OTN data
+    data <- filter(data, !grepl('release', startunqdetecid))
+    data$startdate <- as.POSIXct(data$startdate, tz="UCT")
+    data$enddate <- as.POSIXct(data$enddate, tz="UCT")
+    data$station <- as.character(data$station)
+  }
+  total_days = get_days(data, type, calculation_method)
   ri <- data.frame('days_detected'=numeric(),'residency_index'=numeric(), 'station'=character())
   stations <- distinct(select(data, station))
+  if(type=="OTNComp"){
+    stations$station <- as.character(stations$station) 
+  }
   for (index in 1:as.integer(count(stations))) {
     stn <- as.character(slice(stations, index)$station)
     stn_data <- filter(data, station == stn)
-    total_stn_days <- get_days(stn_data, calculation_method)
+    total_stn_days <- get_days(stn_data, type, calculation_method)
     res_index = as.double(total_stn_days)/total_days
     row <- data.frame('days_detected'=total_stn_days,'residency_index'=res_index, 'station'=stn)
     ri <- rbind(ri, row)
@@ -354,7 +362,7 @@ residence_index <- function(filename, stations_file, calculation_method='kessel'
   ri <- left_join(ri, station_locs, by = "station")
   write_loc <- paste('ri_files/',calculation_method,'.csv', sep = "")
   write.csv(ri, write_loc, row.names=FALSE)
-  print(paste("File written too:", write_loc))
+  print(paste("File written to:", write_loc))
   return(ri)
 }
 # ri_plot()
