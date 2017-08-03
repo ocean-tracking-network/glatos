@@ -44,11 +44,18 @@ times <- c(timeA, timeB, timeC)
 times <- as.POSIXct(times, tz="UCT")
 long <- c(-63.591785, -63.571830, -63.593094, -63.591228, -63.570306, -63.593255, -63.588545, -63.570178, -63.591743)
 lat <- c(44.635467, 44.644277, 44.636216, 44.637284, 44.644078, 44.637034, 44.638017, 44.645788, 44.638239)
-fishIcons <- iconList(red=makeIcon("/Users/dinian/Desktop/glatos/redFish.png", iconWidth = 39, iconHeight=24),
-                      blue=makeIcon("/Users/dinian/Desktop/glatos/blueFish.png", iconWidth = 39, iconHeight=24),
-                      green=makeIcon("/Users/dinian/Desktop/glatos/greenFish.png", iconWidth = 39, iconHeight=24))
+sMapData3 <- data.frame(animalId=anId, timestamp=times,longitude=long, latitude=lat)
 
+anId <- c(1, 2, 3, 1, 2, 3, 1, 2, 3)
+timeA <- rep(x="2010/10/11 11:11:11", times=3)
+timeB <- rep(x="2010/10/11 11:12:11", times=3)
+timeC <- rep(x="2010/10/11 11:13:11", times=3)
+times <- c(timeA, timeB, timeC)
+times <- as.POSIXct(times, tz="UCT")
+long <- c(-63.575993, -63.580284, -63.626032, -63.604145, -63.591700, -63.575306, -63.612943, -63.618736, -63.568354)
+lat <- c(44.652902, 44.631772, 44.665845, 44.655283, 44.636597, 44.642827, 44.642665, 44.649300, 44.640201)
 sMapData <- data.frame(animalId=anId, timestamp=times,longitude=long, latitude=lat)
+
 
 # Getting location at every second
 dataS <- sMapData
@@ -169,6 +176,12 @@ sMapData <- sMapData[order(sMapData$animalId, sMapData$timestamp),]
 #   mapTime3 <- addMarkers(mapTime3, lng=mdSplit3$longitude[[i]], lat=mdSplit3$latitude[[i]], label=s, icon=fishIcons[[i]])
 # }
 
+iconFiles <- c("/Users/dinian/Desktop/glatos-git/visualization/Icons/redFish.png", "/Users/dinian/Desktop/glatos-git/visualization/Icons/blueFish.png", "/Users/dinian/Desktop/glatos-git/visualization/Icons/greenFish.png")
+sMapData2 <- sMapData
+sMapData$icon <- apply(sMapData, 1, function(x) {
+  n <- x["animalId"]
+  return(iconFiles[[as.integer(n)]])
+})
 
 
 
@@ -191,8 +204,7 @@ server <- function(input, output, session) {
   output$mymap <- renderLeaflet({
     leaflet() %>%
       addTiles() %>%
-      addMarkers(data = points(), label=as.character(points()$a))
-      
+      addMarkers(data = points(), label=as.character(points()$a), icon=makeIcon(points()$icon, iconWidth = 39, iconHeight=24))
       
   })
 }
