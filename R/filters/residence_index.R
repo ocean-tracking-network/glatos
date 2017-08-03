@@ -334,44 +334,76 @@ get_days <- function(dets, type='OTN', calculation_method='kessel') {
 #
 # @var Detections - CSV Path
 # @var stations_file - CSV path
+# @var type - string
 # @var calculation_method - string
-residence_index <- function(filename, stations_file, type, calculation_method='kessel') {
-  data <- read.csv(filename)
-  if(type=="OTNComp") { #OTN data
-    data <- filter(data, !grepl('release', startunqdetecid))
-    data$startdate <- as.POSIXct(data$startdate, tz="UCT")
-    data$enddate <- as.POSIXct(data$enddate, tz="UCT")
-    data$station <- as.character(data$station)
-  }
-  total_days = get_days(data, type, calculation_method)
+residency_index <- function(data, station_locs, type, calculation_method='kessel', write_file=FALSE) {
+  #data <- read.csv(filename)
+  
+  data <- filter(data, !grepl('release', startunqdetecid))
+  total_days = get_days(data, calculation_method)
+  
   ri <- data.frame('days_detected'=numeric(),'residency_index'=numeric(), 'station'=character())
+  
   stations <- distinct(select(data, station))
-  if(type=="OTNComp"){
-    stations$station <- as.character(stations$station) 
-  }
   for (index in 1:as.integer(count(stations))) {
     stn <- as.character(slice(stations, index)$station)
     stn_data <- filter(data, station == stn)
-    total_stn_days <- get_days(stn_data, type, calculation_method)
+    total_stn_days <- get_days(stn_data, calculation_method)
     res_index = as.double(total_stn_days)/total_days
     row <- data.frame('days_detected'=total_stn_days,'residency_index'=res_index, 'station'=stn)
     ri <- rbind(ri, row)
   }
-  station_locs <- read.csv(stations_file)
+  #station_locs <- read.csv(stations_file)
   station_locs$station <- as.character(station_locs$station)
   ri <- left_join(ri, station_locs, by = "station")
-  write_loc <- paste('ri_files/',calculation_method,'.csv', sep = "")
-  write.csv(ri, write_loc, row.names=FALSE)
-  print(paste("File written to:", write_loc))
+  # write_loc <- paste('ri_files/',calculation_method,'.csv', sep = "")
+  # write.csv(ri, write_loc, row.names=FALSE)
+  # print(paste("File written too:", write_loc))
   return(ri)
 }
+
+
+
 # ri_plot()
 # ---------
 # This function uses plotly to place the caluclated RI on a map.
 #
 # @var df - a data frame
+# @var type - string
 # @ var title - string
-ri_plot <- function(df, title="Residence Index") {
+ri_plot <- function(df, type, title="Residence Index") {
+  if(type=="OTNComp") { #Set column names for OTN data
+    colNames = list(latitudeCol="latitude", longitudeCol="longitude", residency_indexCol="residency_index", stationCol="station")
+  } else if (type=="GLATOS") { #Set column names for GLATOS data
+    colNames = list(latitudeCol="deploy_lat", longitudeCol="deploy_long", residency_indexCol="residency_index", stationCol="glatos_array")
+  } else if (type == "sample") { #Set column names for sample data
+    colNames = list(latitudeCol="lat", longitudeCol="lon", residency_indexCol="ri", station="station")
+  } else { # Other type
+    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+  }
+  
+  # Check that residency_index is in the dataframe
+  if (!(colNames$residency_indexCol %in% names(df))){
+    if(type=="OTNComp") {
+      df <- residence_index(df, otnStat, "OTNComp", "timedelta") #Get residency_indexCol
+    } else {
+      df <- residence_index(df, stations, type, "timedelta") #Get residency_indexCol
+    }
+  }
+  
+  # Check that the specified columns appear in the dataframe
+  missingCols <- setdiff(unlist(colNames), names(df))
+  if (length(missingCols) > 0){
+    stop(paste0("Dataframe is missing the following ",
+                "column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
+         call.=FALSE)
+  }
+  
+  # Subset detections with only user-defined columns and change names
+  # this makes code more easy to understand (esp. ddply)
+  df <- df[,unlist(colNames)] #subset
+  names(df) <- c("latitude","longitude","residency_index","station")
+  
   lat_range <- c(df$latitude[which.min(df$latitude)], df$latitude[which.max(df$latitude)])
   lon_range <- c(df$longitude[which.min(df$longitude)], df$longitude[which.max(df$longitude)])
   m <- list(colorbar = list(title = "Residence Index"))
@@ -408,4 +440,7 @@ ri_plot <- function(df, title="Residence Index") {
     ) %>%
     layout(title = title, geo = g)
   show(p)
+  if(type=="sample") {
+    message("The sample data works")
+  }
 }
