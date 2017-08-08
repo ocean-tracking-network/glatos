@@ -15,8 +15,10 @@ library(geojsonio)
 library(colorRamps)
 
 #For animating
+library(leaflet)
 library(shiny)
 library(xts)
+library(dplyr)
 #library(leaflet)
 #library(dplyr)
 
