@@ -5,18 +5,112 @@ library(leaflet)
 
 #http://www.r-graph-gallery.com/2017/03/14/4-tricks-for-working-with-r-leaflet-and-shiny/
 
-showMapIcon <- function(sMapData, 
+#' Shows leaflet maps as a shiny app with timelines of animal movements
+#' Can also filter by id and show different types of maps
+
+
+
+
+
+#' showMapIcon: shows an animated leaflet map with the movements of all the
+#'   animals, depicts animals with icons on local disk
+#' @param detections A data frame containing detection data with at least
+#'   4 columns containing 'animal', 'timestamp', 'latitude', and 'longitude'.
+#'   Column names are specified with \code{detColNames} by \code{type}.
+#' 
+#' @param type A character string that contains the type of data that is being 
+#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#' 
+#' @details detColNames is defined as a list with names of required columns in 
+#'   \code{detections}, defined by \code{type}: 
+#' \itemize{
+#'   \item \code{animalCol} is a character string with the name of the column 
+#' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
+#' 		 'catalognumber' for OTN data, or 'animalId' for sample data).
+#'	 \item \code{timestampCol} is a character string with the name of the column 
+#' 		 containing datetime stamps for the detections (MUST be of class 
+#'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
+#'     OTN data, or 'timestamp' for sample data).
+#'	 \item \code{latitudeCol} is a character string with the name of the column
+#'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
+#'     for OTN data, or 'latitude' for sample data).
+#'	 \item \code{longitudeCol} is a character string with the name of the column
+#'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
+#'     for OTN data, or 'longitude' for sample data).
+#'
+#' @param iconFiles optional parameter, holds locations of files that hold images
+#'   of icons
+#' 
+#' @param meanLongitude optional parameter, holds the longitude of the middle of
+#'   the base map
+#' 
+#' @param meanLatitude optional parameter, holds the latitude of the middle of
+#'   the base map
+#' 
+#' @param zoom optional parameter, holds the zoom of the view of the base map
+#' 
+#' @details Uses \code{movePath} to get locations every second/minute
+#'
+#' @author Angela Dini
+#' 
+#' @export
+
+# Show map of all animals with icons
+showMapIcon <- function(detections, type="sample",
                         iconFiles=c("/Users/dinian/Desktop/glatos-git/R/visualization/Icons/redFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/blueFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/greenFish.png"), 
                         meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+  
+  if(type == "GLATOS") { #Set column names for GLATOS data
+    detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
+  } else if (type == "OTN") { #Set column names for OTN data
+    detColNames = list(animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
+  } else if (type == "sample") { #Set column names for sample data
+    detColNames = list(animalCol="animalId", timestampCol="timestamp", latCol="latitude", longCol="longitude")
+  } else { # Other type
+    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+  }
+  
+  # Check that the specified columns appear in the detections dataframe
+  missingCols <- setdiff(unlist(detColNames), names(detections))
+  if (length(missingCols) > 0){
+    stop(paste0("Detections dataframe is missing the following ",
+                "column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
+         call.=FALSE)
+  }
+  
+  # Subset detections with only user-defined columns and change names
+  # this makes code more easy to understand (esp. ddply)
+  detections <- detections[,unlist(detColNames)] #subset
+  names(detections) <- c("animalId","time","latitude","longitude")
+  
+  
+  # Check that timestamp is of class 'POSIXct'
+  if(!('POSIXct' %in% class(detections$time))){
+    stop(paste0("Column '",detColNames$timestampCol,
+                "' in the detections dataframe must be of class 'POSIXct'."),
+         call.=FALSE)
+  } 
+  
+  
+  
+  
+  
+  
+  
   # Get location at every second
-  mdSplit <- split(sMapData, sMapData$animalId) #Split data by id
+  mdSplit <- split(detections, detections$animalId) #Split data by id
   for(i in 1: length(mdSplit)) {
     mdI <- mdSplit[[i]]
     anId <- mdI$animalId[[1]]
     for (t in 1:(length(mdI$time)-1)) {
-      if(length(mdI$time)>=2 && !is.na(mdI$time[[t]]) && !is.na(mdI$time[[t+1]]) && !is.na(mdI$latitude[[t]]) && !is.na(mdI$longitude[[t]]) && !is.na(mdI$latitude[[t+1]]) && !is.na(mdI$longitude[[t+1]])) {
+      if(length(mdI$time)<2) {
+      }
+      else if(!is.na(mdI$time[[t]]) && !is.na(mdI$time[[t+1]]) && !is.na(mdI$latitude[[t]]) && !is.na(mdI$longitude[[t]]) && !is.na(mdI$latitude[[t+1]]) && !is.na(mdI$longitude[[t+1]])) {
         tS <- seq(mdI$time[[t]], mdI$time[[t+1]], by="sec")
-        if(length(tS) > 1) {
+        if(length(tS) == 0 || length(tS) == 1) {
+          #print("ts is too small")
+        }
+        else {
           locs <- movePath(mdI$longitude[[t]], mdI$latitude[[t]], mdI$longitude[[t+1]], mdI$latitude[[t+1]], tS)
           
           # Clean up data to match dataS
@@ -25,25 +119,32 @@ showMapIcon <- function(sMapData,
           locs$longitude <- locs$lon
           locs$lon <- NULL
           locs$animalId <- rep(x=anId, times=nrow(locs))
-          sMapData <- rbind(sMapData, locs)
+          locs$time <- locs$timestamp
+          locs$timestamp <- NULL
+          print(locs)
+          sMapData <- rbind(detections, locs)
         }
       }
     }
   }
-  sMapData <- sMapData[order(sMapData$animalId, sMapData$timestamp),]
+  sMapData <- sMapData[order(sMapData$animalId, sMapData$time),]
   
   #Adding icons column to sMapData
   sMapData$icon <- apply(sMapData, 1, function(x) {
     listUniq <- unique(sMapData$animalId)
     n <- match(x["animalId"], listUniq)
     return(iconFiles[[n]])
+    # n <- x["animalId"]
+    # return(iconFiles[[as.integer(n)]])
   })
+  
+  #print(sMapData)
   
   # From https://stackoverflow.com/questions/30370840/animate-map-in-r-with-leaflet-and-xts/38878585
   ui <- fluidPage(
     sliderInput("time", "date", min(sMapData$time),
-                max(sMapData$timestamp),
-                value=max(sMapData$timestamp),
+                max(sMapData$time),
+                value=max(sMapData$time),
                 step=1,
                 animate=animationOptions(interval=400, loop=TRUE)),
     leafletOutput("mymap")
@@ -52,17 +153,111 @@ showMapIcon <- function(sMapData,
   server <- function(input, output, session) {
     points <- reactive ({
       sMapData %>%
-        filter(sMapData$timestamp==input$time)
+        filter(sMapData$time==input$time)
     })
     output$mymap <- renderLeaflet({
       leaflet() %>%
         setView(lng=meanLongitude, lat=meanLatitude, zoom=zoom) %>%
         addTiles() %>%
+        #Original: addMarkers(data = points(), label = as.character(points()$a), icon = makeIcon(points()$icon, iconWidth = 39, iconHeight = 24))
+        #addMarkers(lat = points()$latitude, lng = points()$longitude, label = as.character(points()$anId), icon = makeIcon(points()$icon, iconWidth = 39, iconHeight = 24))
         addMarkers(lat = points()$latitude, lng=points()$longitude, label=as.character(points()$a), icon=makeIcon(points()$icon, iconWidth = 39, iconHeight=24))
     })
   }
+  #shinyApp(ui, server)
   runApp(list(ui=ui, server=server))
 }
+
+
+
+
+
+
+
+
+# Get location at every second
+mdSplit <- split(detections, detections$animal) #Split data by id
+for(i in 1: length(mdSplit)) {
+  mdI <- mdSplit[[i]]
+  anId <- mdI$animal[[1]]
+  for (t in 1:(length(mdI$timestamp)-1)) {
+    if(length(mdI$timestamp)>=2 && !is.na(mdI$timestamp[[t]]) && !is.na(mdI$timestamp[[t+1]]) && !is.na(mdI$latitude[[t]]) && !is.na(mdI$longitude[[t]]) && !is.na(mdI$latitude[[t+1]]) && !is.na(mdI$longitude[[t+1]])) {
+      # Gets sequence of every second between each pair of times
+      tS <- seq(mdI$timestamp[[t]], mdI$timestamp[[t+1]], by="sec")
+      if(length(tS) > 1){
+        # Use 'movePath' method to get location at every second
+        locs <- movePath(mdI$longitude[[t]], mdI$latitude[[t]], mdI$longitude[[t+1]], mdI$latitude[[t+1]], tS)
+        
+        # Clean up data to match dataS
+        locs$latitude <- locs$lat
+        locs$lat <- NULL
+        locs$longitude <- locs$lon
+        locs$lon <- NULL
+        locs$animal <- rep(x=anId, times=nrow(locs))
+        print(locs)
+        mapData <- rbind(detections, locs)
+      }
+    }
+  }
+}
+# Order by id and time
+mapData <- mapData[order(mapData$animal, mapData$timestamp),]
+
+#Adding icon column to mapData to associate each data instance with an icon
+mapData$icon <- apply(mapData, 1, function(x) {
+  listUniq <- unique(mapData$animal)
+  n <- match(x["animal"], listUniq)
+  return(iconFiles[[n]])
+})
+
+# From https://stackoverflow.com/questions/30370840/animate-map-in-r-with-leaflet-and-xts/38878585
+ui <- fluidPage(
+  # Timeline slider
+  sliderInput("time", "date", min(mapData$timestamp),
+              max(mapData$timestamp),
+              value=max(mapData$timestamp),
+              step=1,
+              animate=animationOptions(interval=400, loop=TRUE)), #Loop continuously through the time
+  leafletOutput("mymap") #Leaflet map
+)
+
+server <- function(input, output, session) {
+  points <- reactive ({
+    mapData %>%
+      filter(mapData$timestamp==input$time) #Points for the specific time
+  })
+  output$mymap <- renderLeaflet({
+    leaflet() %>%
+      setView(lng=meanLongitude, lat=meanLatitude, zoom=zoom) %>% #Setting view with specified parameters
+      addTiles() %>% #Adding base map
+      addMarkers(lat = points()$latitude, lng=points()$longitude, label=paste(as.character(points()$a), ", ", points()$timestamp), icon=makeIcon(points()$icon, iconWidth = 39, iconHeight=24)) #Adding markers with their icons, labelled with the id and timestamp
+  })
+}
+runApp(list(ui=ui, server=server)) #Show map
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #Show map with coloured circle markers (Alice = red, Bob = blue, Eve = green)
 showMapCircle <- function(sMapData, colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
@@ -339,7 +534,8 @@ showMapPoints <- function(sMapData, colourNames=c("red", "blue", "green"), meanL
   
   server <- function(input, output, session) {
     points <- reactive ({
-      sMapData
+      sMapData #%>%
+      #filter(dataS$timestamp==input$time)
     })
     output$mymap <- renderLeaflet({
       leaflet() %>%
@@ -403,6 +599,7 @@ showIdMapFollow <- function(sMapData, id, colourNames=palette(rainbow(3)), meanL
     })
     output$mymap <- renderLeaflet({
       leaflet() %>%
+        #setView(lng=meanLongitude, lat=meanLatitude, zoom=zoom) %>%
         addTiles() %>%
         addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=as.character(points()$a), color=points()$colour)
     })
@@ -465,7 +662,7 @@ cF <- c("red", "blue", "green")
 # cF <- c("red", "blue", "green")
 
 # Show full animated map with icons:
-showMapIcon(smData, iF)
+showMapIcon(detections=smData, iconFiles = iF)
 # OR (using default iconFiles)
 showMapIcon(smData)
 
