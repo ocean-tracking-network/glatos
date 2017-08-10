@@ -5,7 +5,9 @@ library(leaflet)
 
 #http://www.r-graph-gallery.com/2017/03/14/4-tricks-for-working-with-r-leaflet-and-shiny/
 
-showMapIcon <- function(sMapData, iconFiles, meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showMapIcon <- function(sMapData, 
+                        iconFiles=c("/Users/dinian/Desktop/glatos-git/R/visualization/Icons/redFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/blueFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/greenFish.png"), 
+                        meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
   # Get location at every second
   dataS <- sMapData
   mdSplit <- split(sMapData, sMapData$animalId) #Split data by id
@@ -76,7 +78,7 @@ showMapIcon <- function(sMapData, iconFiles, meanLongitude=-63.5904, meanLatitud
 }
 
 #Show map with coloured circle markers (Alice = red, Bob = blue, Eve = green)
-showMapCircle <- function(sMapData, colourNames, meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showMapCircle <- function(sMapData, colourNames=c("red", "blue", "green"), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
   # Get location at every second
   dataS <- sMapData
   mdSplit <- split(sMapData, sMapData$animalId) #Split data by id
@@ -143,7 +145,7 @@ showMapCircle <- function(sMapData, colourNames, meanLongitude=-63.5904, meanLat
 
 #Show only animals with a specific id
 # Using coloured circle markers
-showIdMap <- function(sMapData, id, colourNames, meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showIdMap <- function(sMapData, id, colourNames=c("red", "blue", "green"), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
   # Get location at every second
   mdSplit <- split(sMapData, sMapData$animalId) #Split data by id
   for(i in 1: length(mdSplit)) {
@@ -210,7 +212,7 @@ showIdMap <- function(sMapData, id, colourNames, meanLongitude=-63.5904, meanLat
 
 
 # Show path of animals with id defined in 'id'
-showMapPathId <- function(sMapData, id, colourNames, meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showMapPathId <- function(sMapData, id, colourNames=c("red", "blue", "green"), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
   # Get location at every second
   mdSplit <- split(sMapData, sMapData$animalId) #Split data by id
   for(i in 1: length(mdSplit)) {
@@ -270,7 +272,7 @@ showMapPathId <- function(sMapData, id, colourNames, meanLongitude=-63.5904, mea
 }
 
 # Show paths of all animals
-showMapPaths <- function(sMapData, colourNames, meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showMapPaths <- function(sMapData, colourNames=c("red", "blue", "green"), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
   # Get location at every second
   mdSplit <- split(sMapData, sMapData$animalId) #Split data by id
   for(i in 1: length(mdSplit)) {
@@ -328,7 +330,7 @@ showMapPaths <- function(sMapData, colourNames, meanLongitude=-63.5904, meanLati
 }
 
 # Show all points (detections) of animals with id defined in 'id'
-showMapPointsId <- function(sMapData, id, colourNames, meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showMapPointsId <- function(sMapData, id, colourNames=c("red", "blue", "green"), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
   dataS <- sMapData[sMapData$animalId==id,]
   dataS <- dataS[order(dataS$timestamp),]
   
@@ -359,7 +361,7 @@ showMapPointsId <- function(sMapData, id, colourNames, meanLongitude=-63.5904, m
 }
 
 # Show points (detections) of all animals
-showMapPoints <- function(sMapData, colourNames, meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showMapPoints <- function(sMapData, colourNames=c("red", "blue", "green"), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
   sMapData <- sMapData[order(sMapData$animalId, sMapData$timestamp),]
   
   #Adding colour column to sMapData
@@ -390,7 +392,7 @@ showMapPoints <- function(sMapData, colourNames, meanLongitude=-63.5904, meanLat
 }
 
 # Show map following animals with id defined in 'id'
-showIdMapFollow <- function(sMapData, id, colourNames, meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showIdMapFollow <- function(sMapData, id, colourNames=c("red", "blue", "green"), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
   # Get location at every second
   mdSplit <- split(sMapData, sMapData$animalId) #Split data by id
   for(i in 1: length(mdSplit)) {
@@ -511,6 +513,8 @@ cF <- c("red", "blue", "green")
 
 # Show full animated map with icons:
 showMapIcon(smData, iF)
+# OR (using default iconFiles)
+showMapIcon(smData)
 
 # Show full animated map with all species with coloured circles
 showMapCircle(smData, cF)
