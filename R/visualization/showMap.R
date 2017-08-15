@@ -1,7 +1,7 @@
-library(shiny)
-library(xts)
-library(dplyr)
-library(leaflet)
+# library(shiny)
+# library(xts)
+# library(dplyr)
+# library(leaflet)
 
 #http://www.r-graph-gallery.com/2017/03/14/4-tricks-for-working-with-r-leaflet-and-shiny/
 
@@ -58,7 +58,7 @@ library(leaflet)
 # Show map of all animals with icons
 showMapIcon <- function(detections, type="sample",
                         iconFiles=c("/Users/dinian/Desktop/glatos-git/R/visualization/Icons/redFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/blueFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/greenFish.png"), 
-                        meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+                        meanLongitude=0, meanLatitude=0, zoom=13) {
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
@@ -97,10 +97,18 @@ showMapIcon <- function(detections, type="sample",
     stop(paste0("length of colourNames does not match number of unique '", detColNames$animalCol,"'"), call.=FALSE)
   }
   
+  # Set mean longitude and mean latitude if not already set
+  if (meanLongitude == 0 && meanLatitude == 0) {
+    meanLongitude <- mean(detections$longitude)
+    meanLatitude <- mean(detections$latitude)
+  }
+  
   # Get location at every second
   mdSplit <- split(detections, detections$animalId) #Split data by id
   for(i in 1: length(mdSplit)) {
     mdI <- mdSplit[[i]]
+    #Order each split of data by time
+    mdI <- mdI[order(mdI$time),]
     anId <- mdI$animalId[[1]]
     for (t in 1:(length(mdI$time)-1)) {
       if(length(mdI$time) >=2 && !is.na(mdI$time[[t]]) && !is.na(mdI$time[[t+1]]) && !is.na(mdI$latitude[[t]]) && !is.na(mdI$longitude[[t]]) && !is.na(mdI$latitude[[t+1]]) && !is.na(mdI$longitude[[t+1]])) {
@@ -157,7 +165,7 @@ showMapIcon <- function(detections, type="sample",
       leaflet() %>%
         setView(lng=meanLongitude, lat=meanLatitude, zoom=zoom) %>%
         addTiles() %>%
-        addMarkers(lat = points()$latitude, lng=points()$longitude, label=as.character(points()$a), icon=makeIcon(points()$icon, iconWidth = 39, iconHeight=24))
+        addMarkers(lat = points()$latitude, lng=points()$longitude, label=paste0("id: ", as.character(points()$a)), icon=makeIcon(points()$icon, iconWidth = 39, iconHeight=24))
     })
   }
   #Run the application
@@ -209,7 +217,7 @@ showMapIcon <- function(detections, type="sample",
 #' @export
 
 #Show map with coloured circle markers (Alice = red, Bob = blue, Eve = green)
-showMapCircle <- function(detections, type="sample", colourNames=list(), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showMapCircle <- function(detections, type, colourNames=list(), meanLongitude=0, meanLatitude=0, zoom=13) {
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
@@ -251,10 +259,18 @@ showMapCircle <- function(detections, type="sample", colourNames=list(), meanLon
     stop(paste0("length of colourNames does not match number of unique '", detColNames$animalCol, "'"), call.=FALSE)
   }
   
+  # Set mean longitude and mean latitude if not already set
+  if (meanLongitude == 0 && meanLatitude == 0) {
+    meanLongitude <- mean(detections$longitude)
+    meanLatitude <- mean(detections$latitude)
+  }
+  
   # Get location at every second
   mdSplit <- split(detections, detections$animalId) #Split data by id
   for(i in 1: length(mdSplit)) {
     mdI <- mdSplit[[i]]
+    #Order each split of data by time
+    mdI <- mdI[order(mdI$time),]
     anId <- mdI$animalId[[1]]
     for (t in 1:(length(mdI$time)-1)) {
       if(length(mdI$time)>=2 && !is.na(mdI$time[[t]]) && !is.na(mdI$time[[t+1]]) && !is.na(mdI$latitude[[t]]) && !is.na(mdI$longitude[[t]]) && !is.na(mdI$latitude[[t+1]]) && !is.na(mdI$longitude[[t+1]])) {
@@ -311,7 +327,7 @@ showMapCircle <- function(detections, type="sample", colourNames=list(), meanLon
       leaflet() %>%
         setView(lng=meanLongitude, lat=meanLatitude, zoom=zoom) %>%
         addTiles() %>%
-        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=as.character(points()$a), color=points()$colour)
+        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=paste0("id: ", as.character(points()$a)), color=points()$colour)
     })
   }
   # Run the application
@@ -366,7 +382,7 @@ showMapCircle <- function(detections, type="sample", colourNames=list(), meanLon
 #' 
 #' @export
 
-showIdMap <- function(detections, type="sample", id, colourNames=list(), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showIdMap <- function(detections, type, id, colourNames=list(), meanLongitude=0, meanLatitude=0, zoom=13) {
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
@@ -408,10 +424,18 @@ showIdMap <- function(detections, type="sample", id, colourNames=list(), meanLon
     stop(paste0("length of colourNames does not match number of unique '", detColNames$animalCol, "'"), call.=FALSE)
   }
   
+  # Set mean longitude and mean latitude if not already set
+  if (meanLongitude == 0 && meanLatitude == 0) {
+    meanLongitude <- mean(detections$longitude)
+    meanLatitude <- mean(detections$latitude)
+  }
+  
   # Get location at every second
   mdSplit <- split(detections, detections$animalId) #Split data by id
   for(i in 1: length(mdSplit)) {
     mdI <- mdSplit[[i]]
+    #Order each split of data by time
+    mdI <- mdI[order(mdI$time),]
     anId <- mdI$animalId[[1]]
     for (t in 1:(length(mdI$time)-1)) {
       if(length(mdI$time)>=2 && !is.na(mdI$time[[t]]) && !is.na(mdI$time[[t+1]]) && !is.na(mdI$latitude[[t]]) && !is.na(mdI$longitude[[t]]) && !is.na(mdI$latitude[[t+1]]) && !is.na(mdI$longitude[[t+1]])) {
@@ -427,6 +451,8 @@ showIdMap <- function(detections, type="sample", id, colourNames=list(), meanLon
           locs$longitude <- locs$lon
           locs$lon <- NULL
           locs$animalId <- rep(x=anId, times=nrow(locs))
+          locs$time <- locs$timestamp
+          locs$timestamp <- NULL
           
           # Merge the two dataframes
           detections <- rbind(detections, locs)
@@ -439,7 +465,7 @@ showIdMap <- function(detections, type="sample", id, colourNames=list(), meanLon
   dataS <- detections[detections$animalId==id,]
   
   # Order dataS by time
-  dataS <- dataS[order(dataS$timestamp),]
+  dataS <- dataS[order(dataS$time),]
   
   #Add colour column to dataS
   dataS$colour <- apply(dataS, 1, function(x) {
@@ -452,8 +478,8 @@ showIdMap <- function(detections, type="sample", id, colourNames=list(), meanLon
   ui <- fluidPage(
     # Application page should have slider and leaflet map
     sliderInput("time", "date", min(dataS$time),
-                max(dataS$timestamp),
-                value=max(dataS$timestamp),
+                max(dataS$time),
+                value=max(dataS$time),
                 step=1,
                 animate=animationOptions(interval=400, loop=TRUE)),
     leafletOutput("mymap")
@@ -462,14 +488,14 @@ showIdMap <- function(detections, type="sample", id, colourNames=list(), meanLon
   server <- function(input, output, session) {
     points <- reactive ({
       dataS %>%
-        filter(dataS$timestamp==input$time)
+        filter(dataS$time==input$time)
     })
     # Define leaflet map as described
     output$mymap <- renderLeaflet({
       leaflet() %>%
         setView(lng=meanLongitude, lat=meanLatitude, zoom=zoom) %>%
         addTiles() %>%
-        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=as.character(points()$a), color=points()$colour)
+        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=paste0("id: ", as.character(points()$a)), color=points()$colour)
     })
   }
   # Run the application
@@ -524,7 +550,7 @@ showIdMap <- function(detections, type="sample", id, colourNames=list(), meanLon
 #' 
 #' @export
 
-showMapPathId <- function(detections, type="sample", id, colourNames=list(), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showMapPathId <- function(detections, type, id, colourNames=list(), meanLongitude=0, meanLatitude=0, zoom=13) {
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
@@ -566,10 +592,18 @@ showMapPathId <- function(detections, type="sample", id, colourNames=list(), mea
     stop(paste0("length of colourNames does not match number of unique '", detColNames$animalCol, "'"), call.=FALSE)
   }
   
+  # Set mean longitude and mean latitude if not already set
+  if (meanLongitude == 0 && meanLatitude == 0) {
+    meanLongitude <- mean(detections$longitude)
+    meanLatitude <- mean(detections$latitude)
+  }
+  
   # Get location at every second
   mdSplit <- split(detections, detections$animalId) #Split data by id
   for(i in 1: length(mdSplit)) {
     mdI <- mdSplit[[i]]
+    #Order each split of data by time
+    mdI <- mdI[order(mdI$time),]
     anId <- mdI$animalId[[1]]
     for (t in 1:(length(mdI$time)-1)) {
       if(length(mdI$time)>=2 && !is.na(mdI$time[[t]]) && !is.na(mdI$time[[t+1]]) && !is.na(mdI$latitude[[t]]) && !is.na(mdI$longitude[[t]]) && !is.na(mdI$latitude[[t+1]]) && !is.na(mdI$longitude[[t+1]])) {
@@ -585,9 +619,11 @@ showMapPathId <- function(detections, type="sample", id, colourNames=list(), mea
           locs$longitude <- locs$lon
           locs$lon <- NULL
           locs$animalId <- rep(x=anId, times=nrow(locs))
+          locs$time <- locs$timestamp
+          locs$timestamp <- NULL
           
           # Merge the two dataframes
-          detections <- rbind(detecionts, locs)
+          detections <- rbind(detections, locs)
         }
       }
     }
@@ -597,8 +633,7 @@ showMapPathId <- function(detections, type="sample", id, colourNames=list(), mea
   dataS <- detections[detections$animalId==id,]
   
   # Order data by time
-  dataS <- dataS[order(dataS$timestamp),]
-  
+  dataS <- dataS[order(dataS$time),]
   
   # Add colour column to dataS
   dataS$colour <- apply(dataS, 1, function(x) {
@@ -622,7 +657,7 @@ showMapPathId <- function(detections, type="sample", id, colourNames=list(), mea
       leaflet() %>%
         setView(lng=meanLongitude, lat=meanLatitude, zoom=zoom) %>%
         addTiles() %>%
-        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=as.character(points()$a), color=points()$colour)
+        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=paste0("id: ", as.character(points()$a)), color=points()$colour)
     })
   }
   
@@ -674,7 +709,7 @@ showMapPathId <- function(detections, type="sample", id, colourNames=list(), mea
 #' 
 #' @export
 
-showMapPaths <- function(detections, type="sample", colourNames=list(), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showMapPaths <- function(detections, type, colourNames=list(), meanLongitude=0, meanLatitude=0, zoom=13) {
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
@@ -716,10 +751,18 @@ showMapPaths <- function(detections, type="sample", colourNames=list(), meanLong
     stop(paste0("length of colourNames does not match number of unique '", detColNames$animalCol, "'"), call.=FALSE)
   }
   
+  # Set mean longitude and mean latitude if not already set
+  if (meanLongitude == 0 && meanLatitude == 0) {
+    meanLongitude <- mean(detections$longitude)
+    meanLatitude <- mean(detections$latitude)
+  }
+  
   # Get location at every second
   mdSplit <- split(detections, detections$animalId) #Split data by id
   for(i in 1: length(mdSplit)) {
     mdI <- mdSplit[[i]]
+    #Order each split of data by time
+    mdI <- mdI[order(mdI$time),]
     anId <- mdI$animalId[[1]]
     for (t in 1:(length(mdI$time)-1)) {
       if(length(mdI$time)>=2 && !is.na(mdI$time[[t]]) && !is.na(mdI$time[[t+1]]) && !is.na(mdI$latitude[[t]]) && !is.na(mdI$longitude[[t]]) && !is.na(mdI$latitude[[t+1]]) && !is.na(mdI$longitude[[t+1]])) {
@@ -735,6 +778,8 @@ showMapPaths <- function(detections, type="sample", colourNames=list(), meanLong
           locs$longitude <- locs$lon
           locs$lon <- NULL
           locs$animalId <- rep(x=anId, times=nrow(locs))
+          locs$time <- locs$timestamp
+          locs$timestamp <- NULL
           
           # Merge the two dataframes
           detections <- rbind(detections, locs)
@@ -746,7 +791,7 @@ showMapPaths <- function(detections, type="sample", colourNames=list(), meanLong
   # Do not filter by id, no slider
   
   # Order data by animal id and time
-  sMapData <- detections[order(detections$animalId, detections$timestamp),]
+  sMapData <- detections[order(detections$animalId, detections$time),]
   
   # Add colour column to sMapData
   sMapData$colour <- apply(sMapData, 1, function(x) {
@@ -770,7 +815,7 @@ showMapPaths <- function(detections, type="sample", colourNames=list(), meanLong
       leaflet() %>%
         setView(lng=meanLongitude, lat=meanLatitude, zoom=zoom) %>%
         addTiles() %>%
-        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=as.character(points()$a), color=points()$colour)
+        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=paste0("id: ",as.character(points()$a)), color=points()$colour)
     })
   }
   
@@ -827,7 +872,7 @@ showMapPaths <- function(detections, type="sample", colourNames=list(), meanLong
 #' 
 #' @export
 
-showMapPointsId <- function(detections, type="sample", id, colourNames=list(), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showMapPointsId <- function(detections, type, id, colourNames=list(), meanLongitude=0, meanLatitude=0, zoom=13) {
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
@@ -869,19 +914,29 @@ showMapPointsId <- function(detections, type="sample", id, colourNames=list(), m
     stop(paste0("length of colourNames does not match number of unique '", detColNames$animalCol, "'"), call.=FALSE)
   }
   
+  # Set mean longitude and mean latitude if not already set
+  if (meanLongitude == 0 && meanLatitude == 0) {
+    meanLongitude <- mean(detections$longitude)
+    meanLatitude <- mean(detections$latitude)
+  }
+  
   # Do not get locations every second
   
   # Filter data so that it only contains detections of the specified animal id
   dataS <- detections[detections$animalId==id,]
   
   # Order data by time
-  dataS <- dataS[order(dataS$timestamp),]
+  dataS <- dataS[order(dataS$time),]
   
   # Add colour column to data
   dataS$colour <- apply(dataS, 1, function(x) {
-    listUniq <- unique(sMapData$animalId)
+    listUniq <- unique(detections$animalId)
     n <- match(id, listUniq)
-    return(colourNames[[n]])
+    if(is.na(n)) {
+      stop(paste0("The id '", id, "' does not exist in this data."))
+    } else {
+      return(colourNames[[n]])
+    }
   })
   
   # From https://stackoverflow.com/questions/30370840/animate-map-in-r-with-leaflet-and-xts/38878585
@@ -899,7 +954,7 @@ showMapPointsId <- function(detections, type="sample", id, colourNames=list(), m
       leaflet() %>%
         setView(lng=meanLongitude, lat=meanLatitude, zoom=zoom) %>%
         addTiles() %>%
-        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=paste0(as.character(points()$a), ", ", as.character(points()$timestamp)), color=points()$colour)
+        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=paste0("id: ",as.character(points()$a), ", time: ", as.character(points()$time)), color=points()$colour)
     })
   }
   
@@ -951,7 +1006,7 @@ showMapPointsId <- function(detections, type="sample", id, colourNames=list(), m
 #' 
 #' @export
 
-showMapPoints <- function(detections, type="sample", colourNames=list(), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showMapPoints <- function(detections, type, colourNames=list(), meanLongitude=0, meanLatitude=0, zoom=13) {
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
@@ -993,6 +1048,12 @@ showMapPoints <- function(detections, type="sample", colourNames=list(), meanLon
     stop(paste0("length of colourNames does not match number of unique '", detColNames$animalCol, "'"), call.=FALSE)
   }
   
+  # Set mean longitude and mean latitude if not already set
+  if (meanLongitude == 0 && meanLatitude == 0) {
+    meanLongitude <- mean(detections$longitude)
+    meanLatitude <- mean(detections$latitude)
+  }
+  
   # Do not get locations every second, do not filter by id
   
   # Order data by animal id and time
@@ -1001,7 +1062,8 @@ showMapPoints <- function(detections, type="sample", colourNames=list(), meanLon
   #Add colour column to data
   detections$colour <- apply(detections, 1, function(x) {
     listUniq <- unique(detections$animalId)
-    n <- match(x["animalId"], listUniq)
+    n <- which(listUniq == x["animalId"]) # Find index of id in list of unique ids
+    #print(paste0(x["animalId"], ": ",n))
     return(colourNames[[n]])
   })
   
@@ -1020,7 +1082,7 @@ showMapPoints <- function(detections, type="sample", colourNames=list(), meanLon
       leaflet() %>%
         setView(lng=meanLongitude, lat=meanLatitude, zoom=zoom) %>%
         addTiles() %>%
-        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=paste0(as.character(points()$a), ", ", as.character(points()$timestamp)), color=points()$colour)
+        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=paste0("id: ", as.character(points()$a), ", time: ", as.character(points()$time)), color=points()$colour)
     })
   }
   
@@ -1076,7 +1138,7 @@ showMapPoints <- function(detections, type="sample", colourNames=list(), meanLon
 #' 
 #' @export
 
-showIdMapFollow <- function(detections, type="sample", id, colourNames=list(), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=13) {
+showIdMapFollow <- function(detections, type, id, colourNames=list(), meanLongitude=0, meanLatitude=0, zoom=13) {
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
@@ -1118,11 +1180,20 @@ showIdMapFollow <- function(detections, type="sample", id, colourNames=list(), m
     stop(paste0("length of colourNames does not match number of unique '", detColNames$animalCol, "'"), call.=FALSE)
   }
   
+  # Set mean longitude and mean latitude if not already set
+  if (meanLongitude == 0 && meanLatitude == 0) {
+    meanLongitude <- mean(detections$longitude)
+    meanLatitude <- mean(detections$latitude)
+  }
+  
   # Get location at every second
   mdSplit <- split(detections, detections$animalId) #Split data by id
   for(i in 1: length(mdSplit)) {
     mdI <- mdSplit[[i]]
+    #Order each split of data by time
+    mdI <- mdI[order(mdI$time),]
     anId <- mdI$animalId[[1]]
+    
     for (t in 1:(length(mdI$time)-1)) {
       if(length(mdI$time)>=2 && !is.na(mdI$time[[t]]) && !is.na(mdI$time[[t+1]]) && !is.na(mdI$latitude[[t]]) && !is.na(mdI$longitude[[t]]) && !is.na(mdI$latitude[[t+1]]) && !is.na(mdI$longitude[[t+1]])) {
         # Get sequence of seconds of time between the two times
@@ -1137,16 +1208,23 @@ showIdMapFollow <- function(detections, type="sample", id, colourNames=list(), m
           locs$longitude <- locs$lon
           locs$lon <- NULL
           locs$animalId <- rep(x=anId, times=nrow(locs))
+          locs$time <- locs$timestamp
+          locs$timestamp <- NULL
+          
+          # Merge the two dataframes
           detections <- rbind(detections, locs)
         }
       }
     }
   }
+  
+  # Filter data to include only animals with the specified id
   dataS <- detections[detections$animalId==id,]
-  dataS <- dataS[order(dataS$timestamp),]
   
+  # Order data by time
+  dataS <- dataS[order(dataS$time),]
   
-  #Adding colour column to dataS
+  # Add colour column to dataS
   dataS$colour <- apply(dataS, 1, function(x) {
     listUniq <- unique(detections$animalId)
     n <- match(id, listUniq)
@@ -1157,8 +1235,8 @@ showIdMapFollow <- function(detections, type="sample", id, colourNames=list(), m
   ui <- fluidPage(
     # Application page should have slider and leaflet map
     sliderInput("time", "date", min(dataS$time),
-                max(dataS$timestamp),
-                value=max(dataS$timestamp),
+                max(dataS$time),
+                value=max(dataS$time),
                 step=1,
                 animate=animationOptions(interval=400, loop=TRUE)),
     leafletOutput("mymap")
@@ -1167,156 +1245,16 @@ showIdMapFollow <- function(detections, type="sample", id, colourNames=list(), m
   server <- function(input, output, session) {
     points <- reactive ({
       dataS %>%
-        filter(dataS$timestamp==input$time)
+        filter(dataS$time==input$time)
     })
     # Define leaflet map as described
     # Does not have setView
     output$mymap <- renderLeaflet({
       leaflet() %>%
         addTiles() %>%
-        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=as.character(points()$a), color=points()$colour)
+        addCircleMarkers(lat = points()$latitude, lng=points()$longitude, label=paste0("id: ",as.character(points()$a)), color=points()$colour)
     })
   }
   # Run the application
   runApp(list(ui=ui, server=server))
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# To run:
-
-# Sample data:
-# Data 1: All 3 fish (Alice, Bob, and Eve) present at all times
-anId <- c("Alice", "Bob", "Eve", "Alice", "Bob", "Eve", "Alice", "Bob", "Eve")
-timeA <- rep(x="2010/10/11 11:11:11", times=3)
-timeB <- rep(x="2010/10/11 11:12:11", times=3)
-timeC <- rep(x="2010/10/11 11:13:11", times=3)
-times <- c(timeA, timeB, timeC)
-times <- as.POSIXct(times, tz="America/Halifax")
-long <- c(-63.575993, -63.580284, -63.626032, -63.604145, -63.587708, -63.575306, -63.612943, -63.618736, -63.568354)
-lat <- c(44.652902, 44.631772, 44.665845, 44.655283, 44.645422, 44.642827, 44.642665, 44.649300, 44.640201)
-smData <- data.frame(animalId=anId, timestamp=times,longitude=long, latitude=lat)
-iF <- c("/Users/dinian/Desktop/glatos-git/R/visualization/Icons/redFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/blueFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/greenFish.png")
-cF <- c("red", "blue", "green")
-
-# #Data 2: Blue fish detected for one second but does not have path
-# anId <- c(Alice, Bob, Alice)
-# times <- c("2010/10/11 11:00:00", "2010/10/11 11:00:15", "2010/10/11 11:00:30")
-# times <- as.POSIXct(times, tz="America/Halifax")
-# long <- c(-63.626032, -63.618736, -63.580284)
-# lat <- c(44.665845, 44.649300, 44.631772)
-# smData <- data.frame(animalId=anId, timestamp=times,longitude=long, latitude=lat)
-# iF <- c("/Users/dinian/Desktop/glatos-git/R/visualization/Icons/redFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/blueFish.png")
-# cF <- c("red", "blue", "green")
-
-# #Data 3: Bob(blue fish) detected after Alice(red fish) and leaves before Alice(red fish) but has path
-# anId <- c(Alice, Alice, Bob, Alice, Bob, Alice, Alice)
-# times <- c("2010/10/11 11:00:00", "2010/10/11 11:00:07", "2010/10/11 11:00:10", "2010/10/11 11:00:15", "2010/10/11 11:00:20", "2010/10/11 11:00:24", "2010/10/11 11:00:30")
-# times <- as.POSIXct(times, tz="America/Halifax")
-# long <- c(-63.62603, -63.61874, -63.58028, -63.5917, -63.60415, -63.58063, -63.56861)
-# lat <- c(44.66584, 44.64930, 44.63177, 44.6366, 44.65528, 44.64747, 44.62328)
-# smData <- data.frame(animalId=anId, timestamp=times,longitude=long, latitude=lat)
-# iF <- c("/Users/dinian/Desktop/glatos-git/R/visualization/Icons/redFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/blueFish.png")
-# cF <- c("red", "blue", "green")
-
-# Show full animated map with icons:
-showMapIcon(detections=smData, iconFiles = iF)
-# OR (using default iconFiles)
-showMapIcon(smData)
-
-# Show full animated map with all species with coloured circles
-showMapCircle(smData, cF)
-# OR (using colour palette)
-n <- length(unique(smData$animalId))
-showMapCircle(smData, palette(rainbow(n)))
-
-
-# Show animated map from a different position (viewed into Fairview)
-showMapIcon(smData, iF, meanLatitude = 44.66584, meanLongitude = -63.62603, zoom=15)
-showMapCircle(smData, iF, meanLatitude = 44.66584, meanLongitude = -63.62603, zoom=14)
-
-
-# Show animated map with animals of specific animal id ("Eve"):
-showIdMap(smData, "Eve", cF)
-
-# Show map following animals with specific animal id ("Eve")
-showIdMapFollow(smData, "Eve", cF)
-
-# Show paths / points on map of animals of specific animal id ("Eve"):
-showMapPathId(smData, "Eve", cF)
-
-# Show paths of all animals
-showMapPaths(smData, cF)
-
-# Show all tags of animals
-showMapPoints(smData, cF)
-
-# Show all animals with id defined in 'id' ("Eve")
-showMapPointsId(smData, "Eve", cF)
-
-
-#Can do:
-#For showMapIcon
-showMapIcon(detections=smData, type="sample", iconFiles = iF, meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapIcon(detections=smData, iconFiles = iF, meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapIcon(detections=smData, iconFiles = iF)
-showMapIcon(detections=smData)
-
-#For showMapCircle
-showMapCircle(detections=smData, type="sample", colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapCircle(detections=smData, colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapCircle(detections=smData, colourNames=cF)
-showMapCircle(detections=smData)
-
-#For showIdMap
-showIdMap(detections=smData, type="sample", id="Eve", colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showIdMap(detections=smData, id="Eve", colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showIdMap(detections=smData, id="Eve", colourNames=palette(rainbow(3)))
-showIdMap(detections=smData, id="Eve")
-
-#For showIdMapFollow
-showIdMapFollow(detections=smData, type="sample", id="Eve", colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showIdMapFollow(detections=smData, id="Eve", colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showIdMapFollow(detections=smData, id="Eve", colourNames=palette(rainbow(3)))
-showIdMapFollow(detections=smData, id="Eve")
-
-#For showMapPathId
-showMapPathId(detections=smData, type="sample", id="Eve", colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapPathId(detections=smData, id="Eve", colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapPathId(detections=smData, id="Eve", colourNames=palette(rainbow(3)))
-showMapPathId(detections=smData, id="Eve")
-
-
-#For showMapPaths
-showMapPaths(detections=smData, type="sample", colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapPaths(detections=smData, colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapPaths(detections=smData, colourNames=palette(rainbow(3)))
-showMapPaths(detections=smData)
-
-#For showMapPoints
-showMapPoints(detections=smData, type="sample", colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapPoints(detections=smData, colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapPoints(detections=smData, colourNames=palette(rainbow(3)))
-showMapPoints(detections=smData)
-
-#For showMapPointsId
-showMapPointsId(detections=smData, type="sample", id="Eve", colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapPointsId(detections=smData, id="Eve", colourNames=palette(rainbow(3)), meanLongitude=-63.5904, meanLatitude=44.6474, zoom=14)
-showMapPointsId(detections=smData, id="Eve", colourNames=palette(rainbow(3)))
-showMapPointsId(detections=smData, id="Eve")
