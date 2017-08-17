@@ -20,17 +20,20 @@ library("plotly")
 # For glatos data, total_diff_days(glatos, "GLATOS")
 # For OTN detections data, total_diff_days(otnDet, "OTNDet")
 # For OTN compressed data, total_diff_days(otnComp, "OTNComp")
-total_diff_days <- function(detections, type) {
-  if(type == "GLATOS") {
-    detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
-  } else if (type == "OTNDet") {
-    detColNames = list(startDate="datecollected", endDate="datecollected")
-  } else if (type == "OTNComp") {
-    detColNames = list(startDate="startdate", endDate="enddate")
-  } else if (type == "sample") {
-    detColNames = list(startDate="startdate", endDate="enddate")
-  } else {
-    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+total_diff_days <- function(detections, type, detColNames=list()) {
+  # Check if user has set column names
+  if(length(detColNames) == 0) {
+    if(type == "GLATOS") {
+      detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
+    } else if (type == "OTNDet") {
+      detColNames = list(startDate="datecollected", endDate="datecollected")
+    } else if (type == "OTNComp") {
+      detColNames = list(startDate="startdate", endDate="enddate")
+    } else if (type == "sample") {
+      detColNames = list(startDate="startdate", endDate="enddate")
+    } else {
+      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+    }
   }
   
   # Check that the specified columns appear in the detections dataframe
@@ -90,17 +93,20 @@ total_diff_days <- function(detections, type) {
 # For glatos data, total_days_count(glatos, "GLATOS")
 # For OTN detections data, total_days_count(otnDet, "OTNDet")
 # For OTN compressed data, total_days_count(otnComp, "OTNComp")
-total_days_count <- function(detections, type) {
-  if(type == "GLATOS") {
-    detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
-  } else if (type == "OTNDet") {
-    detColNames = list(startDate="datecollected", endDate="datecollected")
-  } else if (type == "OTNComp") {
-    detColNames = list(startDate="startdate", endDate="enddate")
-  } else if (type == "sample") {
-    detColNames = list(startDate="startdate", endDate="enddate")
-  } else {
-    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+total_days_count <- function(detections, type, detColNames=list()) {
+  # Check if user has set column names
+  if(length(detColNames) == 0) {
+    if(type == "GLATOS") {
+      detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
+    } else if (type == "OTNDet") {
+      detColNames = list(startDate="datecollected", endDate="datecollected")
+    } else if (type == "OTNComp") {
+      detColNames = list(startDate="startdate", endDate="enddate")
+    } else if (type == "sample") {
+      detColNames = list(startDate="startdate", endDate="enddate")
+    } else {
+      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+    }
   }
   
   # Check that the specified columns appear in the detections dataframe
@@ -151,17 +157,20 @@ total_days_count <- function(detections, type) {
 # For glatos data, aggregate_total_with_overlap(glatos, "GLATOS")
 # For OTN detections data, aggregate_total_with_overlap(otnDet, "OTNDet")
 # For OTN compressed data, aggregate_total_with_overlap(otnComp, "OTNComp")
-aggregate_total_with_overlap <- function(detections, type) {
-  if(type == "GLATOS") {
-    detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
-  } else if (type == "OTNDet") {
-    detColNames = list(startDate="datecollected", endDate="datecollected")
-  } else if (type == "OTNComp") {
-    detColNames = list(startDate="startdate", endDate="enddate")
-  } else if (type == "sample") {
-    detColNames = list(startDate="startdate", endDate="enddate")
-  } else {
-    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+aggregate_total_with_overlap <- function(detections, type, detColNames=list()) {
+  # Check if user has set column names
+  if(length(detColNames) == 0) {
+    if(type == "GLATOS") {
+      detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
+    } else if (type == "OTNDet") {
+      detColNames = list(startDate="datecollected", endDate="datecollected")
+    } else if (type == "OTNComp") {
+      detColNames = list(startDate="startdate", endDate="enddate")
+    } else if (type == "sample") {
+      detColNames = list(startDate="startdate", endDate="enddate")
+    } else {
+      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+    }
   }
   
   # Check that the specified columns appear in the detections dataframe
@@ -208,17 +217,20 @@ aggregate_total_with_overlap <- function(detections, type) {
 # For glatos data, aggregate_total_no_overlap(glatos, "GLATOS")
 # For OTN detections data, aggregate_total_no_overlap(otnDet, "OTNDet")
 # For OTN compressed data, aggregate_total_no_overlap(otnComp, "OTNComp")
-aggregate_total_no_overlap <- function(detections, type) {
-  if(type == "GLATOS") {
-    detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
-  } else if (type == "OTNDet") {
-    detColNames = list(startDate="datecollected", endDate="datecollected")
-  } else if (type == "OTNComp") {
-    detColNames = list(startDate="startdate", endDate="enddate")
-  } else if (type == "sample") {
-    detColNames = list(startDate="startdate", endDate="enddate")
-  } else {
-    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+aggregate_total_no_overlap <- function(detections, type, detColNames=list()) {
+  #Check if user has set column names
+  if(length(detColNames) == 0) {
+    if(type == "GLATOS") {
+      detColNames = list(startDate="detection_timestamp_utc", endDate="detection_timestamp_utc")
+    } else if (type == "OTNDet") {
+      detColNames = list(startDate="datecollected", endDate="datecollected")
+    } else if (type == "OTNComp") {
+      detColNames = list(startDate="startdate", endDate="enddate")
+    } else if (type == "sample") {
+      detColNames = list(startDate="startdate", endDate="enddate")
+    } else {
+      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+    }
   }
   
   # Check that the specified columns appear in the detections dataframe
@@ -371,15 +383,18 @@ residency_index <- function(data, station_locs, type, calculation_method='kessel
 # @var df - a data frame
 # @var type - string
 # @ var title - string
-ri_plot <- function(df, type, title="Residence Index") {
-  if(type=="OTNComp") { #Set column names for OTN data
-    colNames = list(latitudeCol="latitude", longitudeCol="longitude", residency_indexCol="residency_index", stationCol="station")
-  } else if (type=="GLATOS") { #Set column names for GLATOS data
-    colNames = list(latitudeCol="deploy_lat", longitudeCol="deploy_long", residency_indexCol="residency_index", stationCol="glatos_array")
-  } else if (type == "sample") { #Set column names for sample data
-    colNames = list(latitudeCol="lat", longitudeCol="lon", residency_indexCol="ri", station="station")
-  } else { # Other type
-    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+ri_plot <- function(df, type, title="Residence Index", colNames=list()) {
+  # Check if user has set column names
+  if(length(colNames) == 0) {
+    if(type=="OTNComp") { #Set column names for OTN data
+      colNames = list(latitudeCol="latitude", longitudeCol="longitude", residency_indexCol="residency_index", stationCol="station")
+    } else if (type=="GLATOS") { #Set column names for GLATOS data
+      colNames = list(latitudeCol="deploy_lat", longitudeCol="deploy_long", residency_indexCol="residency_index", stationCol="glatos_array")
+    } else if (type == "sample") { #Set column names for sample data
+      colNames = list(latitudeCol="lat", longitudeCol="lon", residency_indexCol="ri", station="station")
+    } else { # Other type
+      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+    }
   }
   
   # Check that residency_index is in the dataframe

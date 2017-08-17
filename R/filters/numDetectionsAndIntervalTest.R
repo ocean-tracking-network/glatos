@@ -50,16 +50,16 @@
 
 # Similar wording in method headers to detectionEventFilter from GLATOS
 numIntervalTest <- function(detections, type, detColNames=list()) {
-  #Check if user has not set column names
-  if(length(detColNames)==0) {
-    if(type=="GLATOS") { #Set column names for GLATOS data
+  # Check if user has set column names
+  if(length(detColNames) == 0) {
+    if(type == "GLATOS") { #Set column names for GLATOS data
       detColNames <- list(transmittersCol = "transmitter_id", receiversCol = "receiver_sn", timestamp = "detection_timestamp_utc")
       detections$minLag <- detections$min_lag
     } else if (type == "OTN"){ #Set column names for OTN data
       detColNames <- list(transmitters = "tagname", receivers = "receiver_group", timestamp = "datecollected")
-    }else if (type == "sample") { #Set column names for sample data described above
+    } else if (type == "sample") { #Set column names for sample data described above
       detColNames <- list(transmitters = "transmitter", receivers = "receiver", timestamp = "time")
-    }else { #Other
+    } else { #Other
       stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
     }
   }
