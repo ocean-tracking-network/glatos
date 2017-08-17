@@ -116,12 +116,12 @@ showMapPointsId(detections=smData, type="sample", id="Eve")
 
 
 # Examples with OTN data:
+showMapPaths(otnDet, type="OTN", zoom=9)
 showMapPoints(otnDet, type="OTN", zoom=9)
 showMapPointsId(otnDet, type="OTN", id="NSBS-Alison", zoom=9)
 
 # Examples with GLATOS data
 showMapPoints(glatos, type="GLATOS", zoom=5)
 showMapPointsId(glatos, type="GLATOS", id="167", zoom=5)
-
 
 
