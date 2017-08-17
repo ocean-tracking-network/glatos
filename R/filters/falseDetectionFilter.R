@@ -18,6 +18,9 @@
 #' @param minLagCol A character string containing the name of the column 
 #'   in \code{detections} that contains 'min_lag'.
 #'   
+#' @param detColNames An optional list that contains the user-defined column
+#'   names
+#'   
 #' @details The min_lag column should be in \code{detections} but if not, program
 #'   will add in using getMinLag() function.
 #' @details Detections are identified as potentially false when 

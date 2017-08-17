@@ -8,8 +8,9 @@
 #' @param type A character string that contains the type of data that is being passed in,
 #'   for example, "OTN", "GLATOS", or "sample".
 #' 
-#' @param detColNames An optional list that allows the user to set their own column
-#'   names
+#' @param detColNames An optional list that contains the user-defined column names
+#' 
+#' @param minVelValue An optional integer that contains the minimum velocity
 #'   
 #' @details detColNames is defined as a list with the names of the required columns in
 #' \code{detections}:
@@ -72,22 +73,19 @@
 velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   #Different column names from different types of data
   #Set different minimum velocity values to test against
-  # If detColNames has not been set by user
+  # Check if user has set column names
   if(length(detColNames) == 0) {
     if(type == "sample") { #Set column names for sample data
       detColNames <- list(timestampCol = "time", transmittersCol = "transmitter", receiversCol = "receiver", longCol = "longitude", latCol = "latitude")
-      minVelValue <- 1
     } else if (type == "GLATOS") { #Set column names for GLATOS data
       detColNames <- list(timestampCol = "detection_timestamp_utc", transmittersCol = "transmitter_id", receiversCol = "receiver_sn", longCol = "deploy_long", latCol = "deploy_lat")
-      minVelValue <- 10
     } else if (type == "OTN") { #Set column names for OTN data
       detColNames <- list(timestampCol = "datecollected", transmittersCol = "tagname", receiversCol = "receiver_group", longCol = "longitude", latCol = "latitude")
-      minVelValue <- 10
     } else { #Other type
-      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+      stop(paste0("The type '", type, "' is not defined."), call.=FALSE)
     }
   }
-  # If minVelValue has not been set by user
+  # Check if user has defined minimum velocity
   if(minVelValue == -100) {
     if(type == "sample") { #Set minimum velocity for sample data
       minVelValue <- 1
@@ -96,7 +94,7 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
     } else if (type == "OTN") { #Set minimum velocity for OTN data
       minVelValue <- 10
     } else { #Other type
-      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+      stop(paste0("The type '", type, "' is not defined."), call.=FALSE)
     }
   }
   

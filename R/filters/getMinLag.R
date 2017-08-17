@@ -8,7 +8,7 @@
 #' @param type A character string that contains the type of data that is being passed in,
 #'   for example, "OTN", "GLATOS", or "sample".
 #' 
-#' @param detColNames An optional list that allows the user to set their own column
+#' @param detColNames An optional list that contains the user-defined column
 #'   names
 #'   
 #' @details detColNames is defined as a list with the names of the required columns in
@@ -36,17 +36,7 @@
 #' A new column (\code{min_lag}), indicating the minimum lag of each entry (according
 #' to the definition above), is added to the input data frame.
 #' 
-#' @return A data frame containing the data with a min_lag column appended:
-#'	\item{min_lag}{Minimum lag between.}
-#' 	\item{MeanLongitude}{Mean longitude of detections comprising each event.}
-#'  \item{FirstDetection}{The time of the first detection in a given detection 
-#'    event.} 
-#'  \item{LastDetection}{The time of the last detection in a given detection 
-#'    event.}  
-#'  \item{NumDetections}{The total number of detection that comprised a given
-#' 	  detection event.}
-#'  \item{ResTime_sec}{The elapsed time in seconds between the first and last 
-#'		detection in a given event.}
+#' @return A data frame containing the data with a min_lag column appended
 #'
 #' @author A. Dini
 #'
@@ -58,7 +48,7 @@
 #' @export
 
 getMinLag <- function(detections, type, detColNames=list()) {
-  # If detColNames not set by user
+  #Check if user has not set column names
   if(length(detColNames) == 0) {
     if(type == "GLATOS") { #Set column names for GLATOS data
       detColNames <- list(transmittersCol = "transmitter_id", receiversCol = "receiver_sn", timestampCol = "detection_timestamp_utc")

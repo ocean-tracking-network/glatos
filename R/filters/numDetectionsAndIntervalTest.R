@@ -7,6 +7,9 @@
 #'   
 #' @param type A character string that contains the type of data that is being passed in,
 #'   for example, "OTN", "GLATOS", or "sample".
+#' 
+#' @param detColNames An optional list that contains the user-defined column
+#'   names
 #'   
 #' @details detColNames is defined as a list with the names of the required columns in
 #' \code{detections}, defined by \code{type}:
@@ -47,7 +50,8 @@
 
 # Similar wording in method headers to detectionEventFilter from GLATOS
 numIntervalTest <- function(detections, type, detColNames=list()) {
-  if(length(detColNames == 0) {
+  # Check if user has set column names
+  if(length(detColNames) == 0) {
     if(type == "GLATOS") { #Set column names for GLATOS data
       detColNames <- list(transmittersCol = "transmitter_id", receiversCol = "receiver_sn", timestamp = "detection_timestamp_utc")
       detections$minLag <- detections$min_lag
