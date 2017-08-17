@@ -10,7 +10,7 @@ rec <- c(11, 22, 33, 44,55, 66, 77, 33, 44, 11)
 lat <- c(44.6358, 44.6362, 44.6373, 44.6368, 44.6371, 44.6375, 44.6380, 44.6373, 44.6368, 44.6358)
 long <- c(-63.5949, -63.5931, -63.5912, -63.5890, -63.5882, -63.5873, -63.5885, -63.5912, -63.5890, -63.5949)
 sampleVel <- data.frame(id=id,time=d, transmitter=tr, receiver=rec, longitude=long, latitude=lat)
-velData <- velTest(sampleVel, "sample")
+velData <- velTest(sampleVel, "sample", minVelValue = 1)
 
 # Expected results
 minDistShouldBe <- c(149.37496, 149.37496, 182.93891, 71.63089, 71.63089, 84.05377, 110.15029, 182.93891, 182.93891, 480.43047)

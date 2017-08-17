@@ -10,10 +10,20 @@
 #' 
 #' @param detColNames An optional list that contains the user-defined column
 #'   names
+#' 
+#' @param shortIntSec An optional integer that contains the maximum number of seconds in a 
+#'   'short interval' (usually 2 hours or 2*60*60 seconds)
+#' 
+#' @param longIntSec An optional integer that contains the minimum number of seconds in a
+#'   'long interval' (usually 24 hours or 24*60*60 seconds)
 #'   
 #' @details detColNames is defined as a list with the names of the required columns in
 #' \code{detections}, defined by \code{type}:
 #'  \itemize{
+#'    \item \code{timestampCol} is a character string with the name of the column
+#'    containing datetime stamps for the detections (MUST be of class 'POSIXct')
+#'    ('detection_timestamp_utc' for GLATOS data, 'datecollected' for OTN data, or
+#'                                                 'time' for sample data).
 #'    \item \code{transmittersCol} is a character string with the name of the column
 #'     containing the ids of the transmitters
 #'     ('transmission_id' for GLATOS data, 'tagname' for OTN data, or 'transmitter'
@@ -22,10 +32,6 @@
 #'     containing the ids of the receivers
 #'     ('receiver_sn' for GLATOS data, 'receiver_group' for OTN data, or 'receiver'
 #'                                                 for sample data).
-#'    \item \code{timestampCol} is a character string with the name of the column
-#'    containing datetime stamps for the detections (MUST be of class 'POSIXct')
-#'    ('detection_timestamp_utc' for GLATOS data, 'datecollected' for OTN data, or
-#'                                                 'time' for sample data).
 #'   }
 #'
 #' @details An instance is invalid (0) if it is the only detection with its transmitter id and receiver id
@@ -49,16 +55,16 @@
 #' @export
 
 # Similar wording in method headers to detectionEventFilter from GLATOS
-numIntervalTest <- function(detections, type, detColNames=list()) {
+numIntervalTest <- function(detections, type, detColNames=list(), shortIntSec= 2*60*60, longIntSec=24*60*60) {
   # Check if user has set column names
   if(length(detColNames) == 0) {
     if(type == "GLATOS") { #Set column names for GLATOS data
-      detColNames <- list(transmittersCol = "transmitter_id", receiversCol = "receiver_sn", timestamp = "detection_timestamp_utc")
+      detColNames <- list(timestamp = "detection_timestamp_utc", transmittersCol = "transmitter_id", receiversCol = "receiver_sn")
       detections$minLag <- detections$min_lag
     } else if (type == "OTN"){ #Set column names for OTN data
-      detColNames <- list(transmitters = "tagname", receivers = "receiver_group", timestamp = "datecollected")
+      detColNames <- list(timestamp = "datecollected", transmitters = "tagname", receivers = "receiver_group")
     } else if (type == "sample") { #Set column names for sample data described above
-      detColNames <- list(transmitters = "transmitter", receivers = "receiver", timestamp = "time")
+      detColNames <- list(timestamp = "time", transmitters = "transmitter", receivers = "receiver")
     } else { #Other
       stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
     }
@@ -75,7 +81,7 @@ numIntervalTest <- function(detections, type, detColNames=list()) {
   # Subset detections with only user-defined columns and change names
   # this makes code easier to understand (especially ddply)
   detections2 <- detections[,unlist(detColNames)] #subset
-  names(detections2) <- c("transmitters","receivers","timestamp")
+  names(detections2) <- c("timestamp", "transmitters", "receivers")
   detections2$num <- as.numeric(detections2$timestamp) #Add another column
   
   #Check that timestamp is of class 'POSIXct'
@@ -112,9 +118,9 @@ numIntervalTest <- function(detections, type, detColNames=list()) {
       shortInt <<- 0
       longInt <<- 0
       sapply(minLag2, function(y) {
-        if(y<=2*60*60) {#short interval, <=2 hours
+        if(y<=shortIntSec) {#short interval
           shortInt <<- shortInt + 1
-        } else if (y>=24*60*60) {#long interval, >=24 hours
+        } else if (y>=longIntSec) {#long interval
           longInt <<- longInt + 1
         }
       })
@@ -135,6 +141,9 @@ numIntervalTest <- function(detections, type, detColNames=list()) {
   detections2 <- do.call("rbind", list2)
   detections2 <- detections2[order(detections2$num),] #Put them back in the original order to be able to append the answers to detections
   
+  #Add results to original 'detections' dataframe
+  detections$numIntervalValid <- detections2$valid
+    
   #Print out results
   numVal <<- 0
   val <- detections2$valid
@@ -146,5 +155,5 @@ numIntervalTest <- function(detections, type, detColNames=list()) {
   nr <- nrow(detections2)
   message(paste0("The filter identified ", nr-sum(detections2$valid)," (", round((nr - sum(detections2$valid))/nr*100, 2), "%) of ", nr, " detections as invalid using the number of detections and interval ratio test."))
 
-  return(detections2)
+  return(detections)
 }

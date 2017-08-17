@@ -88,7 +88,7 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   # Check if user has defined minimum velocity
   if(minVelValue == -100) {
     if(type == "sample") { #Set minimum velocity for sample data
-      minVelValue <- 1
+      minVelValue <- 20
     } else if (type == "GLATOS") { #Set minimum velocity for GLATOS data
       minVelValue <- 10
     } else if (type == "OTN") { #Set minimum velocity for OTN data
@@ -112,9 +112,8 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   names(data2) <- c("timestamp", "transmitters","receivers","long", "lat")
   # data2$num <- as.numeric(data2$timestamp)
   
-  
   # Check that timestamp is of class 'POSIXct'
-  if(!('POSIXct' %in% class(data2$timestampCol))){
+  if(!('POSIXct' %in% class(data2$timestamp))){
     stop(paste0("Column '",detColNames$timestampCol,
                 "' in the detections dataframe must be of class 'POSIXct'."),
          call.=FALSE)
@@ -131,10 +130,12 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   distB <- geosphere::distHaversine(pointsBefore[,c('long', 'lat')], points[,c('long','lat')])
   distA <- geosphere::distHaversine(points[,c('long', 'lat')], pointsAfter[,c('long', 'lat')])
   
-  #Get minimum of distance before point and distance after point
-  distances <- data.frame(distB=distB, distA=distA)
-  di <- apply(distances, 1, function(x) min(x, na.rm=TRUE))
-  detections$min_dist <- di #Find minimum distance of before and after
+  #Get minimum of distance before point and distance after point, if not calculated
+  if(!('min_dist' %in% names(detections))){
+    distances <- data.frame(distB=distB, distA=distA)
+    di <- apply(distances, 1, function(x) min(x, na.rm=TRUE))
+    detections$min_dist <- di #Find minimum distance of before and after
+  }
   
   #Calculate minimum time (min_time) between current point and the point before or after
   n <- as.numeric(data2$timestamp)
@@ -165,6 +166,18 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
       0 #not valid
     }
   })
+  
+  #Print out results
+  numVal <<- 0
+  val <- detections$valid
+  l <- sapply(val, function(x) {
+    if(x == 1) {
+      numVal <<- numVal+1
+    }
+  })
+  nr <- nrow(detections)
+  message(paste0("The filter identified ", nr-sum(detections$valid)," (", round((nr - sum(detections$valid))/nr*100, 2), "%) of ", nr, " detections as invalid using the velocity test."))
+  
   
   return(detections)
 }
