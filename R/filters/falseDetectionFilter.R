@@ -55,11 +55,11 @@
 #'   
 #' @export
 
-falseDetectionFilter <- function(detections, type, tf=3600, minLagCol = "min_lag"){
+falseDetectionFilter <- function(detections, type, tf=3600, minLagCol = "min_lag", detColNames=list()){
   # Check that the minLag column is in the detections dataframe
   # If not, add it in using getMinLag method
   if (!(minLagCol %in% names(detections))){
-    detections <- getMinLag(detections, type) #Get min_lag column
+    detections <- getMinLag(detections, type, detColNames) #Get min_lag column
   }
   
   # Identify possible false detections by comparing "min_lag" column to 
