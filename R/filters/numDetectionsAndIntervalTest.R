@@ -7,6 +7,9 @@
 #'   
 #' @param type A character string that contains the type of data that is being passed in,
 #'   for example, "OTN", "GLATOS", or "sample".
+#' 
+#' @param detColNames An optional list that contains the user-defined column
+#'   names
 #'   
 #' @details detColNames is defined as a list with the names of the required columns in
 #' \code{detections}, defined by \code{type}:
@@ -46,16 +49,19 @@
 #' @export
 
 # Similar wording in method headers to detectionEventFilter from GLATOS
-numIntervalTest <- function(detections, type) {
-  if(type=="GLATOS") { #Set column names for GLATOS data
-    detColNames <- list(transmittersCol = "transmitter_id", receiversCol = "receiver_sn", timestamp = "detection_timestamp_utc")
-    detections$minLag <- detections$min_lag
-  } else if (type == "OTN"){ #Set column names for OTN data
-    detColNames <- list(transmitters = "tagname", receivers = "receiver_group", timestamp = "datecollected")
-  }else if (type == "sample") { #Set column names for sample data described above
-    detColNames <- list(transmitters = "transmitter", receivers = "receiver", timestamp = "time")
-  }else { #Other
-    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+numIntervalTest <- function(detections, type, detColNames=list()) {
+  #Check if user has not set column names
+  if(length(detColNames)==0) {
+    if(type=="GLATOS") { #Set column names for GLATOS data
+      detColNames <- list(transmittersCol = "transmitter_id", receiversCol = "receiver_sn", timestamp = "detection_timestamp_utc")
+      detections$minLag <- detections$min_lag
+    } else if (type == "OTN"){ #Set column names for OTN data
+      detColNames <- list(transmitters = "tagname", receivers = "receiver_group", timestamp = "datecollected")
+    }else if (type == "sample") { #Set column names for sample data described above
+      detColNames <- list(transmitters = "transmitter", receivers = "receiver", timestamp = "time")
+    }else { #Other
+      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+    }
   }
   
   # Check that the specified columns above appear in the detections dataframe

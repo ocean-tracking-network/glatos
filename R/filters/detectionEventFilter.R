@@ -13,6 +13,9 @@
 #' @param type A character string that contains the type of data that is being 
 #'   passed in, for example, "OTN", "GLATOS", or "sample".
 #' 
+#' @param detColNames An optional list that contains the user-defined column
+#'   names
+#' 
 #' @details detColNames is defined as a list with names of required columns in 
 #'   \code{detections}, defined by \code{type}: 
 #' \itemize{
@@ -68,15 +71,18 @@
 #'   For sample data, detectionEventFilter(data, "sample")
 #' @export
 
-detectionEventFilter <- function(detections, type, timeSep = Inf) {
-  if(type == "GLATOS") { #Set column names for GLATOS data
-    detColNames = list(locationCol="glatos_array",animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
-  } else if (type == "OTN") { #Set column names for OTN data
-    detColNames = list(locationCol="station",animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
-  } else if (type == "sample") { #Set column names for sample data
-    detColNames = list(locationCol="location", animalCol="animal", timestampCol="time", latCol="latitude", longCol="longitude")
-  } else { # Other type
-    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+detectionEventFilter <- function(detections, type, timeSep = Inf, detColNames=list()) {
+  #Check if user has defined detColNames
+  if(length(detColNames)==0) {
+    if(type == "GLATOS") { #Set column names for GLATOS data
+      detColNames = list(locationCol="glatos_array",animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
+    } else if (type == "OTN") { #Set column names for OTN data
+      detColNames = list(locationCol="station",animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
+    } else if (type == "sample") { #Set column names for sample data
+      detColNames = list(locationCol="location", animalCol="animal", timestampCol="time", latCol="latitude", longCol="longitude")
+    } else { # Other type
+      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+    }
   }
   
   # Check that the specified columns appear in the detections dataframe

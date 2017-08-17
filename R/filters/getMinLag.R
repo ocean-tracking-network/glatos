@@ -7,6 +7,9 @@
 #'   
 #' @param type A character string that contains the type of data that is being passed in,
 #'   for example, "OTN", "GLATOS", or "sample".
+#' 
+#' @param detColNames An optional list that contains the user-defined column
+#'   names
 #'   
 #' @details detColNames is defined as a list with the names of the required columns in
 #' \code{detections}, defined by \code{type}:
@@ -54,16 +57,19 @@
 #'
 #' @export
 
-getMinLag <- function(detections, type) {
-  if(type=="GLATOS") { #Set column names for GLATOS data
-    detColNames <- list(transmittersCol = "transmitter_id", receiversCol = "receiver_sn", timestampCol = "detection_timestamp_utc")
-    detections$minLag <- detections$min_lag
-  } else if (type == "OTN"){ #Set column names for OTN data
-    detColNames <- list(transmittersCol = "tagname", receiversCol = "receiver_group", timestampCol = "datecollected")
-  } else if (type == "sample") { #Set column names for sample data
-    detColNames <- list(transmittersCol = "transmitter", receiversCol = "receiver", timestampCol = "time")
-  } else { #Other type
-    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+getMinLag <- function(detections, type, detColNames=list()) {
+  #Check if user has not set column names
+  if (length(detColNames)==0) {
+    if(type=="GLATOS") { #Set column names for GLATOS data
+      detColNames <- list(transmittersCol = "transmitter_id", receiversCol = "receiver_sn", timestampCol = "detection_timestamp_utc")
+      detections$minLag <- detections$min_lag
+    } else if (type == "OTN"){ #Set column names for OTN data
+      detColNames <- list(transmittersCol = "tagname", receiversCol = "receiver_group", timestampCol = "datecollected")
+    } else if (type == "sample") { #Set column names for sample data
+      detColNames <- list(transmittersCol = "transmitter", receiversCol = "receiver", timestampCol = "time")
+    } else { #Other type
+      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+    }
   }
   
   # Check that the specified columns above appear in the detections dataframe

@@ -7,6 +7,9 @@
 #'   
 #' @param type A character string that contains the type of data that is being passed in,
 #'   for example, "OTN", "GLATOS", or "sample".
+#' 
+#' @param detColNames An optional list that contains the user-defined column
+#'   names
 #'   
 #' @details detColNames is defined as a list with the names of the required columns in
 #' \code{detections}:
@@ -66,20 +69,23 @@
 #'
 #' @export
 
-velTest <- function(detections, type) {
+velTest <- function(detections, type, detColNames=list()) {
   #Different column names from different types of data
   #Set different minimum velocity values to test against
-  if(type == "sample") { #Set column names for sample data
-    detColNames <- list(timestampCol = "time", transmittersCol = "transmitter", receiversCol = "receiver", longCol = "longitude", latCol = "latitude")
-    minVelValue <- 1
-  } else if (type == "GLATOS") { #Set column names for GLATOS data
-    detColNames <- list(timestampCol = "detection_timestamp_utc", transmittersCol = "transmitter_id", receiversCol = "receiver_sn", longCol = "deploy_long", latCol = "deploy_lat")
-    minVelValue <- 10
-  } else if (type == "OTN") { #Set column names for OTN data
-    detColNames <- list(timestampCol = "datecollected", transmittersCol = "tagname", receiversCol = "receiver_group", longCol = "longitude", latCol = "latitude")
-    minVelValue <- 10
-  } else { #Other type
-    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+  #Check if user has not set column names
+  if(length(detColNames)==0) {
+    if(type == "sample") { #Set column names for sample data
+      detColNames <- list(timestampCol = "time", transmittersCol = "transmitter", receiversCol = "receiver", longCol = "longitude", latCol = "latitude")
+      minVelValue <- 1
+    } else if (type == "GLATOS") { #Set column names for GLATOS data
+      detColNames <- list(timestampCol = "detection_timestamp_utc", transmittersCol = "transmitter_id", receiversCol = "receiver_sn", longCol = "deploy_long", latCol = "deploy_lat")
+      minVelValue <- 10
+    } else if (type == "OTN") { #Set column names for OTN data
+      detColNames <- list(timestampCol = "datecollected", transmittersCol = "tagname", receiversCol = "receiver_group", longCol = "longitude", latCol = "latitude")
+      minVelValue <- 10
+    } else { #Other type
+      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+    }
   }
   
   # Check that the specified columns appear in the detections dataframe

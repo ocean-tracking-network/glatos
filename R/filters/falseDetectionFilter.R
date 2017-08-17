@@ -17,6 +17,9 @@
 #'   
 #' @param minLagCol A character string containing the name of the column 
 #'   in \code{detections} that contains 'min_lag'.
+#' 
+#' @param detColNames An optional list that contains the user-defined column
+#'   names
 #'   
 #' @details The min_lag column should be in \code{detections} but if not, program
 #'   will add in using getMinLag() function.
@@ -55,11 +58,11 @@
 #'   
 #' @export
 
-falseDetectionFilter <- function(detections, type, tf=3600, minLagCol = "min_lag"){
+falseDetectionFilter <- function(detections, type, tf=3600, minLagCol = "min_lag", detColNames=list()){
   # Check that the minLag column is in the detections dataframe
   # If not, add it in using getMinLag method
   if (!(minLagCol %in% names(detections))){
-    detections <- getMinLag(detections, type) #Get min_lag column
+    detections <- getMinLag(detections, type, detColNames) #Get min_lag column
   }
   
   # Identify possible false detections by comparing "min_lag" column to 
