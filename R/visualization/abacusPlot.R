@@ -75,15 +75,18 @@
 #' 
 #' @export
 
-abacusPlot <- function(detections, type, controlTable = NULL, plotTitle = "", Ylab=NA, outFile = "AbacusPlot.png", ...) {
-  if(type=="sample") { #Set column names for sample data
-    detColNames = list(locationCol="location", timestampCol="time")
-  } else if(type=="GLATOS") { #Set column names for GLATOS data
-    detColNames=list(locationCol="glatos_array", timestampCol="detection_timestamp_utc")
-  } else if(type=="OTN"){ #Set column names for OTN data
-    detColNames = list(locationCol="station", timestampCol="datecollected")
-  } else { #Other type
-    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+abacusPlot <- function(detections, type, detColNames=list(), controlTable = NULL, plotTitle = "", Ylab=NA, outFile = "AbacusPlot.png", ...) {
+  #Check if user has set column names
+  if(length(detColNames)==0) {
+    if(type=="sample") { #Set column names for sample data
+      detColNames = list(locationCol="location", timestampCol="time")
+    } else if(type=="GLATOS") { #Set column names for GLATOS data
+      detColNames=list(locationCol="glatos_array", timestampCol="detection_timestamp_utc")
+    } else if(type=="OTN"){ #Set column names for OTN data
+      detColNames = list(locationCol="station", timestampCol="datecollected")
+    } else { #Other type
+      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+    }
   }
   
 	# Check that the specified columns appear in the detections data frame
