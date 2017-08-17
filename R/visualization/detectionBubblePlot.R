@@ -125,9 +125,9 @@
 # Changed map (SpatialPolygonDataFrame) to use data from NaturalEarthData
 
 # To use:
-# For sample data, detectionBubble(detSampleDBP, recSampleDBP, "sample", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
-# For glatos data, abacusPlot(glatos, glatosR "GLATOS", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
-# For OTN data, abacusPlot(otn, otnR, "OTN", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
+# For sample data, detectionBubblePlot(detSampleDBP, recSampleDBP, "sample", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
+# For glatos data, detectionBubblePlot(glatos, glatosR "GLATOS", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
+# For OTN data, detectionBubblePlot(otn, otnR, "OTN", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
 
 detectionBubblePlot <- function(detections, receiverLocs = NULL, type, ocean_shapefile="/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp"){
   
