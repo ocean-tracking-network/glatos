@@ -23,6 +23,9 @@ velValidShouldBe <- c(0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1)
 effValid1ShouldBe <- c(2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2)
 effValid2ShouldBe <- c(1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1)
 
+# Test messages
+#velMessageShouldBe <- "The filter identified 8 (53.33%) of 15 detections as invalid using the velocity test.\n"
+
 # Testing columns that result from velTest using testthat library
 test_that("min_dist column gives expected result", {
   # Check if expected and actual results are the same
@@ -56,3 +59,7 @@ test_that("efficiency test method 2 validity column gives expected result", {
   # Check that expected and actual results are the same
   expect_equal(effData$effValid2, effValid2ShouldBe)
 })
+
+#test_that("velocity message gives expected result", {
+#  expect_message(velTest(effData, "sample"), velMessageShouldBe)
+#})
