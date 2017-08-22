@@ -169,15 +169,14 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   
   #Print out results
   numVal <<- 0
-  val <- detections$valid
+  val <- detections$velValid
   l <- sapply(val, function(x) {
     if(x == 1) {
       numVal <<- numVal+1
     }
   })
   nr <- nrow(detections)
-  message(paste0("The filter identified ", nr-sum(detections$valid)," (", round((nr - sum(detections$valid))/nr*100, 2), "%) of ", nr, " detections as invalid using the velocity test."))
-  
+  message(paste0("The filter identified ", nr-numVal," (", round((nr - numVal)/nr*100, 2), "%) of ", nr, " detections as invalid using the velocity test."))
   
   return(detections)
 }
