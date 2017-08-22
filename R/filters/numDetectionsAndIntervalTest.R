@@ -57,7 +57,6 @@
 #'   For sample data, numIntervalTest(data, "sample")
 #'
 #' @export
-
 # Similar wording in method headers to detectionEventFilter from GLATOS
 numIntervalTest <- function(detections, type, detColNames=list(), shortIntSec= 2*60*60, longIntSec=24*60*60) {
   # Check if user has set column names
@@ -86,19 +85,29 @@ numIntervalTest <- function(detections, type, detColNames=list(), shortIntSec= 2
   
   # Subset detections with only user-defined columns and change names
   # this makes code easier to understand (especially ddply)
-  detections2 <- detections[,unlist(detColNames)] #subset
-  names(detections2) <- c("timestamp", "transmitters", "receivers")
-  detections2$num <- as.numeric(detections2$timestamp) #Add another column
+  data3 <- detections[,unlist(detColNames)] #subset
+  names(data3) <- c("timestamp", "transmitters", "receivers")
+  data3$num <- as.numeric(data3$timestamp) #Add another column
+  
+  #Save row names to keep original ordering later
+  data3$rn <- row.names(data3)
   
   #Check that timestamp is of class 'POSIXct'
-  if(!('POSIXct' %in% class(detections2$timestamp))){
+  if(!('POSIXct' %in% class(data3$timestamp))){
     stop(paste0("Column '",detColNames$timestampCol,
                 "' in the detections dataframe must be of class 'POSIXct'."),
          call.=FALSE)
   }
   
-  #Split detections by transmitter id and receiver
-  li <- split(detections2, list(detections2$transmitters, detections2$receivers))
+  liNA <- subset(data3, is.na(data3$timestamp) | is.na(data3$transmitters) | is.na(data3$receivers))
+  #Add columns
+  liNA$valid <- rep(3, nrow(liNA))
+  #Subset detections without any NA (no missing values)
+  data2 <- subset(data3, !is.na(data3$timestamp) & !is.na(data3$transmitters) & !is.na(data3$receivers))
+  
+  
+  #Split detections (data2) by transmitter id and receiver
+  li <- split(data2, list(data2$transmitters, data2$receivers))
   
   #Remove empty data frames from the list
   li <- li[sapply(li, function(x) dim(x)[1]) > 0]
@@ -107,10 +116,10 @@ numIntervalTest <- function(detections, type, detColNames=list(), shortIntSec= 2
   list2 <- lapply(li, function(x) {
     if(nrow(x)==1) {
       #Set data frames in list with 1 entry to have a validity of 0 (number of detections test)
-      x$valid <- 0
+      x$valid <- 2
       x
     } else {
-      n <- as.numeric(x$time)#stamp)
+      n <- x$num#as.numeric(x$timestamp)
       #Calculate time between current and previous entry for each entry
       mL1a <- (n-dplyr::lag(n))
       #Calculate time between current and next entry for each entry
@@ -134,9 +143,9 @@ numIntervalTest <- function(detections, type, detColNames=list(), shortIntSec= 2
       x$valid <- sapply(minLag2, function(y) {
         #Return valid if number of short intervals is larger than number of long intervals
         if(shortInt > longInt){
-          1
+          1 #Valid
         } else {
-          0
+          2 #Invalid
         }
       })
       x
@@ -144,22 +153,30 @@ numIntervalTest <- function(detections, type, detColNames=list(), shortIntSec= 2
   })
   
   #Combine list of data frames
-  detections2 <- do.call("rbind", list2)
-  detections2 <- detections2[order(detections2$num),] #Put them back in the original order to be able to append the answers to detections
+  data2 <- do.call("rbind", list2)
   
-  #Add results to original 'detections' dataframe
+  #Combine liNA and data2 into detections2
+  detections2 <- rbind(liNA, data2)
+  
+  #Order detections2 by row names (numerically) to put in same order as detections
+  detections2 <- detections2[order(as.numeric(detections2$rn)),]
+  
+  #Append added columns from detections2 into detections
   detections$numIntervalValid <- detections2$valid
-    
-  #Print out results
+  
+  #Count number of valid rows
   numVal <<- 0
-  val <- detections2$valid
+  val <- detections$numIntervalValid
   l <- sapply(val, function(x) {
     if(x == 1) {
       numVal <<- numVal+1
     }
   })
-  nr <- nrow(detections2)
-  message(paste0("The filter identified ", nr-sum(detections2$valid)," (", round((nr - sum(detections2$valid))/nr*100, 2), "%) of ", nr, " detections as invalid using the number of detections and interval ratio test."))
-
+  nr <- nrow(detections)
+  
+  #Print results
+  message(paste0("The filter identified ", nr-numVal," (", round((nr - numVal)/nr*100, 2), "%) of ", nr, " detections as invalid using the number of detections and interval ratio test."))
+  message(paste0("The filter identified ", numVal," (", round((numVal)/nr*100, 2), "%) of ", nr, " detections as valid using the number of detections and interval ratio test."))
+  
   return(detections)
 }

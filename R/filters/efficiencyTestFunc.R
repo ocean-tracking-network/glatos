@@ -146,6 +146,8 @@ efficiencyTest <- function(detections, type, detColNames=list(), minVelValue=-10
   })
   nr <- nrow(detections)
   message(paste0("The filter identified ", nr-numVal1," (", round((nr - numVal1)/nr*100, 2), "%) of ", nr, " detections as invalid using the first method of the efficiency test."))
+  message(paste0("The filter identified ", numVal1," (", round((numVal1)/nr*100, 2), "%) of ", nr, " detections as valid using the first method of the efficiency test."))
   message(paste0("The filter identified ", nr-numVal2," (", round((nr - numVal2)/nr*100, 2), "%) of ", nr, " detections as invalid using the second method of the efficiency test."))
+  message(paste0("The filter identified ", numVal2," (", round((numVal2)/nr*100, 2), "%) of ", nr, " detections as valid using the second method of the efficiency test."))
   return(detections)
 }

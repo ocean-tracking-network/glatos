@@ -116,16 +116,30 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   
   # Subset detections with only user-defined columns and change names
   # this makes code easier to understand (especially ddply)
-  data2 <- detections[,unlist(detColNames)] #subset
-  names(data2) <- c("timestamp", "transmitters","receivers","long", "lat")
+  data3 <- detections[,unlist(detColNames)] #subset
+  names(data3) <- c("timestamp", "transmitters","receivers","long", "lat")
   # data2$num <- as.numeric(data2$timestamp)
   
+  #Save row names to keep original ordering later
+  data3$rn <- row.names(data3)
+  
   # Check that timestamp is of class 'POSIXct'
-  if(!('POSIXct' %in% class(data2$timestamp))){
+  if(!('POSIXct' %in% class(data3$timestamp))){
     stop(paste0("Column '",detColNames$timestampCol,
                 "' in the detections dataframe must be of class 'POSIXct'."),
          call.=FALSE)
   }
+  
+  #Get data points with missing information
+  #Subset detections that have NA (missing values, should have validity of 3)
+  liNA <- subset(data3, is.na(data3$timestamp) | is.na(data3$transmitters) | is.na(data3$receivers) | is.na(data3$long) | is.na(data3$lat))
+  #Add columns
+  liNA$min_dist <- rep(NA, nrow(liNA))
+  liNA$min_time <- rep(NA, nrow(liNA))
+  liNA$min_vel <- rep(NA, nrow(liNA))
+  liNA$velValid <- rep(3, nrow(liNA))
+  #Subset detections without any NA (no missing values)
+  data2 <- subset(data3, !is.na(data3$timestamp) & !is.na(data3$transmitters) & !is.na(data3$receivers) & !is.na(data3$long) & !is.na(data3$lat))
   
   #Set of points, which are made up of: (longitude, latitude)
   points <- data.frame(long=data2$long, lat=data2$lat)
@@ -142,7 +156,7 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   if(!('min_dist' %in% names(detections))){
     distances <- data.frame(distB=distB, distA=distA)
     di <- apply(distances, 1, function(x) min(x, na.rm=TRUE))
-    detections$min_dist <- di #Find minimum distance of before and after
+    data2$min_dist <- di #Find minimum distance of before and after
   }
   
   #Calculate minimum time (min_time) between current point and the point before or after
@@ -151,10 +165,10 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   lagAfter <- dplyr::lead(n)-n #Time between current point and after point
   d <- data.frame(before = lagBefore, after = lagAfter)
   mLag <- apply(d, 1, function(x) min(x, na.rm=TRUE)) #Minimum of time before and after
-  detections$min_time <- mLag
+  data2$min_time <- mLag
   
   #Calculate minimum velocity (min_vel) between current point and the point before or after
-  detections$min_vel<- apply(detections, 1, function(x) {
+  data2$min_vel<- apply(data2, 1, function(x) {
     timeS <- as.numeric(x["min_time"])
     # if(is.na(timeS))
     #   timeS <- strsplit(x["min_time"], " ")[[1]][1]
@@ -166,16 +180,28 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   })
   
   #Check if min_vel is valid (below the threshold, minVelValue) (1 if yes, 0 if no)
-  detections$velValid<-apply(detections, 1, function(x) {
+  data2$velValid<-apply(data2, 1, function(x) {
     val<-as.numeric(x["min_vel"])
     if (val<minVelValue) {
-      1 #valid
+      1 #Valid
     } else {
-      0 #not valid
+      2 #Invalid
     }
   })
   
-  #Print out results
+  #Combine liNA and data2 into detections2
+  detections2 <- rbind(liNA, data2)
+  
+  #Order detections2 by row names (numerically) to put in same order as detections
+  detections2 <- detections2[order(as.numeric(detections2$rn)),]
+  
+  #Append added columns from detections2 into detections
+  detections$min_dist <- detections2$min_dist
+  detections$min_time <- detections2$min_time
+  detections$min_vel <- detections2$min_vel
+  detections$velValid <- detections2$velValid
+  
+  #Count number of valid rows
   numVal <<- 0
   val <- detections$velValid
   l <- sapply(val, function(x) {
@@ -184,7 +210,10 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
     }
   })
   nr <- nrow(detections)
-  message(paste0("The filter identified ", nr-numVal," (", round((nr - numVal)/nr*100, 2), "%) of ", nr, " detections as invalid using the velocity test."))
+  
+  #Print results
+  message(paste0("The filter identified ", nr - numVal," (", round((nr - numVal)/nr*100, 2), "%) of ", nr, " detections as invalid using the velocity test."))
+  message(paste0("The filter identified ", numVal," (", round((numVal)/nr*100, 2), "%) of ", nr, " detections as valid using the velocity test."))
   
   return(detections)
 }
