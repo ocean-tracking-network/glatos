@@ -17,7 +17,7 @@
 #'   Column names are specified with \code{detColNames} by \code{type}.
 #' 
 #' @param type A character string that contains the type of data that is being 
-#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#'   passed in, for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @param iconFiles optional parameter, a list of Strings containing the locations of files that 
 #'  hold images of icons, must be same length as number of unique animal ids
@@ -37,17 +37,18 @@
 #' \itemize{
 #'   \item \code{animalCol} is a character string with the name of the column 
 #' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
-#' 		 'catalognumber' for OTN data, or 'animalId' for sample data).
+#' 		 'catalognumber' for OTN detections or qualified data, or 'animalId' for 
+#' 		 sample data).
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'timestamp' for sample data).
+#'     OTN detections or qualified data, or 'timestamp' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     for OTN detections or qualified data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-#'     for OTN data, or 'longitude' for sample data).
+#'     for OTN detections or qualified data, or 'longitude' for sample data).
 #' 
 #' @details Uses \code{movePath} to get locations every second/minute
 #'
@@ -56,13 +57,13 @@
 #' @export
 
 # Show map of all animals with icons
-showMapIcon <- function(detections, type="sample",
+showMapIcon <- function(detections, type,
                         iconFiles=c("/Users/dinian/Desktop/glatos-git/R/visualization/Icons/redFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/blueFish.png", "/Users/dinian/Desktop/glatos-git/R/visualization/Icons/greenFish.png"), 
                         meanLongitude=0, meanLatitude=0, zoom=13) {
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
-  } else if (type == "OTN") { #Set column names for OTN data
+  } else if (type == "OTNDet" || type=="OTNQual") { #Set column names for OTN data
     detColNames = list(animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
   } else if (type == "sample") { #Set column names for sample data
     detColNames = list(animalCol="animalId", timestampCol="timestamp", latCol="latitude", longCol="longitude")
@@ -181,7 +182,7 @@ showMapIcon <- function(detections, type="sample",
 #'   Column names are specified with \code{detColNames} by \code{type}.
 #' 
 #' @param type A character string that contains the type of data that is being 
-#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#'   passed in, for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @param colourNames optional parameter, a list of Strings containing the name of the
 #'   colours used for each animal id, must be same length as number of unique animal ids
@@ -198,17 +199,18 @@ showMapIcon <- function(detections, type="sample",
 #' \itemize{
 #'   \item \code{animalCol} is a character string with the name of the column 
 #' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
-#' 		 'catalognumber' for OTN data, or 'animalId' for sample data).
+#' 		 'catalognumber' for OTN detections or qualified data, or 'animalId' for 
+#' 		 sample data).
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'timestamp' for sample data).
+#'     OTN detections or qualified data, or 'timestamp' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     for OTN detections or qualified data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-#'     for OTN data, or 'longitude' for sample data).
+#'     for OTN detections or qualified data, or 'longitude' for sample data).
 #'
 #' @details Uses \code{movePath} to get locations every second/minute
 #'
@@ -221,7 +223,7 @@ showMapCircle <- function(detections, type, colourNames=list(), meanLongitude=0,
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
-  } else if (type == "OTN") { #Set column names for OTN data
+  } else if (type == "OTNDet" || type == "OTNQual") { #Set column names for OTN data
     detColNames = list(animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
   } else if (type == "sample") { #Set column names for sample data
     detColNames = list(animalCol="animalId", timestampCol="timestamp", latCol="latitude", longCol="longitude")
@@ -344,7 +346,7 @@ showMapCircle <- function(detections, type, colourNames=list(), meanLongitude=0,
 #'   Column names are specified with \code{detColNames} by \code{type}.
 #' 
 #' @param type A character string that contains the type of data that is being 
-#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#'   passed in, for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @param id A character string that contains the animal identifier to examine
 #' 
@@ -364,17 +366,18 @@ showMapCircle <- function(detections, type, colourNames=list(), meanLongitude=0,
 #' \itemize{
 #'   \item \code{animalCol} is a character string with the name of the column 
 #' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
-#' 		 'catalognumber' for OTN data, or 'animalId' for sample data).
+#' 		 'catalognumber' for OTN detections or qualified data, or 'animalId' for 
+#' 		 sample data).
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'timestamp' for sample data).
+#'     OTN detections or qualified data, or 'timestamp' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     for OTN detections or qualified data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-#'     for OTN data, or 'longitude' for sample data).
+#'     for OTN detections or qualified data, or 'longitude' for sample data).
 #'
 #' @details Uses \code{movePath} to get locations every second/minute
 #'
@@ -386,7 +389,7 @@ showIdMap <- function(detections, type, id, colourNames=list(), meanLongitude=0,
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
-  } else if (type == "OTN") { #Set column names for OTN data
+  } else if (type == "OTNDet" || type=="OTNQual") { #Set column names for OTN data
     detColNames = list(animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
   } else if (type == "sample") { #Set column names for sample data
     detColNames = list(animalCol="animalId", timestampCol="timestamp", latCol="latitude", longCol="longitude")
@@ -512,7 +515,7 @@ showIdMap <- function(detections, type, id, colourNames=list(), meanLongitude=0,
 #'   Column names are specified with \code{detColNames} by \code{type}.
 #' 
 #' @param type A character string that contains the type of data that is being 
-#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#'   passed in, for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @param id A character string that contains the animal identifier to examine
 #' 
@@ -532,17 +535,18 @@ showIdMap <- function(detections, type, id, colourNames=list(), meanLongitude=0,
 #' \itemize{
 #'   \item \code{animalCol} is a character string with the name of the column 
 #' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
-#' 		 'catalognumber' for OTN data, or 'animalId' for sample data).
+#' 		 'catalognumber' for OTN detections or qualified data, or 'animalId' for 
+#' 		 sample data).
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'timestamp' for sample data).
+#'     OTN detections or qualified data, or 'timestamp' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     for OTN detections or qualified data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-#'     for OTN data, or 'longitude' for sample data).
+#'     for OTN detections or qualified data, or 'longitude' for sample data).
 #' 
 #' @details Uses \code{movePath} to get locations every second/minute
 #'
@@ -554,7 +558,7 @@ showMapPathId <- function(detections, type, id, colourNames=list(), meanLongitud
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
-  } else if (type == "OTN") { #Set column names for OTN data
+  } else if (type == "OTNDet" || type == "OTNQual") { #Set column names for OTN data
     detColNames = list(animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
   } else if (type == "sample") { #Set column names for sample data
     detColNames = list(animalCol="animalId", timestampCol="timestamp", latCol="latitude", longCol="longitude")
@@ -673,7 +677,7 @@ showMapPathId <- function(detections, type, id, colourNames=list(), meanLongitud
 #'   Column names are specified with \code{detColNames} by \code{type}.
 #' 
 #' @param type A character string that contains the type of data that is being 
-#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#'   passed in, for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @param colourNames optional parameter, a list of Strings containing the name of the
 #'   colours used for each animal id, must be same length as number of unique animal ids
@@ -691,17 +695,18 @@ showMapPathId <- function(detections, type, id, colourNames=list(), meanLongitud
 #' \itemize{
 #'   \item \code{animalCol} is a character string with the name of the column 
 #' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
-#' 		 'catalognumber' for OTN data, or 'animalId' for sample data).
+#' 		 'catalognumber' for OTN detections or qualified data, or 'animalId' for 
+#' 		 sample data).
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'timestamp' for sample data).
+#'     OTN detections or qualified data, or 'timestamp' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     for OTN detections or qualified data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-#'     for OTN data, or 'longitude' for sample data).
+#'     for OTN detections or qualified data, or 'longitude' for sample data).
 #'     
 #' @details Uses \code{movePath} to get locations every second/minute
 #'
@@ -713,7 +718,7 @@ showMapPaths <- function(detections, type, colourNames=list(), meanLongitude=0, 
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
-  } else if (type == "OTN") { #Set column names for OTN data
+  } else if (type == "OTNDet" || type == "OTNQual") { #Set column names for OTN data
     detColNames = list(animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
   } else if (type == "sample") { #Set column names for sample data
     detColNames = list(animalCol="animalId", timestampCol="timestamp", latCol="latitude", longCol="longitude")
@@ -834,7 +839,7 @@ showMapPaths <- function(detections, type, colourNames=list(), meanLongitude=0, 
 #'   Column names are specified with \code{detColNames} by \code{type}.
 #' 
 #' @param type A character string that contains the type of data that is being 
-#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#'   passed in, for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @param id A character string that contains the animal identifier to examine
 #' 
@@ -854,17 +859,18 @@ showMapPaths <- function(detections, type, colourNames=list(), meanLongitude=0, 
 #' \itemize{
 #'   \item \code{animalCol} is a character string with the name of the column 
 #' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
-#' 		 'catalognumber' for OTN data, or 'animalId' for sample data).
+#' 		 'catalognumber' for OTN detections or qualified data, or 'animalId' for 
+#' 		 sample data).
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'timestamp' for sample data).
+#'     OTN detections or qualified data, or 'timestamp' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     for OTN detections or qualified data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-#'     for OTN data, or 'longitude' for sample data).
+#'     for OTN detections or qualified data, or 'longitude' for sample data).
 #' 
 #' @details Uses \code{movePath} to get locations every second/minute
 #'
@@ -876,7 +882,7 @@ showMapPointsId <- function(detections, type, id, colourNames=list(), meanLongit
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
-  } else if (type == "OTN") { #Set column names for OTN data
+  } else if (type == "OTNDet" || type == "OTNQual") { #Set column names for OTN data
     detColNames = list(animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
   } else if (type == "sample") { #Set column names for sample data
     detColNames = list(animalCol="animalId", timestampCol="timestamp", latCol="latitude", longCol="longitude")
@@ -970,24 +976,25 @@ showMapPointsId <- function(detections, type, id, colourNames=list(), meanLongit
 #'   Column names are specified with \code{detColNames} by \code{type}.
 #' 
 #' @param type A character string that contains the type of data that is being 
-#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#'   passed in, for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @details detColNames is defined as a list with names of required columns in 
 #'   \code{detections}, defined by \code{type}: 
 #' \itemize{
 #'   \item \code{animalCol} is a character string with the name of the column 
 #' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
-#' 		 'catalognumber' for OTN data, or 'animalId' for sample data).
+#' 		 'catalognumber' for OTN detections or qualified data, or 'animalId' for 
+#' 		 sample data).
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'timestamp' for sample data).
+#'     OTN detections or qualified data, or 'timestamp' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     for OTN detections or qualified data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-#'     for OTN data, or 'longitude' for sample data).
+#'     for OTN detections or qualified data, or 'longitude' for sample data).
 #'
 #' @param colourNames optional parameter, a list of Strings containing the name of the
 #'   colours used for each animal id, must be same length as number of unique animal ids
@@ -1010,7 +1017,7 @@ showMapPoints <- function(detections, type, colourNames=list(), meanLongitude=0,
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
-  } else if (type == "OTN") { #Set column names for OTN data
+  } else if (type == "OTNDet" || type == "OTNQual") { #Set column names for OTN data
     detColNames = list(animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
   } else if (type == "sample") { #Set column names for sample data
     detColNames = list(animalCol="animalId", timestampCol="timestamp", latCol="latitude", longCol="longitude")
@@ -1102,7 +1109,7 @@ showMapPoints <- function(detections, type, colourNames=list(), meanLongitude=0,
 #'   Column names are specified with \code{detColNames} by \code{type}.
 #' 
 #' @param type A character string that contains the type of data that is being 
-#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#'   passed in, for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @param id A character string that contains the animal identifier to examine
 #' 
@@ -1122,17 +1129,18 @@ showMapPoints <- function(detections, type, colourNames=list(), meanLongitude=0,
 #' \itemize{
 #'   \item \code{animalCol} is a character string with the name of the column 
 #' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
-#' 		 'catalognumber' for OTN data, or 'animalId' for sample data).
+#' 		 'catalognumber' for OTN detections or qualified data, or 'animalId' for 
+#' 		 sample data).
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'timestamp' for sample data).
+#'     OTN detections or qualified data, or 'timestamp' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     for OTN detections or qualified data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-#'     for OTN data, or 'longitude' for sample data).
+#'     for OTN detections or qualified data, or 'longitude' for sample data).
 #' 
 #' @details Uses \code{movePath} to get locations every second/minute
 #'
@@ -1144,7 +1152,7 @@ showIdMapFollow <- function(detections, type, id, colourNames=list(), meanLongit
   
   if(type == "GLATOS") { #Set column names for GLATOS data
     detColNames = list(animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
-  } else if (type == "OTN") { #Set column names for OTN data
+  } else if (type == "OTNDet" || type == "OTNQual") { #Set column names for OTN data
     detColNames = list(animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
   } else if (type == "sample") { #Set column names for sample data
     detColNames = list(animalCol="animalId", timestampCol="timestamp", latCol="latitude", longCol="longitude")

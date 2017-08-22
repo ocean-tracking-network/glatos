@@ -11,7 +11,7 @@
 #'   \code{type}.
 #'   
 #' @param type A character string that contains the type of data that is being 
-#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#'   passed in, for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @param detColNames An optional list that contains the user-defined column
 #'   names
@@ -21,20 +21,21 @@
 #' \itemize{
 #'   \item \code{locationCol} is a character string with the name of the column 
 #'   	 containing locations you wish to filter to ('glatos_array' for GLATOS data, 
-#' 		 'station' for OTN data, or 'location' for sample data).
+#' 		 'station' for OTN detection or qualified data, or location' for sample data).
 #'   \item \code{animalCol} is a character string with the name of the column 
 #' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
-#' 		 'catalognumber' for OTN data, or 'animal' for sample data).
+#' 		 'catalognumber' for OTN detection or qualified data, or 'animal' for sample 
+#' 		 data).
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'time' for sample data).
+#'     OTN detection or qualified data, or 'time' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     for OTN detecion or qualified data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-#'     for OTN data, or 'longitude' for sample data).
+#'     for OTN detection or qualified data, or 'longitude' for sample data).
 #' }
 #' 
 #' @param timeSep Amount of time (in seconds) that must pass between 
@@ -67,7 +68,8 @@
 #'
 #' @usage To use:
 #'   For GLATOS data, detectionEventFilter(data, "GLATOS")
-#'   For OTN data, detectionEventFilter(data, "OTN")
+#'   For OTN detection data, detectionEventFilter(data, "OTNDet")
+#'   For OTN qualified data, detectionEventFilter(data, "OTNQual")
 #'   For sample data, detectionEventFilter(data, "sample")
 #' @export
 
@@ -76,7 +78,7 @@ detectionEventFilter <- function(detections, type, timeSep = Inf, detColNames=li
   if(length(detColNames)==0) {
     if(type == "GLATOS") { #Set column names for GLATOS data
       detColNames = list(locationCol="glatos_array",animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
-    } else if (type == "OTN") { #Set column names for OTN data
+    } else if (type == "OTNDet" || type=="OTNQual") { #Set column names for OTN data
       detColNames = list(locationCol="station",animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
     } else if (type == "sample") { #Set column names for sample data
       detColNames = list(locationCol="location", animalCol="animal", timestampCol="time", latCol="latitude", longCol="longitude")

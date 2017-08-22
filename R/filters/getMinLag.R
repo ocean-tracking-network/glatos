@@ -6,7 +6,7 @@
 #'   Column names are specified by \code{type}.
 #'   
 #' @param type A character string that contains the type of data that is being passed in,
-#'   for example, "OTN", "GLATOS", or "sample".
+#'   for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @param detColNames An optional list that contains the user-defined column
 #'   names
@@ -16,15 +16,18 @@
 #'  \itemize{
 #'    \item \code{transmitters} is a character string with the name of the column
 #'     containing the ids of the transmitters
-#'     ('transmission_id' for GLATOS data, 'tagname' for OTN data, or 'transmitter'
+#'     ('transmission_id' for GLATOS data, 'tagname' for OTN detection data, 'fieldnumber'
+#'                                                 for OTN qualified data, or 'transmitter'
 #'                                                 for sample data).
 #'     \item \code{receivers} is a character string with the name of the column
 #'     containing the ids of the receivers
-#'     ('receiver_sn' for GLATOS data, 'receiver_group' for OTN data, or 'receiver'
-#'                                                 for sample data).
+#'     ('receiver_sn' for GLATOS data, 'receiver_group' for OTN detection data, 'rcvrcatnumber' 
+#'                                                 for OTN qualified data, or 'receiver' for
+#'                                                 sample data).
 #'     \item \code{timestampCol} is a character string with the name of the column
 #'     containing datetime stamps for the detections (MUST be of class 'POSIXct')
-#'     ('detection_timestamp_utc' for GLATOS data, 'datecollected' for OTN data, or
+#'     ('detection_timestamp_utc' for GLATOS data, 'datecollected' for OTN detection data, 
+#'                                                 'datecollected' for OTN qualified data, or
 #'                                                 'time' for sample data).
 #'   }
 #'
@@ -42,7 +45,8 @@
 #'
 #' @usage To use:
 #'   For GLATOS data, getMinLag(data, "GLATOS")
-#'   For OTN data, getMinLag(data, "OTN")
+#'   For OTN detection data, getMinLag(data, "OTNDet")
+#'   For OTN qualified data, getMinLag(data, "OTNQual")
 #'   For sample data, getMinLag(data, "sample")
 #'
 #' @export
@@ -53,8 +57,10 @@ getMinLag <- function(detections, type, detColNames=list()) {
     if(type == "GLATOS") { #Set column names for GLATOS data
       detColNames <- list(transmittersCol = "transmitter_id", receiversCol = "receiver_sn", timestampCol = "detection_timestamp_utc")
       detections$minLag <- detections$min_lag
-    } else if (type == "OTN"){ #Set column names for OTN data
+    } else if (type == "OTNDet"){ #Set column names for OTN detection data
       detColNames <- list(transmittersCol = "tagname", receiversCol = "receiver_group", timestampCol = "datecollected")
+    } else if (type == "OTNQual"){ #Set column names for OTN qualified data
+      detColNames <- list(transmittersCol = "fieldnumber", receiversCol = "rcvrcatnumber", timestampCol = "datecollected")
     } else if (type == "sample") { #Set column names for sample data
       detColNames <- list(transmittersCol = "transmitter", receiversCol = "receiver", timestampCol = "time")
     } else { #Other type

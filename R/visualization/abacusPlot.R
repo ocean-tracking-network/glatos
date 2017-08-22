@@ -7,18 +7,18 @@
 #'   datetime stamps for the detections (MUST be of class 'POSIXct').
 #' 
 #' @param type A character string that contains the type of data that is being passed in,
-#'   for example, "OTN", "GLATOS", or "sample".
+#'   for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #'   
 #' @details detColNames is a list of character strings with names of
 #'   required columns in \code{detections}:
 #' \itemize{
 #'   \item \code{locationCol} is a character string with the name of the column 
 #'   	 containing locations you wish to filter to ('glatos_array' for GLATOS data, 
-#' 		 'station' for OTN data, or 'location' for sample data).
+#' 		 'station' for OTN detection or qualified data, or 'location' for sample data).
 #'   \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'time' for sample data).
+#'     OTN detection or qualified data, or 'time' for sample data).
 #' }
 #'    
 #' @param controlTable An optional data frame with two columns, c('location', and 
@@ -70,7 +70,8 @@
 #' 
 #' @usage To use:
 #'   For GLATOS data, abacusPlot(data, "GLATOS")
-#'   For OTN data, abacusPlot(data, "OTN")
+#'   For OTN detection data, abacusPlot(data, "OTNDet")
+#'   For OTN qualified data, abacusPlot(data, "OTNQual")
 #'   For sample data, abacusPlot(data, "sample")
 #' 
 #' @export
@@ -80,7 +81,7 @@ abacusPlot <- function(detections, type, controlTable = NULL, plotTitle = "", Yl
     detColNames = list(locationCol="location", timestampCol="time")
   } else if(type=="GLATOS") { #Set column names for GLATOS data
     detColNames=list(locationCol="glatos_array", timestampCol="detection_timestamp_utc")
-  } else if(type=="OTN"){ #Set column names for OTN data
+  } else if(type=="OTNDet" || type=="OTNQual"){ #Set column names for OTN data
     detColNames = list(locationCol="station", timestampCol="datecollected")
   } else { #Other type
     stop(paste0("The type '",type,"' is not defined."), call.=FALSE)

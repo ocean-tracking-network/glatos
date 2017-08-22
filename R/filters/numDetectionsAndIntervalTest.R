@@ -6,7 +6,7 @@
 #'   Column names are specified by \code{type}.
 #'   
 #' @param type A character string that contains the type of data that is being passed in,
-#'   for example, "OTN", "GLATOS", or "sample".
+#'   for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @param detColNames An optional list that contains the user-defined column
 #'   names
@@ -22,16 +22,19 @@
 #'  \itemize{
 #'    \item \code{timestampCol} is a character string with the name of the column
 #'    containing datetime stamps for the detections (MUST be of class 'POSIXct')
-#'    ('detection_timestamp_utc' for GLATOS data, 'datecollected' for OTN data, or
-#'                                                 'time' for sample data).
+#'    ('detection_timestamp_utc' for GLATOS data, 'datecollected' for OTN detection data, 
+#'                                                 'datecollected' for OTN qualified data,
+#'                                                 or 'time' for sample data).
 #'    \item \code{transmittersCol} is a character string with the name of the column
 #'     containing the ids of the transmitters
-#'     ('transmission_id' for GLATOS data, 'tagname' for OTN data, or 'transmitter'
+#'     ('transmission_id' for GLATOS data, 'tagname' for OTN detection data, 'fieldnumber'
+#'                                                 for OTN qualified data, or 'transmitter'
 #'                                                 for sample data).
 #'     \item \code{receiversCol} is a character string with the name of the column
 #'     containing the ids of the receivers
-#'     ('receiver_sn' for GLATOS data, 'receiver_group' for OTN data, or 'receiver'
-#'                                                 for sample data).
+#'     ('receiver_sn' for GLATOS data, 'receiver_group' for OTN detection data, 
+#'                                                 'rcvrcatnumber' for OTN qualified data,
+#'                                                 or 'receiver' for sample data).
 #'   }
 #'
 #' @details An instance is invalid (0) if it is the only detection with its transmitter id and receiver id
@@ -48,9 +51,10 @@
 #' @author A. Dini
 #'
 #' @usage To use:
-#'   For GLATOS data, numIntervalTest(glatos, "GLATOS")
-#'   For OTN gata, numIntervalTest(otn, "OTN")
-#'   For sample data, numIntervalTest(sample, "sample")
+#'   For GLATOS data, numIntervalTest(data, "GLATOS")
+#'   For OTN detection data, numIntervalTest(data, "OTNDet")
+#'   For OTN qualified data, numIntervalTest(data, "OTNQual")
+#'   For sample data, numIntervalTest(data, "sample")
 #'
 #' @export
 
@@ -61,8 +65,10 @@ numIntervalTest <- function(detections, type, detColNames=list(), shortIntSec= 2
     if(type == "GLATOS") { #Set column names for GLATOS data
       detColNames <- list(timestamp = "detection_timestamp_utc", transmittersCol = "transmitter_id", receiversCol = "receiver_sn")
       detections$minLag <- detections$min_lag
-    } else if (type == "OTN"){ #Set column names for OTN data
+    } else if (type == "OTNDet"){ #Set column names for OTN detection data
       detColNames <- list(timestamp = "datecollected", transmitters = "tagname", receivers = "receiver_group")
+    } else if (type == "OTNQual"){ #Set column names for OTN qualified data
+      detColNames <- list(timestamp = "datecollected", transmitters = "fieldnumber", receivers = "rcvrcatnumber")
     } else if (type == "sample") { #Set column names for sample data described above
       detColNames <- list(timestamp = "time", transmitters = "transmitter", receivers = "receiver")
     } else { #Other

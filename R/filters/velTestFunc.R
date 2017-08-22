@@ -6,7 +6,7 @@
 #'   Column names are specified by \code{type}.
 #'   
 #' @param type A character string that contains the type of data that is being passed in,
-#'   for example, "OTN", "GLATOS", or "sample".
+#'   for example, "OTNDet", "OTNQual", "GLATOS", or "sample".
 #' 
 #' @param detColNames An optional list that contains the user-defined column names
 #' 
@@ -17,24 +17,29 @@
 #'  \itemize{
 #'    \item \code{timestampCol} is a character string with the name of the column
 #'    containing datetime stamps for the detections (MUST be of class 'POSIXct')
-#'    ('detection_timestamp_utc' for GLATOS data, 'datecollected' for OTN data, or
-#'                                                 'time' for sample data).
+#'    ('detection_timestamp_utc' for GLATOS data, 'datecollected' for OTN detection data, 
+#'                                                 'datecollected' for OTN qualified data,
+#'                                                 or 'time' for sample data).
 #'    \item \code{transmittersCol} is a character string with the name of the column
 #'     containing the ids of the transmitters
-#'     ('transmission_id' for GLATOS data, 'tagname' for OTN data, or 'transmitter'
+#'     ('transmission_id' for GLATOS data, 'tagname' for OTN detection data, 'fieldnumber'
+#'                                                 for OTN qualified data, or 'transmitter'
 #'                                                 for sample data).
 #'     \item \code{receiversCol} is a character string with the name of the column
 #'     containing the ids of the receivers
-#'     ('receiver_sn' for GLATOS data, 'receiver_group' for OTN data, or 'receiver'
-#'                                                 for sample data).
+#'     ('receiver_sn' for GLATOS data, 'receiver_group' for OTN detection data, 'rcvrcatnumber'
+#'                                                 for OTN qualified data, or 'receiver' for
+#'                                                 sample data).
 #'     \item \code{longitudeCol} is a character string with the name of the column
 #'     containing the longitude coordinate for the detections
-#'     ('deploy_long' for GLATOS data, 'longitude' for OTN data, or 'longitude' for 
+#'     ('deploy_long' for GLATOS data, 'longitude' for OTN detection data, 'longitude' for
+#'                                                 OTN qualified data, or 'longitude' for 
 #'                                                 sample data).
 #'     \item \code{latitudeCol} is a character string with the name of the column
 #'     containing the latitude coordinate for the detections
-#'     ('deploy_lat' for GLATOS data, 'latitude' for OTN data, or 'latitude' for
-#'                                                 sample data).
+#'     ('deploy_lat' for GLATOS data, 'latitude' for OTN detection data, 'latitude' for OTN
+#'                                                 qualified data, or 'latitude' for sample
+#'                                                 data).
 #'   }
 #'
 #' @details Each value in the min_dist column indicates the minimum of the distance between the 
@@ -65,7 +70,8 @@
 #'
 #' @usage To use:
 #'   For GLATOS data, velTest(data, "GLATOS")
-#'   For OTN data, velTest(data, "OTN")
+#'   For OTN detection data, velTest(data, "OTNDet")
+#'   For OTN qualified data, velTest(data, "OTNQual")
 #'   For sample data, velTest(data, "sample")
 #'
 #' @export
@@ -79,8 +85,10 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
       detColNames <- list(timestampCol = "time", transmittersCol = "transmitter", receiversCol = "receiver", longCol = "longitude", latCol = "latitude")
     } else if (type == "GLATOS") { #Set column names for GLATOS data
       detColNames <- list(timestampCol = "detection_timestamp_utc", transmittersCol = "transmitter_id", receiversCol = "receiver_sn", longCol = "deploy_long", latCol = "deploy_lat")
-    } else if (type == "OTN") { #Set column names for OTN data
+    } else if (type == "OTNDet") { #Set column names for OTN detection data
       detColNames <- list(timestampCol = "datecollected", transmittersCol = "tagname", receiversCol = "receiver_group", longCol = "longitude", latCol = "latitude")
+    } else if (type == "OTNQual") { #Set column names for OTN qualified data
+      detColNames <- list(timestampCol = "datecollected", transmittersCol = "fieldnumber", receiversCol = "rcvrcatnumber", longCol = "longitude", latCol = "latitude")
     } else { #Other type
       stop(paste0("The type '", type, "' is not defined."), call.=FALSE)
     }
@@ -91,7 +99,7 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
       minVelValue <- 20
     } else if (type == "GLATOS") { #Set minimum velocity for GLATOS data
       minVelValue <- 10
-    } else if (type == "OTN") { #Set minimum velocity for OTN data
+    } else if (type == "OTNDet" || type == "OTNQual") { #Set minimum velocity for OTN data
       minVelValue <- 10
     } else { #Other type
       stop(paste0("The type '", type, "' is not defined."), call.=FALSE)

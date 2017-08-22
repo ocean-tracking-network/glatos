@@ -23,20 +23,20 @@
 #' \itemize{
 #'   \item \code{locationCol} is a character string with the name of the column 
 #'   	 containing locations you wish to filter to ('glatos_array' for GLATOS data, 
-#' 		 'station' for OTN data, or 'location' for sample data).
+#' 		 'station' for OTN detection or qualified data, or 'location' for sample data).
 #'   \item \code{animalCol} is a character string with the name of the column 
 #' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
-#' 		 'catalognumber' for OTN data, or 'animal' for sample data).
+#' 		 'catalognumber' for OTN detection or qualified data, or 'animal' for sample data).
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
 #'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'time' for sample data).
+#'     OTN detection or qualified data, or 'time' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     for OTN detection or qualified data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-#'     for OTN data, or 'longitude' for sample data).
+#'     for OTN detection or qualified data, or 'longitude' for sample data).
 #' }
 #' 
 #' @details map is an optional SpatialPolygonsDataFrame or other
@@ -48,21 +48,22 @@
 #' \itemize{
 #'   \item \code{locationCol} is a character string with the name of the column 
 #'   	 containing the locations that will be plotted ('glatos_array' for GLATOS data, 
-#' 		 'station' for OTN data, or 'location' for sample data).
+#' 		 'station' for OTN detection or qualified data, or 'location' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing the latitude of the receiver ('deploy_lat' for 
-#'     GLATOS data, 'latitude' for OTN data, or 'latitude' for sample data). 
+#'     GLATOS data, 'latitude' for OTN detection or qualified data, or 'latitude' for 
+#'     sample data). 
 #'	 \item \code{longitudeCol} is a character string with the name of the column
 #'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     for OTN detection or qualified data, or 'latitude' for sample data).
 #'	 \item \code{deploy_timestampCol} is a character string with the name of 
 #'     the column containing datetime stamps for receiver deployments (MUST be 
 #'     of class 'POSIXct') ('deploy_date_time'for GLATOS data, 'deploy_date_time' for OTN
-#'     data, or 'deploy_time' for sample data). 
+#'     detection or qualified data, or 'deploy_time' for sample data). 
 #'	 \item \code{recover_timestampCol} is a character string with the name of 
 #'     the column containing datetime stamps for receier recover (MUST be of 
-#'     class 'POSIXct') ('recover_date_time'for GLATOS data, 'recover_date_time' for OTN data,
-#'     or 'recover_time' for sample data). 
+#'     class 'POSIXct') ('recover_date_time'for GLATOS data, 'recover_date_time' for OTN 
+#'     detection or qualified data, or 'recover_time' for sample data). 
 #' }
 #' 
 #' @details mapPars is a list of mapping parameters (with exact names 
@@ -116,6 +117,11 @@
 #'
 #' @author T. R. Binder, edited by A. Dini
 #' 
+#' @usage To use:
+#'   For GLATOS data, detectionBubblePlot(dataDet, dataRec, "GLATOS", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
+#'   For OTN detection data, detectionBubblePlot(dataDet, dataRec, "OTNDet", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
+#'   For OTN qualified data, detectionBubblePlot(dataDet, dataRec, "OTNQual", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
+#'   For sample data, detectionBubblePlot(dataDet, dataRec, "sample", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
 #' 
 #' @export
 
@@ -123,11 +129,6 @@
 # Changed the column names to work with OTN, GLATOS, and sample data
 # Changed map parameters to use OTN area
 # Changed map (SpatialPolygonDataFrame) to use data from NaturalEarthData
-
-# To use:
-# For sample data, detectionBubblePlot(detSampleDBP, recSampleDBP, "sample", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
-# For glatos data, detectionBubblePlot(glatos, glatosR "GLATOS", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
-# For OTN data, detectionBubblePlot(otn, otnR, "OTN", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
 
 detectionBubblePlot <- function(detections, receiverLocs = NULL, type, ocean_shapefile="/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp"){
   
@@ -169,7 +170,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type, ocean_sha
   ogrInfo(ocean_shapefile, layer=layer)
   ocean_poly <- readOGR(ocean_shapefile, layer=layer) #SpatialPolygonDataFrame object
   
-  if(type == "GLATOS") { #Sets different attributes for GLATOS data
+  if(type == "GLATOS") { #Set different attributes for GLATOS data
     detColNames = list(locationCol="glatos_array", animalCol="animal_id", timestampCol="detection_timestamp_utc", latCol="deploy_lat", longCol="deploy_long")
     recColNames = list(locationCol="glatos_array", latCol="deploy_lat", longCol="deploy_long", deploy_timestampCol="deploy_date_time", recover_timestampCol="recover_date_time")
     mapPars = list(
@@ -185,7 +186,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type, ocean_sha
     symbolRadius = 1
     colGrad = c("white", "red")
     showAll = FALSE
-  } else if (type == "OTN") {
+  } else if (type == "OTNDet" || type == "OTNQual") { #Set different attributes for OTN data
     detColNames = list(locationCol="station", animalCol="catalognumber", timestampCol="datecollected", latCol="latitude", longCol="longitude")
     recColNames = list(locationCol="station", latCol="latitude", longCol="longitude", deploy_timestampCol="deploy_date_time", recover_timestampCol="recover_date_time")
     mapPars = list(
@@ -201,7 +202,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type, ocean_sha
     symbolRadius = 1
     colGrad = c("white", "red")
     showAll = FALSE
-  } else if (type == "sample") {
+  } else if (type == "sample") { #Set different attributes for sample data
     detColNames = list(locationCol="location", animalCol="animal", timestampCol="time", latCol="latitude", longCol="longitude")
     recColNames = list(locationCol="location", latCol="latitude", longCol="longitude", deploy_timestampCol="deploy_time", recover_timestampCol="recover_time")
     mapPars = list(
@@ -217,7 +218,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type, ocean_sha
     symbolRadius = 1
     colGrad = c("white", "red")
     showAll = FALSE
-  } else {
+  } else { #Other type
     stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
   }
   # Update mapping parameter objects based on user-specified in mapPars	
