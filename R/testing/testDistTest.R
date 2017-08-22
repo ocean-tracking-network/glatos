@@ -1,7 +1,7 @@
 # To run:
 # test_file("/Users/dinian/Desktop/glatos-git/R/testing/testDistTest.R")
 
-# Sample data for velTestFunc.R
+# Sample data for distTestFunc.R
 id <- 1:10
 d <- c("2010/10/10 10:52:07", "2010/10/10 10:59:23", "2010/10/10 11:03:26", "2010/10/10 11:06:15", "2010/10/10 11:07:15", "2010/10/10 11:09:10", "2010/10/10 11:11:11", "2010/10/10 11:16:16", "2010/10/10 11:19:27", "2010/10/10 11:28:17")
 d <- as.POSIXct(d, tz="UCT")

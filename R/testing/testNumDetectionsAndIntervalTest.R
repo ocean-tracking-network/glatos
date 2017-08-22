@@ -16,7 +16,7 @@ validShouldBe <- c(1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0)
 # Test column that results from numDetectionsAndIntervalTest using testthat library
 test_that("valid column gives expected result", {
   # Check if expected and actual results are the same
-  expect_equal(intervalData$valid, validShouldBe)
+  expect_equal(intervalData$numIntervalValid, validShouldBe)
 })
 
 # # Test message
