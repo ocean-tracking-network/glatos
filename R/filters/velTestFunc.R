@@ -173,7 +173,7 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
     # if(is.na(timeS))
     #   timeS <- strsplit(x["min_time"], " ")[[1]][1]
     if(timeS == 0) { #If time of current point and before or after point is the same, return 0 as dividing it will give an error
-      0
+      2
     } else {
       as.numeric(x["min_dist"])/as.numeric(timeS) #Dividing distance and time to calculate minimum speed
     }
