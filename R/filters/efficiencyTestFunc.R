@@ -104,14 +104,14 @@ efficiencyTest <- function(detections, type, detColNames=list(), minVelValue=-10
   
   # Calculate valid column for efficiency test using first method (described below)
   #   and append to \code{detections}
-  # 1 if all columns are valid (all 1), 2 if questionable validity (contains a 0), 3 if missing information
+  # 1 if all columns are valid (all 1), 2 if questionable validity (contains a 2), 3 if missing information
   detections$effValid1 <- apply(detections, 1, function(x) {
-    if(x["numIntervalValid"] == 1 && x["velValid"] == 1 && x["distValid"] == 1) {
-      1 #valid
-    } else if(x["numIntervalValid"] == 0 || x["velValid"] == 0 || x["distValid"] == 0) {
-      2 #questionable
+    if(x["numIntervalValid"] == 3 || x["velValid"] == 3 || x["distValid"] == 3) {
+      3 #Missing information
+    } else if(x["numIntervalValid"] == 1 && x["velValid"] == 1 && x["distValid"] == 1) {
+      1 #Valid
     } else {
-      3 #missing information
+      2 #Invalid
     }
   })
   
@@ -120,16 +120,16 @@ efficiencyTest <- function(detections, type, detColNames=list(), minVelValue=-10
   # 1 if valid (valid for number detections and interval test OR valid for both velocity and distance test)
   # 2 if questionable, 3 if missing information
   detections$effValid2 <- apply(detections, 1, function(x) {
-    if(x["numIntervalValid"] == 1 || (x["velValid"] == 1 && x["distValid"] == 1)) {
-      1 #valid
-    } else if (x["velValid"] == 0 || x["distValid"] == 0) {
-      2 #questionable
+    if(x["numIntervalValid"] == 3 || (x["velValid"] == 3 || x["distValid"] == 3)) {
+      3 #Missing information
+    } else if(x["numIntervalValid"] == 1 || (x["velValid"] == 1 && x["distValid"] == 1)) {
+      1 #Valid
     } else {
-      3 #missing information
+      2 #Invalid
     }
   })
   
-  #Print out results
+  #Count number of valid rows
   numVal1 <<- 0
   numVal2 <<- 0
   val1 <- detections$effValid1
@@ -145,9 +145,12 @@ efficiencyTest <- function(detections, type, detColNames=list(), minVelValue=-10
     }
   })
   nr <- nrow(detections)
+  
+  #Print results
   message(paste0("The filter identified ", nr-numVal1," (", round((nr - numVal1)/nr*100, 2), "%) of ", nr, " detections as invalid using the first method of the efficiency test."))
   message(paste0("The filter identified ", numVal1," (", round((numVal1)/nr*100, 2), "%) of ", nr, " detections as valid using the first method of the efficiency test."))
   message(paste0("The filter identified ", nr-numVal2," (", round((nr - numVal2)/nr*100, 2), "%) of ", nr, " detections as invalid using the second method of the efficiency test."))
   message(paste0("The filter identified ", numVal2," (", round((numVal2)/nr*100, 2), "%) of ", nr, " detections as valid using the second method of the efficiency test."))
+  
   return(detections)
 }
