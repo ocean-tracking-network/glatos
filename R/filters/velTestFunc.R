@@ -119,7 +119,7 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   data3 <- detections[,unlist(detColNames)] #subset
   names(data3) <- c("timestamp", "transmitters","receivers","long", "lat")
   # data2$num <- as.numeric(data2$timestamp)
-  
+
   #Save row names to keep original ordering later
   data3$rn <- row.names(data3)
   
@@ -153,7 +153,7 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   distA <- geosphere::distHaversine(points[,c('long', 'lat')], pointsAfter[,c('long', 'lat')])
   
   #Get minimum of distance before point and distance after point, if not calculated
-  if(!('min_dist' %in% names(detections))){
+  if(!('min_dist' %in% names(data2))){
     distances <- data.frame(distB=distB, distA=distA)
     di <- apply(distances, 1, function(x) min(x, na.rm=TRUE))
     data2$min_dist <- di #Find minimum distance of before and after
@@ -181,8 +181,8 @@ velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
   
   #Check if min_vel is valid (below the threshold, minVelValue) (1 if yes, 0 if no)
   data2$velValid<-apply(data2, 1, function(x) {
-    val<-as.numeric(x["min_vel"])
-    if (val<minVelValue) {
+    val <- as.numeric(x["min_vel"])
+    if (val < minVelValue) {
       1 #Valid
     } else {
       2 #Invalid

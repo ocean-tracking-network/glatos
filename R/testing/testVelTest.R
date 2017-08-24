@@ -35,36 +35,36 @@ minVelNAShouldBe <- c(2.669058, NA, NA, 1.296507, NA, 1.835838, 1.835838, NA, 2.
 validNAShouldBe <- c(2, 3, 3, 1, 3, 1, 1, 3, 1, 2)
 
 # Testing columns that result from velTest using testthat library
-test_that("min_dist column gives expected result", {
+test_that("min_dist column of data without NA gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(velData$min_dist, minDistShouldBe)
 })
-test_that("min_time column gives expected result", {
+test_that("min_time column of data without NA gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(velData$min_time, minTimeShouldBe)
 })
-test_that("min_vel column gives expected result", {
+test_that("min_vel column of data without NA gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(velData$min_vel, minVelShouldBe, tolerance = 3.96e-08) #To stop any error due to rounding
 })
-test_that("valid column gives expected result", {
+test_that("valid column of data without NA gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(velData$velValid, validShouldBe)
 })
 
-test_that("min_dist column gives expected result", {
+test_that("min_dist column of data with NA gives expected result", {
   # Check if expected and actual results are the same
-  expect_equal(velDataNA$min_dist, minDistNAShouldBe, tolerance = 2.43e-05)
+  expect_equal(velDataNA$min_dist, minDistNAShouldBe, tolerance = 2.43e-05) #To stop any error due to rounding
 })
-test_that("min_time column gives expected result", {
+test_that("min_time column of data with NA gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(velDataNA$min_time, minTimeNAShouldBe)
 })
-test_that("min_vel column gives expected result", {
+test_that("min_vel column of data with NA gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(velDataNA$min_vel, minVelNAShouldBe, tolerance = 3.33e-07) #To stop any error due to rounding
 })
-test_that("valid column gives expected result", {
+test_that("valid column of data with NA gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(velDataNA$velValid, validNAShouldBe)
 })

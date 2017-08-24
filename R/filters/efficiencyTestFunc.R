@@ -85,19 +85,19 @@ efficiencyTest <- function(detections, type, detColNames=list(), minVelValue=-10
   # print(detections)
   
   # Perform number of detections and interval test
-  detections <- numIntervalTest(detections, type, detColNames, shortIntSec = shortIntSec, longIntSec = longIntSec)
+  detections <- numIntervalTest(detections, type = type, detColNames = detColNames, shortIntSec = shortIntSec, longIntSec = longIntSec)
   
   # print("detections after numIntervalTest:")
   # print(detections)
   
   # Perform distance test
-  detections <- distTest(detections, type=type, detColNames = detColNames, minDistValue = minDistValue)
+  detections <- distTest(detections, type = type, detColNames = detColNames, minDistValue = minDistValue)
   
   # print("detections after distTest:")
   # print(detections)
   
   # Perform velocity test
-  detections <- velTest(detections, type, detColNames = detColNames, minVelValue = minVelValue)
+  detections <- velTest(detections, type = type, detColNames = detColNames, minVelValue = minVelValue)
   
   # print("detections after velTest:")
   # print(detections)
