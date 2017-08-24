@@ -1069,9 +1069,12 @@ showMapPoints <- function(detections, type, colourNames=list(), meanLongitude=0,
   #Add colour column to data
   detections$colour <- apply(detections, 1, function(x) {
     listUniq <- unique(detections$animalId)
+    #print(listUniq)
     #Remove whitespace from animalId
-    anId <- gsub(" ","", x["animalId"], fixed=TRUE)
-    n <- which(listUniq == anId) # Find index of id in list of unique ids
+    #anId <- gsub(" ","", x["animalId"], fixed=TRUE)
+    #anId <- x["animalId"]
+    #print(anId)
+    n <- which(listUniq == x["animalId"]) # Find index of id in list of unique ids
     #print(paste0("'", anId, "' : ", n))
     return(colourNames[[n]])
   })

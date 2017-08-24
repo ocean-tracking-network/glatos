@@ -7,7 +7,7 @@ timeA <- rep(x="2010/10/11 11:11:11", times=3)
 timeB <- rep(x="2010/10/11 11:12:11", times=3)
 timeC <- rep(x="2010/10/11 11:13:11", times=3)
 times <- c(timeA, timeB, timeC)
-times <- as.POSIXct(times, tz="America/Halifax")
+times <- as.POSIXct(times, tz="UCT")
 long <- c(-63.575993, -63.580284, -63.626032, -63.604145, -63.587708, -63.575306, -63.612943, -63.618736, -63.568354)
 lat <- c(44.652902, 44.631772, 44.665845, 44.655283, 44.645422, 44.642827, 44.642665, 44.649300, 44.640201)
 smData <- data.frame(animalId=anId, timestamp=times,longitude=long, latitude=lat)
@@ -115,13 +115,32 @@ showMapPointsId(detections=smData, type="sample", id="Eve")
 
 
 
-# Examples with OTN data:
-showMapPaths(otnDet, type="OTN", zoom=9)
-showMapPoints(otnDet, type="OTN", zoom=9)
-showMapPointsId(otnDet, type="OTN", id="NSBS-Alison", zoom=9)
+# Examples with OTN detection data:
+showMapCircle(otnDet, type="OTNDet", zoom=9)
+showIdMap(otnDet, type="OTNDet", id="NSBS-Alison", zoom=9)
+showIdMapFollow(otnDet, type="OTNDet", id="NSBS-Alison", zoom=9)
+showMapPathId(otnDet, type="OTNDet", id="NSBS-Alison", zoom=9)
+showMapPaths(otnDet, type="OTNDet", zoom=9)
+showMapPoints(otnDet, type="OTNDet", zoom=9)
+showMapPointsId(otnDet, type="OTNDet", id="NSBS-Alison", zoom=9)
 
-# Examples with GLATOS data
+# Examples with OTN qualified data:
+showMapCircle(otnQual, type="OTNQual", zoom=9)
+showIdMap(otnQual, type="OTNQual", id="A69-9001-28367-5176559", zoom=9)
+showIdMapFollow(otnQual, type="OTNQual", id="A69-9001-28367-5176559", zoom=9)
+showMapPathId(otnQual, type="OTNQual", id="A69-9001-28367-5176559", zoom=9)
+showMapPaths(otnQual, type="OTNQual", zoom=9)
+showMapPoints(otnQual, type="OTNQual", zoom=9)
+showMapPointsId(otnQual, type="OTNQual", id="A69-9001-28367-5176559", zoom=9)
+
+# Examples with GLATOS data:
+showMapCircle(glatos, type="GLATOS", zoom=5)
+showIdMap(glatos, type="GLATOS", id="167", zoom=5)
+showIdMapFollow(glatos, type="GLATOS", id="167", zoom=5)
+showMapPathId(glatos, type="GLATOS", id="167", zoom=5)
+showMapPaths(glatos, type="GLATOS", zoom=5)
 showMapPoints(glatos, type="GLATOS", zoom=5)
 showMapPointsId(glatos, type="GLATOS", id="167", zoom=5)
+
 
 
