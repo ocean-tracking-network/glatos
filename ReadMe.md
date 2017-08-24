@@ -19,19 +19,19 @@ for determining optimal spacing of receviers in a line and tag specifications (e
 
 #### Data processing and summarization  
 
-1. ['getMinLag'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/getMinLag.R) appends a 'min_lag' column to the detection data. This is minimum of the time lag before and after the current row for the same transmitter and receiver. This function can be used in the falseDetectionFilter if it does not already have a min_lag column.
+1. [`getMinLag`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/getMinLag.R) appends a 'min_lag' column to the detection data. This is minimum of the time lag before and after the current row for the same transmitter and receiver. This function can be used in the falseDetectionFilter if it does not already have a min_lag column.
 
 2. [`falseDetectionFilter`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/falseDetectionFilter.r) identifies potential false detections in the GLATOS standard data export package using "short interval" criteria (GLATOS min_lag column or the column appended by the function 'getMinLag'). 
 
 3. [`detectionEventFilter`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/detectionEventFilter.r) distills detection data down to a much smaller number of discrete detection events, defined as a change in location (defined by user) or time gap that exceeds a threshold (defined by user). 
 
-4. ['numIntervalTest'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/numDetectionsAndIntervalTest.R) filters data by teh number of detections and interval test (Steckenreuter et al., 2016).
+4. [`numIntervalTest`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/numDetectionsAndIntervalTest.R) filters data by the number of detections and interval test (Steckenreuter et al., 2016).
 
-5. ['distTest'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/distTestFunc.R) filters detection data by the distance test (Steckenreuter et al., 2016). 
+5. [`distTest`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/distTestFunc.R) filters detection data by the distance test (Steckenreuter et al., 2016). 
 
-6. ['velTest'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/velTestFunc.R) filters data by the velocity test (Steckenreuter et al., 2016).
+6. [`velTest`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/velTestFunc.R) filters data by the velocity test (Steckenreuter et al., 2016).
 
-7. ['efficiencyTest'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/efficiencyTestFunc.R) filters data by the number of detections and interval test, distance test, and velocity test (Steckenreuter et al., 2016). It then uses the definition from Steckenreuter and colleagues (2016) to identify if a row is valid (1), questionable (2), or has missing information (3). 
+7. [`efficiencyTest`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/efficiencyTestFunc.R) filters data by the number of detections and interval test, distance test, and velocity test (Steckenreuter et al., 2016). It then uses the definition from Steckenreuter and colleagues (2016) to identify if a row is valid (1), questionable (2), or has missing information (3). 
 
 #### Visualization and data exploration
 
@@ -43,7 +43,7 @@ for determining optimal spacing of receviers in a line and tag specifications (e
 
 4. [`movePath`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/movePath.r), [`interpolatePath`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/interpolatePath.r), and [`animatePath`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/animatePath.r) can be used together to interpolate movement paths between detections and save animated movement paths to a video file (mp4).
 
-5. ['showMap'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/showMap.R) can be used to visualize the movements of the animals on a leaflet map using a shiny application. This uses 'movePath' to determine the location of the animals at every second to plot their movement better on the map.
+5. [`showMap`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/showMap.R) can be used to visualize the movements of the animals on a leaflet map using a shiny application. This uses 'movePath' to determine the location of the animals at every second to plot their movement better on the map.
 
 #### Random utility functions
 
@@ -53,25 +53,25 @@ The following functions were needed by other functions in this package but might
 2. [`rotatePoints`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/rotatePoints.r) will rotate a set of 2-d points about another point. 
 3. [`crw`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/crw.r) will simulate an unconstrained correlated random walk.
 4. [`vectorHeading`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/vectorHeading.r) will calculate (in degrees) the heading of the vector between adjacent point-pairs in a set of positions (e.g., along a track).  
-5. ['residence_index'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/residence_index.R) will calculate the number of days inside a data frame and will plot this.
+5. [`residence_index`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/residence_index.R) will calculate the number of days inside a data frame and will plot this.
 
 
 #### Testing functions
 
 The following functions were used to test each of the functions that would return a data frame:
-1. ['sampleData'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/sampleData.R) includes sample data that can be used for the functions
-2. ['showMapSampleData'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/showMapSampleData.R) includes sample data for showMap functions
-3. ['testDetectionBubblePlot'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testDetectionBubblePlot') uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'detectionBubblePlot' function described above.
-4. ['testDetectionEventFilter'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testDetectionEventFilter.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'detectionEventFilter' function described above.
-5. ['testDistTest'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testDistTest.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'distTest' function described above.
-6. ['testEfficiencyTest'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testEfficiencyTest.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'efficiencyTest' function described above.
-7. ['testFalseDetectionFilter'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testFalseDetectionFilter.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'falseDetectionFilter' function described above.
-8. ['testMinLag'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testMinLag.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'getMinLag' function described above.
-9. ['testMovePath'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testMovePath.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'movePath' function described above.
-10. ['testNumDetectionsAndIntervalTest'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testNumDetectionsAndIntervalTest.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'numDetectionsAndIntervalTest' function described above.
-11. ['testResidenceIndex'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testResidenceIndex.R) uses the 'testthat' package to test that the correct values are returned from sample data when using the 'residence_index' methods described above.
-12. ['testVectorHeading'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testVectorHeading.R) uses the 'testthat' package to test that the correct values are returned from sample data when using the 'vectorHeading' function described above.
-13. ['testVelTest'](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testVelTest.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'velTest' function described above.
+1. [`sampleData`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/sampleData.R) includes sample data that can be used for the functions
+2. [`showMapSampleData`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/showMapSampleData.R) includes sample data for showMap functions
+3. [`testDetectionBubblePlot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testDetectionBubblePlot') uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'detectionBubblePlot' function described above.
+4. [`testDetectionEventFilter`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testDetectionEventFilter.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'detectionEventFilter' function described above.
+5. [`testDistTest`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testDistTest.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'distTest' function described above.
+6. [`testEfficiencyTest`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testEfficiencyTest.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'efficiencyTest' function described above.
+7. [`testFalseDetectionFilter`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testFalseDetectionFilter.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'falseDetectionFilter' function described above.
+8. [`testMinLag`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testMinLag.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'getMinLag' function described above.
+9. [`testMovePath`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testMovePath.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'movePath' function described above.
+10. [`testNumDetectionsAndIntervalTest`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testNumDetectionsAndIntervalTest.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'numDetectionsAndIntervalTest' function described above.
+11. [`testResidenceIndex`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testResidenceIndex.R) uses the 'testthat' package to test that the correct values are returned from sample data when using the 'residence_index' methods described above.
+12. [`testVectorHeading`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testVectorHeading.R) uses the 'testthat' package to test that the correct values are returned from sample data when using the 'vectorHeading' function described above.
+13. [`testVelTest`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/testVelTest.R) uses the 'testthat' package to test that the correct data frame is returned from sample data when using the 'velTest' function described above.
 
 ### Installation
 
