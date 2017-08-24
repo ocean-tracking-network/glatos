@@ -3,24 +3,24 @@
 
 # Sample data for efficiencyTestFunc.R (without NA)
 id <- 1:10
-d <- c("2010/10/10 10:52:07", "2010/10/10 10:59:23", "2010/10/10 11:03:26", "2010/10/10 11:06:15", "2010/10/10 11:07:15", "2010/10/10 11:09:10", "2010/10/10 11:11:11", "2010/10/10 11:16:16", "2010/10/10 11:19:27", "2010/10/10 11:28:17")
-d <- as.POSIXct(d, tz="UCT")
+date <- c("2010/10/10 10:52:07", "2010/10/10 10:59:23", "2010/10/10 11:03:26", "2010/10/10 11:06:15", "2010/10/10 11:07:15", "2010/10/10 11:09:10", "2010/10/10 11:11:11", "2010/10/10 11:16:16", "2010/10/10 11:19:27", "2010/10/10 11:28:17")
+date <- as.POSIXct(date, tz="UCT")
 tr <- c(111, 111, 111, 111, 111, 111, 111, 111, 111,111)
 rec <- c(11, 22, 33, 44, 55, 66, 77, 33, 44, 11)
 lat <- c(44.6358, 44.6362, 44.6373, 44.6368, 44.6371, 44.6375, 44.6380, 44.6373, 44.6368, 44.6358)
 long <- c(-63.5949, -63.5931, -63.5912, -63.5890, -63.5882, -63.5873, -63.5885, -63.5912, -63.5890, -63.5949)
-sampleEff <- data.frame(id=id,time=d, transmitter=tr, receiver=rec, longitude=long, latitude=lat)
+sampleEff <- data.frame(id=id, time=date, transmitter=tr, receiver=rec, longitude=long, latitude=lat)
 effData <- efficiencyTest(sampleEff, type = "sample", minVelValue = 1, minDistValue = 150)
 
 # Sample data for efficiencyTestFunc.R (with NA)
-id <- 1:10
-d <- c("2010/10/10 10:52:07", "2010/10/10 10:59:23", "2010/10/10 11:03:26", "2010/10/10 11:06:15", "2010/10/10 11:07:15", "2010/10/10 11:09:10", "2010/10/10 11:11:11", "2010/10/10 11:16:16", "2010/10/10 11:19:27", "2010/10/10 11:28:17")
-d <- as.POSIXct(d, tz="UCT")
-tr <- c(111, 111, 111, 111, NA, 111, 111, 111, 111,111)
-rec <- c(11, NA, 33, 44, 55, 66, 77, 33, 44, 11)
-lat <- c(44.6358, 44.6362, 44.6373, 44.6368, 44.6371, 44.6375, 44.6380, NA, 44.6368, 44.6358)
-long <- c(-63.5949, -63.5931, NA, -63.5890, -63.5882, -63.5873, -63.5885, -63.5912, -63.5890, -63.5949)
-sampleEffNA <- data.frame(id=id,time=d, transmitter=tr, receiver=rec, longitude=long, latitude=lat)
+idNA <- 1:10
+dateNA <- c("2010/10/10 10:52:07", "2010/10/10 10:59:23", "2010/10/10 11:03:26", "2010/10/10 11:06:15", "2010/10/10 11:07:15", "2010/10/10 11:09:10", "2010/10/10 11:11:11", "2010/10/10 11:16:16", "2010/10/10 11:19:27", "2010/10/10 11:28:17")
+dateNA <- as.POSIXct(dateNA, tz="UCT")
+trNA <- c(111, 111, 111, 111, NA, 111, 111, 111, 111,111)
+recNA <- c(11, NA, 33, 44, 55, 66, 77, 33, 44, 11)
+latNA <- c(44.6358, 44.6362, 44.6373, 44.6368, 44.6371, 44.6375, 44.6380, NA, 44.6368, 44.6358)
+longNA <- c(-63.5949, -63.5931, NA, -63.5890, -63.5882, -63.5873, -63.5885, -63.5912, -63.5890, -63.5949)
+sampleEffNA <- data.frame(id=idNA, time=dateNA, transmitter=trNA, receiver=recNA, longitude=longNA, latitude=latNA)
 effDataNA <- efficiencyTest(sampleEffNA, type = "sample", minVelValue = 0.7, minDist=150)
 
 # Expected results
@@ -44,7 +44,7 @@ effValid2NAShouldBe <- c(1, 3, 3, 1, 3, 2, 2, 3, 1, 1)
 # Test messages
 #velMessageShouldBe <- "The filter identified 8 (53.33%) of 15 detections as invalid using the velocity test.\n"
 
-# Testing columns that result from velTest using testthat library
+# Test columns that result from velTest using testthat library
 test_that("min_dist column of data without NA gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(effData$min_dist, minDistShouldBe, tolerance = 3.43e-05) #To stop any error due to rounding
@@ -108,6 +108,56 @@ test_that("efficiency test method 1 validity column of data with NA gives expect
 test_that("efficiency test method 2 validity column of data with NA gives expected result", {
   # Check that expected and actual results are the same
   expect_equal(effDataNA$effValid2, effValid2NAShouldBe)
+})
+
+# Test that some columns do not change
+test_that("id column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effData$id, id)
+})
+test_that("time column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effData$time, date)
+})
+test_that("transmitter column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effData$transmitter, tr)
+})
+test_that("receiver column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effData$receiver, rec)
+})
+test_that("longitude column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effData$longitude, long)
+})
+test_that("latitude column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effData$latitude, lat)
+})
+test_that("id column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effDataNA$id, idNA)
+})
+test_that("time column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effDataNA$time, dateNA)
+})
+test_that("transmitter column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effDataNA$transmitter, trNA)
+})
+test_that("receiver column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effDataNA$receiver, recNA)
+})
+test_that("longitude column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effDataNA$longitude, longNA)
+})
+test_that("latitude column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(effDataNA$latitude, latNA)
 })
 
 #test_that("velocity message gives expected result", {

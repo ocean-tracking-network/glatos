@@ -3,24 +3,24 @@
 
 # Sample data for velTestFunc.R (without NA)
 id <- 1:10
-d <- c("2010/10/10 10:52:07", "2010/10/10 10:59:23", "2010/10/10 11:03:26", "2010/10/10 11:06:15", "2010/10/10 11:07:15", "2010/10/10 11:09:10", "2010/10/10 11:11:11", "2010/10/10 11:16:16", "2010/10/10 11:19:27", "2010/10/10 11:28:17")
-d <- as.POSIXct(d, tz="UCT")
+date <- c("2010/10/10 10:52:07", "2010/10/10 10:59:23", "2010/10/10 11:03:26", "2010/10/10 11:06:15", "2010/10/10 11:07:15", "2010/10/10 11:09:10", "2010/10/10 11:11:11", "2010/10/10 11:16:16", "2010/10/10 11:19:27", "2010/10/10 11:28:17")
+date <- as.POSIXct(date, tz="UCT")
 tr <- c(111, 111, 111, 111, 111, 111, 111, 111, 111,111)
 rec <- c(11, 22, 33, 44, 55, 66, 77, 33, 44, 11)
 lat <- c(44.6358, 44.6362, 44.6373, 44.6368, 44.6371, 44.6375, 44.6380, 44.6373, 44.6368, 44.6358)
 long <- c(-63.5949, -63.5931, -63.5912, -63.5890, -63.5882, -63.5873, -63.5885, -63.5912, -63.5890, -63.5949)
-sampleVel <- data.frame(id=id,time=d, transmitter=tr, receiver=rec, longitude=long, latitude=lat)
+sampleVel <- data.frame(id=id, time=date, transmitter=tr, receiver=rec, longitude=long, latitude=lat)
 velData <- velTest(sampleVel, "sample", minVelValue = 1)
 
 # Sample data for velTestFunc.R (with NA)
-id <- 1:10
-d <- c("2010/10/10 10:01:00", "2010/10/10 10:02:00", "2010/10/10 10:03:00", "2010/10/10 10:04:00", "2010/10/10 10:05:00", "2010/10/10 10:06:00", "2010/10/10 10:07:00", "2010/10/10 10:08:00", "2010/10/10 10:09:00", "2010/10/10 10:10:00")
-d <- as.POSIXct(d, tz="UCT")
-tr <- c(111, 111, 111, 111, NA, 111, 111, 111, 111,111)
-rec <- c(11, NA, 33, 44, 55, 66, 77, 33, 44, 11)
-lat <- c(44.6358, 44.6362, 44.6373, 44.6368, 44.6371, 44.6375, 44.6380, NA, 44.6368, 44.6358)
-long <- c(-63.5949, -63.5931, NA, -63.5890, -63.5882, -63.5873, -63.5885, -63.5912, -63.5890, -63.5949)
-sampleVelNA <- data.frame(id=id,time=d, transmitter=tr, receiver=rec, longitude=long, latitude=lat)
+idNA <- 1:10
+dateNA <- c("2010/10/10 10:01:00", "2010/10/10 10:02:00", "2010/10/10 10:03:00", "2010/10/10 10:04:00", "2010/10/10 10:05:00", "2010/10/10 10:06:00", "2010/10/10 10:07:00", "2010/10/10 10:08:00", "2010/10/10 10:09:00", "2010/10/10 10:10:00")
+dateNA <- as.POSIXct(dateNA, tz="UCT")
+trNA <- c(111, 111, 111, 111, NA, 111, 111, 111, 111,111)
+recNA <- c(11, NA, 33, 44, 55, 66, 77, 33, 44, 11)
+latNA <- c(44.6358, 44.6362, 44.6373, 44.6368, 44.6371, 44.6375, 44.6380, NA, 44.6368, 44.6358)
+longNA <- c(-63.5949, -63.5931, NA, -63.5890, -63.5882, -63.5873, -63.5885, -63.5912, -63.5890, -63.5949)
+sampleVelNA <- data.frame(id=idNA, time=dateNA, transmitter=trNA, receiver=recNA, longitude=longNA, latitude=latNA)
 velDataNA <- velTest(sampleVelNA, "sample", minVelValue = 2.5)
 
 
@@ -51,7 +51,6 @@ test_that("valid column of data without NA gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(velData$velValid, validShouldBe)
 })
-
 test_that("min_dist column of data with NA gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(velDataNA$min_dist, minDistNAShouldBe, tolerance = 2.43e-05) #To stop any error due to rounding
@@ -67,4 +66,54 @@ test_that("min_vel column of data with NA gives expected result", {
 test_that("valid column of data with NA gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(velDataNA$velValid, validNAShouldBe)
+})
+
+# Test that some columns do not change
+test_that("id column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velData$id, id)
+})
+test_that("time column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velData$time, date)
+})
+test_that("transmitter column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velData$transmitter, tr)
+})
+test_that("receiver column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velData$receiver, rec)
+})
+test_that("longitude column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velData$longitude, long)
+})
+test_that("latitude column of data without NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velData$latitude, lat)
+})
+test_that("id column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velDataNA$id, idNA)
+})
+test_that("time column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velDataNA$time, dateNA)
+})
+test_that("transmitter column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velDataNA$transmitter, trNA)
+})
+test_that("receiver column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velDataNA$receiver, recNA)
+})
+test_that("longitude column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velDataNA$longitude, longNA)
+})
+test_that("latitude column of data with NA does not change", {
+  # Check if expected and actual results are the same
+  expect_equal(velDataNA$latitude, latNA)
 })
