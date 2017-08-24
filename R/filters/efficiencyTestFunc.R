@@ -129,28 +129,43 @@ efficiencyTest <- function(detections, type, detColNames=list(), minVelValue=-10
     }
   })
   
-  #Count number of valid rows
-  numVal1 <<- 0
-  numVal2 <<- 0
+  #Count number of rows of each validity score
+  num11 <<- 0
+  num12 <<- 0
+  num13 <<- 0
+  num21 <<- 0
+  num22 <<- 0
+  num23 <<- 0
   val1 <- detections$effValid1
   val2 <- detections$effValid2
   l1 <- sapply(val1, function(x) {
-    if(x == 1) {
-      numVal1 <<- numVal1+1
+    if(x == 1) { #row with validity score of 1 (valid)
+      num11 <<- num11+1
+    } else if (x==2) { #row with validity score of 2 (questionable)
+      num12 <<- num12+1
+    } else { #row with validity score of 3 (missing information)
+      num13 <<- num13+1
     }
   })
   l2 <- sapply(val2, function(x) {
-    if(x == 1) {
-      numVal2 <<- numVal2+1
+    if(x == 1) { #row with validity score of 1 (valid)
+      num21 <<- num21+1
+    } else if (x==2) { #row with validity score of 2 (questionable)
+      num22 <<- num22+1
+    } else { #row with validity score of 3 (missing information)
+      num23 <<- num23+1
     }
   })
+  
   nr <- nrow(detections)
   
   #Print results
-  message(paste0("The filter identified ", nr-numVal1," (", round((nr - numVal1)/nr*100, 2), "%) of ", nr, " detections as invalid using the first method of the efficiency test."))
-  message(paste0("The filter identified ", numVal1," (", round((numVal1)/nr*100, 2), "%) of ", nr, " detections as valid using the first method of the efficiency test."))
-  message(paste0("The filter identified ", nr-numVal2," (", round((nr - numVal2)/nr*100, 2), "%) of ", nr, " detections as invalid using the second method of the efficiency test."))
-  message(paste0("The filter identified ", numVal2," (", round((numVal2)/nr*100, 2), "%) of ", nr, " detections as valid using the second method of the efficiency test."))
+  message(paste0("The filter identified ", num11," (", round((num11)/nr*100, 2), "%) of ", nr, " detections as valid using the first method of the efficiency test."))
+  message(paste0("The filter identified ", num12," (", round((num12)/nr*100, 2), "%) of ", nr, " detections as questionable using the first method of the efficiency test."))
+  message(paste0("The filter identified ", num13," (", round((num13)/nr*100, 2), "%) of ", nr, " detections as having missing information using the the first method of the efficiency test."))
+  message(paste0("The filter identified ", num21," (", round((num21)/nr*100, 2), "%) of ", nr, " detections as valid using the second method of the efficiency test."))
+  message(paste0("The filter identified ", num22," (", round((num22)/nr*100, 2), "%) of ", nr, " detections as questionable using the second method of the efficiency test."))
+  message(paste0("The filter identified ", num23," (", round((num23)/nr*100, 2), "%) of ", nr, " detections as having missing information using the second method of the efficiency test."))
   
   return(detections)
 }

@@ -175,19 +175,26 @@ distTest <- function(detections, type, detColNames=list(), minDistValue=-100) {
   detections$min_dist <- detections2$min_dist
   detections$distValid <- detections2$distValid
   
-  #Count number of valid rows
-  numVal <<- 0
+  #Count number of rows of each validity score
+  num1 <<- 0
+  num2 <<- 0
+  num3 <<- 0
   val <- detections$distValid
   l <- sapply(val, function(x) {
-    if(x == 1) {
-      numVal <<- numVal+1
+    if(x == 1) { #row with validity score of 1 (valid)
+      num1 <<- num1+1
+    } else if (x==2) { #row with validity score of 2 (questionable)
+      num2 <<- num2+1
+    } else { #row with validity score of 3 (missing information)
+      num3 <<- num3+1
     }
   })
   nr <- nrow(detections)
   
   #Print results
-  message(paste0("The filter identified ", nr - numVal," (", round((nr - numVal)/nr*100, 2), "%) of ", nr, " detections as invalid using the distance test."))
-  message(paste0("The filter identified ", numVal," (", round((numVal)/nr*100, 2), "%) of ", nr, " detections as valid using the distance test."))
+  message(paste0("The filter identified ", num1," (", round((num1)/nr*100, 2), "%) of ", nr, " detections as valid using the distance test."))
+  message(paste0("The filter identified ", num2," (", round((num2)/nr*100, 2), "%) of ", nr, " detections as questionable using the distance test."))
+  message(paste0("The filter identified ", num3," (", round((num3)/nr*100, 2), "%) of ", nr, " detections as having missing information using the distance test."))
   
   return(detections)
 }
