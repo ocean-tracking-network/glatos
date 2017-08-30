@@ -28,7 +28,8 @@
 #' @examples
 #' #get path to example detection file
 #' det_file <- system.file("extdata", 
-#'   "NEED_TO_ADD.csv",package="glatos")
+#'   "walleye_detections.zip",package="glatos")
+#' det_file <- unzip(det_file, "walleye_detections.csv")
 #' det <- read_glatos_detections(det_file)
 #'
 #' @export
