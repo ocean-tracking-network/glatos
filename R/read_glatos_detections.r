@@ -62,23 +62,25 @@ read_glatos_detections <- function(det_file, version=NULL) {
   if (version == "1.3") {
 
     #read data
-    det <- data.table::fread(det_file, sep = ",")
+    colClasses <- 
+    dtc <- data.table::fread(det_file, sep = ",")
     
     #coerce timestamps to POSIXct; note that with fastPOSIXct raw
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
-    det[ , detection_timestamp_utc := 
+    dtc[ , detection_timestamp_utc := 
              fasttime::fastPOSIXct(detection_timestamp_utc, tz = "UTC")]
-    det[ , utc_release_date_time := 
+    dtc[ , utc_release_date_time := 
              fasttime::fastPOSIXct(utc_release_date_time, tz = "UTC")]
     
     #coerce dates to date
-    det[ , glatos_caught_date := 
+    dtc[glatos_caught_date == "", glatos_caught_date := NA]
+    dtc[ , glatos_caught_date := 
         as.Date(glatos_caught_date)]
   }
   #-end v1.3----------------------------------------------------------------
   
   #TO DO: cerce to glatos_detections (e.g., as_glatos_detections) instead of 
-  class(det) <- c("glatos_detections",class(det))
+  class(dtc) <- c("glatos_detections",class(dtc))
   
-  return(det)
+  return(dtc)
 }
