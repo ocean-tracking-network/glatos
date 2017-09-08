@@ -1,3 +1,4 @@
+leafletMapTrial <- function(){
 install.packages("leaflet")
 install.packages("geojsonio")
 install.packages("colorRamps")
@@ -114,3 +115,4 @@ for(i in 1:length(mdSplit3$animalId)) {
 saveWidget(mapTime1, file="/Users/dinian/Desktop/glatos/map1.html")
 saveWidget(mapTime2, file="/Users/dinian/Desktop/glatos/map2.html")
 saveWidget(mapTime3, file="/Users/dinian/Desktop/glatos/map3.html")
+}
