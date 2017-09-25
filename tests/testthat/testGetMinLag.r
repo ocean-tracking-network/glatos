@@ -1,9 +1,3 @@
-# install.packages("testthat")
-# library(testthat)
-
-# To run:
-# test_file("/Users/dinian/Desktop/glatos-git/R/testing/testMinLag.R")
-
 # Sample data for getMinLag.R
 id <- 1:10
 time <- c("2010/10/11 08:14:22", "2010/10/11 08:15:22", "2010/10/11 09:00:00", "2010/10/11 10:23:55", "2010/10/11 11:23:55", "2010/10/11 11:24:55", "2010/10/11 11:24:56", "2010/10/11 11:52:44", "2010/10/11 11:58:44", "2010/10/11 11:59:45")
