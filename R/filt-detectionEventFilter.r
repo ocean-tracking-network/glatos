@@ -16,7 +16,7 @@
 #' @param detColNames An optional list that contains the user-defined column
 #'   names
 #' 
-#' @details detColNames is defined as a list with names of required columns in 
+#' @param detColNames A list with names of required columns in 
 #'   \code{detections}, defined by \code{type}: 
 #' \itemize{
 #'   \item \code{locationCol} is a character string with the name of the column 
@@ -66,7 +66,10 @@
 #' @author T. R. Binder, edited by A. Dini
 #'
 #' @examples
+#' 
+#' #example 1 - GLATOS data
 #' library(glatos)
+#' 
 #' data("walleye_detections") #example data
 #' 
 #' head(walleye_detections)
@@ -76,20 +79,36 @@
 #' #7-day filter
 #' filt_7d <- detectionEventFilter(walleye_detections , timeSep = 604800) 
 #' 
+#' 
+#' 
+#' 
 #' @export
 
 detectionEventFilter <- function(detections, type = "GLATOS", timeSep = Inf, 
   detColNames=list()) {
+  
   #Check if user has defined detColNames
-  if(length(detColNames)==0) {
+  if(length(detColNames) == 0) {
     if(type == "GLATOS") { #Set column names for GLATOS data
-      detColNames = list(locationCol="glatos_array",animalCol="animal_id", timestampCol="detection_timestamp_utc",latCol="deploy_lat", longCol="deploy_long")
+      detColNames = list(locationCol = "glatos_array",
+                         animalCol= "animal_id", 
+                         timestampCol = "detection_timestamp_utc",
+                         latCol = "deploy_lat", 
+                         longCol = "deploy_long")
     } else if (type == "OTN") { #Set column names for OTN data
-      detColNames = list(locationCol="station",animalCol="catalognumber", timestampCol="datecollected",latCol="latitude", longCol="longitude")
+      detColNames = list(locationCol = "station",
+                         animalCol = "catalognumber", 
+                         timestampCol = "datecollected",
+                         latCol = "latitude", 
+                         longCol = "longitude")
     } else if (type == "sample") { #Set column names for sample data
-      detColNames = list(locationCol="location", animalCol="animal", timestampCol="time", latCol="latitude", longCol="longitude")
+      detColNames = list(locationCol = "location", 
+                         animalCol = "animal", 
+                         timestampCol = "time", 
+                         latCol = "latitude", 
+                         longCol = "longitude")
     } else { # Other type
-      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+      stop(paste0("The type '", type, "' is not defined."), call. = FALSE)
     }
   }
   
@@ -97,8 +116,9 @@ detectionEventFilter <- function(detections, type = "GLATOS", timeSep = Inf,
   missingCols <- setdiff(unlist(detColNames), names(detections))
   if (length(missingCols) > 0){
     stop(paste0("Detections dataframe is missing the following ",
-                "column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-         call.=FALSE)
+                "column(s):\n", paste0("       '", missingCols, "'", 
+                collapse="\n")), 
+         call. = FALSE)
   }
   
   # Subset detections with only user-defined columns and change names
@@ -120,10 +140,8 @@ detectionEventFilter <- function(detections, type = "GLATOS", timeSep = Inf,
   
   # Add a column indicating the time between a given detection and the detection
   #  before it. The first detection in the dataset is assigned a value of NA.
-  # Use dplyr's lag method to do this
-  # Original: detections$TimeDiff <- c(NA, diff(detections$timestamp))
   n <- as.numeric(detections$timestamp)
-  detections$TimeDiff <- n-dplyr::lag(n)
+  detections$TimeDiff <- n - dplyr::lag(n)
   
   # Insert new columns indicating whether transmitter_id or location changed 
   #  sequentially between rows in the dataframe and whether the time between 
@@ -131,23 +149,21 @@ detectionEventFilter <- function(detections, type = "GLATOS", timeSep = Inf,
   #  detection event.
   
   # Flag if animal changed
-  # Use dplyr's lag method to do this
-  # Original: detections$IndividComparison <- c(NA, as.numeric(detections$animal[-1] != head(detections$animal,-1)))
-  detections$IndividComparison <- (detections$animal != dplyr::lag(detections$animal))
+  detections$IndividComparison <- (detections$animal != 
+                                    dplyr::lag(detections$animal))
   
   # Flag if location changed
-  # Use dplyr's lag method to do this
-  # Original: detections$GroupComparison <- c(NA, as.numeric(detections$location[-1] != head(detections$location,-1)))
-  #n <- as.numeric(detections)
-  detections$GroupComparison <- (detections$location != dplyr::lag(detections$location))
+  detections$GroupComparison <- (detections$location != 
+                                  dplyr::lag(detections$location))
   
   # Flag if interval exceeded time threshold
   detections$TimeThreshold <- as.numeric(detections$TimeDiff > timeSep)
   
   # Determine if each detection is the start of a new detection event.
-  detections$NewEvent <- with(detections, ifelse((IndividComparison + 
-                                                    GroupComparison + TimeThreshold) != 0 | is.na(IndividComparison + 
-                                                                                                    GroupComparison + TimeThreshold), 1, 0))
+  detections$NewEvent <- with(detections, 
+    ifelse((IndividComparison + GroupComparison + TimeThreshold) != 0 | 
+           is.na(IndividComparison + GroupComparison + TimeThreshold), 
+           1, 0))
   
   # Assign unique number to each event (increasing by one for each event)
   detections$Event <- cumsum(detections$NewEvent)
@@ -156,17 +172,19 @@ detectionEventFilter <- function(detections, type = "GLATOS", timeSep = Inf,
   Results <- plyr::ddply(detections, plyr::.(Event), plyr::summarise,
                          Individual = animal[1], 
                          Location = as.character(location[1]), 
-                         MeanLatiude = mean(lat, na.rm=T), 
-                         MeanLongitude = mean(lon, na.rm=T), 
+                         MeanLatiude = mean(lat, na.rm = T), 
+                         MeanLongitude = mean(lon, na.rm = T), 
                          FirstDetection = timestamp[1], 
                          LastDetection = timestamp[length(timestamp)], 
                          NumDetections = length(Event), 
-                         ResTime_sec = as.numeric(timestamp[length(timestamp)]) - 
+                         ResTime_sec = 
+                           as.numeric(timestamp[length(timestamp)]) - 
                            as.numeric(timestamp)[1])
   
   # Returns dataframe containing summarized detection event data
   message(paste0("The event filter distilled ", nrow(detections), 
-                 " detections down to ", nrow(Results), " distinct detection events."))
+                 " detections down to ", nrow(Results), 
+                 " distinct detection events."))
   
   return(Results)
 }
