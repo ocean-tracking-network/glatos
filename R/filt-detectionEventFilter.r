@@ -65,13 +65,21 @@
 #'
 #' @author T. R. Binder, edited by A. Dini
 #'
-#' @usage To use:
-#'   For GLATOS data, detectionEventFilter(data, "GLATOS")
-#'   For OTN data, detectionEventFilter(data, "OTN")
-#'   For sample data, detectionEventFilter(data, "sample")
+#' @examples
+#' library(glatos)
+#' data("walleye_detections") #example data
+#' 
+#' head(walleye_detections)
+#' 
+#' filt0 <- detectionEventFilter(walleye_detections) #no time filter
+#' 
+#' #7-day filter
+#' filt_7d <- detectionEventFilter(walleye_detections , timeSep = 604800) 
+#' 
 #' @export
 
-detectionEventFilter <- function(detections, type, timeSep = Inf, detColNames=list()) {
+detectionEventFilter <- function(detections, type = "GLATOS", timeSep = Inf, 
+  detColNames=list()) {
   #Check if user has defined detColNames
   if(length(detColNames)==0) {
     if(type == "GLATOS") { #Set column names for GLATOS data
