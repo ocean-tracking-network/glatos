@@ -1,6 +1,3 @@
-# To run:
-# test_file("/Users/dinian/Desktop/glatos-git/R/testing/testDetectionEventFilter.R")
-
 # Sample data for detectionEventFilter.R
 loc <- c("TTB", "OSC", "PRS", "OSC", "OSC", "TTB", "PRS", "PRS", "PRS", "PRS")
 anId <- rep(x=7, times=10)
