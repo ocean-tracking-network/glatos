@@ -66,9 +66,10 @@
 #' @author T. R. Binder, edited by A. Dini
 #'
 #' @examples
-#' 
-#' #example 1 - GLATOS data
 #' library(glatos)
+#' 
+#' 
+#' #example - GLATOS data
 #' 
 #' data("walleye_detections") #example data
 #' 
@@ -78,9 +79,6 @@
 #' 
 #' #7-day filter
 #' filt_7d <- detectionEventFilter(walleye_detections , timeSep = 604800) 
-#' 
-#' 
-#' 
 #' 
 #' @export
 
