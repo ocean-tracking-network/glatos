@@ -11,6 +11,9 @@
 #'   (in seconds) between either the previous or next detection (whichever 
 #'   is closest) of the same transmitter on the same receiver.
 #'   
+#' @param type A character string that contains the type of data that is being 
+#'   passed in, for example, "OTN", "GLATOS", or "sample". Default is "GLATOS".
+#'   
 #' @param tf A numeric scalar indicating the time threshold (in seconds; e.g., 
 #'   Pincock's (2012) "short interval") for identifying possible false 
 #'   detections.
@@ -21,13 +24,16 @@
 #' @param detColNames An optional list that contains the user-defined column
 #'   names
 #'   
-#' @details The min_lag column should be in \code{detections} but if not, program
-#'   will add in using getMinLag() function.
+#' @details The min_lag column should be in \code{detections} but if not, 
+#'  program will add in using getMinLag() function.
+#'   
 #' @details Detections are identified as potentially false when 
 #'   \code{min_lag > tf}.
+#'   
 #' @details 
 #' A new column (\code{passedFilter}), indicating if each record (row) passed 
 #' the filter, is added to the input data frame. 
+#' 
 #' @details  
 #' A common rule of thumb for choosing tf for VEMCO PPM encoded transmitters 
 #'   is 30 times the nominal delay (e.g., 3600 s for a transmitter with a 
@@ -51,14 +57,22 @@
 #'     monitoring equipment. Animal Biotelemetry, 3(1), p.55.
 #'     \cr \url{https://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-015-0094-z}
 #' 
-#' @usage To use:
-#'   For glatos data, falseDetectionFilter(data, "GLATOS")
-#'   For OTN data, falseDetectionFilter(data, "OTN")
-#'   For sample data, falseDetectionFilter(data, "sample")
+#' @examples
+#' library(glatos)
+#' 
+#' # example - GLATOS data
+#' data("walleye_detections") #example data
+#' 
+#' head(walleye_detections)
+#'
+#' dtx <- falseDetectionFilter(walleye_detections, 3600)
+#' head(dtx)
 #'   
 #' @export
 
-falseDetectionFilter <- function(detections, type, tf=3600, minLagCol = "min_lag", detColNames=list()){
+falseDetectionFilter <- function(detections, type = "GLATOS", tf = 3600, 
+  minLagCol = "min_lag", detColNames=list()){
+  
   # Check that the minLag column is in the detections dataframe
   # If not, add it in using getMinLag method
   if (!(minLagCol %in% names(detections))){
