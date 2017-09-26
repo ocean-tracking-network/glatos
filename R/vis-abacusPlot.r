@@ -66,8 +66,35 @@
 #'   
 #' @author T. R. Binder, edited by A. Dini
 #'   
-#' @usage To use: For GLATOS data, abacusPlot(data, "GLATOS") For OTN data,
-#'   abacusPlot(data, "OTN") For sample data, abacusPlot(data, "sample")
+#' @examples
+#' library(glatos)
+#' 
+#' data("walleye_detections") #example data
+#' 
+#' head(walleye_detections)
+#' 
+#' #subset one transmitter
+#' walleye_detections <-
+#' 	 walleye_detections[walleye_detections$transmitter_id == 32123, ]
+#' 	
+#' #plot without control table
+#' abacusPlot(walleye_detections, controlTable=NULL, plotTitle = "TagID: 32123",
+#' 	 outFile="AbacusPlot_tag32123.png", col = "red")
+#' 	
+#' #get example control table
+#' data("walleye_controlTable") #example dataset
+#' walleye_controlTable
+#' 
+#' #plot with control table
+#' abacusPlot(walleye_detections, controlTable=walleye_controlTable, 
+#' 	 plotTitle = "TagID: 32123", outFile="AbacusPlot_tag32123_control.png", 
+#' 	 col = "red")
+#'
+#' #plot with custom y-axis label and lines connecting symbols
+#' abacusPlot(walleye_detections, controlTable=walleye_controlTable, 
+#' 	 plotTitle = "TagID: 32123", Ylab="Location (GLATOS Array)",
+#' 	 outFile="AbacusPlot_tag32123_control.png", 
+#' 	 col = "red", type="o")
 #'   
 #' @export
 
