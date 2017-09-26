@@ -33,7 +33,7 @@
 #'   on the figure (default will match \code{detColNames$locationCol}).
 #'   
 #' @param outFile An optional character string with the name (including 
-#'   extension of output file created. File extension will determine type of 
+#'   extension) of output file created. File extension will determine type of 
 #'   file written. For example, \code{"AbacusPlot.png"} will write a png 
 #'   file to the working directory. If \code{NULL} (default) then the plot will 
 #'   be printed to the default plot device will be used. Supported extensions: 
