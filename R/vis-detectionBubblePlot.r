@@ -14,10 +14,6 @@
 #' @param type A character string that contains the type of data that is being 
 #'   passed in, for example, "OTN", "GLATOS", or "sample".
 #'   
-#' @param ocean_shapefile A pathname for a file that contains data to make the 
-#'   SpatialPolygonsDataFrame for the bubble plot. (from NaturalEarthData)
-#' @references http://www.naturalearthdata.com
-#'   
 #' @details detColNames is defined as a list with names of required columns in 
 #'   \code{detections}, defined by \code{type}: 
 #' \itemize{
@@ -128,41 +124,17 @@
 # For OTN data, abacusPlot(otn, otnR, "OTN", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
 
 detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS", 
-  ocean_shapefile="/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp"){
+  map = NULL){
   
-# detectionBubblePlot <- function(detections, 
-# 	receiverLocs = NULL, 
-# 	map = NULL,
-# 	mapPars = list(
-# 		xLimits = c(-94.5, -75), 
-# 		yLimits = c(41, 49.5), 
-# 		symbolRadius = 1, 
-# 		colGrad = c("white", "red"), 
-# 		showAll = FALSE),
-# 	detColNames = list(
-# 		locationCol="glatos_array",
-# 		animalCol="animal_id",
-# 		timestampCol="detection_timestamp_utc",
-# 		latCol="deploy_lat",
-# 		longCol="deploy_long"),
-# 	recColNames = list(
-# 		locationCol="glatos_array",
-# 		latCol="deploy_lat",
-# 		longCol="deploy_long",
-# 		deploy_timestampCol="deploy_date_time",
-# 		recover_timestampCol="recover_date_time")){
-# 
+  # #Libraries used for SpatialPolygonDataFrame
+  # library(maptools)
+  # library(rgdal)
+  # library(raster)
+  # library(maps)
+  # library(mapdata)
+  # library(marmap)
+  # library(lattice)
   
-  #Libraries used for SpatialPolygonDataFrame
-  library(maptools)
-  library(rgdal)
-  library(raster)
-  library(maps)
-  library(mapdata)
-  library(marmap)
-  library(lattice)
-  
-
   if(type == "GLATOS") { #Sets different attributes for GLATOS data
     detColNames = list(locationCol = "glatos_array", 
                        animalCol = "animal_id", 
@@ -174,6 +146,13 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
                        longCol = "deploy_long", 
                        deploy_timestampCol = "deploy_date_time", 
                        recover_timestampCol = "recover_date_time")
+    
+    if(is.null(map)) {
+      #read example file from package
+      data(greatLakesPoly)
+      map <- greatLakesPoly
+    }
+    
     mapPars = list(
       xLimits = c(-94.5, -75), 
       yLimits = c(41, 49.5), 
@@ -198,6 +177,13 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
                        longCol = "longitude", 
                        deploy_timestampCol = "deploy_date_time", 
                        recover_timestampCol = "recover_date_time")
+    
+    if(is.null(map)) {
+      #read example file from package
+      data(oceanPoly)
+      map <- oceanPoly
+    }
+    
     mapPars = list(
       xLimits = c(-69.4, -59.3), 
       yLimits = c(42.8, 47.6), 
@@ -238,6 +224,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
   } else {
     stop(paste0("The type '", type, "' is not defined."), call. = FALSE)
   }
+  
   # Update mapping parameter objects based on user-specified in mapPars	
   for(i in 1:length(mapPars)) 
     assign(names(mapPars)[i], mapPars[[i]]) 
@@ -377,7 +364,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 		par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))	    
 		
 		# Plot background image
-		plot(ocean_poly, xlim = xLimits, ylim = yLimits, axes = T, asp = 1.4, 
+		sp::plot(map, xlim = xLimits, ylim = yLimits, axes = T, asp = 1.4, 
 		  xaxs = "i", lwd = 1.5, xaxt = 'n', yaxt = 'n', col = "White", 
 		  bg="WhiteSmoke")
 		
