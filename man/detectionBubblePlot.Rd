@@ -4,7 +4,7 @@
 \alias{detectionBubblePlot}
 \title{Plot number of tagged animals or detections on a map}
 \usage{
-detectionBubblePlot(detections, receiverLocs = NULL, type,
+detectionBubblePlot(detections, receiverLocs = NULL, type = "GLATOS",
   ocean_shapefile = "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
 }
 \arguments{
@@ -39,9 +39,7 @@ A list containing the following data frames and columns:
 
 Two png files containing bubble plots for number of unique fish 
   detected ("BubblePlot_summaryNumFish.png") and total detections 
-  ("BubblePlot_summaryNumDetections.png") are also written to the working 
-  directory. Summary data for each plot are also written to CSV files 
-  in the working directory.
+  ("BubblePlot_summaryNumDetections.png").
 }
 \description{
 Make bubble plots showing the number of fish detected and number of 
@@ -52,21 +50,21 @@ detColNames is defined as a list with names of required columns in
   \code{detections}, defined by \code{type}: 
 \itemize{
   \item \code{locationCol} is a character string with the name of the column 
-  	 containing locations you wish to filter to ('glatos_array' for GLATOS data, 
-		 'station' for OTN data, or 'location' for sample data).
+  	 containing locations you wish to filter to ('glatos_array' for GLATOS 
+  	 data, 'station' for OTN data, or 'location' for sample data).
   \item \code{animalCol} is a character string with the name of the column 
-		 containing the individual animal identifier ('animal_id' for GLATOS data,
-		 'catalognumber' for OTN data, or 'animal' for sample data).
+		 containing the individual animal identifier ('animal_id' for GLATOS 
+		 data, 'catalognumber' for OTN data, or 'animal' for sample data).
  \item \code{timestampCol} is a character string with the name of the column 
 		 containing datetime stamps for the detections (MUST be of class 
-    'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-    OTN data, or 'time' for sample data).
+    'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' 
+    for OTN data, or 'time' for sample data).
  \item \code{latitudeCol} is a character string with the name of the column
-    containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-    for OTN data, or 'latitude' for sample data).
+    containing latitude of the receiver ('deploy_lat' for GLATOS data, 
+    'latitude' for OTN data, or 'latitude' for sample data).
  \item \code{longitudeCol} is a character string with the name of the column
-    containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-    for OTN data, or 'longitude' for sample data).
+    containing longitude of the receiver ('deploy_long' for GLATOS data, 
+    'longitude' for OTN data, or 'longitude' for sample data).
 }
 
 map is an optional SpatialPolygonsDataFrame or other
@@ -77,22 +75,22 @@ recColNames is a list with names of required columns in
   \code{receiverLocs}, defined by \code{type}: 
 \itemize{
   \item \code{locationCol} is a character string with the name of the column 
-  	 containing the locations that will be plotted ('glatos_array' for GLATOS data, 
-		 'station' for OTN data, or 'location' for sample data).
+  	 containing the locations that will be plotted ('glatos_array' for GLATOS 
+  	 data, 'station' for OTN data, or 'location' for sample data).
  \item \code{latitudeCol} is a character string with the name of the column
     containing the latitude of the receiver ('deploy_lat' for 
     GLATOS data, 'latitude' for OTN data, or 'latitude' for sample data). 
  \item \code{longitudeCol} is a character string with the name of the column
-    containing longitude of the receiver ('deploy_long' for GLATOS data, 'latitude'
-    for OTN data, or 'latitude' for sample data).
+    containing longitude of the receiver ('deploy_long' for GLATOS data, 
+    'latitude' for OTN data, or 'latitude' for sample data).
  \item \code{deploy_timestampCol} is a character string with the name of 
     the column containing datetime stamps for receiver deployments (MUST be 
-    of class 'POSIXct') ('deploy_date_time'for GLATOS data, 'deploy_date_time' for OTN
-    data, or 'deploy_time' for sample data). 
+    of class 'POSIXct') ('deploy_date_time'for GLATOS data, 
+    'deploy_date_time' for OTN data, or 'deploy_time' for sample data). 
  \item \code{recover_timestampCol} is a character string with the name of 
     the column containing datetime stamps for receier recover (MUST be of 
-    class 'POSIXct') ('recover_date_time'for GLATOS data, 'recover_date_time' for OTN data,
-    or 'recover_time' for sample data). 
+    class 'POSIXct') ('recover_date_time'for GLATOS data, 
+    'recover_date_time' for OTN data, or 'recover_time' for sample data). 
 }
 
 mapPars is a list of mapping parameters (with exact names 

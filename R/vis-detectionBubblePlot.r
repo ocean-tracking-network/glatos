@@ -22,21 +22,21 @@
 #'   \code{detections}, defined by \code{type}: 
 #' \itemize{
 #'   \item \code{locationCol} is a character string with the name of the column 
-#'   	 containing locations you wish to filter to ('glatos_array' for GLATOS data, 
-#' 		 'station' for OTN data, or 'location' for sample data).
+#'   	 containing locations you wish to filter to ('glatos_array' for GLATOS 
+#'   	 data, 'station' for OTN data, or 'location' for sample data).
 #'   \item \code{animalCol} is a character string with the name of the column 
-#' 		 containing the individual animal identifier ('animal_id' for GLATOS data,
-#' 		 'catalognumber' for OTN data, or 'animal' for sample data).
+#' 		 containing the individual animal identifier ('animal_id' for GLATOS 
+#' 		 data, 'catalognumber' for OTN data, or 'animal' for sample data).
 #'	 \item \code{timestampCol} is a character string with the name of the column 
 #' 		 containing datetime stamps for the detections (MUST be of class 
-#'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'time' for sample data).
+#'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' 
+#'     for OTN data, or 'time' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
-#'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     containing latitude of the receiver ('deploy_lat' for GLATOS data, 
+#'     'latitude' for OTN data, or 'latitude' for sample data).
 #'	 \item \code{longitudeCol} is a character string with the name of the column
-#'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'longitude'
-#'     for OTN data, or 'longitude' for sample data).
+#'     containing longitude of the receiver ('deploy_long' for GLATOS data, 
+#'     'longitude' for OTN data, or 'longitude' for sample data).
 #' }
 #' 
 #' @details map is an optional SpatialPolygonsDataFrame or other
@@ -47,22 +47,22 @@
 #'   \code{receiverLocs}, defined by \code{type}: 
 #' \itemize{
 #'   \item \code{locationCol} is a character string with the name of the column 
-#'   	 containing the locations that will be plotted ('glatos_array' for GLATOS data, 
-#' 		 'station' for OTN data, or 'location' for sample data).
+#'   	 containing the locations that will be plotted ('glatos_array' for GLATOS 
+#'   	 data, 'station' for OTN data, or 'location' for sample data).
 #'	 \item \code{latitudeCol} is a character string with the name of the column
 #'     containing the latitude of the receiver ('deploy_lat' for 
 #'     GLATOS data, 'latitude' for OTN data, or 'latitude' for sample data). 
 #'	 \item \code{longitudeCol} is a character string with the name of the column
-#'     containing longitude of the receiver ('deploy_long' for GLATOS data, 'latitude'
-#'     for OTN data, or 'latitude' for sample data).
+#'     containing longitude of the receiver ('deploy_long' for GLATOS data, 
+#'     'latitude' for OTN data, or 'latitude' for sample data).
 #'	 \item \code{deploy_timestampCol} is a character string with the name of 
 #'     the column containing datetime stamps for receiver deployments (MUST be 
-#'     of class 'POSIXct') ('deploy_date_time'for GLATOS data, 'deploy_date_time' for OTN
-#'     data, or 'deploy_time' for sample data). 
+#'     of class 'POSIXct') ('deploy_date_time'for GLATOS data, 
+#'     'deploy_date_time' for OTN data, or 'deploy_time' for sample data). 
 #'	 \item \code{recover_timestampCol} is a character string with the name of 
 #'     the column containing datetime stamps for receier recover (MUST be of 
-#'     class 'POSIXct') ('recover_date_time'for GLATOS data, 'recover_date_time' for OTN data,
-#'     or 'recover_time' for sample data). 
+#'     class 'POSIXct') ('recover_date_time'for GLATOS data, 
+#'     'recover_date_time' for OTN data, or 'recover_time' for sample data). 
 #' }
 #' 
 #' @details mapPars is a list of mapping parameters (with exact names 
@@ -162,12 +162,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
   library(marmap)
   library(lattice)
   
-  #Map
-  #The file that stores shp data from http://www.naturalearthdata.com/ with Ocean polygon (at 110 m) is at "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp"
-  layer <- ogrListLayers(ocean_shapefile)
-  ogrInfo(ocean_shapefile, layer=layer)
-  ocean_poly <- readOGR(ocean_shapefile, layer=layer) #SpatialPolygonDataFrame object
-  
+
   if(type == "GLATOS") { #Sets different attributes for GLATOS data
     detColNames = list(locationCol = "glatos_array", 
                        animalCol = "animal_id", 

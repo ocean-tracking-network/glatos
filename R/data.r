@@ -77,3 +77,15 @@
 "walleye_plotControl"
 
 
+#' @title A SpatialPolygonDataFrame of the world's oceans.
+#' 
+#' @description A SpatialPolygonDataFrame of the world's oceans. This is 
+#' used as a default map background in several 
+#' \link{glatos} functions when \code{type = "OTN"}.
+#'
+#' @usage data(oceanPoly)
+#'
+#' @source 
+#' http//www.naturalearthdata.com/download/110m/physical/ne_110m_ocean.zip
+#' 
+"oceanPoly"
