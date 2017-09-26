@@ -5,7 +5,7 @@
 \title{Plot number of tagged animals or detections on a map}
 \usage{
 detectionBubblePlot(detections, receiverLocs = NULL, type = "GLATOS",
-  ocean_shapefile = "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
+  map = NULL)
 }
 \arguments{
 \item{detections}{A data frame containing detection data with at least 
@@ -19,8 +19,69 @@ receiver 'location', 'lat', 'lon', 'deploy_timestamp', and
 \item{type}{A character string that contains the type of data that is being 
 passed in, for example, "OTN", "GLATOS", or "sample".}
 
-\item{ocean_shapefile}{A pathname for a file that contains data to make the 
-SpatialPolygonsDataFrame for the bubble plot. (from NaturalEarthData)}
+\item{map}{is an optional SpatialPolygonsDataFrame or other
+geo-referenced object to be plotted as the background for the plot. It is 
+defined by \code{type}.}
+
+\item{detColNames}{is defined as a list with names of required columns in 
+  \code{detections}, defined by \code{type}: 
+\itemize{
+  \item \code{locationCol} is a character string with the name of the column 
+       containing locations you wish to filter to ('glatos_array' for GLATOS 
+       data, 'station' for OTN data, or 'location' for sample data).
+  \item \code{animalCol} is a character string with the name of the column 
+         containing the individual animal identifier ('animal_id' for GLATOS 
+         data, 'catalognumber' for OTN data, or 'animal' for sample data).
+ \item \code{timestampCol} is a character string with the name of the column 
+         containing datetime stamps for the detections (MUST be of class 
+    'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' 
+    for OTN data, or 'time' for sample data).
+ \item \code{latitudeCol} is a character string with the name of the column
+    containing latitude of the receiver ('deploy_lat' for GLATOS data, 
+    'latitude' for OTN data, or 'latitude' for sample data).
+ \item \code{longitudeCol} is a character string with the name of the column
+    containing longitude of the receiver ('deploy_long' for GLATOS data, 
+    'longitude' for OTN data, or 'longitude' for sample data).
+}}
+
+\item{recColNames}{is a list with names of required columns in 
+  \code{receiverLocs}, defined by \code{type}: 
+\itemize{
+  \item \code{locationCol} is a character string with the name of the column 
+       containing the locations that will be plotted ('glatos_array' for GLATOS 
+       data, 'station' for OTN data, or 'location' for sample data).
+ \item \code{latitudeCol} is a character string with the name of the column
+    containing the latitude of the receiver ('deploy_lat' for 
+    GLATOS data, 'latitude' for OTN data, or 'latitude' for sample data). 
+ \item \code{longitudeCol} is a character string with the name of the column
+    containing longitude of the receiver ('deploy_long' for GLATOS data, 
+    'latitude' for OTN data, or 'latitude' for sample data).
+ \item \code{deploy_timestampCol} is a character string with the name of 
+    the column containing datetime stamps for receiver deployments (MUST be 
+    of class 'POSIXct') ('deploy_date_time'for GLATOS data, 
+    'deploy_date_time' for OTN data, or 'deploy_time' for sample data). 
+ \item \code{recover_timestampCol} is a character string with the name of 
+    the column containing datetime stamps for receier recover (MUST be of 
+    class 'POSIXct') ('recover_date_time'for GLATOS data, 
+    'recover_date_time' for OTN data, or 'recover_time' for sample data). 
+}}
+
+\item{mapPars}{is a list of mapping parameters (with exact names 
+  matching below) including:
+\itemize{
+  \item \code{xLimits} is a two-element numeric vector that defines 
+    minimum and maximum extents of the viewable plot area along the x-axis.
+  \item \code{yLimits} is a two-element numeric vector that defines 
+    minimum and maximum extents of the viewable plot area along the y-axis.
+  \item \code{symbolRadius} is a numeric scalar that sets the radius of 
+    each "bubble" on the plot in units of percent of x-axis scale. Default 
+    value = 1 (i.e., 1% of x-axis).
+  \item \code{colGrad} A two-element character vector indicating the start 
+    and end colors of the gradient scale used to color-code "bubbles".
+  \item \code{showAll} A logical (default = FALSE) indicating whether to 
+    plot all receiver groups (TRUE) or only those receiver groups on 
+    which the fish were detected (FALSE).
+} which are defined by \code{type}}
 }
 \value{
 A list containing the following data frames and columns: 
@@ -46,70 +107,6 @@ Make bubble plots showing the number of fish detected and number of
   detections across a telemetry receiver network.
 }
 \details{
-detColNames is defined as a list with names of required columns in 
-  \code{detections}, defined by \code{type}: 
-\itemize{
-  \item \code{locationCol} is a character string with the name of the column 
-  	 containing locations you wish to filter to ('glatos_array' for GLATOS 
-  	 data, 'station' for OTN data, or 'location' for sample data).
-  \item \code{animalCol} is a character string with the name of the column 
-		 containing the individual animal identifier ('animal_id' for GLATOS 
-		 data, 'catalognumber' for OTN data, or 'animal' for sample data).
- \item \code{timestampCol} is a character string with the name of the column 
-		 containing datetime stamps for the detections (MUST be of class 
-    'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' 
-    for OTN data, or 'time' for sample data).
- \item \code{latitudeCol} is a character string with the name of the column
-    containing latitude of the receiver ('deploy_lat' for GLATOS data, 
-    'latitude' for OTN data, or 'latitude' for sample data).
- \item \code{longitudeCol} is a character string with the name of the column
-    containing longitude of the receiver ('deploy_long' for GLATOS data, 
-    'longitude' for OTN data, or 'longitude' for sample data).
-}
-
-map is an optional SpatialPolygonsDataFrame or other
-  geo-referenced object to be plotted as the background for the plot. It is 
-  defined by \code{type}.
-
-recColNames is a list with names of required columns in 
-  \code{receiverLocs}, defined by \code{type}: 
-\itemize{
-  \item \code{locationCol} is a character string with the name of the column 
-  	 containing the locations that will be plotted ('glatos_array' for GLATOS 
-  	 data, 'station' for OTN data, or 'location' for sample data).
- \item \code{latitudeCol} is a character string with the name of the column
-    containing the latitude of the receiver ('deploy_lat' for 
-    GLATOS data, 'latitude' for OTN data, or 'latitude' for sample data). 
- \item \code{longitudeCol} is a character string with the name of the column
-    containing longitude of the receiver ('deploy_long' for GLATOS data, 
-    'latitude' for OTN data, or 'latitude' for sample data).
- \item \code{deploy_timestampCol} is a character string with the name of 
-    the column containing datetime stamps for receiver deployments (MUST be 
-    of class 'POSIXct') ('deploy_date_time'for GLATOS data, 
-    'deploy_date_time' for OTN data, or 'deploy_time' for sample data). 
- \item \code{recover_timestampCol} is a character string with the name of 
-    the column containing datetime stamps for receier recover (MUST be of 
-    class 'POSIXct') ('recover_date_time'for GLATOS data, 
-    'recover_date_time' for OTN data, or 'recover_time' for sample data). 
-}
-
-mapPars is a list of mapping parameters (with exact names 
-  matching below) including:
-\itemize{
-  \item \code{xLimits} is a two-element numeric vector that defines 
-    minimum and maximum extents of the viewable plot area along the x-axis.
-  \item \code{yLimits} is a two-element numeric vector that defines 
-    minimum and maximum extents of the viewable plot area along the y-axis.
-  \item \code{symbolRadius} is a numeric scalar that sets the radius of 
-    each "bubble" on the plot in units of percent of x-axis scale. Default 
-    value = 1 (i.e., 1% of x-axis).
-  \item \code{colGrad} A two-element character vector indicating the start 
-    and end colors of the gradient scale used to color-code "bubbles".
-  \item \code{showAll} A logical (default = FALSE) indicating whether to 
-    plot all receiver groups (TRUE) or only those receiver groups on 
-    which the fish were detected (FALSE).
-} which are defined by \code{type}
-
 If \code{mapPars$showAll} is TRUE then the plot will show all 
   receivers, including those that detected none of the transmitters in 
   \code{detections}. In that case, it will first be determined if a receiver 
@@ -122,8 +119,26 @@ If \code{mapPars$showAll} is TRUE then the plot will show all
   will accept a vector containing any two colors return by \code{colors()} 
   as character strings.
 }
-\references{
-http://www.naturalearthdata.com
+\examples{
+#example detection data
+data(walleye_detections) 
+head(walleye_detections)
+
+#call with defaults
+detectionBubblePlot(walleye_detections)
+
+#example receiver location data
+data(recLoc_example) 
+head(recLoc_example)
+
+#view example map background
+library(sp) #to avoid errors plotting SpatialPolygonsDataFrame
+data(greatLakesPoly)
+plot(greatLakesPoly)
+
+detectionBubblePlot(walleye_detections, receiverLocs=recLoc_example,
+  mapParms=list(symbolRadius = 1.4,colGrad = c("white", "blue"), showAll=T))
+
 }
 \author{
 T. R. Binder, edited by A. Dini

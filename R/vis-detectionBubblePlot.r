@@ -14,7 +14,7 @@
 #' @param type A character string that contains the type of data that is being 
 #'   passed in, for example, "OTN", "GLATOS", or "sample".
 #'   
-#' @details detColNames is defined as a list with names of required columns in 
+#' @param detColNames is defined as a list with names of required columns in 
 #'   \code{detections}, defined by \code{type}: 
 #' \itemize{
 #'   \item \code{locationCol} is a character string with the name of the column 
@@ -35,11 +35,11 @@
 #'     'longitude' for OTN data, or 'longitude' for sample data).
 #' }
 #' 
-#' @details map is an optional SpatialPolygonsDataFrame or other
+#' @param map is an optional SpatialPolygonsDataFrame or other
 #'   geo-referenced object to be plotted as the background for the plot. It is 
 #'   defined by \code{type}.
 #' 
-#' @details recColNames is a list with names of required columns in 
+#' @param recColNames is a list with names of required columns in 
 #'   \code{receiverLocs}, defined by \code{type}: 
 #' \itemize{
 #'   \item \code{locationCol} is a character string with the name of the column 
@@ -61,7 +61,7 @@
 #'     'recover_date_time' for OTN data, or 'recover_time' for sample data). 
 #' }
 #' 
-#' @details mapPars is a list of mapping parameters (with exact names 
+#' @param mapPars is a list of mapping parameters (with exact names 
 #'   matching below) including:
 #' \itemize{
 #'   \item \code{xLimits} is a two-element numeric vector that defines 
@@ -110,7 +110,26 @@
 #'
 #' @author T. R. Binder, edited by A. Dini
 #' 
+#' @examples
+#' #example detection data
+#' data(walleye_detections) 
+#' head(walleye_detections)
+#'
+#' #call with defaults
+#' detectionBubblePlot(walleye_detections)
 #' 
+#' #example receiver location data
+#' data(recLoc_example) 
+#' head(recLoc_example)
+#' 
+#' #view example map background
+#' library(sp) #to avoid errors plotting SpatialPolygonsDataFrame
+#' data(greatLakesPoly)
+#' plot(greatLakesPoly)
+#' 
+#' detectionBubblePlot(walleye_detections, receiverLocs=recLoc_example,
+#'   mapParms=list(symbolRadius = 1.4,colGrad = c("white", "blue"), showAll=T))
+#'
 #' @export
 
 # My changes:
