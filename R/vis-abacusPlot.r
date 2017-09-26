@@ -1,33 +1,30 @@
 #' Plot detection locations of acoustic transmitters over time
-#'
-#' @param detections A data frame containing at least two columns with names 
-#'   specified by \code{detColNames} by \code{type}. The 'location' column contains the 
-#'   locations (typically 'glatos_array' or 'station' for GLATOS data) that 
-#'   will be plotted on the y-axis. The 'timestamp' column contains the 
-#'   datetime stamps for the detections (MUST be of class 'POSIXct').
 #' 
-#' @param type A character string that contains the type of data that is being passed in,
-#'   for example, "OTN", "GLATOS", or "sample".
+#' @param detections A data frame containing at least two columns with names 
+#'   specified by \code{detColNames} by \code{type}. The 'location' column
+#'   contains the locations (typically 'glatos_array' or 'station' for GLATOS
+#'   data) that will be plotted on the y-axis. The 'timestamp' column contains
+#'   the datetime stamps for the detections (MUST be of class 'POSIXct').
 #'   
-#' @details detColNames is a list of character strings with names of
-#'   required columns in \code{detections}:
-#' \itemize{
-#'   \item \code{locationCol} is a character string with the name of the column 
-#'   	 containing locations you wish to filter to ('glatos_array' for GLATOS data, 
-#' 		 'station' for OTN data, or 'location' for sample data).
-#'   \item \code{timestampCol} is a character string with the name of the column 
-#' 		 containing datetime stamps for the detections (MUST be of class 
-#'     'POSIXct') ('detection_timestamp_utc' for GLATOS data, 'datecollected' for
-#'     OTN data, or 'time' for sample data).
-#' }
-#'    
-#' @param controlTable An optional data frame with two columns, c('location', and 
-#'   'y_order). The 'location' column is a character vector of locations to be 
-#'   plotted on the y-axis and the name of the 'location' column must match the 
-#'   'location' column in \code{detections} data frame 
-#'   (set in \code{detColNames} by \code{type}). The 'y_order' column specifies what order the 
-#'   grouping variable will appear on the y-axis (y_order increases as you move 
-#'   away from the x-axis).
+#' @param type A character string that contains the type of data that is being
+#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#'   
+#' @details detColNames is a list of character strings with names of required
+#'   columns in \code{detections}: \itemize{ \item \code{locationCol} is a
+#'   character string with the name of the column containing locations you wish
+#'   to filter to ('glatos_array' for GLATOS data, 'station' for OTN data, or
+#'   'location' for sample data). \item \code{timestampCol} is a character
+#'   string with the name of the column containing datetime stamps for the
+#'   detections (MUST be of class 'POSIXct') ('detection_timestamp_utc' for
+#'   GLATOS data, 'datecollected' for OTN data, or 'time' for sample data). }
+#'   
+#' @param controlTable An optional data frame with two columns, c('location',
+#'   and 'y_order). The 'location' column is a character vector of locations to
+#'   be plotted on the y-axis and the name of the 'location' column must match
+#'   the 'location' column in \code{detections} data frame (set in
+#'   \code{detColNames} by \code{type}). The 'y_order' column specifies what
+#'   order the grouping variable will appear on the y-axis (y_order increases as
+#'   you move away from the x-axis).
 #'   
 #' @param plotTitle An optional character string that will appear at the top of 
 #'   the plot. Default is no title.
@@ -38,44 +35,46 @@
 #' @param outFile An optional character string with the name of the png file 
 #'   created (including file extension; default = "AbacusPlot.png").
 #'   
-#' @param ... Other plotting arguments that pass to "plot" function 
-#'   (e.g., col, lwd, type).
-#'
+#' @param ... Other plotting arguments that pass to "plot" function (e.g., col,
+#'   lwd, type).
+#'   
 #' @details NAs are not allowed in any of the three required columns of 
 #'   \code{events}.
-#'
+#'   
 #' @details The control table is used to control which locations will appear in 
-#' the plot and in what order they will appear. If no controlTable is 
-#' supplied, the function will plot only those locations that appear in the 
-#' \code{detections} data frame and the order of locations on the y-axis will  
-#' correspond to the order in which each location appears in the data frame.
-#'
-#' @details By default, the function does not distinguish detections from  
-#' different transmitters and will therefore plot all transmitters the same  
-#' color. If more than one fish is desired in a single plot, a vector of colors  
-#' must be passed to the function using the 'col =' argument. The color vector  
-#' must be the same length as the number of rows in the detections data frame. 
-#'
+#'   the plot and in what order they will appear. If no controlTable is 
+#'   supplied, the function will plot only those locations that appear in the 
+#'   \code{detections} data frame and the order of locations on the y-axis will 
+#'   correspond to the order in which each location appears in the data frame.
+#'   
+#' @details By default, the function does not distinguish detections from 
+#'   different transmitters and will therefore plot all transmitters the same 
+#'   color. If more than one fish is desired in a single plot, a vector of
+#'   colors must be passed to the function using the 'col =' argument. The color
+#'   vector must be the same length as the number of rows in the detections data
+#'   frame.
+#'   
 #' @details #' Alternatively, plots for multiple individual fish can be created 
-#' by looping through and creating a separate plot on subsetted detections data.
-#' Plotting options (i.e., line width and color) can be changed using optional 
-#' graphical parameters 
-#' \url{http://www.statmethods.net/advgraphs/parameters.html} 
-#' that are passed to "segments" (see ?segments).
-#'
+#'   by looping through and creating a separate plot on subsetted detections
+#'   data. Plotting options (i.e., line width and color) can be changed using
+#'   optional graphical parameters 
+#'   \url{http://www.statmethods.net/advgraphs/parameters.html} that are passed
+#'   to "segments" (see ?segments).
+#'   
 #' @return A png file containing the abacus plot (default name "AbacusPlot.png")
-#' is written to the working directory.
-#'
+#'   is written to the working directory.
+#'   
 #' @author T. R. Binder, edited by A. Dini
-#' 
-#' @usage To use:
-#'   For GLATOS data, abacusPlot(data, "GLATOS")
-#'   For OTN data, abacusPlot(data, "OTN")
-#'   For sample data, abacusPlot(data, "sample")
-#' 
+#'   
+#' @usage To use: For GLATOS data, abacusPlot(data, "GLATOS") For OTN data,
+#'   abacusPlot(data, "OTN") For sample data, abacusPlot(data, "sample")
+#'   
 #' @export
 
-abacusPlot <- function(detections, type, detColNames=list(), controlTable = NULL, plotTitle = "", Ylab=NA, outFile = "AbacusPlot.png", ...) {
+abacusPlot <- function(detections, type = "GLATOS", detColNames=list(), 
+  controlTable = NULL, plotTitle = "", Ylab=NA, 
+  outFile = "AbacusPlot.png", ...) {
+  
   #Check if user has set column names
   if(length(detColNames)==0) {
     if(type=="sample") { #Set column names for sample data
