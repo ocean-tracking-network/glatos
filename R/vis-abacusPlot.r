@@ -32,8 +32,12 @@
 #' @param Ylab A character string indicating the y-axis label that will appear 
 #'   on the figure (default will match \code{detColNames$locationCol}).
 #'   
-#' @param outFile An optional character string with the name of the png file 
-#'   created (including file extension; default = "AbacusPlot.png").
+#' @param outFile An optional character string with the name (including 
+#'   extension of output file created. File extension will determine type of 
+#'   file written. For example, \code{"AbacusPlot.png"} will write a png 
+#'   file to the working directory. If \code{NULL} (default) then the plot will 
+#'   be printed to the default plot device will be used. Supported extensions: 
+#'   png, jpeg, bmp, and tiff.
 #'   
 #' @param ... Other plotting arguments that pass to "plot" function (e.g., col,
 #'   lwd, type).
@@ -61,8 +65,8 @@
 #'   \url{http://www.statmethods.net/advgraphs/parameters.html} that are passed
 #'   to "segments" (see ?segments).
 #'   
-#' @return A png file containing the abacus plot (default name "AbacusPlot.png")
-#'   is written to the working directory.
+#' @return An image to the default plot device or a file containing the 
+#' image if \code{outFile} is specified.
 #'   
 #' @author T. R. Binder, edited by A. Dini
 #'   
@@ -78,8 +82,8 @@
 #' 	 walleye_detections[walleye_detections$transmitter_id == 32123, ]
 #' 	
 #' #plot without control table
-#' abacusPlot(walleye_detections, controlTable=NULL, plotTitle = "TagID: 32123",
-#' 	 outFile="AbacusPlot_tag32123.png", col = "red")
+#' abacusPlot(walleye_detections, controlTable=NULL, 
+#'   plotTitle = "TagID: 32123" col = "red")
 #' 	
 #' #get example control table
 #' data("walleye_controlTable") #example dataset
@@ -87,20 +91,18 @@
 #' 
 #' #plot with control table
 #' abacusPlot(walleye_detections, controlTable=walleye_controlTable, 
-#' 	 plotTitle = "TagID: 32123", outFile="AbacusPlot_tag32123_control.png", 
-#' 	 col = "red")
+#' 	 plotTitle = "TagID: 32123", col = "red")
 #'
 #' #plot with custom y-axis label and lines connecting symbols
 #' abacusPlot(walleye_detections, controlTable=walleye_controlTable, 
 #' 	 plotTitle = "TagID: 32123", Ylab="Location (GLATOS Array)",
-#' 	 outFile="AbacusPlot_tag32123_control.png", 
 #' 	 col = "red", type="o")
 #'   
 #' @export
 
 abacusPlot <- function(detections, type = "GLATOS", detColNames = list(), 
   controlTable = NULL, plotTitle = "", Ylab=NA, 
-  outFile = "AbacusPlot.png", ...) {
+  outFile = NULL, ...) {
   
   #Check if user has set column names
   if(length(detColNames) == 0) {
@@ -181,9 +183,27 @@ abacusPlot <- function(detections, type = "GLATOS", detColNames = list(),
 	# different string lengths (e.g., "DRM" vs "DRM-001").
 	YlabOffset <- (max(nchar(detections$location)) - 3) / 3
 	
-	# Create a png file containing the detections plot
-	png(outFile, height = pngHeight, width = 1000, pointsize = 22)
-	# Set inner and outer margins
+
+	#get file extension
+  file_type <- ifelse(is.null(outFile), NA, tools::file_ext(outFile))
+	
+	#check file extension is supported
+  ext_supp <- c(NA, "png", "jpeg", "png", "bmp", "tiff")
+	if(!(tolower(file_type) %in% ext_supp))
+	  stop(paste0("Image type '", file_type, "' is not supported."), 
+	    call. = FALSE)
+    
+  if(!is.na(file_type) & tolower(file_type) == 'png')
+	  png(outFile, height = pngHeight, width = 1000, pointsize = 22)
+  if(!is.na(file_type) & tolower(file_type) == 'jpeg')
+    jpeg(outFile, height = pngHeight, width = 1000, pointsize = 22)
+  if(!is.na(file_type) & tolower(file_type) == 'bmp')
+    bmp(outFile, height = pngHeight, width = 1000, pointsize = 22)
+  if(!is.na(file_type) & tolower(file_type) == 'tiff')
+    tiff(outFile, height = pngHeight, width = 1000, pointsize = 22)  
+	
+    
+  # Set inner and outer margins
 	par(mar = c(1, 1, 1.5, 2), oma = c(3, 4 + YlabOffset, 0, 0))
 		
 	# Plot detection data
@@ -204,10 +224,13 @@ abacusPlot <- function(detections, type = "GLATOS", detColNames = list(),
 	# Add axes titles
 	mtext("Date", side = 1, line = 2.2, cex = 1.2)
 	mtext(Ylab, side = 2, line = 3.5 + YlabOffset, cex = 1.2)
-	dev.off()
 
-	#get output directory
-	outDir <- ifelse(dirname(outFile) == ".", getwd(), dirname(outFile)) 
-	message(paste0("Output file is located in the following directory:\n", 
-		outDir))	
+	if(!is.na(file_type))	{
+	  dev.off()
+
+  	#get output directory
+  	outDir <- ifelse(dirname(outFile) == ".", getwd(), dirname(outFile)) 
+  	message(paste0("Output file is located in the following directory:\n", 
+  		outDir))	
+	}
 }
