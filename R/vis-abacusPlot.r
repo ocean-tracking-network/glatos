@@ -71,20 +71,23 @@
 #'   
 #' @export
 
-abacusPlot <- function(detections, type = "GLATOS", detColNames=list(), 
+abacusPlot <- function(detections, type = "GLATOS", detColNames = list(), 
   controlTable = NULL, plotTitle = "", Ylab=NA, 
   outFile = "AbacusPlot.png", ...) {
   
   #Check if user has set column names
-  if(length(detColNames)==0) {
-    if(type=="sample") { #Set column names for sample data
-      detColNames = list(locationCol="location", timestampCol="time")
-    } else if(type=="GLATOS") { #Set column names for GLATOS data
-      detColNames=list(locationCol="glatos_array", timestampCol="detection_timestamp_utc")
+  if(length(detColNames) == 0) {
+    if(type == "sample") { #Set column names for sample data
+      detColNames = list(locationCol = "location", 
+                         timestampCol = "time")
+    } else if(type == "GLATOS") { #Set column names for GLATOS data
+      detColNames = list(locationCol = "glatos_array", 
+                       timestampCol = "detection_timestamp_utc")
     } else if(type=="OTN"){ #Set column names for OTN data
-      detColNames = list(locationCol="station", timestampCol="datecollected")
+      detColNames = list(locationCol = "station", 
+                         timestampCol = "datecollected")
     } else { #Other type
-      stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+      stop(paste0("The type '", type, "' is not defined."), call. = FALSE)
     }
   }
   
@@ -92,20 +95,20 @@ abacusPlot <- function(detections, type = "GLATOS", detColNames=list(),
 	missingCols <- setdiff(unlist(detColNames), names(detections))
 	if (length(missingCols) > 0){
 		stop(paste0("Detections data frame is missing the following ",
-			"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-			call.=FALSE)
+			"column(s):\n", paste0("       '", missingCols, "'", collapse="\n")), 
+			call. = FALSE)
 	}
 	
 	# Subset detections with only user-defined columns and change names
 	# this makes code more easy to understand (esp. ddply)
-	detections <- detections[,unlist(detColNames)] #subset
+	detections <- detections[ ,unlist(detColNames)] #subset
 	names(detections) <- c("location","timestamp")
 		
 	# Check that timestamp is of class 'POSIXct'
 	if(!('POSIXct' %in% class(detections$timestamp))){
-		stop(paste0("Column '",detColNames$timestampCol,
+		stop(paste0("Column '", detColNames$timestampCol,
 			"' in the detections data frame must be of class 'POSIXct'."),
-			call.=FALSE)
+			call. = FALSE)
 	} 
 
 	# If controlTable not supplied, create one - plotted in order locations 
@@ -118,15 +121,16 @@ abacusPlot <- function(detections, type = "GLATOS", detColNames=list(),
 	} else {
     
 		# Check that the specified columns are in the control table data frame
-		missingCols <- setdiff(c(detColNames$locationCol, "y_order"), names(controlTable))
+		missingCols <- setdiff(c(detColNames$locationCol, "y_order"), 
+		  names(controlTable))
 		if (length(missingCols) > 0){
 			stop(paste0("Control table data frame is missing the following ",
-				"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-				call.=FALSE)
+				"column(s):\n", paste0("       '", missingCols, "'", collapse="\n")), 
+				call. = FALSE)
 		}
 		
 		#change name of location column in control table
-		controlTable <- controlTable[,c(detColNames[[1]],"y_order")] #order columns
+		controlTable <- controlTable[ ,c(detColNames[[1]], "y_order")] #order cols
 		names(controlTable)[1] <- "location"
 	}
 	
@@ -139,7 +143,7 @@ abacusPlot <- function(detections, type = "GLATOS", detColNames=list(),
 	detections <- merge(detections, controlTable, by = "location", all.y = TRUE)
 	
 	#sort by timestamp
-	detections <- detections[order(detections$timestamp),] 
+	detections <- detections[order(detections$timestamp), ] 
    
 	# Variable which scales the height of the y-axis depending on the number of 
 	# labels to appear. 
@@ -148,12 +152,12 @@ abacusPlot <- function(detections, type = "GLATOS", detColNames=list(),
 	
 	# Calculate a y-axis label offset to accommodate grouping variables with 
 	# different string lengths (e.g., "DRM" vs "DRM-001").
-	YlabOffset <- (max(nchar(detections$location))-3)/3
+	YlabOffset <- (max(nchar(detections$location)) - 3) / 3
 	
 	# Create a png file containing the detections plot
 	png(outFile, height = pngHeight, width = 1000, pointsize = 22)
 	# Set inner and outer margins
-	par(mar = c(1,1,1.5,2), oma = c(3,4 + YlabOffset,0,0))
+	par(mar = c(1, 1, 1.5, 2), oma = c(3, 4 + YlabOffset, 0, 0))
 		
 	# Plot detection data
 	with(detections, 
@@ -176,7 +180,7 @@ abacusPlot <- function(detections, type = "GLATOS", detColNames=list(),
 	dev.off()
 
 	#get output directory
-	outDir <- ifelse(dirname(outFile)==".", getwd(), dirname(outFile)) 
+	outDir <- ifelse(dirname(outFile) == ".", getwd(), dirname(outFile)) 
 	message(paste0("Output file is located in the following directory:\n", 
 		outDir))	
 }
