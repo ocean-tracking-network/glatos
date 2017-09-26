@@ -171,8 +171,16 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
   ocean_poly <- readOGR(ocean_shapefile, layer=layer) #SpatialPolygonDataFrame object
   
   if(type == "GLATOS") { #Sets different attributes for GLATOS data
-    detColNames = list(locationCol="glatos_array", animalCol="animal_id", timestampCol="detection_timestamp_utc", latCol="deploy_lat", longCol="deploy_long")
-    recColNames = list(locationCol="glatos_array", latCol="deploy_lat", longCol="deploy_long", deploy_timestampCol="deploy_date_time", recover_timestampCol="recover_date_time")
+    detColNames = list(locationCol = "glatos_array", 
+                       animalCol = "animal_id", 
+                       timestampCol = "detection_timestamp_utc", 
+                       latCol = "deploy_lat", 
+                       longCol = "deploy_long")
+    recColNames = list(locationCol = "glatos_array", 
+                       latCol = "deploy_lat", 
+                       longCol = "deploy_long", 
+                       deploy_timestampCol = "deploy_date_time", 
+                       recover_timestampCol = "recover_date_time")
     mapPars = list(
       xLimits = c(-94.5, -75), 
       yLimits = c(41, 49.5), 
@@ -187,8 +195,16 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
     colGrad = c("white", "red")
     showAll = FALSE
   } else if (type == "OTN") {
-    detColNames = list(locationCol="station", animalCol="catalognumber", timestampCol="datecollected", latCol="latitude", longCol="longitude")
-    recColNames = list(locationCol="station", latCol="latitude", longCol="longitude", deploy_timestampCol="deploy_date_time", recover_timestampCol="recover_date_time")
+    detColNames = list(locationCol = "station", 
+                       animalCol = "catalognumber", 
+                       timestampCol = "datecollected", 
+                       latCol = "latitude", 
+                       longCol = "longitude")
+    recColNames = list(locationCol = "station", 
+                       latCol = "latitude", 
+                       longCol = "longitude", 
+                       deploy_timestampCol = "deploy_date_time", 
+                       recover_timestampCol = "recover_date_time")
     mapPars = list(
       xLimits = c(-69.4, -59.3), 
       yLimits = c(42.8, 47.6), 
@@ -203,8 +219,16 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
     colGrad = c("white", "red")
     showAll = FALSE
   } else if (type == "sample") {
-    detColNames = list(locationCol="location", animalCol="animal", timestampCol="time", latCol="latitude", longCol="longitude")
-    recColNames = list(locationCol="location", latCol="latitude", longCol="longitude", deploy_timestampCol="deploy_time", recover_timestampCol="recover_time")
+    detColNames = list(locationCol = "location", 
+                       animalCol = "animal", 
+                       timestampCol = "time", 
+                       latCol = "latitude", 
+                       longCol = "longitude")
+    recColNames = list(locationCol = "location", 
+                       latCol = "latitude", 
+                       longCol = "longitude", 
+                       deploy_timestampCol = "deploy_time", 
+                       recover_timestampCol = "recover_time")
     mapPars = list(
       xLimits = c(-69.4, -59.3), 
       yLimits = c(42.8, 47.6), 
@@ -219,7 +243,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
     colGrad = c("white", "red")
     showAll = FALSE
   } else {
-    stop(paste0("The type '",type,"' is not defined."), call.=FALSE)
+    stop(paste0("The type '", type, "' is not defined."), call. = FALSE)
   }
   # Update mapping parameter objects based on user-specified in mapPars	
   for(i in 1:length(mapPars)) 
@@ -229,20 +253,20 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 	missingCols <- setdiff(unlist(detColNames), names(detections))
 	if (length(missingCols) > 0){
 		stop(paste0("Detections data frame is missing the following ",
-			"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-			call.=FALSE)
+			"column(s):\n", paste0("       '", missingCols, "'", collapse = "\n")), 
+			call. = FALSE)
 	}
     
 	# Subset detections with only user-defined columns and change names
 	# this makes the code more easy to understand.
-	detections <- detections[,unlist(detColNames)] #subset
-	names(detections) <- c("location","animal","timestamp","lat","long")
+	detections <- detections[ , unlist(detColNames)] #subset
+	names(detections) <- c("location", "animal", "timestamp", "lat", "long")
 		
 	# Check that timestamp is of class 'POSIXct'
 	if(!('POSIXct' %in% class(detections$timestamp))){
-		stop(paste0("Column '",detColNames$timestampCol,
+		stop(paste0("Column '", detColNames$timestampCol,
 			"' in 'detections' data frame must be of class 'POSIXct'."),
-			call.=FALSE)
+			call. = FALSE)
 	}  	
 
 	# Check that the receiverLocs data frame is supplied if showAll = TRUE
@@ -255,22 +279,22 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 		missingCols <- setdiff(unlist(recColNames), names(receiverLocs))
 		if (length(missingCols) > 0){
 			stop(paste0("'receiverLocs' data frame is missing the following ",
-				"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-				call.=FALSE)
+				"column(s):\n", paste0("       '", missingCols, "'", collapse="\n")), 
+				call. = FALSE)
 		}
 		
 		# Subset receiverLocs with only user-defined columns and change names
 		#  this makes the code more easy to understand.
-		receiverLocs <- receiverLocs[,unlist(recColNames)] #subset
-		names(receiverLocs) <- c("location","lat","long","deploy_timestamp",
+		receiverLocs <- receiverLocs[ , unlist(recColNames)] #subset
+		names(receiverLocs) <- c("location", "lat", "long", "deploy_timestamp",
 			"recover_timestamp")		
 	
 		# Check that timestamp is of class 'POSIXct'
 		if(!('POSIXct' %in% class(receiverLocs$deploy_timestamp)) | 
 			!('POSIXct' %in% class(receiverLocs$recover_timestamp))){
-				stop(paste0("Columns '",recColNames$deploy_timestampCol,"' and '",
-					recColNames$recover_timestampCol,"' in 'receiverLocs' data frame ",
-					"must be of class 'POSIXct'."),call.=FALSE)
+				stop(paste0("Columns '", recColNames$deploy_timestampCol, "' and '",
+					recColNames$recover_timestampCol, "' in 'receiverLocs' data frame ",
+					"must be of class 'POSIXct'."), call. = FALSE)
 		}     
    
 	
@@ -281,7 +305,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 		# Remove receiver locations that do not have both a deploy and recover time 
 		# (i.e., ignore receivers for which the data were not in hand)
 		receiverLocs <- receiverLocs[!is.na(receiverLocs$deploy_timestamp) & 
-			!is.na(receiverLocs$recover_timestamp),]
+			!is.na(receiverLocs$recover_timestamp), ]
 		
 		# Subset receiver locations that did not overlap with the period between 
 		#  the first and last detection in the detections data frame
@@ -291,13 +315,14 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 			
 		# Determine mean location of receiver groups that were available to for 
 		#  detecting fish but did not
-		summaryReceivers <- plyr::ddply(receiverLocs, plyr::.(location), plyr::summarise, 
-			Summary = 0, meanLat = mean(lat), meanLon = mean(long), .drop = FALSE)
+		summaryReceivers <- plyr::ddply(receiverLocs, plyr::.(location), 
+		  plyr::summarise, Summary = 0, meanLat = mean(lat), meanLon = mean(long), 
+		  .drop = FALSE)
 					
 		# Retain only those receiver groups that do not already appear in the 
 		#  detections data frame
 		summaryReceivers <- summaryReceivers[!(summaryReceivers$location %in% 
-			unique(detections$location)),]
+			unique(detections$location)), ]
 	}
     
 	# Summarize number of unique fish detected and mean lat and lon for each 
@@ -315,9 +340,9 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 
 	
 	# Summarize number of detections and mean lat and lon for each receiver group
-	summaryNumDetections <- plyr::ddply(detections, plyr::.(location), plyr::summarise, 
-		Summary = length(timestamp), meanLat = mean(lat), meanLon = mean(long), 
-		.drop = FALSE)
+	summaryNumDetections <- plyr::ddply(detections, plyr::.(location), 
+	  plyr::summarise, Summary = length(timestamp), meanLat = mean(lat), 
+	  meanLon = mean(long), .drop = FALSE)
     
 	# If showAll = TRUE, append receiver groups with no detections to the summary
 	if(showAll){
@@ -329,26 +354,26 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 	# Re-order the summaries so that sites with detections plot on top of sites 
 	#  without. Makes it easier to see detected locations when they are close 
 	#  enough together that the bubbles overlap    
-	summaryNumFish <- summaryNumFish[order(summaryNumFish$Summary),]
+	summaryNumFish <- summaryNumFish[order(summaryNumFish$Summary), ]
 	summaryNumDetections <- summaryNumDetections[order(
-		summaryNumDetections$Summary),]
+		summaryNumDetections$Summary), ]
 	
 	# Create labs with degrees symbol for plots
 	xlabs <- round(seq(from = xLimits[1], to = xLimits[2], 
-		length.out = 5),2)
+		length.out = 5), 2)
 	ylabs <- round(seq(from = yLimits[1], to = yLimits[2], 
-		length.out = 5),2)
+		length.out = 5), 2)
 	
 	# Define the color palette used to color-code the bubbles
 	color <- c(colorRampPalette(colGrad)(101))
 	
 	# Calculate the location to plot the color scale
-	scaleLoc <- c(xLimits[1] + ((xLimits[2] - xLimits[1])*0.025), 
-		yLimits[1] + ((yLimits[2] - yLimits[1])*0.25), xLimits[1] + ((xLimits[2] - 
-		xLimits[1])*0.05), yLimits[2] - ((yLimits[2] - yLimits[1])*0.25))
+	scaleLoc <- c(xLimits[1] + ((xLimits[2] - xLimits[1])  *0.025), 
+		yLimits[1] + ((yLimits[2] - yLimits[1]) * 0.25), xLimits[1] + ((xLimits[2] - 
+		xLimits[1]) * 0.05), yLimits[2] - ((yLimits[2] - yLimits[1]) * 0.25))
 	
 	# Calculate the aspect ratio for the figure
-	figRatio <- (yLimits[2] - yLimits[1])/(xLimits[2] - xLimits[1])*1.4
+	figRatio <- (yLimits[2] - yLimits[1]) / (xLimits[2] - xLimits[1]) * 1.4
     
 	# Make two plots, one for each number of unique fish and number of detections    
 	for(i in c("summaryNumFish", "summaryNumDetections")){
@@ -356,32 +381,33 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 		temp <- get(i)
 		
 		# Open png file
-		png(filename = paste0("BubblePlot_", i, ".png"), height = 1000*figRatio, 
+		png(filename = paste0("BubblePlot_", i, ".png"), height = 1000 * figRatio, 
 			width = 1000, pointsize = 28)
 			
 		# Set margins
 		par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))	    
 		
 		# Plot background image
-		plot(ocean_poly, xlim = xLimits, ylim = yLimits, axes = T, asp = 1.4, xaxs = "i", 
-			lwd = 1.5, xaxt = 'n', yaxt = 'n', col = "White", bg="WhiteSmoke")
+		plot(ocean_poly, xlim = xLimits, ylim = yLimits, axes = T, asp = 1.4, 
+		  xaxs = "i", lwd = 1.5, xaxt = 'n', yaxt = 'n', col = "White", 
+		  bg="WhiteSmoke")
 		
 		if(showAll){
 			# Plot the bubbles for zeros
 			symbols(temp$meanLon[temp$Summary == 0], temp$meanLat[temp$Summary == 0], 
-				circles = rep((xLimits[2]-xLimits[1])*symbolRadius/100, 
+				circles = rep((xLimits[2] - xLimits[1]) * symbolRadius / 100, 
 				length(temp$meanLon[temp$Summary == 0])),add = T, inches = FALSE, 
 				bg = "white", fg = "black", lwd = 3)
 			# Add 'X' to bubbles with no detections
 			text(temp$meanLon[temp$Summary == 0], temp$meanLat[temp$Summary == 0], 
-				"X", cex=0.6*symbolRadius)
+				"X", cex = 0.6 * symbolRadius)
 		}
 		 # Plot the bubbles for non-zeros
 		symbols(temp$meanLon[temp$Summary != 0], temp$meanLat[temp$Summary != 0], 
-			circles = rep((xLimits[2]-xLimits[1])*symbolRadius/100, 
+			circles = rep((xLimits[2] - xLimits[1]) * symbolRadius / 100, 
 			length(temp$meanLon[temp$Summary != 0])),add = T, inches = FALSE, 
-			bg = color[round(temp$Summary[temp$Summary != 0]/
-			max(temp$Summary)*100, 0) + 1], fg = "black", lwd = 3)
+			bg = color[round(temp$Summary[temp$Summary != 0] /
+			max(temp$Summary) * 100, 0) + 1], fg = "black", lwd = 3)
 		
 		# Add color legend
 		plotrix::color.legend(scaleLoc[1], scaleLoc[2], scaleLoc[3], scaleLoc[4], 
@@ -389,11 +415,11 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 				0)), color, gradient="y", family = "sans", cex = 0.5, align = 'rb')
 		
 		# Add x-axis and title
-		axis(1, at = xlabs, labels = paste0(format(xlabs,5), "°"), cex.axis = 1)
+		axis(1, at = xlabs, labels = paste0(format(xlabs, 5), "°"), cex.axis = 1)
 		mtext("Longitude", side = 1, line = 2.5, cex = 1)
 		
 		# Add y-axis and title
-		axis(2, at = ylabs, labels = paste0(format(ylabs,4), "°"), cex.axis = 1, 
+		axis(2, at = ylabs, labels = paste0(format(ylabs, 4), "°"), cex.axis = 1, 
 			las = 1)
 		mtext("Latitude", side = 2, line = 4, cex = 1)
 
@@ -404,8 +430,8 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 	}
    
 	message(paste0("png files were written to the following directory:\n", 
-		getwd(),"\n"))
+		getwd(), "\n"))
 	
-	return(list(summaryNumFish=summaryNumFish, 
-		summaryNumDetections=summaryNumDetections))
+	return(list(summaryNumFish = summaryNumFish, 
+		summaryNumDetections = summaryNumDetections))
 }		
