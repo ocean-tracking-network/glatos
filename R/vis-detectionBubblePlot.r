@@ -78,6 +78,13 @@
 #'     which the fish were detected (FALSE).
 #' } which are defined by \code{type}
 #' 
+#' @param outFile An optional character string with the name (including 
+#'   extension) of output file created. File extension will determine type of 
+#'   file written. For example, \code{"BubblePlot.png"} will write a png 
+#'   file to the working directory. If \code{NULL} (default) then the plot will 
+#'   be printed to the default plot device will be used. Supported extensions: 
+#'   png, jpeg, bmp, and tiff.
+#' 
 #' @details If \code{mapPars$showAll} is TRUE then the plot will show all 
 #'   receivers, including those that detected none of the transmitters in 
 #'   \code{detections}. In that case, it will first be determined if a receiver 
@@ -127,32 +134,14 @@
 #' data(greatLakesPoly)
 #' plot(greatLakesPoly)
 #' 
-#' detectionBubblePlot(walleye_detections, receiverLocs=recLoc_example,
-#'   mapParms=list(symbolRadius = 1.4,colGrad = c("white", "blue"), showAll=T))
+#' detectionBubblePlot(walleye_detections, receiverLocs = recLoc_example,
+#'   mapParms = list(symbolRadius = 1.4,colGrad = c("white", "blue"), 
+#'   showAll = T))
 #'
 #' @export
 
-# My changes:
-# Changed the column names to work with OTN, GLATOS, and sample data
-# Changed map parameters to use OTN area
-# Changed map (SpatialPolygonDataFrame) to use data from NaturalEarthData
-
-# To use:
-# For sample data, detectionBubble(detSampleDBP, recSampleDBP, "sample", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
-# For glatos data, abacusPlot(glatos, glatosR "GLATOS", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
-# For OTN data, abacusPlot(otn, otnR, "OTN", "/Users/dinian/Desktop/glatos/data/ne_110m_ocean/ne_110m_ocean.shp")
-
 detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS", 
-  map = NULL){
-  
-  # #Libraries used for SpatialPolygonDataFrame
-  # library(maptools)
-  # library(rgdal)
-  # library(raster)
-  # library(maps)
-  # library(mapdata)
-  # library(marmap)
-  # library(lattice)
+  map = NULL, outFile = NULL){
   
   if(type == "GLATOS") { #Sets different attributes for GLATOS data
     detColNames = list(locationCol = "glatos_array", 
@@ -374,11 +363,31 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 	for(i in c("summaryNumFish", "summaryNumDetections")){
 		
 		temp <- get(i)
+
+		#get file extension
+		file_type <- ifelse(is.null(outFile), NA, tools::file_ext(outFile))
 		
-		# Open png file
-		png(filename = paste0("BubblePlot_", i, ".png"), height = 1000 * figRatio, 
-			width = 1000, pointsize = 28)
-			
+		#check file extension is supported
+		ext_supp <- c(NA, "png", "jpeg", "png", "bmp", "tiff")
+		if(!(tolower(file_type) %in% ext_supp))
+		  stop(paste0("Image type '", file_type, "' is not supported."), 
+		    call. = FALSE)
+		
+		if(!is.null(outFile)){
+		  outFile_i <- file.path(dirname(outFile), paste0(i, "_", basename(outFile)))
+		
+		  if(!is.na(file_type) & tolower(file_type) == 'png')
+		    png(outFile_i, height = 1000 * figRatio, width = 1000, pointsize = 28)
+		  if(!is.na(file_type) & tolower(file_type) == 'jpeg')
+		    jpeg(outFile_i, height = 1000 * figRatio, width = 1000, pointsize = 28)
+	  	if(!is.na(file_type) & tolower(file_type) == 'bmp')
+		    bmp(outFile_i, height = 1000 * figRatio, width = 1000, pointsize = 28)
+		  if(!is.na(file_type) & tolower(file_type) == 'tiff')
+		    tiff(outFile_i, height = 1000 * figRatio, width = 1000, pointsize = 28)  
+		}	
+		  
+		if(is.null(outFile)) x11(height = 7 * figRatio, width = 7)
+		
 		# Set margins
 		par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))	    
 		
@@ -419,14 +428,15 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 		mtext("Latitude", side = 2, line = 4, cex = 1)
 
 		box()
-	
-		# Close the png file       
-		dev.off()
+
+		if(!is.na(file_type))	dev.off() 	# Close plot device 
+		  
 	}
    
-	message(paste0("png files were written to the following directory:\n", 
-		getwd(), "\n"))
+	if(!is.na(file_type)) 
+	  message(paste0("Image files were written to the following directory:\n", 
+		  getwd(), "\n"))
 	
-	return(list(summaryNumFish = summaryNumFish, 
-		summaryNumDetections = summaryNumDetections))
+	  return(list(summaryNumFish = summaryNumFish, 
+		  summaryNumDetections = summaryNumDetections))
 }		

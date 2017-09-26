@@ -5,7 +5,7 @@
 \title{Plot number of tagged animals or detections on a map}
 \usage{
 detectionBubblePlot(detections, receiverLocs = NULL, type = "GLATOS",
-  map = NULL)
+  map = NULL, outFile = NULL)
 }
 \arguments{
 \item{detections}{A data frame containing detection data with at least 
@@ -22,6 +22,13 @@ passed in, for example, "OTN", "GLATOS", or "sample".}
 \item{map}{is an optional SpatialPolygonsDataFrame or other
 geo-referenced object to be plotted as the background for the plot. It is 
 defined by \code{type}.}
+
+\item{outFile}{An optional character string with the name (including 
+extension) of output file created. File extension will determine type of 
+file written. For example, \code{"BubblePlot.png"} will write a png 
+file to the working directory. If \code{NULL} (default) then the plot will 
+be printed to the default plot device will be used. Supported extensions: 
+png, jpeg, bmp, and tiff.}
 
 \item{detColNames}{is defined as a list with names of required columns in 
   \code{detections}, defined by \code{type}: 
@@ -136,8 +143,9 @@ library(sp) #to avoid errors plotting SpatialPolygonsDataFrame
 data(greatLakesPoly)
 plot(greatLakesPoly)
 
-detectionBubblePlot(walleye_detections, receiverLocs=recLoc_example,
-  mapParms=list(symbolRadius = 1.4,colGrad = c("white", "blue"), showAll=T))
+detectionBubblePlot(walleye_detections, receiverLocs = recLoc_example,
+  mapParms = list(symbolRadius = 1.4,colGrad = c("white", "blue"), 
+  showAll = T))
 
 }
 \author{
