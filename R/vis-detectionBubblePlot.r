@@ -110,9 +110,7 @@
 #'
 #' @return Two png files containing bubble plots for number of unique fish 
 #'   detected ("BubblePlot_summaryNumFish.png") and total detections 
-#'   ("BubblePlot_summaryNumDetections.png") are also written to the working 
-#'   directory. Summary data for each plot are also written to CSV files 
-#'   in the working directory.
+#'   ("BubblePlot_summaryNumDetections.png").
 #'
 #' @author T. R. Binder, edited by A. Dini
 #' 
@@ -336,9 +334,7 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 			summaryNumFish <- rbind(summaryNumFish, summaryReceivers)
 	}
     
-	write.csv(summaryNumFish, "NumFish.csv", row.names = FALSE)
 
-	
 	# Summarize number of detections and mean lat and lon for each receiver group
 	summaryNumDetections <- plyr::ddply(detections, plyr::.(location), 
 	  plyr::summarise, Summary = length(timestamp), meanLat = mean(lat), 
@@ -348,8 +344,6 @@ detectionBubblePlot <- function(detections, receiverLocs = NULL, type = "GLATOS"
 	if(showAll){
 			summaryNumDetections <- rbind(summaryNumDetections, summaryReceivers)
 	}
-	
-	write.csv(summaryNumDetections, "NumDetections.csv", row.names = FALSE)
 	
 	# Re-order the summaries so that sites with detections plot on top of sites 
 	#  without. Makes it easier to see detected locations when they are close 
