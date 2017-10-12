@@ -4,8 +4,8 @@
 \alias{velTest}
 \title{Check if measured velocity of a tagged animal is within plausible range}
 \usage{
-To use: For GLATOS data, velTest(data, "GLATOS") For OTN data,
- velTest(data, "OTN") For sample data, velTest(data, "sample")
+velTest(detections, maxVelocity = NA, type = "GLATOS",
+  detColNames = list())
 }
 \arguments{
 \item{detections}{A data frame containing detection data with at least 5 
@@ -13,15 +13,15 @@ columns containing 'timestamp', 'transmitters', 'receivers', 'longitude',
 and 'latitude'. Column names are specified by \code{detColNames} or 
 indirectly by \code{type} (for GLATOS and OTN data).}
 
+\item{maxVelocity}{The maximum expected velocity ('ground speed') of a tagged 
+animal, in meters per second.}
+
 \item{type}{A character string with the type of detection data
 passed in, if applicable. Acceptable values are "GLATOS" (default) or "OTN".
  Not used (ignored) when \code{detColNames} is used.}
 
 \item{detColNames}{An optional list that contains the user-defined column 
 names of reuired columns in \code{detections}. See Details.}
-
-\item{maxVelocity}{The maximum expected velocity ('ground speed') of a tagged 
-animal, in meters per second.}
 }
 \value{
 A data frame containing the data with the four columns appended to it:
@@ -69,6 +69,13 @@ Each value in the min_vel column indicates the value in the min_dist
 
 Each value in the velValid column indicates whether the value in the
  min_vel column is greater than the threshold 'maxVelocity'.
+}
+\examples{
+
+#for GLATOS data
+data(walleye_detections)
+velTest(walleye_detections, 5.0)
+ 
 }
 \references{
 (in APA) Steckenreuter, A., Hoenner, X., Huveneers, C.,

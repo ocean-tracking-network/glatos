@@ -63,13 +63,20 @@
 #'  
 #'@author A. Dini
 #'  
-#'@usage To use: For GLATOS data, velTest(data, "GLATOS") For OTN data,
-#'  velTest(data, "OTN") For sample data, velTest(data, "sample")
+#'@examples
+#'
+#'#for GLATOS data
+#'data(walleye_detections)
+#'velTest(walleye_detections, 5.0)
 #'  
 #' @export
 
-velTest <- function(detections, type = "GLATOS", detColNames = list(), 
-  maxVelocity = NA) {
+velTest <- function(detections, maxVelocity = NA, type = "GLATOS", 
+  detColNames = list()) {
+  
+  #check if maxVelocity specified
+  if(is.na(maxVelocity)) stop("input argument 'maxVelocity' must be specified.")
+  
   #Different column names from different types of data
   #Set different minimum velocity values to test against
   # Check if user has set column names
@@ -107,7 +114,7 @@ velTest <- function(detections, type = "GLATOS", detColNames = list(),
   
   
   # Check that timestamp is of class 'POSIXct'
-  if(!('POSIXct' %in% class(data2$timestampCol))){
+  if(!('POSIXct' %in% class(data2$timestamp))){
     stop(paste0("Column '", detColNames$timestampCol,
                 "' in the detections dataframe must be of class 'POSIXct'."),
          call. = FALSE)
