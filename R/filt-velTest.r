@@ -90,19 +90,7 @@ velTest <- function(detections, type = "GLATOS", detColNames = list(),
       stop(paste0("The type '", type, "' is not defined."), call. = FALSE)
     }
   }
-  # Check if user has defined minimum velocity
-  if(maxVelocity == -100) {
-    if(type == "sample") { #Set minimum velocity for sample data
-      maxVelocity <- 1
-    } else if (type == "GLATOS") { #Set minimum velocity for GLATOS data
-      maxVelocity <- 10
-    } else if (type == "OTN") { #Set minimum velocity for OTN data
-      maxVelocity <- 10
-    } else { #Other type
-      stop(paste0("The type '", type, "' is not defined."), call. = FALSE)
-    }
-  }
-  
+
   # Check that the specified columns appear in the detections dataframe
   missingCols <- setdiff(unlist(detColNames), names(detections))
   if (length(missingCols) > 0){
