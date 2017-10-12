@@ -71,9 +71,7 @@ velTest <- function(detections, type = "GLATOS", detColNames=list(), minVelValue
   #Set different minimum velocity values to test against
   # Check if user has set column names
   if(length(detColNames) == 0) {
-    if(type == "sample") { #Set column names for sample data
-      detColNames <- list(timestampCol = "time", transmittersCol = "transmitter", receiversCol = "receiver", longCol = "longitude", latCol = "latitude")
-    } else if (type == "GLATOS") { #Set column names for GLATOS data
+    if(type == "GLATOS") { #Set column names for GLATOS data
       detColNames <- list(timestampCol = "detection_timestamp_utc", transmittersCol = "transmitter_id", receiversCol = "receiver_sn", longCol = "deploy_long", latCol = "deploy_lat")
     } else if (type == "OTN") { #Set column names for OTN data
       detColNames <- list(timestampCol = "datecollected", transmittersCol = "tagname", receiversCol = "receiver_group", longCol = "longitude", latCol = "latitude")
