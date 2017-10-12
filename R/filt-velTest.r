@@ -66,7 +66,8 @@
 #'  
 #' @export
 
-velTest <- function(detections, type = "GLATOS", detColNames=list(), minVelValue=-100) {
+velTest <- function(detections, type = "GLATOS", detColNames = list(), 
+  minVelValue = -100) {
   #Different column names from different types of data
   #Set different minimum velocity values to test against
   # Check if user has set column names
@@ -84,7 +85,7 @@ velTest <- function(detections, type = "GLATOS", detColNames=list(), minVelValue
                           longCol = "longitude", 
                           latCol = "latitude")
     } else { #Other type
-      stop(paste0("The type '", type, "' is not defined."), call.=FALSE)
+      stop(paste0("The type '", type, "' is not defined."), call. = FALSE)
     }
   }
   # Check if user has defined minimum velocity
@@ -96,7 +97,7 @@ velTest <- function(detections, type = "GLATOS", detColNames=list(), minVelValue
     } else if (type == "OTN") { #Set minimum velocity for OTN data
       minVelValue <- 10
     } else { #Other type
-      stop(paste0("The type '", type, "' is not defined."), call.=FALSE)
+      stop(paste0("The type '", type, "' is not defined."), call. = FALSE)
     }
   }
   
@@ -104,64 +105,73 @@ velTest <- function(detections, type = "GLATOS", detColNames=list(), minVelValue
   missingCols <- setdiff(unlist(detColNames), names(detections))
   if (length(missingCols) > 0){
     stop(paste0("Detections dataframe is missing the following ",
-                "column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-         call.=FALSE)
+                "column(s):\n", paste0("       '", missingCols, "'", 
+                collapse="\n")), call. = FALSE)
   }
   
   # Subset detections with only user-defined columns and change names
   # this makes code easier to understand (especially ddply)
-  data2 <- detections[,unlist(detColNames)] #subset
-  names(data2) <- c("timestamp", "transmitters","receivers","long", "lat")
+  data2 <- detections[ ,unlist(detColNames)] #subset
+  names(data2) <- c("timestamp", "transmitters", "receivers", "long", "lat")
   # data2$num <- as.numeric(data2$timestamp)
   
   
   # Check that timestamp is of class 'POSIXct'
   if(!('POSIXct' %in% class(data2$timestampCol))){
-    stop(paste0("Column '",detColNames$timestampCol,
+    stop(paste0("Column '", detColNames$timestampCol,
                 "' in the detections dataframe must be of class 'POSIXct'."),
-         call.=FALSE)
+         call. = FALSE)
   }
   
   #Set of points, which are made up of: (longitude, latitude)
-  points <- data.frame(long=data2$long, lat=data2$lat)
+  points <- data.frame(long = data2$long, lat = data2$lat)
   
-  #Gets list of points before the current and after the current point (lag and lead, respectively)
-  pointsBefore <- data.frame(long=dplyr::lag(data2$long), lat=dplyr::lag(data2$lat))
-  pointsAfter <- data.frame(long=dplyr::lead(data2$long), lat=dplyr::lead(data2$lat))
+  #Gets list of points before the current and after the current point (lag and
+  #lead, respectively)
+  pointsBefore <- data.frame(long = dplyr::lag(data2$long), 
+                             lat = dplyr::lag(data2$lat))
+  pointsAfter <- data.frame(long = dplyr::lead(data2$long), 
+                            lat = dplyr::lead(data2$lat))
   
-  #Calculates distance between each set of points by calculating distance between previous and current point, and distance between current and next point and labelling each list distB and distA, respectively
-  distB <- geosphere::distHaversine(pointsBefore[,c('long', 'lat')], points[,c('long','lat')])
-  distA <- geosphere::distHaversine(points[,c('long', 'lat')], pointsAfter[,c('long', 'lat')])
+  #Calculates distance between each set of points by calculating distance
+  #between previous and current point, and distance between current and next
+  #point and labelling each list distB and distA, respectively
+  distB <- geosphere::distHaversine(pointsBefore[ , c('long', 'lat')], 
+                                    points[ , c('long', 'lat')])
+  distA <- geosphere::distHaversine(points[ , c('long', 'lat')], 
+                                    pointsAfter[ , c('long', 'lat')])
   
   #Get minimum of distance before point and distance after point
-  distances <- data.frame(distB=distB, distA=distA)
-  di <- apply(distances, 1, function(x) min(x, na.rm=TRUE))
+  distances <- data.frame(distB = distB, distA = distA)
+  di <- apply(distances, 1, function(x) min(x, na.rm = TRUE))
   detections$min_dist <- di #Find minimum distance of before and after
   
-  #Calculate minimum time (min_time) between current point and the point before or after
+  #Calculate min time (min_time) between current point and points before/after
   n <- as.numeric(data2$timestamp)
   lagBefore <- n - dplyr::lag(n) #Time between current point and before point
-  lagAfter <- dplyr::lead(n)-n #Time between current point and after point
+  lagAfter <- dplyr::lead(n) - n #Time between current point and after point
   d <- data.frame(before = lagBefore, after = lagAfter)
-  mLag <- apply(d, 1, function(x) min(x, na.rm=TRUE)) #Minimum of time before and after
+  mLag <- apply(d, 1, function(x) min(x, na.rm = TRUE)) #Min time before/after
   detections$min_time <- mLag
   
-  #Calculate minimum velocity (min_vel) between current point and the point before or after
+  #Calculate min velocity (min_vel) between current point and points before/after
   detections$min_vel<- apply(detections, 1, function(x) {
     timeS <- as.numeric(x["min_time"])
     # if(is.na(timeS))
     #   timeS <- strsplit(x["min_time"], " ")[[1]][1]
-    if(timeS == 0) { #If time of current point and before or after point is the same, return 0 as dividing it will give an error
+    #If time of current point and before or after point is the same, return 0 as
+    #dividing it will give an error
+    if(timeS == 0) { 
       0
     } else {
-      as.numeric(x["min_dist"])/as.numeric(timeS) #Dividing distance and time to calculate minimum speed
+      as.numeric(x["min_dist"]) / as.numeric(timeS) #calculate minimum speed
     }
   })
   
-  #Check if min_vel is valid (below the threshold, minVelValue) (1 if yes, 0 if no)
-  detections$velValid<-apply(detections, 1, function(x) {
-    val<-as.numeric(x["min_vel"])
-    if (val<minVelValue) {
+  #Check if min_vel is valid (< threshold, minVelValue) (1 if yes, 0 if no)
+  detections$velValid <- apply(detections, 1, function(x) {
+    val <- as.numeric(x["min_vel"])
+    if (val < minVelValue) {
       1 #valid
     } else {
       0 #not valid
