@@ -1,76 +1,72 @@
-#' Perform velocity test (Steckenreuter et al., 2016), which checks if the minimum velocity is above a threshold
-#'   and returns a validity column using the geosphere and dplyr libraries
+#'Perform velocity test (Steckenreuter et al., 2017), which checks if the 
+#'minimum velocity is above a threshold and returns a validity column using the 
+#'geosphere and dplyr libraries
 #'
-#' @param detections A data frame containing detection data with at least 
-#'   5 columns containing 'timestamp', 'transmitters', 'receivers', 'longitude', and 'latitude'. 
-#'   Column names are specified by \code{type}.
-#'   
-#' @param type A character string that contains the type of data that is being passed in,
-#'   for example, "OTN", "GLATOS", or "sample".
-#' 
-#' @param detColNames An optional list that contains the user-defined column names
-#' 
-#' @param minVelValue An optional integer that contains the minimum velocity
-#'   
-#' @details detColNames is defined as a list with the names of the required columns in
-#' \code{detections}:
-#'  \itemize{
-#'    \item \code{timestampCol} is a character string with the name of the column
-#'    containing datetime stamps for the detections (MUST be of class 'POSIXct')
-#'    ('detection_timestamp_utc' for GLATOS data, 'datecollected' for OTN data, or
-#'                                                 'time' for sample data).
-#'    \item \code{transmittersCol} is a character string with the name of the column
-#'     containing the ids of the transmitters
-#'     ('transmission_id' for GLATOS data, 'tagname' for OTN data, or 'transmitter'
-#'                                                 for sample data).
-#'     \item \code{receiversCol} is a character string with the name of the column
-#'     containing the ids of the receivers
-#'     ('receiver_sn' for GLATOS data, 'receiver_group' for OTN data, or 'receiver'
-#'                                                 for sample data).
-#'     \item \code{longitudeCol} is a character string with the name of the column
-#'     containing the longitude coordinate for the detections
-#'     ('deploy_long' for GLATOS data, 'longitude' for OTN data, or 'longitude' for 
-#'                                                 sample data).
-#'     \item \code{latitudeCol} is a character string with the name of the column
-#'     containing the latitude coordinate for the detections
-#'     ('deploy_lat' for GLATOS data, 'latitude' for OTN data, or 'latitude' for
-#'                                                 sample data).
-#'   }
-#'
-#' @details Each value in the min_dist column indicates the minimum of the distance between the 
-#'   current instance and instance before, and the distance between the current instance and the
-#'   instance after
-#' @details Each value in the min_time column indicates the minimum of the time between the
-#'   current instance and instance before, and the time between the current instance and the
-#'   instance after
-#' @details Each value in the min_vel column indicates the value in the min_dist column divided by
-#'   the value in the min_time column
-#' @details Each value in the velValid column indicates whether the value in the min_vel column
-#'   is greater than the threshold 'minVelValue'
-#' 
-#' @return A data frame containing the data with the four columns appended to it:
-#'	\item{min_dist}{Minimum of the distance between the current instance and instance 
-#'	  before, and the distance between the current instance and the instance after.}
-#' 	\item{min_time}{Minimum of the time between the current instance and instance 
-#'	  before, and the time between the current instance and the instance after.}
-#' 	\item{min_vel}{The min_dist value divided by the min_time value.} 
-#'  \item{velValid}{A value to check if the min_vel value is greater than or equal to (1), or less than (0)
-#'    the threshold.}
-#'
-#' @references (in APA) Steckenreuter, A., Hoenner, X., Huveneers, C., Simpfendorfer, C., Buscot, M.J., 
-#'   Tattersall, K., ... Harcourt, R. (2016). Optimising the design of large-scale acoustic telemetry
-#'   curtains. Marine and Freshwater Research. doi: 10.1071/mf/16126
-#' 
-#' @author A. Dini
-#'
-#' @usage To use:
-#'   For GLATOS data, velTest(data, "GLATOS")
-#'   For OTN data, velTest(data, "OTN")
-#'   For sample data, velTest(data, "sample")
-#'
+#'@param detections A data frame containing detection data with at least 5 
+#'  columns containing 'timestamp', 'transmitters', 'receivers', 'longitude', 
+#'  and 'latitude'. Column names are specified by \code{detColNames} or 
+#'  indirectly by \code{type} (for GLATOS and OTN data).
+#'  
+#'@param type A character string with the type of detection data  
+#'  passed in, if applicable. Acceptable values are "GLATOS" (default) or "OTN".
+#'   Not used (ignored) when \code{detColNames} is used.
+#'  
+#'@param detColNames An optional list that contains the user-defined column 
+#'  names of reuired columns in \code{detections}. See Details.
+#'  
+#'@param minVelValue An optional integer that contains the minimum velocity
+#'  
+#'@details detColNames A list with the names of the required
+#'  columns in \code{detections}: \itemize{ \item \code{timestampCol} is a
+#'  character string with the name of the column containing datetime stamps for
+#'  the detections (MUST be of class 'POSIXct') ('detection_timestamp_utc' for
+#'  GLATOS data, 'datecollected' for OTN data, or 'time' for sample data). \item
+#'  \code{transmittersCol} is a character string with the name of the column 
+#'  containing the ids of the transmitters ('transmission_id' for GLATOS data,
+#'  'tagname' for OTN data, or 'transmitter' for sample data). \item
+#'  \code{receiversCol} is a character string with the name of the column 
+#'  containing the ids of the receivers ('receiver_sn' for GLATOS data,
+#'  'receiver_group' for OTN data, or 'receiver' for sample data). \item
+#'  \code{longitudeCol} is a character string with the name of the column 
+#'  containing the longitude coordinate for the detections ('deploy_long' for
+#'  GLATOS data, 'longitude' for OTN data, or 'longitude' for sample data). 
+#'  \item \code{latitudeCol} is a character string with the name of the column 
+#'  containing the latitude coordinate for the detections ('deploy_lat' for
+#'  GLATOS data, 'latitude' for OTN data, or 'latitude' for sample data). }
+#'  
+#'@details Each value in the min_dist column indicates the minimum of the
+#'  distance between the current instance and instance before, and the distance
+#'  between the current instance and the instance after.
+#'@details Each value in the min_time column indicates the minimum of the time
+#'  between the current instance and instance before, and the time between the
+#'  current instance and the instance after.
+#'@details Each value in the min_vel column indicates the value in the min_dist
+#'  column divided by the value in the min_time column.
+#'@details Each value in the velValid column indicates whether the value in the
+#'  min_vel column is greater than the threshold 'minVelValue'.
+#'  
+#'@return A data frame containing the data with the four columns appended to it:
+#'  \item{min_dist}{Minimum of the distance between the current instance and
+#'  instance before, and the distance between the current instance and the
+#'  instance after.} \item{min_time}{Minimum of the time between the current
+#'  instance and instance before, and the time between the current instance and
+#'  the instance after.} \item{min_vel}{The min_dist value divided by the
+#'  min_time value.} \item{velValid}{A value to check if the min_vel value is
+#'  greater than or equal to (1), or less than (0) the threshold.}
+#'  
+#'@references (in APA) Steckenreuter, A., Hoenner, X., Huveneers, C.,
+#'  Simpfendorfer, C., Buscot, M.J., Tattersall, K., ... Harcourt, R. (2016).
+#'  Optimising the design of large-scale acoustic telemetry curtains. Marine and
+#'  Freshwater Research. doi: 10.1071/mf/16126
+#'  
+#'@author A. Dini
+#'  
+#'@usage To use: For GLATOS data, velTest(data, "GLATOS") For OTN data,
+#'  velTest(data, "OTN") For sample data, velTest(data, "sample")
+#'  
 #' @export
 
-velTest <- function(detections, type, detColNames=list(), minVelValue=-100) {
+velTest <- function(detections, type = "GLATOS", detColNames=list(), minVelValue=-100) {
   #Different column names from different types of data
   #Set different minimum velocity values to test against
   # Check if user has set column names
