@@ -1,4 +1,5 @@
-# Sample data for the code I have written so far
+# Sample data for the code contributed by Angela Dini.
+# Currently not used in the package.
 
 # Sample code for getMinLag.R:
 # id  time                  transmitter   receiver
