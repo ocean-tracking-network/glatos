@@ -1,6 +1,7 @@
-#'Perform velocity test (Steckenreuter et al., 2017), which checks if the 
-#'minimum velocity is above a threshold and returns a validity column using the 
-#'geosphere and dplyr libraries
+#'Check if measured velocity of a tagged animal is within plausible range
+#' 
+#'Perform velocity test (Steckenreuter et al., 2017), which checks if 
+#'measured velocity exceeds a threshold (maximum velocity).
 #'
 #'@param detections A data frame containing detection data with at least 5 
 #'  columns containing 'timestamp', 'transmitters', 'receivers', 'longitude', 
@@ -14,7 +15,8 @@
 #'@param detColNames An optional list that contains the user-defined column 
 #'  names of reuired columns in \code{detections}. See Details.
 #'  
-#'@param minVelValue An optional integer that contains the minimum velocity
+#'@param maxVelocity The maximum expected velocity ('ground speed') of a tagged 
+#'  animal, in meters per second.
 #'  
 #'@details detColNames A list with the names of the required
 #'  columns in \code{detections}: \itemize{ \item \code{timestampCol} is a
@@ -43,7 +45,7 @@
 #'@details Each value in the min_vel column indicates the value in the min_dist
 #'  column divided by the value in the min_time column.
 #'@details Each value in the velValid column indicates whether the value in the
-#'  min_vel column is greater than the threshold 'minVelValue'.
+#'  min_vel column is greater than the threshold 'maxVelocity'.
 #'  
 #'@return A data frame containing the data with the four columns appended to it:
 #'  \item{min_dist}{Minimum of the distance between the current instance and
@@ -52,7 +54,7 @@
 #'  instance and instance before, and the time between the current instance and
 #'  the instance after.} \item{min_vel}{The min_dist value divided by the
 #'  min_time value.} \item{velValid}{A value to check if the min_vel value is
-#'  greater than or equal to (1), or less than (0) the threshold.}
+#'  greater than or equal to (0), or less than (1) the \code{maxVelocity}.}
 #'  
 #'@references (in APA) Steckenreuter, A., Hoenner, X., Huveneers, C.,
 #'  Simpfendorfer, C., Buscot, M.J., Tattersall, K., ... Harcourt, R. (2017).
@@ -67,7 +69,7 @@
 #' @export
 
 velTest <- function(detections, type = "GLATOS", detColNames = list(), 
-  minVelValue = -100) {
+  maxVelocity = NA) {
   #Different column names from different types of data
   #Set different minimum velocity values to test against
   # Check if user has set column names
@@ -89,13 +91,13 @@ velTest <- function(detections, type = "GLATOS", detColNames = list(),
     }
   }
   # Check if user has defined minimum velocity
-  if(minVelValue == -100) {
+  if(maxVelocity == -100) {
     if(type == "sample") { #Set minimum velocity for sample data
-      minVelValue <- 1
+      maxVelocity <- 1
     } else if (type == "GLATOS") { #Set minimum velocity for GLATOS data
-      minVelValue <- 10
+      maxVelocity <- 10
     } else if (type == "OTN") { #Set minimum velocity for OTN data
-      minVelValue <- 10
+      maxVelocity <- 10
     } else { #Other type
       stop(paste0("The type '", type, "' is not defined."), call. = FALSE)
     }
@@ -168,10 +170,10 @@ velTest <- function(detections, type = "GLATOS", detColNames = list(),
     }
   })
   
-  #Check if min_vel is valid (< threshold, minVelValue) (1 if yes, 0 if no)
+  #Check if min_vel is valid (< threshold, maxVelocity) (1 if yes, 0 if no)
   detections$velValid <- apply(detections, 1, function(x) {
     val <- as.numeric(x["min_vel"])
-    if (val < minVelValue) {
+    if (val < maxVelocity) {
       1 #valid
     } else {
       0 #not valid
