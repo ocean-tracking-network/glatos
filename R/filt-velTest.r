@@ -72,9 +72,17 @@ velTest <- function(detections, type = "GLATOS", detColNames=list(), minVelValue
   # Check if user has set column names
   if(length(detColNames) == 0) {
     if(type == "GLATOS") { #Set column names for GLATOS data
-      detColNames <- list(timestampCol = "detection_timestamp_utc", transmittersCol = "transmitter_id", receiversCol = "receiver_sn", longCol = "deploy_long", latCol = "deploy_lat")
+      detColNames <- list(timestampCol = "detection_timestamp_utc", 
+                     transmittersCol= "transmitter_id", 
+                     receiversCol = "receiver_sn", 
+                     longCol = "deploy_long", 
+                     latCol = "deploy_lat")
     } else if (type == "OTN") { #Set column names for OTN data
-      detColNames <- list(timestampCol = "datecollected", transmittersCol = "tagname", receiversCol = "receiver_group", longCol = "longitude", latCol = "latitude")
+      detColNames <- list(timestampCol = "datecollected", 
+                          transmittersCol = "tagname", 
+                          receiversCol = "receiver_group", 
+                          longCol = "longitude", 
+                          latCol = "latitude")
     } else { #Other type
       stop(paste0("The type '", type, "' is not defined."), call.=FALSE)
     }
