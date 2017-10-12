@@ -55,9 +55,9 @@
 #'  greater than or equal to (1), or less than (0) the threshold.}
 #'  
 #'@references (in APA) Steckenreuter, A., Hoenner, X., Huveneers, C.,
-#'  Simpfendorfer, C., Buscot, M.J., Tattersall, K., ... Harcourt, R. (2016).
+#'  Simpfendorfer, C., Buscot, M.J., Tattersall, K., ... Harcourt, R. (2017).
 #'  Optimising the design of large-scale acoustic telemetry curtains. Marine and
-#'  Freshwater Research. doi: 10.1071/mf/16126
+#'  Freshwater Research. 68:1403-1413. doi: 10.1071/MF16126
 #'  
 #'@author A. Dini
 #'  
