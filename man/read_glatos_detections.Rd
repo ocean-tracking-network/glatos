@@ -18,14 +18,14 @@ values are \code{NULL} and \code{"1.3"}. Any other values will trigger
 an error.}
 }
 \value{
-A data.table object of class \code{glatos_detections}:
+A data.frame of class \code{glatos_detections}:
 }
 \description{
-Read data from a GLATOS detection (csv) file and return a data.table of  
+Read data from a GLATOS detection (csv) file and return a data.frame of  
 class \code{glatos_detections}.
 }
 \details{
-For speed, data are loaded using the \code{fread} function in the 
+Data are loaded using the \code{fread} function in the 
 \code{data.table} package and timestamps are coerced to POSIXct usign the 
 \code{fastPOSIXct} function in the \code{fasttime} package. All times must be
 in UTC timezone per GLATOS standard.

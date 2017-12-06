@@ -2,7 +2,7 @@
 #' Read data from a GLATOS detection file
 #' 
 #' @description
-#' Read data from a GLATOS detection (csv) file and return a data.table of  
+#' Read data from a GLATOS detection (csv) file and return a data.frame of  
 #' class \code{glatos_detections}.
 #'
 #' @param det_file A character string with path and name of detection file in 
@@ -16,12 +16,12 @@
 #'  an error.
 #'  
 #' @details
-#' For speed, data are loaded using the \code{fread} function in the 
+#' Data are loaded using the \code{fread} function in the 
 #' \code{data.table} package and timestamps are coerced to POSIXct usign the 
 #' \code{fastPOSIXct} function in the \code{fasttime} package. All times must be
 #' in UTC timezone per GLATOS standard.
 #' 
-#' @return A data.table object of class \code{glatos_detections}:
+#' @return A data.frame of class \code{glatos_detections}:
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'
@@ -61,25 +61,28 @@ read_glatos_detections <- function(det_file, version=NULL) {
   #-Detections v1.3----------------------------------------------------------------  
   if (version == "1.3") {
 
+    col_classes <- detection_specs[["v1.3"]]$type
+    timestamp_cols <- which(col_classes == "POSIXct")
+    date_cols <- which(col_classes == "Date")
+    col_classes[c(timestamp_cols, date_cols)] <- "character"
+    
     #read data
-    colClasses <- 
-    dtc <- data.table::fread(det_file, sep = ",")
+    dtc <- data.table::fread(det_file, sep = ",", colClasses = col_classes)
     
     #coerce timestamps to POSIXct; note that with fastPOSIXct raw
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
-    dtc[ , detection_timestamp_utc := 
-             fasttime::fastPOSIXct(detection_timestamp_utc, tz = "UTC")]
-    dtc[ , utc_release_date_time := 
-             fasttime::fastPOSIXct(utc_release_date_time, tz = "UTC")]
-    
+    for (j in timestamp_cols) set(dtc, j = j, 
+                      value = fasttime::fastPOSIXct(dtc[[j]], tz = "UTC"))
     #coerce dates to date
-    dtc[glatos_caught_date == "", glatos_caught_date := NA]
-    dtc[ , glatos_caught_date := 
-        as.Date(glatos_caught_date)]
+    for (j in date_cols) {
+      set(dtc, j = j, value = ifelse(dtc[[j]] == "", NA, dtc[[j]]))
+      set(dtc, j = j, value = as.Date(dtc[[j]]))
+    }
   }
   #-end v1.3----------------------------------------------------------------
   
   #TO DO: cerce to glatos_detections (e.g., as_glatos_detections) instead of 
+  dtc <- as.data.frame(dtc)
   class(dtc) <- c("glatos_detections",class(dtc))
   
   return(dtc)
