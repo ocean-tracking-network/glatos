@@ -171,7 +171,7 @@ data(walleye_detections)
 data(greatLakesTrLayer)
 trans <- greatLakesTrLayer
 dtc <- walleye_detections
-intTimeStamp <- 86400
+intTimeStamp <- 86400/2
 rast <- greatLakesTrLayer
 lnlThresh = 0.9
 
@@ -195,44 +195,69 @@ ids <- unique(dtc$animal_id)
 dtc[, bin := tSeq[findInterval(detection_timestamp_utc, tSeq)] ]
 
 # make all combinations of animals and detection bins
-dtc <- merge(CJ(bin = tSeq, animal_id = ids), dtc, by = c("bin", "animal_id"), all.x = TRUE)
+
+	# merge detections and all possible detections 
+	#  adds NA to bins where detections did not occur
+	dtc <- merge(dtc, expand.grid(animal_id = ids, bin = tSeq), by.x = c('animal_id', 'bin'), 
+		by.y = c('animal_id', 'bin'), 
+		all = TRUE)
+setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
 # number rows by fish
 dtc[,row_num := 1:.N, by = animal_id]
 
+# extract "holes"
+holes <- dtc[!is.na(deploy_lat), .(start = .I[-nrow(.SD)], end = .I[-1]), by = animal_id]
+holes[, diff := end - start, by = animal_id][diff > 1]
+
+from <- dtc[holes[, diff:= end - start, by = animal_id][diff > 1]$start]
+to <- dtc[holes[, diff:= end - start, by = animal_id][diff > 1]$end]
+
+# combine into table
+
+sp_move <- cbind(from, to)
+names(sp_move) <- c("f_animal_id", "f_bin", "f_detection_timestamp", "f_glatos_array", "f_station_no", "f_deploy_lat", "f_deploy_long", "f_row_num", "t_animal_id", "t_bin", "t_detection_timestamp", "t_glatos_array", "t_station_no", "t_deploy_lat", "t_deploy_long", "row_num")
+
+
+#write.csv(dtc[animal_id == 3], "check.csv")
+
 # extract all changes in position
-dtc[, to_lat := data.table::shift(deploy_lat, type = "lead"), by = animal_id ]
-dtc[, to_lon := data.table::shift(deploy_long, type = "lead"), by = animal_id ]
+#dtc[, to_lat := data.table::shift(deploy_lat, type = "lead"), by = animal_id ]
+#dtc[, to_lon := data.table::shift(deploy_long, type = "lead"), by = animal_id ]
 
-setkey(dtc, deploy_lat, deploy_long, to_lat, to_lon)
-sp_move <- unique(dtc[!is.na(to_lat), .(deploy_lat, deploy_long, to_lat, to_lon), allow.cartesian = TRUE, by = animal_id])
 
-# interpolate movements
 # calculate the "great circle" (linear) distance between points 
-sp_move[, gcd := geosphere::distHaversine(as.matrix(sp_move[,.(deploy_long, deploy_lat)]), as.matrix(sp_move[, .(to_lon, to_lat)])) ]
+sp_move[, gcd := geosphere::distHaversine(as.matrix(sp_move[,.(f_deploy_long, f_deploy_lat)]), as.matrix(sp_move[, .(t_deploy_long, t_deploy_lat)])) ]
 
 # remove any with great circle dist = 0
-sp_move <- sp_move[gcd != 0]
+#sp_move <- sp_move[gcd != 0]
 
 # calculate least cost (non-linear) distance between points
+sp_move[, lcd := costDistance(trans, c(f_deploy_long, f_deploy_lat), c(t_deploy_long, t_deploy_lat)), by = 1:nrow(sp_move)]
 
-# this takes ~8 min to run on 2856 rows.
-# prehaps a "min linear dist" argument so you don't need to loop through all lines?
-sp_move[, lcd := costDistance(trans, c(deploy_long, deploy_lat), c(to_lon, to_lat)), by = 1:nrow(sp_move)]
+# calculate ratio of gcd:lcd
+sp_move[, crit := gcd/lcd]
 
 # for development purposes...
 saveRDS(sp_move, "sp_move.rds")
 sp_move <- readRDS("sp_move.rds")
 
-# extract rows that need non-linear interpolation based on ratio between gcd:lcd 
-nln <- sp_move[(gcd/lcd) >= lnlThresh, c("deploy_lat", "deploy_long", "to_lat", "to_lon")]
+# extract rows that linear interpolation based on ratio between gcd:lcd
+ln <- sp_move[crit < lnlThresh, c("f_deploy_lat", "f_deploy_long", "t_deploy_lat", "t_deploy_long")]
 
-# calculate non-linear interpolation (~ 5 min on 1443 rows)
-nln[, coord := .(sp::coordinates(gdistance::shortestPath(trans, c(deploy_long, deploy_lat), c(to_lon, to_lat), output = "SpatialLines"))), by = 1:nrow(nln)]
+# extract rows that need non-linear interpolation based on ratio between gcd:lcd 
+nln <- sp_move[ >= lnlThresh, c("f_deploy_lat", "f_deploy_long", "t_deploy_lat", "t_deploy_long")]
+
+# extract unique  movements
+setkey(nln, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
+nln <- unique(nln[,.(f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long), allow.cartesian = TRUE, by = f_animal_id])
+
+# calculate non-linear interpolation 
+nln[, coord := .(sp::coordinates(gdistance::shortestPath(trans, c(f_deploy_long, f_deploy_lat), c(t_deploy_long, t_deploy_lat), output = "SpatialLines"))), by = 1:nrow(nln)]
 
 # for development purposes...
 saveRDS(nln, "nln.rds")
-nln <- readRDS("nln.rds")
+#nln <- readRDS("nln.rds")
 
 # create group counting variable
 nln[, grp := 1:.N]
@@ -247,9 +272,10 @@ nln[, coord := NULL]
 res[, flg := 2]
 
 # add start and end coordinates to interpolated data.
-start_coords <- nln[, c("deploy_lat", "deploy_long", "grp")][,flg := 1]
-end_coords <- nln[, c("to_lat", "to_lon", "grp")][, flg := 3]
+start_coords <- nln[, c("f_deploy_lat", "f_deploy_long", "grp")][,flg := 1]
+end_coords <- nln[, c("t_deploy_lat", "t_deploy_long", "grp")][, flg := 3]
 
+names(start_coords) <- c("deploy_lat", "deploy_long", "grp", "flg")
 names(end_coords) <- c("deploy_lat", "deploy_long", "grp", "flg")
 coords <- rbind(start_coords, end_coords, res)
 #setkey(coords, grp, flg)
