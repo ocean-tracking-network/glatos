@@ -1,8 +1,8 @@
 #' @title 
-#' Summarize (breakdown) GLATOS detections by individual and location.
+#' Breakdown and summarize GLATOS detections by individual and location.
 #' 
 #' @description
-#' Summarize (breakdown) GLATOS detections by individual and location.
+#' Breakdown and summarize GLATOS detections by individual and location.
 #'
 #' @param dtc A GLATOS detection data frame (class \code{glatos_detections}).
 #'  

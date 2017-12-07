@@ -2,7 +2,7 @@
 % Please edit documentation in R/summ-breakdown.r
 \name{breakdown}
 \alias{breakdown}
-\title{Summarize (breakdown) GLATOS detections by individual and location.}
+\title{Breakdown and summarize GLATOS detections by individual and location.}
 \usage{
 breakdown(dtc, by_col = list(individual = c("animal_id"), location =
   c("glatos_array", "station_no")))
@@ -24,7 +24,7 @@ A list of two data frames. The first named 'individuals' and the
  count of unique oppposing groups, and min and max detection timestamps.
 }
 \description{
-Summarize (breakdown) GLATOS detections by individual and location.
+Breakdown and summarize GLATOS detections by individual and location.
 }
 \details{
 TBD
