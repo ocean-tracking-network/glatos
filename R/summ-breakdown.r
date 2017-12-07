@@ -46,7 +46,7 @@ breakdown <- function(dtc, by_col = list(individual = c("animal_id"),
                  last_detc = max(detection_timestamp_utc)
                       ), 
                       by = eval(by_col$individual)]
-  setkeyv(tbl_loc, by_col$animal_id) 
+  setkeyv(tbl_ind, by_col$animal_id) 
   tbl_loc <- dtc[, .(ind_count = nrow(unique(.SD[,by_col$individual, with = FALSE])),
                      det_count = .N, 
                      first_det = min(detection_timestamp_utc),
