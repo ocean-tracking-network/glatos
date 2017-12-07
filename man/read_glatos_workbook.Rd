@@ -26,8 +26,8 @@ be ignored.)}
 A list of class \code{glatos_workbook} with six elements:
 \describe{
   \item{metadata}{A list with data about the project.}
-  \item{instruments}{A data frame with information about stations.}
-  \item{animals}{A data frame with data about animals.}
+  \item{animals}{A data frame with data about tagged animals.}
+  \item{receivers}{A data frame with data about receiver stations.}
 }
 }
 \description{

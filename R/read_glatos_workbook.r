@@ -27,8 +27,8 @@
 #' @return A list of class \code{glatos_workbook} with six elements:
 #' \describe{
 #'   \item{metadata}{A list with data about the project.}
-#'   \item{instruments}{A data frame with information about stations.}
-#'   \item{animals}{A data frame with data about animals.}
+#'   \item{animals}{A data frame with data about tagged animals.}
+#'   \item{receivers}{A data frame with data about receiver stations.}
 #' }
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) 
@@ -40,7 +40,8 @@
 #' wb <- read_glatos_workbook(wb_file)
 #'
 #' @export
-read_glatos_workbook <- function(workbook, wb_version=NULL, read_all=FALSE) {
+read_glatos_workbook <- function(workbook, wb_version = NULL, 
+  read_all = FALSE) {
 
   #Function to set timezone of POSIXct objects loaded with read_excel
   # -read_excel assumes all timestamps are in UTC, so POSIX data in other 
@@ -200,17 +201,18 @@ read_glatos_workbook <- function(workbook, wb_version=NULL, read_all=FALSE) {
         "consecutive_deploy_no", "ins_serial_number"))
     wb2 <- with(wb, list(
                   metadata = project,
-                  instruments = merge(deployment,
+                    animals = tagging,
+                  receivers = merge(deployment,
                     recovery[, unique(c(ins_key$by.y, 
                       setdiff(names(recovery), names(deployment))))],
                     by.x = c("glatos_project", "glatos_array", "station_no",
                       "consecutive_deploy_no", "ins_serial_no"), 
                     by.y = c("glatos_project", "glatos_array", "station_no", 
                       "consecutive_deploy_no", "ins_serial_number"), 
-                    all.x=TRUE, all.y=TRUE),
-                  animals = tagging))
+                    all.x=TRUE, all.y=TRUE)
+                  ))
     #add location descriptions
-    wb2$instruments <- with(wb2, merge(instruments, wb$locations,
+    wb2$receivers <- with(wb2, merge(receivers, wb$locations,
         by = "glatos_array"))
       
   }
