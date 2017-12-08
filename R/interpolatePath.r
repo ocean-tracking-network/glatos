@@ -167,6 +167,7 @@
 library(gdistance)
 library(glatos)
 library(data.table)
+
 data(walleye_detections) 
 data(greatLakesTrLayer)
 trans <- greatLakesTrLayer
@@ -195,36 +196,20 @@ ids <- unique(dtc$animal_id)
 dtc[, bin := tSeq[findInterval(detection_timestamp_utc, tSeq)] ]
 
 # make all combinations of animals and detection bins
-
-	# merge detections and all possible detections 
-	#  adds NA to bins where detections did not occur
-	dtc <- merge(dtc, expand.grid(animal_id = ids, bin = tSeq), by.x = c('animal_id', 'bin'), 
-		by.y = c('animal_id', 'bin'), 
-		all = TRUE)
+dtc <- merge(CJ(bin = tSeq, animal_id = ids), dtc, by = c("bin", "animal_id"), all.x = TRUE)
 setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
-# number rows by fish
-dtc[,row_num := 1:.N, by = animal_id]
-
-# extract "holes"
-holes <- dtc[!is.na(deploy_lat), .(start = .I[-nrow(.SD)], end = .I[-1]), by = animal_id]
-holes[, diff := end - start, by = animal_id][diff > 1]
-
-from <- dtc[holes[, diff:= end - start, by = animal_id][diff > 1]$start]
-to <- dtc[holes[, diff:= end - start, by = animal_id][diff > 1]$end]
-
-# combine into table
-
-sp_move <- cbind(from, to)
-names(sp_move) <- c("f_animal_id", "f_bin", "f_detection_timestamp", "f_glatos_array", "f_station_no", "f_deploy_lat", "f_deploy_long", "f_row_num", "t_animal_id", "t_bin", "t_detection_timestamp", "t_glatos_array", "t_station_no", "t_deploy_lat", "t_deploy_long", "row_num")
-
+# add from and two coordinates for all "missing" observations
+holes <- dtc[!is.na(deploy_lat), .(start=.I[-nrow(.SD)], end=.I[-1]), by = animal_id][end-start>1]
+dtc[holes$start, f_deploy_lat := deploy_lat]
+dtc[holes$start, f_deploy_long := deploy_long]
+dtc[holes$start, t_deploy_lat := dtc[holes$end, c("deploy_lat")]]
+dtc[holes$start, t_deploy_long := dtc[holes$end, c("deploy_long")]]
 
 #write.csv(dtc[animal_id == 3], "check.csv")
 
-# extract all changes in position
-#dtc[, to_lat := data.table::shift(deploy_lat, type = "lead"), by = animal_id ]
-#dtc[, to_lon := data.table::shift(deploy_long, type = "lead"), by = animal_id ]
-
+# extract "holes" to calculate lookup table
+sp_move <- dtc[!is.na(f_deploy_lat), c("deploy_lat", "deploy_long", "f_deploy_lat", "f_deploy_long", "t_deploy_lat", "t_deploy_long", "detection_timestamp_utc", "bin", "animal_id")]
 
 # calculate the "great circle" (linear) distance between points 
 sp_move[, gcd := geosphere::distHaversine(as.matrix(sp_move[,.(f_deploy_long, f_deploy_lat)]), as.matrix(sp_move[, .(t_deploy_long, t_deploy_lat)])) ]
@@ -243,47 +228,99 @@ saveRDS(sp_move, "sp_move.rds")
 sp_move <- readRDS("sp_move.rds")
 
 # extract rows that linear interpolation based on ratio between gcd:lcd
-ln <- sp_move[crit < lnlThresh, c("f_deploy_lat", "f_deploy_long", "t_deploy_lat", "t_deploy_long")]
+ln <- sp_move[crit < lnlThresh]
 
 # extract rows that need non-linear interpolation based on ratio between gcd:lcd 
-nln <- sp_move[ >= lnlThresh, c("f_deploy_lat", "f_deploy_long", "t_deploy_lat", "t_deploy_long")]
+nln <- sp_move[crit >= lnlThresh]
 
-# extract unique  movements
+# extract unique  movements to create nln lookup
 setkey(nln, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
-nln <- unique(nln[,.(f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long), allow.cartesian = TRUE, by = f_animal_id])
+nln_look <- unique(nln[,.(f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long), allow.cartesian = TRUE])
 
 # calculate non-linear interpolation 
-nln[, coord := .(sp::coordinates(gdistance::shortestPath(trans, c(f_deploy_long, f_deploy_lat), c(t_deploy_long, t_deploy_lat), output = "SpatialLines"))), by = 1:nrow(nln)]
+nln_look[, coord := .(sp::coordinates(gdistance::shortestPath(trans, c(f_deploy_long, f_deploy_lat), c(t_deploy_long, t_deploy_lat), output = "SpatialLines"))), by = 1:nrow(nln_look)]
 
 # for development purposes...
-saveRDS(nln, "nln.rds")
-#nln <- readRDS("nln.rds")
+saveRDS(nln_look, "nln_look.rds")
+nln_look <- readRDS("nln.rds")
 
 # create group counting variable
-nln[, grp := 1:.N]
+nln_look[, grp := 1:.N]
 
 # extract interpolated points from coordinate lists...
-res <- nln[, .(deploy_long = nln$coord[[.I]][[1]][, 1], deploy_lat = nln$coord[[.I]][[1]][, 2]), by = grp]
+res <- nln_look[, .(deploy_long = nln_look$coord[[.I]][[1]][, 1], deploy_lat = nln_look$coord[[.I]][[1]][, 2]), by = grp]
+res[,flg := 2]
+
+# add order count within groups
+#res[, order := .GRP, by = grp]
 
 # drop coord list from nln
-nln[, coord := NULL]
-
-# assign flag = 2 for interpolated positions
-res[, flg := 2]
+nln_look[, coord := NULL]
 
 # add start and end coordinates to interpolated data.
-start_coords <- nln[, c("f_deploy_lat", "f_deploy_long", "grp")][,flg := 1]
-end_coords <- nln[, c("t_deploy_lat", "t_deploy_long", "grp")][, flg := 3]
+start_coords <- nln_look[, c("f_deploy_lat", "f_deploy_long", "grp")][,flg := 1]
+end_coords <- nln_look[, c("t_deploy_lat", "t_deploy_long", "grp")][, flg := 3]
+names(start_coords)[1:2] <- c("deploy_lat", "deploy_long")
+names(end_coords)[1:2] <- c("deploy_lat", "deploy_long")
+res <- rbind(start_coords, end_coords, res)
 
-names(start_coords) <- c("deploy_lat", "deploy_long", "grp", "flg")
-names(end_coords) <- c("deploy_lat", "deploy_long", "grp", "flg")
-coords <- rbind(start_coords, end_coords, res)
-#setkey(coords, grp, flg)
+# add keys to nln_look
+setkey(nln_look, grp)
+setkey(res, grp)
+nln_look <- nln_look[res]
 
-# join back to key columns in nln...
-setkey(nln, grp)
-setkey(coords, grp)
-nln <- nln[coords]
+  
+
+# nln_look is now a lookup table with all interpolated positions
+# next, we need to add from/to values from lookup table to dtc so we can merge
+# dtc must be merged with dtc so that to and from lat/lon coordinates are added...
+# first, look up interpolated values in sp_move by linking with row numbers...
+
+#need to extract rows before and after NAs using to and from
+
+
+################################3
+
+setkey(nln, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
+setkey(nln_look, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
+
+out <- nln_look[nln, allow.cartesian = TRUE]
+setkey(out, grp, order)
+
+# calculate cummulative distance
+
+
+
+
+# join back with dtc
+setkey(nln_look, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
+setkey(dtc, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
+
+dtc <- nln_look[dtc, allow.cartesian = TRUE]
+setkey(dtc, animal_id, bin, detection_timestamp_utc, flg)
+write.csv(dtc[animal_id == 3], "check.csv")
+
+
+
+
+
+
+
+setkey(nln, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
+setkey(dtc, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
+
+tst <- nln[dtc, allow.cartesian = TRUE]
+
+setkey(tst, animal_id, detection_timestamp_utc, grp, flg)
+
+
+
+
+
+
+
+
+
 
 # now need to join the interpolated detections with the original dataset...
 # need a "full outer join"
