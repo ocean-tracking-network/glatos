@@ -6,6 +6,10 @@ glatos is an R package with functions useful to members of the Great Lakes Acous
 ### Package status
 This package is in early development. To access the package or contribute code, join the project at ([https://gitlab.oceantrack.org/GreatLakes/glatos](https://gitlab.oceantrack.org/GreatLakes/glatos)). If you encounter problems or have questions or suggestions, please post a new issue or email cholbrook@usgs.gov (maintainer: Chris Holbrook).
 
+### Installation
+
+Installation instructions can be found [here](https://gitlab.oceantrack.org/GreatLakes/glatos/wikis/installation-instructions)
+
 ### Contents  
 #### Simulation functions for system design and evaluation
 
@@ -42,26 +46,5 @@ The following functions were needed by other functions in this package but might
 3. [`crw`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/crw.r) will simulate an unconstrained correlated random walk.
 4. [`vectorHeading`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/vectorHeading.r) will calculate (in degrees) the heading of the vector between adjacent point-pairs in a set of positions (e.g., along a track).  
 
-
-### Installation
-
-The R package GLATOS is available from the Ocean Tracking Network's [gitlab](https://gitlab.oceantrack.org/GreatLakes/glatos).  
-  
-To install the most recent, stable release:  
-
-1. Download the compiled package tarball [here](/uploads/71af37af1cf6f7499d4074bcaa26d9fc/glatos_0.1.3.tar.gz)
-
-2. Use the following command in R 
-```{r}
-install.packages(path_to_file)) #e.g. install.packages("C:/somedir/glatos_0.1.3.tar.gz")
-```  
-or
-
-3. Install by mouse clicks
-    - *RStudio:* Tools > Install Packages > Install From: "Package Archive File..."
-    - *RGui:* Packages > Install package(s) from local files... 
-
-
-Instructions for installing a development version can be found [here](https://gitlab.oceantrack.org/GreatLakes/glatos/wikis/installation-instructions)
 
 
