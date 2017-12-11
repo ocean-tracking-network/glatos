@@ -199,67 +199,67 @@ dtc[, bin := tSeq[findInterval(detection_timestamp_utc, tSeq)] ]
 dtc <- merge(CJ(bin = tSeq, animal_id = ids), dtc, by = c("bin", "animal_id"), all.x = TRUE)
 setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
-# add from and two coordinates for all "missing" observations
-#holes <- dtc[!is.na(deploy_lat), .(start=.I[-nrow(.SD)], end=.I[-1]), by = animal_id][end-start>1]
-
-# toy example
-foo <- data.table(x = c(1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4), y = c(NA,1,NA,2,3,4,NA,5,6,7,NA,NA,8,NA,9,NA,NA,10,11,NA,12,NA,13,NA,14))
+inter <- dtc
 
 # identify start and end rows for observations before and after NA
-bar <- [!is.na(y), .(start =.I[-nrow(.SD)], end =.I[-1]), by = x][end-start>1] #original
+ends <- inter[!is.na(deploy_lat), .(start =.I[-nrow(.SD)], end =.I[-1]), by = animal_id][end-start>1] #original
 
 # identify observations that are both start and ends
-start_end <- bar[, c(start, end)]
-dups <- start_end[bar[, duplicated(c(start, end))]]
+start_end <- ends[, c(start, end)]
+dups <- start_end[ends[, duplicated(c(start, end))]]
 
 # create and append duplicate rows for observations
 # that are both start and end.
 # This is so each observation can be in only one group
-foo[, rep := 1L][dups, rep := 2L][, num := 1:.N][rep(num, rep)]
-foo[, rep := NULL]
+inter[, rep := 1L][dups, rep := 2L][, num := 1:.N][rep(num, rep)]
+inter[, rep := NULL]
 
-new <- bar[, .(row_idx = start:end), by = 1:nrow(bar)]
-setkey(foo, num)
+new <- ends[, .(row_idx = start:end), by = 1:nrow(ends)]
+setkey(inter, num)
 setkey(new, row_idx)
-foo <- new[foo]
-foo[!is.na(nrow)]
-
-
-
-
-# extract groups of NAs
-foo[ foo[!is.na(y), .(start=.I[-nrow(.SD)], end=.I[-1]), by = x] [end-start > 1] [,c(start:end), by = 1:nrow(bar)]$V1]
-###############
-
-
-
-
-
-
-
-
-
-
-# join events from bar with foo?
-
+inter <- new[inter]
+inter <- inter[!is.na(nrow)]
+setkey(inter, animal_id, bin, detection_timestamp_utc)
 
 
 #write.csv(dtc[animal_id == 3], "check.csv")
 
-# extract "holes" to calculate lookup table
-sp_move <- dtc[!is.na(f_deploy_lat), c("deploy_lat", "deploy_long", "f_deploy_lat", "f_deploy_long", "t_deploy_lat", "t_deploy_long", "detection_timestamp_utc", "bin", "animal_id")]
+inter[, gcd := geosphere::distHaversine(trans, as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = nrow ]
 
-# calculate the "great circle" (linear) distance between points 
-sp_move[, gcd := geosphere::distHaversine(as.matrix(sp_move[,.(f_deploy_long, f_deploy_lat)]), as.matrix(sp_move[, .(t_deploy_long, t_deploy_lat)])) ]
+# calculate least cost (non-linear) distance between points
+inter[, lcd := costDistance(trans, fromCoords = as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = nrow]
+
+# calculate ratio of gcd:lcd
+inter[, crit := gcd/lcd]
+
+# extract rows that need non-linear interpolation based on ratio between gcd:lcd
+lookup <- inter[crit >= lnlThresh]
+
+
+lookup <- lookup[!is.na(deploy_lat),]
+
+
+lookup[, t_lat := shift(deploy_lat, type = "lead"), by = nrow]
+lookup[, t_long := shift(deploy_long, type = "lead"), by = nrow]
+
+# extract unique  movements to create nln lookup
+setkey(lookup, deploy_lat, deploy_long, t_lat, t_long)
+lookup <- unique(lookup[, .(deploy_lat, deploy_long, t_lat, t_long), allow.cartesian = TRUE])
+
+
+
+
+
+
+
+# extract "holes" to calculate lookup table
+lookup <- inter[!is.na(f_deploy_lat), c("deploy_lat", "deploy_long", "f_deploy_lat", "f_deploy_long", "t_deploy_lat", "t_deploy_long", "detection_timestamp_utc", "bin", "animal_id")]
+
 
 # remove any with great circle dist = 0
 #sp_move <- sp_move[gcd != 0]
 
-# calculate least cost (non-linear) distance between points
-sp_move[, lcd := costDistance(trans, c(f_deploy_long, f_deploy_lat), c(t_deploy_long, t_deploy_lat)), by = 1:nrow(sp_move)]
 
-# calculate ratio of gcd:lcd
-sp_move[, crit := gcd/lcd]
 
 # for development purposes...
 saveRDS(sp_move, "sp_move.rds")
