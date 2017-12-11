@@ -6,6 +6,10 @@ glatos is an R package with functions useful to members of the Great Lakes Acous
 ### Package status
 This package is in early development. To access the package or contribute code, join the project at ([https://gitlab.oceantrack.org/GreatLakes/glatos](https://gitlab.oceantrack.org/GreatLakes/glatos)). If you encounter problems or have questions or suggestions, please post a new issue or email cholbrook@usgs.gov (maintainer: Chris Holbrook).
 
+### Installation
+
+Installation instructions can be found [here](https://gitlab.oceantrack.org/GreatLakes/glatos/wikis/installation-instructions)
+
 ### Contents  
 #### Simulation functions for system design and evaluation
 
@@ -42,11 +46,5 @@ The following functions were needed by other functions in this package but might
 3. [`crw`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/crw.r) will simulate an unconstrained correlated random walk.
 4. [`vectorHeading`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/vectorHeading.r) will calculate (in degrees) the heading of the vector between adjacent point-pairs in a set of positions (e.g., along a track).  
 
-
-### Installation
-
-The R package GLATOS is available from the Ocean Tracking Network's [gitlab](https://gitlab.oceantrack.org/GreatLakes/glatos).  
-  
-Installation instructions can be found [here](https://gitlab.oceantrack.org/GreatLakes/glatos/wikis/installation-instructions)
 
 
