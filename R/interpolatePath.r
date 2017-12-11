@@ -200,11 +200,49 @@ dtc <- merge(CJ(bin = tSeq, animal_id = ids), dtc, by = c("bin", "animal_id"), a
 setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
 # add from and two coordinates for all "missing" observations
-holes <- dtc[!is.na(deploy_lat), .(start=.I[-nrow(.SD)], end=.I[-1]), by = animal_id][end-start>1]
-dtc[holes$start, f_deploy_lat := deploy_lat]
-dtc[holes$start, f_deploy_long := deploy_long]
-dtc[holes$start, t_deploy_lat := dtc[holes$end, c("deploy_lat")]]
-dtc[holes$start, t_deploy_long := dtc[holes$end, c("deploy_long")]]
+#holes <- dtc[!is.na(deploy_lat), .(start=.I[-nrow(.SD)], end=.I[-1]), by = animal_id][end-start>1]
+
+# toy example
+foo <- data.table(x = c(1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4), y = c(NA,1,NA,2,3,4,NA,5,6,7,NA,NA,8,NA,9,NA,NA,10,11,NA,12,NA,13,NA,14))
+
+# identify start and end rows for observations before and after NA
+bar <- [!is.na(y), .(start =.I[-nrow(.SD)], end =.I[-1]), by = x][end-start>1] #original
+
+# identify observations that are both start and ends
+start_end <- bar[, c(start, end)]
+dups <- start_end[bar[, duplicated(c(start, end))]]
+
+# create and append duplicate rows for observations
+# that are both start and end.
+# This is so each observation can be in only one group
+foo[, rep := 1L][dups, rep := 2L][, num := 1:.N][rep(num, rep)]
+foo[, rep := NULL]
+
+new <- bar[, .(row_idx = start:end), by = 1:nrow(bar)]
+setkey(foo, num)
+setkey(new, row_idx)
+foo <- new[foo]
+foo[!is.na(nrow)]
+
+
+
+
+# extract groups of NAs
+foo[ foo[!is.na(y), .(start=.I[-nrow(.SD)], end=.I[-1]), by = x] [end-start > 1] [,c(start:end), by = 1:nrow(bar)]$V1]
+###############
+
+
+
+
+
+
+
+
+
+
+# join events from bar with foo?
+
+
 
 #write.csv(dtc[animal_id == 3], "check.csv")
 
