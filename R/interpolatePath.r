@@ -221,10 +221,9 @@ inter <- new[inter]
 inter <- inter[!is.na(nrow)]
 setkey(inter, animal_id, bin, detection_timestamp_utc)
 
-
 #write.csv(dtc[animal_id == 3], "check.csv")
 
-inter[, gcd := geosphere::distHaversine(trans, as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = nrow ]
+inter[, gcd := geosphere::distHaversine(as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = nrow ]
 
 # calculate least cost (non-linear) distance between points
 inter[, lcd := costDistance(trans, fromCoords = as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = nrow]
@@ -235,16 +234,78 @@ inter[, crit := gcd/lcd]
 # extract rows that need non-linear interpolation based on ratio between gcd:lcd
 lookup <- inter[crit >= lnlThresh]
 
-
-lookup <- lookup[!is.na(deploy_lat),]
-
-
+# add order column
+lookup[, row := 1:.N]
+lookup <- lookup[!is.na(deploy_lat), ]
 lookup[, t_lat := shift(deploy_lat, type = "lead"), by = nrow]
 lookup[, t_long := shift(deploy_long, type = "lead"), by = nrow]
 
-# extract unique  movements to create nln lookup
+# extract unique  movements to create lookup
 setkey(lookup, deploy_lat, deploy_long, t_lat, t_long)
-lookup <- unique(lookup[, .(deploy_lat, deploy_long, t_lat, t_long), allow.cartesian = TRUE])
+lookup <- unique(lookup[, .(deploy_lat, deploy_long, t_lat, t_long, nrow, row),
+                        allow.cartesian = TRUE])
+setkey(lookup, row)
+
+# calculate non-linear interpolation
+#lookup <- lookup[ lookup[, !is.na(t_lat)]] 
+#lookup[, coord := .(sp::coordinates(gdistance::shortestPath(trans, c(deploy_long, deploy_lat), c(t_long, t_lat), output = "SpatialLines"))), by = 1:nrow(lookup)]
+
+lookup[, coord := sp::coordinates(gdistance::shortestPath(trans, as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), as.matrix(.SD[.N, c("deploy_long", "deploy_lat")]), output = "SpatialLines")), by = nrow]
+####
+
+lookup <- lookup[!is.na(t_lat)]
+
+# create group counting variable
+lookup[, grp := 1:.N]
+
+# extract interpolated points from coordinate lists...
+res <- lookup[, .(nln_longitude = lookup$coord[[.I]][, 1], nln_latitude = lookup$coord[[.I]][, 2]), by = grp]
+res[,flg := 2]
+
+# drop coord list from nln
+lookup[, coord := NULL]
+
+# set keys
+setkey(lookup, grp)
+setkey(res, grp)
+lookup <- lookup[res]
+lookup$type <- "inter"
+##
+
+# add key locations as data for interpolation:
+first <- lookup[, head(.SD, n=1), by = nrow][, c("nln_longitude", "nln_latitude", "type") := list(deploy_long, deploy_lat, "first")]
+last <- lookup[, head(.SD, n=1), by = nrow][, c("nln_longitude", "nln_latitude", "type") := list(t_long, t_lat, "last")]
+
+lookup <- rbind(first, lookup, last)
+setkey(lookup, nrow, type, order)
+lookup[, order := 1:.N, by = nrow]
+
+# calculate cumulative distance moved for interpolated tracks.
+lookup[, cumdist := cumsum(c(0, sqrt(diff(nln_longitude)^2 + diff(nln_latitude)^2))), by = grp]
+
+
+
+
+setkey(lookup, nrow)
+
+#lookup routine
+inter_tst <- inter[nrow %in% c(2)]
+inter_tst[,iTime := detection_timestamp_utc][is.na(detection_timestamp_utc), iTime := bin]
+#####
+
+#This extracts values for lookup table
+lookup[.(inter_tst[, .SD, by = nrow ]$nrow[1]) ]
+       
+#####
+# foo <- lookup[.(inter_tst[1, 1])]
+# put this into a function?
+bar <- as.POSIXct(approx(foo$cumdist, c(as.numeric(head(inter_tst$detection_timestamp_utc, n=1)), rep(NA, nrow(foo)-2), as.numeric(tail(inter_tst$detection_timestamp_utc, n=1))), xout = foo$cumdist)$y, origin = "1970-01-01 00:00:00", tz = attr(inter_tst$detection_timestamp_utc, "tzone"))
+
+pathLon <- approx(bar, foo$nln_longitude, xout = inter_tst$iTime)$y
+pathLat <- approx(bar, foo$nln_latitude, xout = inter_tst$iTime)$y
+
+inter_tst[, deploy_long := pathLon]
+inter_tst[, deploy_lat := pathLat]
 
 
 
@@ -252,12 +313,13 @@ lookup <- unique(lookup[, .(deploy_lat, deploy_long, t_lat, t_long), allow.carte
 
 
 
-# extract "holes" to calculate lookup table
-lookup <- inter[!is.na(f_deploy_lat), c("deploy_lat", "deploy_long", "f_deploy_lat", "f_deploy_long", "t_deploy_lat", "t_deploy_long", "detection_timestamp_utc", "bin", "animal_id")]
 
 
-# remove any with great circle dist = 0
-#sp_move <- sp_move[gcd != 0]
+
+
+
+
+
 
 
 
@@ -275,40 +337,14 @@ nln <- sp_move[crit >= lnlThresh]
 setkey(nln, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
 nln_look <- unique(nln[,.(f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long), allow.cartesian = TRUE])
 
-# calculate non-linear interpolation 
-nln_look[, coord := .(sp::coordinates(gdistance::shortestPath(trans, c(f_deploy_long, f_deploy_lat), c(t_deploy_long, t_deploy_lat), output = "SpatialLines"))), by = 1:nrow(nln_look)]
-
 # for development purposes...
 saveRDS(nln_look, "nln_look.rds")
 nln_look <- readRDS("nln.rds")
 
-# create group counting variable
-nln_look[, grp := 1:.N]
 
-# extract interpolated points from coordinate lists...
-res <- nln_look[, .(deploy_long = nln_look$coord[[.I]][[1]][, 1], deploy_lat = nln_look$coord[[.I]][[1]][, 2]), by = grp]
-res[,flg := 2]
 
 # add order count within groups
 #res[, order := .GRP, by = grp]
-
-# drop coord list from nln
-nln_look[, coord := NULL]
-
-# add start and end coordinates to interpolated data.
-start_coords <- nln_look[, c("f_deploy_lat", "f_deploy_long", "grp")][,flg := 1]
-end_coords <- nln_look[, c("t_deploy_lat", "t_deploy_long", "grp")][, flg := 3]
-names(start_coords)[1:2] <- c("deploy_lat", "deploy_long")
-names(end_coords)[1:2] <- c("deploy_lat", "deploy_long")
-res <- rbind(start_coords, end_coords, res)
-
-# add keys to nln_look
-setkey(nln_look, grp)
-setkey(res, grp)
-nln_look <- nln_look[res]
-
-  
-
 # nln_look is now a lookup table with all interpolated positions
 # next, we need to add from/to values from lookup table to dtc so we can merge
 # dtc must be merged with dtc so that to and from lat/lon coordinates are added...
