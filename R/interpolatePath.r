@@ -273,192 +273,39 @@ lookup$type <- "inter"
 ##
 
 # add key locations as data for interpolation:
-first <- lookup[, head(.SD, n=1), by = nrow][, c("nln_longitude", "nln_latitude", "type") := list(deploy_long, deploy_lat, "first")]
-last <- lookup[, head(.SD, n=1), by = nrow][, c("nln_longitude", "nln_latitude", "type") := list(t_long, t_lat, "last")]
-
+first <- lookup[, .SD[1], by = nrow][, c("nln_longitude", "nln_latitude", "type") := list(deploy_long, deploy_lat, "first")]
+last <- lookup[, .SD[1], by = nrow][, c("nln_longitude", "nln_latitude", "type") := list(t_long, t_lat, "last")]
 lookup <- rbind(first, lookup, last)
-setkey(lookup, nrow, type, order)
 lookup[, order := 1:.N, by = nrow]
+setkey(lookup, nrow, type, order)
 
 # calculate cumulative distance moved for interpolated tracks.
 lookup[, cumdist := cumsum(c(0, sqrt(diff(nln_longitude)^2 + diff(nln_latitude)^2))), by = grp]
 
-
-
-
+####################
 setkey(lookup, nrow)
 
-#lookup routine
-inter_tst <- inter[nrow %in% c(2)]
-inter_tst[,iTime := detection_timestamp_utc][is.na(detection_timestamp_utc), iTime := bin]
-#####
+# inter- should contain all movements (including repeated movements between same location)..
+# lookup- should contain unique movements only.
+# need to lookup movements from lookup for all in inter and then add timestamps to looked up  
 
-#This extracts values for lookup table
-lookup[.(inter_tst[, .SD, by = nrow ]$nrow[1]) ]
-       
-#####
-# foo <- lookup[.(inter_tst[1, 1])]
-# put this into a function?
-bar <- as.POSIXct(approx(foo$cumdist, c(as.numeric(head(inter_tst$detection_timestamp_utc, n=1)), rep(NA, nrow(foo)-2), as.numeric(tail(inter_tst$detection_timestamp_utc, n=1))), xout = foo$cumdist)$y, origin = "1970-01-01 00:00:00", tz = attr(inter_tst$detection_timestamp_utc, "tzone"))
+setkey(inter, nrow, bin)
 
-pathLon <- approx(bar, foo$nln_longitude, xout = inter_tst$iTime)$y
-pathLat <- approx(bar, foo$nln_latitude, xout = inter_tst$iTime)$y
+move <- inter[, .SD[1, c("row_idx", "animal_id", "detection_timestamp_utc")], by = nrow]
 
-inter_tst[, deploy_long := pathLon]
-inter_tst[, deploy_lat := pathLat]
+all <- lookup[.(move$nrow)]
 
+inter[!is.na(detection_timestamp_utc), type := c("first", "last")]
 
+setkey(inter, nrow, type)
+setkey(all, nrow, type)
 
+tst <- inter[, c("nrow", "detection_timestamp_utc", "type")][all ]
 
+tst[, i_time := if(!is.na(.SD[1,"detection_timestamp_utc"])) as.POSIXct(approx(cumdist, as.numeric(detection_timestamp_utc), xout = cumdist)$y, origin = "1970-01-01 00:00:00", tz = attr(detection_timestamp_utc, "tzone")), by = nrow]
 
+inter[, i_long := approx(tst, inter$deploy_long, xout = inter_tst$iTime)$y ]
+# stopped here....
 
 
 
-
-
-
-
-
-
-
-
-
-# for development purposes...
-saveRDS(sp_move, "sp_move.rds")
-sp_move <- readRDS("sp_move.rds")
-
-# extract rows that linear interpolation based on ratio between gcd:lcd
-ln <- sp_move[crit < lnlThresh]
-
-# extract rows that need non-linear interpolation based on ratio between gcd:lcd 
-nln <- sp_move[crit >= lnlThresh]
-
-# extract unique  movements to create nln lookup
-setkey(nln, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
-nln_look <- unique(nln[,.(f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long), allow.cartesian = TRUE])
-
-# for development purposes...
-saveRDS(nln_look, "nln_look.rds")
-nln_look <- readRDS("nln.rds")
-
-
-
-# add order count within groups
-#res[, order := .GRP, by = grp]
-# nln_look is now a lookup table with all interpolated positions
-# next, we need to add from/to values from lookup table to dtc so we can merge
-# dtc must be merged with dtc so that to and from lat/lon coordinates are added...
-# first, look up interpolated values in sp_move by linking with row numbers...
-
-#need to extract rows before and after NAs using to and from
-
-
-################################3
-
-setkey(nln, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
-setkey(nln_look, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
-
-out <- nln_look[nln, allow.cartesian = TRUE]
-setkey(out, grp, order)
-
-# calculate cummulative distance
-
-
-
-
-# join back with dtc
-setkey(nln_look, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
-setkey(dtc, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
-
-dtc <- nln_look[dtc, allow.cartesian = TRUE]
-setkey(dtc, animal_id, bin, detection_timestamp_utc, flg)
-write.csv(dtc[animal_id == 3], "check.csv")
-
-
-
-
-
-
-
-setkey(nln, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
-setkey(dtc, f_deploy_lat, f_deploy_long, t_deploy_lat, t_deploy_long)
-
-tst <- nln[dtc, allow.cartesian = TRUE]
-
-setkey(tst, animal_id, detection_timestamp_utc, grp, flg)
-
-
-
-
-
-
-
-
-
-
-# now need to join the interpolated detections with the original dataset...
-# need a "full outer join"
-
-
-##################
-## test_nln <- data.table(lat = c(1,1,1,1,1,1), lon = c(2,2,2,2,2,2), to_lat = c(3,3,3,3,3,3), to_lon = c(4,4,4,4,4,4), grp = c(11,22,33,44,55,66), i.lat = c(5,6,5,6,5,6), i.lon = c(6,7,6,7,6,7))
-## test_dtc <- data.table(lat = c(2,1,3,1), lon = c(3,2,4,2), to_lat = c(5,3,6,3), to_lon = c(7,4,8,4), other = c(11,22,33,44))
-
-## setkey(test_dtc, lat, lon, to_lat, to_lon)
-## setkey(test_nln, lat, lon, to_lat, to_lon)
-
-## #merge(test_dtc, test_nln, by = c("lat", "lon", "to_lat", "to_lon"), all.x = TRUE, all.y = FALSE)
-## test_dtc[test_nln] # almost...
-## test_nln[test_dtc, allow.cartesian = TRUE] # this one does it...
-
-
-## ##############
-
-#tst1 <- nln[dtc, allow.cartesian = TRUE]
-
-setkey(nln, deploy_lat, deploy_long, to_lat, to_lon)
-setkey(dtc, deploy_lat, deploy_long, to_lat, to_lon)
-
-tst <- nln[dtc, allow.cartesian = TRUE]
-
-setkey(tst, animal_id, detection_timestamp_utc, grp, flg)
-
-# create numbered variable for all rows (just in case)
-tst[,row_order := 1:.N]
-
-tst[type == "interpolated", type := "nl_inter"]
-tst[flg == 1 |is.na(flg) | flg == 3, type := "real"] 
-tst[type == "nl_inter", detection_timestamp_utc := NA]
-
-###############
-
-## #write.csv(tst[animal_id ==3], "check.csv")
-
-## # combine columns...
-## #tst[is.na(inter_lat), inter_lat := latitude]
-## #tst[is.na(inter_lon), inter_lon := longitude]
-
-
-
-
-## # create dataframe to hold interpolated data
-## res <- dtc[0,]
-
-## ################################
-## # get start and end info for observations surrounding a NA
-## # these are values to interpolate on...
-## start <- dtc[dtc[!is.na(latitude), .(.I[-nrow(.SD)]), by = individual ]$V1]
-## names(start) <- c("bin", "individual", "start_timestamp", "start_lat", "start_lon", "type")
-
-
-## ##################
-
-## iTime(inter$start_timestamp[1], inter$end_timestamp[1])
-
-## iTime <- function(start_timestamp, end_timestamp){
-##   iTime <-  as.POSIXct(c(as.numeric(start_timestamp), tSeq[tSeq > as.numeric(start_timestamp) & tSeq < as.numeric(end_timestamp)], as.numeric(end_timestamp)), origin = "1970-01-01", tz = attr(dtc$timestamp, "tzone"))
-##   return(iTime)
-## }
-
-
-## inter[, iTime := list(list(iTime(start_timestamp, end_timestamp))), by = 1:nrow(inter)]
