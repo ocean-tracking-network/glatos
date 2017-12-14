@@ -199,10 +199,8 @@ dtc[, bin := tSeq[findInterval(detection_timestamp_utc, tSeq)] ]
 dtc <- merge(CJ(bin = tSeq, animal_id = ids), dtc, by = c("bin", "animal_id"), all.x = TRUE)
 setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
-inter <- dtc
-
 # identify start and end rows for observations before and after NA
-ends <- inter[!is.na(deploy_lat), .(start =.I[-nrow(.SD)], end =.I[-1]), by = animal_id][end-start>1] #original
+ends <- dtc[!is.na(deploy_lat), .(start =.I[-nrow(.SD)], end =.I[-1]), by = animal_id][end-start>1] #original
 
 # identify observations that are both start and ends
 start_end <- ends[, c(start, end)]
@@ -211,100 +209,119 @@ dups <- start_end[ends[, duplicated(c(start, end))]]
 # create and append duplicate rows for observations
 # that are both start and end.
 # This is so each observation can be in only one group
-inter[, rep := 1L][dups, rep := 2L][, num := 1:.N][rep(num, rep)]
-inter[, rep := NULL]
+dtc[, rep := 1L][dups, rep := 2L][, num := 1:.N][rep(num, rep)]
+dtc[, rep := NULL]
 
 new <- ends[, .(row_idx = start:end), by = 1:nrow(ends)]
-setkey(inter, num)
+setkey(dtc, num)
 setkey(new, row_idx)
-inter <- new[inter]
-inter <- inter[!is.na(nrow)]
-setkey(inter, animal_id, bin, detection_timestamp_utc)
+dtc <- new[dtc]
+dtc <- dtc[!is.na(nrow)]
+setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
 #write.csv(dtc[animal_id == 3], "check.csv")
 
-inter[, gcd := geosphere::distHaversine(as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = nrow ]
+dtc[, gcd := geosphere::distHaversine(as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = nrow ]
 
 # calculate least cost (non-linear) distance between points
-inter[, lcd := costDistance(trans, fromCoords = as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = nrow]
+dtc[, lcd := costDistance(trans, fromCoords = as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = nrow]
 
 # calculate ratio of gcd:lcd
-inter[, crit := gcd/lcd]
+dtc[, crit := gcd/lcd]
 
 # extract rows that need non-linear interpolation based on ratio between gcd:lcd
-lookup <- inter[crit >= lnlThresh]
+nln <- dtc[crit >= lnlThresh]
 
 # add order column
-lookup[, row := 1:.N]
-lookup <- lookup[!is.na(deploy_lat), ]
-lookup[, t_lat := shift(deploy_lat, type = "lead"), by = nrow]
-lookup[, t_long := shift(deploy_long, type = "lead"), by = nrow]
+nln[, row := 1:.N]
+nln <- nln[!is.na(deploy_lat), ]
+nln[, t_lat := shift(deploy_lat, type = "lead"), by = nrow]
+nln[, t_long := shift(deploy_long, type = "lead"), by = nrow]
+nln[!is.na(t_lat), ord := 1]
+nln[is.na(t_lat), ord := 2]
 
-# extract unique  movements to create lookup
-setkey(lookup, deploy_lat, deploy_long, t_lat, t_long)
-lookup <- unique(lookup[, .(deploy_lat, deploy_long, t_lat, t_long, nrow, row),
-                        allow.cartesian = TRUE])
+# fill in "last" t_lat, t_long with first values
+nln[is.na(t_lat), t_lat := .SD[1, "deploy_lat"], by = nrow]
+nln[is.na(t_long), t_long := .SD[1, "deploy_long"], by = nrow]
+
+# extract unique  movements to create lookup table
+setkey(nln, deploy_lat, deploy_long, t_lat, t_long)
+lookup <- unique(nln[, .(deploy_lat, deploy_long, t_lat, t_long, nrow, row),
+                     allow.cartesian = TRUE])
 setkey(lookup, row)
 
-# calculate non-linear interpolation
-#lookup <- lookup[ lookup[, !is.na(t_lat)]] 
-#lookup[, coord := .(sp::coordinates(gdistance::shortestPath(trans, c(deploy_long, deploy_lat), c(t_long, t_lat), output = "SpatialLines"))), by = 1:nrow(lookup)]
-
+# calculate non-linear interpolation for all unique movements in lookup table
 lookup[, coord := sp::coordinates(gdistance::shortestPath(trans, as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), as.matrix(.SD[.N, c("deploy_long", "deploy_lat")]), output = "SpatialLines")), by = nrow]
-####
 
-lookup <- lookup[!is.na(t_lat)]
-
-# create group counting variable
 lookup[, grp := 1:.N]
 
 # extract interpolated points from coordinate lists...
-res <- lookup[, .(nln_longitude = lookup$coord[[.I]][, 1], nln_latitude = lookup$coord[[.I]][, 2]), by = grp]
-res[,flg := 2]
-
-# drop coord list from nln
-lookup[, coord := NULL]
+res <- lookup[, .(nln_longitude = lookup$coord[[.I]][, 1], nln_latitude = lookup$coord[[.I]][, 2]), by = grp][,flg := 2]
 
 # set keys
 setkey(lookup, grp)
 setkey(res, grp)
 lookup <- lookup[res]
 lookup$type <- "inter"
-##
+lookup[,coord := NULL]
 
+##
 # add key locations as data for interpolation:
 first <- lookup[, .SD[1], by = nrow][, c("nln_longitude", "nln_latitude", "type") := list(deploy_long, deploy_lat, "first")]
 last <- lookup[, .SD[1], by = nrow][, c("nln_longitude", "nln_latitude", "type") := list(t_long, t_lat, "last")]
 lookup <- rbind(first, lookup, last)
 lookup[, order := 1:.N, by = nrow]
-setkey(lookup, nrow, type, order)
+setkey(lookup, grp, order)
 
 # calculate cumulative distance moved for interpolated tracks.
 lookup[, cumdist := cumsum(c(0, sqrt(diff(nln_longitude)^2 + diff(nln_latitude)^2))), by = grp]
 
 ####################
-setkey(lookup, nrow)
+# this needs checked....
+# nln contains all movements that need interpolated using the non-linear approach.
+# lookup- contains unique movements only. 
+# need to lookup movements from lookup for all in inter and then add timestamps to looked up need to link using lat/lon keys  
 
-# inter- should contain all movements (including repeated movements between same location)..
-# lookup- should contain unique movements only.
-# need to lookup movements from lookup for all in inter and then add timestamps to looked up  
+setkey(lookup, deploy_lat, deploy_long, t_lat, t_long)
+setkey(nln, deploy_lat, deploy_long, t_lat, t_long)
 
-setkey(inter, nrow, bin)
+foo <- lookup[J(unique(nln[,c("deploy_lat", "deploy_long", "t_lat", "t_long")]))]
+foo[ foo[, .I[c(1, .N)], by = c("deploy_lat", "deploy_long", "t_lat", "t_long")]$V1, ord := c(1, 2)]
 
-move <- inter[, .SD[1, c("row_idx", "animal_id", "detection_timestamp_utc")], by = nrow]
+setkey(foo, deploy_lat, deploy_long, t_lat, t_long, ord)
+setkey(nln, deploy_lat, deploy_long, t_lat, t_long, ord)
 
-all <- lookup[.(move$nrow)]
+out <- nln[foo]
+setkey(out, grp, order)
 
-inter[!is.na(detection_timestamp_utc), type := c("first", "last")]
 
-setkey(inter, nrow, type)
-setkey(all, nrow, type)
+################################TEST
+lookup <- data.table(lat = c(1,1,1,2,2,2,3,3,3,3), lon = c(1,1,1,1,1,2,2,2,2,2), t_lat = c(3,3,3,3,3,4,4,4,4,4), t_lon = c(5,5,5,5,5,6,6,6,6,6), nln_lat = runif(10, min = 1, max = 1000), nln_lon = runif(10, min = 1, max = 1000), order = 1:10)
+lookup[, grp := 1:.N, by = c("lat", "lon", "t_lat", "t_lon")]
 
-tst <- inter[, c("nrow", "detection_timestamp_utc", "type")][all ]
+dt <- data.table( lat = c(1,1,2,2), lon = c(1,1,1,1), t_lat = c(3,3,3,3), t_lon = c(5,5,5,5), ts = c(1000014, 1000020, 1000030, 1000040), ord = c(1,2,1,2))
 
+setkey(lookup, lat, lon, t_lat, t_lon)
+setkey(dt, lat, lon, t_lat, t_lon)
+
+#lookup[J(unique(dt[,c("lat", "lon", "t_lat", "t_lon")]))]
+foo <- lookup[J(unique(dt[,c("lat", "lon", "t_lat", "t_lon")]))]
+foo[ foo[, .I[c(1, .N)], by = c("lat", "lon", "t_lat", "t_lon")]$V1, ord := c(1,2)]
+
+setkey(foo, lat, lon, t_lat, t_lon, ord)
+setkey(dt, lat, lon, t_lat, t_lon, ord)
+
+
+# this seems to work...
+# both are same...
+dt[foo]
+setkey(foo, order)
+#merge(foo, dt, by = c("lat", "lon", "t_lat", "t_lon", "ord"), all.x = TRUE)
+
+################################## TEST TO HERE...
 tst[, i_time := if(!is.na(.SD[1,"detection_timestamp_utc"])) as.POSIXct(approx(cumdist, as.numeric(detection_timestamp_utc), xout = cumdist)$y, origin = "1970-01-01 00:00:00", tz = attr(detection_timestamp_utc, "tzone")), by = nrow]
 
-inter[, i_long := approx(tst, inter$deploy_long, xout = inter_tst$iTime)$y ]
+inter[, i_long := approx(tst$i_time, all$nln_long, xout = inter_tst$detection_timestamp)$y ]
 # stopped here....
 
 
