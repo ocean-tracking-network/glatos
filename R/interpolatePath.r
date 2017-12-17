@@ -242,6 +242,9 @@ nln[!is.na(detection_timestamp_utc), t_lat := shift(deploy_lat, type = "lead"), 
 nln[!is.na(detection_timestamp_utc), t_lon := shift(deploy_long, type = "lead"), by = nrow]
 nln[!is.na(detection_timestamp_utc), t_timestamp := shift(detection_timestamp_utc, type = "lead"), by = nrow]
 
+# timeseries
+nln[,iTime := detection_timestamp_utc]
+nln[is.na(detection_timestamp_utc), iTime := bin]
 
 nln_small <- nln[ !is.na(detection_timestamp_utc)][!is.na(t_lat)]
 
@@ -265,11 +268,63 @@ lookup <- unique(nln_small[, .(deploy_lat, deploy_long, t_lat, t_lon),
 
 # calculate non-linear interpolation for all unique movements in lookup table
 lookup[, coord := sp::coordinates(gdistance::shortestPath(trans, as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), as.matrix(.SD[1, c("t_lon", "t_lat")]), output = "SpatialLines")), by = 1:nrow(lookup)]
+lookup[, grp := 1:.N]
 
-#lookup[, grp := 1:.N]
+out <- lookup[nln_small]
+
+
+saveRDS(out, "out.rds")
+out <- readRDS("out.rds")
+
+#######
+out[, coords := list(list(rbind(.SD[1, c("deploy_long", "deploy_lat")], out$coord[[.I]], .SD[1, c("t_lon", "t_lat")], use.names = FALSE))), by = 1:nrow(out)]
+
+out[, cumdist := list(lapply(out$coords[[.I]][,1], function(x) cumsum(c(0, distHaversine(out$coords[[.I]]))))), by = 1:nrow(out)] 
+
+out[, iTime := (list(lapply(as.numeric(out$cumdist[[.I]]), function(x) as.numeric(c(detection_timestamp_utc, rep(NA, length(out$cumdist[[.I]])-2), t_timestamp))))), by = 1:nrow(out)]
+
+out[, app := list(lapply(out$cumdist[[.I]], function(x) approx(out$cumdist[[.I]], out$iTime[[.I]], xout = out$cumdist[[.I]])$y)), by = 1:nrow(out)]
+############
+
+
+
+
 
 # extract interpolated points from coordinate lists...
-#res <- lookup[, .(nln_longitude = lookup$coord[[.I]][, 1], nln_latitude = lookup$coord[[.I]][, 2]), b#y = grp][,flg := 2]
+res <- lookup[, .(nln_longitude = lookup$coord[[.I]][, 1], nln_latitude = lookup$coord[[.I]][, 2]), by = grp][,flg := 2]
+
+# set keys, join interpolation and original data
+setkey(lookup, grp)
+setkey(res, grp)
+lookup <- lookup[res]
+lookup$type <- "inter"
+lookup[,coord := NULL]
+
+setkey(lookup, deploy_lat, deploy_long, t_lat, t_lon)
+out <- lookup[nln_small, allow.cartesian = TRUE]
+setkey(out, animal_id, bin, detection_timestamp_utc)
+
+out[, cumdist := cumsum(diff(distHaversine(rbind(.SD[1, c("deploy_long", "deploy_lat")], .SD[, c("nln_longitude", "nln_latitude")], .SD[.N, c("t_lon", "t_lat")], use.names = FALSE)))), by = nrow ]
+
+
+foo <- c(0, cumsum(distHaversine(rbind(out[1, c("deploy_long", "deploy_lat")], out[1:4, c("nln_longitude", "nln_latitude")], out[1, c("t_lon", "t_lat")], use.names = FALSE))))
+
+
+                                                                                                              ], use.names = FALSE))^2 + diff(rbind(.SD[1, "deploy_lat"], .SD[, "nln_latitude"], .SD[.N, "t_lat"], use.names = FALSE))^2)), by = nrow ]
+
+
+
+distHaversine(as.matrix(.SD[1, c("deploy_long", "deploy_lat")])
+    + diff(c(.SD[1, "deploy_lat"], nln_latitude, .SD[.N, "deploy_lat"]))^2))), by = nrow]
+
+## # calculate cumulative distance moved for interpolated tracks.
+## lookup[, cumdist := cumsum(c(0, sqrt(diff(nln_longitude)^2 + diff(nln_latitude)^2))), by = grp]
+
+
+
+
+
+
 
 ##########
 ## names(lookup)[c(1:4)] <- c("y", "x", "t_lat", "t_lon")
@@ -282,21 +337,11 @@ lookup[, coord := sp::coordinates(gdistance::shortestPath(trans, as.matrix(.SD[1
 
 ## lookup[, tst := lapply(coord, function(x) x[1])]
 
-
-
-
-               
 ## rbind(matrix(c(1,2), nrow = 1, ncol = 2, byrow = FALSE, dimnames = list(NULL, c("x", "y"))), lookup$coord[[1]])
 
                
 
 #########
-# set keys
-## setkey(lookup, grp)
-## setkey(res, grp)
-## lookup <- lookup[res]
-## lookup$type <- "inter"
-## lookup[,coord := NULL]
 
 ## ##
 ## # add key locations as data for interpolation:
@@ -306,8 +351,6 @@ lookup[, coord := sp::coordinates(gdistance::shortestPath(trans, as.matrix(.SD[1
 ## lookup[, order := 1:.N, by = nrow]
 ## setkey(lookup, grp, order)
 
-## # calculate cumulative distance moved for interpolated tracks.
-## lookup[, cumdist := cumsum(c(0, sqrt(diff(nln_longitude)^2 + diff(nln_latitude)^2))), by = grp]
 
 ####################
 # this needs checked....Seems to be working but need to get correct order in output.
@@ -321,8 +364,6 @@ lookup[, coord := sp::coordinates(gdistance::shortestPath(trans, as.matrix(.SD[1
 
 #key for nln and lookup = animal_id, bin, detection_timestamp
 
-out <- lookup[nln_small]
-setkey(out, animal_id, bin, detection_timestamp_utc)
 
 
 
