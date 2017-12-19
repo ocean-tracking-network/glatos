@@ -168,22 +168,33 @@ library(gdistance)
 library(glatos)
 library(data.table)
 
+
 data(walleye_detections) 
 data(greatLakesTrLayer)
-trans <- greatLakesTrLayer
-dtc <- walleye_detections
-intTimeStamp <- 86400/2
-rast <- greatLakesTrLayer
-lnlThresh = 0.9
+
+
+interpolatePath <- function(dtc = walleye_detections,
+                            trans = greatLakesTrLayer,
+                            intTimeStamp = 86400/2,
+                            rast = greatLakesTrLayer,
+                            lnlThresh = 0.9){
+
 
 # this script uses data.table extensively
 setDT(dtc)
 
 # subset only columns needed
-dtc <- dtc[,c("animal_id", "detection_timestamp_utc", "glatos_array", "station_no", "deploy_lat", "deploy_long")]
+dtc <- dtc[,c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
 
 # Sort detections by transmitter id and then by detection timestamp
 setkey(dtc, animal_id, detection_timestamp_utc)
+
+# add detection "type" column
+dtc[, type := "real"]
+
+# save original dataset to combine with interpolated data in the end
+det <- dtc
+names(det) <- c("animal_id", "bin_stamp", "i_lat", "i_lon", "type")
 
 # create sequence of timestamps based on min/max timestamps in data
 rng <- as.POSIXct(trunc(range(dtc$detection_timestamp_utc), units = 'days'), tz = 'GMT')
@@ -200,9 +211,7 @@ dtc <- merge(CJ(bin = tSeq, animal_id = ids), dtc, by = c("bin", "animal_id"), a
 setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
 # identify start and end rows for observations before and after NA
-ends <- dtc[!is.na(deploy_lat), .(start =.I[-nrow(.SD)], end =.I[-1]), by = animal_id][end-start>1] #original
-
-# check out using a foverlap join to extract all rows between start/end rows
+ends <- dtc[!is.na(deploy_lat), .(start = .I[-nrow(.SD)], end = .I[-1]), by = animal_id][end - start > 1]
 
 # identify observations that are both start and ends
 start_end <- ends[, c(start, end)]
@@ -221,8 +230,7 @@ dtc <- new[dtc]
 dtc <- dtc[!is.na(nrow)]
 setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
-#write.csv(dtc[animal_id == 3], "check.csv")
-
+# calculate great circle distance between coords
 dtc[, gcd := geosphere::distHaversine(as.matrix(.SD[1, c("deploy_long", "deploy_lat")]), as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = nrow ]
 
 # calculate least cost (non-linear) distance between points
@@ -231,13 +239,27 @@ dtc[, lcd := costDistance(trans, fromCoords = as.matrix(.SD[1, c("deploy_long", 
 # calculate ratio of gcd:lcd
 dtc[, crit := gcd/lcd]
 
-# extract rows that need non-linear interpolation based on ratio between gcd:lcd
-nln <- dtc[crit >= lnlThresh & crit != Inf]
-
 # create keys for lookup
-nln[!is.na(detection_timestamp_utc), t_lat := shift(deploy_lat, type = "lead"), by = nrow]
-nln[!is.na(detection_timestamp_utc), t_lon := shift(deploy_long, type = "lead"), by = nrow]
-nln[!is.na(detection_timestamp_utc), t_timestamp := shift(detection_timestamp_utc, type = "lead"), by = nrow]
+dtc[!is.na(detection_timestamp_utc), t_lat := shift(deploy_lat, type = "lead"), by = nrow]
+dtc[!is.na(detection_timestamp_utc), t_lon := shift(deploy_long, type = "lead"), by = nrow]
+dtc[!is.na(detection_timestamp_utc), t_timestamp := shift(detection_timestamp_utc, type = "lead"), by = nrow]
+
+# extract rows that need non-linear interpolation based on ratio between gcd:lcd
+nln <- dtc[crit < lnlThresh & !is.infinite(crit) & crit != 0]
+
+# extract data for linear interpolation
+# had to add "crit == 0" because lcd was unable to be calculated for one movement (nrow = 86).
+# this was because movement was outside bounds of transition layer.  A check to make sure that all
+# points to be interpolated are within the tranition layer is needed prior to interpolation.
+
+ln <- dtc[crit >= lnlThresh | is.infinite(crit) | is.na(crit) | crit == 0]
+
+ln[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc), bin_stamp := bin]
+ln[, i_lat := {tmp = .SD[c(1, .N), c("detection_timestamp_utc", "deploy_lat")]; approx(c(tmp$detection_timestamp_utc), c(tmp$deploy_lat), xout = c(bin_stamp))$y}, by = nrow]
+ln[, i_lon := {tmp = .SD[c(1, .N), c("detection_timestamp_utc", "deploy_long")]; approx(c(tmp$detection_timestamp_utc), c(tmp$deploy_long), xout = c(bin_stamp))$y}, by = nrow]
+
+# subset interpolated data
+ln <- ln[is.na(type), c("animal_id", "bin_stamp", "i_lat", "i_lon")][, type := "inter"]
 
 # extract records to lookup
 nln_small <- nln[ !is.na(detection_timestamp_utc)][!is.na(t_lat)]
@@ -275,118 +297,33 @@ setkey(nln_small, nrow, seq_count)
 # add timeseries for interpolating nln movements
 nln_small[nln_small[, .I[1], by = nrow]$V1, iTime := detection_timestamp_utc]
 nln_small[nln_small[, .I[.N], by = nrow]$V1, iTime := t_timestamp]
-nln_small[nln_small[, .I[c(-1, -.N)], by = nrow]$V1, iTime := NA]
 
 # calculate cumdist
 nln_small[, cumdist := cumsum(c(0, sqrt(diff(nln_longitude)^2 + diff(nln_latitude)^2))), by = nrow]
 
 # interpolate missing timestamps for interpolated coordinates
-nln_small[, i_time := as.POSIXct(approx(cumdist, iTime, xout = cumdist)$y, origin = "1970-01-01 00:00:00",
-                                tz = attr(nln_small$iTime, "tzone")), by = nrow]
+nln_small[, iTime := as.POSIXct(approx(cumdist, iTime, xout = cumdist)$y,
+                                 origin = "1970-01-01 00:00:00",
+                                 tz = attr(nln_small$iTime, "tzone")), by = nrow]
 
+# create timestamp vector to interpolate on.
 nln[, bin_stamp := detection_timestamp_utc]
 nln[is.na(detection_timestamp_utc), bin_stamp := bin] 
+nln[, grp := nrow]
 
-################################
-
-# extract "bin_stamp" from nln and use to calculate
-# use nrow as key...
-
-
-nln_small[, c(approx(i_time, nln_longitude, xout = c(tSeq[between(tSeq, detection_timestamp_utc[.I], t_timestamp[.I])]))), by = nrow]
-
+# interpolate timestamps
 setkey(nln_small, nrow)
-#nln[, nln_long := print({tmp = nln[, nln_small[.(nln[1,"nrow"]), c("i_time", "nln_longitude")]]}), by = nrow]#;
-#  approx(tmp$i_time, tmp$nln_longitude, xout = nln_tst$bin_stamp)$y}, by = nrow]
+setkey(nln, nrow)
+nln[, i_lat := {tmp = nln_small[.(.SD[1, "nrow"]), c("iTime", "nln_latitude")];
+    approx(tmp$iTime, tmp$nln_latitude, xout = bin_stamp)$y}, by = grp]
 
+nln[, i_lon := {tmp = nln_small[.(.SD[1, "nrow"]), c("iTime", "nln_longitude")];
+    approx(tmp$iTime, tmp$nln_longitude, xout = bin_stamp)$y}, by = grp]
 
-nln[, print(match(nln_small$nrow, nln$nrow)), by = nrow]#;
+#setkey(nln, nrow, bin_stamp)
 
-nln[, print(match(nln$nrow, nln_small)), by = nrow]
+nln <- nln[is.na(type), c("animal_id", "bin_stamp", "i_lat", "i_lon", "type")][, type := "inter"]
+out <- rbind(det, nln, ln)
 
-###############match example...
-require(data.table)
-a <- data.table(id=1:10,date=as.Date(1:10))
-setkey(a,id)
-b <- data.table(id=4:6)
-setkey(b,id)
-
-a[b]
-#match example....
-
-
-nln_small[nln]
-
-
-
-                        , by = nrow]
-
-
-
-
-
-
-
-
-                 nln_small[.(nln_tst[1, "nrow"]), "nln_longitude"], by = nrow]
-
-                c(nln_small[.(.SD[1, "nrow"]), "nln_longitude"]), xout = c(nln_tst$bin_stamp))$y]
-            
-is.vector(c(nln_small[.(nln_tst$nrow[1]), "i_time"]))
-
-nln_small_tst <- nln_small[nrow == 2] 
-
-tSeq
-
-
-nln_small[, num_rows := .N, by = nrow]
-
-
-
-write.csv(nln, "check1.csv")
-                       
-
-#interpolate x and y locations based on timestamps
-pathLon <- approx(out, path$x, xout = iTime)$y
-pathLat <- approx(out, path$y, xout = iTime)$y
-
-########
-
-
-# calculate bins between timestamp & t_timestamp for each nrow, then calculate interpolated x and y...
-
-
-
-
-
-
-
-
-
-nln_tst <- nln[nrow == 2]
-setkey(nln_tst, deploy_lat, deploy_long, t_lat, t_lon)    
-setkey(nln_small, deploy_lat, deploy_long, t_lat, t_lon)
-
-out <- nln_tst[nln_small]
-out <- nln_small[nln_tst]
-
-
-
-
-
-write.csv(out, "check2.csv")
-
-
-saveRDS(out, "out.rds")
-out <- readRDS("out.rds")
-
-
-
-
-
-
-
-
-
-
-
+return(out)
+}
