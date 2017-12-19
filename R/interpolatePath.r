@@ -174,6 +174,7 @@ data(greatLakesTrLayer)
 
 dtc = walleye_detections
 trans = greatLakesTrLayer
+
 intTimeStamp = 86400/2
 rast = greatLakesTrLayer
 lnlThresh = 0.9
