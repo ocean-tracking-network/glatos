@@ -172,19 +172,25 @@ library(data.table)
 data(walleye_detections) 
 data(greatLakesTrLayer)
 
+dtc = walleye_detections
+trans = greatLakesTrLayer
+intTimeStamp = 86400/2
+rast = greatLakesTrLayer
+lnlThresh = 0.9
 
-interpolatePath <- function(dtc = walleye_detections,
-                            trans = greatLakesTrLayer,
-                            intTimeStamp = 86400/2,
-                            rast = greatLakesTrLayer,
-                            lnlThresh = 0.9){
+out <- interpolatePath2(dtc = walleye_detections, trans = greatLakesTrLayer, intTimeStamp = 86400/2, rast = greatLakesTrLayer, lnlThresh = 0.9)
 
 
+
+interpolatePath2 <- function(dtc, trans, intTimeStamp, rast, lnlThresh){
+
+library(data.table)
+  
 # this script uses data.table extensively
 setDT(dtc)
 
 # subset only columns needed
-dtc <- dtc[,c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
+dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
 
 # Sort detections by transmitter id and then by detection timestamp
 setkey(dtc, animal_id, detection_timestamp_utc)
