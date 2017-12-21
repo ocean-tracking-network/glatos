@@ -4,47 +4,31 @@
 \alias{interpolatePath}
 \title{Interpolate new positions within a spatiotemporal path data}
 \usage{
-interpolatePath(dtc, intTimeStamp = 86400, rast = NULL, lnlThresh = 0.9,
-  detColNames = list(individualCol = "animal_id", timestampCol =
-  "detection_timestamp_utc", latitudeCol = "deploy_lat", longitudeCol =
-  "deploy_long", typeCol = "record_type"))
+interpolatePath(dtc, trans = NULL, int_time_stamp = 86400,
+  lnl_thresh = 0.9)
 }
 \arguments{
-\item{dtc}{A data frame containing spatiotemporal data with at least 
-4 columns containing 'individual', 'timestamp','longitude', and 'latitude' 
-data and an optional fifth column with the 'type' of record 
-(e.g., detection). Default column names match the GLATOS 
-detection export file but other names can be specified with 
-\code{detColNames}.}
+\item{dtc}{A data frame containing spatiotemporal data with at
+least 4 columns containing 'animal_id',
+'detection_timestamp_utc','deploy_lat', and 'deploy_long' Default
+column names match the GLATOS}
 
-\item{intTimeStamp}{The time step size (in seconds) of interpolated 
-positions. Default is 86400 (one day).}
-
-\item{rast}{An optional transition matrix with the "cost" of moving across 
-each cell within the map extent. Must be of class 
-\code{TransitionLayer} (See \code{gdistance} package). Passed to  
+\item{trans}{An optional transition matrix with the "cost" of
+moving across each cell within the map extent. Must be of class
+\code{TransitionLayer} (See \code{gdistance} package). Passed to
 \code{trans} in \code{\link{movePath}}.}
 
-\item{lnlThresh}{A numeric threshold for determining if linear or non-linear 
-interpolation will be used based on the ratio of linear-to-non-linear
-shortest path distances. Passed to \code{ithresh} in 
-\code{\link{movePath}}.}
+\item{int_time_stamp}{The time step size (in seconds) of interpolated 
+positions. Default is 86400 (one day).}
 
-\item{detColNames}{A list with names of columns in \code{dtc}:
-\itemize{
-  \item \code{individualCol} is a character string that uniquely identifies 
-    an individual (e.g., tagged animal). Default is 'animal_id'.
- \item \code{timestampCol} is a character string with the name of the column 
-         containing datetime stamps. Default is 'detection_timestamp_utc'.
- \item \code{latitudeCol} is a character string with the name of the column
-    containing latitude data. Default is 'deploy_lat'.
- \item \code{longitudeCol} is a character string with the name of the column
-    containing longitude of the receiver. Default is 'deploy_long'.
- \item \code{typeCol} is a character string with the name of the optional 
-    column that identifies the type of record. Default is 'record_type'.}}
+\item{lnl_thresh}{A numeric threshold for determining if linear or
+non-linear interpolation will be used based on the ratio of
+linear-to-non-linear shortest path distances. Passed to
+\code{ithresh} in \code{\link{movePath}}.}
 }
 \value{
-A dataframe with id, timestamp, lat, lon, and record type.
+A data.table with animal_id, detection_timestamp_utc,
+  deploy_lat, deploy_long, and record type.
 }
 \description{
 Interpolate new positions within a spatiotemporal path data set 
@@ -52,26 +36,31 @@ Interpolate new positions within a spatiotemporal path data set
 	 using linear or non-linear interpolation (via \code{\link{movePath}}).
 }
 \details{
-Interpolation is done by passing each consecutive pair of points to 
-\code{\link{movePath}} for interpolation via linear or non-linear 
-methods, depending on \code{rast}.
+Interpolation is done by passing each consecutive pair of
+  points to \code{\link{movePath}} for interpolation via linear or
+  non-linear methods, depending on \code{rast}.
 
-Non-linear interpolation uses the 'gdistance' package to find the shortest 
-pathway between two locations (i.e., receivers) that avoid 'impossible' 
-movements (e.g., over land for fish). The shortest non-linear path between 
-two locations is calculated using a 'transition matrix layer' (\code{rast}) 
-that represents the 'cost' of an animal moving between adjacent grid cells. 
-For example, each cell in \code{rast} may be coded as water (1) or land (0)
-to represent possible (1) and impossible (0) movement path.
+Non-linear interpolation uses the 'gdistance' package to
+  find the shortest pathway between two locations (i.e., receivers)
+  that avoid 'impossible' movements (e.g., over land for fish). The
+  shortest non-linear path between two locations is calculated
+  using a 'transition matrix layer' (\code{rast}) that represents
+  the 'cost' of an animal moving between adjacent grid cells.  For
+  example, each cell in \code{rast} may be coded as water (1) or
+  land (0) to represent possible (1) and impossible (0) movement
+  path.
 
-Linear interpolation is used for all points when \code{rast} is not supplied.
-When \code{rast} is supplied, then interpolation method is determined for
-each pair of observed positions. For example, linear interpolation will be 
-used if the two points are exactly the same and when the ratio of linear-to-
-can be used to control whether non-linear or linear interpolation is used
-for all points. For example, non-linear interpolation will be used for all
-points when \code{lnlThresh} = 1 and linear interpolation will be used for 
-all points when \code{lnlThresh} = 0.
+Linear interpolation is used for all points when
+  \code{trans} is not supplied.  When \code{trans} is supplied,
+  then interpolation method is determined for each pair of observed
+  positions. For example, linear interpolation will be used if the
+  two points are exactly the same and when the ratio of linear-to-
+  # non-linear shortest path distances exceeds
+  \code{lnlThresh}. \code{lnlThresh} can be used to control whether
+  non-linear or linear interpolation is used for all points. For
+  example, non-linear interpolation will be used for all points
+  when \code{lnlThresh} = 1 and linear interpolation will be used
+  for all points when \code{lnl_thresh} = 0.
 }
 \examples{
 

@@ -54,8 +54,6 @@
 #' @seealso \code{\link{movePath}}
 #'
 #' @author Todd Hayden
-#'
-#' @import data.table
 #' 
 #' @examples
 #'
@@ -230,7 +228,7 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
     as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = i.start]
 
   # calculate least cost (non-linear) distance between points
-  dtc[, lcd := costDistance(trans, fromCoords = as.matrix(
+  dtc[, lcd := gdistance::costDistance(trans, fromCoords = as.matrix(
     .SD[1, c("deploy_long", "deploy_lat")]),
     toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])),
     by = i.start]
