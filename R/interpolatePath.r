@@ -175,7 +175,7 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
 
 
 # if only need to do linear interpolation:
-  if(tran == NULL | lnl_thresh == 0){
+  if(trans == NULL | lnl_thresh == 0){
     dtc[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc),
                                                 bin_stamp := bin]
     dtc[, i_lat := approx(detection_timestamp_utc, deploy_lat,
