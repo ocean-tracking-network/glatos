@@ -168,7 +168,7 @@ read_glatos_workbook <- function(wb_file, wb_version = NULL,
       refcol_cols <- timestamp_cols[grep("REFCOL", schema_i$arg[timestamp_cols])]
       #function to construct time zone string from reference column tmp
       REFCOL <- function(x) {
-        col_x <- gsub("^REFCOL\\(|)$", "", x)
+        col_x <- gsub(")$", "", strsplit(x, "REFCOL\\(")[[1]][2])
         x2 <- tmp[, col_x]
         utc_rows <- tolower(x2) %in% c("utc", "gmt")
         x2[utc_rows] <- "UTC"
