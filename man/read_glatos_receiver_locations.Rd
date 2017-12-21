@@ -32,7 +32,8 @@ must be in UTC timezone per GLATOS standard.
 }
 \examples{
 #get path to example receiver_locations file
-data(recLoc_example)
+rec_file <- system.file("extdata", 
+  "receiver_locations_2011.csv", package = "glatos")
 rcv <- read_glatos_receiver_locations(rec_file)
 
 }
