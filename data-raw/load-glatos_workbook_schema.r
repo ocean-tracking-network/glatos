@@ -119,7 +119,7 @@ glatos_workbook_schema$v1.3$tagging <- read.table(text="
   tag_code_space                            character  NA
   tag_implant_type                          character  NA
   tag_activation_date                       Date       NA
-  est_tag_life                              numeric    NA
+  est_tag_life                              character  NA
   tagger                                    character  NA
   tag_owner_pi                              character  NA
   tag_owner_organization                    character  NA
@@ -167,3 +167,4 @@ glatos_workbook_schema$v1.3$tagging <- read.table(text="
 #\Version 1.3
 #----------------------------------------------------
 
+#devtools::use_data(glatos_workbook_schema, overwrite = TRUE)
