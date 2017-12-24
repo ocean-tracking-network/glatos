@@ -160,7 +160,14 @@ glatos_workbook_schema$v1.3$tagging <- read.table(text="
   anesthetic_concentration_in_recirculation character  NA
   buffer_concentration_in_recirculation     character  NA
   dissolved_oxygen                          character  NA
-  comments                                  character  NA",
+  comments                                  character  NA
+  glatos_project	                          character  NA
+  glatos_external_tag_id1                   character  NA
+  glatos_external_tag_id2                   character  NA
+  glatos_tag_recovered                      character  NA
+  glatos_caught_date	                      Date       NA
+  glatos_reward                             character  NA
+",
   header = TRUE,
   stringsAsFactors = FALSE)
 
