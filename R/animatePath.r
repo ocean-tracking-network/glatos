@@ -129,127 +129,133 @@
 #'  
 #' @export
 
-animatePath <- function(procObj, recs, outDir, background=NULL, 
-	backgroundYlim = c(41.48, 45.90), backgroundXlim = c(-84.0, -79.5), 
-	ffmpeg = NA, plotControl=NULL,
-	procObjColNames=list(animalCol="animal_id",binCol="bin",
-	  timestampCol="detection_timestamp_utc", latitudeCol="deploy_lat", 
-	  longitudeCol="deploy_long", typeCol="record_type"),
-  recColNames=list(latitudeCol="deploy_lat", 
-		longitudeCol="deploy_long", deploy_timestampCol="deploy_date_time", 
-		recover_timestampCol="recover_date_time"),
-  tail_dur = 0){
-	
-	#try calling ffmpeg
-  # add exe if ffmpeg is directory
-  cmd <- ifelse(grepl("ffmpeg.exe$",ffmpeg) | is.na(ffmpeg), ffmpeg, 
-    paste0(ffmpeg,"\\ffmpeg.exe"))
-  cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', cmd)	
-  ffVers <- suppressWarnings(system2(cmd, "-version",stdout=F)) #call ffmpeg
-  if(ffVers == 127) stop(paste0('"ffmpeg.exe" was not found.\n',
-    'Ensure it is installed add added to system PATH variable\n',
-    "or specify path using input argument 'ffmpeg'\n\n",
-    'FFmpeg is available from:\n https://ffmpeg.org/'), call.=FALSE)
-		
-	# Check that required columns appear in the procObj data frame
-	missingCols <- setdiff(procObjColNames, names(procObj))
-	if (length(missingCols) > 0){
-		stop(paste0("'procObj' data frame is missing the following ",
-			"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-			call.=FALSE)
-	}
-    
-	# Subset procObj with only required columns and change names
-	# this makes the code more easy to understand.
-	procObj <- procObj[,unlist(procObjColNames)] #subset in order
-	
-	names(procObj) <- c("id","bin","timestamp","lat","lon","type") #rename
-		
-	# Check that timestamp is of class 'POSIXct'
-	if(!('POSIXct' %in% class(procObj$timestamp))){
-		stop(paste0("Column 'timestamp' in procObj",
-			" data frame must be of class 'POSIXct'."), call.=FALSE)
-	}  			
-		
-	# Check that the specified columns appear in recs data frame
-	missingCols <- setdiff(unlist(recColNames), names(recs))
-	if (length(missingCols) > 0){
-		stop(paste0("'recs' data frame is missing the following ",
-			"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-			call.=FALSE)
-	}
-	
-	# Subset recs with only user-defined columns and change names
-	#  this makes the code more easy to understand.
-	recs <- recs[,unlist(recColNames)] #subset
-	names(recs) <- c("lat","lon","deploy_date_time","recover_date_time")		
 
-	# Check that timestamp is of class 'POSIXct'
-	if(!('POSIXct' %in% class(recs$deploy_date_time)) | 
-		!('POSIXct' %in% class(recs$recover_date_time))){
-			stop(paste0("Columns '",recColNames$deploy_timestampCol,"' and '",
-				recColNames$recover_timestampCol,"' in 'recs' data frame ",
-				"must be of class 'POSIXct'."),call.=FALSE)
-	}    		
-		
+library(glatos)
+# create procdata for development
+# example detection data
+## data(walleye_detections) 
+## dtc <- walleye_detections
+## dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
+## data(greatLakesTrLayer)
+## trans <- greatLakesTrLayer
+## procObj <- interpolatePath(dtc, trans=greatLakesTrLayer)
+## saveRDS(procObj, "procObj.rds")
 
-	# add colors and symbols to detections data frame
-	if(!is.null(plotControl)){	
-		#merge plotControl with procObj
-		procObj <- merge(procObj, plotControl, by.x=c("id","type"), 
-			by.y=c("id","what"))
-	} else {
-		#otherwise, assign default colors and symbols
-    procObj$color = 'black'
-    procObj$marker = 21
-    procObj$marker_cex = 1
-    procObj$line_color = NA
-    procObj$line_width = NA
-	}		
+#development
+procObj <- readRDS("procObj.rds")
+# example receiver location data
+data(recLoc_example) 
+data(greatLakesPoly) 
+background <- greatLakesPoly
+backgroundYlim = c(41.48, 45.90)
+backgroundXlim = c(-84.0, -79.5)
+recs <- recLoc_example
+int_time_stamp <- 86400
+outDir <- "~/Desktop/test"
+
+setDT(procObj)
+setDT(recs)
+
+#################################
+# try calling ffmpeg
+# add exe if ffmpeg is directory
+# cmd <- ifelse(grepl("ffmpeg.exe$",ffmpeg) | is.na(ffmpeg), ffmpeg, 
+# paste0(ffmpeg,"\\ffmpeg.exe"))
+# cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', cmd)	
+# ffVers <- suppressWarnings(system2(cmd, "-version",stdout=F)) #call ffmpeg
+# if(ffVers == 127) stop(paste0('"ffmpeg.exe" was not found.\n',
+# 'Ensure it is installed add added to system PATH variable\n',
+#   "or specify path using input argument 'ffmpeg'\n\n",
+#   'FFmpeg is available from:\n https://ffmpeg.org/'), call.=FALSE)
+
+# Need to add plot colors and symbols back into function.  Also need to add line functionality
+
+  ## # add colors and symbols to detections data frame
+  ##       if(!is.null(plotControl)){	
+  ##       	#merge plotControl with procObj
+  ##       	procObj <- merge(procObj, plotControl, by.x=c("id","type"), 
+  ##       		by.y=c("id","what"))
+  ##       } else {
+  ##       	#otherwise, assign default colors and symbols
+  ##   procObj$color = 'black'
+  ##   procObj$marker = 21
+  ##   procObj$marker_cex = 1
+  ##   procObj$line_color = NA
+  ##   procObj$line_width = NA
+  ##       }		
 
 			
 	#make output directory if it does not already exist
-	if(!dir.exists(outDir))	dir.create(outDir)
+#	if(!dir.exists(outDir))	dir.create(outDir)
 
   #setwd(outDir)
     
-	#get sequence of time breaks
-  tSeq <- sort(unique(procObj$bin))
+# create sequence of timestamps based on min/max timestamps in data
+rng <- as.POSIXct(trunc(range(procObj$bin_stamp), units = "days"),
+                  tz = "GMT")
+t_seq <- seq(rng[1], rng[2], int_time_stamp)
 
-	# bin data by time interval and add to recs
-	recs$depBin <- findInterval(recs$deploy_date_time, tSeq)
-	recs$recBin <- findInterval(recs$recover_date_time, tSeq)
+# add bins to processed object for plotting
+procObj[, plot_bin := findInterval(bin_stamp, t_seq)]
 
-	for(i in 1:length(tSeq)){
-		if(i==1) {
-			message(paste0("Writing png files to ",outDir,"..."))
-			pb <- txtProgressBar(style=3) #initialize progress bar
-		}
+# create group counter
+procObj[, grp := plot_bin]
+
+# remove receivers not recovered (records with NA in recover_date_time)
+setkey(recs, recover_date_time)
+recs <- recs[!J(NA_real_), c("station", "deploy_lat", "deploy_long", "deploy_date_time", "recover_date_time")]
+
+# bin data by time interval and add to recs
+recs[, start := findInterval(deploy_date_time, t_seq)]
+recs[, end := findInterval(recover_date_time, t_seq)]
+####
+
+#setkey(procObj, start, end)
+#setkey(recs, start, end)
+#plot_obj <- foverlaps(procObj, recs, type = "within")
+
+# add clock for plot
+procObj[, clk := t_seq[plot_bin]]
+
+
+cust_plot <- function(x, outDir, background = NULL, backgroundYlim = c(41.48, 45.90),
+                      backgroundXlim = c(-84.0, -79.5)){
+
+  sub_recs <- recs[between(x$plot_bin[1], lower = recs$start, upper = recs$end)]
+
+  # plot GL outline and movement points 
+  png(paste(outDir,"/", x$plot_bin[1], '.png', sep = ''), width = 3200, height = 2400, units = 'px', res = 300)
+
+  # plot background image
+  par(oma=c(0,0,0,0), mar=c(0,0,0,0))  #no margins
+  if(is.null(background)) {
+    data(greatLakesPoly) #example in glatos package
+    background <- greatLakesPoly
+  }
+  
+  #note call to plot with sp
+  sp::plot(background, ylim = c(backgroundYlim), xlim = c(backgroundXlim), axes = FALSE, lwd = 2)
+
+  # plot fish locations, receivers, clock  
+  points(x = sub_recs$deploy_long, y = sub_recs$deploy_lat, pch = 21, cex = 2, col = 'tan2', bg = 'tan2')
+  text(x = -84.0, y = 42.5, as.Date(x$clk[1]), cex = 2.5)
+  points(x = x$i_lon, y = x$i_lat, pch = 21, col = "red", bg = "red")
+  dev.off()
+}
+
+# specify marker colors, sizes, etc in function?
+procObj[,  cust_plot(x = .SD, outDir = outDir, background = NULL),  by = grp]
+
+	## for(i in 1:length(tSeq)){
+	## 	if(i==1) {
+	## 		message(paste0("Writing png files to ",outDir,"..."))
+	## 		pb <- txtProgressBar(style=3) #initialize progress bar
+	## 	}
 		
 		# subset for plotting
-	  tail_start <- max(i - tail_dur, 1) #so always 1 or larger
-		procObj.i <- procObj[procObj$bin %in% tSeq[tail_start:i],]
-		
-		# extract receivers active during time interval
-		recs.i <- recs[,c('lat', 'lon', 'deploy_date_time', 
-			'recover_date_time')][recs$recBin >= i & recs$depBin <= i,]
-
-		# plot GL outline and movement points
-		png(paste(outDir,"/",i, '.png', sep = ''), width = 3200, height = 2400, units = 'px', res = 300)
-		
-		# plot background image
-		par(oma=c(0,0,0,0), mar=c(0,0,0,0))  #no margins
-		if(is.null(background)) {
-			data(greatLakesPoly) #example in glatos package
-			background <- greatLakesPoly 
-		}
-		#note call to plot with sp
-		sp::plot(background, ylim = c(backgroundYlim) , xlim = c(backgroundXlim), 
-			axes = FALSE, lwd = 2)
-
-		# plot fish locations, receivers, clock
-		points(x = recs.i$lon, y = recs.i$lat, pch = 21, cex = 2, col = 'tan2', 
-			bg = 'tan2')
+#	  tail_start <- max(i - tail_dur, 1) #so always 1 or larger
+        #procObj.i <- procObj[procObj$bin %in% tSeq[tail_start:i], ]
+            
 		#make lines if specified
 		if(any(!is.na(procObj.i$line_color)) | any(!is.na(procObj.i$line_width))){
   		ids <- sort(unique(procObj.i$id))
@@ -271,7 +277,10 @@ animatePath <- function(procObj, recs, outDir, background=NULL,
 	close(pb)
 
 	message("Compiling video file (mp4)...")
-			
+
+#        explore ffmpeg call with mapmate::ffmpeg
+
+  
 	#specify a call to ffmpeg
 	ffcall <- sprintf('-framerate 30 -y -i "%s/%%d.png" -c:v libx264 -vf "fps=30, 
 		format=yuv420p" "%s/animation.mp4"', outDir, outDir)
