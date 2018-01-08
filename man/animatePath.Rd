@@ -4,14 +4,7 @@
 \alias{animatePath}
 \title{Create an animated video of spatiotemporal path data}
 \usage{
-animatePath(procObj, recs, outDir, background = NULL,
-  backgroundYlim = c(41.48, 45.9), backgroundXlim = c(-84, -79.5),
-  ffmpeg = NA, plotControl = NULL, procObjColNames = list(animalCol =
-  "animal_id", binCol = "bin", timestampCol = "detection_timestamp_utc",
-  latitudeCol = "deploy_lat", longitudeCol = "deploy_long", typeCol =
-  "record_type"), recColNames = list(latitudeCol = "deploy_lat", longitudeCol
-  = "deploy_long", deploy_timestampCol = "deploy_date_time",
-  recover_timestampCol = "recover_date_time"), tail_dur = 0)
+animatePath(x, y, z)
 }
 \arguments{
 \item{procObj}{A data frame created by \code{\link{interpolatePath}} 
@@ -42,13 +35,13 @@ This argument is only needed if ffmpeg has not been added to your
 path variable on your computer.  For Windows machines, path must point 
 to ffmpeg.exe.  For example, 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'}
 
-\item{plotControl}{An optional data frame with four columns ('id', 'what', 
+\item{plot_control}{An optional data frame with four columns ('id', 'position_type', 
   'color', and 'marker') that specify the plot symbols and colors for 
   each animal and position type. See examples below for an example.
 \itemize{
   \item \code{id} contains the unique identifier of individual animals and 
        corresponds to 'id' column in 'dtc'. 
-  \item \code{what} indicates if the options should be applied to observed
+  \item \code{position_type} indicates if the options should be applied to observed
     positions (detections; 'detected') or interpolated positions 
     ('interpolated').
   \item \code{color} contains the marker color to be plotted for each 
