@@ -345,5 +345,7 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
                nln[type == "inter", c("animal_id", "bin_stamp", "i_lat", "i_lon",
                                   "type")], det)
   setkey(det, animal_id, bin_stamp)
+
+det[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
   return(det)
 }
