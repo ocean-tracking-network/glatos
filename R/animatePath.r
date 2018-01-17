@@ -143,25 +143,11 @@
 
 ## #development
 library(glatos)
-
+x
 proc_obj <- readRDS("procObj.rds")
-## # example receiver location data
-data(recLoc_example) 
-data(greatLakesPoly) 
-background <- greatLakesPoly
-background_ylim = c(41.48, 45.90)
-background_xlim = c(-84.0, -79.5)
-recs <- recLoc_example
-int_time_stamp <- 86400
-out_dir <- "~/Desktop/test"
-ani_name <- "animation.mp4"
-ffmpeg <- NA
-animate = TRUE
-#ffmpeg <- "~/Desktop"
 
 # note: IF plot_control is provided, only fish provided in "animal_id" will be plotted.  Surpress plotting of animals by not including them in animal_id
  plot_control <- data.frame(animal_id = c(3, 10, 22, 23, 153, 167, 171, 234, 444, 479, 3, 10, 22, 23, 153, 167, 171, 234, 444, 479), type = c("real", "real", "real", "real", "real", "real", "real", "real", "real", "real", "inter", "inter", "inter", "inter", "inter", "inter", "inter", "inter", "inter", "inter"), color = c("pink", "pink", "pink", "pink", "pink", "pink", "pink", "pink", "pink", "pink", "red", "red", "red", "red", "red", "red", "red", "red", "red", "red"), marker = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21), marker_cex = rep(1,20))
-plot_control = NULL
 ###############
 
 # ffmpeg = path to execute ffmpeg
@@ -169,31 +155,27 @@ plot_control = NULL
 # animate = TRUE (default) = make animated video, FALSE = no video
 # frame_delete = TRUE = delete all frames after making animation
 
-# tests
-
-proc_obj <- proc_obj[animal_id == 23]
-
-animatePath(proc_obj = proc_obj, recs = recs, plot_control = NULL, background = NULL,
-            background_ylim = c(41.48, 45.9), background_xlim = c(-84, -79.5),
-            ffmpeg = NA, int_time_stamp = 86400, ani_name = "animation.mp4",
-            frame_delete = TRUE, animate = TRUE, out_dir = "~/Desktop/test")
+# tests reveal that receivers are not being updated correctly.  Need to explore bug
+animatePath(proc_obj = proc_obj, recs = recs, plot_control = plot_control, background = NULL, background_ylim = c(41.48, 45.9), background_xlim = c(-84, -79.5), ffmpeg = NA, ani_name = "animation.mp4", frame_delete = TRUE, animate = TRUE, out_dir = "~/Desktop/test")
 
 animatePath(proc_obj = proc_obj, recs = recs, plot_control = NULL, background = NULL,
             background_ylim = c(41.48, 45.9), background_xlim = c(-84, -79.5),
-            ffmpeg = NA, int_time_stamp = 86400, ani_name = "animation.mp4",
-            frame_delete = TRUE, animate = TRUE, out_dir = "~/Desktop/test")
+            ffmpeg = NA, ani_name = "animation.mp4",
+            frame_delete = FALSE, animate = TRUE, out_dir = "~/Desktop/test")
 
+animatePath(proc_obj = proc_obj, recs = recs, plot_control = NULL, background = NULL,
+            background_ylim = c(41.48, 45.9), background_xlim = c(-84, -79.5),
+            ffmpeg = NA, ani_name = "animation.mp4",
+            frame_delete = FALSE, animate = FALSE, out_dir = "~/Desktop/test")
 
-
-
-
+############
 animatePath <- function(proc_obj, recs, plot_control = NULL, out_dir = getwd(), background = NULL,
                         background_ylim = c(41.48, 45.9),
                         background_xlim = c(-84, -79.5),
                         ffmpeg = NA,
                         ani_name = "animation.mp4", frame_delete = TRUE,
                         animate = TRUE ){
-  setDT(procObj)
+  setDT(proc_obj)
   setDT(recs)
 
   # try calling ffmpeg if animate = TRUE.
@@ -235,30 +217,22 @@ animatePath <- function(proc_obj, recs, plot_control = NULL, out_dir = getwd(), 
   #make output directory if it does not already exist
   if(!dir.exists(out_dir)) dir.create(out_dir)
 
-  # this needs cleaned up...plot_bin can be swapped for bin_stamp???   
-  proc_obj[, plot_bin := bin_stamp]
-
-  # add bins to processed object for plotting
-  proc_obj[, plot_bin := findInterval(bin_stamp, t_seq)]
-
   # create group identifier
-  proc_obj[, grp := plot_bin]
+  proc_obj[, grp := bin_stamp]
 
   # remove receivers not recovered (records with NA in recover_date_time)
   setkey(recs, recover_date_time)
   recs <- recs[!J(NA_real_), c("station", "deploy_lat", "deploy_long",
                                "deploy_date_time", "recover_date_time")]
 
-  # bin data by time interval and add to recs
-  recs[, start := findInterval(deploy_date_time, t_seq)]
-  recs[, end := findInterval(recover_date_time, t_seq)]
-
-  # add clock for plot
-  proc_obj[, clk := t_seq[plot_bin]]
-
+  # extract time sequence for plotting
+  t_seq <- unique(proc_obj$bin_stamp)
+  
   # determine leading zeros needed by ffmpeg and add as new column
-  char <- paste0("%", 0, nchar(as.character(max(proc_obj$plot_bin))), "d")
-  proc_obj[, f_name := paste0(sprintf(char, plot_bin), ".png")]
+  char <- paste0("%", 0, nchar((length(t_seq))), "d")
+  setkey(proc_obj, bin_stamp)
+  proc_obj[, f_name := .GRP, by = grp]
+  proc_obj[, f_name := paste0(sprintf(char, f_name), ".png")]
 
   if(is.null(background)) {
     data(greatLakesPoly) #example in glatos package
@@ -268,8 +242,8 @@ animatePath <- function(proc_obj, recs, plot_control = NULL, out_dir = getwd(), 
   cust_plot <- function(x){
 
     # extract receivers in the water during plot interval
-    sub_recs <- recs[between(x$plot_bin[1], lower = recs$start, upper = recs$end)]
-
+    sub_recs <- recs[between(proc_obj$bin_stamp[1], lower = recs$deploy_date_time, upper = recs$recover_date_time)]
+    
     # plot GL outline and movement points
     png(file.path(out_dir, x$f_name[1]), width = 3200, height = 2400,
         units = 'px', res = 300)
@@ -284,7 +258,7 @@ animatePath <- function(proc_obj, recs, plot_control = NULL, out_dir = getwd(), 
     # plot fish locations, receivers, clock
     points(x = sub_recs$deploy_long, y = sub_recs$deploy_lat, pch = 21, cex = 2,
            col = "tan2", bg = "tan2")
-    text(x = -84.0, y = 42.5, as.Date(x$clk[1]), cex = 2.5)
+    text(x = -84.0, y = 42.5, as.Date(x$bin_stamp[1]), cex = 2.5)
     points(x = x$i_lon, y = x$i_lat, pch = x$marker, col = x$color,
            cex = x$marker_cex)
     dev.off()
@@ -296,17 +270,14 @@ animatePath <- function(proc_obj, recs, plot_control = NULL, out_dir = getwd(), 
   setkey(proc_obj, grp)
   # create images
   proc_obj[, {setTxtProgressBar(pb, .GRP); cust_plot(x = .SD)},  by = grp,
-          .SDcols = c("plot_bin", "clk", "i_lon", "i_lat", "marker", "color",
+          .SDcols = c("bin_stamp", "i_lon", "i_lat", "marker", "color",
                       "marker_cex", "f_name")]
 close(pb)
   
   if(animate == TRUE & frame_delete == TRUE){
-out_dir <- "/home/thayden/Desktop/test"
-
-
 mapmate::ffmpeg(dir = out_dir, pattern = paste0(char, ".png"),
                     output = ani_name, output_dir = out_dir, rate = "ntsc")
-    unlink(file.path(outDir, unique(procObj$f_name)))
+    unlink(file.path(out_dir, unique(proc_obj$f_name)))
   } else {
     if(animate == TRUE & frame_delete == FALSE){
       mapmate::ffmpeg(dir = out_dir, pattern = paste0(char, ".png"),
