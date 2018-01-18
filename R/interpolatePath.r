@@ -6,26 +6,26 @@
 #' 
 #' @param dtc A data frame containing spatiotemporal data with at
 #'   least 4 columns containing 'animal_id',
-#'   'detection_timestamp_utc','deploy_lat', and 'deploy_long' Default
-#'   column names match the GLATOS
+#'   'detection_timestamp_utc','deploy_lat', and 'deploy_long'.
+#'   'deploy_lat' and 'deploy_long' must be in WGS 84 coordinate
+#'   system and 'detection_timestamp_utc' must be a timestamp (POSIXct
+#'   class). Default column names match the GLATOS and additional
+#'   columns will be ignored.
 #'
 #' @param int_time_stamp The time step size (in seconds) of interpolated 
 #'   positions. Default is 86400 (one day).
 #'   
 #' @param trans An optional transition matrix with the "cost" of
 #'   moving across each cell within the map extent. Must be of class
-#'   \code{TransitionLayer} (See \code{gdistance} package). Passed to
-#'   \code{trans} in \code{\link{movePath}}.
+#'   \code{TransitionLayer} (See \code{gdistance} package).
 #'   
 #' @param lnl_thresh A numeric threshold for determining if linear or
 #'   non-linear interpolation will be used based on the ratio of
-#'   linear-to-non-linear shortest path distances. Passed to
-#'   \code{ithresh} in \code{\link{movePath}}.
+#'   linear-to-non-linear shortest path distances.
 #'   
-#' @details Interpolation is done by passing each consecutive pair of
-#'   points to \code{\link{movePath}} for interpolation via linear or
-#'   non-linear methods, depending on \code{rast}.
-#' 
+#' @details Linear or nonlinear interpolation is calculated for consecutive (in time) pairs of points
+#'   using \code{gdistance} 
+#'
 #' @details Non-linear interpolation uses the 'gdistance' package to
 #'   find the shortest pathway between two locations (i.e., receivers)
 #'   that avoid 'impossible' movements (e.g., over land for fish). The
@@ -48,10 +48,9 @@
 #'   when \code{lnlThresh} = 1 and linear interpolation will be used
 #'   for all points when \code{lnl_thresh} = 0.
 #'
-#' @return A data.table with animal_id, detection_timestamp_utc,
+#' @return A data frame with animal_id, detection_timestamp_utc,
 #'   deploy_lat, deploy_long, and record type.
 #'
-#' @seealso \code{\link{movePath}}
 #'
 #' @author Todd Hayden
 #' 
@@ -144,10 +143,11 @@
 
 interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
                             lnl_thresh = 0.9){
-
   # this function uses data.table extensively
   setDT(dtc)
-  #copy(dtc)
+  
+  # subset only necessary columns
+  dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
 
   # Sort detections by transmitter id and then by detection timestamp
   setkey(dtc, animal_id, detection_timestamp_utc)
@@ -158,11 +158,9 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   det <- dtc
   names(det) <- c("animal_id", "bin_stamp", "i_lat", "i_lon", "type")
 
-  # create sequence of timestamps based on min/max timestamps in data
-  rng <- as.POSIXct(trunc(range(dtc$detection_timestamp_utc), units = "days"),
-                    tz = "GMT")
-  t_seq <- seq(rng[1], rng[2], int_time_stamp)
-
+  t_seq <- seq(min(dtc$detection_timestamp_utc), max(dtc$detection_timestamp_utc),
+               int_time_stamp)
+  
   # bin data by time interval and add bin to dtc
   dtc[, bin := t_seq[findInterval(detection_timestamp_utc, t_seq)] ]
 
@@ -170,7 +168,6 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   dtc <- merge(CJ(bin = t_seq, animal_id = unique(dtc$animal_id)), dtc,
                by = c("bin", "animal_id"), all.x = TRUE)
   setkey(dtc, animal_id, bin, detection_timestamp_utc)
-
 
 # if only need to do linear interpolation:
   if(is.null(trans) | lnl_thresh == 0){
@@ -187,8 +184,8 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
     return(dtc)
      stop
   }
-
-  # routine for nln combined with ln interpolation
+ 
+  # routine for combined nln and ln interpolation
   # identify start and end rows for observations before and after NA
   ends <- dtc[!is.na(deploy_lat), .(start = .I[-nrow(.SD)], end = .I[-1]),
               by = animal_id][end - start > 1]
@@ -226,6 +223,21 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   dtc[, gcd := geosphere::distHaversine(as.matrix(
     .SD[1, c("deploy_long", "deploy_lat")]),
     as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = i.start]
+
+  # if doing any nln interpolation, need to check that all receivers are in "water"
+  # stop execution and display offending receivers if any receivers are on land.
+
+  r1 <- raster(trans)
+  land_chk <- dtc[!is.na(deploy_long), c("deploy_long", "deploy_lat") ]
+  setkey(land_chk, deploy_long, deploy_lat)
+  land_chk <- unique(land_chk)
+  coordinates(land_chk) <- c("deploy_long", "deploy_lat")
+  proj4string(land_chk) <- CRS("+init=epsg:4326")
+  tst <- is.na(extract(r1, land_chk))
+
+  capture <- function(x){paste(capture.output(print(x)), collapse = "\n")}
+  if(any(tst)) {stop("coordinates on land.  Interpolation impossible!\n",
+                      capture(as.data.table(land_chk[tst])), call. = FALSE)}
 
   # calculate least cost (non-linear) distance between points
   dtc[, lcd := gdistance::costDistance(trans, fromCoords = as.matrix(
