@@ -5,12 +5,11 @@
 #' 	 using linear or non-linear interpolation (via \code{\link{movePath}}).
 #' 
 #' @param dtc A data frame containing spatiotemporal data with at
-#'   least 4 columns containing 'animal_id',
-#'   'detection_timestamp_utc','deploy_lat', and 'deploy_long'.
-#'   'deploy_lat' and 'deploy_long' must be in WGS 84 coordinate
-#'   system and 'detection_timestamp_utc' must be a timestamp (POSIXct
-#'   class). Default column names match the GLATOS and additional
-#'   columns will be ignored.
+#'   least 4 columns containing 'animal_id' (numeric or character),
+#'   'detection_timestamp_utc' (POSIXct),'deploy_lat' (numeric),
+#'   'deploy_long' (numeric).  'deploy_lat' and 'deploy_long' must be
+#'   in WGS 84 coordinate system and 'detection_timestamp_utc'. Default column names match the
+#'   GLATOS detections export. Additional columns in dtc will be ignored.
 #'
 #' @param int_time_stamp The time step size (in seconds) of interpolated 
 #'   positions. Default is 86400 (one day).
@@ -22,9 +21,6 @@
 #' @param lnl_thresh A numeric threshold for determining if linear or
 #'   non-linear interpolation will be used based on the ratio of
 #'   linear-to-non-linear shortest path distances.
-#'   
-#' @details Linear or nonlinear interpolation is calculated for consecutive (in time) pairs of points
-#'   using \code{gdistance} 
 #'
 #' @details Non-linear interpolation uses the 'gdistance' package to
 #'   find the shortest pathway between two locations (i.e., receivers)
@@ -142,10 +138,8 @@
 #' @export 
 
 interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
-                            lnl_thresh = 0.9){
-  # this function uses data.table extensively
-  setDT(dtc)
-  
+                            lnl_thresh = 0.9){# this function uses data.table extensively
+  setDT(dtc) 
   # subset only necessary columns
   dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
 
@@ -358,6 +352,7 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
                                   "type")], det)
   setkey(det, animal_id, bin_stamp)
 
-det[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
-  return(det)
+  det[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
+
+  return(as.data.frame(det))
 }

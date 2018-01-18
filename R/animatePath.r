@@ -3,99 +3,62 @@
 #' Create a set of frames (png image files) showing geographic location data
 #' (e.g., detections of tagged fish or interpolated path data) at discrete 
 #' points in time and stitch frames into a video animation (mp4 file).    
-#' 
-#' @param procObj A data frame created by \code{\link{interpolatePath}} 
+#'
+#'
+#' @param proc_obj A data frame created by \code{\link{interpolatePath}} 
 #'   function.
 #'   
-#' @param recs A data frame containing at least four columns with 
-#'   receiver 'lat', 'lon', 'deploy_timestamp', and 
-#'   'recover_timestamp'. Default column names match GLATOS standard receiver 
-#'   location file \cr(e.g., 'GLATOS_receiverLocations_yyyymmdd.csv'), but 
-#'   column names can also be specified with \code{recColNames}.
-#'   
-#' @param outDir A character string with file path to directory where 
-#'   individual frames for animations will be written.
+#' @param recs A data frame containing at least four columns with
+#'   receiver 'deploy_lat', 'deploy_long', 'deploy_date_time', and
+#'   'recover_date_time'. Other columns in object will be ignored.
+#'   Default column names match GLATOS standard receiver location file
+#'   \cr(e.g., 'GLATOS_receiverLocations_yyyymmdd.csv').
+#'
+#' @param out_dir A character string with file path to directory where 
+#'   individual frames for animations will be written. Default is working directory.
 #'   
 #' @param background An optional object of class \code{SpatialPolygonsDataFrame} 
 #'   to be used as background of each frame. Default is a simple polygon
 #'   of the Great Lakes (\code{greatLakesPoly}) included in the 'glatos' 
 #'   package.
 #'   
-#' @param backgroundYlim vector of two values specifying the min/max values 
+#' @param background_ylim vector of two values specifying the min/max values 
 #' 	 for y-scale of plot. Units are same as background argument.
 #' 	 
-#' @param backgroundXlim vector of two values specifying the min/max values 
+#' @param background_xlim vector of two values specifying the min/max values 
 #'   for x-scale of plot. Units are same as background argument.
 #'   
 #' @param ffmpeg A character string with path to install directory for ffmpeg. 
 #'   This argument is only needed if ffmpeg has not been added to your 
 #'   path variable on your computer.  For Windows machines, path must point 
 #'   to ffmpeg.exe.  For example, 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'
-#'   
-#' @param plot_control An optional data frame with four columns ('id', 'position_type', 
-#'   'color', and 'marker') that specify the plot symbols and colors for 
+#'
+#' @param ani_name Name of animation (character string)
+#'
+#' @param frame_delete Boolean.  Default (TRUE) delete individual
+#'   image frames after animation is created
+#'
+#' @param animate Boolean. Default (TRUE) creates video animation
+#' 
+#' @param plot_control An optional data frame with four columns ('animal_id', 'type', 
+#'   'color', and 'marker', 'marker_cex') that specify the plot symbols and colors for 
 #'   each animal and position type. See examples below for an example.
 #' \itemize{
-#'   \item \code{id} contains the unique identifier of individual animals and 
-#'   	 corresponds to 'id' column in 'dtc'. 
-#'   \item \code{position_type} indicates if the options should be applied to observed
-#'     positions (detections; 'detected') or interpolated positions 
-#'     ('interpolated').
+#'   \item \code{animal_id} contains the unique identifier of individual animals and 
+#'   	 corresponds to 'animal_id' column in 'dtc'. 
+#'   \item \code{type} indicates if the options should be applied to observed
+#'     positions (detections; 'real') or interpolated positions 
+#'     ('inter').
 #'   \item \code{color} contains the marker color to be plotted for each 
 #'     animal and position type.  
 #'   \item \code{marker} contains the marker style to be plotted for each
 #'     animal and position type. Passed to \code{par()$pch}.
 #'   \item \code{marker_cex} contains the marker size to be plotted for each
 #'     animal and position type. Passed to \code{par()$cex}.
-#'   \item \code{line_color} contains the line color. Passed to 
-#'     \code{par()$col}.
-#'   \item \code{line_width} contains the line width. Passed to 
-#'     \code{par()$lwd}.
 #' } 
 #' 
-#' @param procObjColNames A list with names of required columns in 
-#'   \code{procObj}: 
-#' \itemize{
-#'   \item \code{animalCol} is a character string with the name of the column 
-#' 		 containing the individual animal identifier.
-#'	 \item \code{binCol} contains timestamps that define each frame.
-#'	 \item \code{timestampCol} is a character string with the name of the column 
-#' 		 containing datetime stamps for the detections (MUST be of class 
-#'     'POSIXct').
-#'	 \item \code{latitudeCol} is a character string with the name of the column
-#'     containing latitude of the receiver.
-#'	 \item \code{longitudeCol} is a character string with the name of the column
-#'     containing longitude of the receiver.
-#'	 \item \code{typeCol} is a character string with the name of the optional 
-#'     column that identifies the type of record. Default is 'record_type'. 
-#' }
-#' 
-#' @param recColNames A list with names of required columns in 
-#'   \code{recs}: 
-#' \itemize{
-#'	 \item \code{latitudeCol} is a character string with the name of the column
-#'     containing latitude of the receiver (typically, 'deploy_lat' for 
-#'     GLATOS standard detection export data). 
-#'	 \item \code{longitudeCol} is a character string with the name of the column
-#'     containing longitude of the receiver (typically, 'deploy_long' for 
-#'     GLATOS standard detection export data).
-#'	 \item \code{deploy_timestampCol} is a character string with the name of 
-#'     the column containing datetime stamps for receier deployments (MUST be 
-#'     of class 'POSIXct'; typically, 'deploy_date_time' for GLATOS standard 
-#'     detection export data). 
-#'	 \item \code{recover_timestampCol} is a character string with the name of 
-#'     the column containing datetime stamps for receier recover (MUST be of 
-#'     class 'POSIXct'; typically, 'recover_date_time' for GLATOS standard 
-#'     detection export data).
-#' }
-#' 
-#' @param tail_dur contains the duration (in same units as \code{procObj$bin}; 
-#'     see \code{\link{interpolatePath}}) of trailing points in each frame. 
-#'     Default value is 0 (no trailing points). A value
-#'     of \code{Inf} will show all points from start.
-#'
 #' @return Sequentially-numbered png files (one for each frame) and 
-#'   one mp4 file will be written to \code{outDir}.
+#'   one mp4 file will be written to \code{out_dir}.
 #' 
 #' @author Todd Hayden
 #'
@@ -119,13 +82,6 @@
 #' myDir <- paste0(getwd(),"/frames")
 #' animatePath(pos1, recs=recLoc_example, outDir=myDir)
 #' 
-#' 
-#' #add trailing points to include last 15 bins (in this case, days)
-#' data(walleye_plotControl)
-#' walleye_plotControl$line_color <- "grey60"
-#' walleye_plotControl$line_width <- 5
-#' animatePath(procObj = pos1, recs = recLoc_example, 
-#'   plotControl = walleye_plotControl, outDir=myDir, tail_dur = 15)
 #'  
 #' @export
 
@@ -224,6 +180,7 @@ animatePath <- function(proc_obj, recs, plot_control = NULL, out_dir = getwd(), 
   recs <- recs[!J(NA_real_), c("station", "deploy_lat", "deploy_long",
                                "deploy_date_time", "recover_date_time")]
 
+  
   # extract time sequence for plotting
   t_seq <- unique(proc_obj$bin_stamp)
   
