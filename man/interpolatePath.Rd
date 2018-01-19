@@ -9,25 +9,25 @@ interpolatePath(dtc, trans = NULL, int_time_stamp = 86400,
 }
 \arguments{
 \item{dtc}{A data frame containing spatiotemporal data with at
-least 4 columns containing 'animal_id',
-'detection_timestamp_utc','deploy_lat', and 'deploy_long' Default
-column names match the GLATOS}
+least 4 columns containing 'animal_id' (numeric or character),
+'detection_timestamp_utc' (POSIXct),'deploy_lat' (numeric),
+'deploy_long' (numeric).  'deploy_lat' and 'deploy_long' must be
+in WGS 84 coordinate system and 'detection_timestamp_utc'. Default column names match the
+GLATOS detections export. Additional columns in dtc will be ignored.}
 
 \item{trans}{An optional transition matrix with the "cost" of
 moving across each cell within the map extent. Must be of class
-\code{TransitionLayer} (See \code{gdistance} package). Passed to
-\code{trans} in \code{\link{movePath}}.}
+\code{TransitionLayer} (See \code{gdistance} package).}
 
 \item{int_time_stamp}{The time step size (in seconds) of interpolated 
 positions. Default is 86400 (one day).}
 
 \item{lnl_thresh}{A numeric threshold for determining if linear or
 non-linear interpolation will be used based on the ratio of
-linear-to-non-linear shortest path distances. Passed to
-\code{ithresh} in \code{\link{movePath}}.}
+linear-to-non-linear shortest path distances.}
 }
 \value{
-A data.table with animal_id, detection_timestamp_utc,
+A data frame with animal_id, detection_timestamp_utc,
   deploy_lat, deploy_long, and record type.
 }
 \description{
@@ -36,10 +36,6 @@ Interpolate new positions within a spatiotemporal path data set
 	 using linear or non-linear interpolation (via \code{\link{movePath}}).
 }
 \details{
-Interpolation is done by passing each consecutive pair of
-  points to \code{\link{movePath}} for interpolation via linear or
-  non-linear methods, depending on \code{rast}.
-
 Non-linear interpolation uses the 'gdistance' package to
   find the shortest pathway between two locations (i.e., receivers)
   that avoid 'impossible' movements (e.g., over land for fish). The
@@ -147,9 +143,6 @@ pos2 <- interpolatePath(walleye_detections, rast=greatLakesTrLayer)
 pts2 <- SpatialPoints(pos2[,c("deploy_long","deploy_lat")])
 points(pts2, pch=20, col='blue', cex=0.5)
 
-}
-\seealso{
-\code{\link{movePath}}
 }
 \author{
 Todd Hayden
