@@ -85,45 +85,7 @@
 #'  
 #' @export
 
-## library(glatos)
-## # create procdata for development
-## # example detection data
-## ##
-## data(walleye_detections) 
-## dtc <- walleye_detections
-## dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
-## data(greatLakesTrLayer)
-## trans <- greatLakesTrLayer
-## procObj <- interpolatePath(dtc, trans=greatLakesTrLayer)
-## saveRDS(procObj, "procObj.rds")
 
-## #development
-library(glatos)
-proc_obj <- readRDS("procObj.rds")
-data(recLoc_example)
-recs <- recLoc_example
-# note: IF plot_control is provided, only fish provided in "animal_id" will be plotted.  Surpress plotting of animals by not including them in animal_id
- plot_control <- data.frame(animal_id = c(3, 10, 22, 23, 153, 167, 171, 234, 444, 479, 3, 10, 22, 23, 153, 167, 171, 234, 444, 479), type = c("real", "real", "real", "real", "real", "real", "real", "real", "real", "real", "inter", "inter", "inter", "inter", "inter", "inter", "inter", "inter", "inter", "inter"), color = c("pink", "pink", "pink", "pink", "pink", "pink", "pink", "pink", "pink", "pink", "red", "red", "red", "red", "red", "red", "red", "red", "red", "red"), marker = c(21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21), marker_cex = rep(1,20))
-###############
-
-# ffmpeg = path to execute ffmpeg
-# ani_out = path/file name of video.
-# animate = TRUE (default) = make animated video, FALSE = no video
-# frame_delete = TRUE = delete all frames after making animation
-
-animatePath(proc_obj = proc_obj, recs = recs, plot_control = plot_control, background = NULL, background_ylim = c(41.48, 45.9), background_xlim = c(-84, -79.5), ffmpeg = NA, ani_name = "animation.mp4", frame_delete = TRUE, animate = TRUE, out_dir = "~/Desktop/test")
-
-animatePath(proc_obj = proc_obj, recs = recs, plot_control = NULL, background = NULL,
-            background_ylim = c(41.48, 45.9), background_xlim = c(-84, -79.5),
-            ffmpeg = NA, ani_name = "animation.mp4",
-            frame_delete = FALSE, animate = TRUE, out_dir = "~/Desktop/test")
-
-animatePath(proc_obj = proc_obj, recs = recs, plot_control = NULL, background = NULL,
-            background_ylim = c(41.48, 45.9), background_xlim = c(-84, -79.5),
-            ffmpeg = NA, ani_name = "animation.mp4",
-            frame_delete = FALSE, animate = FALSE, out_dir = "~/Desktop/test")
-
-############
 animatePath <- function(proc_obj, recs, plot_control = NULL, out_dir = getwd(), background = NULL,
                         background_ylim = c(41.48, 45.9),
                         background_xlim = c(-84, -79.5),
