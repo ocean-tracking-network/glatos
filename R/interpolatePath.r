@@ -137,6 +137,14 @@
 #'
 #' @export 
 
+
+data(walleye_detections) 
+data(greatLakesTrLayer)
+dtc <- walleye_detections
+trans = greatLakesTrLayer
+int_time_stamp = 86400
+lnl_thresh = 0.9
+
 interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
                             lnl_thresh = 0.9){# this function uses data.table extensively
   setDT(dtc) 
@@ -218,27 +226,12 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
     .SD[1, c("deploy_long", "deploy_lat")]),
     as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = i.start]
 
-  # if doing any nln interpolation, need to check that all receivers are in "water"
-  # stop execution and display offending receivers if any receivers are on land.
-
-  r1 <- raster(trans)
-  land_chk <- dtc[!is.na(deploy_long), c("deploy_long", "deploy_lat") ]
-  setkey(land_chk, deploy_long, deploy_lat)
-  land_chk <- unique(land_chk)
-  coordinates(land_chk) <- c("deploy_long", "deploy_lat")
-  proj4string(land_chk) <- CRS("+init=epsg:4326")
-  tst <- is.na(extract(r1, land_chk))
-
-  capture <- function(x){paste(capture.output(print(x)), collapse = "\n")}
-  if(any(tst)) {stop("coordinates on land.  Interpolation impossible!\n",
-                      capture(as.data.table(land_chk[tst])), call. = FALSE)}
-
-  # calculate least cost (non-linear) distance between points
+##   # calculate least cost (non-linear) distance between points
   dtc[, lcd := gdistance::costDistance(trans, fromCoords = as.matrix(
     .SD[1, c("deploy_long", "deploy_lat")]),
     toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])),
     by = i.start]
-
+  
   # calculate ratio of gcd:lcd
   dtc[, crit := gcd / lcd]
 
@@ -252,15 +245,24 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
       by = i.start]
 
   # extract rows that need non-linear interpolation based on ratio between gcd:lcd
-  nln <- dtc[crit < lnl_thresh & !is.infinite(crit) & crit != 0 ]
+  nln <- dtc[crit < lnl_thresh & is.finite(lcd)]
 
   # extract data for linear interpolation
-  # had to add "crit == 0" because lcd was unable to be calculated for
   # one movement (nrow = 86) because movement went outside bounds of
   # transition layer.  A check to make sure that all points to be interpolated
   # are within the tranition layer is needed before any interpolation.
 
-  ln <- dtc[crit >= lnl_thresh | is.infinite(crit) | is.na(crit) | crit == 0]
+  ln <- dtc[crit >= lnl_thresh | is.infinite(lcd) | is.nan(crit) ]
+
+  land_chk <- ln[is.infinite(lcd)][!is.na(deploy_lat), c("deploy_lat", "deploy_long")]
+
+  # if doing any nln interpolation, need to check that all receivers are in "water"
+  # stop execution and display offending receivers if any receivers are on land.
+  
+   capture <- function(x){paste(capture.output(print(x)), collapse = "\n")}
+  if(nrow(land_chk > 0)) {stop("coordinates on land.  Non-linear Interpolation impossible!\n",
+                     capture(as.data.table(land_chk)), call. = FALSE)}
+
   ln[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc),
                                              bin_stamp := bin]
   ln[, i_lat := {tmp = .SD[c(1, .N), c("detection_timestamp_utc", "deploy_lat")];
