@@ -138,15 +138,9 @@
 #' @export 
 
 
-data(walleye_detections) 
-data(greatLakesTrLayer)
-dtc <- walleye_detections
-trans = greatLakesTrLayer
-int_time_stamp = 86400
-lnl_thresh = 0.9
-
 interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
-                            lnl_thresh = 0.9){# this function uses data.table extensively
+                            lnl_thresh = 0.9){
+  # this function uses data.table extensively
   setDT(dtc) 
   # subset only necessary columns
   dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
@@ -234,7 +228,7 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   
   # calculate ratio of gcd:lcd
   dtc[, crit := gcd / lcd]
-
+  
   # create keys for lookup
   dtc[!is.na(detection_timestamp_utc),
       t_lat := data.table::shift(deploy_lat, type = "lead"), by = i.start]
@@ -245,24 +239,27 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
       by = i.start]
 
   # extract rows that need non-linear interpolation based on ratio between gcd:lcd
-  nln <- dtc[crit < lnl_thresh & is.finite(lcd)]
+  nln <- dtc[crit < lnl_thresh ]
 
-  # extract data for linear interpolation
-  # one movement (nrow = 86) because movement went outside bounds of
-  # transition layer.  A check to make sure that all points to be interpolated
-  # are within the tranition layer is needed before any interpolation.
+  land_chk <- dtc[is.infinite(lcd)][!is.na(deploy_lat), c("deploy_lat", "deploy_long")]
 
-  ln <- dtc[crit >= lnl_thresh | is.infinite(lcd) | is.nan(crit) ]
-
-  land_chk <- ln[is.infinite(lcd)][!is.na(deploy_lat), c("deploy_lat", "deploy_long")]
-
-  # if doing any nln interpolation, need to check that all receivers are in "water"
   # stop execution and display offending receivers if any receivers are on land.
   
    capture <- function(x){paste(capture.output(print(x)), collapse = "\n")}
-  if(nrow(land_chk > 0)) {stop("coordinates on land.  Non-linear Interpolation impossible!\n",
-                     capture(as.data.table(land_chk)), call. = FALSE)}
 
+  if(nrow(land_chk) > 0) {
+    stop("receiver inaccessible. Interpolation impossible!\n check receiver locations\n",
+                               capture(as.data.table(land_chk)), call. = FALSE)
+  }
+
+  
+  # extract data for linear interpolation
+  # check to make sure that all points to be interpolated
+  # are within the tranition layer is needed before any interpolation.
+
+  ln <- dtc[crit >= lnl_thresh | is.nan(crit) ]
+
+  # linear interpolation
   ln[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc),
                                              bin_stamp := bin]
   ln[, i_lat := {tmp = .SD[c(1, .N), c("detection_timestamp_utc", "deploy_lat")];
