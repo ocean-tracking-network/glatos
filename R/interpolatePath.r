@@ -137,14 +137,19 @@
 #'
 #' @export 
 
-
 interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
                             lnl_thresh = 0.9){
-  # this function uses data.table extensively
-  setDT(dtc) 
-  # subset only necessary columns
-  dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
 
+  # this function uses data.table extensively
+  setDT(dtc)
+
+  # subset only necessary columns
+  dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat",
+                 "deploy_long")]
+
+  # count number of rows- single observations are not interpolated
+  dtc[, num_rows := nrow(.SD), by = animal_id]
+  
   # Sort detections by transmitter id and then by detection timestamp
   setkey(dtc, animal_id, detection_timestamp_utc)
 
@@ -152,11 +157,19 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
 
   # save original dataset to combine with interpolated data in the end
   det <- dtc
-  names(det) <- c("animal_id", "bin_stamp", "i_lat", "i_lon", "type")
+  names(det) <- c("animal_id", "bin_stamp", "i_lat", "i_lon", "num_rows", "type")
+
+  # remove any fish with only one detection
+  dtc <- dtc[num_rows != 1]
+  
+  # error if only fish with one observation.
+  if(nrow(dtc) == 0) {
+    stop("must have two observations to interpolate")
+  }
 
   t_seq <- seq(min(dtc$detection_timestamp_utc), max(dtc$detection_timestamp_utc),
                int_time_stamp)
-  
+
   # bin data by time interval and add bin to dtc
   dtc[, bin := t_seq[findInterval(detection_timestamp_utc, t_seq)] ]
 
@@ -173,14 +186,17 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
                           xout = bin_stamp)$y, by = animal_id]
     dtc[, i_lon := approx(detection_timestamp_utc, deploy_long,
                           xout = bin_stamp)$y, by = animal_id]
+    dtc[is.na(deploy_long), type := "inter"]
+    dtc <- dtc[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "type")]
+    det <- det[num_rows == 1, c("animal_id", "bin_stamp", "i_lat", "i_lon",
+                                "type")]
 
-     dtc[is.na(deploy_long), type := "inter"]
-
-    dtc[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "type")]
-    return(dtc)
-     stop
+    out <- rbind(dtc, det)
+    setkey(out, animal_id, bin_stamp)
+    return(as.data.frame(out))
+    stop
   }
- 
+
   # routine for combined nln and ln interpolation
   # identify start and end rows for observations before and after NA
   ends <- dtc[!is.na(deploy_lat), .(start = .I[-nrow(.SD)], end = .I[-1]),
@@ -220,15 +236,15 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
     .SD[1, c("deploy_long", "deploy_lat")]),
     as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = i.start]
 
-##   # calculate least cost (non-linear) distance between points
+  # calculate least cost (non-linear) distance between points
   dtc[, lcd := gdistance::costDistance(trans, fromCoords = as.matrix(
     .SD[1, c("deploy_long", "deploy_lat")]),
     toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])),
     by = i.start]
-  
+
   # calculate ratio of gcd:lcd
   dtc[, crit := gcd / lcd]
-  
+
   # create keys for lookup
   dtc[!is.na(detection_timestamp_utc),
       t_lat := data.table::shift(deploy_lat, type = "lead"), by = i.start]
@@ -238,21 +254,24 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
       t_timestamp := data.table::shift(detection_timestamp_utc, type = "lead"),
       by = i.start]
 
-  # extract rows that need non-linear interpolation based on ratio between gcd:lcd
+  # extract rows that need non-linear interpolation
+  # based on ratio between gcd:lcd
   nln <- dtc[crit < lnl_thresh ]
 
-  land_chk <- dtc[is.infinite(lcd)][!is.na(deploy_lat), c("deploy_lat", "deploy_long")]
+  land_chk <- dtc[is.infinite(lcd)][!is.na(deploy_lat),
+                                    c("deploy_lat", "deploy_long")]
 
   # stop execution and display offending receivers if any receivers are on land.
-  
+
    capture <- function(x){paste(capture.output(print(x)), collapse = "\n")}
 
   if(nrow(land_chk) > 0) {
-    stop("receiver inaccessible. Interpolation impossible!\n check receiver locations\n",
+    stop("coordinates outside extent of transition layer. Interpolation
+          impossible! Check receiver locations or extents of
+          transition layer:\n",
                                capture(as.data.table(land_chk)), call. = FALSE)
-  }
+  } 
 
-  
   # extract data for linear interpolation
   # check to make sure that all points to be interpolated
   # are within the tranition layer is needed before any interpolation.
@@ -345,13 +364,16 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   nln[is.na(deploy_long), type := "inter"]
 
   # combine into a single data.table
-    det <- rbind(ln[type == "inter", c("animal_id", "bin_stamp", "i_lat",
-                                        "i_lon", "type")],
-               nln[type == "inter", c("animal_id", "bin_stamp", "i_lat", "i_lon",
-                                  "type")], det)
-  setkey(det, animal_id, bin_stamp)
+    out <- rbind(ln[type == "inter", c("animal_id", "bin_stamp", "i_lat", "i_lon", "type")],
+                 nln[type == "inter", c("animal_id", "bin_stamp", "i_lat", "i_lon", "type")],
+               det[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "type")]
+               )
 
-  det[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
+out[, !c("animal_id")]
+  
+  setkey(out, animal_id, bin_stamp)
 
-  return(as.data.frame(det))
+  out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
+
+  return(as.data.frame(out))
 }
