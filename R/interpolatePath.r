@@ -2,14 +2,14 @@
 #'
 #' Interpolate new positions within a spatiotemporal path data set 
 #'   (e.g., detections of tagged fish) at regularly-spaced time intervals   
-#' 	 using linear or non-linear interpolation (via \code{\link{movePath}}).
+#' 	 using linear or non-linear interpolation.
 #' 
-#' @param dtc A data frame containing spatiotemporal data with at
-#'   least 4 columns containing 'animal_id' (numeric or character),
-#'   'detection_timestamp_utc' (POSIXct),'deploy_lat' (numeric),
-#'   'deploy_long' (numeric).  'deploy_lat' and 'deploy_long' must be
-#'   in WGS 84 coordinate system and 'detection_timestamp_utc'. Default column names match the
-#'   GLATOS detections export. Additional columns in dtc will be ignored.
+#' @param dtc A data frame containing spatiotemporal data with at least 
+#'   4 columns containing 'individual', 'timestamp','longitude', and 'latitude' 
+#'   data and an optional fifth column with the 'type' of record 
+#'   (e.g., detection). Default column names match the GLATOS 
+#'   detection export file but other names can be specified with 
+#'   \code{detColNames}.
 #'
 #' @param int_time_stamp The time step size (in seconds) of interpolated 
 #'   positions. Default is 86400 (one day).
@@ -39,11 +39,11 @@
 #'   find the shortest pathway between two locations (i.e., receivers)
 #'   that avoid 'impossible' movements (e.g., over land for fish). The
 #'   shortest non-linear path between two locations is calculated
-#'   using a 'transition matrix layer' (\code{rast}) that represents
+#'   using a 'transition matrix layer' (\code{trans}) that represents
 #'   the 'cost' of an animal moving between adjacent grid cells.  For
 #'   example, each cell in \code{rast} may be coded as water (1) or
 #'   land (0) to represent possible (1) and impossible (0) movement
-#'   path.
+#'   paths.
 #' 
 #' @details Linear interpolation is used for all points when
 #'   \code{trans} is not supplied.  When \code{trans} is supplied,
@@ -51,14 +51,14 @@
 #'   positions. For example, linear interpolation will be used if the
 #'   two points are exactly the same and when the ratio of linear-to-
 #'   # non-linear shortest path distances exceeds
-#'   \code{lnlThresh}. \code{lnlThresh} can be used to control whether
+#'   \code{lnl_thresh}. \code{lnl_thresh} can be used to control whether
 #'   non-linear or linear interpolation is used for all points. For
 #'   example, non-linear interpolation will be used for all points
-#'   when \code{lnlThresh} = 1 and linear interpolation will be used
+#'   when \code{lnl_thresh} = 1 and linear interpolation will be used
 #'   for all points when \code{lnl_thresh} = 0.
 #'
-#' @return A data frame with animal_id, detection_timestamp_utc,
-#'   deploy_lat, deploy_long, and record type.
+#' @return A dataframe with id, timestamp,
+#'   lat, lon, and record type.
 #'
 #'
 #' @author Todd Hayden
