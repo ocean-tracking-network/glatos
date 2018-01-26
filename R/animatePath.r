@@ -46,7 +46,7 @@
 #'   
 #' @param overwrite Overwite the animation file if it already exists. Default is FALSE (file is not #'    overwritten)
 #' 
-#' @param threshold Threshold time in seconds before cease plotting points for a fish that leaves one lacation and is not detected elsewhere before returning to that location. Default is NULL (all interpolated points are plotted - appears that the fish was present constantly at the location)  
+#' @param threshold Threshold time in seconds before cease plotting interpolated points for a fish that leaves one lacation and is not detected elsewhere before returning to that location. Default is NULL (all interpolated points are plotted - appears that the fish was present constantly at the location)  
 #' 
 #' \itemize{
 #'   \item \code{animal_id} contains the unique identifier of individual animals and 
