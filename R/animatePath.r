@@ -43,6 +43,11 @@
 #' @param plot_control An optional data frame with four columns ('animal_id', 'type', 
 #'   'color', and 'marker', 'marker_cex') that specify the plot symbols and colors for 
 #'   each animal and position type. See examples below for an example.
+#'   
+#' @param overwrite Overwite the animation file if it already exists. Default is FALSE (file is not #'    overwritten)
+#' 
+#' @param threshold Threshold time in seconds before cease plotting interpolated points for a fish that leaves one lacation and is not detected elsewhere before returning to that location. Default is NULL (all interpolated points are plotted - appears that the fish was present constantly at the location)  
+#' 
 #' \itemize{
 #'   \item \code{animal_id} contains the unique identifier of individual animals and 
 #'   	 corresponds to 'animal_id' column in 'dtc'. 
@@ -90,8 +95,11 @@ animatePath <- function(proc_obj, recs, plot_control = NULL, out_dir = getwd(), 
                         background_ylim = c(41.48, 45.9),
                         background_xlim = c(-84, -79.5),
                         ffmpeg = NA,
-                        ani_name = "animation.mp4", frame_delete = TRUE,
-                        animate = TRUE ){
+                        ani_name = "animation.mp4",
+                        frame_delete = TRUE,
+                        animate = TRUE,
+                        overwrite = FALSE,
+                        threshold = NULL){
   setDT(proc_obj)
   setDT(recs)
 
@@ -117,6 +125,22 @@ animatePath <- function(proc_obj, recs, plot_control = NULL, out_dir = getwd(), 
         call. = FALSE)
   }
 
+  # add plotting columns for dealing with fish that leave a site and aren't detected elsewhere (optional) - uses thershold value that is user defined with argument 'threshold'
+  if(!is.null(threshold)){
+    setkey(proc_obj, animal_id, bin_stamp)
+    proc_obj <- proc_obj[, .(animal_id, bin_stamp, i_lat, i_lon, record_type,
+                        diff_time = ifelse(length(bin_stamp == 1), NA,
+                        c(NA,as.numeric(diff(bin_stamp)))),
+                        diff_loc = ifelse(length(bin_stamp == 1), NA, c(NA,
+                        ifelse(diff(i_lat) == 0 & diff(i_lon) == 0, 0, 1)))),
+                        by = animal_id]
+    
+    proc_obj <-  proc_obj[,.(animal_id, bin_stamp, i_lat, i_lon, record_type,
+                          diff_time, diff_loc,
+                          plot = ifelse(diff_time > threshold &
+                                          diff_loc == 0, 0, 1))]
+  }
+  
   # add colors and symbols to detections data frame
   if(!is.null(plot_control)){
     setDT(plot_control)
@@ -188,21 +212,21 @@ animatePath <- function(proc_obj, recs, plot_control = NULL, out_dir = getwd(), 
   setkey(proc_obj, grp)
 
   # create images
-  proc_obj[, {setTxtProgressBar(pb, .GRP); cust_plot(x = .SD)},  by = grp,
+  proc_obj[proc_obj$plot %in% c(NA,1), {setTxtProgressBar(pb, .GRP); cust_plot(x = .SD)},  by = grp,
           .SDcols = c("bin_stamp", "i_lon", "i_lat", "marker", "color",
                       "marker_cex", "f_name")]
 close(pb)
   
-  if(animate == TRUE & frame_delete == TRUE){
+  if(animate & frame_delete){
 mapmate::ffmpeg(dir = out_dir, pattern = paste0(char, ".png"),
-                    output = ani_name, output_dir = out_dir, rate = "ntsc")
+                    output = ani_name, output_dir = out_dir, rate = "ntsc", overwrite = overwrite)
     unlink(file.path(out_dir, unique(proc_obj$f_name)))
   } else {
-    if(animate == TRUE & frame_delete == FALSE){
+    if(animate & !frame_delete){
       mapmate::ffmpeg(dir = out_dir, pattern = paste0(char, ".png"),
-                      output = ani_name, output_dir = out_dir, rate = "ntsc")
+                      output = ani_name, output_dir = out_dir, rate = "ntsc", overwrite = overwrite)
     } else {
-      if(animate == FALSE){
+      if(!animate){
         stop
       }
     }
