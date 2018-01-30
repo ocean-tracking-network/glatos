@@ -1,28 +1,26 @@
-
-dir = "~/Documents/bug_squash/hornsby/Frames2/"
-pattern = "%d.png"
-output = "test.mp4"
-output_dir = "~/Desktop"
-rate = "ntsc"
-delay = 1
-start = 1
-size = "source"
-preset = "ultrafast" 
-codec = "default"
-format = "yuv420p"
-lossless = FALSE
-min.rate = 10
-fps.out = rate
-alpha = 1
-overwrite = FALSE 
-glob = FALSE
-
-
-library(mapmate)
-make_frames("~/Documents/bug_squash/hornsby/Frames2/", pattern = "%d.png",  output_dir = "~/Desktop", output = "test.mp4")
+## dir = "~/Documents/bug_squash/hornsby/Frames2/"
+## pattern = "%d.png"
+## output = "test.mp4"
+## output_dir = "~/Desktop"
+## rate = "ntsc"
+## delay = 1
+## start = 1
+## size = "source"
+## preset = "ultrafast" 
+## codec = "default"
+## format = "yuv420p"
+## lossless = FALSE
+## min.rate = 10
+## fps.out = rate
+## alpha = 1
+## overwrite = FALSE 
+## glob = FALSE
 
 
-make_frames <- function(dir = ".", pattern, output, output_dir = ".", rate = "ntsc",
+## #library(mapmate)
+## animate_video(dir = "~/Documents/bug_squash/hornsby/Frames2/", pattern = "%d.png",  output_dir = "~/Desktop", output = "test.mp4", overwrite = TRUE, fps.out = 60)
+
+animate_video  <- function(dir = ".", pattern, output = "animation.mp4", output_dir = ".", rate = "ntsc",
      delay = 1, start = 1, size = "source", preset = "ultrafast",
      codec = "default", format = "yuv420p", lossless = FALSE,
      min.rate = 10, fps.out = rate, alpha = 1, overwrite = FALSE,
@@ -100,7 +98,6 @@ if (!missing(rate) && !missing(delay)) {stop("specify 'rate' or 'delay' but not 
         if (lossless & codec %in% c("h264", "libx264")) 
             vc <- paste0(vc, "-qp 0 ")
     }
-    x <- gsub("  ", " ", paste0(input, vc, output))
-
+  x <- gsub("  ", " ", paste0(input, vc, output))
   system2(cmd, x, stdout=FALSE)
 }
