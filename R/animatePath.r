@@ -78,7 +78,7 @@
 #' head(recLoc_example)
 #' 
 #' #call with defaults; linear interpolation
-#' pos1 <- interpolatePath(walleye_detections)
+#'  pos1 <- interpolatePath(walleye_detections)
 #' 
 #' #make sure ffmpeg is installed before calling animatePath
 #' # and if you have not added path to 'ffmpeg.exe' to your Windows PATH 
@@ -317,6 +317,7 @@ animatePath <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = ge
   pb <- txtProgressBar(min = 0, max = grpn, style = 3)
 
   setkey(proc_obj, grp)
+
   # create images
   proc_obj[proc_obj$plot %in% c(NA,1),
            {setTxtProgressBar(pb, .GRP); cust_plot(x = .SD,

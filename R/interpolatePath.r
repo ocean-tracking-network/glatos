@@ -153,55 +153,25 @@
 #' @export 
 
 interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
-                            lnl_thresh = 0.9,
-                            detColNames = list(individualCol="animal_id",
-                                               timestampCol = "detection_timestamp_utc",
-                                               latitudeCol = "deploy_lat",
-                                               longitudeCol = "deploy_long",
-                                               typeCol = "record_type")){
+                            lnl_thresh = 0.9){
+  
   # this function uses data.table extensively
   setDT(dtc)
+
+  # subset only columns for function:
+  dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
+
+  dtc[, record_type := "detection"]
   
-  # update defaultColNames with detColNames
-  defaultColNames <- list(individualCol="animal_id",
-                          timestampCol="detection_timestamp_utc",
-                          latitudeCol="deploy_lat",
-                          longitudeCol="deploy_long",
-                          typeCol="record_type")
-  for(i in 1:length(detColNames))
-    defaultColNames[[names(detColNames)[i]]] <- detColNames[[i]]
-
-  # Check that detections data frame contains required columns
-  missingCols <- setdiff(unlist(defaultColNames[1:4]), names(dtc))
-  if (length(missingCols) > 0){
-    stop(paste0("'dtc' data frame is missing the following ", "column(s):\n",
-                paste0("       '",missingCols,"'", collapse="\n")), call.=FALSE)
-  }
-
-  missingCols <- setdiff(defaultColNames$typeCol, names(dtc))
-  if (length(missingCols) > 0) dtc[, defaultColNames$typeCol:= "detection"]
-  dtc <- dtc[, unlist(defaultColNames), with = FALSE]
-
-  # define column names used only inside this function
-  colNamesInternal <- c("individual","timestamp","latitude","longitude","type")
-  names(dtc) <- colNamesInternal
-
-  # Check that timestamp is of class 'POSIXct'
-  if(!('POSIXct' %in% class(dtc$timestamp))){
-    stop(paste0("Column '",defaultColNames$timestampCol,
-                "' in 'dtc' data frame must be of class 'POSIXct'."),
-         call.=FALSE)
-  } 	
-
   # count number of rows- single observations are not interpolated
-  dtc[, num_rows := nrow(.SD), by = individual]
+  dtc[, num_rows := nrow(.SD), by = animal_id]
   
   # Sort detections by transmitter id and then by detection timestamp
-  setkey(dtc, individual, timestamp)
+  setkey(dtc, animal_id, detection_timestamp_utc)
 
   # save original dataset to combine with interpolated data in the end
   det <- dtc
-  names(det) <- c("individual", "bin_stamp", "i_lat", "i_lon", "type", "num_rows")
+  names(det) <- c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type", "num_rows")
 
   # remove any fish with only one detection
   dtc <- dtc[num_rows != 1]
@@ -210,45 +180,39 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   if (nrow(dtc) == 0) {stop("must have two observations to interpolate")
   }
   
-  t_seq <- seq(min(dtc$timestamp), max(dtc$timestamp), int_time_stamp)
+  t_seq <- seq(min(dtc$detection_timestamp_utc), max(dtc$detection_timestamp_utc), int_time_stamp)
 
   # bin data by time interval and add bin to dtc
-  dtc[, bin := t_seq[findInterval(timestamp, t_seq)] ]
+  dtc[, bin := t_seq[findInterval(detection_timestamp_utc, t_seq)] ]
 
   # make all combinations of animals and detection bins
-  dtc <- merge(CJ(bin = t_seq, individual = unique(dtc$individual)), dtc,
-               by = c("bin", "individual"), all.x = TRUE)
-  setkey(dtc, individual, bin, timestamp)
+  dtc <- merge(CJ(bin = t_seq, animal_id = unique(dtc$animal_id)), dtc,
+               by = c("bin", "animal_id"), all.x = TRUE)
+  setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
   # if only need to do linear interpolation:
   if (is.null(trans) | lnl_thresh == 0){
-    dtc[, bin_stamp := timestamp][is.na(timestamp), bin_stamp := bin]
-    dtc[, i_lat := approx(timestamp, latitude, xout = bin_stamp)$y,
-        by = individual]
-    dtc[, i_lon := approx(timestamp, longitude, xout = bin_stamp)$y,
-        by = individual]
-    dtc[is.na(longitude), type := "inter"]
-    dtc <- dtc[, c("individual", "bin_stamp", "i_lat", "i_lon", "type")]
-    det <- det[num_rows == 1, c("individual", "bin_stamp", "i_lat", "i_lon",
-                                "type")]
+    dtc[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc), bin_stamp := bin]
+    dtc[, i_lat := approx(detection_timestamp_utc, deploy_lat, xout = bin_stamp)$y,
+        by = animal_id]
+    dtc[, i_lon := approx(detection_timestamp_utc, deploy_long, xout = bin_stamp)$y,
+        by = animal_id]
+    dtc[is.na(deploy_long), record_type := "interpolated"]
+    dtc <- dtc[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")]
+    det <- det[num_rows == 1, c("animal_id", "bin_stamp", "i_lat", "i_lon",
+                                "record_type")]
     out <- rbind(dtc, det)
-    setkey(out, individual, bin_stamp)
+    setkey(out, animal_id, bin_stamp)
     out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
-    names(out) <- c("individual", "timestamp", "latitude", "longitude", "type")
-
-    # set column names back to original names
-    changeNames <- names(out) %in% colNamesInternal
-    newNames <- unname(unlist(defaultColNames)[match(names(out)[changeNames],
-                                                   colNamesInternal)])
-    names(out)[changeNames] <- newNames
+    names(out) <- c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long", "record_type")
     return(as.data.frame(out))
     stop
   }
 
   # routine for combined nln and ln interpolation
   # identify start and end rows for observations before and after NA
-  ends <- dtc[!is.na(latitude), .(start = .I[-nrow(.SD)], end = .I[-1]),
-              by = individual][end - start > 1]
+  ends <- dtc[!is.na(deploy_lat), .(start = .I[-nrow(.SD)], end = .I[-1]),
+              by = animal_id][end - start > 1]
 
   # identify observations that are both start and ends
   dups <-  c(ends$start, ends$end)[ ends[, duplicated(c(start, end))]]
@@ -264,8 +228,8 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   dtc[, num := NULL]
 
   # recalculate first and last rows- no duplicate rows this time...
-  new_ends <- dtc[!is.na(latitude), .(start = .I[-nrow(.SD)], end = .I[-1]),
-                  by = individual][end - start > 1]
+  new_ends <- dtc[!is.na(deploy_lat), .(start = .I[-nrow(.SD)], end = .I[-1]),
+                  by = animal_id][end - start > 1]
 
   # create row index needed for overlap join
   dtc[, c("start", "end") := list(1:.N, 1:.N)]
@@ -276,32 +240,32 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   dtc <- foverlaps(new_ends[, -1], dtc, by.x = c("start", "end"),
                    by.y = c("start", "end"))
 
-  setkey(dtc, individual, bin, timestamp)
+  setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
   # calculate great circle distance between coords
   dtc[, gcd := geosphere::distHaversine(as.matrix(
-    .SD[1, c("longitude", "latitude")]),
-    as.matrix(.SD[.N, c("longitude", "latitude")])), by = i.start]
+    .SD[1, c("deploy_long", "deploy_lat")]),
+    as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = i.start]
 
   # calculate least cost (non-linear) distance between points
   dtc[, lcd := gdistance::costDistance(trans, fromCoords = as.matrix(
-    .SD[1, c("longitude", "latitude")]),
-    toCoords = as.matrix(.SD[.N, c("longitude", "latitude")])),
+    .SD[1, c("deploy_long", "deploy_lat")]),
+    toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])),
     by = i.start]
 
   # calculate ratio of gcd:lcd
   dtc[, crit := gcd / lcd]
 
   # create keys for lookup
-  dtc[!is.na(timestamp), t_lat := data.table::shift(latitude, type = "lead"), by = i.start]
-  dtc[!is.na(timestamp), t_lon := data.table::shift(longitude, type = "lead"), by = i.start]
-  dtc[!is.na(timestamp), t_timestamp := data.table::shift(timestamp, type = "lead"), by = i.start]
+  dtc[!is.na(detection_timestamp_utc), t_lat := data.table::shift(deploy_lat, type = "lead"), by = i.start]
+  dtc[!is.na(detection_timestamp_utc), t_lon := data.table::shift(deploy_long, type = "lead"), by = i.start]
+  dtc[!is.na(detection_timestamp_utc), t_timestamp := data.table::shift(detection_timestamp_utc, type = "lead"), by = i.start]
 
   # extract rows that need non-linear interpolation
   # based on ratio between gcd:lcd
   nln <- dtc[crit < lnl_thresh ]
 
-  land_chk <- dtc[is.infinite(lcd)][!is.na(latitude), c("latitude", "longitude")]
+  land_chk <- dtc[is.infinite(lcd)][!is.na(deploy_lat), c("deploy_lat", "deploy_long")]
 
   # stop execution and display offending receivers if any receivers are on land.
 
@@ -319,38 +283,38 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
 
   ln <- dtc[crit >= lnl_thresh | is.nan(crit) ]
   if (nrow(ln) == 0){
-    ln <- data.table(individual = character(), i_lat = numeric(), i_lon = numeric(),
-                     bin_stamp = as.POSIXct(character()), type = character())
+    ln <- data.table(animal_id = character(), i_lat = numeric(), i_lon = numeric(),
+                     bin_stamp = as.POSIXct(character()), record_type = character())
     } else {
     
     # linear interpolation
-    ln[, bin_stamp := timestamp][is.na(timestamp), bin_stamp := bin]
-    ln[, i_lat := {tmp = .SD[c(1, .N), c("timestamp", "latitude")];
-    approx(c(tmp$timestamp), c(tmp$latitude), xout = c(bin_stamp))$y},
+    ln[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc), bin_stamp := bin]
+    ln[, i_lat := {tmp = .SD[c(1, .N), c("detection_timestamp_utc", "deploy_lat")];
+    approx(c(tmp$detection_timestamp_utc), c(tmp$deploy_lat), xout = c(bin_stamp))$y},
     by = i.start]
-    ln[, i_lon := {tmp = .SD[c(1, .N), c("timestamp", "longitude")];
-    approx(c(tmp$timestamp), c(tmp$longitude), xout = c(bin_stamp))$y},
+    ln[, i_lon := {tmp = .SD[c(1, .N), c("detection_timestamp_utc", "deploy_long")];
+    approx(c(tmp$detection_timestamp_utc), c(tmp$deploy_long), xout = c(bin_stamp))$y},
     by = i.start]
-    ln[is.na(longitude), type := "inter"]
+    ln[is.na(deploy_long), record_type := "interpolated"]
   }
 
   # extract records to lookup
-  nln_small <- nln[ !is.na(timestamp)][!is.na(t_lat)]
+  nln_small <- nln[ !is.na(detection_timestamp_utc)][!is.na(t_lat)]
   
   if(nrow(nln_small) == 0){
-    nln <- data.table(individual = character(), i_lat = numeric(), i_lon = numeric(),
-                      bin_stamp = as.POSIXct(character()), type = character())
+    nln <- data.table(animal_id = character(), i_lat = numeric(), i_lon = numeric(),
+                      bin_stamp = as.POSIXct(character()), record_type = character())
   } else {
 
     # nln interpolation
     # create lookup table
-    setkey(nln_small, latitude, longitude, t_lat, t_lon)
-    lookup <- unique(nln_small[, .(latitude, longitude, t_lat, t_lon),
+    setkey(nln_small, deploy_lat, deploy_long, t_lat, t_lon)
+    lookup <- unique(nln_small[, .(deploy_lat, deploy_long, t_lat, t_lon),
                                allow.cartesian = TRUE])
 
     # calculate non-linear interpolation for all unique movements in lookup table
     lookup[, coord := sp::coordinates(gdistance::shortestPath(trans, as.matrix(
-      .SD[1, c("longitude", "latitude")]), as.matrix(
+      .SD[1, c("deploy_long", "deploy_lat")]), as.matrix(
         .SD[1, c("t_lon", "t_lat")]), output = "SpatialLines")),
       by = 1:nrow(lookup)]
     lookup[, grp := 1:.N]
@@ -366,19 +330,19 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
     lookup[, coord := NULL]
 
     # added first/last rows, number sequence for groups
-    lookup[lookup[, .I[1], by = grp]$V1, nln_longitude := longitude]
+    lookup[lookup[, .I[1], by = grp]$V1, nln_longitude := deploy_long]
     lookup[lookup[, .I[.N], by = grp]$V1, nln_longitude := t_lon]
-    lookup[lookup[, .I[1], by = grp]$V1, nln_latitude := latitude]
+    lookup[lookup[, .I[1], by = grp]$V1, nln_latitude := deploy_lat]
     lookup[lookup[, .I[.N], by = grp]$V1, nln_latitude := t_lat]
     lookup[,seq_count := 1:.N, by = grp]
 
     # lookup interpolated values for original dataset
-    setkey(lookup, latitude, longitude, t_lat, t_lon)
+    setkey(lookup, deploy_lat, deploy_long, t_lat, t_lon)
     nln_small <- lookup[nln_small, allow.cartesian = TRUE]
     setkey(nln_small, i.start, seq_count)
 
     # add timeseries for interpolating nln movements
-    nln_small[nln_small[, .I[1], by = i.start]$V1, i_time := timestamp]
+    nln_small[nln_small[, .I[1], by = i.start]$V1, i_time := detection_timestamp_utc]
     nln_small[nln_small[, .I[.N], by = i.start]$V1, i_time := t_timestamp]
 
     # calculate cumdist
@@ -393,8 +357,8 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
               by = i.start]
 
     # create timestamp vector to interpolate on.
-    nln[, bin_stamp := timestamp]
-    nln[is.na(timestamp), bin_stamp := bin]
+    nln[, bin_stamp := detection_timestamp_utc]
+    nln[is.na(detection_timestamp_utc), bin_stamp := bin]
     nln[, grp := i.start]
 
     # interpolate timestamps
@@ -410,25 +374,20 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
                                     approx(tmp$i_time, tmp$nln_longitude,
                                            xout = bin_stamp)$y}, by = grp]
 
-    nln[is.na(longitude), type := "inter"]
+    nln[is.na(deploy_long), record_type := "interpolated"]
   }
 
   # combine into a single data.table
-  out <- rbind(ln[type == "inter", c("individual", "bin_stamp", "i_lat",
-                                     "i_lon", "type")],
-               nln[type == "inter", c("individual", "bin_stamp", "i_lat",
-                                      "i_lon", "type")],
-               det[, c("individual", "bin_stamp", "i_lat", "i_lon", "type")])
+  out <- rbind(ln[record_type == "interpolated", c("animal_id", "bin_stamp", "i_lat",
+                                     "i_lon", "record_type")],
+               nln[record_type == "interpolated", c("animal_id", "bin_stamp", "i_lat",
+                                      "i_lon", "record_type")],
+               det[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")])
 
-  out[, !c("individual")]
-  setkey(out, individual, bin_stamp)
+  out[, !c("animal_id")]
+  setkey(out, animal_id, bin_stamp)
   out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
-  names(out) <- c("individual", "timestamp", "latitude", "longitude", "type")
+  names(out) <- c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long", "record_type")
 
-  # set column names back to original names
-  changeNames <- names(out) %in% colNamesInternal
-  newNames <- unname(unlist(defaultColNames)[match(names(out)[changeNames],
-                                                   colNamesInternal)])
-  names(out)[changeNames] <- newNames
   return(as.data.frame(out))
 }
