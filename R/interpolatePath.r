@@ -4,12 +4,10 @@
 #'   (e.g., detections of tagged fish) at regularly-spaced time intervals   
 #' 	 using linear or non-linear interpolation.
 #' 
-#' @param dtc A data frame containing spatiotemporal data with at least 
-#'   4 columns containing 'individual', 'timestamp','longitude', and 'latitude' 
-#'   data and an optional fifth column with the 'type' of record 
-#'   (e.g., detection). Default column names match the GLATOS 
-#'   detection export file but other names can be specified with 
-#'   \code{detColNames}.
+#' @param dtc An object of class \code{glatos_detections} or data frame
+#'   containing spatiotemporal data with at least 4 columns containing
+#'   'animal_id', 'detection_timestamp_utc','deploy_long', and
+#'   'deploy_lat' columns.
 #'
 #' @param int_time_stamp The time step size (in seconds) of interpolated 
 #'   positions. Default is 86400 (one day).
@@ -19,21 +17,7 @@
 #'   \code{TransitionLayer} (See \code{gdistance} package).
 #'   
 #' @param lnl_thresh A numeric threshold for determining if linear or
-#'   non-linear interpolation will be used based on the ratio of
-#'   linear-to-non-linear shortest path distances.
-#'
-#' @param detColNamesA list with names of columns in \code{dtc}:
-#' \itemize{
-#'  \item \code{individualCol} is a character string that uniquely identifies 
-#'     an individual (e.g., tagged animal). Default is 'animal_id'.
-#'  \item \code{timestampCol} is a character string with the name of the column 
-#' 		 containing datetime stamps. Default is 'detection_timestamp_utc'.
-#'  \item \code{latitudeCol} is a character string with the name of the column
-#'     containing latitude data. Default is 'deploy_lat'.
-#'  \item \code{longitudeCol} is a character string with the name of the column
-#'     containing longitude of the receiver. Default is 'deploy_long'.
-#'  \item \code{typeCol} is a character string with the name of the optional 
-#'     column that identifies the type of record. Default is 'record_type'.} 
+#'   non-linear interpolation shortest path will be used.
 #'
 #' @details Non-linear interpolation uses the 'gdistance' package to
 #'   find the shortest pathway between two locations (i.e., receivers)
@@ -49,16 +33,18 @@
 #'   \code{trans} is not supplied.  When \code{trans} is supplied,
 #'   then interpolation method is determined for each pair of observed
 #'   positions. For example, linear interpolation will be used if the
-#'   two points are exactly the same and when the ratio of linear-to-
-#'   # non-linear shortest path distances exceeds
-#'   \code{lnl_thresh}. \code{lnl_thresh} can be used to control whether
-#'   non-linear or linear interpolation is used for all points. For
-#'   example, non-linear interpolation will be used for all points
-#'   when \code{lnl_thresh} = 1 and linear interpolation will be used
-#'   for all points when \code{lnl_thresh} = 0.
+#'   two points are exactly the same and when the ratio (linear
+#'   distance:non-linear distance) between two positions is less than
+#'   \code{lnl_thresh}.  Non-linear interpolation will be used when
+#'   ratio is greater than \code{lnl_thresh}.  \code{lnl_thresh} can
+#'   be used to control whether non-linear or linear interpolation is
+#'   used for all points. For example, non-linear interpolation will
+#'   be used for all points when \code{lnl_thresh} = 1 and linear
+#'   interpolation will be used for all points when \code{lnl_thresh}
+#'   = 0.
 #'
-#' @return A dataframe with id, timestamp,
-#'   lat, lon, and record type.
+#' @return A dataframe with animal_id, bin_timestamp,
+#'   latitude, longitude, and record type.
 #'
 #'
 #' @author Todd Hayden
@@ -118,7 +104,13 @@
 #' points(pts3, pch=20, col='magenta', lwd=2, cex=1.5) 
 #' --------------------------------------------------
 #' # EXAMPLE #2 - GLATOS detection data
-#' data(walleye_detections) 
+#'
+#' # load detection data
+#' det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
+#' det_file <- unzip(det_file, "walleye_detections.csv")
+#' dtc <- read_glatos_detections(det_file)
+#'
+#' # take a look
 #' head(walleye_detections)
 #'  
 #' # call with defaults; linear interpolation
@@ -147,7 +139,7 @@
 #' pos2 <- interpolatePath(walleye_detections, trans=greatLakesTrLayer)
 #' 
 #' # coerce to SpatialPoints object and plot
-#' pts2 <- SpatialPoints(pos2[, c("deploy_long","deploy_lat")])
+#' pts2 <- SpatialPoints(pos2[, c("longitude","latitude")])
 #' points(pts2, pch=20, col='blue', cex=0.5)
 #' 
 #' @export 
@@ -204,7 +196,7 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
     out <- rbind(dtc, det)
     setkey(out, animal_id, bin_stamp)
     out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
-    names(out) <- c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long", "record_type")
+    names(out) <- c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type")
     return(as.data.frame(out))
     stop
   }
@@ -257,15 +249,20 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   dtc[, crit := gcd / lcd]
 
   # create keys for lookup
-  dtc[!is.na(detection_timestamp_utc), t_lat := data.table::shift(deploy_lat, type = "lead"), by = i.start]
-  dtc[!is.na(detection_timestamp_utc), t_lon := data.table::shift(deploy_long, type = "lead"), by = i.start]
-  dtc[!is.na(detection_timestamp_utc), t_timestamp := data.table::shift(detection_timestamp_utc, type = "lead"), by = i.start]
+  dtc[!is.na(detection_timestamp_utc),
+      t_lat := data.table::shift(deploy_lat, type = "lead"), by = i.start]
+  dtc[!is.na(detection_timestamp_utc),
+      t_lon := data.table::shift(deploy_long, type = "lead"), by = i.start]
+  dtc[!is.na(detection_timestamp_utc),
+      t_timestamp := data.table::shift(detection_timestamp_utc, type = "lead"),
+      by = i.start]
 
   # extract rows that need non-linear interpolation
   # based on ratio between gcd:lcd
   nln <- dtc[crit < lnl_thresh ]
 
-  land_chk <- dtc[is.infinite(lcd)][!is.na(deploy_lat), c("deploy_lat", "deploy_long")]
+  land_chk <- dtc[is.infinite(lcd)][!is.na(deploy_lat),
+                                    c("deploy_lat", "deploy_long")]
 
   # stop execution and display offending receivers if any receivers are on land.
 
@@ -283,40 +280,55 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
 
   ln <- dtc[crit >= lnl_thresh | is.nan(crit) ]
   if (nrow(ln) == 0){
-    ln <- data.table(animal_id = character(), i_lat = numeric(), i_lon = numeric(),
-                     bin_stamp = as.POSIXct(character()), record_type = character())
+    ln <- data.table(animal_id = character(), i_lat = numeric(),
+                     i_lon = numeric(),
+                     bin_stamp = as.POSIXct(character()),
+                     record_type = character())
     } else {
-    
-    # linear interpolation
-    ln[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc), bin_stamp := bin]
-    ln[, i_lat := {tmp = .SD[c(1, .N), c("detection_timestamp_utc", "deploy_lat")];
-    approx(c(tmp$detection_timestamp_utc), c(tmp$deploy_lat), xout = c(bin_stamp))$y},
-    by = i.start]
-    ln[, i_lon := {tmp = .SD[c(1, .N), c("detection_timestamp_utc", "deploy_long")];
-    approx(c(tmp$detection_timestamp_utc), c(tmp$deploy_long), xout = c(bin_stamp))$y},
-    by = i.start]
-    ln[is.na(deploy_long), record_type := "interpolated"]
-  }
 
+    message("starting linear interpolation")
+    # linear interpolation
+      ln[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc),
+                                                 bin_stamp := bin]
+      ln[, i_lat := {tmp = .SD[c(1, .N),
+                               c("detection_timestamp_utc", "deploy_lat")];
+                               approx(c(tmp$detection_timestamp_utc),
+                                      c(tmp$deploy_lat),
+                                      xout = c(bin_stamp))$y}, by = i.start]
+      ln[, i_lon := {tmp = .SD[c(1, .N),
+                               c("detection_timestamp_utc", "deploy_long")];
+                               approx(c(tmp$detection_timestamp_utc),
+                                      c(tmp$deploy_long), xout = c(bin_stamp))$y},
+         by = i.start]
+      ln[is.na(deploy_long), record_type := "interpolated"]
+    }
+  message("finished linear interpolation")
+  
   # extract records to lookup
   nln_small <- nln[ !is.na(detection_timestamp_utc)][!is.na(t_lat)]
   
   if(nrow(nln_small) == 0){
-    nln <- data.table(animal_id = character(), i_lat = numeric(), i_lon = numeric(),
-                      bin_stamp = as.POSIXct(character()), record_type = character())
+    nln <- data.table(animal_id = character(), i_lat = numeric(),
+                      i_lon = numeric(),
+                      bin_stamp = as.POSIXct(character()),
+                      record_type = character())
   } else {
-
     # nln interpolation
     # create lookup table
     setkey(nln_small, deploy_lat, deploy_long, t_lat, t_lon)
     lookup <- unique(nln_small[, .(deploy_lat, deploy_long, t_lat, t_lon),
                                allow.cartesian = TRUE])
 
+    message("starting non-linear interpolation")
     # calculate non-linear interpolation for all unique movements in lookup table
-    lookup[, coord := sp::coordinates(gdistance::shortestPath(trans, as.matrix(
+    lookup[, coord := {sp::coordinates(
+      gdistance::shortestPath(trans, as.matrix(
       .SD[1, c("deploy_long", "deploy_lat")]), as.matrix(
-        .SD[1, c("t_lon", "t_lat")]), output = "SpatialLines")),
+        .SD[1, c("t_lon", "t_lat")]), output = "SpatialLines"))},
       by = 1:nrow(lookup)]
+
+    message("finished non-linear interpolation")
+    
     lookup[, grp := 1:.N]
 
     # extract interpolated points from coordinate lists...
@@ -342,7 +354,8 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
     setkey(nln_small, i.start, seq_count)
 
     # add timeseries for interpolating nln movements
-    nln_small[nln_small[, .I[1], by = i.start]$V1, i_time := detection_timestamp_utc]
+    nln_small[nln_small[, .I[1], by = i.start]$V1,
+              i_time := detection_timestamp_utc]
     nln_small[nln_small[, .I[.N], by = i.start]$V1, i_time := t_timestamp]
 
     # calculate cumdist
@@ -378,16 +391,16 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   }
 
   # combine into a single data.table
-  out <- rbind(ln[record_type == "interpolated", c("animal_id", "bin_stamp", "i_lat",
-                                     "i_lon", "record_type")],
-               nln[record_type == "interpolated", c("animal_id", "bin_stamp", "i_lat",
-                                      "i_lon", "record_type")],
+  out <- rbind(ln[record_type == "interpolated",
+                  c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")],
+               nln[record_type == "interpolated",
+                   c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")],
                det[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")])
 
   out[, !c("animal_id")]
   setkey(out, animal_id, bin_stamp)
   out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
-  names(out) <- c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long", "record_type")
+  names(out) <- c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type")
 
   return(as.data.frame(out))
 }
