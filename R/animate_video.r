@@ -1,31 +1,40 @@
-## dir = "~/Documents/bug_squash/hornsby/Frames2/"
-## pattern = "%d.png"
-## output = "test.mp4"
-## output_dir = "~/Desktop"
-## rate = "ntsc"
-## delay = 1
-## start = 1
-## size = "source"
-## preset = "ultrafast" 
-## codec = "default"
-## format = "yuv420p"
-## lossless = FALSE
-## min.rate = 10
-## fps.out = rate
-## alpha = 1
-## overwrite = FALSE 
-## glob = FALSE
+##' Create video from image sequence
+##'
+##' Create video from directory of sequenced images (frames) using FFmpeg.
+##' .. content for \description{} (no empty lines) ..
+##'
+##' .. content for \details{} ..
+##' @title 
+##' @param dir 
+##' @param pattern 
+##' @param output 
+##' @param output_dir 
+##' @param fps.in 
+##' @param start.frame 
+##' @param end.frame 
+##' @param size 
+##' @param preset 
+##' @param codec 
+##' @param format 
+##' @param lossless 
+##' @param min.rate 
+##' @param fps.out 
+##' @param overwrite 
+##' @param ffmpeg 
+##' @return 
+##' @author Todd Hayden
+##'
+##'
+##' 
 
 
 ## #library(mapmate)
-## animate_video(dir = "~/Documents/bug_squash/hornsby/Frames2/", pattern = "%d.png",  output_dir = "~/Desktop", output = "test.mp4", overwrite = TRUE, fps.out = 60)
+animate_video(dir = "~/Documents/bug_squash/hornsby/Frames2/", pattern = "%d.png",  output_dir = "~/Desktop", fps.in = 30, start.frame = 1, end.frame = NULL, size = "source", preset = "ultrafast", codec = "default", format = "yuv420p", lossless = FALSE, min.rate = 10, fps.out = 30, overwrite = TRUE, ffmpeg = NA)
 
-animate_video  <- function(dir = ".", pattern, output = "animation.mp4", output_dir = ".", rate = "ntsc",
-     delay = 1, start = 1, size = "source", preset = "ultrafast",
-     codec = "default", format = "yuv420p", lossless = FALSE,
-     min.rate = 10, fps.out = rate, alpha = 1, overwrite = FALSE,
-     glob = FALSE, ffmpeg = NA){
 
+
+animate_video  <- function(dir = ".", pattern, output = "animation.mp4", output_dir = ".", fps.in = 30, start.frame = 1, end.frame = NULL, size = "source", preset = "ultrafast", codec = "default", format = "yuv420p", lossless = FALSE, min.rate = 10, fps.out = 30, overwrite = FALSE, ffmpeg = NA){
+  
   # try calling ffmpeg
 
   # add exe if ffmpeg is directory
@@ -38,27 +47,17 @@ animate_video  <- function(dir = ".", pattern, output = "animation.mp4", output_
     "or specify path using input argument 'ffmpeg'\n\n",
     'FFmpeg is available from:\n https://ffmpeg.org/'), call.=FALSE)
   
-if (!missing(rate) && !missing(delay)) {stop("specify 'rate' or 'delay' but not both")}
-    if (!missing(delay)) 
-        rate <- round(1/delay)
-    linux <- .Platform$OS.type == "linux"
-    iglob <- "-pattern_type glob -i "
-    input <- file.path(dir, pattern)
-    blend <- if (length(input) == 1) 
-        FALSE
-    else TRUE
-    input <- if (linux & glob) 
-        paste0(iglob, "\"", input, "\"")
-    else paste("-i", input)
-    inrate <- paste("-framerate", rate)
-    start <- paste("-start_number", start)
-    input <- paste0(paste(start, inrate, input), collapse = " ")
-    ext <- strsplit(output, "\\.")[[1]]
-    ext_stop <- "'output' must end in '.mp4', '.mov', '.mkv', '.webm', or '.gif'"
-    if (length(ext) == 1) 
+  input <- file.path(dir, pattern)
+  input <- paste("-i", input)
+  inrate <- paste("-framerate", fps.in)
+  start <- paste("-start_number", start.frame)
+  input <- paste0(paste(inrate, start, input), collapse = " ")
+  ext <- strsplit(output, "\\.")[[1]]
+  ext_stop <- "'output' must end in '.mp4', '.mov', '.mkv', '.webm', '.gif', or 'wmv'"
+  if (length(ext) == 1) 
         stop(ext_stop)
     else ext <- utils::tail(ext, 1)
-    if (!ext %in% c("mp4", "mov", "mkv", "webm", "gif")) 
+    if (!ext %in% c("mp4", "mov", "mkv", "webm", "gif", "wmv")) 
         stop(ext_stop)
     output <- file.path(output_dir, output)
     format <- paste0("format=", format)
@@ -69,21 +68,18 @@ if (!missing(rate) && !missing(delay)) {stop("specify 'rate' or 'delay' but not 
         size <- paste0(",scale=", size, ",setsar=1:1")
     }
     else size <- paste("-s", size)
-    if (blend) {
-        blend_prefix <- "-filter_complex \"blend=all_mode='overlay':all_opacity="
-        if (ext == "gif") {
-            vf <- paste0(blend_prefix, alpha, "\"")
-        }
-        else {
-            vf <- paste0(blend_prefix, alpha, ",", format, size, 
-                "\"")
-        }
-    }
-    else if (ext == "gif") {
+    
+    if (ext == "gif") {
         vf <- size
+    } else vf <- paste0("-vf ", "\"", format, size, "\"")
+  
+  output <- paste(vf, output)
+
+  if (!is.null(end.frame)){
+    nframes <- end.frame - start.frame
+    output <- paste("-vframes", nframes)
     }
-    else vf <- paste0("-vf ", "\"", format, size, "\"")
-    output <- paste(vf, output)
+
     outrate <- paste("-r", max(fps.out, min.rate))
     output <- paste(outrate, output, ifelse(overwrite, "-y", 
         "-n"))
@@ -99,5 +95,11 @@ if (!missing(rate) && !missing(delay)) {stop("specify 'rate' or 'delay' but not 
             vc <- paste0(vc, "-qp 0 ")
     }
   x <- gsub("  ", " ", paste0(input, vc, output))
-  system2(cmd, x, stdout=FALSE)
+    system2(cmd, x, stdout=FALSE)
+  #  return(paste(cmd, x))
 }
+
+
+
+
+
