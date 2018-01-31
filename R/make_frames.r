@@ -334,20 +334,20 @@ animatePath <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = ge
 close(pb)
   
   if(animate & frame_delete){
-    mapmate::ffmpeg(dir = out_dir,
+    make_video(dir = out_dir,
                     pattern = paste0(char, ".png"),
                     output = ani_name,
                     output_dir = out_dir,
-                    rate = "ntsc",
-                    overwrite = overwrite)
+               overwrite = overwrite,
+               ffmpeg = ffmpeg)
     unlink(file.path(out_dir, unique(proc_obj$f_name)))
   }else if(animate & !frame_delete){
-    mapmate::ffmpeg(dir = out_dir,
+    make_video(dir = out_dir,
                     pattern = paste0(char, ".png"),
                     output = ani_name,
                     output_dir = out_dir,
-                    rate = "ntsc",
-                    overwrite = overwrite)
+               overwrite = overwrite,
+               ffmpeg = ffmpeg)
   }else{
     if(!animate){
        stop
