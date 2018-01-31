@@ -40,7 +40,7 @@
 #'
 #' @param animate Boolean. Default (TRUE) creates video animation
 #' 
-#' @param plot_control An optional data frame with four columns ('animal_id', 'type', 
+#' @param plot_control An optional data frame with four columns ('animal_id', 'record_type', 
 #'   'color', and 'marker', 'marker_cex') that specify the plot symbols and colors for 
 #'   each animal and position type. See examples below for an example.
 #'   
@@ -51,9 +51,9 @@
 #' \itemize{
 #'   \item \code{animal_id} contains the unique identifier of individual animals and 
 #'   	 corresponds to 'animal_id' column in 'dtc'. 
-#'   \item \code{type} indicates if the options should be applied to observed
+#'   \item \code{record_type} indicates if the options should be applied to observed
 #'     positions (detections; 'real') or interpolated positions 
-#'     ('inter').
+#'     ('interpolated').
 #'   \item \code{color} contains the marker color to be plotted for each 
 #'     animal and position type.  
 #'   \item \code{marker} contains the marker style to be plotted for each
@@ -91,7 +91,7 @@
 #' @export
 
 
-animatePath <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = getwd(),
+make_frames <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = getwd(),
                         background = NULL,
                         background_ylim = c(41.3, 49.0),
                         background_xlim = c(-92.45, -75.87),
@@ -166,8 +166,8 @@ animatePath <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = ge
   # Add colors and symbols to detections data frame
   if(!is.null(plot_control)){
     setDT(plot_control)
-    proc_obj <- merge(proc_obj, plot_control, by.x=c("animal_id", "type"),
-                     by.y=c("animal_id","type"))
+    proc_obj <- merge(proc_obj, plot_control, by.x=c("animal_id", "record_type"),
+                     by.y=c("animal_id","record_type"))
     proc_obj <- proc_obj[!is.na(color)]
   } else {
 
