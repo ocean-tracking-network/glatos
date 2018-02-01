@@ -133,26 +133,24 @@
 ##'
 ##' \dontrun{
 ##' # load frames
-##' det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
-##' det_file <- unzip(det_file, "walleye_detections.csv")
-##' dtc <- read_glatos_detections(det_file)
-##' }
-##' \dontrun{
-##' # test output .mp4
-##' animate_video(dir = "~/Documents/bug_squash/hornsby/Frames2/",
-##'               pattern = "%d.png",
-##'               output_dir = "~ /Desktop",
+##' det_file <- system.file("extdata", "frames", package = "glatos")
+##'
+##' # make .mp4 video
+##' make_video(dir = det_file,
+##'               pattern = "%03d.png",
+##'               output_dir = "/home/thayden/Desktop",
 ##'               output = "animation.mp4",
 ##'               fps_in = 30,
 ##'               start_frame = 1,
 ##'               end_frame = NULL,
-##'               size = "source",
+##'               size = "720x480",
 ##'               preset = "medium",
 ##'               codec = "default",
 ##'               format = "yuv420p",
 ##'               lossless = FALSE,
 ##'               overwrite = TRUE,
 ##'               ffmpeg = NA)
+##'
 ##' }
 
 

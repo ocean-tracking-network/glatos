@@ -55,10 +55,10 @@ NULL
 #' 
 #' @name video images
 #' 
-#' @section Filename: frames.zip
+#' @section Filename: frames
 #' 
 #' @usage 
-#' system.file("extdata", "frames.zip", package="glatos")
+#' system.file("extdata", "frames", package="glatos")
 #'
 #' @author Todd Hayden
 #' 
