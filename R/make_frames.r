@@ -81,10 +81,7 @@
 #' dtc <- read_glatos_detections(det_file)
 #'
 #' # take a look
-#' head(walleye_detections)
-#'  
-#' # call with defaults; linear interpolation
-#' pos1 <- interpolatePath(walleye_detections)
+#' head(dtc)
 #'
 #' # load receiver location data
 #' rec_file <- system.file("extdata", 
@@ -96,7 +93,7 @@
 #' 
 #' # make sequential frames but don't make animation  
 #' myDir <- paste0(getwd(),"/frames1")
-#' make_frames(pos1, recs=recs, outDir=myDir, animate = FALSE)
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 #'
 #' # make sequential frames and animation
 #' # make sure ffmpeg is installed if argument \code{animate = TRUE}
@@ -106,15 +103,14 @@
 #'
 #' # if ffmpeg is on system path
 #' myDir <- paste0(getwd(),"/frames2")
-#' make_frames(pos1, recs=recs, outDir=myDir, animate = TRUE)
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE)
 #'
 #' \dontrun{
 #' # if ffmpeg is not on system path (windows)
 #' myDir <- paste0(getwd(), "/frames3")
-#' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
-#' }
+#' make_frames(pos1, recs=recs, outDir=my_dir, animate=TRUE, ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
 #'
-#'#' \dontrun{
+#'
 #' # if ffmpeg is not on system path (mac)
 #' myDir <- paste0(getwd(), "/frames3")
 #' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="/path/to/ffmpeg")
@@ -122,21 +118,21 @@
 
 #' # add one-week (604800 seconds) non-detection elsewhere threshold
 #' myDir <- paste0(getwd(), "/frames4")
-#' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, threshold = 86400)
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE, threshold = 86400)
 #'  
 #' @export
 
 
 make_frames <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = getwd(),
                         background_ylim = c(41.3, 49.0),
-                        background_xlim = c(-92.45, -75.87),
-                        show_interpolated = TRUE,
-                        threshold = NULL,
-                        animate = TRUE,
+                        background_xlim = c(-92.45, -75.87) ,
+                        show_interpolated = TRUE ,
+                        threshold = NULL ,
+                        animate = TRUE ,
                         ani_name = "animation.mp4",
-                        frame_delete = FALSE,
-                        overwrite = FALSE,
-                        ffmpeg = NA){
+                        frame_delete = FALSE ,
+                        overwrite = FALSE ,
+                        ffmpeg = NA ){
   
   # Try calling ffmpeg if animate = TRUE.
   # If animate = FALSE, video file is not produced and there is no need to check for package.
@@ -156,15 +152,7 @@ make_frames <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = ge
            call. = FALSE)
     }
     
-    mapmate <- any(installed.packages()[,1] == "mapmate")
-    if(mapmate == FALSE){
-      stop(paste0("mapmate package is not installed.\n",
-               "see: https://github.com/leonswicz/mapmate\n",
-               'install: devtools::install_github("leonawicz/mapmate")'),
-        call. = FALSE)
-    }
-
-
+    
   # Convert proc_obj and recs dataframes into data.table objects to inprove speed of script
   setDT(proc_obj)
   if(!is.null(recs)){
@@ -174,6 +162,8 @@ make_frames <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = ge
     recs <- recs[!J(NA_real_), c("station", "deploy_lat", "deploy_long",
                                  "deploy_date_time", "recover_date_time")]
   }
+
+  proc_obj$plot <- 1
   
   # Add plotting columns for dealing with fish that leave a site and aren't 
   # detected elsewhere before returning to that site (optional) - uses thershold
@@ -252,7 +242,7 @@ make_frames <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = ge
     # plot GL outline and movement points
     png(file.path(out_dir, x$f_name[1]),
         width = 2000,
-        height = 2000*figRatio,
+        height = ifelse(2000*figRatio%%2==0, 2000*figRatio, 2000*figRatio+1),
         units = 'px',
         pointsize = 22*figRatio)
 

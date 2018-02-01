@@ -46,4 +46,27 @@ NULL
 NULL
 
 
+#' @title Video frames of walleye movements in Lake Huron
+#' 
+#' @description Sequential images of walleye movements in Lake Huron
+#'   for testing functionality of ffmpeg function.
+#' 
+#' @format Folder contains 100 sequentially labeled .png image files
+#' 
+#' @name video images
+#' 
+#' @section Filename: frames.zip
+#' 
+#' @usage 
+#' system.file("extdata", "frames.zip", package="glatos")
+#'
+#' @author Todd Hayden
+#' 
+#' @source \url{http://glatos.glos.us/home/project/HECWL}
+NULL
+
+
+
+
+
 

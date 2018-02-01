@@ -86,7 +86,7 @@
 ##'   an abbreviated standard such as \code{"ntsc"}.  See
 ##'   \href{http://ffmpeg.org/ffmpeg-utils.html#Video-size}{FFmpeg
 ##'   standard video sizes} for common dimensions and available
-##'   abbreviations.}
+##'   abbreviations.
 ##' 
 ##'@details Presets provide a certain encoding speed to compression
 ##'   ratio.  Available presets include \code{ultrafast},
@@ -130,6 +130,13 @@
 ##' 
 ##' @examples
 ##'
+##'
+##' \dontrun{
+##' # load frames
+##' det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
+##' det_file <- unzip(det_file, "walleye_detections.csv")
+##' dtc <- read_glatos_detections(det_file)
+##' }
 ##' \dontrun{
 ##' # test output .mp4
 ##' animate_video(dir = "~/Documents/bug_squash/hornsby/Frames2/",

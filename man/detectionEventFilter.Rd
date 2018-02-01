@@ -4,34 +4,36 @@
 \alias{detectionEventFilter}
 \title{Classify discrete events in detection data}
 \usage{
-detectionEventFilter(detections, detColNames = list(locationCol =
-  "glatos_array", animalCol = "animal_id", timestampCol =
-  "detection_timestamp_utc", latCol = "deploy_lat", longCol = "deploy_long"),
-  timeSep = Inf)
+detectionEventFilter(detections, location_variable = "glatos_array",
+  time_sep = Inf)
 }
 \arguments{
 \item{detections}{A data frame containing detection data with at least 
-5 columns containing 'location', 'animal', 'timestamp', 'latitude', 
-and 'longitude'. Column names are specified with \code{detColNames}.}
-
-\item{detColNames}{A list with names of required columns in 
+  4 columns 'animal_id', 'detection_timestamp_utc', 'deploy_lat', 
+  and 'deploy_long' plus a location column for grouping, which is specified
+  using \code{location_variable}.
+  
   \code{detections}: 
 \itemize{
-  \item \code{locationCol} is a character string with the name of the column 
+  \item \code{location_variable} is a character string with the name of the column 
        containing locations you wish to filter to (typically 'glatos_array' or 
-         'station' for GLATOS data).
-  \item \code{animalCol} is a character string with the name of the column 
+         'station' for GLATOS data). Specified using the location_variable argument.
+  \item \code{animal_id} is a character string with the name of the column 
          containing the individual animal identifier.
- \item \code{timestampCol} is a character string with the name of the column 
+ \item \code{detection_timestamp_utc} is a character string with the name of the column 
          containing datetime stamps for the detections (MUST be of class 
     'POSIXct').
- \item \code{latitudeCol} is a character string with the name of the column
+ \item \code{deploy_lat} is a character string with the name of the column
     containing latitude of the receiver.
- \item \code{longitudeCol} is a character string with the name of the column
+ \item \code{deploy_long} is a character string with the name of the column
     containing longitude of the receiver.
 }}
 
-\item{timeSep}{Amount of time (in seconds) that must pass between 
+\item{location_variable}{A character string indicating the column name in the
+detections data frame that will be used as the location grouping variable
+(e.g. "glatos_array", "glatos_station")}
+
+\item{time_sep}{Amount of time (in seconds) that must pass between 
 sequential detections on the same receiver (or group of receivers, 
 depending on specified location) before that detection is considered to 
 belong to a new detection event. The default value \code{Inf}, will not 
@@ -39,15 +41,15 @@ define events based on elapsed time (only when location changes).}
 }
 \value{
 A data frame containing discrete detection event data:
-\item{MeanLatitude}{Mean latitude of detections comprising each event.}
-	\item{MeanLongitude}{Mean longitude of detections comprising each event.}
- \item{FirstDetection}{The time of the first detection in a given detection 
+\item{mean_latitude}{Mean latitude of detections comprising each event.}
+	\item{mean_longitude}{Mean longitude of detections comprising each event.}
+ \item{first_detection}{The time of the first detection in a given detection 
    event.} 
- \item{LastDetection}{The time of the last detection in a given detection 
+ \item{last_detection}{The time of the last detection in a given detection 
    event.}  
- \item{NumDetections}{The total number of detection that comprised a given
+ \item{num_detections}{The total number of detection that comprised a given
 	  detection event.}
- \item{ResTime_sec}{The elapsed time in seconds between the first and last 
+ \item{res_time_sec}{The elapsed time in seconds between the first and last 
 	detection in a given event.}
 }
 \description{
@@ -57,7 +59,7 @@ Reduce detection data from an acoustic telemetry receiver into discrete
   location that are separated by a user-defined threshold period of time.
 }
 \details{
-MeanLatitude and MeanLongitude columns in the output dataframe are 
+mean_latitude and mean_longitude columns in the output dataframe are 
   the mean GPS locations for the detections comprising that detection event. 
   For example, if the a fish was detected at 3 receiver stations in a 
   glatos_array and glatos_array was selected as the location, then GPS 
@@ -71,10 +73,10 @@ data("walleye_detections") #example data
 
 head(walleye_detections)
 
-filt0 <- detectionEventFilter(walleye_detections) #no time filter
+filt0 <- detectioneventFilter(walleye_detections) #no time filter
 
 #7-day filter
-filt_7d <- detectionEventFilter(walleye_detections , timeSep = 604800) 
+filt_7d <- detectioneventFilter(walleye_detections , time_sep = 604800) 
 
 }
 \author{

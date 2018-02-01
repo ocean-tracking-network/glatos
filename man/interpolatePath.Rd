@@ -5,17 +5,13 @@
 \title{Interpolate new positions within a spatiotemporal path data}
 \usage{
 interpolatePath(dtc, trans = NULL, int_time_stamp = 86400,
-  lnl_thresh = 0.9, detColNames = list(individualCol = "animal_id",
-  timestampCol = "detection_timestamp_utc", latitudeCol = "deploy_lat",
-  longitudeCol = "deploy_long", typeCol = "record_type"))
+  lnl_thresh = 0.9)
 }
 \arguments{
-\item{dtc}{A data frame containing spatiotemporal data with at least 
-4 columns containing 'individual', 'timestamp','longitude', and 'latitude' 
-data and an optional fifth column with the 'type' of record 
-(e.g., detection). Default column names match the GLATOS 
-detection export file but other names can be specified with 
-\code{detColNames}.}
+\item{dtc}{An object of class \code{glatos_detections} or data frame
+containing spatiotemporal data with at least 4 columns containing
+'animal_id', 'detection_timestamp_utc','deploy_long', and
+'deploy_lat' columns.}
 
 \item{trans}{An optional transition matrix with the "cost" of
 moving across each cell within the map extent. Must be of class
@@ -25,25 +21,11 @@ moving across each cell within the map extent. Must be of class
 positions. Default is 86400 (one day).}
 
 \item{lnl_thresh}{A numeric threshold for determining if linear or
-non-linear interpolation will be used based on the ratio of
-linear-to-non-linear shortest path distances.}
-
-\item{detColNamesA}{list with names of columns in \code{dtc}:
-\itemize{
- \item \code{individualCol} is a character string that uniquely identifies 
-    an individual (e.g., tagged animal). Default is 'animal_id'.
- \item \code{timestampCol} is a character string with the name of the column 
-         containing datetime stamps. Default is 'detection_timestamp_utc'.
- \item \code{latitudeCol} is a character string with the name of the column
-    containing latitude data. Default is 'deploy_lat'.
- \item \code{longitudeCol} is a character string with the name of the column
-    containing longitude of the receiver. Default is 'deploy_long'.
- \item \code{typeCol} is a character string with the name of the optional 
-    column that identifies the type of record. Default is 'record_type'.}}
+non-linear interpolation shortest path will be used.}
 }
 \value{
-A dataframe with id, timestamp,
-  lat, lon, and record type.
+A dataframe with animal_id, bin_timestamp,
+  latitude, longitude, and record type.
 }
 \description{
 Interpolate new positions within a spatiotemporal path data set 
@@ -65,13 +47,15 @@ Linear interpolation is used for all points when
   \code{trans} is not supplied.  When \code{trans} is supplied,
   then interpolation method is determined for each pair of observed
   positions. For example, linear interpolation will be used if the
-  two points are exactly the same and when the ratio of linear-to-
-  # non-linear shortest path distances exceeds
-  \code{lnl_thresh}. \code{lnl_thresh} can be used to control whether
-  non-linear or linear interpolation is used for all points. For
-  example, non-linear interpolation will be used for all points
-  when \code{lnl_thresh} = 1 and linear interpolation will be used
-  for all points when \code{lnl_thresh} = 0.
+  two points are exactly the same and when the ratio (linear
+  distance:non-linear distance) between two positions is less than
+  \code{lnl_thresh}.  Non-linear interpolation will be used when
+  ratio is greater than \code{lnl_thresh}.  \code{lnl_thresh} can
+  be used to control whether non-linear or linear interpolation is
+  used for all points. For example, non-linear interpolation will
+  be used for all points when \code{lnl_thresh} = 1 and linear
+  interpolation will be used for all points when \code{lnl_thresh}
+  = 0.
 }
 \examples{
 
@@ -128,7 +112,13 @@ pts3 <- SpatialPoints(path3[,c("x","y")])
 points(pts3, pch=20, col='magenta', lwd=2, cex=1.5) 
 --------------------------------------------------
 # EXAMPLE #2 - GLATOS detection data
-data(walleye_detections) 
+
+# load detection data
+det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
+det_file <- unzip(det_file, "walleye_detections.csv")
+dtc <- read_glatos_detections(det_file)
+
+# take a look
 head(walleye_detections)
  
 # call with defaults; linear interpolation
@@ -157,7 +147,7 @@ data(greatLakesTrLayer)
 pos2 <- interpolatePath(walleye_detections, trans=greatLakesTrLayer)
 
 # coerce to SpatialPoints object and plot
-pts2 <- SpatialPoints(pos2[, c("deploy_long","deploy_lat")])
+pts2 <- SpatialPoints(pos2[, c("longitude","latitude")])
 points(pts2, pch=20, col='blue', cex=0.5)
 
 }
