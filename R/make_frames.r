@@ -74,25 +74,53 @@
 #' @author Todd Hayden
 #'
 #' @examples
-#' library(glatos)
-#' #example detection data
-#' data(walleye_detections) 
+#'
+#' # load detection data
+#' det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
+#' det_file <- unzip(det_file, "walleye_detections.csv")
+#' dtc <- read_glatos_detections(det_file)
+#'
+#' # take a look
 #' head(walleye_detections)
-#' 
-#' #example receiver location data
-#' data(recLoc_example) 
-#' head(recLoc_example)
+#'  
+#' # call with defaults; linear interpolation
+#' pos1 <- interpolatePath(walleye_detections)
+#'
+#' # load receiver location data
+#' rec_file <- system.file("extdata", 
+#'   "receiver_locations_2011.csv", package = "glatos")
+#' recs <- read_glatos_receiver_locations(rec_file)
 #' 
 #' #call with defaults; linear interpolation
-#'  pos1 <- interpolatePath(walleye_detections)
+#'  pos1 <- interpolatePath(dtc)
 #' 
-#' #make sure ffmpeg is installed before calling animatePath
-#' # and if you have not added path to 'ffmpeg.exe' to your Windows PATH 
+#' # make sequential frames but don't make animation  
+#' myDir <- paste0(getwd(),"/frames1")
+#' make_frames(pos1, recs=recs, outDir=myDir, animate = FALSE)
+#'
+#' # make sequential frames and animation
+#' # make sure ffmpeg is installed if argument \code{animate = TRUE}
+#' # If you have not added path to 'ffmpeg.exe' to your Windows PATH 
 #' # environment variable then you'll need to do that  
 #' # or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
-#' myDir <- paste0(getwd(),"/frames")
-#' animatePath(pos1, recs=recLoc_example, outDir=myDir)
+#'
+#' # if ffmpeg is on system path
+#' myDir <- paste0(getwd(),"/frames2")
+#' make_frames(pos1, recs=recs, outDir=myDir, animate = TRUE)
+#'
+#' \dontrun{
+#' # if ffmpeg is not on system path (windows)
+#' myDir <- paste0(getwd(), "/frames3")
+#' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
+#' }
+#'
+#'
+#'
+#'
 #' 
+#' # add one-week (604800 seconds) non-detection elsewhere threshold
+#' myDir <- paste0(getwd(), "/frames4")
+#' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, threshold = 86400)
 #'  
 #' @export
 
@@ -111,6 +139,7 @@ make_frames <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = ge
   # Try calling ffmpeg if animate = TRUE.
   # If animate = FALSE, video file is not produced and there is no need to check for package.
   if(animate == TRUE){
+
     cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)	
     ffVers <- suppressWarnings(system2(cmd, "-version", stdout=F)) #call ffmpeg
     if(ffVers == 127)
