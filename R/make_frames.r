@@ -108,10 +108,12 @@
 #' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
 #' }
 #'
-#'
-#'
-#'
-#' 
+#'#' \dontrun{
+#' # if ffmpeg is not on system path (mac)
+#' myDir <- paste0(getwd(), "/frames3")
+#' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="/path/to/ffmpeg")
+#' }
+
 #' # add one-week (604800 seconds) non-detection elsewhere threshold
 #' myDir <- paste0(getwd(), "/frames4")
 #' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, threshold = 86400)
