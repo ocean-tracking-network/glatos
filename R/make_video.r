@@ -149,7 +149,7 @@
 ##' }
 
 
-animate_video  <- function(dir = ".", pattern, output = "animation.mp4",
+make_video  <- function(dir = ".", pattern, output = "animation.mp4",
                            output_dir = ".", fps_in = 30, start_frame = 1,
                            end_frame = NULL, size = "source",
                            preset = "medium",
