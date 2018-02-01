@@ -163,9 +163,9 @@ animate_video  <- function(dir = ".", pattern, output = "animation.mp4",
   # try calling ffmpeg
 
   # add exe if ffmpeg is directory
-  cmd <- ifelse(grepl("ffmpeg.exe$",ffmpeg) | is.na(ffmpeg), ffmpeg,
-                paste0(ffmpeg,"\\ffmpeg.exe"))
-  cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', cmd)
+ # cmd <- ifelse(grepl("ffmpeg.exe$",ffmpeg) | is.na(ffmpeg), ffmpeg,
+  #              paste0(ffmpeg,"\\ffmpeg.exe"))
+  cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)
   ffVers <- suppressWarnings(system2(cmd, "-version",stdout=F)) #call ffmpeg
   if(ffVers == 127) stop(paste0('"ffmpeg.exe" was not found.\n',
     'Ensure it is installed add added to system PATH variable\n',
