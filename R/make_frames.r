@@ -2,7 +2,8 @@
 #' 
 #' Create a set of frames (png image files) showing geographic location data
 #' (e.g., detections of tagged fish or interpolated path data) at discrete 
-#' points in time and stitch frames into a video animation (mp4 file).    
+#' points in time on top of a Great Lakes shapefil and optionally stitches
+#' frames into a video animation (mp4 file).    
 #'
 #'
 #' @param proc_obj A data frame created by \code{\link{interpolatePath}} 
@@ -14,39 +15,44 @@
 #'   Default column names match GLATOS standard receiver location file
 #'   \cr(e.g., 'GLATOS_receiverLocations_yyyymmdd.csv').
 #'
+#' @param plot_control An optional data frame with four columns ('animal_id',
+#'   'record_type', 'color', and 'marker', 'marker_cex') that specify the plot
+#'    symbols and colors for each animal and position type. See examples below
+#'    for an example.
+#'
 #' @param out_dir A character string with file path to directory where 
-#'   individual frames for animations will be written. Default is working directory.
+#'   individual frames for animations will be written. Default is working
+#'   directory.
 #'   
-#' @param background An optional object of class \code{SpatialPolygonsDataFrame} 
-#'   to be used as background of each frame. Default is a simple polygon
-#'   of the Great Lakes (\code{greatLakesPoly}) included in the 'glatos' 
-#'   package.
-#'   
-#' @param background_ylim vector of two values specifying the min/max values 
+#' @param background_ylim Vector of two values specifying the min/max values 
 #' 	 for y-scale of plot. Units are same as background argument.
 #' 	 
-#' @param background_xlim vector of two values specifying the min/max values 
+#' @param background_xlim Vector of two values specifying the min/max values 
 #'   for x-scale of plot. Units are same as background argument.
 #'   
-#' @param ffmpeg A character string with path to install directory for ffmpeg. 
-#'   This argument is only needed if ffmpeg has not been added to your 
-#'   path variable on your computer.  For Windows machines, path must point 
-#'   to ffmpeg.exe.  For example, 'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'
-#'
-#' @param ani_name Name of animation (character string)
-#'
-#' @param frame_delete Boolean.  Default (TRUE) delete individual
-#'   image frames after animation is created
-#'
+#' @param show_interpolated logocal value indicating whether interploated
+#'   positions should be shown or not. Default is True.
+#' 
+#' @param threshold Threshold time in seconds before cease plotting interpolated
+#'   points for a fish that leaves one lacation and is not detected elsewhere
+#'   before returning to that location. Default is NULL (all interpolated points
+#'   are plotted - appears that the fish was present constantly at the location)
+#'   
 #' @param animate Boolean. Default (TRUE) creates video animation
 #' 
-#' @param plot_control An optional data frame with four columns ('animal_id', 'record_type', 
-#'   'color', and 'marker', 'marker_cex') that specify the plot symbols and colors for 
-#'   each animal and position type. See examples below for an example.
-#'   
-#' @param overwrite Overwite the animation file if it already exists. Default is FALSE (file is not #'    overwritten)
+#' @param ani_name Name of animation (character string)
 #' 
-#' @param threshold Threshold time in seconds before cease plotting interpolated points for a fish that leaves one lacation and is not detected elsewhere before returning to that location. Default is NULL (all interpolated points are plotted - appears that the fish was present constantly at the location)
+#' @param frame_delete Boolean.  Default (TRUE) delete individual
+#'   image frames after animation is created
+#'   
+#' @param overwrite Overwite the animation file if it already exists. Default is
+#'   FALSE (file is not overwritten)
+#' 
+#' @param ffmpeg A character string with path to ffmpeg executable file
+#'   (Windows: "ffmpeg.exe", MacOS: "ffmpeg"). The ffmpeg executable is found in
+#'   the ffmpeg folder you can download from https://ffmpeg.org/. This argument
+#'   is only needed if ffmpeg has not been added to your path variable on your
+#'   computer.
 #' 
 #' \itemize{
 #'   \item \code{animal_id} contains the unique identifier of individual animals and 
@@ -92,23 +98,20 @@
 
 
 make_frames <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = getwd(),
-                        background = NULL,
                         background_ylim = c(41.3, 49.0),
                         background_xlim = c(-92.45, -75.87),
-                        ffmpeg = NA,
+                        show_interpolated = TRUE,
+                        threshold = NULL,
+                        animate = TRUE,
                         ani_name = "animation.mp4",
                         frame_delete = FALSE,
-                        animate = TRUE,
                         overwrite = FALSE,
-                        threshold = NULL,
-                        show_interpolated = TRUE){
+                        ffmpeg = NA){
   
   # Try calling ffmpeg if animate = TRUE.
   # If animate = FALSE, video file is not produced and there is no need to check for package.
   if(animate == TRUE){
-    cmd <- ifelse(grepl("ffmpeg.exe$",ffmpeg) | is.na(ffmpeg), ffmpeg,
-                  paste0(ffmpeg,"\\ffmpeg.exe"))
-    cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', cmd)	
+    cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)	
     ffVers <- suppressWarnings(system2(cmd, "-version", stdout=F)) #call ffmpeg
     if(ffVers == 127)
       stop(paste0('"ffmpeg.exe" was not found.\n',
@@ -192,11 +195,11 @@ make_frames <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = ge
   proc_obj[, f_name := .GRP, by = grp]
   proc_obj[, f_name := paste0(sprintf(char, f_name), ".png")]
 
-  if(is.null(background)) {
-    data(greatLakesPoly) #example in glatos package
-    background <- greatLakesPoly
-  }
-  
+ 
+  # Load Great lakes background
+  data(greatLakesPoly) #example in glatos package
+  background <- greatLakesPoly
+
   cust_plot <- function(x, proc_obj, sub_recs, out_dir, background, background_xlim,
                         background_ylim, show_interpolated){
 
@@ -226,23 +229,15 @@ make_frames <- function(proc_obj, recs = NULL, plot_control = NULL, out_dir = ge
     # Set bottom margin to plot timeline outside of plot window
     par(oma=c(0,0,0,0), mar=c(6,0,0,0), xpd=FALSE)  
 
-    if(is.null(background)){
-      # Note call to plot with sp
-      sp::plot(background,
-               ylim = c(background_ylim),
-               xlim = c(background_xlim),
-               axes = FALSE,
-               lwd = 2*figRatio,
-               col = "white",
-               bg = "gray74")
-    }else{
-      # Note call to plot with sp
-      sp::plot(background,
-               ylim = c(background_ylim),
-               xlim = c(background_xlim),
-               axes = FALSE,
-               lwd = 2*figRatio)
-    }
+
+    # Note call to plot with sp
+    sp::plot(background,
+             ylim = c(background_ylim),
+             xlim = c(background_xlim),
+             axes = FALSE,
+             lwd = 2*figRatio,
+             col = "white",
+             bg = "gray74")
     
     box(lwd = 3*figRatio)
     
