@@ -44,17 +44,15 @@
 #'   = 0.
 #'
 #' @return A dataframe with animal_id, bin_timestamp,
-#'   latitude, longitude, and record type.
+#'   latitude, longitude, and record_type.
 #'
 #'
-#' @author Todd Hayden
+#' @author Todd Hayden, Tom Binder, Chris Holbrook
 #' 
 #' @examples
 #' 
 #' -------------------------------------------------------
 #' # EXAMPLE #1 - simple example
-#' # example transition matrix
-#' data(greatLakesTrLayer)
 #'   
 #' # example map background
 #' data(greatLakesPoly)
@@ -63,44 +61,38 @@
 #' 
 #' # make up points
 #' pos <- data.frame(
-#'    id=1,
-#'    x=c(-87,-82.5, -78),
-#'    y=c(44, 44.5, 43.5),
-#'    time=as.POSIXct(c("2000-01-01 00:00",
-#'      "2000-02-01 00:00", "2000-03-01 00:00")))
+#'    animal_id=1,
+#'    deploy_long=c(-87,-82.5, -78),
+#'    deploy_lat=c(44, 44.5, 43.5),
+#'    detection_timestamp_utc=as.POSIXct(c("2000-01-01 00:00",
+#'      "2000-02-01 00:00", "2000-03-01 00:00"), tz = "UTC"))
 #' 
 #' # coerce to SpatialPoints object and plot
-#'  pts <- SpatialPoints(pos[,c("x","y")])
+#'  pts <- SpatialPoints(pos[,c("deploy_long","deploy_lat")])
 #'  points(pts, pch=20, col='red', cex=3)
 #' 
 #' # interpolate path using linear method
-#' path1 <- interpolatePath(pos, 
-#'    detColNames=list(individualCol="id", timestampCol="time",
-#'    longitudeCol="x", latitudeCol="y"))
+#' path1 <- interpolatePath(pos)
 #'  
 #' # coerce to SpatialPoints object and plot
-#' pts1 <- SpatialPoints(path1[,c("x","y")])
+#' pts1 <- SpatialPoints(path1[,c("longitude","latitude")])
 #' points(pts1, pch=20, col='blue', lwd=2, cex=1.5) 
 #' 
 #' # example transition matrix
 #' data(greatLakesTrLayer)
 #'  
 #' # interpolate path using non-linear method (requires 'trans')
-#' path2 <- interpolatePath(pos, trans=greatLakesTrLayer,
-#' detColNames=list(individualCol="id", timestampCol="time",
-#'                  longitudeCol="x", latitudeCol="y"))
+#' path2 <- interpolatePath(pos, trans=greatLakesTrLayer)
 #' 
 #' # coerce to SpatialPoints object and plot
-#' pts2 <- SpatialPoints(path2[,c("x","y")])
+#' pts2 <- SpatialPoints(path2[,c("longitude","latitude")])
 #' points(pts2, pch=20, col='green', lwd=2, cex=1.5) 
 #'  
 #' # can also force linear-interpolation with lnlThresh=0
-#' path3 <- interpolatePath(pos, trans=greatLakesTrLayer, lnl_thresh=0,
-#'   detColNames=list(individualCol="id", timestampCol="time",
-#'                    longitudeCol="x", latitudeCol="y"))
+#' path3 <- interpolatePath(pos, trans=greatLakesTrLayer, lnl_thresh=0)
 #' 
 #' # coerce to SpatialPoints object and plot
-#' pts3 <- SpatialPoints(path3[,c("x","y")])
+#' pts3 <- SpatialPoints(path3[,c("longitude","latitude")])
 #' points(pts3, pch=20, col='magenta', lwd=2, cex=1.5) 
 #' --------------------------------------------------
 #' # EXAMPLE #2 - GLATOS detection data
@@ -111,24 +103,18 @@
 #' dtc <- read_glatos_detections(det_file)
 #'
 #' # take a look
-#' head(walleye_detections)
+#' head(dtc)
 #'  
 #' # call with defaults; linear interpolation
-#' pos1 <- interpolatePath(walleye_detections)
+#' pos1 <- interpolatePath(dtc)
 #'  
 #' # plot on example map background
 #' data(greatLakesPoly)
 #' library(sp) # to plot SpatialPolygon without error
 #' plot(greatLakesPoly)
-#' 
-#' # remove any missing positions from beginning or end of interpolated timeseries
-#' # missing positions occur for timestamps before a fish is first detected
-#' # or after a fish is last detected.
-#' pos1 <- pos1[pos1$animal_id == 3 & !is.na(pos1$deploy_lat),
-#'                   c("deploy_long", "deploy_lat")]
-#' 
+#'  
 #' # coerce to SpatialPoints object and plot
-#' pts1 <- SpatialPoints(pos1)
+#' pts1 <- SpatialPoints(pos1[, c("longitude", "latitude")])
 #' points(pts1, pch=20, col='red', cex=0.5)
 #'  
 #' # example transition matrix
@@ -136,7 +122,7 @@
 #'  
 #' # call with "transition matrix" (non-linear interpolation), other options
 #' # note that it is quite a bit slower due than linear interpolation
-#' pos2 <- interpolatePath(walleye_detections, trans=greatLakesTrLayer)
+#' pos2 <- interpolatePath(dtc, trans=greatLakesTrLayer)
 #' 
 #' # coerce to SpatialPoints object and plot
 #' pts2 <- SpatialPoints(pos2[, c("longitude","latitude")])
@@ -196,6 +182,7 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
     out <- rbind(dtc, det)
     setkey(out, animal_id, bin_stamp)
     out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
+    out <- na.omit(out, cols = "i_lat")   
     names(out) <- c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type")
     return(as.data.frame(out))
     stop
@@ -401,6 +388,6 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   setkey(out, animal_id, bin_stamp)
   out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
   names(out) <- c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type")
-
+  out <- na.omit(out, cols = "latitude")
   return(as.data.frame(out))
 }

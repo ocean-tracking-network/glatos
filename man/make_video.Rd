@@ -54,7 +54,8 @@ for ffmpeg.  This argument is only needed if ffmpeg has not been
 added to your path variable on your computer.  For Windows
 machines, path must point to ffmpeg.exe, typically located in
 "bin" folder.  For example,
-'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe'}
+'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe' or 'path/to/ffmpeg' on
+mac.}
 }
 \value{
 One video animation will be written to \code{output_dir}
@@ -85,14 +86,14 @@ Sequenced image files are input into FFmpeg using a file
   name convention which requires specifying the entire,
   non-changing file name with a consecutive integer numbering
   component.  The integer number component indicates the maximum
-  number of digits of all the images.  For example, \code{\%04d}
-  represents the file numbering \code{0000, 0001, 0002, ..., 9999}
-  and \code{\%02d} represents images numbered from \code{00, 01,
-  02, ..., 10}.  File names of image sequences input to FFmpeg may
+  number of digits of all the images.  For example, \code{\%04d.png}
+  represents the file numbering \code{0000.png, 0001.png, 0002.png, ..., 9999.png}
+  and \code{\%02d.png} represents images numbered from \code{00.png, 01.png,
+  02.png, ..., 10.png}.  File names of image sequences input to FFmpeg may
   have a prefix provided that all image files have the
   sequence. For example an image sequence of \code{myfile001.png,
   myfile002.png, myfile003.png, ..., myfile999.png} is represented
-  as \code{myfile\%03d.png}.  \code{pattern} accepts the pattern
+  as \code{myfile\%03d.png}.  \code{pattern} only accepts this pattern
   of image file names.
 
 Function can create .mp4, .mov, .mkv, .gif, .wmv, or
@@ -149,34 +150,42 @@ Presets provide a certain encoding speed to compression
   \code{codec} settings, e.g., \code{h264} or \code{libx264}.  If
   \code{TRUE}, recommended \code{preset} values are
   \code{ultrafast} or \code{veryslow}. See
-  \code{https://trac.ffmpeg.org/wiki/Encode/H.264} for more
+  \url{https://trac.ffmpeg.org/wiki/Encode/H.264} for more
   information.
 }
 \examples{
 
-
-\dontrun{
 # load frames
-det_file <- system.file("extdata", "frames", package = "glatos")
+frames <- system.file("extdata", "frames", package = "glatos")
 
 # make .mp4 video
-make_video(dir = det_file,
-              pattern = "\%03d.png",
-              output_dir = "/home/thayden/Desktop",
-              output = "animation.mp4",
-              fps_in = 30,
-              start_frame = 1,
-              end_frame = NULL,
-              size = "720x480",
-              preset = "medium",
-              codec = "default",
-              format = "yuv420p",
-              lossless = FALSE,
-              overwrite = TRUE,
-              ffmpeg = NA)
+# make sure ffmpeg is on system path (see \\code{make_frames} and details)
+make_video(dir = frames, pattern = "\%02d.png", output = "animation.mp4"  )
+
+# make .wmv video
+make_video(dir=frames, pattern = "\%02d.png", output = "animation.wmv" )
+
+# start animation on frame 10, end on frame 20
+make_video(dir=frames, pattern = "\%02d.png", start_frame = 10, end_frame = 20, output = "animation_2.mp4")
+
+# resize output video to 720x480
+make_video(dir=frames, pattern = "\%02d.png", size = "720x480", output = "animation_3.mp4" )
+
+# change ffmpeg preset
+make_video(dir=frames, pattern = "\%02d.png", preset = "ultrafast", output = "animation_4.mp4")
+
+# change input framerate
+make_video(dir=frames, fps_in = 1, pattern = "\%02d.png", preset = "ultrafast", output = "animation_5.mp4")
+
+\dontrun{
+# add path to ffmpeg (windows)
+make_video(dir = frames, pattern = "\%02d.png", output = "animation.mp4", ffmpeg = "c://path//to//windows//ffmpeg.exe")
+
+# add path to ffmpeg (mac)
+make_video(dir = frames, pattern = "\%02d.png", output = "animation.mp4", ffmpeg = "/path/to/ffmpeg")
+}
 
 }
-}
 \author{
-Todd Hayden
+Todd Hayden, Tom Binder, Chris Holbrook
 }

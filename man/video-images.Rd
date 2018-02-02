@@ -8,14 +8,14 @@
 \url{http://glatos.glos.us/home/project/HECWL}
 }
 \usage{
-system.file("extdata", "frames.zip", package="glatos")
+system.file("extdata", "frames", package="glatos")
 }
 \description{
 Sequential images of walleye movements in Lake Huron
   for testing functionality of ffmpeg function.
 }
 \section{Filename}{
- frames.zip
+ frames
 }
 
 \author{

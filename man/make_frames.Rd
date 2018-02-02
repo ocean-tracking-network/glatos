@@ -11,8 +11,10 @@ make_frames(proc_obj, recs = NULL, plot_control = NULL, out_dir = getwd(),
   ffmpeg = NA)
 }
 \arguments{
-\item{proc_obj}{A data frame created by \code{\link{interpolatePath}} 
-function.}
+\item{proc_obj}{A data frame created by
+\code{\link{interpolatePath}} function or a data frame containing
+'animal_id', 'bin_timestamp', 'latitude', 'longitude', and
+'record_type'}
 
 \item{recs}{An optional data frame containing at least four columns with
 receiver 'deploy_lat', 'deploy_long', 'deploy_date_time', and
@@ -21,9 +23,19 @@ Default column names match GLATOS standard receiver location file
 \cr(e.g., 'GLATOS_receiverLocations_yyyymmdd.csv').}
 
 \item{plot_control}{An optional data frame with four columns ('animal_id',
-'record_type', 'color', and 'marker', 'marker_cex') that specify the plot
- symbols and colors for each animal and position type. See examples below
- for an example.}
+  'record_type', 'color', and 'marker', 'marker_cex') that specify the plot
+   symbols and colors for each animal and position type. See examples below
+   for an example.
+
+\itemize{ \item \code{animal_id} contains the unique identifier of
+  individual animals.  \item \code{record_type} indicates if the
+  options should be applied to observed positions (detections;
+  'detection') or interpolated positions ('interpolated').  \item
+  \code{color} contains the marker color to be plotted for each
+  animal and position type.  \item \code{marker} contains the
+  marker style to be plotted for each animal and position type.
+  \item \code{marker_cex} contains the character expansion code
+  (\code{cex}) for each marker.  }}
 
 \item{out_dir}{A character string with file path to directory where 
 individual frames for animations will be written. Default is working
@@ -54,24 +66,10 @@ image frames after animation is created}
 FALSE (file is not overwritten)}
 
 \item{ffmpeg}{A character string with path to ffmpeg executable file
-  (Windows: "ffmpeg.exe", MacOS: "ffmpeg"). The ffmpeg executable is found in
-  the ffmpeg folder you can download from https://ffmpeg.org/. This argument
-  is only needed if ffmpeg has not been added to your path variable on your
-  computer.
-
-\itemize{
-  \item \code{animal_id} contains the unique identifier of individual animals and 
-       corresponds to 'animal_id' column in 'dtc'. 
-  \item \code{record_type} indicates if the options should be applied to observed
-    positions (detections; 'real') or interpolated positions 
-    ('interpolated').
-  \item \code{color} contains the marker color to be plotted for each 
-    animal and position type.  
-  \item \code{marker} contains the marker style to be plotted for each
-    animal and position type. Passed to \code{par()$pch}.
-  \item \code{marker_cex} contains the marker size to be plotted for each
-    animal and position type. Passed to \code{par()$cex}.
-}}
+(Windows: "ffmpeg.exe", MacOS: "ffmpeg"). The ffmpeg executable is found in
+the ffmpeg folder you can download from https://ffmpeg.org/. This argument
+is only needed if ffmpeg has not been added to your path variable on your
+computer.}
 }
 \value{
 Sequentially-numbered png files (one for each frame) and 
@@ -90,6 +88,9 @@ det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
 det_file <- unzip(det_file, "walleye_detections.csv")
 dtc <- read_glatos_detections(det_file)
 
+# shrink size to reduce computation time
+dtc <- dtc[1:5000,]
+
 # take a look
 head(dtc)
 
@@ -98,12 +99,8 @@ rec_file <- system.file("extdata",
   "receiver_locations_2011.csv", package = "glatos")
 recs <- read_glatos_receiver_locations(rec_file)
 
-#call with defaults; linear interpolation
+# call with defaults; linear interpolation
  pos1 <- interpolatePath(dtc)
-
-# make sequential frames but don't make animation  
-myDir <- paste0(getwd(),"/frames1")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 
 # make sequential frames and animation
 # make sure ffmpeg is installed if argument \\code{animate = TRUE}
@@ -111,24 +108,43 @@ make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 # environment variable then you'll need to do that  
 # or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
 
-# if ffmpeg is on system path
+# make sequential frames but don't make animation  
+myDir <- paste0(getwd(),"/frames1")
+make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
+
+# make sequential frames, no animation, add threshold for non-detection
 myDir <- paste0(getwd(),"/frames2")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE)
+make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE, threshold = (86400))
+
+# make sequential frames, and animate.  Keep both animation and frames
+myDir <- paste0(getwd(), "/frames3")
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, threshold = (86400*10))
+
+# make animation, remove frames.
+myDir <- paste0(getwd(), "/frames4")
+make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE)
 
 \dontrun{
-# if ffmpeg is not on system path (windows)
-myDir <- paste0(getwd(), "/frames3")
-make_frames(pos1, recs=recs, outDir=my_dir, animate=TRUE, ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
+# if ffmpeg is not on system path
+
+# windows
+myDir <- paste0(getwd(), "/frames5")
+make_frames(pos1, recs=recs, out_dir=my_dir, animate=TRUE,
+ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
+
+# mac
+myDir <- paste0(getwd(), "/frames6")
+make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="/path/to/ffmpeg")}
+
+# specifying plot_control
+control <- expand.grid(animal_id = unique(pos1$animal_id),
+record_type = c("detection", "interpolated"), color = "green", marker = 19,
+marker_cex = 1.2, stringsAsFactors = FALSE)
+
+# myDir <- paste0(getwd(),"/frames2")
+make_frames(pos1, recs=recs, out_dir=myDir, plot_control = control)
 
 
-# if ffmpeg is not on system path (mac)
-myDir <- paste0(getwd(), "/frames3")
-make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="/path/to/ffmpeg")
-}
-# add one-week (604800 seconds) non-detection elsewhere threshold
-myDir <- paste0(getwd(), "/frames4")
-make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE, threshold = 86400)
- 
 }
 \author{
 Todd Hayden
