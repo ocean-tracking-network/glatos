@@ -51,7 +51,7 @@ NULL
 #' @description Sequential images of walleye movements in Lake Huron
 #'   for testing functionality of ffmpeg function.
 #' 
-#' @format Folder contains 100 sequentially labeled .png image files
+#' @format Folder contains 30 sequentially labeled .png image files
 #' 
 #' @name video images
 #' 
