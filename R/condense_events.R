@@ -5,22 +5,13 @@
 #'   groups, depending on location), or sequential detections at the same 
 #'   location that are separated by a user-defined threshold period of time.
 #'
-#' @param detections A data frame containing detection data with at least 
-#'   3 columns containing 'location', 'animal', and 'timestamp' columns. Column names are specified with \code{detColNames}.
-#'   
-#' @param detColNames A list with names of required columns in 
-#'   \code{detections}: 
-#' \itemize{
-#'   \item \code{locationCol} is a character string with the name of the column 
-#'   	 containing locations you wish to filter to (typically 'glatos_array' or 
-#' 		 'station' for GLATOS data).
-#'   \item \code{animalCol} is a character string with the name of the column 
-#' 		 containing the individual animal identifier.
-#'	 \item \code{timestampCol} is a character string with the name of the column 
-#' 		 containing datetime stamps for the detections (MUST be of class 
-#'     'POSIXct').
-#' }
-#' 
+#' @param dtc An object of class \code{glatos_detections} of data
+#'   frame containing spatiotemporal data with a location column
+#'   (typically 'glatos_array' or 'station'), 'animal_id' and
+#'   'detection_timestamp_utc' columns.
+#'
+#' @param loc_col Name of column in 'dtc' that specifies location column
+#'   ' 
 #' @param timeSep Amount of time (in seconds) that must pass between 
 #'   sequential detections on the same receiver (or group of receivers, 
 #'   depending on specified location) before that detection is considered to 
@@ -37,50 +28,35 @@
 #' @author T. R. Binder, Todd Hayden
 #' @export
 #' @examples
-#' data("walleye_detections")
-#' dtx <- condense_events(walleye_detections, timeSep = 3600)
+#'
+#' # load detection data
+#' det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
+#' det_file <- unzip(det_file, "walleye_detections.csv")
+#' dtc <- read_glatos_detections(det_file)
+#'
+#' dtx <- condense_events(dtc, timeSep = 3600)
 
+condense_events <- function(dtc, loc_col = "glatos_array", timeSep=Inf){
+  # Sort detections by transmitter id and then by detection timestamp.
+  setDT(dtc)
+  setkey(dtc, animal_id, detection_timestamp_utc)
+  dtc$TimeDiff <- c(NA, diff(dtc[, detection_timestamp_utc]))
 
-condense_events <- function(detections, detColNames = list(locationCol="glatos_array", animalCol="animal_id", timestampCol="detection_timestamp_utc"), timeSep=Inf){
+  # new fish.
+  dtc$newfsh <- as.numeric(c(1, head(dtc[, animal_id], -1)) != dtc[, animal_id])
+  dtc$TimeDiff[dtc$newfsh == 1] <- NA
 
-## Check that the specified columns appear in the detections dataframe
-    missingCols <- setdiff(unlist(detColNames), names(detections))
-    if (length(missingCols) > 0){
-        stop(paste0("Detections dataframe is missing the following ",
-                    "column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-             call.=FALSE)
-    }
+  # arrival detections
+  dtc$arrival <- as.numeric(c(1, dtc[, loc_col, with = FALSE]
+                              [2:nrow(dtc)] != dtc[, loc_col, with = FALSE]
+                              [1:(nrow(dtc) - 1)]) | dtc$TimeDiff >
+                              timeSep | dtc$newfsh == 1)
+  # depart detections
+  dtc$depart = 0
+  dtc$depart[((which(dtc$arrival == 1)) - 1)] <- 1
+  dtc$depart[(nrow(dtc))] <- 1
 
-## Check that timestamp is of class 'POSIXct'
-    if(!('POSIXct' %in% class(detections[,detColNames$timestampCol]))){
-        stop(paste0("Column '", detColNames$timestampCol,
-                    "' in the detections dataframe must be of class 'POSIXct'."),
-             call.=FALSE)
-    } 
-
-## Sort detections by transmitter id and then by detection timestamp.
-    detections <- detections[order(detections[,detColNames$animalCol], detections[,detColNames$timestampCol]),]
-
-    detections$TimeDiff <- c(NA, diff(detections[,detColNames$timestampCol]))	
-
-## new fish.
-    detections$newfsh <- as.numeric(c(1, head(detections[, detColNames$animalCol], -1)) != detections[,detColNames$animalCol])
-    detections$TimeDiff[detections$newfsh == 1] <- NA
-
-    ## arrival detections
-    detections$arrival <- as.numeric(c(1, detections[,detColNames$locationCol][2:nrow(detections)] != detections[,detColNames$locationCol][1:(nrow(detections) - 1)]) | detections$TimeDiff > timeSep | detections$newfsh == 1)
-
-    ## depart detections
-    detections$depart = 0
-    detections$depart[((which(detections$arrival == 1)) - 1)] <- 1
-    detections$depart[(nrow(detections))] <- 1
-
-    ## assign events
-    detections$event <- cumsum(detections$arrival)    
-    return(detections)
-}
-
-
-
-
-
+  # assign events
+  dtc$event <- cumsum(dtc$arrival)    
+  return(as.data.frame(dtc))
+  }

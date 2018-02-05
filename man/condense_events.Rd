@@ -4,26 +4,16 @@
 \alias{condense_events}
 \title{Classify detection data into events}
 \usage{
-condense_events(detections, detColNames = list(locationCol = "glatos_array",
-  animalCol = "animal_id", timestampCol = "detection_timestamp_utc"),
-  timeSep = Inf)
+condense_events(dtc, loc_col = "glatos_array", timeSep = Inf)
 }
 \arguments{
-\item{detections}{A data frame containing detection data with at least 
-3 columns containing 'location', 'animal', and 'timestamp' columns. Column names are specified with \code{detColNames}.}
+\item{dtc}{An object of class \code{glatos_detections} of data
+frame containing spatiotemporal data with a location column
+(typically 'glatos_array' or 'station'), 'animal_id' and
+'detection_timestamp_utc' columns.}
 
-\item{detColNames}{A list with names of required columns in 
-  \code{detections}: 
-\itemize{
-  \item \code{locationCol} is a character string with the name of the column 
-       containing locations you wish to filter to (typically 'glatos_array' or 
-         'station' for GLATOS data).
-  \item \code{animalCol} is a character string with the name of the column 
-         containing the individual animal identifier.
- \item \code{timestampCol} is a character string with the name of the column 
-         containing datetime stamps for the detections (MUST be of class 
-    'POSIXct').
-}}
+\item{loc_col}{Name of column in 'dtc' that specifies location column
+'}
 
 \item{timeSep}{Amount of time (in seconds) that must pass between 
 sequential detections on the same receiver (or group of receivers, 
@@ -46,8 +36,13 @@ Reduce detection data from an acoustic telemetry receiver into discrete
   location that are separated by a user-defined threshold period of time.
 }
 \examples{
-data("walleye_detections")
-dtx <- condense_events(walleye_detections, timeSep = 3600)
+
+# load detection data
+det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
+det_file <- unzip(det_file, "walleye_detections.csv")
+dtc <- read_glatos_detections(det_file)
+
+dtx <- condense_events(dtc, timeSep = 3600)
 }
 \author{
 T. R. Binder, Todd Hayden
