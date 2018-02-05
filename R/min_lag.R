@@ -1,6 +1,7 @@
 #' Minimum lag filter
 #'
-#' Calculate minimum time interval between successive detections for identifying false detections
+#' Calculate minimum time interval between successive detections for identifying
+#' false detections
 #' 
 #' Calculates minimum time interval between detections for each tag on
 #' a receiver
@@ -23,7 +24,8 @@
 #'     function replicates the 'min_lag' column included in the
 #'     standard glatos export.
 #'
-#' @return a column is added to input dataframe with the shortest time interval for each observation
+#' @return a column is added to input dataframe with the shortest time interval
+#' for each observation
 #'
 #' 
 #' @author Todd Hayden
@@ -37,32 +39,30 @@
 #' dtc <- read_glatos_detections(det_file)
 #'
 #' # calculate min_lag
-#' min_lag(walleye_detections)
+#' min_lag(dtc)
 #'
 #'
 #' 
+
 min_lag <- function(dtc){
-
   setDT(dtc)
-   setkey(dtc, transmitter_id, receiver_sn, detection_timestamp_utc)   
-    priorTDiff <- as.numeric( dtc[,detection_timestamp_utc]) - as.numeric(c(NA, head(dtc[,detection_timestamp_utc], -1)))
+  setkey(dtc, transmitter_id, receiver_sn, detection_timestamp_utc)
+  priorTDiff <- as.numeric( dtc[,detection_timestamp_utc]) - as.numeric(
+    c(NA, head(dtc[,detection_timestamp_utc], -1)))
+  futureTDiff <- as.numeric(c(tail(dtc[,detection_timestamp_utc], -1), NA)) -
+    as.numeric(dtc[,dtc$detection_timestamp_utc])
+  futureRec <- as.numeric(c(tail(dtc[,receiver_sn], -1), NA) != dtc[,receiver_sn])
+  priorRec <- as.numeric(c(NA, head(dtc[,receiver_sn], -1)) != dtc[,receiver_sn])
+  futureTran <- as.numeric(c(tail(dtc[,transmitter_id], -1), NA) !=
+                             dtc[,transmitter_id])
+  priorTran <- as.numeric(c(NA, head(dtc[, transmitter_id], -1)) !=
+                            dtc[,transmitter_id])
 
-    futureTDiff <- as.numeric(c(tail(dtc[,detection_timestamp_utc], -1), NA)) - as.numeric(detections[,dtc$detection_timestamp_utc])
-    
-    futureRec <- as.numeric(c(tail(dtc[,receiver_sn], -1), NA) != dtc[,receiver_sn])
-    priorRec <- as.numeric(c(NA, head(dtc[,receiver_sn], -1)) != dtc[,receiver_sn])
-
-    futureTran <- as.numeric(c(tail(dtc[,transmitter_id], -1), NA) != dtc[,transmitter_id])
-    priorTran <- as.numeric(c(NA, head(dtc[, transmitter_id], -1)) != dtc[,transmitter_id])
-
-    futureTDiff[futureRec == 1] <- NA
-    priorTDiff[priorRec ==1] <- NA
-
-    futureTDiff[futureTran ==1] <- NA
-    priorTDiff[priorTran ==1] <- NA
-
-    dtc$min_lag <- pmin(priorTDiff, futureTDiff, na.rm = TRUE)
-    return(as.data.frame(dtc))
+  futureTDiff[futureRec == 1] <- NA
+  priorTDiff[priorRec ==1] <- NA
+  futureTDiff[futureTran ==1] <- NA
+  priorTDiff[priorTran ==1] <- NA
+  dtc$min_lag <- pmin(priorTDiff, futureTDiff, na.rm = TRUE)
+  setkey(dtc, animal_id, detection_timestamp_utc)
+  return(as.data.frame(dtc))
 }
-
-

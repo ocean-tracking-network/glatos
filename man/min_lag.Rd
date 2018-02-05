@@ -4,44 +4,27 @@
 \alias{min_lag}
 \title{Minimum lag filter}
 \usage{
-min_lag(detections, detColNames = list(transmitter_id = "transmitter_id",
-  timestampCol = "detection_timestamp_utc", receiver_sn = "receiver_sn"))
+min_lag(dtc)
 }
 \arguments{
-\item{detections}{A data frame containing detection
-data (e.g., from the standard GLATOS detection export file
-'*_detectionsWithLocs.csv').  Must contain the columns
+\item{dtc}{An object of class \code{glatos_detections} or data
+frame containing acoustic detection data with
 \code{detection_timestamp}, \code{transmitter_id}, and
-\code{receiver_sn} or equivalent (specified by
-\code{detColNames}). \code{min_lag} is loosely based on the the
-"short interval" method described by Pincock (2012) and replicates
-the \code{min_lag} column in the standare glatos export file. In
-this case (GLATOS), it is defined for each detection as the
-shortest interval (in seconds) between either the previous or next
-detection (whichever is closest) of the same transmitter on the
-same receiver.}
-
-\item{detColNames}{An optional list of character strings with names of required columns in
-    \code{detections}:
-\itemize{
-   \item \code{transmitter_id} A character scalar with the name (in quotes) of the column
-    containing transmitter_id.  The default value
-    ('transmitter_id') is consistent with the GLATOS standard.
-
-\item \code{timestampCol} A character scalar with the name (in
-    quotes) of the column containing the timestamp data. The
-    default value ("detection_timestamp_utc") is consistent with
-    GLATOS standard.
-\item \code{receiver_sn} A character scalar with the name (in quotes) of the column
-    containing receiver_id.  The default value
-    ('receiver_id') is consistent with the GLATOS standard.
-}}
+\code{receiver_sn}.  \code{min_lag} is loosely based on the the
+"short interval" method described by Pincock (2012) and
+replicates the \code{min_lag} column in the standare glatos
+export file. In this case (GLATOS), \code{min_lat} is defined for each
+detection as the shortest interval (in seconds) between either
+the previous or next detection (whichever is closest) of the same
+transmitter on the same receiver.}
 }
 \value{
-a column is added to input dataframe with the shortest time interval for each observation
+a column is added to input dataframe with the shortest time interval
+for each observation
 }
 \description{
-Calculate minimum time interval between successive detections for identifying false detections
+Calculate minimum time interval between successive detections for identifying
+false detections
 }
 \details{
 Calculates minimum time interval between detections for each tag on
@@ -55,12 +38,14 @@ A new column (\code{min_lag}) is added to the input
     standard glatos export.
 }
 \examples{
-data('walleye_detections') # example data
 
-head(walleye_detections)
+# load detection file
+det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
+det_file <- unzip(det_file, "walleye_detections.csv")
+dtc <- read_glatos_detections(det_file)
 
 # calculate min_lag
-dtx <- min_lag(walleye_detections)
+min_lag(dtc)
 
 
 

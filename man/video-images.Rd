@@ -3,7 +3,7 @@
 \name{video images}
 \alias{video images}
 \title{Video frames of walleye movements in Lake Huron}
-\format{Folder contains 100 sequentially labeled .png image files}
+\format{Folder contains 30 sequentially labeled .png image files}
 \source{
 \url{http://glatos.glos.us/home/project/HECWL}
 }
