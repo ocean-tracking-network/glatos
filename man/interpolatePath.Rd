@@ -4,164 +4,139 @@
 \alias{interpolatePath}
 \title{Interpolate new positions within a spatiotemporal path data}
 \usage{
-interpolatePath(dtc, intTimeStamp = 86400, rast = NULL, lnlThresh = 0.9,
-  detColNames = list(individualCol = "animal_id", timestampCol =
-  "detection_timestamp_utc", latitudeCol = "deploy_lat", longitudeCol =
-  "deploy_long", typeCol = "record_type"))
+interpolatePath(dtc, trans = NULL, int_time_stamp = 86400,
+  lnl_thresh = 0.9)
 }
 \arguments{
-\item{dtc}{A data frame containing spatiotemporal data with at least 
-4 columns containing 'individual', 'timestamp','longitude', and 'latitude' 
-data and an optional fifth column with the 'type' of record 
-(e.g., detection). Default column names match the GLATOS 
-detection export file but other names can be specified with 
-\code{detColNames}.}
+\item{dtc}{An object of class \code{glatos_detections} or data frame
+containing spatiotemporal data with at least 4 columns containing
+'animal_id', 'detection_timestamp_utc','deploy_long', and
+'deploy_lat' columns.}
 
-\item{intTimeStamp}{The time step size (in seconds) of interpolated 
+\item{trans}{An optional transition matrix with the "cost" of
+moving across each cell within the map extent. Must be of class
+\code{TransitionLayer} (See \code{gdistance} package).}
+
+\item{int_time_stamp}{The time step size (in seconds) of interpolated 
 positions. Default is 86400 (one day).}
 
-\item{rast}{An optional transition matrix with the "cost" of moving across 
-each cell within the map extent. Must be of class 
-\code{TransitionLayer} (See \code{gdistance} package). Passed to  
-\code{trans} in \code{\link{movePath}}.}
-
-\item{lnlThresh}{A numeric threshold for determining if linear or non-linear 
-interpolation will be used based on the ratio of linear-to-non-linear
-shortest path distances. Passed to \code{ithresh} in 
-\code{\link{movePath}}.}
-
-\item{detColNames}{A list with names of columns in \code{dtc}:
-\itemize{
-  \item \code{individualCol} is a character string that uniquely identifies 
-    an individual (e.g., tagged animal). Default is 'animal_id'.
- \item \code{timestampCol} is a character string with the name of the column 
-         containing datetime stamps. Default is 'detection_timestamp_utc'.
- \item \code{latitudeCol} is a character string with the name of the column
-    containing latitude data. Default is 'deploy_lat'.
- \item \code{longitudeCol} is a character string with the name of the column
-    containing longitude of the receiver. Default is 'deploy_long'.
- \item \code{typeCol} is a character string with the name of the optional 
-    column that identifies the type of record. Default is 'record_type'.}}
+\item{lnl_thresh}{A numeric threshold for determining if linear or
+non-linear interpolation shortest path will be used.}
 }
 \value{
-A dataframe with id, timestamp, lat, lon, and record type.
+A dataframe with animal_id, bin_timestamp,
+  latitude, longitude, and record_type.
 }
 \description{
 Interpolate new positions within a spatiotemporal path data set 
   (e.g., detections of tagged fish) at regularly-spaced time intervals   
-	 using linear or non-linear interpolation (via \code{\link{movePath}}).
+	 using linear or non-linear interpolation.
 }
 \details{
-Interpolation is done by passing each consecutive pair of points to 
-\code{\link{movePath}} for interpolation via linear or non-linear 
-methods, depending on \code{rast}.
+Non-linear interpolation uses the 'gdistance' package to
+  find the shortest pathway between two locations (i.e., receivers)
+  that avoid 'impossible' movements (e.g., over land for fish). The
+  shortest non-linear path between two locations is calculated
+  using a 'transition matrix layer' (\code{trans}) that represents
+  the 'cost' of an animal moving between adjacent grid cells.  For
+  example, each cell in \code{rast} may be coded as water (1) or
+  land (0) to represent possible (1) and impossible (0) movement
+  paths.
 
-Non-linear interpolation uses the 'gdistance' package to find the shortest 
-pathway between two locations (i.e., receivers) that avoid 'impossible' 
-movements (e.g., over land for fish). The shortest non-linear path between 
-two locations is calculated using a 'transition matrix layer' (\code{rast}) 
-that represents the 'cost' of an animal moving between adjacent grid cells. 
-For example, each cell in \code{rast} may be coded as water (1) or land (0)
-to represent possible (1) and impossible (0) movement path.
-
-Linear interpolation is used for all points when \code{rast} is not supplied.
-When \code{rast} is supplied, then interpolation method is determined for
-each pair of observed positions. For example, linear interpolation will be 
-used if the two points are exactly the same and when the ratio of linear-to-
-can be used to control whether non-linear or linear interpolation is used
-for all points. For example, non-linear interpolation will be used for all
-points when \code{lnlThresh} = 1 and linear interpolation will be used for 
-all points when \code{lnlThresh} = 0.
+Linear interpolation is used for all points when
+  \code{trans} is not supplied.  When \code{trans} is supplied,
+  then interpolation method is determined for each pair of observed
+  positions. For example, linear interpolation will be used if the
+  two points are exactly the same and when the ratio (linear
+  distance:non-linear distance) between two positions is less than
+  \code{lnl_thresh}.  Non-linear interpolation will be used when
+  ratio is greater than \code{lnl_thresh}.  \code{lnl_thresh} can
+  be used to control whether non-linear or linear interpolation is
+  used for all points. For example, non-linear interpolation will
+  be used for all points when \code{lnl_thresh} = 1 and linear
+  interpolation will be used for all points when \code{lnl_thresh}
+  = 0.
 }
 \examples{
 
---------------------------------------------------
-#EXAMPLE #1 - simple example
-
-#example transition matrix
-data(greatLakesTrLayer)
- 
-#example map background
+-------------------------------------------------------
+# EXAMPLE #1 - simple example
+  
+# example map background
 data(greatLakesPoly)
 library(sp) #to plot SpatialPolygon without error
 plot(greatLakesPoly)
 
-#make up points
+# make up points
 pos <- data.frame(
-  id=1,
-  x=c(-87,-82.5, -78),
-  y=c(44, 44.5, 43.5),
-  time=as.POSIXct(c("2000-01-01 00:00",
-    "2000-02-01 00:00", "2000-03-01 00:00")))
+   animal_id=1,
+   deploy_long=c(-87,-82.5, -78),
+   deploy_lat=c(44, 44.5, 43.5),
+   detection_timestamp_utc=as.POSIXct(c("2000-01-01 00:00",
+     "2000-02-01 00:00", "2000-03-01 00:00"), tz = "UTC"))
 
-#coerce to SpatialPoints object and plot
-pts <- SpatialPoints(pos[,c("x","y")])
-points(pts, pch=20, col='red', cex=3)
+# coerce to SpatialPoints object and plot
+ pts <- SpatialPoints(pos[,c("deploy_long","deploy_lat")])
+ points(pts, pch=20, col='red', cex=3)
 
-#interpolate path using linear method
-path1 <- interpolatePath(pos, 
-  detColNames=list(individualCol="id", timestampCol="time", 
-		 longitudeCol="x", latitudeCol="y"))
-
-#coerce to SpatialPoints object and plot
-pts1 <- SpatialPoints(path1[,c("x","y")])
+# interpolate path using linear method
+path1 <- interpolatePath(pos)
+ 
+# coerce to SpatialPoints object and plot
+pts1 <- SpatialPoints(path1[,c("longitude","latitude")])
 points(pts1, pch=20, col='blue', lwd=2, cex=1.5) 
 
-#example transition matrix
+# example transition matrix
 data(greatLakesTrLayer)
+ 
+# interpolate path using non-linear method (requires 'trans')
+path2 <- interpolatePath(pos, trans=greatLakesTrLayer)
 
-#interpolate path using non-linear method (requires 'trans')
-path2 <- interpolatePath(pos, 
-  rast=greatLakesTrLayer,
-  detColNames=list(individualCol="id", timestampCol="time",
-  longitudeCol="x", latitudeCol="y"))
-
-#coerce to SpatialPoints object and plot
-pts2 <- SpatialPoints(path2[,c("x","y")])
+# coerce to SpatialPoints object and plot
+pts2 <- SpatialPoints(path2[,c("longitude","latitude")])
 points(pts2, pch=20, col='green', lwd=2, cex=1.5) 
+ 
+# can also force linear-interpolation with lnlThresh=0
+path3 <- interpolatePath(pos, trans=greatLakesTrLayer, lnl_thresh=0)
 
-#can also force linear-interpolation with lnlThresh=0
-path3 <- interpolatePath(pos, 
-  rast=greatLakesTrLayer, lnlThresh=0,
-  detColNames=list(individualCol="id", timestampCol="time",
-  longitudeCol="x", latitudeCol="y"))
-
-#coerce to SpatialPoints object and plot
-pts3 <- SpatialPoints(path3[,c("x","y")])
+# coerce to SpatialPoints object and plot
+pts3 <- SpatialPoints(path3[,c("longitude","latitude")])
 points(pts3, pch=20, col='magenta', lwd=2, cex=1.5) 
-
 --------------------------------------------------
-#EXAMPLE #2 - GLATOS detection data
-data(walleye_detections) 
-head(walleye_detections)
+# EXAMPLE #2 - GLATOS detection data
 
-#call with defaults; linear interpolation
-pos1 <- interpolatePath(walleye_detections)
+# load detection data
+det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
+det_file <- unzip(det_file, "walleye_detections.csv")
+dtc <- read_glatos_detections(det_file)
 
-#plot on example map background
+# take a look
+head(dtc)
+ 
+# call with defaults; linear interpolation
+pos1 <- interpolatePath(dtc)
+ 
+# plot on example map background
 data(greatLakesPoly)
-library(sp) #to plot SpatialPolygon without error
+library(sp) # to plot SpatialPolygon without error
 plot(greatLakesPoly)
-
-#coerce to SpatialPoints object and plot
-pts1 <- SpatialPoints(pos1[pos1$animal_id==3,c("deploy_long","deploy_lat")])
+ 
+# coerce to SpatialPoints object and plot
+pts1 <- SpatialPoints(pos1[, c("longitude", "latitude")])
 points(pts1, pch=20, col='red', cex=0.5)
-
-#example transition matrix
+ 
+# example transition matrix
 data(greatLakesTrLayer)
-
-#call with "transition matrix" (non-linear interpolation), other options
+ 
+# call with "transition matrix" (non-linear interpolation), other options
 # note that it is quite a bit slower due than linear interpolation
-pos2 <- interpolatePath(walleye_detections, rast=greatLakesTrLayer)
+pos2 <- interpolatePath(dtc, trans=greatLakesTrLayer)
 
-#coerce to SpatialPoints object and plot
-pts2 <- SpatialPoints(pos2[,c("deploy_long","deploy_lat")])
+# coerce to SpatialPoints object and plot
+pts2 <- SpatialPoints(pos2[, c("longitude","latitude")])
 points(pts2, pch=20, col='blue', cex=0.5)
 
 }
-\seealso{
-\code{\link{movePath}}
-}
 \author{
-Todd Hayden
+Todd Hayden, Tom Binder, Chris Holbrook
 }
