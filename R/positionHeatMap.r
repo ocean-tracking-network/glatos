@@ -321,4 +321,3 @@ positionHeatMap <- function (positions, resolution=10, interval=3600,
 	
 	message(paste0("Output file are located in:\n", filePath))
 }	
-
