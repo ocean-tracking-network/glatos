@@ -20,8 +20,8 @@
 ##'   returns 0 (land) for movements between land and water and 1 for
 ##'   all over-water movements.
 ##' 
-##' @return returns geo-corrected transition raster layer where land = 0 and water =
-##'   1 (see \code{gdistance})
+##' @return returns geo-corrected transition raster layer where land = 0 and
+##' water=1 (see \code{gdistance})
 ##' @author Todd Hayden, Tom Binder, Chris Holbrook
 ##' @examples
 ##'
