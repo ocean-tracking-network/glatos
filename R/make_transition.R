@@ -2,9 +2,11 @@
 ##'
 ##' Create transition layer for \code{interpolatePath} from polygon shapefile.
 ##' 
-##' @param in_file character, file path to polygon shapefile
+##' @param in_file character, file path to polygon shapefile (with
+##'   extension of *.shp)
 ##' @param res two element vector that specifies the x and y dimension
-##'   of output raster cells.  In example, units are degrees.
+##'   of output raster cells.  Units of res are same as input
+##'   shapefile.  In example, units are degrees.
 ##' 
 ##' @details \code{make_transition} uses gdalUtils::gdal_rasterize to
 ##'   convert a polygon shapefile into transition layer (see
@@ -22,20 +24,22 @@
 ##' 
 ##' @return returns geo-corrected transition raster layer where land = 0 and
 ##' water=1 (see \code{gdistance})
+##'
 ##' @author Todd Hayden, Tom Binder, Chris Holbrook
+##'
 ##' @examples
 ##'
 ##' # path to polygon shapefile
-##' in_file <- system.file("extdata", "shoreline.zip", package = "glatos")
-##' gl <- unzip(in_file, "shoreline.shp" )
+##' poly <- system.file("extdata", "shoreline.zip", package = "glatos")
+##' poly <- unzip(poly, exdir = tempdir())
 ##'
 ##' # make_transition layer
-##' tst <- make_transition(gl, res = c(0.1, 0.1))
+##' tst <- make_transition(poly[grepl("*.shp", poly)], res = c(0.1, 0.1))
 ##'
 ##' @export
 
 
-make_transition <- function(in_file, res = c(0.1, 0.1)){
+make_transition <- function(in_file = ".", res = c(0.1, 0.1)){
   out <-tempfile(fileext = ".tif")
   burned <- gdalUtils::gdal_rasterize(in_file, dst_filename= out, burn = 1,
                                       tr = res, output_Raster = TRUE)

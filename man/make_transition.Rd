@@ -4,17 +4,19 @@
 \alias{make_transition}
 \title{Create transition layer from polygon shapefile}
 \usage{
-make_transition(in_file, res = c(0.1, 0.1))
+make_transition(in_file = ".", res = c(0.1, 0.1))
 }
 \arguments{
-\item{in_file}{character, file path to polygon shapefile}
+\item{in_file}{character, file path to polygon shapefile (with
+extension of *.shp)}
 
 \item{res}{two element vector that specifies the x and y dimension
-of output raster cells.  In example, units are degrees.}
+of output raster cells.  Units of res are same as input
+shapefile.  In example, units are degrees.}
 }
 \value{
-returns geo-corrected transition raster layer where land = 0 and water =
-  1 (see \code{gdistance})
+returns geo-corrected transition raster layer where land = 0 and
+water=1 (see \code{gdistance})
 }
 \description{
 Create transition layer for \code{interpolatePath} from polygon shapefile.
@@ -37,11 +39,11 @@ output transition layer is corrected for projection
 \examples{
 
 # path to polygon shapefile
-in_file <- system.file("extdata", "shoreline.zip", package = "glatos")
-gl <- unzip(in_file, "shoreline.shp" )
+poly <- system.file("extdata", "shoreline.zip", package = "glatos")
+poly <- unzip(poly, exdir = tempdir())
 
 # make_transition layer
-tst <- make_transition(gl, res = c(0.1, 0.1))
+tst <- make_transition(poly[grepl("*.shp", poly)], res = c(0.1, 0.1))
 
 }
 \author{
