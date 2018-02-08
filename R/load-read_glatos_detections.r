@@ -71,12 +71,12 @@ read_glatos_detections <- function(det_file, version=NULL) {
     
     #coerce timestamps to POSIXct; note that with fastPOSIXct raw
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
-    for (j in timestamp_cols) set(dtc, j = j, 
+    for (j in timestamp_cols) data.table::set(dtc, j = j, 
                       value = fasttime::fastPOSIXct(dtc[[j]], tz = "UTC"))
     #coerce dates to date
     for (j in date_cols) {
-      set(dtc, j = j, value = ifelse(dtc[[j]] == "", NA, dtc[[j]]))
-      set(dtc, j = j, value = as.Date(dtc[[j]]))
+      data.table::set(dtc, j = j, value = ifelse(dtc[[j]] == "", NA, dtc[[j]]))
+      data.table::set(dtc, j = j, value = as.Date(dtc[[j]]))
     }
   }
   #-end v1.3----------------------------------------------------------------
