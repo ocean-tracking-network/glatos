@@ -73,12 +73,12 @@ NULL
 #' 
 #' @format shapefile
 #' 
-#' @name glshoreline_mod.
+#' @name shoreline
 #' 
-#' @section Filename: glshoreline_mod.zip
+#' @section Filename: shoreline.zip
 #' 
 #' @usage 
-#' system.file("extdata", "glshoreline_mod.zip", package="glatos")
+#' system.file("extdata", "shoreline.zip", package="glatos")
 #'
 #' @author Todd Hayden
 #' 

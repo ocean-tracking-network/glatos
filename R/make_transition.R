@@ -26,17 +26,12 @@
 ##' @examples
 ##'
 ##' # path to polygon shapefile
-##' in_file <- system.file("extdata", "glshoreline_mod.zip", package = "glatos")
-##' gl <- unzip(in_file, "glshoreline_mod.shp", )
+##' in_file <- system.file("extdata", "shoreline.zip", package = "glatos")
+##' gl <- unzip(in_file, "shoreline.shp" )
 ##'
 ##' # make_transition layer
 ##' tst <- make_transition(gl, res = c(0.1, 0.1))
 ##'
-##' # 
-##'
-##' 
-##' # make transition layer
-##' # make_transition(in_file)
 ##' @export
 
 

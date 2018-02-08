@@ -17,21 +17,6 @@
 #'   Default column names match GLATOS standard receiver location file
 #'   \cr(e.g., 'GLATOS_receiverLocations_yyyymmdd.csv').
 #'
-#' @param plot_control An optional data frame with four columns ('animal_id',
-#'   'record_type', 'color', and 'marker', 'marker_cex') that specify the plot
-#'    symbols and colors for each animal and position type. See examples below
-#'    for an example.
-#'
-#' \itemize{ \item \code{animal_id} contains the unique identifier of
-#'   individual animals.  \item \code{record_type} indicates if the
-#'   options should be applied to observed positions (detections;
-#'   'detection') or interpolated positions ('interpolated').  \item
-#'   \code{color} contains the marker color to be plotted for each
-#'   animal and position type.  \item \code{marker} contains the
-#'   marker style to be plotted for each animal and position type.
-#'   \item \code{marker_cex} contains the character expansion code
-#'   (\code{cex}) for each marker.  }
-#'
 #' @param out_dir A character string with file path to directory where 
 #'   individual frames for animations will be written. Default is working
 #'   directory.
@@ -41,14 +26,6 @@
 #' 	 
 #' @param background_xlim Vector of two values specifying the min/max values 
 #'   for x-scale of plot. Units are same as background argument.
-#'   
-#' @param show_interpolated logocal value indicating whether interploated
-#'   positions should be shown or not. Default is True.
-#' 
-#' @param threshold Threshold time in seconds before cease plotting interpolated
-#'   points for a fish that leaves one lacation and is not detected elsewhere
-#'   before returning to that location. Default is NULL (all interpolated points
-#'   are plotted - appears that the fish was present constantly at the location)
 #'   
 #' @param animate Boolean. Default (TRUE) creates video animation
 #' 
@@ -126,13 +103,6 @@
 #' myDir <- paste0(getwd(), "/frames6")
 #' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="/path/to/ffmpeg")}
 #'
-#' # specifying plot_control
-#' control <- expand.grid(animal_id = unique(pos1$animal_id),
-#' record_type = c("detection", "interpolated"), color = "green", marker = 19,
-#' marker_cex = 1.2, stringsAsFactors = FALSE)
-#'
-#' # myDir <- paste0(getwd(),"/frames2")
-#' make_frames(pos1, recs=recs, out_dir=myDir, plot_control = control)
 #'
 #'
 #' @export
@@ -155,7 +125,7 @@ make_frames <- function(proc_obj,
   # If animate = FALSE, video file is not produced- no need to check for package.
   if(animate == TRUE){
 
-    cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)	
+    cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)
     ffVers <- suppressWarnings(system2(cmd, "-version", stdout=F)) #call ffmpeg
     if(ffVers == 127)
       stop(paste0('"ffmpeg.exe" was not found.\n',
@@ -168,8 +138,7 @@ make_frames <- function(proc_obj,
                   'argument to FALSE.'),
            call. = FALSE)
     }
-    
-    
+
   # Convert proc_obj and recs dataframes into data.table objects
   setDT(proc_obj)
   if(!is.null(recs)){
@@ -178,59 +147,6 @@ make_frames <- function(proc_obj,
     setkey(recs, recover_date_time)
     recs <- recs[!J(NA_real_), c("station", "deploy_lat", "deploy_long",
                                  "deploy_date_time", "recover_date_time")]
-  }
-
-  # add column used in plotting threshold
-  proc_obj$p_thresh <- 1
-  
-  # Add plotting columns for dealing with fish that leave a site and aren't 
-  # detected elsewhere before returning to that site (optional) - uses thershold
-  # value that is user defined with argument 'threshold'
-  if(!is.null(threshold)){
-    setkey(proc_obj, animal_id, bin_timestamp)
-
-    ## proc_obj <- proc_obj[, .(animal_id, bin_timestamp,
-    ##                         latitude, longitude, record_type,
-    ##                         diff_time = ifelse(length(bin_timestamp) == 1,
-    ##                                             as.numeric(NA),
-    ##                                             c(NA,as.numeric(diff(bin_timestamp)))),
-    ##                         diff_loc = ifelse(length(bin_timestamp) == 1,
-    ##                                           as.numeric(NA), 
-    ##                                           c(NA, ifelse(diff(latitude) == 0 &
-    ##                                           diff(longitude) == 0, 0, 1)))),
-    ##                      by = animal_id]
-
-
-    proc_obj[, c("diff_time", "diff_loc") :=
-                 list(ifelse(length(bin_timestamp) == 1, as.numeric(NA),
-                             c(NA, as.numeric(diff(bin_timestamp)))),
-                      ifelse(length(bin_timestamp) == 1, as.numeric(NA),
-                             c(NA, ifelse(diff(latitude) == 0 &
-                                            diff(longitude) == 0,0,1)))),
-             by = animal_id]
-
-   
-    ## proc_obj <-  proc_obj[,.(animal_id, bin_timestamp, latitude, longitude,
-    ##                          record_type, diff_time, diff_loc,
-    ##                       plot = ifelse(diff_time > threshold & diff_loc == 0, 0, 1))]
-
-  proc_obj[, plot := ifelse(diff_time > threshold & diff_loc == 0, 0, 1)]
-
-
-  }
-  
-  # Add colors and symbols to detections data frame
-  if(!is.null(plot_control)){
-    setDT(plot_control)
-    proc_obj <- merge(proc_obj, plot_control, by.x=c("animal_id", "record_type"),
-                     by.y=c("animal_id","record_type"))
-    proc_obj <- proc_obj[!is.na(color)]
-  } else {
-
-    # Otherwise, assign default colors and symbols
-    proc_obj$color = 'blue'
-    proc_obj$marker = 16
-    proc_obj$marker_cex = 2
   }
 
   # Make output directory if it does not already exist
@@ -253,14 +169,15 @@ make_frames <- function(proc_obj,
   # Load Great lakes background
   data(greatLakesPoly) #example in glatos package
   background <- greatLakesPoly
-
+  
   cust_plot <- function(x,
                         proc_obj,
                         sub_recs,
                         out_dir,
                         background,
                         background_xlim,
-                        background_ylim, show_interpolated){
+                        background_ylim,
+                        show_interpolated){
 
     if(!is.null(recs)){
     # extract receivers in the water during plot interval
@@ -269,7 +186,7 @@ make_frames <- function(proc_obj,
                              upper = recs$recover_date_time)]
     }
     
-    # Calculate linear distance in meters of x and y limits.
+    # Calculate great circle distance in meters of x and y limits.
     # needed to determine aspect ratio of the output
     linear_x = geosphere::distMeeus(c(background_xlim[1],background_ylim[1]),
                                     c(background_xlim[2],background_ylim[1]))
@@ -342,31 +259,27 @@ make_frames <- function(proc_obj,
     
     # Update timeline
     ptime <- (as.numeric(x[1,"grp"]) - as.numeric(min(proc_obj$grp))) / time_dur 
+
     # Proportion of timeline elapsed
     timeline_x_i <- timeline_x[1] + diff(timeline_x) * ptime
+
     # Plot slider along timeline at appropriate location
     points(timeline_x_i,
            timeline_y[1],
            pch = 21,
            cex = 2,
-           bg = "grey40", 
+           bg = "grey40",
            col = "grey20",
            lwd = 1)
     
     # Plot detection data
     if(!show_interpolated){
-      points(x = x$longitude,
-             y = x$latitude,
-             pch = x$marker,
-             col = ifelse(x$record_type == "inter", "transparent", x$color),
-             cex = x$marker_cex)
-    }else{
-      points(x = x$longitude,
-             y = x$latitude,
-             pch = x$marker,
-             col = x$color,
-             cex = x$marker_cex)
-    }
+      points(x = x$longitude, y = x$latitude, pch = 16,
+             col = ifelse(x$record_type == "inter", "transparent", "blue"),
+             cex = 2) }else{
+               points(x = x$longitude, y = x$latitude, pch = 16, col = "blue",
+                      cex = 2)
+             }
     dev.off()
   }
   
