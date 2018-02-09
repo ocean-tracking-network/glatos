@@ -62,7 +62,7 @@
 #' dtc <- read_glatos_detections(det_file)
 #' 
 #' # shrink size to reduce computation time
-#' dtc <- dtc[1:5000,]
+#' #dtc <- dtc[1:5000,]
 #' 
 #' # take a look
 #' head(dtc)
@@ -93,8 +93,13 @@
 #' myDir <- paste0(getwd(), "/frames3")
 #' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, threshold = (86400*10))
 #'
+#' # make sequential frames, and animate, add 5-day tail
+#' #' myDir <- paste0(getwd(), "/frames4")
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE,
+#' threshold = (86400*10), tail_dur = 5)
+#' 
 #' # make animation, remove frames.
-#' myDir <- paste0(getwd(), "/frames4")
+#' myDir <- paste0(getwd(), "/frames5")
 #' make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE)
 #'
 #' \dontrun{
@@ -112,25 +117,17 @@
 #'
 #'
 #' @export
-  
-make_frames <- function(proc_obj,
-                        recs = NULL,
-                        plot_control = NULL,
-                        out_dir = getwd(),
+#' 
+make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         background_ylim = c(41.3, 49.0),
                         background_xlim = c(-92.45, -75.87),
-                        show_interpolated = TRUE,
-                        tail_dur = 0,
-                        animate = TRUE,
-                        ani_name = "animation.mp4",
-                        frame_delete = FALSE,
-                        overwrite = FALSE,
-                        ffmpeg = NA){
+                        show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
+                        ani_name = "animation.mp4", frame_delete = FALSE,
+                        overwrite = FALSE, ffmpeg = NA){
   
   # Try calling ffmpeg if animate = TRUE.
   # If animate = FALSE, video file is not produced- no need to check for package.
   if(animate == TRUE){
-
     cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)
     ffVers <- suppressWarnings(system2(cmd, "-version", stdout=F)) #call ffmpeg
     if(ffVers == 127)
@@ -143,7 +140,7 @@ make_frames <- function(proc_obj,
                   '(e.g., Windows Movie Maker or iMovie) by setting the animate\n',
                   'argument to FALSE.'),
            call. = FALSE)
-    }
+  }
 
   # Convert proc_obj and recs dataframes into data.table objects
   setDT(proc_obj)
@@ -159,92 +156,103 @@ make_frames <- function(proc_obj,
   # Make output directory if it does not already exist
   if(!dir.exists(out_dir)) dir.create(out_dir)
 
-  # Create group identifier for plotting
-  # groups are defined by time bins
-  proc_obj[, grp := bin_timestamp]
-
   # extract time sequence for plotting
-  t_seq <- sort(unique(proc_obj$bin_timestamp))
-  
+  t_seq <- unique(proc_obj$bin_timestamp)
+
+  # make tails if needed
+  if(tail_dur == 0){
+
+    #  Create group identifier for plotting
+    proc_obj[, grp := bin_timestamp]
+  } else {
+
+    # make tail groups if needed
+    dur <- proc_obj[, .(t_seq = sort(unique(bin_timestamp)))]
+    dur[, c("t_end", "t_grp") :=
+            list(data.table::shift(t_seq, type = "lag",
+                                   fill = min(t_seq), n = tail_dur),
+                 1:nrow(dur))]
+
+    # group obs for tails
+    proc_obj[, t_end := bin_timestamp]
+    setkey(dur, t_end, t_seq)
+
+    # merge by overlap
+    proc_obj <- foverlaps(proc_obj, dur, type = "within",
+                          nomatch = 0L, by.x = c("bin_timestamp", "t_end"))
+    proc_obj <- proc_obj[, c("animal_id", "t_seq", "latitude", "longitude",
+                             "record_type")]
+    names(proc_obj) <- c("animal_id", "bin_timestamp", "latitude", "longitude",
+                         "record_type")
+    proc_obj[, grp := bin_timestamp]
+  }
+
   # determine leading zeros needed by ffmpeg and add as new column
   char <- paste0("%", 0, nchar((length(t_seq))), "d")
   setkey(proc_obj, bin_timestamp)
   proc_obj[, f_name := .GRP, by = grp]
   proc_obj[, f_name := paste0(sprintf(char, f_name), ".png")]
 
- 
+  # order data for plotting
+    setkey(proc_obj, bin_timestamp, animal_id,  record_type)
+
   # Load Great lakes background
   data(greatLakesPoly) #example in glatos package
   background <- greatLakesPoly
-  
-  cust_plot <- function(x,
-                        proc_obj,
-                        sub_recs,
-                        out_dir,
-                        background,
-                        background_xlim,
-                        background_ylim,
-                        show_interpolated){
+
+  # define custom plot function
+  cust_plot <- function(x, proc_obj, sub_recs, out_dir, background,
+                        background_xlim, background_ylim, show_interpolated){
 
     if(!is.null(recs)){
-    # extract receivers in the water during plot interval
-    sub_recs <- recs[between(x$bin_timestamp[1],
-                             lower = recs$deploy_date_time,
-                             upper = recs$recover_date_time)]
+      # extract receivers in the water during plot interval
+      sub_recs <- recs[between(x$bin_timestamp[1], lower = recs$deploy_date_time,
+                               upper = recs$recover_date_time)]
     }
-    
+
     # Calculate great circle distance in meters of x and y limits.
     # needed to determine aspect ratio of the output
     linear_x = geosphere::distMeeus(c(background_xlim[1],background_ylim[1]),
                                     c(background_xlim[2],background_ylim[1]))
     linear_y = geosphere::distMeeus(c(background_xlim[1],background_ylim[1]),
                                     c(background_xlim[1],background_ylim[2]))
-    
+
+    # aspect ratio of image
     figRatio <- linear_y/linear_x
 
-    # calculate image height
+    # calculate image height based on aspect ratio
     height <- trunc(2000*figRatio)
-    
+
     # plot GL outline and movement points
-    png(file.path(out_dir, x$f_name[1]),
-        width = 2000,
-        height = ifelse(height%%2==0,
-                        height, height+1),
-        units = 'px',
+    png(file.path(out_dir, x$f_name[1]), width = 2000,
+        height = ifelse(height%%2==0, height, height + 1), units = 'px',
         pointsize = 22*figRatio)
 
     # Plot background image
     # Set bottom margin to plot timeline outside of plot window
-    par(oma=c(0,0,0,0), mar=c(6,0,0,0), xpd=FALSE)  
+    par(oma=c(0,0,0,0), mar=c(6,0,0,0), xpd=FALSE)
 
     # Note call to plot with sp
-    sp::plot(background,
-             ylim = c(background_ylim),
-             xlim = c(background_xlim),
-             axes = FALSE,
-             lwd = 2*figRatio,
-             col = "white",
-             bg = "gray74")
-    
+    sp::plot(background, ylim = c(background_ylim), xlim = c(background_xlim),
+             axes = FALSE, lwd = 2*figRatio, col = "white", bg = "gray74")
+
     box(lwd = 3*figRatio)
-    
     if(!is.null(recs)){
       # plot receivers
-      points(x = sub_recs$deploy_long,
-             y = sub_recs$deploy_lat,
-             pch = 16,
+      points(x = sub_recs$deploy_long, y = sub_recs$deploy_lat, pch = 16,
              cex = 1.5)
     }
-    
-    ### Add timeline
+
+    # Add timeline
     par(xpd = TRUE)
+
     # Define timeline x and y location
-    xlim_diff <- diff(background_xlim) 
-    ylim_diff <- diff(background_ylim) 
+    xlim_diff <- diff(background_xlim)
+    ylim_diff <- diff(background_ylim)
     timeline_y <- rep(background_ylim[1] - (0.06*ylim_diff), 2)
     timeline_x <- c(background_xlim[1] + (0.10*xlim_diff),
                     background_xlim[2] - (0.10*xlim_diff))
-    
+
     # Initalize timeline
     lines(timeline_x, timeline_y, col = "grey70", lwd = 20*figRatio, lend = 0)
     
@@ -263,27 +271,22 @@ make_frames <- function(proc_obj,
          labels = format(labels, "%Y-%m-%d"),
          cex = 2,
          pos = 1)
-    
+
     # Update timeline
-    ptime <- (as.numeric(x[1,"grp"]) - as.numeric(min(proc_obj$grp))) / time_dur 
+    ptime <- (as.numeric(x[1,"grp"]) - as.numeric(min(proc_obj$grp))) / time_dur
 
     # Proportion of timeline elapsed
     timeline_x_i <- timeline_x[1] + diff(timeline_x) * ptime
 
     # Plot slider along timeline at appropriate location
-    points(timeline_x_i,
-           timeline_y[1],
-           pch = 21,
-           cex = 2,
-           bg = "grey40",
-           col = "grey20",
-           lwd = 1)
+    points(timeline_x_i, timeline_y[1], pch = 21, cex = 2, bg = "grey40",
+           col = "grey20", lwd = 1)
     
     # Plot detection data
     if(!show_interpolated){
       points(x = x$longitude, y = x$latitude, pch = 16,
              col = ifelse(x$record_type == "inter", "transparent", "blue"),
-             cex = 2) }else{
+             cex = 2) } else {
                points(x = x$longitude, y = x$latitude, pch = 16, col = "blue",
                       cex = 2)
              }
@@ -297,42 +300,24 @@ make_frames <- function(proc_obj,
   setkey(proc_obj, grp)
 
   # create images
-  proc_obj[proc_obj$p_thresh %in% c(NA,1),
-           {setTxtProgressBar(pb, .GRP); cust_plot(x = .SD,
-                                                   proc_obj,
-                                                   sub_recs,
-                                                   out_dir,
-                                                   background,
-                                                   background_xlim,
-                                                   background_ylim,
-                                                   show_interpolated)},
-           by = grp,
-           .SDcols = c("bin_timestamp", "longitude", "latitude", "record_type",
-                       "marker", "color", "marker_cex", "f_name", "grp")]
-
+  proc_obj[, {setTxtProgressBar(pb, .GRP);
+    cust_plot(x = .SD, proc_obj, sub_recs, out_dir, background, background_xlim,
+              background_ylim, show_interpolated)}, by = grp,
+    .SDcols = c("bin_timestamp", "longitude", "latitude", "record_type",
+                "f_name", "grp")]
   close(pb)
 
-  if(animate == FALSE & frame_delete == TRUE){
-    message("are you sure?")}
-
+  if(animate == FALSE & frame_delete == TRUE){message("are you sure?")}
   if(animate == FALSE){message(paste("frames are in\n", out_dir))}
-  
+
   if(animate & frame_delete){
-    make_video(dir = out_dir,
-               pattern = paste0(char, ".png"),
-               output = ani_name,
-               output_dir = out_dir,
-               overwrite = overwrite,
-               ffmpeg = ffmpeg)
-      unlink(file.path(out_dir, unique(proc_obj$f_name)))
+    make_video(dir = out_dir, pattern = paste0(char, ".png"), output = ani_name,
+               output_dir = out_dir, overwrite = overwrite, ffmpeg = ffmpeg)
+    unlink(file.path(out_dir, unique(proc_obj$f_name)))
     message(paste("video is in\n", out_dir))}
 
   if(animate & !frame_delete){
-        make_video(dir = out_dir,
-                   pattern = paste0(char, ".png"),
-                   output = ani_name,
-                   output_dir = out_dir,
-                   overwrite = overwrite,
-                   ffmpeg = ffmpeg)
-        message(paste("video and frames in \n", out_dir))}
-  }
+    make_video(dir = out_dir, pattern = paste0(char, ".png"), output = ani_name,
+               output_dir = out_dir, overwrite = overwrite, ffmpeg = ffmpeg)
+    message(paste("video and frames in \n", out_dir))}
+}
