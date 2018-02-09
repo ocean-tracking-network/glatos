@@ -132,7 +132,7 @@
 
 interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
                             lnl_thresh = 0.9){
-
+  
   # this function uses data.table extensively
   setDT(dtc)
 
@@ -184,6 +184,7 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
     out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
     out <- na.omit(out, cols = "i_lat")   
     names(out) <- c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type")
+    out <- unique(out)
     return(as.data.frame(out))
     stop
   }
@@ -389,5 +390,7 @@ interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
   out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
   names(out) <- c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type")
   out <- na.omit(out, cols = "latitude")
+  out <- unique(out)
   return(as.data.frame(out))
 }
+
