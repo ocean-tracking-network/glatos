@@ -42,6 +42,12 @@
 #'   the ffmpeg folder you can download from https://ffmpeg.org/. This argument
 #'   is only needed if ffmpeg has not been added to your path variable on your
 #'   computer.
+#'
+#' @param tail_dur contains the duration (in same units as \code{proc_obj$bin_timestamp}; 
+#'     see \code{\link{interpolatePath}}) of trailing points in each frame. 
+#'     Default value is 0 (no trailing points). A value
+#'     of \code{Inf} will show all points from start.
+
 #' 
 #' @return Sequentially-numbered png files (one for each frame) and 
 #'   one mp4 file will be written to \code{out_dir}.
@@ -114,7 +120,7 @@ make_frames <- function(proc_obj,
                         background_ylim = c(41.3, 49.0),
                         background_xlim = c(-92.45, -75.87),
                         show_interpolated = TRUE,
-                        threshold = NULL,
+                        tail_dur = 0,
                         animate = TRUE,
                         ani_name = "animation.mp4",
                         frame_delete = FALSE,
@@ -143,6 +149,7 @@ make_frames <- function(proc_obj,
   setDT(proc_obj)
   if(!is.null(recs)){
     setDT(recs)
+
     # Remove receivers not recovered (records with NA in recover_date_time)
     setkey(recs, recover_date_time)
     recs <- recs[!J(NA_real_), c("station", "deploy_lat", "deploy_long",
@@ -157,7 +164,7 @@ make_frames <- function(proc_obj,
   proc_obj[, grp := bin_timestamp]
 
   # extract time sequence for plotting
-  t_seq <- unique(proc_obj$bin_timestamp)
+  t_seq <- sort(unique(proc_obj$bin_timestamp))
   
   # determine leading zeros needed by ffmpeg and add as new column
   char <- paste0("%", 0, nchar((length(t_seq))), "d")
