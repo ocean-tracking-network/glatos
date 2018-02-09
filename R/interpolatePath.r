@@ -132,7 +132,7 @@
 
 interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
                             lnl_thresh = 0.9){
-  
+
   # this function uses data.table extensively
   setDT(dtc)
 

@@ -6,7 +6,7 @@
 \usage{
 make_frames(proc_obj, recs = NULL, plot_control = NULL, out_dir = getwd(),
   background_ylim = c(41.3, 49), background_xlim = c(-92.45, -75.87),
-  show_interpolated = TRUE, threshold = NULL, animate = TRUE,
+  show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
   ani_name = "animation.mp4", frame_delete = FALSE, overwrite = FALSE,
   ffmpeg = NA)
 }
