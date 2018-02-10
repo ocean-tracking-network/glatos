@@ -85,11 +85,10 @@
 ##'   video is scaled.  \code{size} can be a character string of
 ##'   dimensions in length by height format such as \code{"720x480"} or
 ##'   an abbreviated standard such as \code{"ntsc"}.  See
-##'   \href{http://ffmpeg.org/ffmpeg-utils.html#Video-size}{FFmpeg
-##'   standard video sizes} for common dimensions and available
-##'   abbreviations.
+##'   \href{http://ffmpeg.org/ffmpeg-utils.html#Video-size}{FFmpegstandard video sizes}
+##' for common dimensions and available abbreviations.
 ##' 
-##'@details Presets provide a certain encoding speed to compression
+##' @details Presets provide a certain encoding speed to compression
 ##'   ratio.  Available presets include \code{ultrafast},
 ##'   \code{superfast}, \code{veryfast}, \code{faster}, \code{fast},
 ##'   \code{medium}, \code{slow}, \code{slower}, \code{veryslow}.
@@ -97,9 +96,9 @@
 ##'   size, lower animation quality, and faster computation
 ##'   times. Slower speeds \code{veryslow} corresponds to smaller
 ##'   file, higher quality animation and slower computation times.
-##'   See \href{http://trac.ffmpeg.org/wiki/Encode/H.264}
+##'   See \url{http://trac.ffmpeg.org/wiki/Encode/H.264}
 ##'
-##' @details \code{codec} is ignored if the file name in
+##'  @details \code{codec} is ignored if the file name in
 ##'   \code{pattern} ends with \code{.gif}.  For other video output
 ##'   file types a default codec is used depending on the file
 ##'   extension of output animation.These

@@ -32,6 +32,11 @@ for y-scale of plot. Units are same as background argument.}
 \item{background_xlim}{Vector of two values specifying the min/max values 
 for x-scale of plot. Units are same as background argument.}
 
+\item{tail_dur}{contains the duration (in same units as \code{proc_obj$bin_timestamp}; 
+see \code{\link{interpolatePath}}) of trailing points in each frame. 
+Default value is 0 (no trailing points). A value
+of \code{Inf} will show all points from start.}
+
 \item{animate}{Boolean. Default (TRUE) creates video animation}
 
 \item{ani_name}{Name of animation (character string)}
@@ -89,21 +94,16 @@ recs <- read_glatos_receiver_locations(rec_file)
 myDir <- paste0(getwd(),"/frames1")
 make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 
-# make sequential frames, no animation, add threshold for non-detection
-myDir <- paste0(getwd(),"/frames2")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE, threshold = (86400))
-
 # make sequential frames, and animate.  Keep both animation and frames
-myDir <- paste0(getwd(), "/frames3")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, threshold = (86400*10))
+myDir <- paste0(getwd(), "/frames2")
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE)
 
 # make sequential frames, and animate, add 5-day tail
-#' myDir <- paste0(getwd(), "/frames4")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE,
-threshold = (86400*10), tail_dur = 5)
+myDir <- paste0(getwd(), "/frames3")
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur = 5)
 
 # make animation, remove frames.
-myDir <- paste0(getwd(), "/frames5")
+myDir <- paste0(getwd(), "/frames4")
 make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE)
 
 \dontrun{
@@ -117,8 +117,6 @@ ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
 # mac
 myDir <- paste0(getwd(), "/frames6")
 make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="/path/to/ffmpeg")}
-
-
 
 }
 \author{

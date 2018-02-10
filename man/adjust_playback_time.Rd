@@ -8,23 +8,22 @@ adjust_playback_time(scale_factor = 1, input, output_dir = ".",
   output = "new.mp4", overwrite = FALSE, ffmpeg = NA)
 }
 \arguments{
-\item{scale_factor}{multiplicative factor changes duration of
-video playback. See details.}
+\item{scale_factor}{multiplicative factor changes duration of video
+playback. See details.}
 
 \item{input}{character, path to video file}
 
-\item{output_dir}{character, output directory, default is working
-directory}
+\item{output_dir}{character, output directory, default is working directory}
 
 \item{output}{character, output file name}
 
 \item{overwrite}{logical, default is \code{TRUE}}
 
-\item{ffmpeg}{A character string with path to install directory
-for ffmpeg.  This argument is only needed if ffmpeg has not been
-added to your path variable on your computer.  For Windows
-machines, path must point to ffmpeg.exe, typically located in
-bin folder. see \code{\link{make_video}}}
+\item{ffmpeg}{A character string with path to install directory for
+ffmpeg. This argument is only needed if ffmpeg is not on your computers
+system path. For Windows machines, path must point to 'ffmpeg.exe',
+located in the bin subfolder within the ffmpeg folder.  On mac, path must
+point to 'ffmpeg' within the 'bin' subfolder. see \code{\link{make_video}}}
 }
 \value{
 One video animation will be written to \code{output_dir}
@@ -33,32 +32,27 @@ One video animation will be written to \code{output_dir}
 Speed up or slow down playback of video using FFmpeg software.
 }
 \details{
-\code{adjust_playback_time} adjusts playback speed of
-  video.  \code{scale_factor} controls the magnitude of speed-up
-  or slow-down by modifying the presentation timestamp of each
-  video frame. For more information, see \href{https://trac.ffmpeg.org/wiki}
-{How to speed up/slow down a video}.  Values of \code{scale_factor} < 1 speed up playback and >1 slow
-  down video. In addition to changing playback, function can
-  change output format by specifying a different file extension in
-  \code{output}.
+\code{adjust_playback_time} adjusts playback speed of video.
+  \code{scale_factor} controls the magnitude of speed-up or slow-down by
+  modifying the presentation timestamp of each video frame. For more
+  information, see \url{https://trac.ffmpeg.org/wiki}.  Values of
+  \code{scale_factor} < 1 speed up playback and >1 slow down video. In
+  addition to changing playback, function can change output format by
+  specifying a different file extension in \code{output}.
 }
 \examples{
 
-#load frames
-frames <- system.file("extdata", "frames", package = "glatos")
-make_video(dir = frames, pattern = "\%02d.png", output = "animation.mp4"  )
+# load example frames frames <- system.file("extdata", "frames", package = "glatos")
 
-# slow video down by a factor of 10
-path <- file.path(getwd(), "animation.mp4")
-adjust_playback_time(scale_factor = 10, input = path)
+# make video animation make_video(dir = frames, pattern = "\%02d.png", output = "animation.mp4" )
+
+# slow video down by a factor of 10 path <- file.path(getwd(), "animation.mp4")
+  adjust_playback_time(scale_factor = 10, input = path)
 
 # slow video down by a factor of 10 and change format of output video
-adjust_playback_time(scale_factor = 10, input = path, output = "slow.wmv")
+  adjust_playback_time(scale_factor = 10, input = path, output = "slow.wmv")
 
-# speed up video
-adjust_playback_time(scale_factor=0.5, input = path, output = "faster.mp4")
-
-
+# speed up video adjust_playback_time(scale_factor=0.5, input = path, output = "faster.mp4")
 
 }
 \author{
