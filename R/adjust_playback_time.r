@@ -18,8 +18,9 @@
 ##' @details \code{adjust_playback_time} adjusts playback speed of
 ##'   video.  \code{scale_factor} controls the magnitude of speed-up
 ##'   or slow-down by modifying the presentation timestamp of each
-##'   video frame. For more information, see \href{https://trac.ffmpeg.org/wiki}
-##' {How to speed up/slow down a video}.  Values of \code{scale_factor} < 1 speed up playback and >1 slow
+##'   video frame. For more information, see 
+##'   \href{https://trac.ffmpeg.org/wiki}{How to speed up/slow down a video}.  
+##'   Values of \code{scale_factor} < 1 speed up playback and >1 slow
 ##'   down video. In addition to changing playback, function can
 ##'   change output format by specifying a different file extension in
 ##'   \code{output}.
