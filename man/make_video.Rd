@@ -127,7 +127,7 @@ Presets provide a certain encoding speed to compression
   size, lower animation quality, and faster computation
   times. Slower speeds \code{veryslow} corresponds to smaller
   file, higher quality animation and slower computation times.
-  See \href{http://trac.ffmpeg.org/wiki/Encode/H.264}
+  See \url{http://trac.ffmpeg.org/wiki/Encode/H.264}
 
 \code{codec} is ignored if the file name in
   \code{pattern} ends with \code{.gif}.  For other video output
