@@ -1,38 +1,52 @@
-
-##' .. content for \description{} (no empty lines) ..
+##' Create transition layer from polygon shapefile
 ##'
-##' .. content for \details{} ..
-##' @title 
-##' @param in_file
-##' @details result is in same projection as input, must have working gdal on computer, see instructions for gdalUtils::gdal_rasterize, produces layer with land = 0, water = 1.  Need argument for tr 
-##' @return returns transition raster layer (gdistance)
+##' Create transition layer for \code{interpolatePath} from polygon shapefile.
+##' 
+##' @param in_file character, file path to polygon shapefile (with
+##'   extension of *.shp)
+##' @param res two element vector that specifies the x and y dimension
+##'   of output raster cells.  Units of res are same as input
+##'   shapefile.  In example, units are degrees.
+##' 
+##' @details \code{make_transition} uses gdalUtils::gdal_rasterize to
+##'   convert a polygon shapefile into transition layer (see
+##'   \code{gdistance} where raster cell values on land = 0 and water
+##'   = 1. Output raster is in same projection as input shapefile and
+##'   has same extents as input shapefile.  Function requires that
+##'   gdal is working on computer.  To determine if gdal is installed
+##'   on your computer, see gdalUtils::gdal_rasterize.
+##'
+##' @details output transition layer is corrected for projection
+##'   distortions using \code{gdistance::geoCorrection}.  Adjacent
+##'   cells are connected by 16 directions and transition function
+##'   returns 0 (land) for movements between land and water and 1 for
+##'   all over-water movements.
+##' 
+##' @return returns geo-corrected transition raster layer where land = 0 and
+##' water=1 (see \code{gdistance})
+##'
 ##' @author Todd Hayden, Tom Binder, Chris Holbrook
+##'
 ##' @examples
 ##'
 ##' # path to polygon shapefile
-##' in_file <- "/home/thayden/Documents/R_workshop/coastline_poly_modified/glshoreline_mod.shp"
+##' poly <- system.file("extdata", "shoreline.zip", package = "glatos")
+##' poly <- unzip(poly, exdir = tempdir())
 ##'
-##' # make transition layer
-##' make_transition(in_file)
+##' # make_transition layer
+##' tst <- make_transition(poly[grepl("*.shp", poly)], res = c(0.1, 0.1))
+##'
 ##' @export
 
 
-make_transition <- function(in_file){
-  # gdalUtils::gdal_rasterize function is WAY faster than
-  # raster::rasterize and seems to do a much better job keep in mind
-  # that "at" argument can be used to change default method for
-  # rasterizing when line crosses partial cell.  including at in the
-  # call turns this on- default is not include this.  Setting at == TRUE
-  # does nothing.
-
-  foo <- gdalUtils::gdal_rasterize(in_file, out_file, burn = 1, tr = c(0.1, 0.1),
-                                   output_Raster = TRUE)
-  foo <- raster(foo)
+make_transition <- function(in_file = ".", res = c(0.1, 0.1)){
+  out <-tempfile(fileext = ".tif")
+  burned <- gdalUtils::gdal_rasterize(in_file, dst_filename= out, burn = 1,
+                                      tr = res, output_Raster = TRUE)
+  unlink(out)
+  burned <- raster::raster(burned)
   tran <- function(x){if(x[1] * x[2] == 0){return(0)} else {return(1)}}
-  tr1 <- gdistance::transition(tst, transitionFunction = tran, directions = 16)
-  tr1C <- gdistance::geoCorrection(tr1, type="c")
-  return(tr1C)
+  tr1 <- gdistance::transition(burned, transitionFunction = tran, directions = 16)
+  tr1 <- gdistance::geoCorrection(tr1, type="c")
+  return(tr1)
 }
-
-
-

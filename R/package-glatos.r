@@ -80,5 +80,9 @@
 #'
 #' @docType package
 #' @name glatos
+<<<<<<< HEAD
 #' @import data.table
+=======
+#' @import data.table sp
+>>>>>>> f58831ac6a6e3476d649830b93604aaa671d1bca
 NULL

@@ -14,8 +14,7 @@ Imports:
 		plyr,		
 		raster,
     rgdal,
-		sp,
-		data.table
+		sp, data.table
 License: GPL (2.0 or later)
 LazyLoad: yes
 RoxygenNote: 6.0.1

@@ -65,8 +65,23 @@ NULL
 #' @source \url{http://glatos.glos.us/home/project/HECWL}
 NULL
 
-
-
-
-
+#' @title zipped polygon shapefile of Great Lakes
+#' 
+#' @description Polygon coastline of Great Lakes in WGS84
+#'   projection.  Includes outlines of Tittabawassee River (Lake
+#'   Huron), Maumee River (Lake Erie), and Sandusky River (Lake Erie)
+#' 
+#' @format shapefile
+#' 
+#' @name shoreline
+#' 
+#' @section Filename: shoreline.zip
+#' 
+#' @usage 
+#' system.file("extdata", "shoreline.zip", package="glatos")
+#'
+#' @author Todd Hayden
+#' 
+#' @source \url{http://glatos.glos.us/home}
+NULL
 

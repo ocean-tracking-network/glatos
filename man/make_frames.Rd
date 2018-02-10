@@ -4,9 +4,9 @@
 \alias{make_frames}
 \title{Create an animated video of spatiotemporal path data}
 \usage{
-make_frames(proc_obj, recs = NULL, plot_control = NULL, out_dir = getwd(),
+make_frames(proc_obj, recs = NULL, out_dir = getwd(),
   background_ylim = c(41.3, 49), background_xlim = c(-92.45, -75.87),
-  show_interpolated = TRUE, threshold = NULL, animate = TRUE,
+  show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
   ani_name = "animation.mp4", frame_delete = FALSE, overwrite = FALSE,
   ffmpeg = NA)
 }
@@ -22,21 +22,6 @@ receiver 'deploy_lat', 'deploy_long', 'deploy_date_time', and
 Default column names match GLATOS standard receiver location file
 \cr(e.g., 'GLATOS_receiverLocations_yyyymmdd.csv').}
 
-\item{plot_control}{An optional data frame with four columns ('animal_id',
-  'record_type', 'color', and 'marker', 'marker_cex') that specify the plot
-   symbols and colors for each animal and position type. See examples below
-   for an example.
-
-\itemize{ \item \code{animal_id} contains the unique identifier of
-  individual animals.  \item \code{record_type} indicates if the
-  options should be applied to observed positions (detections;
-  'detection') or interpolated positions ('interpolated').  \item
-  \code{color} contains the marker color to be plotted for each
-  animal and position type.  \item \code{marker} contains the
-  marker style to be plotted for each animal and position type.
-  \item \code{marker_cex} contains the character expansion code
-  (\code{cex}) for each marker.  }}
-
 \item{out_dir}{A character string with file path to directory where 
 individual frames for animations will be written. Default is working
 directory.}
@@ -46,14 +31,6 @@ for y-scale of plot. Units are same as background argument.}
 
 \item{background_xlim}{Vector of two values specifying the min/max values 
 for x-scale of plot. Units are same as background argument.}
-
-\item{show_interpolated}{logocal value indicating whether interploated
-positions should be shown or not. Default is True.}
-
-\item{threshold}{Threshold time in seconds before cease plotting interpolated
-points for a fish that leaves one lacation and is not detected elsewhere
-before returning to that location. Default is NULL (all interpolated points
-are plotted - appears that the fish was present constantly at the location)}
 
 \item{animate}{Boolean. Default (TRUE) creates video animation}
 
@@ -89,7 +66,7 @@ det_file <- unzip(det_file, "walleye_detections.csv")
 dtc <- read_glatos_detections(det_file)
 
 # shrink size to reduce computation time
-dtc <- dtc[1:5000,]
+#dtc <- dtc[1:5000,]
 
 # take a look
 head(dtc)
@@ -120,8 +97,13 @@ make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE, threshold = (86400)
 myDir <- paste0(getwd(), "/frames3")
 make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, threshold = (86400*10))
 
+# make sequential frames, and animate, add 5-day tail
+#' myDir <- paste0(getwd(), "/frames4")
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE,
+threshold = (86400*10), tail_dur = 5)
+
 # make animation, remove frames.
-myDir <- paste0(getwd(), "/frames4")
+myDir <- paste0(getwd(), "/frames5")
 make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE)
 
 \dontrun{
@@ -136,13 +118,6 @@ ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
 myDir <- paste0(getwd(), "/frames6")
 make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="/path/to/ffmpeg")}
 
-# specifying plot_control
-control <- expand.grid(animal_id = unique(pos1$animal_id),
-record_type = c("detection", "interpolated"), color = "green", marker = 19,
-marker_cex = 1.2, stringsAsFactors = FALSE)
-
-# myDir <- paste0(getwd(),"/frames2")
-make_frames(pos1, recs=recs, out_dir=myDir, plot_control = control)
 
 
 }
