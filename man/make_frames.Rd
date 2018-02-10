@@ -32,6 +32,11 @@ for y-scale of plot. Units are same as background argument.}
 \item{background_xlim}{Vector of two values specifying the min/max values 
 for x-scale of plot. Units are same as background argument.}
 
+\item{tail_dur}{contains the duration (in same units as \code{proc_obj$bin_timestamp}; 
+see \code{\link{interpolatePath}}) of trailing points in each frame. 
+Default value is 0 (no trailing points). A value
+of \code{Inf} will show all points from start.}
+
 \item{animate}{Boolean. Default (TRUE) creates video animation}
 
 \item{ani_name}{Name of animation (character string)}

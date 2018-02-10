@@ -80,10 +80,9 @@ read_glatos_detections <- function(det_file, version=NULL) {
     }
   }
   #-end v1.3----------------------------------------------------------------
-  
-  #TO DO: cerce to glatos_detections (e.g., as_glatos_detections) instead of 
-  dtc <- as.data.frame(dtc)
-  class(dtc) <- c("glatos_detections",class(dtc))
+
+  #assign class 
+  dtc <- glatos_detections(dtc)
   
   return(dtc)
 }
