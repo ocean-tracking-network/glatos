@@ -54,7 +54,7 @@
 #' 
 #' @description
 #' A data frame containing fish detection data from the GLATOS Project 
-#' HECSL. This is a sample of detection data in the standard 
+#' HECWL. This is a sample of detection data in the standard 
 #' GLATOS export format.
 #'
 #' @author Todd Hayden 
