@@ -6,6 +6,7 @@ Version: 0.1.3.900
 Date: 2018-02-11
 Depends: R (>= 3.1.1)
 Imports: 
+		cellranger,
 		data.table,		
 		fasttime,
 		gdistance,
@@ -13,6 +14,7 @@ Imports:
 		plotrix,
 		plyr,		
 		raster,
+		readxl,
     rgdal,
 		sp
 Suggests: testthat
