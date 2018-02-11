@@ -2,18 +2,17 @@
 #' Read data from a GLATOS receiver location file
 #' 
 #' @description
-#' Read data from a GLATOS receiver location (csv) file and return a 
+#' Read data from a standard GLATOS receiver location (csv) file and return a 
 #' data.frame of class \code{glatos_receiver_locations}.
 #'
 #' @param rec_file A character string with path and name of receiver location
 #'   file in standard GLATOS format (*.csv). If only file name is given, then
 #'   the file must be located in the working directory.
 #'  
-#' @param version An optional character string with 
-#'  the glatos file version number. If NULL (default value) then version 
-#'  will be determined by evaluating file structure. The only allowed 
-#'  values are \code{NULL} and \code{"1.0"}. Any other values will trigger 
-#'  an error.
+#' @param version An optional character string with the glatos file version
+#'   number. If NULL (default value) then version will be determined by
+#'   evaluating file structure. The only allowed values currently are
+#'   \code{NULL} and \code{"1.0"}. Any other values will trigger an error.
 #'  
 #' @details 
 #' Data are loaded using the \code{fread} function in the
@@ -41,7 +40,6 @@ read_glatos_receiver_locations <- function(rec_file, version = NULL) {
   
   
   #Identify file version
-  ##TODO: expand version matching to use column names in each sheet
   id_file_version <- function(rec_file){
     col_names <- names(data.table::fread(rec_file, nrows = 0))
     if(all(glatos_receiver_locations_schema$v1.0$name == col_names)) { 
