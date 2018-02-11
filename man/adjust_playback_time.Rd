@@ -44,17 +44,21 @@ Speed up or slow down playback of video using FFmpeg software.
 }
 \examples{
 
-# load example frames frames <- system.file("extdata", "frames", package = "glatos")
+# load example frames 
+frames <- system.file("extdata", "frames", package = "glatos")
 
-# make video animation make_video(dir = frames, pattern = "\%02d.png", output = "animation.mp4" )
+# make video animation 
+make_video(dir = frames, pattern = "\%02d.png", output = "animation.mp4" )
 
-# slow video down by a factor of 10 path <- file.path(getwd(), "animation.mp4")
-  adjust_playback_time(scale_factor = 10, input = path)
+# slow video down by a factor of 10 
+path <- file.path(getwd(), "animation.mp4")
+adjust_playback_time(scale_factor = 10, input = path)
 
 # slow video down by a factor of 10 and change format of output video
-  adjust_playback_time(scale_factor = 10, input = path, output = "slow.wmv")
+adjust_playback_time(scale_factor = 10, input = path, output = "slow.wmv")
 
-# speed up video adjust_playback_time(scale_factor=0.5, input = path, output = "faster.mp4")
+# speed up video 
+adjust_playback_time(scale_factor=0.5, input = path, output = "faster.mp4")
 
 }
 \author{
