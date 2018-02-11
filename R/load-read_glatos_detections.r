@@ -1,9 +1,8 @@
 #' @title 
 #' Read data from a GLATOS detection file
 #' 
-#' @description
-#' Read data from a GLATOS detection (csv) file and return a data.frame of  
-#' class \code{glatos_detections}.
+#' @description Read data from a standard GLATOS detection (csv) file and return
+#' a data.frame of class \code{glatos_detections}.
 #'
 #' @param det_file A character string with path and name of detection file in 
 #'  standard GLATOS format (*.csv). If only file name is given, then the 
@@ -41,7 +40,6 @@ read_glatos_detections <- function(det_file, version = NULL) {
   
   
   #Identify detection file version
-  ##TODO: expand version matching to use column names in each sheet
   id_det_version <- function(det_file){
     det_col_names <- names(data.table::fread(det_file, nrows = 0))
     if(all(glatos_detection_schema$v1.3$name == det_col_names)) { 
