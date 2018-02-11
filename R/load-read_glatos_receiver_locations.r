@@ -80,9 +80,8 @@ read_glatos_receiver_locations <- function(rec_file, version = NULL) {
   }
   #-end v1.0----------------------------------------------------------------
   
-  #TO DO: cerce to glatos_receiver_locations (e.g., as_glatos_receiver_loc...) 
-  rec <- as.data.frame(rec)
-  class(rec) <- c("glatos_receiver_locations", class(rec))
+  #assign class 
+  rec <- glatos_receiver_locations(rec)
   
   return(rec)
 }
