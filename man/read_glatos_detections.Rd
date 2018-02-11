@@ -11,11 +11,10 @@ read_glatos_detections(det_file, version = NULL)
 standard GLATOS format (*.csv). If only file name is given, then the 
 file must be located in the working directory.}
 
-\item{version}{An optional character string with 
-the glatos file version number. If NULL (default value) then version 
-will be determined by evaluating workbook structure. The only allowed 
-values are \code{NULL} and \code{"1.3"}. Any other values will trigger 
-an error.}
+\item{version}{An optional character string with the glatos file version
+number. If NULL (default value) then version will be determined by
+evaluating file structure. The only allowed values currently are
+\code{NULL} and \code{"1.3"}. Any other values will trigger an error.}
 }
 \value{
 A data.frame of class \code{glatos_detections}:
@@ -33,7 +32,7 @@ in UTC timezone per GLATOS standard.
 \examples{
 #get path to example detection file
 det_file <- system.file("extdata", 
-  "walleye_detections.zip",package="glatos")
+  "walleye_detections.zip", package = "glatos")
 det_file <- unzip(det_file, "walleye_detections.csv")
 det <- read_glatos_detections(det_file)
 

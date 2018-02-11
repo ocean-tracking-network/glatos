@@ -24,10 +24,10 @@ glatos_detection_schema$v1.3 <- read.table(text = "
   sensor_unit                character
   deploy_lat                 numeric
   deploy_long                numeric
-  receiver_sn                numeric
+  receiver_sn                character
   tag_type                   character
   tag_model                  character
-  tag_serial_number          numeric
+  tag_serial_number          character
   common_name_e              character
   capture_location           character
   length                     numeric
@@ -50,4 +50,7 @@ glatos_detection_schema$v1.3 <- read.table(text = "
 
 #\Version 1.3
 #----------------------------------------------------
+
+
+#devtools::use_data(glatos_detection_schema, pkg = "..", overwrite = TRUE)
 
