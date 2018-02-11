@@ -20,8 +20,8 @@ evaluating file structure. The only allowed values currently are
 A data.frame of class \code{glatos_detections}:
 }
 \description{
-Read data from a GLATOS detection (csv) file and return a data.frame of  
-class \code{glatos_detections}.
+Read data from a standard GLATOS detection (csv) file and return
+a data.frame of class \code{glatos_detections}.
 }
 \details{
 Data are loaded using the \code{fread} function in the 
