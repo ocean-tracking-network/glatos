@@ -14,7 +14,9 @@ Imports:
 		plyr,		
 		raster,
     rgdal,
-		sp, data.table
+		sp, 
+		data.table,
+		fasttime
 Suggests: testthat
 License: GPL (2.0 or later)
 LazyLoad: yes
