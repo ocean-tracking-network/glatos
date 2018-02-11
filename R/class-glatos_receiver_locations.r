@@ -6,7 +6,7 @@
 #' @param x A data.frame or data.table created from a standard glatos 
 #' receiver_location file.
 #' 
-#' @return A data.frame of class \code{glatos_detections}:
+#' @return A data.frame of class \code{glatos_receiver_locations}:
 #'
 #' @note
 #' This function may be expanded in the future to dictate conversion 
