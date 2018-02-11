@@ -1,5 +1,5 @@
 #' @title 
-#' Read data from a GLATOS workbook
+#' Read data from a GLATOS data workbook
 #' 
 #' @description
 #' Read data from a GLATOS workbook (xlsm file) and return a list of class 
@@ -9,10 +9,10 @@
 #'  standard GLATOS format (*.xlsm). If only file name is given, then the 
 #'  file must be located in the working directory.
 #'  
-#' @param wb_version An optional character string with 
-#'  the workbook version number. If NULL (default value) then version will be
-#'  determined by evaluating workbook structure. The only allowed values 
-#'  are \code{NULL} and \code{"1.3"}. Any other values will trigger an error.
+#' @param wb_version An optional character string with the workbook version
+#'   number. If NULL (default value) then version will be determined by
+#'   evaluating workbook structure. Currently, the only allowed values are
+#'   \code{NULL} and \code{"1.3"}. Any other values will trigger an error.
 #'
 #' @param read_all If TRUE, then all columns and sheets
 #'  (e.g., user-created "project-specific" columns or sheets) in the workbook
@@ -22,13 +22,13 @@
 #'
 #' @details
 #' If \code{read_all = TRUE} then the type of data in each user-defined 
-#' column will be 'guessed' by read_excel; this may throw some warnings.
+#' column will be 'guessed' by \code{read_excel}; this may throw some warnings.
 #' 
-#' @return A list of class \code{glatos_workbook} with six elements:
+#' @return A list of class \code{glatos_workbook} with three elements:
 #' \describe{
 #'   \item{metadata}{A list with data about the project.}
 #'   \item{animals}{A data frame with data about tagged animals.}
-#'   \item{receivers}{A data frame with data about receiver stations.}
+#'   \item{receivers}{A data frame with data about receivers.}
 #' }
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) 
@@ -36,7 +36,7 @@
 #' @examples
 #' #get path to example GLATOS Data Workbook
 #' wb_file <- system.file("extdata", 
-#'   "SMRSL_GLATOS_20140828.xlsm",package="glatos")
+#'   "SMRSL_GLATOS_20140828.xlsm", package = "glatos")
 #' wb <- read_glatos_workbook(wb_file)
 #'
 #' @export
@@ -90,12 +90,12 @@ read_glatos_workbook <- function(wb_file, wb_version = NULL,
   if(is.null(wb_version)) {
     wb_version <- id_workbook_version(wb_file, sheets)
   } else if (!(paste0("v",wb_version) %in% names(glatos_workbook_schema))) {
-    stop(paste0("Workbook version ",wb_version," is not supported."))
+    stop(paste0("Workbook version ", wb_version, " is not supported."))
   }
 
   #define column range for each sheet
   col_range <- list()
-  col_range[names(glatos_workbook_schema[[paste0("v",wb_version)]])] <- NA 
+  col_range[names(glatos_workbook_schema[[paste0("v", wb_version)]])] <- NA 
   col_range <- lapply(col_range, function(x) NULL)
   
   if(!read_all) {
@@ -113,15 +113,15 @@ read_glatos_workbook <- function(wb_file, wb_version = NULL,
     
     #Get project data
     tmp <- readxl::read_excel(wb_file, sheet = "Project", skip = 1, 
-                              col_names=FALSE, col_types = "text")
-    tmp <- data.frame(tmp, stringsAsFactors=F)
+                              col_names = FALSE, col_types = "text")
+    tmp <- data.frame(tmp, stringsAsFactors = F)
     
     wb$project <- list(project_code = tmp[1,2],
                         principle_investigator = tmp[2,2],
                         pi_email = tmp[3,2],
                         source_file=basename(wb_file),
-                        wb_version="1.3",
-                        created=Sys.time())      
+                        wb_version = "1.3",
+                        created = Sys.time())      
 
     #Read all sheets except project
     if(read_all) { 
@@ -160,12 +160,13 @@ read_glatos_workbook <- function(wb_file, wb_version = NULL,
       
       #coerce dates to Date
       date_cols <- which(schema_i$type == "Date")
-      for(j in date_cols) tmp[,j] <- as.Date(data.frame(tmp)[,j])
+      for(j in date_cols) tmp[ ,j] <- as.Date(data.frame(tmp)[ ,j])
       names(tmp) <- tolower(names(tmp))
       
       #fix time zone errors
       timestamp_cols <- which(schema_i$type == "POSIXct")
-      refcol_cols <- timestamp_cols[grep("REFCOL", schema_i$arg[timestamp_cols])]
+      refcol_cols <- timestamp_cols[grep("REFCOL", 
+                                    schema_i$arg[timestamp_cols])]
       #function to construct time zone string from reference column tmp
       REFCOL <- function(x) {
         col_x <- gsub(")$", "", strsplit(x, "REFCOL\\(")[[1]][2])
@@ -214,7 +215,6 @@ read_glatos_workbook <- function(wb_file, wb_version = NULL,
 
   #-end v1.3----------------------------------------------------------------
   
-  #TO DO: cerce to glatos_workbook (e.g., as_glatos_workbook) instead of next
   class(wb2) <- c("glatos_workbook","list")
   
   return(wb2)
