@@ -8,15 +8,15 @@ Maintainer: Chris Holbrook <cholbrook@usgs.gov>
 Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System www.glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
 Depends: R (>= 3.1.1)
 Imports: 
+		data.table,		
+		fasttime,
 		gdistance,
     geosphere,
 		plotrix,
 		plyr,		
 		raster,
     rgdal,
-		sp, 
-		data.table,
-		fasttime
+		sp
 Suggests: testthat
 License: GPL (2.0 or later)
 LazyLoad: yes
