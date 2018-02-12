@@ -11,17 +11,16 @@ read_glatos_receiver_locations(rec_file, version = NULL)
 file in standard GLATOS format (*.csv). If only file name is given, then
 the file must be located in the working directory.}
 
-\item{version}{An optional character string with 
-the glatos file version number. If NULL (default value) then version 
-will be determined by evaluating file structure. The only allowed 
-values are \code{NULL} and \code{"1.0"}. Any other values will trigger 
-an error.}
+\item{version}{An optional character string with the glatos file version
+number. If NULL (default value) then version will be determined by
+evaluating file structure. The only allowed values currently are
+\code{NULL} and \code{"1.0"}. Any other values will trigger an error.}
 }
 \value{
 A data.frame of class \code{glatos_receiver_locations}:
 }
 \description{
-Read data from a GLATOS receiver location (csv) file and return a 
+Read data from a standard GLATOS receiver location (csv) file and return a 
 data.frame of class \code{glatos_receiver_locations}.
 }
 \details{
