@@ -70,7 +70,7 @@
 #' @examples
 #' #get path to example Vemco tag spec file
 #' spec_file <- system.file("extdata", 
-#'   "TagSheet_22982_20170407.xls", package="glatos")
+#'   "lamprey_tag_specs.xls", package="glatos")
 #' my_tags <- read_vemco_tag_specs(spec_file, file_format = "vemco_xls")
 #'
 #' @export
