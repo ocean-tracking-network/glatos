@@ -1,7 +1,6 @@
-context("Check read_glatos_receives")
+context("Check read_glatos_receivers")
 
-# Expected result (example data)
-data(receivers_2011)
+#check against internal data object 'receivers_2011' in R/sysdata.r
 
 # Actual result
 #get path to example receiver location file

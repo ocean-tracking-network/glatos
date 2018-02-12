@@ -52,5 +52,12 @@ glatos_detection_schema$v1.3 <- read.table(text = "
 #----------------------------------------------------
 
 
-#devtools::use_data(glatos_detection_schema, pkg = "..", overwrite = TRUE)
-
+#add to internal data objects
+isd <- file.path("..","R/sysdata.rda") 
+append.Rda <- function(x, file) {
+  old.objects <- load(file, new.env())
+  new.objects <- deparse(substitute(x))
+  old.objects <- setdiff(old.objects, new.objects)
+  save(list = c(old.objects, new.objects), file = file)
+}
+append.Rda(glatos_detection_schema, isd)

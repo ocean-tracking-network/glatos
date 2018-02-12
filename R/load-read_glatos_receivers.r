@@ -3,7 +3,7 @@
 #' 
 #' @description
 #' Read data from a standard GLATOS receiver location (csv) file and return a 
-#' data.frame of class \code{glatos_receiver_locations}.
+#' data.frame of class \code{glatos_receivers}.
 #'
 #' @param rec_file A character string with path and name of receiver location
 #'   file in standard GLATOS format (*.csv). If only file name is given, then
@@ -20,7 +20,7 @@
 #' \code{fastPOSIXct} function in the \code{fasttime} package. All timestamps
 #' must be in UTC timezone per GLATOS standard.
 #' 
-#' @return A data.frame of class \code{glatos_receiver_locations}:
+#' @return A data.frame of class \code{glatos_receivers}:
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'
@@ -35,14 +35,14 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
 
   #Read source file-------------------------------------------------------
   
-  #Get version-specific file specification
-  data(glatos_receiver_locations_schema)
+  #see version-specific file specifications
+  #internal data object; i.e., in R/sysdata.r
   
   
   #Identify file version
   id_file_version <- function(rec_file){
     col_names <- names(data.table::fread(rec_file, nrows = 0))
-    if(all(glatos_receiver_locations_schema$v1.0$name == col_names)) { 
+    if(all(glatos_receivers_schema$v1.0$name == col_names)) { 
       return("1.0") 
     } else {
       stop("Receiver location file version could not be identified.")
@@ -52,7 +52,7 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
   if(is.null(version)) {
     version <- id_file_version(rec_file)
   } else if (!(paste0("v",version) %in% 
-               names(glatos_receiver_locations_schema))) {
+               names(glatos_receivers_schema))) {
     stop(paste0("Receiver locations file version ", version,
                 " is not supported."))
   }
@@ -60,7 +60,7 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
   #-v1.0----------------------------------------------------------------  
   if (version == "1.0") {
 
-    col_classes <- glatos_receiver_locations_schema[["v1.0"]]$type
+    col_classes <- glatos_receivers_schema[["v1.0"]]$type
     timestamp_cols <- which(col_classes == "POSIXct")
     date_cols <- which(col_classes == "Date")
     col_classes[c(timestamp_cols, date_cols)] <- "character"
@@ -81,7 +81,7 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
   #-end v1.0----------------------------------------------------------------
   
   #assign class 
-  rec <- glatos_receiver_locations(rec)
+  rec <- glatos_receivers(rec)
   
   return(rec)
 }

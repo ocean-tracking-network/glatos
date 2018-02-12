@@ -1,7 +1,6 @@
 context("Check read_glatos_detections")
 
-# Expected result (example data)
-data(walleye_detections)
+#check against internal data object 'receivers_2011' in R/sysdata.r
 
 # Actual result
 #get path to example detection file

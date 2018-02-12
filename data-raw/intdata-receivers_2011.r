@@ -4,7 +4,7 @@
 #get path to example receiver_locations file
 rec_file <- system.file("extdata", 
   "receiver_locations_2011.csv", package = "glatos")
-receivers_2011 <- read_glatos_receiver_locations(rec_file)
+receivers_2011 <- read_glatos_receivers(rec_file)
 
 #----------------------------------------------------
 

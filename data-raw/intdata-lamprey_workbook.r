@@ -12,7 +12,7 @@ lamprey_workbook <- read_glatos_workbook(wb_file)
 isd <- file.path("..","R/sysdata.rda") 
 append.Rda <- function(x, file) {
   old.objects <- load(file, new.env())
-  new.object <- deparse(substitute(x))
+  new.objects <- deparse(substitute(x))
   old.objects <- setdiff(old.objects, new.objects)
   save(list = c(old.objects, new.objects), file = file)
 }

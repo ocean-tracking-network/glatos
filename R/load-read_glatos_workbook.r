@@ -69,8 +69,8 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
   
   #Read workbook-----------------------------------------------------------
   
-  #Get version-specific workbook specifications
-  data(glatos_workbook_schema)
+  #see version-specific file specifications
+  #internal data object; i.e., in R/sysdata.r
   
   
   #Get sheet names
@@ -229,7 +229,7 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
   
   #assign classes
   wb2$animals <- glatos_animals(wb2$animals)
-  wb2$receivers <- glatos_receiver_locations(wb2$receivers)
+  wb2$receivers <- glatos_receivers(wb2$receivers)
   wb2 <- glatos_workbook(wb2)
   
   return(wb2)

@@ -35,8 +35,8 @@ read_glatos_detections <- function(det_file, version = NULL) {
 
   #Read detection file-------------------------------------------------------
   
-  #Get version-specific file specifications
-  data(glatos_detection_schema)
+  #see version-specific file specifications
+  #internal data object; i.e., in R/sysdata.r
   
   
   #Identify detection file version
