@@ -6,29 +6,26 @@
 #'   location that are separated by a user-defined threshold period of time.
 #'
 #' @param detections A data frame containing detection data with at least 
-#'   4 columns 'animal_id', 'detection_timestamp_utc', 'deploy_lat', 
+#'   four columns named 'animal_id', 'detection_timestamp_utc', 'deploy_lat', 
 #'   and 'deploy_long' plus a location column for grouping, which is specified
 #'   using \code{location_variable}.
 #'   
 #'   \code{detections}: 
 #' \itemize{
-#'   \item \code{location_variable} is a character string with the name of the column 
-#'   	 containing locations you wish to filter to (typically 'glatos_array' or 
-#' 		 'station' for GLATOS data). Specified using the location_variable argument.
 #'   \item \code{animal_id} is a character string with the name of the column 
 #' 		 containing the individual animal identifier.
-#'	 \item \code{detection_timestamp_utc} is a character string with the name of the column 
-#' 		 containing datetime stamps for the detections (MUST be of class 
-#'     'POSIXct').
+#'	 \item \code{detection_timestamp_utc} is a character string with the name 
+#'	   of the column containing datetime stamps for the detections (MUST be of 
+#'	   class 'POSIXct').
 #'	 \item \code{deploy_lat} is a character string with the name of the column
-#'     containing latitude of the receiver.
+#'     containing latitude of the receiver in decimal degrees (NAD83).
 #'	 \item \code{deploy_long} is a character string with the name of the column
-#'     containing longitude of the receiver.
+#'     containing longitude of the receiver in decimal degrees (NAD83).
 #' }
 #' 
 #' @param location_variable A character string indicating the column name in the
 #'   detections data frame that will be used as the location grouping variable
-#'   (e.g. "glatos_array", "glatos_station")
+#'   (e.g. "glatos_array", "station")
 #' 
 #' @param time_sep Amount of time (in seconds) that must pass between 
 #'   sequential detections on the same receiver (or group of receivers, 
@@ -59,24 +56,24 @@
 #' @author T. R. Binder
 #'
 #' @examples
-#' library(glatos)
-#' data("walleye_detections") #example data
+#'
+#' #get path to example detection file
+#' det_file <- system.file("extdata", 
+#'   "walleye_detections.zip", package = "glatos")
+#' det_file <- unzip(det_file, "walleye_detections.csv")
+#' walleye_detections <- read_glatos_detections(det_file)
 #' 
-#' head(walleye_detections)
-#' 
-#' filt0 <- detectioneventFilter(walleye_detections) #no time filter
+#' filt0 <- detection_events(walleye_detections) #no time filter
 #' 
 #' #7-day filter
-#' filt_7d <- detectioneventFilter(walleye_detections , time_sep = 604800) 
+#' filt_7d <- detection_events(walleye_detections , time_sep = 604800) 
 #'
 #' @export
 
-detectionEventFilter <- function(detections,
-                                 location_variable = "glatos_array",
-                                 time_sep=Inf){
-	
-  library(data.table)
-  
+detection_events <- function(detections,
+                             location_variable = "glatos_array",
+                             time_sep = Inf){
+
 	# Check that the specified columns appear in the detections dataframe
 	missingCols <- setdiff(c("animal_id",
 	                         "detection_timestamp_utc",
@@ -85,19 +82,22 @@ detectionEventFilter <- function(detections,
 	                       names(detections))
 	if (length(missingCols) > 0){
 		stop(paste0("Detections dataframe is missing the following ",
-			"column(s):\n", paste0("       '",missingCols,"'", collapse="\n")), 
-			call.=FALSE)
+			"column(s):\n", paste0("       '", missingCols, "'", collapse = "\n")), 
+			call. = FALSE)
 	}
 	
 	# Check that timestamp is of class 'POSIXct'
 	if(!('POSIXct' %in% class(detections$detection_timestamp_utc))){
-	  stop(paste0("Column 'detection_timestamp_utc' in the detections dataframe must be of class 'POSIXct'."),
-	       call.=FALSE)
+	  stop(paste0(
+    	    "Column 'detection_timestamp_utc' in the detections dataframe",
+          "must be of class 'POSIXct'."),
+	       call. = FALSE)
 	} 
 	
 	# Subset detections with only user-defined columns and change names
 	# this makes code more easy to understand (esp. ddply)
-	names(detections)[which(names(detections) == location_variable)] <- "location_variable"
+	names(detections)[which(names(detections) == location_variable)] <- 
+	  "location_variable"
 	
 	detections <- detections[, c("animal_id",
 	                             "location_variable",
@@ -105,7 +105,7 @@ detectionEventFilter <- function(detections,
 	                             "deploy_lat",
 	                             "deploy_long")]
 	
-	# Make detections data frame a data.tabel object for increased processing speed
+	# Make detections data frame a data.tabel object for processing speed
 	data.table::setDT(detections)
 	
 	# Sort detections by transmitter id and then by detection timestamp.
