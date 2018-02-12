@@ -28,10 +28,10 @@
 #' #get path to example receiver_locations file
 #' rec_file <- system.file("extdata", 
 #'   "receiver_locations_2011.csv", package = "glatos")
-#' rcv <- read_glatos_receiver_locations(rec_file)
+#' rcv <- read_glatos_receivers(rec_file)
 #'
 #' @export
-read_glatos_receiver_locations <- function(rec_file, version = NULL) {
+read_glatos_receivers <- function(rec_file, version = NULL) {
 
   #Read source file-------------------------------------------------------
   
