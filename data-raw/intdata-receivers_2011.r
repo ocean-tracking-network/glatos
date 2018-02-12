@@ -1,10 +1,10 @@
-#Make internal data object lamprey_workbook for testing
+#Make receiver_locations_2011.rda 
 # (example data object)
 
-#get path to example workbook file
-wb_file <- system.file("extdata", 
-  "SMRSL_GLATOS_20140828.xlsm", package = "glatos")
-lamprey_workbook <- read_glatos_workbook(wb_file)
+#get path to example receiver_locations file
+rec_file <- system.file("extdata", 
+  "receiver_locations_2011.csv", package = "glatos")
+receivers_2011 <- read_glatos_receiver_locations(rec_file)
 
 #----------------------------------------------------
 
@@ -12,8 +12,8 @@ lamprey_workbook <- read_glatos_workbook(wb_file)
 isd <- file.path("..","R/sysdata.rda") 
 append.Rda <- function(x, file) {
   old.objects <- load(file, new.env())
-  new.object <- deparse(substitute(x))
+  new.objects <- deparse(substitute(x))
   old.objects <- setdiff(old.objects, new.objects)
   save(list = c(old.objects, new.objects), file = file)
 }
-append.Rda(lamprey_workbook, isd)
+append.Rda(receivers_2011, isd)

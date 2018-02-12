@@ -1,11 +1,11 @@
-#Make glatos_receiver_locations_schema 
-# (internal data object for read_glatos_receiver_locations)
+#Make glatos_receivers_schema 
+# (internal data object for read_glatos_receivers)
 #Specify column names and data types for each receiver locations file version
 
 
 #Make list element for each version
 #pre-allocate table-level structure within each version
-glatos_receiver_locations_schema <- list(
+glatos_receivers_schema <- list(
   "v1.0" = NA
 )
 
@@ -13,7 +13,7 @@ glatos_receiver_locations_schema <- list(
 #----------------------------------------------------
 #Version 1.0
 
-glatos_receiver_locations_schema$v1.0 <- read.table(text = "
+glatos_receivers_schema$v1.0 <- read.table(text = "
   name                  type
   station               character
   glatos_array          character
@@ -45,4 +45,12 @@ glatos_receiver_locations_schema$v1.0 <- read.table(text = "
 #\Version 1.0
 #----------------------------------------------------
 
-#devtools::use_data(glatos_receiver_locations_schema, overwrite = TRUE)
+#add to internal data objects
+isd <- file.path("..","R/sysdata.rda") 
+append.Rda <- function(x, file) {
+  old.objects <- load(file, new.env())
+  new.objects <- deparse(substitute(x))
+  old.objects <- setdiff(old.objects, new.objects)
+  save(list = c(old.objects, new.objects), file = file)
+}
+append.Rda(glatos_receivers_schema, isd)
