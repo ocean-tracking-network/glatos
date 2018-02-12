@@ -65,7 +65,7 @@
 #' dtc <- read_glatos_detections(det_file)
 #'
 #' # shrink data to speed-up
-#' dtc[1:5000]
+#' dtc <- dtc[1:5000,]
 #' 
 #' # take a look
 #' head(dtc)
