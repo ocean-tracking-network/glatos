@@ -40,8 +40,8 @@
 #' wb <- read_glatos_workbook(wb_file)
 #'
 #' @export
-read_glatos_workbook <- function(wb_file, wb_version = NULL, 
-  read_all = FALSE) {
+read_glatos_workbook <- function(wb_file, read_all = FALSE, 
+  wb_version = NULL) {
 
   #Function to set timezone of POSIXct objects loaded with read_excel
   # -read_excel assumes all timestamps are in UTC, so POSIX data in other 
@@ -138,7 +138,7 @@ read_glatos_workbook <- function(wb_file, wb_version = NULL,
         #read one row to get dimension
         tmp <- readxl::read_excel(workbook, 
           sheet = match(sheets_to_read[i], tolower(sheets)), 
-          skip = 1, n_max = 1, 
+          skip = 1, n_max = 1, na = c("", "NA"),
           range = col_range[[sheets_to_read[i]]])
         #identify new columns to add
         if (ncol(tmp) > nrow(schema_i)) {
@@ -154,6 +154,7 @@ read_glatos_workbook <- function(wb_file, wb_version = NULL,
       tmp <- readxl::read_excel(wb_file, 
         sheet = match(sheets_to_read[i], tolower(sheets)), 
         skip = 1, 
+        na = c("", "NA"),
         range = col_range[[sheets_to_read[i]]],
         col_types = gsub("Date|POSIXct", "date", schema_i$type))
       tmp <- data.frame(tmp)
@@ -210,12 +211,26 @@ read_glatos_workbook <- function(wb_file, wb_version = NULL,
     #add location descriptions
     wb2$receivers <- with(wb2, merge(receivers, wb$locations,
         by = "glatos_array"))
+    
+    #drop unwanted columns from receivers
+    drop_cols_rec <- c("glatos_deploy_date_time", "glatos_timezone",
+                   "glatos_recover_date_time")
+    wb2$receivers <- wb2$receivers[ , -match(drop_cols_rec, 
+                                             names(wb2$receivers))]
+    
+    #drop unwanted columns from animals
+    drop_cols_anim <- c("glatos_release_date_time", "glatos_timezone")
+    wb2$animals <- wb2$animals[ , -match(drop_cols_anim, 
+                                         names(wb2$animals))]
       
   }
 
   #-end v1.3----------------------------------------------------------------
   
-  class(wb2) <- c("glatos_workbook","list")
+  #assign classes
+  wb2$animals <- glatos_animals(wb2$animals)
+  wb2$receivers <- glatos_receiver_locations(wb2$receivers)
+  wb2 <- glatos_workbook(wb2)
   
   return(wb2)
 }

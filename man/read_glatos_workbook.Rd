@@ -2,32 +2,32 @@
 % Please edit documentation in R/load-read_glatos_workbook.r
 \name{read_glatos_workbook}
 \alias{read_glatos_workbook}
-\title{Read data from a GLATOS workbook}
+\title{Read data from a GLATOS data workbook}
 \usage{
-read_glatos_workbook(wb_file, wb_version = NULL, read_all = FALSE)
+read_glatos_workbook(wb_file, read_all = FALSE, wb_version = NULL)
 }
 \arguments{
 \item{wb_file}{A character string with path and name of workbook in 
 standard GLATOS format (*.xlsm). If only file name is given, then the 
 file must be located in the working directory.}
 
-\item{wb_version}{An optional character string with 
-the workbook version number. If NULL (default value) then version will be
-determined by evaluating workbook structure. The only allowed values 
-are \code{NULL} and \code{"1.3"}. Any other values will trigger an error.}
-
 \item{read_all}{If TRUE, then all columns and sheets
 (e.g., user-created "project-specific" columns or sheets) in the workbook
 will be imported. If FALSE (default value) then only columns in the 
 standard GLATOS workbook will be imported (project-specific columns will 
 be ignored.)}
+
+\item{wb_version}{An optional character string with the workbook version
+number. If NULL (default value) then version will be determined by
+evaluating workbook structure. Currently, the only allowed values are
+\code{NULL} and \code{"1.3"}. Any other values will trigger an error.}
 }
 \value{
-A list of class \code{glatos_workbook} with six elements:
+A list of class \code{glatos_workbook} with three elements:
 \describe{
   \item{metadata}{A list with data about the project.}
   \item{animals}{A data frame with data about tagged animals.}
-  \item{receivers}{A data frame with data about receiver stations.}
+  \item{receivers}{A data frame with data about receivers.}
 }
 }
 \description{
@@ -36,12 +36,12 @@ Read data from a GLATOS workbook (xlsm file) and return a list of class
 }
 \details{
 If \code{read_all = TRUE} then the type of data in each user-defined 
-column will be 'guessed' by read_excel; this may throw some warnings.
+column will be 'guessed' by \code{read_excel}; this may throw some warnings.
 }
 \examples{
 #get path to example GLATOS Data Workbook
 wb_file <- system.file("extdata", 
-  "SMRSL_GLATOS_20140828.xlsm",package="glatos")
+  "SMRSL_GLATOS_20140828.xlsm", package = "glatos")
 wb <- read_glatos_workbook(wb_file)
 
 }

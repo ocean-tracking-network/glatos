@@ -22,6 +22,8 @@
 #' schema data files, (2) use "..." argument to this constructor function to
 #' allow each standard column to be mapped directly from source, and (3) 
 #' check that requirements are met. 
+#' 
+#' @keywords internal
 
 glatos_workbook <- function(x)  {
   
