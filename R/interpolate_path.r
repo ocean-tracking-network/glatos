@@ -72,7 +72,7 @@
 #'  points(pts, pch=20, col='red', cex=3)
 #' 
 #' # interpolate path using linear method
-#' path1 <- interpolatePath(pos)
+#' path1 <- interpolate_path(pos)
 #'  
 #' # coerce to SpatialPoints object and plot
 #' pts1 <- SpatialPoints(path1[,c("longitude","latitude")])
@@ -82,14 +82,14 @@
 #' data(greatLakesTrLayer)
 #'  
 #' # interpolate path using non-linear method (requires 'trans')
-#' path2 <- interpolatePath(pos, trans=greatLakesTrLayer)
+#' path2 <- interpolate_path(pos, trans=greatLakesTrLayer)
 #' 
 #' # coerce to SpatialPoints object and plot
 #' pts2 <- SpatialPoints(path2[,c("longitude","latitude")])
 #' points(pts2, pch=20, col='green', lwd=2, cex=1.5) 
 #'  
 #' # can also force linear-interpolation with lnlThresh=0
-#' path3 <- interpolatePath(pos, trans=greatLakesTrLayer, lnl_thresh=0)
+#' path3 <- interpolate_path(pos, trans=greatLakesTrLayer, lnl_thresh=0)
 #' 
 #' # coerce to SpatialPoints object and plot
 #' pts3 <- SpatialPoints(path3[,c("longitude","latitude")])
@@ -103,10 +103,10 @@
 #' det <- read_glatos_detections(det_file)
 #'
 #' # take a look
-#' head(dtc)
+#' head(det)
 #'  
 #' # call with defaults; linear interpolation
-#' pos1 <- interpolatePath(det)
+#' pos1 <- interpolate_path(det)
 #'  
 #' # plot on example map background
 #' data(greatLakesPoly)
@@ -122,7 +122,7 @@
 #'  
 #' # call with "transition matrix" (non-linear interpolation), other options
 #' # note that it is quite a bit slower due than linear interpolation
-#' pos2 <- interpolatePath(dtc, trans=greatLakesTrLayer)
+#' pos2 <- interpolate_path(det, trans=greatLakesTrLayer)
 #' 
 #' # coerce to SpatialPoints object and plot
 #' pts2 <- SpatialPoints(pos2[, c("longitude","latitude")])
@@ -134,7 +134,7 @@ interpolate_path <- function(detections, trans = NULL, int_time_stamp = 86400,
                             lnl_thresh = 0.9){
 
   # this function uses data.table extensively
-  setDT(dtc)
+  setDT(detections)
 
   # make copy of detections for function
   dtc <- copy(detections)

@@ -74,8 +74,8 @@ det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
 det_file <- unzip(det_file, "walleye_detections.csv")
 dtc <- read_glatos_detections(det_file)
 
-# shrink size to reduce computation time
-#dtc <- dtc[1:5000,]
+# shrink data to speed-up
+dtc[1:5000]
 
 # take a look
 head(dtc)
@@ -86,7 +86,7 @@ rec_file <- system.file("extdata",
 recs <- read_glatos_receivers(rec_file)
 
 # call with defaults; linear interpolation
- pos1 <- interpolatePath(dtc)
+ pos1 <- interpolate_path(dtc)
 
 # make sequential frames and animation
 # make sure ffmpeg is installed if argument \\code{animate = TRUE}
