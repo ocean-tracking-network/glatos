@@ -8,11 +8,11 @@ make_frames(proc_obj, recs = NULL, out_dir = getwd(),
   background_ylim = c(41.3, 49), background_xlim = c(-92.45, -75.87),
   show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
   ani_name = "animation.mp4", frame_delete = FALSE, overwrite = FALSE,
-  ffmpeg = NA)
+  ffmpeg = NA, ...)
 }
 \arguments{
 \item{proc_obj}{A data frame created by
-\code{\link{interpolatePath}} function or a data frame containing
+\code{\link{interpolate_path}} function or a data frame containing
 'animal_id', 'bin_timestamp', 'latitude', 'longitude', and
 'record_type'}
 
@@ -33,7 +33,7 @@ for y-scale of plot. Units are same as background argument.}
 for x-scale of plot. Units are same as background argument.}
 
 \item{tail_dur}{contains the duration (in same units as \code{proc_obj$bin_timestamp}; 
-see \code{\link{interpolatePath}}) of trailing points in each frame. 
+see \code{\link{interpolate_path}}) of trailing points in each frame. 
 Default value is 0 (no trailing points). A value
 of \code{Inf} will show all points from start.}
 
@@ -52,6 +52,10 @@ FALSE (file is not overwritten)}
 the ffmpeg folder you can download from https://ffmpeg.org/. This argument
 is only needed if ffmpeg has not been added to your path variable on your
 computer.}
+
+\item{...}{Graphical parameters for plotting fish markers.  Any
+argument that can be possed to \code{plot::points}, such as \code{cex =
+2}, \code{pch = 21}.}
 }
 \value{
 Sequentially-numbered png files (one for each frame) and 
@@ -79,7 +83,7 @@ head(dtc)
 # load receiver location data
 rec_file <- system.file("extdata", 
   "receiver_locations_2011.csv", package = "glatos")
-recs <- read_glatos_receiver_locations(rec_file)
+recs <- read_glatos_receivers(rec_file)
 
 # call with defaults; linear interpolation
  pos1 <- interpolatePath(dtc)
@@ -94,13 +98,13 @@ recs <- read_glatos_receiver_locations(rec_file)
 myDir <- paste0(getwd(),"/frames1")
 make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 
-# make sequential frames, and animate.  Keep both animation and frames
+# make sequential frames, and animate.  Keep both animation and frames and change default color of fish markers to red.
 myDir <- paste0(getwd(), "/frames2")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE)
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, col="red")
 
 # make sequential frames, and animate, add 5-day tail
 myDir <- paste0(getwd(), "/frames3")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur = 5)
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=5)
 
 # make animation, remove frames.
 myDir <- paste0(getwd(), "/frames4")
@@ -120,5 +124,5 @@ make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="/path/to/ffmpeg
 
 }
 \author{
-Todd Hayden
+Todd Hayden, Tom Binder, Chris Holbrook
 }

@@ -4,7 +4,7 @@
 #'   (e.g., detections of tagged fish) at regularly-spaced time intervals   
 #' 	 using linear or non-linear interpolation.
 #' 
-#' @param dtc An object of class \code{glatos_detections} or data frame
+#' @param detections An object of class \code{glatos_detections} or data frame
 #'   containing spatiotemporal data with at least 4 columns containing
 #'   'animal_id', 'detection_timestamp_utc','deploy_long', and
 #'   'deploy_lat' columns.
@@ -100,13 +100,13 @@
 #' # load detection data
 #' det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
 #' det_file <- unzip(det_file, "walleye_detections.csv")
-#' dtc <- read_glatos_detections(det_file)
+#' det <- read_glatos_detections(det_file)
 #'
 #' # take a look
 #' head(dtc)
 #'  
 #' # call with defaults; linear interpolation
-#' pos1 <- interpolatePath(dtc)
+#' pos1 <- interpolatePath(det)
 #'  
 #' # plot on example map background
 #' data(greatLakesPoly)
@@ -130,11 +130,15 @@
 #' 
 #' @export 
 
-interpolatePath <- function(dtc, trans = NULL, int_time_stamp = 86400,
+interpolate_path <- function(detections, trans = NULL, int_time_stamp = 86400,
                             lnl_thresh = 0.9){
-  
+
   # this function uses data.table extensively
   setDT(dtc)
+
+  # make copy of detections for function
+  dtc <- copy(detections)
+  detections <- as.data.frame(detections)
 
   # subset only columns for function:
   dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]

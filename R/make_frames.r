@@ -7,7 +7,7 @@
 #'
 #'
 #' @param proc_obj A data frame created by
-#'   \code{\link{interpolatePath}} function or a data frame containing
+#'   \code{\link{interpolate_path}} function or a data frame containing
 #'   'animal_id', 'bin_timestamp', 'latitude', 'longitude', and
 #'   'record_type'
 #'   
@@ -44,15 +44,18 @@
 #'   computer.
 #'
 #' @param tail_dur contains the duration (in same units as \code{proc_obj$bin_timestamp}; 
-#'     see \code{\link{interpolatePath}}) of trailing points in each frame. 
+#'     see \code{\link{interpolate_path}}) of trailing points in each frame. 
 #'     Default value is 0 (no trailing points). A value
 #'     of \code{Inf} will show all points from start.
-
+#'
+#' @param ... Graphical parameters for plotting fish markers.  Any
+#'   argument that can be possed to \code{plot::points}, such as \code{cex =
+#'   2}, \code{pch = 21}.
 #' 
 #' @return Sequentially-numbered png files (one for each frame) and 
 #'   one mp4 file will be written to \code{out_dir}.
 #' 
-#' @author Todd Hayden
+#' @author Todd Hayden, Tom Binder, Chris Holbrook
 #'
 #' @examples
 #'
@@ -70,7 +73,7 @@
 #' # load receiver location data
 #' rec_file <- system.file("extdata", 
 #'   "receiver_locations_2011.csv", package = "glatos")
-#' recs <- read_glatos_receiver_locations(rec_file)
+#' recs <- read_glatos_receivers(rec_file)
 #' 
 #' # call with defaults; linear interpolation
 #'  pos1 <- interpolatePath(dtc)
@@ -85,13 +88,13 @@
 #' myDir <- paste0(getwd(),"/frames1")
 #' make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 #'
-#' # make sequential frames, and animate.  Keep both animation and frames
+#' # make sequential frames, and animate.  Keep both animation and frames and change default color of fish markers to red.
 #' myDir <- paste0(getwd(), "/frames2")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE)
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, col="red")
 #'
 #' # make sequential frames, and animate, add 5-day tail
 #' myDir <- paste0(getwd(), "/frames3")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur = 5)
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=5)
 #' 
 #' # make animation, remove frames.
 #' myDir <- paste0(getwd(), "/frames4")
@@ -111,12 +114,13 @@
 #'
 #' @export
 #' 
+
 make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         background_ylim = c(41.3, 49.0),
                         background_xlim = c(-92.45, -75.87),
                         show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
                         ani_name = "animation.mp4", frame_delete = FALSE,
-                        overwrite = FALSE, ffmpeg = NA){
+                        overwrite = FALSE, ffmpeg = NA, ...){
   
   # Try calling ffmpeg if animate = TRUE.
   # If animate = FALSE, video file is not produced- no need to check for package.
@@ -137,6 +141,12 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
 
   # Convert proc_obj and recs dataframes into data.table objects
   setDT(proc_obj)
+
+  # make copy of proc_obj because of data.table pass by reference
+  work_proc_obj <- copy(proc_obj)
+  proc_obj <- as.data.frame(proc_obj)
+
+  # set recs to data.table  
   if(!is.null(recs)){
     setDT(recs)
 
@@ -150,53 +160,62 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   if(!dir.exists(out_dir)) dir.create(out_dir)
 
   # extract time sequence for plotting
-  t_seq <- unique(proc_obj$bin_timestamp)
+  t_seq <- unique(work_proc_obj$bin_timestamp)
 
   # make tails if needed
   if(tail_dur == 0){
 
     #  Create group identifier for plotting
-    proc_obj[, grp := bin_timestamp]
+    work_proc_obj[, grp := bin_timestamp]
   } else {
 
     # make tail groups if needed
-    dur <- proc_obj[, .(t_seq = sort(unique(bin_timestamp)))]
+    dur <- work_proc_obj[, .(t_seq = sort(unique(bin_timestamp)))]
     dur[, c("t_end", "t_grp") :=
             list(data.table::shift(t_seq, type = "lag",
                                    fill = min(t_seq), n = tail_dur),
                  1:nrow(dur))]
 
     # group obs for tails
-    proc_obj[, t_end := bin_timestamp]
+    work_proc_obj[, t_end := bin_timestamp]
     setkey(dur, t_end, t_seq)
 
     # merge by overlap
-    proc_obj <- foverlaps(proc_obj, dur, type = "within",
+    work_proc_obj <- foverlaps(work_proc_obj, dur, type = "within",
                           nomatch = 0L, by.x = c("bin_timestamp", "t_end"))
-    proc_obj <- proc_obj[, c("animal_id", "t_seq", "latitude", "longitude",
+    work_proc_obj <- work_proc_obj[, c("animal_id", "t_seq", "latitude", "longitude",
                              "record_type")]
-    names(proc_obj) <- c("animal_id", "bin_timestamp", "latitude", "longitude",
+    names(work_proc_obj) <- c("animal_id", "bin_timestamp", "latitude", "longitude",
                          "record_type")
-    proc_obj[, grp := bin_timestamp]
+    work_proc_obj[, grp := bin_timestamp]
   }
 
   # determine leading zeros needed by ffmpeg and add as new column
   char <- paste0("%", 0, nchar((length(t_seq))), "d")
-  setkey(proc_obj, bin_timestamp)
-  proc_obj[, f_name := .GRP, by = grp]
-  proc_obj[, f_name := paste0(sprintf(char, f_name), ".png")]
+  setkey(work_proc_obj, bin_timestamp)
+  work_proc_obj[, f_name := .GRP, by = grp]
+  work_proc_obj[, f_name := paste0(sprintf(char, f_name), ".png")]
 
   # order data for plotting
-    setkey(proc_obj, bin_timestamp, animal_id,  record_type)
+    setkey(work_proc_obj, bin_timestamp, animal_id,  record_type)
 
   # Load Great lakes background
   data(greatLakesPoly) #example in glatos package
   background <- greatLakesPoly
 
+  # turn off interpolated points if show_interpolated = FALSE
+    if(!show_interpolated){
+      work_proc_obj[record_type == "interpolated", latitude := NA]
+      work_proc_obj[record_type == "interpolated", longitude := NA]
+    }
+  
   # define custom plot function
   cust_plot <- function(x, proc_obj, sub_recs, out_dir, background,
                         background_xlim, background_ylim, show_interpolated){
 
+    # graphical params for fish markers
+    dots <- list(...)
+               
     if(!is.null(recs)){
       # extract receivers in the water during plot interval
       sub_recs <- recs[between(x$bin_timestamp[1], lower = recs$deploy_date_time,
@@ -275,26 +294,22 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     points(timeline_x_i, timeline_y[1], pch = 21, cex = 2, bg = "grey40",
            col = "grey20", lwd = 1)
     
-    # Plot detection data
-    if(!show_interpolated){
-      points(x = x$longitude, y = x$latitude, pch = 16,
-             col = ifelse(x$record_type == "inter", "transparent", "blue"),
-             cex = 2) } else {
-               points(x = x$longitude, y = x$latitude, pch = 16, col = "blue",
-                      cex = 2)
-             }
+if(length(dots) == 0){
+  plot_params <- points(x = x$longitude, y=x$latitude, pch = 16, col = "blue", cex = 2) } else {
+      points(x = x$longitude, y = x$latitude, ...)}
+
     dev.off()
   }
   
   ### Progress bar
-  grpn <- uniqueN(proc_obj$grp)
+  grpn <- uniqueN(work_proc_obj$grp)
   pb <- txtProgressBar(min = 0, max = grpn, style = 3)
 
-  setkey(proc_obj, grp)
+  setkey(work_proc_obj, grp)
 
   # create images
-  proc_obj[, {setTxtProgressBar(pb, .GRP);
-    cust_plot(x = .SD, proc_obj, sub_recs, out_dir, background, background_xlim,
+ work_proc_obj[, {setTxtProgressBar(pb, .GRP);
+    cust_plot(x = .SD, work_proc_obj, sub_recs, out_dir, background, background_xlim,
               background_ylim, show_interpolated)}, by = grp,
     .SDcols = c("bin_timestamp", "longitude", "latitude", "record_type",
                 "f_name", "grp")]

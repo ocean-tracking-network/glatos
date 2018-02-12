@@ -53,7 +53,7 @@
 #'   are useful for exploring movement patterns of individual tagged animals.}
 #' \item{\link{detectionBubblePlot}}{is useful for exploring  
 #'   distribution of tagged individuals among receivers.}
-#' \item{\link{movePath}, \link{interpolatePath} ,and \link{animatePath}}{can
+#' \item{\link{interpolate_path} and \link{make_frames}}{can
 #' be used together to interpolate movement paths between detections and 
 #' save animated movement paths to a video file (mp4).}}
 #'

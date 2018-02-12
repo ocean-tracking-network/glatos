@@ -15,9 +15,9 @@
 #' @description A TransitionLayer object that only allows transitions to occur 
 #' within water (i.e., prohibits movement onto land). This dataset was 
 #' developed for non-linear interpolation of fish movement paths from telemetry 
-#' data and is used by default in \link{interpolatePath}.
+#' data and is used by default in \link{interpolate_path}.
 #'
-#' @seealso \link{interpolatePath}, \link{gdistance}
+#' @seealso \link{interpolate_path}, \link{gdistance}
 #' @author Todd Hayden 
 "greatLakesTrLayer"
 
@@ -69,7 +69,7 @@
 #' An example plot control data frame that determines the color and marker of 
 #' points png and mp4 files created by \link{animatePath}. Provided by Todd 
 #' Hayden for use with example file \link{walleye_detections}
-#' with the functions \link{interpolatePath} and \link{animatePath}.
+#' with \link{animatePath}.
 #' 
 #' @seealso \link{interpolatePath}, \link{animatePath}, 
 #' \link{walleye_detections}

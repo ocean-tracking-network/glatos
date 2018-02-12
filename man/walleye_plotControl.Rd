@@ -13,7 +13,7 @@ walleye_plotControl
 An example plot control data frame that determines the color and marker of 
 points png and mp4 files created by \link{animatePath}. Provided by Todd 
 Hayden for use with example file \link{walleye_detections}
-with the functions \link{interpolatePath} and \link{animatePath}.
+with \link{animatePath}.
 }
 \seealso{
 \link{interpolatePath}, \link{animatePath}, 

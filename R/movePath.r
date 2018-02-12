@@ -31,7 +31,7 @@
 #' 
 #' @details 
 #' This function operates on a single pair of geographic (start and end) 
-#' positions and is the primary function in \code{\link{interpolatePath}}. 
+#' positions and is the functionality behind \code{\link{interpolate_path}}. 
 #'
 #' @details 
 #' Non-linear interpolation uses the 'gdistance' package to find the shortest 
@@ -58,7 +58,7 @@
 #' 
 #' @return Data frame with interpolated timestamp, lat, and lon
 #'
-#' @seealso \code{\link{interpolatePath}}
+#' @seealso \code{\link{interpolate_path}}
 #'
 #' @author Todd Hayden
 #' 
@@ -97,7 +97,7 @@
 #' points(pts2, pch=20, col='green', lwd=2, cex=1.5) 
 #'
 #' #can also force linear interpolation by setting 'lnlThresh' = 0
-#' path3 <- interpolatePath(pos, 
+#' path3 <- move_path(pos, 
 #'   rast=greatLakesTrLayer, lnlThresh=0,
 #'   detColNames=list(individualCol="id", timestampCol="time",
 #'   longitudeCol="x", latitudeCol="y"))
