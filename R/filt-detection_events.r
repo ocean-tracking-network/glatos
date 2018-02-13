@@ -87,6 +87,12 @@ detection_events <- function(detections,
                              time_sep = Inf,
                              condense = TRUE){
 
+  # Set variables to NULL that will appear in data.table calls 
+  #  to avoid R CMD check NOTES
+  animal_id <- detection_timestamp_utc <- time_diff <- arrive <-
+    depart <- event <- deploy_lat <- deploy_long <- NULL
+  
+  
   # Check value of condense
   if(!is.logical(condense)) stop(
     "input argument 'condense' must be either TRUE or FALSE (unquoted).")
