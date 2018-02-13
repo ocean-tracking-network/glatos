@@ -81,4 +81,4 @@
 #' @docType package
 #' @name glatos
 #' @import data.table sp
-globalVariables(".")
+globalVariables(".") #to avoid R CMD check note
