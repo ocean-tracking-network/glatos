@@ -149,29 +149,6 @@ detection_events <- function(detections,
 	# Add unique event number (among all fish, not within each fish)
 	detections[ , event := cumsum(arrive)]  
 	
-	# Add a column with time between a given detection and the detection
-	#  before it. The first detection in the dataset is assigned a value of NA.
-	#detections[ ,time_diff := c(NA, diff(detections$detection_timestamp_utc))]
-	
-	# Insert new columns indicating whether transmitter_id or location changed 
-	#  sequentially between rows in the dataframe and whether the time between 
-	#  subsequent detections exceeded the user-defined threshold for a new 
-	#  detection event.
-	
-	# detections[,':='(individ_comparison = c(NA,as.numeric(detections$animal[-1]!=
-	#                                                        head(detections$animal,-1))),
-	#                  group_comparison = c(NA, as.numeric(detections$location[-1] !=
-	#                                                       head(detections$location,-1))),
-	#                  time_threshold = as.numeric(detections$time_diff > time_sep))]
-
-	# Determine if each detection is the start of a new detection event.
-	#detections[, new_event := ifelse((individ_comparison + group_comparison + time_threshold) !=0 |
-	#                                 is.na(individ_comparison + group_comparison + time_threshold),
-	#                               1, 0)]
-
-	# Assign unique number to each event (increasing by one for each event)
-	#detections[ , event := cumsum(new_event)]
-	
 	# Summarize the event data using the ddply function in the plyr package.
 	Results = detections[, .(Individual = animal_id[1],
 	                         location = location_col[1],
@@ -184,6 +161,7 @@ detection_events <- function(detections,
 	                           diff(as.numeric(range(detection_timestamp_utc)))),
 	                     by = event]
 	
+	# Return conditional on 'condense'
   if(condense){
 	
   	# Returns dataframe containing summarized detection event data
