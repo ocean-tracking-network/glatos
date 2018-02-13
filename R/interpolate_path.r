@@ -134,8 +134,7 @@ interpolate_path <- function(detections, trans = NULL, int_time_stamp = 86400,
                             lnl_thresh = 0.9){
   
   # make copy of detections for function
-  dtc <- data.frame(detections)
-  setDT(dtc)
+  dtc <- as.data.table(detections)
 
   # subset only columns for function:
   dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]

@@ -147,9 +147,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   }
 
   # Convert proc_obj and recs dataframes into data.table objects
-  work_proc_obj <- data.frame(proc_obj)
-
-  setDT(work_proc_obj)
+  work_proc_obj <- as.data.table(proc_obj)
   
   # set recs to data.table  
   if(!is.null(recs)){
