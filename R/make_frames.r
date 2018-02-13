@@ -305,6 +305,7 @@ if(length(dots) == 0){
 
     dev.off()
   }
+
   
   ### Progress bar
   grpn <- uniqueN(work_proc_obj$grp)
