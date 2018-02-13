@@ -4,31 +4,32 @@
 \alias{detection_events}
 \title{Classify discrete events in detection data}
 \usage{
-detection_events(detections, location_variable = "glatos_array",
-  time_sep = Inf)
+detection_events(detections, location_col = "glatos_array", time_sep = Inf,
+  condense = TRUE)
 }
 \arguments{
 \item{detections}{A data frame containing detection data with at least 
-  four columns named 'animal_id', 'detection_timestamp_utc', 'deploy_lat', 
-  and 'deploy_long' plus a location column for grouping, which is specified
-  using \code{location_variable}.
+  five columns; four columns must be named 'animal_id', 
+  'detection_timestamp_utc', 'deploy_lat', and 'deploy_long' as described 
+  below and a fifth column containing a location grouping variable, is 
+  specified using \code{location_col}.
   
-  \code{detections}: 
+  The following four columns must appear in \code{detections}: 
 \itemize{
-  \item \code{animal_id} is a character string with the name of the column 
+  \item \code{animal_id} A character string with the name of the column 
          containing the individual animal identifier.
  \item \code{detection_timestamp_utc} is a character string with the name 
    of the column containing datetime stamps for the detections (MUST be of 
    class 'POSIXct').
- \item \code{deploy_lat} is a character string with the name of the column
+ \item \code{deploy_lat} A character string with the name of the column
     containing latitude of the receiver in decimal degrees (NAD83).
- \item \code{deploy_long} is a character string with the name of the column
+ \item \code{deploy_long} A character string with the name of the column
     containing longitude of the receiver in decimal degrees (NAD83).
 }}
 
-\item{location_variable}{A character string indicating the column name in the
+\item{location_col}{A character string indicating the column name in the
 detections data frame that will be used as the location grouping variable
-(e.g. "glatos_array", "station")}
+(e.g. "glatos_array", "station").}
 
 \item{time_sep}{Amount of time (in seconds) that must pass between 
 sequential detections on the same receiver (or group of receivers, 
@@ -37,7 +38,8 @@ belong to a new detection event. The default value \code{Inf}, will not
 define events based on elapsed time (only when location changes).}
 }
 \value{
-A data frame containing discrete detection event data:
+If \code{collapse = TRUE}, a data frame containing discrete 
+  detection event data with the following columns:
 \item{mean_latitude}{Mean latitude of detections comprising each event.}
 	\item{mean_longitude}{Mean longitude of detections comprising each event.}
  \item{first_detection}{The time of the first detection in a given detection 
@@ -48,6 +50,16 @@ A data frame containing discrete detection event data:
 	  detection event.}
  \item{res_time_sec}{The elapsed time in seconds between the first and last 
 	detection in a given event.}
+	
+If \code{collapse = FALSE}, a data frame matching the input data frame 
+\code{detections} with the following columns added:
+ \item{time_diff}{Lagged time difference in seconds between successive 
+   detections of each animal_id.}
+ \item{arrive}{Flag (0 or 1) representing the first detection in each 
+   event.} 
+ \item{depart}{Flag (0 or 1) representing the last detection in each 
+   event.} 
+ \item{event}{Integer representing the event number.}
 }
 \description{
 Reduce detection data from an acoustic telemetry receiver into discrete 
@@ -79,5 +91,5 @@ filt_7d <- detection_events(walleye_detections , time_sep = 604800)
 
 }
 \author{
-T. R. Binder
+T. R. Binder, T. A. Hayden, C. M. Holbrook
 }
