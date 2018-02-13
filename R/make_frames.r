@@ -71,14 +71,7 @@
 #' 
 #' # take a look
 #' head(dtc)
-#'
-#' setDT(dtc)
-#'setkey(dtc, animal_id)
-#'dtc <- dtc[.(c("153", "22", "23"))]
-#'
-#'write.csv(dtc, "test.csv")
-#' 
-#' 
+#'  
 #' # load receiver location data
 #' rec_file <- system.file("extdata", 
 #'   "receiver_locations_2011.csv", package = "glatos")
@@ -154,7 +147,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   }
 
   # Convert proc_obj and recs dataframes into data.table objects
-  work_proc_obj <- proc_obj
+  work_proc_obj <- data.frame(proc_obj)
 
   setDT(work_proc_obj)
   
@@ -198,10 +191,10 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     # merge by overlap
     work_proc_obj <- foverlaps(work_proc_obj, dur, type = "within",
                           nomatch = 0L, by.x = c("bin_timestamp", "t_end"))
-    work_proc_obj <- work_proc_obj[, c("animal_id", "t_seq", "latitude", "longitude",
-                             "record_type")]
-    names(work_proc_obj) <- c("animal_id", "bin_timestamp", "latitude", "longitude",
-                         "record_type")
+    work_proc_obj <- work_proc_obj[, c("animal_id", "t_seq", "latitude",
+                                       "longitude", "record_type")]
+    setnames(work_proc_obj, c("animal_id", "bin_timestamp", "latitude",
+                              "longitude", "record_type"))
     work_proc_obj[, grp := bin_timestamp]
   }
 

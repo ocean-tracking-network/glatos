@@ -81,7 +81,7 @@ dtc <- read_glatos_detections(det_file)
 
 # take a look
 head(dtc)
-
+ 
 # load receiver location data
 rec_file <- system.file("extdata", 
   "receiver_locations_2011.csv", package = "glatos")

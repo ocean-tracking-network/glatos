@@ -132,13 +132,10 @@
 
 interpolate_path <- function(detections, trans = NULL, int_time_stamp = 86400,
                             lnl_thresh = 0.9){
-
-  # this function uses data.table extensively
-  setDT(detections)
-
+  
   # make copy of detections for function
-  dtc <- copy(detections)
-  detections <- as.data.frame(detections)
+  dtc <- data.frame(detections)
+  setDT(dtc)
 
   # subset only columns for function:
   dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
@@ -152,8 +149,8 @@ interpolate_path <- function(detections, trans = NULL, int_time_stamp = 86400,
   setkey(dtc, animal_id, detection_timestamp_utc)
 
   # save original dataset to combine with interpolated data in the end
-  det <- dtc
-  names(det) <- c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type", "num_rows")
+  det <- copy(dtc)
+  setnames(det, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type", "num_rows"))
 
   # remove any fish with only one detection
   dtc <- dtc[num_rows != 1]
@@ -162,7 +159,8 @@ interpolate_path <- function(detections, trans = NULL, int_time_stamp = 86400,
   if (nrow(dtc) == 0) {stop("must have two observations to interpolate")
   }
   
-  t_seq <- seq(min(dtc$detection_timestamp_utc), max(dtc$detection_timestamp_utc), int_time_stamp)
+  t_seq <- seq(min(dtc$detection_timestamp_utc),
+               max(dtc$detection_timestamp_utc), int_time_stamp)
 
   # bin data by time interval and add bin to dtc
   dtc[, bin := t_seq[findInterval(detection_timestamp_utc, t_seq)] ]
@@ -186,8 +184,8 @@ interpolate_path <- function(detections, trans = NULL, int_time_stamp = 86400,
     out <- rbind(dtc, det)
     setkey(out, animal_id, bin_stamp)
     out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
-    out <- na.omit(out, cols = "i_lat")   
-    names(out) <- c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type")
+    out <- na.omit(out, cols = "i_lat")
+    setnames(out, c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type"))
     out <- unique(out)
     return(as.data.frame(out))
     stop
@@ -392,7 +390,7 @@ interpolate_path <- function(detections, trans = NULL, int_time_stamp = 86400,
   out[, !c("animal_id")]
   setkey(out, animal_id, bin_stamp)
   out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
-  names(out) <- c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type")
+  setnames(out, c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type"))
   out <- na.omit(out, cols = "latitude")
   out <- unique(out)
   return(as.data.frame(out))
