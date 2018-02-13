@@ -63,7 +63,8 @@ read_glatos_detections <- function(det_file, version = NULL) {
     col_classes[c(timestamp_cols, date_cols)] <- "character"
     
     #read data
-    dtc <- data.table::fread(det_file, sep = ",", colClasses = col_classes)
+    dtc <- data.table::fread(det_file, sep = ",", colClasses = col_classes,
+                             na.strings = c("", "NA"))
     
     #coerce timestamps to POSIXct; note that with fastPOSIXct raw
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
