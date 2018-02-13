@@ -48,8 +48,12 @@
 #'     Default value is 0 (no trailing points). A value
 #'     of \code{Inf} will show all points from start.
 #'
+#' @param preview controls number of frames created.  Useful for
+#'   checking output before processing large job.  Default (Inf)
+#'   creates all frames.
+#'
 #' @param ... Graphical parameters for plotting fish markers.  Any
-#'   argument that can be possed to \code{plot::points}, such as \code{cex =
+#'   argument that can be passed to \code{plot::points}, such as \code{cex =
 #'   2}, \code{pch = 21}.
 #' 
 #' @return Sequentially-numbered png files (one for each frame) and 
@@ -60,16 +64,21 @@
 #' @examples
 #'
 #' # load detection data
-#' det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
+#' det_file <- system.file("extdata", "walleye_detections.zip",
+#'                          package = "glatos")
 #' det_file <- unzip(det_file, "walleye_detections.csv")
 #' dtc <- read_glatos_detections(det_file)
-#'
-#' # shrink data to speed-up
-#' dtc <- dtc[1:5000,]
 #' 
 #' # take a look
 #' head(dtc)
 #'
+#' setDT(dtc)
+#'setkey(dtc, animal_id)
+#'dtc <- dtc[.(c("153", "22", "23"))]
+#'
+#'write.csv(dtc, "test.csv")
+#' 
+#' 
 #' # load receiver location data
 #' rec_file <- system.file("extdata", 
 #'   "receiver_locations_2011.csv", package = "glatos")
@@ -84,43 +93,48 @@
 #' # environment variable then you'll need to do that  
 #' # or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
 #' 
-#' # make sequential frames but don't make animation  
+#' # make frames, preview the first 5 
 #' myDir <- paste0(getwd(),"/frames1")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE, preview = 5)
 #'
-#' # make sequential frames, and animate.  Keep both animation and frames and change default color of fish markers to red.
-#' myDir <- paste0(getwd(), "/frames2")
+#' # make frames but not animation 
+#' myDir <- paste0(getwd(),"/frames2")
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
+#' 
+#' # make sequential frames, and animate.  Make animation and
+#' # frames. change default color of fish markers to red.
+#' myDir <- paste0(getwd(), "/frames3")
 #' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, col="red")
 #'
 #' # make sequential frames, and animate, add 5-day tail
-#' myDir <- paste0(getwd(), "/frames3")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=5)
+#' myDir <- paste0(getwd(), "/frames4")
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=0)
 #' 
 #' # make animation, remove frames.
-#' myDir <- paste0(getwd(), "/frames4")
+#' myDir <- paste0(getwd(), "/frames5")
 #' make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE)
 #'
 #' \dontrun{
 #' # if ffmpeg is not on system path
 #'
 #' # windows
-#' myDir <- paste0(getwd(), "/frames5")
+#' myDir <- paste0(getwd(), "/frames6")
 #' make_frames(pos1, recs=recs, out_dir=my_dir, animate=TRUE,
 #' ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
 #'
 #' # mac
-#' myDir <- paste0(getwd(), "/frames6")
-#' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="/path/to/ffmpeg")}
+#' myDir <- paste0(getwd(), "/frames7")
+#' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE,
+#' ffmpeg="/path/to/ffmpeg")}
 #'
 #' @export
-#' 
 
 make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         background_ylim = c(41.3, 49.0),
                         background_xlim = c(-92.45, -75.87),
                         show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
                         ani_name = "animation.mp4", frame_delete = FALSE,
-                        overwrite = FALSE, ffmpeg = NA, ...){
+                        overwrite = FALSE, ffmpeg = NA, preview = Inf, ...){
   
   # Try calling ffmpeg if animate = TRUE.
   # If animate = FALSE, video file is not produced- no need to check for package.
@@ -140,12 +154,10 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   }
 
   # Convert proc_obj and recs dataframes into data.table objects
-  setDT(proc_obj)
+  work_proc_obj <- proc_obj
 
-  # make copy of proc_obj because of data.table pass by reference
-  work_proc_obj <- copy(proc_obj)
-  proc_obj <- as.data.frame(proc_obj)
-
+  setDT(work_proc_obj)
+  
   # set recs to data.table  
   if(!is.null(recs)){
     setDT(recs)
@@ -162,6 +174,9 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   # extract time sequence for plotting
   t_seq <- unique(work_proc_obj$bin_timestamp)
 
+  # create num group for later
+  work_proc_obj[, grp_num := .GRP, by = bin_timestamp]
+ 
   # make tails if needed
   if(tail_dur == 0){
 
@@ -210,7 +225,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     }
   
   # define custom plot function
-  cust_plot <- function(x, proc_obj, sub_recs, out_dir, background,
+  cust_plot <- function(x, obj, sub_recs, out_dir, background,
                         background_xlim, background_ylim, show_interpolated){
 
     # graphical params for fish markers
@@ -269,14 +284,14 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     lines(timeline_x, timeline_y, col = "grey70", lwd = 20*figRatio, lend = 0)
     
     # Calculate the duration of the animation based on data extents
-    time_dur <- (as.numeric(max(proc_obj$grp)) - as.numeric(min(proc_obj$grp)))
+    time_dur <- (as.numeric(max(obj$grp)) - as.numeric(min(obj$grp)))
     
     # Add labels to timeline
-    labels <- seq(as.POSIXct(format(min(proc_obj$grp), "%Y-%m-%d")),
-                  as.POSIXct(format(max(proc_obj$grp), "%Y-%m-%d")),
+    labels <- seq(as.POSIXct(format(min(obj$grp), "%Y-%m-%d")),
+                  as.POSIXct(format(max(obj$grp), "%Y-%m-%d")),
                   length.out = 5)
     labels_ticks <- as.POSIXct(format(labels, "%Y-%m-%d"), tz = "GMT")
-    ptime <- (as.numeric(labels_ticks) - as.numeric(min(proc_obj$grp))) / time_dur
+    ptime <- (as.numeric(labels_ticks) - as.numeric(min(obj$grp))) / time_dur
     labels_x <- timeline_x[1] + (diff(timeline_x) * ptime)
     text(x = labels_x,
          y = timeline_y[1]-0.01*(ylim_diff),
@@ -285,7 +300,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
          pos = 1)
 
     # Update timeline
-    ptime <- (as.numeric(x[1,"grp"]) - as.numeric(min(proc_obj$grp))) / time_dur
+    ptime <- (as.numeric(x[1,"grp"]) - as.numeric(min(obj$grp))) / time_dur
 
     # Proportion of timeline elapsed
     timeline_x_i <- timeline_x[1] + diff(timeline_x) * ptime
@@ -307,6 +322,25 @@ if(length(dots) == 0){
 
   setkey(work_proc_obj, grp)
 
+
+  if(preview > 0 & is.finite(preview)){
+    work_proc_obj <- work_proc_obj[grp_num %in% (1:preview),]
+    # create images
+    work_proc_obj[, {setTxtProgressBar(pb, .GRP);
+      cust_plot(x = .SD, work_proc_obj, sub_recs, out_dir, background, background_xlim,
+                background_ylim, show_interpolated)}, by = grp,
+      .SDcols = c("bin_timestamp", "longitude", "latitude", "record_type", "f_name", "grp")]
+    close(pb)
+    message(paste("preview frames are in\n", out_dir))
+    stop
+  }
+  
+  if(preview == 0){close(pb)
+    message("set preview > 0 to see frames")
+    stop}
+
+
+if(is.infinite(preview)){
   # create images
  work_proc_obj[, {setTxtProgressBar(pb, .GRP);
     cust_plot(x = .SD, work_proc_obj, sub_recs, out_dir, background, background_xlim,
@@ -329,3 +363,5 @@ if(length(dots) == 0){
                output_dir = out_dir, overwrite = overwrite, ffmpeg = ffmpeg)
     message(paste("video and frames in \n", out_dir))}
 }
+}
+
