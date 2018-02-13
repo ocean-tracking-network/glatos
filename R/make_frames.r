@@ -64,9 +64,8 @@
 #' @examples
 #'
 #' # load detection data
-#' det_file <- system.file("extdata", "walleye_detections.zip",
+#' det_file <- system.file("extdata", "walleye_detections.csv",
 #'                          package = "glatos")
-#' det_file <- unzip(det_file, "walleye_detections.csv")
 #' dtc <- read_glatos_detections(det_file)
 #' 
 #' # take a look

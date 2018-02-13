@@ -105,7 +105,11 @@ points(pts3, pch=20, col='magenta', lwd=2, cex=1.5)
 --------------------------------------------------
 # EXAMPLE #2 - GLATOS detection data
 
-# load detection data
+ # load detection data
+ det_file <- system.file("extdata", "walleye_detections.csv",
+                         package = "glatos")
+ det <- read_glatos_detections(det_file)
+
 det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
 det_file <- unzip(det_file, "walleye_detections.csv")
 det <- read_glatos_detections(det_file)
