@@ -36,7 +36,7 @@
 #' @examples
 #' #get path to example GLATOS Data Workbook
 #' wb_file <- system.file("extdata", 
-#'   "SMRSL_GLATOS_20140828.xlsm", package = "glatos")
+#'   "walleye_workbook.xlsm", package = "glatos")
 #' wb <- read_glatos_workbook(wb_file)
 #'
 #' @export

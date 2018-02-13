@@ -4,7 +4,7 @@
 \name{walleye_detections}
 \alias{walleye_detections}
 \title{A data frame containing fish detection data}
-\format{An object of class \code{glatos_detections} (inherits from \code{data.frame}) with 150926 rows and 30 columns.}
+\format{An object of class \code{glatos_detections} (inherits from \code{data.frame}) with 7180 rows and 30 columns.}
 \usage{
 walleye_detections
 }

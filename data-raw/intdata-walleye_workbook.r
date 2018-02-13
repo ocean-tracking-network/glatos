@@ -3,17 +3,15 @@
 
 #get path to example workbook file
 wb_file <- system.file("extdata", 
-  "SMRSL_GLATOS_20140828.xlsm", package = "glatos")
-lamprey_workbook <- read_glatos_workbook(wb_file)
+  "walleye_workbook.xlsm", package = "glatos")
+walleye_workbook <- read_glatos_workbook(wb_file)
 
 #----------------------------------------------------
 
-#add to internal data objects
-isd <- file.path("..","R/sysdata.rda") 
-append.Rda <- function(x, file) {
-  old.objects <- load(file, new.env())
-  new.objects <- deparse(substitute(x))
-  old.objects <- setdiff(old.objects, new.objects)
-  save(list = c(old.objects, new.objects), file = file)
-}
-append.Rda(lamprey_workbook, isd)
+#add to sysdata.rda
+rda_file <- file.path("..","R/sysdata.rda")
+glatos:::add_internal_data(walleye_workbook, rda_file)
+
+#for exported ('public') data
+#devtools::use_data(walleye_workbook, pkg = "..", overwrite = TRUE)
+
