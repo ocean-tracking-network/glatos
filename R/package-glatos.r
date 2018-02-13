@@ -81,4 +81,4 @@
 #' @docType package
 #' @name glatos
 #' @import data.table sp
-NULL
+globalVariables(".")
