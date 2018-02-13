@@ -40,8 +40,9 @@ A new column (\code{min_lag}) is added to the input
 \examples{
 
 # load detection file
-det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
-det_file <- unzip(det_file, "walleye_detections.csv")
+
+det_file <- system.file("extdata", "walleye_detections.csv",
+                         package = "glatos")
 dtc <- read_glatos_detections(det_file)
 
 # calculate min_lag

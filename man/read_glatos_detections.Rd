@@ -31,9 +31,8 @@ in UTC timezone per GLATOS standard.
 }
 \examples{
 #get path to example detection file
-det_file <- system.file("extdata", 
-  "walleye_detections.zip", package = "glatos")
-det_file <- unzip(det_file, "walleye_detections.csv")
+det_file <- system.file("extdata", "walleye_detections.csv",
+                         package = "glatos")
 det <- read_glatos_detections(det_file)
 
 }

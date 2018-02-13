@@ -8,7 +8,7 @@ make_frames(proc_obj, recs = NULL, out_dir = getwd(),
   background_ylim = c(41.3, 49), background_xlim = c(-92.45, -75.87),
   show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
   ani_name = "animation.mp4", frame_delete = FALSE, overwrite = FALSE,
-  ffmpeg = NA, ...)
+  ffmpeg = NA, preview = Inf, ...)
 }
 \arguments{
 \item{proc_obj}{A data frame created by
@@ -53,8 +53,12 @@ the ffmpeg folder you can download from https://ffmpeg.org/. This argument
 is only needed if ffmpeg has not been added to your path variable on your
 computer.}
 
+\item{preview}{controls number of frames created.  Useful for
+checking output before processing large job.  Default (Inf)
+creates all frames.}
+
 \item{...}{Graphical parameters for plotting fish markers.  Any
-argument that can be possed to \code{plot::points}, such as \code{cex =
+argument that can be passed to \code{plot::points}, such as \code{cex =
 2}, \code{pch = 21}.}
 }
 \value{
@@ -70,16 +74,13 @@ frames into a video animation (mp4 file).
 \examples{
 
 # load detection data
-det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
-det_file <- unzip(det_file, "walleye_detections.csv")
+det_file <- system.file("extdata", "walleye_detections.csv",
+                         package = "glatos")
 dtc <- read_glatos_detections(det_file)
-
-# shrink data to speed-up
-dtc <- dtc[1:5000,]
 
 # take a look
 head(dtc)
-
+ 
 # load receiver location data
 rec_file <- system.file("extdata", 
   "receiver_locations_2011.csv", package = "glatos")
@@ -94,33 +95,39 @@ recs <- read_glatos_receivers(rec_file)
 # environment variable then you'll need to do that  
 # or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
 
-# make sequential frames but don't make animation  
+# make frames, preview the first 5 
 myDir <- paste0(getwd(),"/frames1")
+make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE, preview = 5)
+
+# make frames but not animation 
+myDir <- paste0(getwd(),"/frames2")
 make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 
-# make sequential frames, and animate.  Keep both animation and frames and change default color of fish markers to red.
-myDir <- paste0(getwd(), "/frames2")
+# make sequential frames, and animate.  Make animation and
+# frames. change default color of fish markers to red.
+myDir <- paste0(getwd(), "/frames3")
 make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, col="red")
 
 # make sequential frames, and animate, add 5-day tail
-myDir <- paste0(getwd(), "/frames3")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=5)
+myDir <- paste0(getwd(), "/frames4")
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=0)
 
 # make animation, remove frames.
-myDir <- paste0(getwd(), "/frames4")
+myDir <- paste0(getwd(), "/frames5")
 make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE)
 
 \dontrun{
 # if ffmpeg is not on system path
 
 # windows
-myDir <- paste0(getwd(), "/frames5")
+myDir <- paste0(getwd(), "/frames6")
 make_frames(pos1, recs=recs, out_dir=my_dir, animate=TRUE,
 ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
 
 # mac
-myDir <- paste0(getwd(), "/frames6")
-make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE, ffmpeg="/path/to/ffmpeg")}
+myDir <- paste0(getwd(), "/frames7")
+make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE,
+ffmpeg="/path/to/ffmpeg")}
 
 }
 \author{
