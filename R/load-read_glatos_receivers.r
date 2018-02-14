@@ -27,7 +27,8 @@
 #' @examples
 #' #get path to example receiver_locations file
 #' rec_file <- system.file("extdata", 
-#'   "receiver_locations_2011.csv", package = "glatos")
+#'   "sample_receivers.csv", package = "glatos")
+#'   
 #' rcv <- read_glatos_receivers(rec_file)
 #'
 #' @export
