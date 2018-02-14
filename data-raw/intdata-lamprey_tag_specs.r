@@ -8,14 +8,10 @@ lamprey_tag_specs <- read_vemco_tag_specs(tag_file, file_format = "vemco_xls")
 
 #----------------------------------------------------
 
-#add to internal data objects
-isd <- file.path("..","R/sysdata.rda") 
-append.Rda <- function(x, file) {
-  load(file)
-  old.objects <- load(file, new.env())
-  new.objects <- deparse(substitute(x))
-  save(list = c(old.objects, new.objects), file = file)
-  }
-append.Rda(lamprey_tag_specs, isd)
+#add to sysdata.rda
+rda_file <- file.path("..","R/sysdata.rda")
+glatos:::add_internal_data(lamprey_tag_specs, rda_file)
 
+#for exported ('public') data
+#devtools::use_data(lamprey_tag_specs, pkg = "..", overwrite = TRUE)
 
