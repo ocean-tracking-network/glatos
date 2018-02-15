@@ -109,11 +109,7 @@ points(pts3, pch=20, col='magenta', lwd=2, cex=1.5)
  det_file <- system.file("extdata", "walleye_detections.csv",
                          package = "glatos")
  det <- read_glatos_detections(det_file)
-
-det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
-det_file <- unzip(det_file, "walleye_detections.csv")
-det <- read_glatos_detections(det_file)
-
+#'
 # take a look
 head(det)
  

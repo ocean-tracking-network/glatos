@@ -101,11 +101,7 @@
 #'  det_file <- system.file("extdata", "walleye_detections.csv",
 #'                          package = "glatos")
 #'  det <- read_glatos_detections(det_file)
-#' 
-#' det_file <- system.file("extdata", "walleye_detections.zip", package = "glatos")
-#' det_file <- unzip(det_file, "walleye_detections.csv")
-#' det <- read_glatos_detections(det_file)
-#'
+#' #'
 #' # take a look
 #' head(det)
 #'  
@@ -190,6 +186,7 @@ interpolate_path <- function(detections, trans = NULL, int_time_stamp = 86400,
     out <- na.omit(out, cols = "i_lat")
     setnames(out, c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type"))
     out <- unique(out)
+    out <- setorder(out, animal_id, bin_timestamp, -record_type)
     return(as.data.frame(out))
     stop
   }
@@ -396,6 +393,7 @@ interpolate_path <- function(detections, trans = NULL, int_time_stamp = 86400,
   setnames(out, c("animal_id", "bin_timestamp", "latitude", "longitude", "record_type"))
   out <- na.omit(out, cols = "latitude")
   out <- unique(out)
+  out <- setorder(out, animal_id, bin_timestamp, -record_type)
   return(as.data.frame(out))
 }
 
