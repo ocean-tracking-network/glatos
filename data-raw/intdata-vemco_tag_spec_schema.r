@@ -12,7 +12,7 @@ vemco_tag_spec_schema <- list(
 vemco_tag_spec_schema$vemco_xls$`tag summary` <- read.table(text = '
   name                                  type
   "Sales Order"	                        character
-  "Serial No."                          numeric
+  "Serial No."                          character
   "# of ID\'s"                          numeric
   "Customer"                            character
   "Researcher"                          character
@@ -63,13 +63,10 @@ vemco_tag_spec_schema$vemco_xls$`tag summary` <- read.table(text = '
 
 #---------------------------------
 
-#add to internal data objects
-isd <- file.path("..","R/sysdata.rda") 
-append.Rda <- function(x, file) {
-  load(file)
-  old.objects <- load(file, new.env())
-  new.objects <- deparse(substitute(x))
-  old.objects <- setdiff(old.objects, new.objects)
-  save(list = c(old.objects, new.objects), file = file)
-}
-append.Rda(vemco_tag_spec_schema, isd)
+#add to sysdata.rda
+rda_file <- file.path("..","R/sysdata.rda")
+glatos:::add_internal_data(vemco_tag_spec_schema, rda_file)
+
+#for exported ('public') data
+#devtools::use_data(vemco_tag_spec_schema, pkg = "..", overwrite = TRUE)
+

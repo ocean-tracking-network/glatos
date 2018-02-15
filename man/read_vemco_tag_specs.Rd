@@ -74,10 +74,10 @@ This function is not endorsed or supported by any transmitter manufacturer.
 \examples{
 #get path to example Vemco tag spec file
 spec_file <- system.file("extdata", 
-  "lamprey_tag_specs.xls", package="glatos")
+  "lamprey_tag_specs.xls", package = "glatos")
 my_tags <- read_vemco_tag_specs(spec_file, file_format = "vemco_xls")
 
 }
 \author{
-C. Holbrook (cholbrook@usgs.gov)
+C. Holbrook, \email{cholbrook@usgs.gov}
 }

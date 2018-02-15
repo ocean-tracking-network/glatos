@@ -64,13 +64,13 @@
 #' \item{accel_on_time_secs}{}
 #' 
 #' }
-#'
-#' @author C. Holbrook (cholbrook@usgs.gov) 
+#' 
+#' @author C. Holbrook, \email{cholbrook@usgs.gov}
 #'
 #' @examples
 #' #get path to example Vemco tag spec file
 #' spec_file <- system.file("extdata", 
-#'   "lamprey_tag_specs.xls", package="glatos")
+#'   "lamprey_tag_specs.xls", package = "glatos")
 #' my_tags <- read_vemco_tag_specs(spec_file, file_format = "vemco_xls")
 #'
 #' @export
@@ -86,8 +86,7 @@ read_vemco_tag_specs <- function(tag_file, file_format = NULL) {
   sheets <- tolower(readxl::excel_sheets(tag_file))
   
   
-  #Identify workbook version
-  ##TODO: expand workbook version matching to use column names in each sheet
+  #Identify file version
   id_file_format <- function(schema, sheets){
     if(all(names(schema$vemco_xls) %in% sheets)) { 
       return("vemco_xls") 
@@ -115,19 +114,35 @@ read_vemco_tag_specs <- function(tag_file, file_format = NULL) {
       spec_i <- vemco_tag_spec_schema$vemco_xls[[sheets_to_read[i]]]
 
       if(length(spec_i) > 1){
-        tmp <- readxl::read_excel(tag_file, 
-          sheet = match(sheets_to_read[i], tolower(sheets)), 
-          col_types = gsub("character", "text", spec_i$type))
-        wb[[sheets_to_read[i]]] <- data.frame(tmp, check.names = FALSE)
+         #read all columns as character/text because it seems they are often 
+         # formatted as text in files from Vemco
+         tmp <- readxl::read_excel(tag_file, 
+           sheet = match(sheets_to_read[i], tolower(sheets)), 
+           col_types = "text")
       
+         #coerce to data frame and add to wb
+         wb[[sheets_to_read[i]]] <- data.frame(tmp, check.names = FALSE)
+         
+        # tmp <- readxl::read_excel(tag_file, 
+        #   sheet = match(sheets_to_read[i], tolower(sheets)), 
+        #   col_types = gsub("character", "text", spec_i$type))
+        # wb[[sheets_to_read[i]]] <- data.frame(tmp, check.names = FALSE)
+        
+        
         #trim leading and trailing white space from column names
         names(wb[[sheets_to_read[i]]]) <- 
           trimws(names(wb[[sheets_to_read[i]]]))
+        
+        #coerce numeric columns
+        for(j in spec_i$name[spec_i$type == "numeric"]) 
+          wb[[sheets_to_read[i]]][ , j] <- 
+            as.numeric(wb[[sheets_to_read[i]]][ , j])
       }
     }
     
     #coerce to class tag_spec
     spec_out <- with(wb$`tag summary`, data.frame(
+      sales_order = `Sales Order`,
       serial_number = `Serial No.`,
       manufacturer = "Vemco",
       model = `Tag Family`,
