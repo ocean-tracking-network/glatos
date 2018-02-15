@@ -174,12 +174,10 @@ glatos_workbook_schema$v1.3$tagging <- read.table(text="
 #\Version 1.3
 #----------------------------------------------------
 
-#add to internal data objects
-isd <- file.path("..","R/sysdata.rda") 
-append.Rda <- function(x, file) {
-  old.objects <- load(file, new.env())
-  new.objects <- deparse(substitute(x))
-  old.objects <- setdiff(old.objects, new.objects)
-  save(list = c(old.objects, new.objects), file = file)
-}
-append.Rda(glatos_workbook_schema, isd)
+#add to sysdata.rda
+rda_file <- file.path("..","R/sysdata.rda")
+glatos:::add_internal_data(glatos_workbook_schema, rda_file)
+
+#for exported ('public') data
+#devtools::use_data(glatos_workbook_schema, pkg = "..", overwrite = TRUE)
+
