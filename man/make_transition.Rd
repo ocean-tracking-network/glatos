@@ -4,19 +4,30 @@
 \alias{make_transition}
 \title{Create transition layer from polygon shapefile}
 \usage{
-make_transition(in_file = ".", res = c(0.1, 0.1))
+make_transition(in_file = ".", output = "out.tif", output_dir = ".",
+  res = c(0.1, 0.1))
 }
 \arguments{
 \item{in_file}{character, file path to polygon shapefile (with
 extension of *.shp)}
 
+\item{output}{character, name of output file for rasterized \code{in_file}}
+
+\item{output_dir}{character, directory that output file will be written}
+
 \item{res}{two element vector that specifies the x and y dimension
 of output raster cells.  Units of res are same as input
-shapefile.  In example, units are degrees.}
+shapefile.}
 }
 \value{
-returns geo-corrected transition raster layer where land = 0 and
-water=1 (see \code{gdistance})
+A list with two elements:
+\describe{
+   \item{transition}{a geo-corrected transition raster layer where land = 0
+      and water=1
+  (see \code{gdistance})}
+   \item{rast}{rasterized input layer of class \code{raster}}}
+  Additonally, rasterized version of input shapefile is written to computer
+  at \code{output_dir}
 }
 \description{
 Create transition layer for \code{interpolatePath} from polygon shapefile.
@@ -44,6 +55,14 @@ poly <- unzip(poly, exdir = tempdir())
 
 # make_transition layer
 tst <- make_transition(poly[grepl("*.shp", poly)], res = c(0.1, 0.1))
+
+# plot raster layer
+# notice land = 1, water = 0
+raster::plot(tst$rast)
+
+# increase resolution
+tst1 <- make_transition(poly[grepl("*.shp", poly)], res = c(0.01, 0.01))
+raster::plot(tst1$rast)
 
 }
 \author{
