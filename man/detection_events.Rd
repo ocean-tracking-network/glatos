@@ -4,10 +4,20 @@
 \alias{detection_events}
 \title{Classify discrete events in detection data}
 \usage{
-detection_events(detections, location_col = "glatos_array", time_sep = Inf,
+detection_events(det, location_col = "glatos_array", time_sep = Inf,
   condense = TRUE)
 }
 \arguments{
+\item{location_col}{A character string indicating the column name in the
+detections data frame that will be used as the location grouping variable
+(e.g. "glatos_array", "station").}
+
+\item{time_sep}{Amount of time (in seconds) that must pass between 
+sequential detections on the same receiver (or group of receivers, 
+depending on specified location) before that detection is considered to 
+belong to a new detection event. The default value \code{Inf}, will not 
+define events based on elapsed time (only when location changes).}
+
 \item{detections}{A data frame containing detection data with at least 
   five columns; four columns must be named 'animal_id', 
   'detection_timestamp_utc', 'deploy_lat', and 'deploy_long' as described 
@@ -26,16 +36,6 @@ detection_events(detections, location_col = "glatos_array", time_sep = Inf,
  \item \code{deploy_long} A character string with the name of the column
     containing longitude of the receiver in decimal degrees (NAD83).
 }}
-
-\item{location_col}{A character string indicating the column name in the
-detections data frame that will be used as the location grouping variable
-(e.g. "glatos_array", "station").}
-
-\item{time_sep}{Amount of time (in seconds) that must pass between 
-sequential detections on the same receiver (or group of receivers, 
-depending on specified location) before that detection is considered to 
-belong to a new detection event. The default value \code{Inf}, will not 
-define events based on elapsed time (only when location changes).}
 }
 \value{
 If \code{collapse = TRUE}, a data frame containing discrete 
@@ -81,12 +81,12 @@ mean_latitude and mean_longitude columns in the output dataframe are
 #get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
                          package = "glatos")
-dtc <- read_glatos_detections(det_file)
+det <- read_glatos_detections(det_file)
 
-filt0 <- detection_events(walleye_detections) #no time filter
+filt0 <- detection_events(det) #no time filter
 
 #7-day filter
-filt_7d <- detection_events(walleye_detections , time_sep = 604800) 
+filt_7d <- detection_events(det , time_sep = 604800) 
 
 }
 \author{

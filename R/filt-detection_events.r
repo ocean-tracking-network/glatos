@@ -72,24 +72,22 @@
 #' #get path to example detection file
 #' det_file <- system.file("extdata", "walleye_detections.csv",
 #'                          package = "glatos")
-#' dtc <- read_glatos_detections(det_file)
+#' det <- read_glatos_detections(det_file)
 #'
-#' filt0 <- detection_events(walleye_detections) #no time filter
+#' filt0 <- detection_events(det) #no time filter
 #' 
 #' #7-day filter
-#' filt_7d <- detection_events(walleye_detections , time_sep = 604800) 
+#' filt_7d <- detection_events(det , time_sep = 604800) 
 #'
 #' @export
 
-detection_events <- function(detections,
+detection_events <- function(det,
                              location_col = "glatos_array",
                              time_sep = Inf,
                              condense = TRUE){
-
-  # Set variables to NULL that will appear in data.table calls 
-  #  to avoid R CMD check NOTES
-  animal_id <- detection_timestamp_utc <- time_diff <- arrive <-
-    depart <- event <- deploy_lat <- deploy_long <- NULL
+ 
+   # Make detections data frame a data.table object for processing speed
+  detections <- data.table::as.data.table(det)
   
   
   # Check value of condense
@@ -116,9 +114,11 @@ detection_events <- function(detections,
 	       call. = FALSE)
 	} 
 	
-	# Make detections data frame a data.table object for processing speed
-	data.table::setDT(detections)
-
+	# Set variables to NULL that will appear in data.table calls 
+	#  to avoid R CMD check NOTES
+	animal_id <- detection_timestamp_utc <- time_diff <- arrive <-
+	  depart <- event <- deploy_lat <- deploy_long <- NULL
+	
 	# Change name of location variable column for convenience 
 	data.table::setnames(detections, location_col, "location_col")
 		
