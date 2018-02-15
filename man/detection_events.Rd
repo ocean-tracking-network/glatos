@@ -8,23 +8,13 @@ detection_events(det, location_col = "glatos_array", time_sep = Inf,
   condense = TRUE)
 }
 \arguments{
-\item{location_col}{A character string indicating the column name in the
-detections data frame that will be used as the location grouping variable
-(e.g. "glatos_array", "station").}
-
-\item{time_sep}{Amount of time (in seconds) that must pass between 
-sequential detections on the same receiver (or group of receivers, 
-depending on specified location) before that detection is considered to 
-belong to a new detection event. The default value \code{Inf}, will not 
-define events based on elapsed time (only when location changes).}
-
-\item{detections}{A data frame containing detection data with at least 
+\item{det}{A data frame containing detection data with at least 
   five columns; four columns must be named 'animal_id', 
   'detection_timestamp_utc', 'deploy_lat', and 'deploy_long' as described 
   below and a fifth column containing a location grouping variable, is 
   specified using \code{location_col}.
   
-  The following four columns must appear in \code{detections}: 
+  The following four columns must appear in \code{det}: 
 \itemize{
   \item \code{animal_id} A character string with the name of the column 
          containing the individual animal identifier.
@@ -36,9 +26,24 @@ define events based on elapsed time (only when location changes).}
  \item \code{deploy_long} A character string with the name of the column
     containing longitude of the receiver in decimal degrees (NAD83).
 }}
+
+\item{location_col}{A character string indicating the column name in the
+detections data frame that will be used as the location grouping variable
+(e.g. "glatos_array", "station").}
+
+\item{time_sep}{Amount of time (in seconds) that must pass between 
+sequential detections on the same receiver (or group of receivers, 
+depending on specified location) before that detection is considered to 
+belong to a new detection event. The default value \code{Inf}, will not 
+define events based on elapsed time (only when location changes).}
+
+\item{condense}{A logical indicating if the result should be a condensed 
+data frame (\code{condense = TRUE}; default value) with one event per row, 
+or the input data frame with new event data columns added 
+\code{condense = TRUE}.}
 }
 \value{
-If \code{collapse = TRUE}, a data frame containing discrete 
+If \code{condense = TRUE}, a data frame containing discrete 
   detection event data with the following columns:
 \item{mean_latitude}{Mean latitude of detections comprising each event.}
 	\item{mean_longitude}{Mean longitude of detections comprising each event.}
@@ -51,8 +56,8 @@ If \code{collapse = TRUE}, a data frame containing discrete
  \item{res_time_sec}{The elapsed time in seconds between the first and last 
 	detection in a given event.}
 	
-If \code{collapse = FALSE}, a data frame matching the input data frame 
-\code{detections} with the following columns added:
+If \code{condense = FALSE}, a data frame matching the input data frame 
+\code{det} with the following columns added:
  \item{time_diff}{Lagged time difference in seconds between successive 
    detections of each animal_id.}
  \item{arrive}{Flag (0 or 1) representing the first detection in each 
@@ -87,6 +92,9 @@ filt0 <- detection_events(det) #no time filter
 
 #7-day filter
 filt_7d <- detection_events(det , time_sep = 604800) 
+
+#7-day filter but return do not condense result
+filt_7d <- detection_events(det , time_sep = 604800, condense = FALSE) 
 
 }
 \author{
