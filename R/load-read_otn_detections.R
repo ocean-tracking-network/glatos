@@ -1,22 +1,25 @@
-#' @title 
 #' Read data from a OTN detection file
 #' 
-#' @description Read data from a standard OTN detection (csv) file and return
+#' Read data from a standard OTN detection (csv) file and return
 #' a data.frame of class \code{glatos_detections}.
 #'
 #' @param det_file A character string with path and name of detection file in 
 #'  OTN detection extract format (*.csv). If only file name is given, then the 
 #'  file must be located in the working directory.
 #'  
-#' @details
-#' Data are loaded using the \code{fread} function in the 
-#' \code{data.table} package and timestamps are coerced to POSIXct usign the 
-#' \code{fastPOSIXct} function in the \code{fasttime} package. All times must be
-#' in UTC timezone per GLATOS standard.
+#' @details 
+#' Data are loaded using \code{\link[data.table]{fread}} package and timestamps
+#' are coerced to POSIXct using the \code{\link[fasttime]{fastPOSIXct}}. All
+#' times must be in UTC timezone per GLATOS standard.
 #' 
-#' @return A data.frame:
+#' @details 
+#' Column names are changed to match GLATOS standard columns when possible. 
+#' Otherwise, OTN columns and column names are retained.
+#' 
+#' @return A data.frame of class \code{glatos_detections} that includes OTN 
+#' columns that do not map directly to GLATOS columns. 
 #'
-#' @author A. Nunes (anunes@dal.ca) 
+#' @author A. Nunes, \email{anunes@dal.ca}
 #'
 #' @examples
 #' #get path to example detection file
