@@ -16,7 +16,8 @@ Imports:
 		raster,
 		readxl,
     rgdal,
-		sp
+		rgeos,
+		sp,
 Suggests: testthat
 URL: https://gitlab.oceantrack.org/GreatLakes/glatos
 BugReports: https://gitlab.oceantrack.org/GreatLakes/glatos/issues
