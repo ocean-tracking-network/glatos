@@ -1,4 +1,4 @@
-#' Plot time series event data
+#' Plot time series glatos event data
 #'
 #' Create an abacus-like plot for discrete event data with start 
 #' and end times. Suitable for data like detection events 
