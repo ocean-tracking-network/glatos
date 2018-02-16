@@ -8,7 +8,7 @@ make_frames(proc_obj, recs = NULL, out_dir = getwd(),
   background_ylim = c(41.3, 49), background_xlim = c(-92.45, -75.87),
   show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
   ani_name = "animation.mp4", frame_delete = FALSE, overwrite = FALSE,
-  ffmpeg = NA, preview = Inf, ...)
+  ffmpeg = NA, preview = FALSE, ...)
 }
 \arguments{
 \item{proc_obj}{A data frame created by
@@ -53,9 +53,8 @@ the ffmpeg folder you can download from https://ffmpeg.org/. This argument
 is only needed if ffmpeg has not been added to your path variable on your
 computer.}
 
-\item{preview}{controls number of frames created.  Useful for
-checking output before processing large job.  Default (Inf)
-creates all frames.}
+\item{preview}{write first frame.  Useful for
+checking output before processing large number of frames.  Default \code{preview = TRUE}}
 
 \item{...}{Graphical parameters for plotting fish markers.  Any
 argument that can be passed to \code{plot::points}, such as \code{cex =
@@ -83,7 +82,7 @@ head(dtc)
  
 # load receiver location data
 rec_file <- system.file("extdata", 
-  "receiver_locations_2011.csv", package = "glatos")
+  "sample_receivers.csv", package = "glatos")
 recs <- read_glatos_receivers(rec_file)
 
 # call with defaults; linear interpolation
@@ -95,26 +94,26 @@ recs <- read_glatos_receivers(rec_file)
 # environment variable then you'll need to do that  
 # or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
 
-# make frames, preview the first 5 
+# make frames, preview the first frame
 myDir <- paste0(getwd(),"/frames1")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE, preview = 5)
+make_frames(pos1, recs=recs, out_dir=myDir, preview = TRUE)
 
 # make frames but not animation 
 myDir <- paste0(getwd(),"/frames2")
 make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 
-# make sequential frames, and animate.  Make animation and
-# frames. change default color of fish markers to red.
+# make sequential frames, and animate.  Make animation and frames.
+change default color of fish markers to red and change marker and size.
 myDir <- paste0(getwd(), "/frames3")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, col="red")
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, col="red", pch = 16, cex = 3)
 
-# make sequential frames, and animate, add 5-day tail
+# make sequential frames, animate, add 5-day tail
 myDir <- paste0(getwd(), "/frames4")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=0)
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=5)
 
 # make animation, remove frames.
 myDir <- paste0(getwd(), "/frames5")
-make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE)
+make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE, frame_delete = TRUE)
 
 \dontrun{
 # if ffmpeg is not on system path

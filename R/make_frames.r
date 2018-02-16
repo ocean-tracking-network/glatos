@@ -48,9 +48,8 @@
 #'     Default value is 0 (no trailing points). A value
 #'     of \code{Inf} will show all points from start.
 #'
-#' @param preview controls number of frames created.  Useful for
-#'   checking output before processing large job.  Default (Inf)
-#'   creates all frames.
+#' @param preview write first frame.  Useful for
+#'   checking output before processing large number of frames.  Default \code{preview = TRUE}
 #'
 #' @param ... Graphical parameters for plotting fish markers.  Any
 #'   argument that can be passed to \code{plot::points}, such as \code{cex =
@@ -73,7 +72,7 @@
 #'  
 #' # load receiver location data
 #' rec_file <- system.file("extdata", 
-#'   "receiver_locations_2011.csv", package = "glatos")
+#'   "sample_receivers.csv", package = "glatos")
 #' recs <- read_glatos_receivers(rec_file)
 #' 
 #' # call with defaults; linear interpolation
@@ -85,26 +84,26 @@
 #' # environment variable then you'll need to do that  
 #' # or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
 #' 
-#' # make frames, preview the first 5 
+#' # make frames, preview the first frame
 #' myDir <- paste0(getwd(),"/frames1")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE, preview = 5)
+#' make_frames(pos1, recs=recs, out_dir=myDir, preview = TRUE)
 #'
 #' # make frames but not animation 
 #' myDir <- paste0(getwd(),"/frames2")
 #' make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 #' 
-#' # make sequential frames, and animate.  Make animation and
-#' # frames. change default color of fish markers to red.
+#' # make sequential frames, and animate.  Make animation and frames.
+#' change default color of fish markers to red and change marker and size.
 #' myDir <- paste0(getwd(), "/frames3")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, col="red")
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, col="red", pch = 16, cex = 3)
 #'
-#' # make sequential frames, and animate, add 5-day tail
+#' # make sequential frames, animate, add 5-day tail
 #' myDir <- paste0(getwd(), "/frames4")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=0)
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=5)
 #' 
 #' # make animation, remove frames.
 #' myDir <- paste0(getwd(), "/frames5")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE)
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE, frame_delete = TRUE)
 #'
 #' \dontrun{
 #' # if ffmpeg is not on system path
@@ -126,7 +125,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         background_xlim = c(-92.45, -75.87),
                         show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
                         ani_name = "animation.mp4", frame_delete = FALSE,
-                        overwrite = FALSE, ffmpeg = NA, preview = Inf, ...){
+                        overwrite = FALSE, ffmpeg = NA, preview = FALSE, ...){
   
   # Try calling ffmpeg if animate = TRUE.
   # If animate = FALSE, video file is not produced- no need to check for package.
@@ -164,8 +163,6 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   # extract time sequence for plotting
   t_seq <- unique(work_proc_obj$bin_timestamp)
 
-  # create num group for later
-  work_proc_obj[, grp_num := .GRP, by = bin_timestamp]
  
   # make tails if needed
   if(tail_dur == 0){
@@ -195,6 +192,12 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     work_proc_obj[, grp := bin_timestamp]
   }
 
+  # set rows in time order
+  setorder(work_proc_obj, bin_timestamp)
+  
+  # create num group for later
+  work_proc_obj[, grp_num := .GRP, by = bin_timestamp]
+  
   # determine leading zeros needed by ffmpeg and add as new column
   char <- paste0("%", 0, nchar((length(t_seq))), "d")
   setkey(work_proc_obj, bin_timestamp)
@@ -220,11 +223,11 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
 
     # graphical params for fish markers
     dots <- list(...)
-               
+
     if(!is.null(recs)){
       # extract receivers in the water during plot interval
       sub_recs <- recs[between(x$bin_timestamp[1], lower = recs$deploy_date_time,
-                               upper = recs$recover_date_time)]
+                              upper = recs$recover_date_time)]
     }
 
     # Calculate great circle distance in meters of x and y limits.
@@ -306,53 +309,46 @@ if(length(dots) == 0){
     dev.off()
   }
 
-  
-  ### Progress bar
-  grpn <- uniqueN(work_proc_obj$grp)
-  pb <- txtProgressBar(min = 0, max = grpn, style = 3)
+  # order for plotting
+  setkey(work_proc_obj, grp_num)
 
-  setkey(work_proc_obj, grp)
+  if(preview == TRUE){
+    work_proc_obj[grp_num == 1, cust_plot(x = .SD, work_proc_obj, sub_recs, out_dir,
+                                      background, background_xlim, background_ylim,
+                                      show_interpolated), by = grp,
+                  .SDcols = c("bin_timestamp", "longitude", "latitude",
+                              "record_type", "f_name", "grp")]
 
-
-  if(preview > 0 & is.finite(preview)){
-    work_proc_obj <- work_proc_obj[grp_num %in% (1:preview),]
-    # create images
-    work_proc_obj[, {setTxtProgressBar(pb, .GRP);
-      cust_plot(x = .SD, work_proc_obj, sub_recs, out_dir, background, background_xlim,
-                background_ylim, show_interpolated)}, by = grp,
-      .SDcols = c("bin_timestamp", "longitude", "latitude", "record_type", "f_name", "grp")]
-    close(pb)
-    message(paste("preview frames are in\n", out_dir))
-    stop
+    return(paste("preview frames are in \n", out_dir))
   }
   
-  if(preview == 0){close(pb)
-    message("set preview > 0 to see frames")
-    stop}
+  if(preview == FALSE){
 
+    # start progress bar
+    grpn <- uniqueN(work_proc_obj$grp)
+    pb <- txtProgressBar(min = 0, max = grpn, style = 3)
 
-if(is.infinite(preview)){
-  # create images
- work_proc_obj[, {setTxtProgressBar(pb, .GRP);
+    # create images
+     work_proc_obj[, {setTxtProgressBar(pb, .GRP);
     cust_plot(x = .SD, work_proc_obj, sub_recs, out_dir, background, background_xlim,
               background_ylim, show_interpolated)}, by = grp,
     .SDcols = c("bin_timestamp", "longitude", "latitude", "record_type",
                 "f_name", "grp")]
-  close(pb)
-
+    close(pb)
+  }
+  
   if(animate == FALSE & frame_delete == TRUE){message("are you sure?")}
   if(animate == FALSE){message(paste("frames are in\n", out_dir))}
 
   if(animate & frame_delete){
     make_video(dir = out_dir, pattern = paste0(char, ".png"), output = ani_name,
                output_dir = out_dir, overwrite = overwrite, ffmpeg = ffmpeg)
-    unlink(file.path(out_dir, unique(proc_obj$f_name)))
+    unlink(file.path(out_dir, unique(work_proc_obj$f_name)))
     message(paste("video is in\n", out_dir))}
 
   if(animate & !frame_delete){
     make_video(dir = out_dir, pattern = paste0(char, ".png"), output = ani_name,
                output_dir = out_dir, overwrite = overwrite, ffmpeg = ffmpeg)
     message(paste("video and frames in \n", out_dir))}
-}
 }
 
