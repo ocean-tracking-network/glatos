@@ -19,8 +19,9 @@
 #'   containing the location grouping variable (e.g., "glatos_array") in 
 #'   quotes.
 #'
-#' @param as_matrix A logical indicating if output should be formatted as
-#'   a matrix (TRUE) or data frame (FALSE; default).   
+#' @param by_loc A logical indicating if output should summarize detections 
+#'   of each animal across all locations (FALSE; default) or at each 
+#'   location (TRUE) or .   
 #' @param location_vals A character vector with names of all possible values
 #'   in \code{location_col}. If \code{NULL} then all unique values in 
 #'   \code{det[ , "location_col"]} will be used.
@@ -29,12 +30,12 @@
 #'
 #' @return 
 #'   \itemize{
-#'   \item{If \code{as_matrix = FALSE} (default): A data frame containing four
+#'   \item{If \code{by_loc = FALSE} (default): A data frame containing four
 #'   columns, the animal identifier, the total number of detections for each
 #'   animal, the total number of locations at which each animal was detected,
 #'   and a space-separated character string containing a list of all unique
 #'   locations each fish was detected.}
-#'   \item{if \code{as_matrix = TRUE}: A list of three data frames where
+#'   \item{if \code{by_loc = TRUE}: A list of three data frames where
 #'   the first column in each row contains \code{animal_id} and the remaining 
 #'   columns contain data (number of detections, first detection timestamp, 
 #'   and last detection timestamp, respectively).}
@@ -50,10 +51,10 @@
 #' det <- read_glatos_detections(det_file)
 #' 
 #' #basic summary
-#' ds <- summary(det)
+#' ds <- summarize_detections(det)
 #' 
-#' #matrix summary
-#' dsm <- summary(det, as_matrix = TRUE)
+#' #tabular summary - location-specific
+#' dsm <- summarize_detections(det, by_loc = TRUE)
 #' 
 #' #specify all possible glatos_arrays from receiver file
 #' #get example receiver data
@@ -62,13 +63,13 @@
 #'                          package = "glatos")
 #' rec <- read_glatos_receivers(rec_file) 
 #' 
-#' dsm2 <- summary(det, as_matrix = TRUE, 
+#' dsm2 <- summarize_detections(det, by_loc = TRUE, 
 #'                 location_vals = sort(unique(rec$glatos_array)))
 #' 
 #' @export
 
-summary.glatos_detections <- function(det, location_col = "glatos_array",
-                                      as_matrix = FALSE, location_vals = NULL){
+summarize_detections <- function(det, location_col = "glatos_array",
+                                      by_loc = FALSE, location_vals = NULL){
   
   #coerce to data.table
   dtc <- data.table::as.data.table(det)
@@ -92,7 +93,7 @@ summary.glatos_detections <- function(det, location_col = "glatos_array",
     stop("Column 'detection_timestamp_utc' must be of class POSIXct.")
   }  
   
-  if(!as_matrix){
+  if(!by_loc){
     #summarize
     det_sum <- dtc[ , list(first_det = min(detection_timestamp_utc), 
                            last_det  = max(detection_timestamp_utc),
@@ -103,7 +104,7 @@ summary.glatos_detections <- function(det, location_col = "glatos_array",
                       by = animal_id]
   }
   
-  if(as_matrix){
+  if(by_loc){
     #get unique values of locs (if NULL) and animals
     if(is.null(location_vals)) location_vals <- 
                                  sort(unique(det[[location_col]]))
