@@ -1,8 +1,8 @@
-#Make glatos_receivers.rda 
+#Make glatos_receivers.rda
 # (internal data object)
 
 #get path to example receiver_locations file
-rec_file <- system.file("extdata", 
+rec_file <- system.file("extdata",
   "sample_receivers.csv", package = "glatos")
 
 sample_receivers <- read_glatos_receivers(rec_file)
