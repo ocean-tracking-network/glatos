@@ -18,6 +18,7 @@ Imports:
     rgdal,
 		rgeos,
 		sp,
+		gdalUtils
 Suggests: testthat
 URL: https://gitlab.oceantrack.org/GreatLakes/glatos
 BugReports: https://gitlab.oceantrack.org/GreatLakes/glatos/issues
