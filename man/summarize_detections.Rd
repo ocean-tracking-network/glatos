@@ -4,11 +4,11 @@
 \alias{summarize_detections}
 \title{Summarize detections by animal and location}
 \usage{
-summarize_detections(det, location_col = "glatos_array", by_loc = FALSE,
-  location_vals = NULL)
+summarize_detections(det, location_col = "glatos_array",
+  receiver_locs = NULL, animals = NULL, type = "animal")
 }
 \arguments{
-\item{det}{A data frame containing detection data with two columns 
+\item{det}{A data frame containing detection data with the two columns 
 described below and one column containing a location grouping variable 
 specified by \code{location_col}. 
 The following two columns must appear in \code{det}: 
@@ -24,56 +24,106 @@ The following two columns must appear in \code{det}:
 containing the location grouping variable (e.g., "glatos_array") in 
 quotes.}
 
-\item{by_loc}{A logical indicating if output should summarize detections 
-of each animal across all locations (FALSE; default) or at each 
-location (TRUE) or .}
+\item{receiver_locs}{A data frame containing receiver data with the three 
+columns 
+described below and one column containing the location grouping variable 
+specified by \code{location_col}. 
+The following three columns must appear in \code{receiver_locs}: 
+\itemize{
+  \item \code{deploy_lat} Latitude of receiver deployment in decimal 
+   degrees, NAD83.
+  \item \code{deploy_lon} Longitude of receiver deployment in decimal 
+   degrees, NAD83.
+}}
 
-\item{location_vals}{A character vector with names of all possible values
-in \code{location_col}. If \code{NULL} then all unique values in 
-\code{det[ , "location_col"]} will be used.}
+\item{animals}{A character string with the unique values of "animal_id" 
+or a data frame containing the column named 'animal_id'.}
+
+\item{type}{A character string indicating the primary variable to be 
+summarized. Possible values are \code{"animal"} (default), 
+\code{"location"}, and \code{"both"}.}
 }
 \value{
-\itemize{
-  \item{If \code{by_loc = FALSE} (default): A data frame containing four
-  columns, the animal identifier, the total number of detections for each
-  animal, the total number of locations at which each animal was detected,
-  and a space-separated character string containing a list of all unique
-  locations each fish was detected.}
-  \item{if \code{by_loc = TRUE}: A list of three data frames where
-  the first column in each row contains \code{animal_id} and the remaining 
-  columns contain data (number of detections, first detection timestamp, 
-  and last detection timestamp, respectively).}
+If \code{type = "animal"} (default): A data frame containing six
+  columns:
+  \itemize{
+    \item{\code{animal_id}: described above.}
+    \item{\code{num_locs}: number of locations.}
+    \item{\code{num_dets}: number of detections.}
+    \item{\code{first_det}: first detection timestamp.}
+    \item{\code{last_det}: last detections timestamp.}
+    \item{\code{locations}: space-delimited character string with 
+      locations detected.}
+  }
+ If \code{type = "location"} (default): A data frame containing six
+  columns:
+  \itemize{
+    \item{\code{LOCATION_COL}: defined by \code{location_col}.}
+    \item{\code{num_fish}: number of unique animals detected.}
+    \item{\code{num_dets}: number of detections.}
+    \item{\code{first_det}: first detection timestamp.}
+    \item{\code{last_det}: last detections timestamp.}
+    \item{\code{mean_lat}: mean latitude of receivers at this location.}
+    \item{\code{mean_lon}: mean longitude of receivers at this location.}
+  }
+ If \code{type = "both"} (default): A data frame containing six
+  columns:
+  \itemize{
+    \item{\code{animal_id}: described above.}
+    \item{\code{LOCATION_COL}: defined by \code{location_col}.}
+    \item{\code{num_dets}: number of detections.}
+    \item{\code{first_det}: first detection timestamp.}
+    \item{\code{last_det}: last detections timestamp.}
+    \item{\code{mean_lat}: mean latitude of receivers at this location.}
+    \item{\code{mean_lon}: mean longitude of receivers at this location.}
   }
 }
 \description{
 Summarize first and last detection timestamps and number of detections 
-of each animal at each location.
+of each animal at each receiver location or each receiver location, or 
+both.
 }
 \details{
-The list of unique locations is pasted as a space-separated string.
+If \code{receiver_locs} is specified, then \code{mean_lat} and 
+  \code{mean_lon} in output will be calculated from those data; otherwise, 
+  they will be calculated from \code{det}.
 }
 \examples{
 
 #get path to example detection file
-det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
-det <- read_glatos_detections(det_file)
-
-#basic summary
-ds <- summarize_detections(det)
-
-#tabular summary - location-specific
-dsm <- summarize_detections(det, by_loc = TRUE)
-
-#specify all possible glatos_arrays from receiver file
-#get example receiver data
-
-rec_file <- system.file("extdata", "sample_receivers.csv",
-                         package = "glatos")
-rec <- read_glatos_receivers(rec_file) 
-
-dsm2 <- summarize_detections(det, by_loc = TRUE, 
-                location_vals = sort(unique(rec$glatos_array)))
+ det_file <- system.file("extdata", "walleye_detections.csv",
+   package = "glatos")
+ det <- read_glatos_detections(det_file)
+ 
+ #basic summary for each animal
+ ds <- summarize_detections(det)
+ 
+ #basic summary for each location
+ ds <- summarize_detections(det, type = "location")
+ 
+ #basic summary for each animal-location combination
+ ds <- summarize_detections(det, type = "both")
+ 
+ 
+ #add receivers
+ #get example receiver data
+ 
+ rec_file <- system.file("extdata", "sample_receivers.csv",
+   package = "glatos")
+ rec <- read_glatos_receivers(rec_file) 
+ 
+ ds <- summarize_detections(det, receiver_locs = rec, type = "location")
+ 
+ 
+ #add animals
+ #get example animal data from walleye workbook
+ wb_file <- system.file("extdata", "walleye_workbook.xlsm",
+   package = "glatos")
+ wb <- read_glatos_workbook(wb_file) 
+ 
+ ds <- summarize_detections(det, animals = wb$animals, type = "animal")
+ ds <- summarize_detections(det, receiver_locs = rec, animals = wb$animals, 
+   type = "both")
 
 }
 \author{
