@@ -1,62 +1,52 @@
 #' Plot detection locations of acoustic transmitters over time
 #' 
-#' @param detections A data frame containing at least two columns with names 
-#'   specified by \code{detColNames} by \code{type}. The 'location' column
-#'   contains the locations (typically 'glatos_array' or 'station' for GLATOS
-#'   data) that will be plotted on the y-axis. The 'timestamp' column contains
-#'   the datetime stamps for the detections (MUST be of class 'POSIXct').
+#' @param det A data frame containing at least two columns: 
+#'   "1) detection_timestamp_utc" (MUST be of class 'POSIXct'), and 2) a
+#'   location column specified by code{location_col}. The locations column
+#'   (typically 'glatos_array' or 'station' for GLATOS data) will be plotted
+#'   on the y-axis. The 'detections_timestamp_utc' column contains the
+#'   datetime stamps for the the detections.
 #'   
-#' @param type A character string that contains the type of data that is being
-#'   passed in, for example, "OTN", "GLATOS", or "sample".
+#' @param location_col A character string with the name of the column
+#'   containing locations you wish to filter to.
 #'   
-#' @details detColNames is a list of character strings with names of required
-#'   columns in \code{detections}: \itemize{ \item \code{locationCol} is a
-#'   character string with the name of the column containing locations you wish
-#'   to filter to ('glatos_array' for GLATOS data, 'station' for OTN data, or
-#'   'location' for sample data). \item \code{timestampCol} is a character
-#'   string with the name of the column containing datetime stamps for the
-#'   detections (MUST be of class 'POSIXct') ('detection_timestamp_utc' for
-#'   GLATOS data, 'datecollected' for OTN data, or 'time' for sample data). }
+#' @param locations An optional vector containing a list of locations
+#'   code{location_col} to show in the plot. Plot order corrsponds to order
+#'   in the vector (from bottom up). Should correspond to values in
+#'   code{location_col}, but can contain values that are not in the det
+#'   data frame (i.e., can use this option to plot locations fish were
+#'   not detected).
 #'   
-#' @param controlTable An optional data frame with two columns, c('location',
-#'   and 'y_order). The 'location' column is a character vector of locations to
-#'   be plotted on the y-axis and the name of the 'location' column must match
-#'   the 'location' column in \code{detections} data frame (set in
-#'   \code{detColNames} by \code{type}). The 'y_order' column specifies what
-#'   order the grouping variable will appear on the y-axis (y_order increases as
-#'   you move away from the x-axis).
+#' @param ylab A character string indicating the y-axis label that will appear 
+#'   on the figure (default will match \code{location_col}).
 #'   
-#' @param plotTitle An optional character string that will appear at the top of 
-#'   the plot. Default is no title.
-#'   
-#' @param Ylab A character string indicating the y-axis label that will appear 
-#'   on the figure (default will match \code{detColNames$locationCol}).
+#' @param ylab A numeric value corresponding to the symbol to be used for
+#'   plotting. See https://www.statmethods.net/advgraphs/parameters.html.
 #'   
 #' @param outFile An optional character string with the name (including 
-#'   extension) of output file created. File extension will determine type of 
-#'   file written. For example, \code{"abacus_plot.png"} will write a png 
-#'   file to the working directory. If \code{NULL} (default) then the plot will 
-#'   be printed to the default plot device will be used. Supported extensions: 
-#'   png, jpeg, bmp, and tiff.
+#'   extension) of output image file to be created created. File extension
+#'   will determine type of file written. For example, \code{"abacus_plot.png"}
+#'   will write a png file to the working directory. If \code{NULL} (default)
+#'   then the plot will be printed to the default plot device.
+#'   Supported extensions: png, jpeg, bmp, and tiff.
 #'   
 #' @param ... Other plotting arguments that pass to "plot" function (e.g., col,
 #'   lwd, type).
 #'   
-#' @details NAs are not allowed in any of the three required columns of 
-#'   \code{events}.
+#' @details NAs are not allowed in any of the two required columns.
 #'   
-#' @details The control table is used to control which locations will appear in 
-#'   the plot and in what order they will appear. If no controlTable is 
-#'   supplied, the function will plot only those locations that appear in the 
-#'   \code{detections} data frame and the order of locations on the y-axis will 
-#'   correspond to the order in which each location appears in the data frame.
+#' @details The locations vector is used to control which locations will
+#'   appear in the plot and in what order they will appear. If no locations
+#'   vector is supplied, the function will plot only those locations that
+#'   appear in the \code{det} data frame and the order of locations on the 
+#'   y-axis will be alphebetical from top to bottom.
 #'   
 #' @details By default, the function does not distinguish detections from 
 #'   different transmitters and will therefore plot all transmitters the same 
 #'   color. If more than one fish is desired in a single plot, a vector of
 #'   colors must be passed to the function using the 'col =' argument. The color
 #'   vector must be the same length as the number of rows in the detections data
-#'   frame.
+#'   frame or the colors will be recycled.
 #'   
 #' @details #' Alternatively, plots for multiple individual fish can be created 
 #'   by looping through and creating a separate plot on subsetted detections
@@ -77,109 +67,77 @@
 #' det <- read_glatos_detections(det_file)
 #' 
 #' #subset one transmitter
-#' det2 <- det[det$transmitter_id == 32054, ]
+#' det2 <- det[det$animal_id == 153, ]
 #' 	
-#' #plot without control table
-#' abacus_plot(det, controlTable=NULL, 
-#'   plotTitle = "TagID: 32054", col = "red")
+#' #plot without control table and main tile and change color to red
+#' abacus_plot(det, locations=NULL, 
+#'   main = "TagID: 32054", col = "red")
 #' 	
-#' #get example control table
-#' data("walleye_controlTable") #example dataset
-#' walleye_controlTable
-#' 
-#' #plot with control table
-#' abacus_plot(det, controlTable=walleye_controlTable, 
-#' 	 plotTitle = "TagID: 32054", col = "red")
+#' #example with locations specified
+#' abacus_plot(det, locations=c("DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
+#'    "DRM", "FDT"), main = "TagID: 32054", col = "red")
 #'
 #' #plot with custom y-axis label and lines connecting symbols
-#' abacus_plot(det, controlTable=walleye_controlTable, 
-#' 	 plotTitle = "TagID: 32054", Ylab="Location (GLATOS Array)",
+#' abacus_plot(det, main = "TagID: 32054", type = "l",
 #' 	 col = "red")
 #'   
 #' @export
 
-abacus_plot <- function(detections, type = "GLATOS", detColNames = list(), 
-  controlTable = NULL, plotTitle = "", Ylab=NA, 
-  outFile = NULL, ...) {
-  
-  #Check if user has set column names
-  if(length(detColNames) == 0) {
-    if(type == "sample") { #Set column names for sample data
-      detColNames = list(locationCol = "location", 
-        timestampCol = "time")
-    } else if(type == "GLATOS") { #Set column names for GLATOS data
-      detColNames = list(locationCol = "glatos_array", 
-        timestampCol = "detection_timestamp_utc")
-    } else if(type=="OTN"){ #Set column names for OTN data
-      detColNames = list(locationCol = "station", 
-        timestampCol = "datecollected")
-    } else { #Other type
-      stop(paste0("The type '", type, "' is not defined."), call. = FALSE)
-    }
-  }
+abacus_plot <- function(det, location_col = 'glatos_array', 
+  locations = NULL, ylab = NA, pch = NA, outFile = NULL, ...) {
   
   # Check that the specified columns appear in the detections data frame
-  missingCols <- setdiff(unlist(detColNames), names(detections))
+  missingCols <- setdiff(c("detection_timestamp_utc", location_col), names(det))
   if (length(missingCols) > 0){
-    stop(paste0("Detections data frame is missing the following ",
+    stop(paste0("det is missing the following ",
       "column(s):\n", paste0("       '", missingCols, "'", collapse="\n")), 
       call. = FALSE)
   }
   
-  # Subset detections with only user-defined columns and change names
-  # this makes code more easy to understand (esp. ddply)
-  detections <- detections[ ,unlist(detColNames)] #subset
-  names(detections) <- c("location","timestamp")
+  # Rename column specified in location_col to "location"
+  names(det)[which(names(det)==location_col)] = "location"
   
   # Check that timestamp is of class 'POSIXct'
-  if(!('POSIXct' %in% class(detections$timestamp))){
-    stop(paste0("Column '", detColNames$timestampCol,
-      "' in the detections data frame must be of class 'POSIXct'."),
+  if(!('POSIXct' %in% class(det$detection_timestamp_utc))){
+    stop(paste0("Column 'detection_timestamp_utc' in the det must be of class 'POSIXct'."),
       call. = FALSE)
   } 
   
-  # If controlTable not supplied, create one - plotted in order locations 
-  #  appear in the detections data frame	
-  if(is.null(controlTable)){
-    controlTable <- data.frame(
-      location = unique(detections$location), 
-      y_order = 1:length(unique(detections$location)), 
+  # If locations not supplied, create one data frame with unique values
+  # (ordered alphebetically from top to bottom) of location_col values with
+  # plot order appended. Otherwise append a column of plot order to locations.
+  if(is.null(locations)){
+    locations_table <- data.frame(
+      location = sort(unique(det$location), decreasing = TRUE), 
+      y_order = 1:length(unique(det$location)), 
       stringsAsFactors = FALSE)
   } else {
-    
-    # Check that the specified columns are in the control table data frame
-    missingCols <- setdiff(c(detColNames$locationCol, "y_order"), 
-      names(controlTable))
-    if (length(missingCols) > 0){
-      stop(paste0("Control table data frame is missing the following ",
-        "column(s):\n", paste0("       '", missingCols, "'", collapse="\n")), 
-        call. = FALSE)
-    }
-    
-    #change name of location column in control table
-    controlTable <- controlTable[ ,c(detColNames[[1]], "y_order")] #order cols
-    names(controlTable)[1] <- "location"
+    locations_table <- data.frame(
+      location = locations, 
+      y_order = 1:length(locations), 
+      stringsAsFactors = FALSE)
   }
   
   #update Ylab value if NA
-  if(is.na(Ylab)) 
-    Ylab <- detColNames$locationCol
+  if(is.na(ylab)){ 
+    Ylab <- location_col
+  }
   
-  # Merge detections and controlTable data frames
-  # Keep only locations that appear in the controlTable data frame
-  detections <- merge(detections, controlTable, by = "location", all.y = TRUE)
+  # Merge det and locations_table data frames
+  # Keep only locations that appear in the locations_table data frame
+  det <- merge(det, locations_table, by = "location", all.y = TRUE)
   
   #sort by timestamp
-  detections <- detections[order(detections$timestamp), ] 
+  det <- det[order(det$detection_timestamp_utc), ] 
   
   # Variable which scales the height of the y-axis depending on the number of 
   # labels to appear. 
   # Assumes 24 labels is the perfect spacing for height = 1000 px.
-  pngHeight <- max((nrow(controlTable)/24)*1000, 500)
+  pngHeight <- max((nrow(locations_table)/24)*1000, 500)
   
   # Calculate a y-axis label offset to accommodate grouping variables with 
   # different string lengths (e.g., "DRM" vs "DRM-001").
-  YlabOffset <- (max(nchar(detections$location)) - 3) / 3
+  YlabOffset <- (max(nchar(det$location)) - 3) / 3
   
   
   #get file extension
@@ -205,18 +163,18 @@ abacus_plot <- function(detections, type = "GLATOS", detColNames = list(),
   par(mar = c(1, 1, 1.5, 2), oma = c(3, 4 + YlabOffset, 0, 0))
   
   # Plot detection data
-  with(detections, 
-    plot(timestamp, y_order, 
-      xlim = range(timestamp, na.rm = TRUE), 
-      ylim = c(1,length(unique(location))), 
-      pch = 16, main = plotTitle, yaxt = "n", xaxt = "n", ylab = "", 
+  with(det, 
+    plot(detection_timestamp_utc, y_order, 
+      xlim = range(detection_timestamp_utc, na.rm = TRUE), 
+      ylim = c(1,nrow(locations_table)), 
+      pch = ifelse(is.na(pch), 16, pch), yaxt = "n", xaxt = "n", ylab = "", 
       xlab = "", ...))
   
   # Add custom axes
-  axis(2, at = controlTable$y_order, 
-    labels = controlTable$location, las = 1)
-  xmaj <- seq(from = min(detections$timestamp, na.rm = TRUE), 
-    to = max(detections$timestamp, na.rm = TRUE), length.out = 5)
+  axis(2, at = locations_table$y_order, 
+    labels = locations_table$location, las = 1)
+  xmaj <- seq(from = min(det$detection_timestamp_utc, na.rm = TRUE), 
+    to = max(det$detection_timestamp_utc, na.rm = TRUE), length.out = 5)
   axis(1, at = xmaj, labels = format(xmaj, "%Y-%m-%d"), las = 1)
   
   # Add axes titles
