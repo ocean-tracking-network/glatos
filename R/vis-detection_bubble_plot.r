@@ -144,309 +144,146 @@
 #'
 #' @export
 
-detection_bubble_plot <- function(detections, receiverLocs = NULL, type = "GLATOS", 
-  map = NULL, outFile = NULL, 	mapPars = list(
-    xLimits = c(-94.5, -75), 
-    yLimits = c(41, 49.5), 
-    symbolRadius = 1, 
-    colGrad = c("white", "red"), 
-    showAll = FALSE)
-){
+detection_bubble_plot <- function(det, location_col = "glatos_array", 
+                                  receiver_locs = NULL,
+                                  map = NULL,
+                                  out_file = NULL,
+                                  background_ylim = c(41.3, 49.0),
+                                  background_xlim = c(-92.45, -75.87),
+                                  symbol_radius = 1,
+                                  col_grad = c("white", "red")){
   
-  if(type == "GLATOS") { #Sets different attributes for GLATOS data
-    detColNames = list(locationCol = "glatos_array", 
-      animalCol = "animal_id", 
-      timestampCol = "detection_timestamp_utc", 
-      latCol = "deploy_lat", 
-      longCol = "deploy_long")
-    recColNames = list(locationCol = "glatos_array", 
-      latCol = "deploy_lat", 
-      longCol = "deploy_long", 
-      deploy_timestampCol = "deploy_date_time", 
-      recover_timestampCol = "recover_date_time")
+  # Check that the specified columns appear in the det data frame
+  missingCols <- setdiff(c("animal_id", "detection_timestamp_utc",
+                           "deploy_lat", "deploy_long", location_col),
+                         names(det))
+  if (length(missingCols) > 0){
+    stop(paste0("det is missing the following ",
+                "column(s):\n", paste0("       '", missingCols, "'",
+                                       collapse="\n")), 
+         call. = FALSE)
+  }
     
     if(is.null(map)) {
       #read example file from package
       data(greatLakesPoly)
       map <- greatLakesPoly
     }
-    
-    mapPars = list(
-      xLimits = c(-94.5, -75), 
-      yLimits = c(41, 49.5), 
-      symbolRadius = 1, 
-      colGrad = c("white", "red"), 
-      showAll = FALSE
-    )
-    # Assign mapping parameter object default values (independent of mapPars)
-    xLimits = c(-94.5, -75)
-    yLimits = c(41, 49.5)
-    symbolRadius = 1
-    colGrad = c("white", "red")
-    showAll = FALSE
-  } else if (type == "OTN") {
-    detColNames = list(locationCol = "station", 
-      animalCol = "catalognumber", 
-      timestampCol = "datecollected", 
-      latCol = "latitude", 
-      longCol = "longitude")
-    recColNames = list(locationCol = "station", 
-      latCol = "latitude", 
-      longCol = "longitude", 
-      deploy_timestampCol = "deploy_date_time", 
-      recover_timestampCol = "recover_date_time")
-    
-    if(is.null(map)) {
-      #read example file from package
-      data(oceanPoly)
-      map <- oceanPoly
-    }
-    
-    mapPars = list(
-      xLimits = c(-69.4, -59.3), 
-      yLimits = c(42.8, 47.6), 
-      symbolRadius = 1, 
-      colGrad = c("white", "red"), 
-      showAll = FALSE
-    )
-    # Assign mapping parameter object default values (independent of mapPars)
-    xLimits = c(-69.4, -59.3) 
-    yLimits = c(42.8, 47.6)
-    symbolRadius = 1
-    colGrad = c("white", "red")
-    showAll = FALSE
-  } else if (type == "sample") {
-    detColNames = list(locationCol = "location", 
-      animalCol = "animal", 
-      timestampCol = "time", 
-      latCol = "latitude", 
-      longCol = "longitude")
-    recColNames = list(locationCol = "location", 
-      latCol = "latitude", 
-      longCol = "longitude", 
-      deploy_timestampCol = "deploy_time", 
-      recover_timestampCol = "recover_time")
-    mapPars = list(
-      xLimits = c(-69.4, -59.3), 
-      yLimits = c(42.8, 47.6), 
-      symbolRadius = 1, 
-      colGrad = c("white", "red"), 
-      showAll = FALSE
-    )
-    # Assign mapping parameter object default values (independent of mapPars)
-    xLimits = c(-69.4, -59.3)
-    yLimits = c(42.8, 47.6)
-    symbolRadius = 1
-    colGrad = c("white", "red")
-    showAll = FALSE
-  } else {
-    stop(paste0("The type '", type, "' is not defined."), call. = FALSE)
-  }
-  
-  # Update mapping parameter objects based on user-specified in mapPars	
-  for(i in 1:length(mapPars)) 
-    assign(names(mapPars)[i], mapPars[[i]]) 
-  
-  # Check that the specified columns appear in the detections data frame
-  missingCols <- setdiff(unlist(detColNames), names(detections))
-  if (length(missingCols) > 0){
-    stop(paste0("Detections data frame is missing the following ",
-      "column(s):\n", paste0("       '", missingCols, "'", collapse = "\n")), 
-      call. = FALSE)
-  }
-  
-  # Subset detections with only user-defined columns and change names
-  # this makes the code more easy to understand.
-  detections <- detections[ , unlist(detColNames)] #subset
-  names(detections) <- c("location", "animal", "timestamp", "lat", "long")
   
   # Check that timestamp is of class 'POSIXct'
-  if(!('POSIXct' %in% class(detections$timestamp))){
-    stop(paste0("Column '", detColNames$timestampCol,
-      "' in 'detections' data frame must be of class 'POSIXct'."),
+  if(!('POSIXct' %in% class(det$detection_timestamp_utc))){
+    stop(paste0("Column detection_timestamp_utc in det data frame must be of
+                class 'POSIXct'."),
       call. = FALSE)
   }  	
-  
-  # Check that the receiverLocs data frame is supplied if showAll = TRUE
-  if(showAll){
-    if(is.null(receiverLocs)){
-      stop("'receiverLocs' data frame must be specified if showAll = TRUE.")            
-    }
     
-    # Check that the specified columns appear in receiverLocs data frame
-    missingCols <- setdiff(unlist(recColNames), names(receiverLocs))
-    if (length(missingCols) > 0){
-      stop(paste0("'receiverLocs' data frame is missing the following ",
-        "column(s):\n", paste0("       '", missingCols, "'", collapse="\n")), 
-        call. = FALSE)
-    }
-    
-    # Subset receiverLocs with only user-defined columns and change names
-    #  this makes the code more easy to understand.
-    receiverLocs <- receiverLocs[ , unlist(recColNames)] #subset
-    names(receiverLocs) <- c("location", "lat", "long", "deploy_timestamp",
-      "recover_timestamp")		
-    
-    # Check that timestamp is of class 'POSIXct'
-    if(!('POSIXct' %in% class(receiverLocs$deploy_timestamp)) | 
-        !('POSIXct' %in% class(receiverLocs$recover_timestamp))){
-      stop(paste0("Columns '", recColNames$deploy_timestampCol, "' and '",
-        recColNames$recover_timestampCol, "' in 'receiverLocs' data frame ",
-        "must be of class 'POSIXct'."), call. = FALSE)
-    }     
-    
-    
-    # Format receiverLocs data frame and subset receiver deployments that 
-    #  occurred within the time period between the first and last detection 
-    #  in the detections data frame
-    
-    # Remove receiver locations that do not have both a deploy and recover time 
-    # (i.e., ignore receivers for which the data were not in hand)
-    receiverLocs <- receiverLocs[!is.na(receiverLocs$deploy_timestamp) & 
-        !is.na(receiverLocs$recover_timestamp), ]
-    
-    # Subset receiver locations that did not overlap with the period between 
-    #  the first and last detection in the detections data frame
-    receiverLocs <- receiverLocs[receiverLocs$deploy_timestamp < 
-        max(detections$timestamp, na.rm = TRUE) & 
-        receiverLocs$recover_timestamp > min(detections$timestamp, na.rm = TRUE),]
-    
-    # Determine mean location of receiver groups that were available to for 
-    #  detecting fish but did not
-    summaryReceivers <- plyr::ddply(receiverLocs, plyr::.(location), 
-      plyr::summarise, Summary = 0, meanLat = mean(lat), meanLon = mean(long), 
-      .drop = FALSE)
-    
-    # Retain only those receiver groups that do not already appear in the 
-    #  detections data frame
-    summaryReceivers <- summaryReceivers[!(summaryReceivers$location %in% 
-        unique(detections$location)), ]
-  }
-  
-  # Summarize number of unique fish detected and mean lat and lon for each 
-  #  receiver group
-  summaryNumFish <- plyr::ddply(detections, plyr::.(location), plyr::summarise, 
-    Summary = length(unique(animal)), meanLat = mean(lat), meanLon = mean(long), 
-    .drop = FALSE)
-  
-  # If showAll = TRUE, append receiver groups with no detections to the summary
-  if(showAll){
-    summaryNumFish <- rbind(summaryNumFish, summaryReceivers)
-  }
-  
-  
-  # Summarize number of detections and mean lat and lon for each receiver group
-  summaryNumDetections <- plyr::ddply(detections, plyr::.(location), 
-    plyr::summarise, Summary = length(timestamp), meanLat = mean(lat), 
-    meanLon = mean(long), .drop = FALSE)
-  
-  # If showAll = TRUE, append receiver groups with no detections to the summary
-  if(showAll){
-    summaryNumDetections <- rbind(summaryNumDetections, summaryReceivers)
-  }
+  # Call glatos::detection_summary to create summary data.
+  det_summ <- glatos::summarize_detections(det, location_col = location_col,
+                                   receiver_locs = receiver_locs,
+                                   type = "location")
   
   # Re-order the summaries so that sites with detections plot on top of sites 
   #  without. Makes it easier to see detected locations when they are close 
   #  enough together that the bubbles overlap    
-  summaryNumFish <- summaryNumFish[order(summaryNumFish$Summary), ]
-  summaryNumDetections <- summaryNumDetections[order(
-    summaryNumDetections$Summary), ]
+  det_summ <- det_summ[order(det_summ$num_fish), ]
   
   # Create labs with degrees symbol for plots
-  xlabs <- round(seq(from = xLimits[1], to = xLimits[2], 
+  xlabs <- round(seq(from = background_xlim[1], to = background_xlim[2], 
     length.out = 5), 2)
-  ylabs <- round(seq(from = yLimits[1], to = yLimits[2], 
+  ylabs <- round(seq(from = background_ylim[1], to = background_ylim[2], 
     length.out = 5), 2)
   
   # Define the color palette used to color-code the bubbles
-  color <- c(colorRampPalette(colGrad)(101))
+  color <- c(colorRampPalette(col_grad)(101))
   
   # Calculate the location to plot the color scale
-  scaleLoc <- c(xLimits[1] + ((xLimits[2] - xLimits[1])  *0.025), 
-    yLimits[1] + ((yLimits[2] - yLimits[1]) * 0.25), xLimits[1] + ((xLimits[2] - 
-        xLimits[1]) * 0.05), yLimits[2] - ((yLimits[2] - yLimits[1]) * 0.25))
+  scaleLoc <- c(background_xlim[1] + ((background_xlim[2] -background_xlim[1])
+                                      *0.025),
+                background_ylim[1] + ((background_ylim[2] - background_ylim[1])
+                                      * 0.25),
+                background_xlim[1] + ((background_xlim[2] - background_xlim[1])
+                                      * 0.05),
+                background_ylim[2] - ((background_ylim[2] - background_ylim[1])
+                                      * 0.25))
   
-  # Calculate the aspect ratio for the figure
-  figRatio <- (yLimits[2] - yLimits[1]) / (xLimits[2] - xLimits[1]) * 1.4
+  # Calculate great circle distance in meters of x and y limits.
+  # needed to determine aspect ratio of the output
+  linear_x = geosphere::distMeeus(c(background_xlim[1],background_ylim[1]),
+                                  c(background_xlim[2],background_ylim[1]))
+  linear_y = geosphere::distMeeus(c(background_xlim[1],background_ylim[1]),
+                                  c(background_xlim[1],background_ylim[2]))
   
-  # Make two plots, one for each number of unique fish and number of detections    
-  for(i in c("summaryNumFish", "summaryNumDetections")){
-    
-    temp <- get(i)
-    
-    #get file extension
-    file_type <- ifelse(is.null(outFile), NA, tools::file_ext(outFile))
-    
-    #check file extension is supported
-    ext_supp <- c(NA, "png", "jpeg", "png", "bmp", "tiff")
-    if(!(tolower(file_type) %in% ext_supp))
-      stop(paste0("Image type '", file_type, "' is not supported."), 
-        call. = FALSE)
-    
-    if(!is.null(outFile)){
-      outFile_i <- file.path(dirname(outFile), paste0(i, "_", basename(outFile)))
-      
-      if(!is.na(file_type) & tolower(file_type) == 'png')
-        png(outFile_i, height = 1000 * figRatio, width = 1000, pointsize = 28)
-      if(!is.na(file_type) & tolower(file_type) == 'jpeg')
-        jpeg(outFile_i, height = 1000 * figRatio, width = 1000, pointsize = 28)
-      if(!is.na(file_type) & tolower(file_type) == 'bmp')
-        bmp(outFile_i, height = 1000 * figRatio, width = 1000, pointsize = 28)
-      if(!is.na(file_type) & tolower(file_type) == 'tiff')
-        tiff(outFile_i, height = 1000 * figRatio, width = 1000, pointsize = 28)  
-    }	
-    
-    if(is.null(outFile)) x11(height = 7 * figRatio, width = 7)
-    
-    # Set margins
-    par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))	    
-    
-    # Plot background image
-    sp::plot(map, xlim = xLimits, ylim = yLimits, axes = T, asp = 1.4, 
-      xaxs = "i", lwd = 1.5, xaxt = 'n', yaxt = 'n', col = "White", 
-      bg="WhiteSmoke")
-    
-    if(showAll){
-      # Plot the bubbles for zeros
-      symbols(temp$meanLon[temp$Summary == 0], temp$meanLat[temp$Summary == 0], 
-        circles = rep((xLimits[2] - xLimits[1]) * symbolRadius / 100, 
-          length(temp$meanLon[temp$Summary == 0])),add = T, inches = FALSE, 
-        bg = "white", fg = "black", lwd = 3)
-      # Add 'X' to bubbles with no detections
-      text(temp$meanLon[temp$Summary == 0], temp$meanLat[temp$Summary == 0], 
-        "X", cex = 0.6 * symbolRadius)
+  # aspect ratio of image
+  figRatio <- linear_y/linear_x
+  
+  #get file extension
+  file_type <- ifelse(is.null(out_file), NA, tools::file_ext(out_file))
+  
+  #check file extension is supported
+  ext_supp <- c(NA, "png", "jpeg", "png", "bmp", "tiff")
+  if(!(tolower(file_type) %in% ext_supp))
+    stop(paste0("Image type '", file_type, "' is not supported."), 
+      call. = FALSE)
+
+  if(!is.na(file_type) & tolower(file_type) == 'png')
+    png(out_file, height = 1000 * figRatio, width = 1000, pointsize = 28)
+  if(!is.na(file_type) & tolower(file_type) == 'jpeg')
+    jpeg(out_file, height = 1000 * figRatio, width = 1000, pointsize = 28)
+  if(!is.na(file_type) & tolower(file_type) == 'bmp')
+    bmp(out_file, height = 1000 * figRatio, width = 1000, pointsize = 28)
+  if(!is.na(file_type) & tolower(file_type) == 'tiff')
+    tiff(out_file, height = 1000 * figRatio, width = 1000, pointsize = 28)  
+
+  
+  if(is.null(out_file)){
+    if(Sys.info()["sysname"]=="Windows"){
+      windows(height = 7 * figRatio, width = 7)
+    }else if(Sys.info()["sysname"]=="Darwin"){
+      quartz(height = 7 * figRatio, width = 7)
+    }else{
+      x11(height = 7 * figRatio, width = 7)
     }
-    # Plot the bubbles for non-zeros
-    symbols(temp$meanLon[temp$Summary != 0], temp$meanLat[temp$Summary != 0], 
-      circles = rep((xLimits[2] - xLimits[1]) * symbolRadius / 100, 
-        length(temp$meanLon[temp$Summary != 0])),add = T, inches = FALSE, 
-      bg = color[round(temp$Summary[temp$Summary != 0] /
-          max(temp$Summary) * 100, 0) + 1], fg = "black", lwd = 3)
-    
-    # Add color legend
-    plotrix::color.legend(scaleLoc[1], scaleLoc[2], scaleLoc[3], scaleLoc[4], 
-      paste0(" ", round(seq(from = 1, to = max(temp$Summary), length.out = 6), 
-        0)), color, gradient="y", family = "sans", cex = 0.5, align = 'rb')
-    
-    # Add x-axis and title
-    axis(1, at = xlabs, labels = parse(text = paste0(format(xlabs,4), "*degree")), cex.axis = 1)
-    mtext("Longitude", side = 1, line = 2.5, cex = 1)
-    
-    # Add y-axis and title
-    axis(2, at = ylabs, labels = parse(text = paste0(format(ylabs,4), "*degree")), cex.axis = 1, 
-      las = 1)
-    mtext("Latitude", side = 2, line = 4, cex = 1)
-    
-    box()
-    
-    if(!is.na(file_type))	dev.off() 	# Close plot device 
-    
   }
   
+  # Set margins
+  par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))	    
+  
+  # Plot background image
+  sp::plot(map, xlim = background_xlim, ylim = background_ylim, axes = T, asp = 1/figRatio, 
+    xaxs = "i", lwd = 1.5, xaxt = 'n', yaxt = 'n', col = "White", 
+    bg="WhiteSmoke")
+  
+  # Plot the bubbles
+  symbols(det_summ$mean_lon, det_summ$mean_lat,
+          circles = rep((background_xlim[2] -
+                           background_xlim[1]) * symbol_radius / 100,
+                        length(det_summ$mean_lon)),
+          add = T, inches = FALSE,
+          bg = color[round(det_summ$num_fish
+                           / max(det_summ$num_fish) * 100, 0) + 1],
+          fg = "black", lwd = 3)
+  
+  # Add color legend
+  plotrix::color.legend(scaleLoc[1], scaleLoc[2], scaleLoc[3], scaleLoc[4], 
+    paste0(" ", round(seq(from = 1, to = max(det_summ$num_fish), length.out = 6), 
+      0)), color, gradient="y", family = "sans", cex = 0.5, align = 'rb')
+  
+  # Add x-axis and title
+  axis(1, at = xlabs, labels = parse(text = paste0(format(xlabs,4), "*degree")), cex.axis = 1)
+  mtext("Longitude", side = 1, line = 2.5, cex = 1)
+  
+  # Add y-axis and title
+  axis(2, at = ylabs, labels = parse(text = paste0(format(ylabs,4), "*degree")), cex.axis = 1, 
+    las = 1)
+  mtext("Latitude", side = 2, line = 4, cex = 1)
+  
+  box()
+  
+  if(!is.na(file_type))	dev.off() 	# Close plot device 
+
   if(!is.na(file_type)) 
     message(paste0("Image files were written to the following directory:\n", 
       getwd(), "\n"))
   
-  return(list(summaryNumFish = summaryNumFish, 
-    summaryNumDetections = summaryNumDetections))
+  return(det_summ)
 }		
