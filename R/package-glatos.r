@@ -81,4 +81,12 @@
 #' @docType package
 #' @name glatos
 #' @import data.table sp
+#' @importFrom grDevices bmp colorRampPalette dev.off jpeg png rainbow 
+#'             tiff windows x11
+#' @importFrom graphics abline axis box legend lines mtext par points symbols 
+#'             text
+#' @importFrom stats approx dnorm ecdf end fivenum median na.omit rbinom 
+#'             rnorm runif start step
+#' @importFrom utils capture.output read.csv setTxtProgressBar txtProgressBar
+#'             unzip write.csv write.table zip
 globalVariables(".") #to avoid R CMD check note
