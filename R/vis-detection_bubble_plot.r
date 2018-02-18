@@ -139,16 +139,6 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   # Define the color palette used to color-code the bubbles
   color <- c(colorRampPalette(col_grad)(101))
   
-  # Calculate the location to plot the color scale
-  scaleLoc <- c(background_xlim[1] + ((background_xlim[2] - background_xlim[1])
-                                      *0.025),
-                background_ylim[1] + ((background_ylim[2] - background_ylim[1])
-                                      * 0.25),
-                background_xlim[1] + ((background_xlim[2] - background_xlim[1])
-                                      * 0.05),
-                background_ylim[2] - ((background_ylim[2] - background_ylim[1])
-                                      * 0.25))
-  
   # Calculate great circle distance in meters of x and y limits.
   # needed to determine aspect ratio of the output
   linear_x = geosphere::distMeeus(c(background_xlim[1],background_ylim[1]),
@@ -179,20 +169,14 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
 
   
   if(is.null(out_file)){
-    if(Sys.info()["sysname"]=="Windows"){
-      windows(height = 7 * figRatio, width = 7)
-    }else if(Sys.info()["sysname"]=="Darwin"){
-      quartz(height = 7 * figRatio, width = 7)
-    }else{
-      x11(height = 7 * figRatio, width = 7)
-    }
+      dev.new(noRStudioGD = TRUE, height = 7 * figRatio, width = 7)
   }
   
   # Set margins
   par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))	    
   
   # Plot background image
-  sp::plot(map, xlim = background_xlim, ylim = background_ylim, axes = T, asp = 1/figRatio, 
+  sp::plot(map, xlim = background_xlim, ylim = background_ylim, axes = T, 
     xaxs = "i", lwd = 1.5, xaxt = 'n', yaxt = 'n', col = "White", 
     bg="WhiteSmoke")
   
@@ -213,10 +197,16 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
         "X", cex = 0.6 * symbol_radius))
   }
   
+  # Calculate the location to plot the color scale
+  scaleLoc <- c(par("usr")[1] + (par("usr")[2] - par("usr")[1])*0.01,
+  par("usr")[3] + ((par("usr")[4] - par("usr")[3])* 0.25),
+  par("usr")[1] + ((par("usr")[2] - par("usr")[1])* 0.03),
+  par("usr")[4] - ((par("usr")[4] - par("usr")[3])* 0.25))
+  
   # Add color legend
   plotrix::color.legend(scaleLoc[1], scaleLoc[2], scaleLoc[3], scaleLoc[4], 
     paste0(" ", round(seq(from = 1, to = max(det_summ$num_fish), length.out = 6), 
-      0)), color, gradient="y", family = "sans", cex = 0.5, align = 'rb')
+      0)), color, gradient="y", family = "sans", cex = 1, align = 'rb')
   
   # Add x-axis and title
   axis(1, at = xlabs, labels = parse(text = paste0(format(xlabs,4), "*degree")), cex.axis = 1)
