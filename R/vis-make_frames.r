@@ -208,8 +208,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     setkey(work_proc_obj, bin_timestamp, animal_id,  record_type)
 
   # Load Great lakes background
-  data(greatLakesPoly) #example in glatos package
-  background <- greatLakesPoly
+  background <- greatLakesPoly #example in glatos package
 
   # turn off interpolated points if show_interpolated = FALSE
     if(!show_interpolated){

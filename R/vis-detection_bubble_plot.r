@@ -109,11 +109,7 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
          call. = FALSE)
   }
     
-    if(is.null(map)) {
-      #read example file from package
-      data(greatLakesPoly)
-      map <- greatLakesPoly
-    }
+  if(is.null(map)) map <- greatLakesPoly #example in glatos package
   
   # Check that timestamp is of class 'POSIXct'
   if(!('POSIXct' %in% class(det$detection_timestamp_utc))){
