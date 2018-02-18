@@ -2,7 +2,6 @@
 
 export(abacus_plot)
 export(adjust_playback_time)
-export(breakdown)
 export(calc_collision_prob)
 export(crw)
 export(crw_in_polygon)

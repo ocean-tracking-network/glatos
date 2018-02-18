@@ -19,7 +19,8 @@
   \item{HPEm}{horizontal position error, in meters; calculated by VEMCO} 
   \item{TEMP}{temperature at time of detection (from temperature sensor)} 
   \item{DEPTH}{depth at time of detection (from pressure sensor)} 
-  \item{ACCEL}{acceleration at time of detection (from accelerometer)} 
+  \item{ACCEL}{acceleration at time of detection (from accelerometer)}
+  \item{DRX}{receivers that detected the associated transmission} 
 }}
 \source{
 Chris Holbrook, US Geological Survey (cholbrook@usgs.gov)
