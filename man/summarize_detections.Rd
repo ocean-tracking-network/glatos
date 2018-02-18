@@ -38,7 +38,7 @@ The following two columns must appear in \code{receiver_locs}:
 }}
 
 \item{animals}{A character vector with values of 'animal_id' that will be
-included in summary. This allows (1) animals \emphasis{not} detected (i.e.,
+included in summary. This allows (1) animals \emph{not} detected (i.e.,
 not present in \code{det}) to be included in the summary and/or (2)
 unwanted animals in \code{det} to be excluded from the summary.}
 
