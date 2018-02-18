@@ -53,19 +53,18 @@
 ##'   to develop or modify \code{animate_video} or submit calls
 ##'   directly to FFmpeg using the system command line.
 ##'
-##' @details Sequenced image files are input into FFmpeg using a file
-##'   name convention which requires specifying the entire,
-##'   non-changing file name with a consecutive integer numbering
-##'   component.  The integer number component indicates the maximum
-##'   number of digits of all the images.  For example, \code{\%04d.png}
-##'   represents the file numbering \code{0000.png, 0001.png, 0002.png, ..., 9999.png}
-##'   and \code{\%02d.png} represents images numbered from \code{00.png, 01.png,
-##'   02.png, ..., 10.png}.  File names of image sequences input to FFmpeg may
-##'   have a prefix provided that all image files have the
-##'   sequence. For example an image sequence of \code{myfile001.png,
-##'   myfile002.png, myfile003.png, ..., myfile999.png} is represented
-##'   as \code{myfile\%03d.png}.  \code{pattern} only accepts this pattern
-##'   of image file names.
+##' @details Sequenced image files are input into FFmpeg using a file name
+##'   convention which requires specifying the entire, non-changing file name
+##'   with a consecutive integer numbering component.  The integer number
+##'   component indicates the maximum number of digits of all the images.  For
+##'   example, \code{\%04d.png} represents the file numbering \code{0000.png,
+##'   0001.png, 0002.png, ..., 9999.png} and \code{\%02d.png} represents images
+##'   numbered from \code{00.png, 01.png, 02.png, ..., 10.png}.  File names of
+##'   image sequences input to FFmpeg may have a prefix provided that all image
+##'   files have the sequence. For example an image sequence of
+##'   \code{myfile001.png, myfile002.png, myfile003.png, ..., myfile999.png} is
+##'   represented as \code{myfile\%03d.png}.  \code{pattern} only accepts this
+##'   pattern of image file names.
 ##'
 ##' @details Function can create .mp4, .mov, .mkv, .gif, .wmv, or
 ##'   .mpeg animations.  Format of created animation is determined by
@@ -81,12 +80,12 @@
 ##'   \code{start_frame} and \code{end_frame} allows user to skip
 ##'   images.
 ##'
-##' @details If \code{size} is not set to \code{"source"}, the output
-##'   video is scaled.  \code{size} can be a character string of
-##'   dimensions in length by height format such as \code{"720x480"} or
-##'   an abbreviated standard such as \code{"ntsc"}.  See
-##'   \href{http://ffmpeg.org/ffmpeg-utils.html#Video-size}{FFmpegstandard video sizes}
-##' for common dimensions and available abbreviations.
+##' @details If \code{size} is not set to \code{"source"}, the output video is
+##'   scaled.  \code{size} can be a character string of dimensions in length by
+##'   height format such as \code{"720x480"} or an abbreviated standard such as
+##'   \code{"ntsc"}.  See
+##'   \href{http://ffmpeg.org/ffmpeg-utils.html#Video-size}{FFmpegstandard video
+##'   sizes} for common dimensions and available abbreviations.
 ##' 
 ##' @details Presets provide a certain encoding speed to compression
 ##'   ratio.  Available presets include \code{ultrafast},
@@ -139,23 +138,29 @@
 ##' make_video(dir=frames, pattern = "%02d.png", output = "animation.wmv" )
 ##'
 ##' # start animation on frame 10, end on frame 20
-##' make_video(dir=frames, pattern = "%02d.png", start_frame = 10, end_frame = 20, output = "animation_2.mp4")
+##' make_video(dir=frames, pattern = "%02d.png", start_frame = 10, 
+##'            end_frame = 20, output = "animation_2.mp4")
 ##'
 ##' # resize output video to 720x480
-##' make_video(dir=frames, pattern = "%02d.png", size = "720x480", output = "animation_3.mp4" )
+##' make_video(dir=frames, pattern = "%02d.png", size = "720x480", 
+##'            output = "animation_3.mp4" )
 ##'
 ##' # change ffmpeg preset
-##' make_video(dir=frames, pattern = "%02d.png", preset = "ultrafast", output = "animation_4.mp4")
+##' make_video(dir=frames, pattern = "%02d.png", preset = "ultrafast", 
+##'            output = "animation_4.mp4")
 ##'
 ##' # change input framerate
-##' make_video(dir=frames, fps_in = 1, pattern = "%02d.png", preset = "ultrafast", output = "animation_5.mp4")
+##' make_video(dir=frames, fps_in = 1, pattern = "%02d.png", 
+##'            preset = "ultrafast", output = "animation_5.mp4")
 ##'
 ##' \dontrun{
 ##' # add path to ffmpeg (windows)
-##' make_video(dir = frames, pattern = "%02d.png", output = "animation.mp4", ffmpeg = "c://path//to//windows//ffmpeg.exe")
+##' make_video(dir = frames, pattern = "%02d.png", output = "animation.mp4", 
+##'            ffmpeg = "c://path//to//windows//ffmpeg.exe")
 ##'
 ##' # add path to ffmpeg (mac)
-##' make_video(dir = frames, pattern = "%02d.png", output = "animation.mp4", ffmpeg = "/path/to/ffmpeg")
+##' make_video(dir = frames, pattern = "%02d.png", output = "animation.mp4", 
+##'            ffmpeg = "/path/to/ffmpeg")
 ##' }
 ##'
 ##' @export
@@ -190,8 +195,8 @@ make_video  <- function(dir = ".",
                   'FFmpeg is available from:\n https://ffmpeg.org/\n',
                   'You may create the individual frames and then combine them\n',
                   'into an animation manually using video editing software\n', 
-                  '(e.g., Windows Movie Maker or iMovie) by setting the animate\n',
-                  'argument to FALSE.'),
+                  '(e.g., Windows Movie Maker or iMovie) by setting the\n',
+                  ' animate argument to FALSE.'),
            call. = FALSE)
 
   input <- file.path(dir, pattern)
@@ -200,7 +205,8 @@ make_video  <- function(dir = ".",
   start <- paste("-start_number", start_frame)
   input <- paste0(paste(inrate, start, input), collapse = " ")
   ext <- strsplit(output, "\\.")[[1]]
-  ext_stop <- "'output' must end in '.mp4', '.mov', '.mkv', '.gif', 'wmv', 'mpeg'"
+  ext_stop <- 
+    "'output' must end in '.mp4', '.mov', '.mkv', '.gif', 'wmv', 'mpeg'"
   if (length(ext) == 1)
         stop(ext_stop)
     else ext <- utils::tail(ext, 1)
