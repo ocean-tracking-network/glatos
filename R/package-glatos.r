@@ -81,8 +81,6 @@
 #' @docType package
 #' @name glatos
 #' @import data.table sp
-#' @importFrom grDevices bmp colorRampPalette dev.new dev.off jpeg png rainbow 
-#'             tiff windows x11 
 #' @importFrom graphics abline axis box legend lines mtext par points symbols 
 #'             text
 #' @importFrom stats approx dnorm ecdf end fivenum median na.omit rbinom 

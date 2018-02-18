@@ -1,6 +1,6 @@
 ##' Create transition layer from polygon shapefile
 ##'
-##' Create transition layer for \code{interpolatePath} from polygon shapefile.
+##' Create transition layer for \code{interpolat_path} from polygon shapefile.
 ##' 
 ##' @param in_file character, file path to polygon shapefile (with
 ##'   extension of *.shp)
@@ -15,7 +15,7 @@
 ##' 
 ##' @details \code{make_transition} uses gdalUtils::gdal_rasterize to
 ##'   convert a polygon shapefile into transition layer (see
-##'   \code{gdistance} where raster cell values on land = 0 and water
+##'   \code{gdistance}) where raster cell values on land = 0 and water
 ##'   = 1. Output raster is in same projection as input shapefile and
 ##'   has same extents as input shapefile.  Function requires that
 ##'   gdal is working on computer.  To determine if gdal is installed
