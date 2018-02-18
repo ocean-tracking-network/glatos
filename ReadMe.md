@@ -1,6 +1,8 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-glatos: An R package for acoustic telemetry
--------------------------------------------
+glatos: An R package for the Great Lakes Acoustic Telemetry Observation System
+------------------------------------------------------------------------------
+
+glatos is an R package with functions useful to members of the Great Lakes Acoustic Telemetry Observation System (<http://glatos.glos.us>). Functions may be generally useful for processing, analyzing, simulating, and visualizing acoustic telemetry data, but are not strictly limited to acoustic telemetry applications.
 
 ### Package status
 
