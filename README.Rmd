@@ -37,7 +37,7 @@ provide fast data loading from standard GLATOS and OTN data files to a single
 structure that is compatible with other glatos functions.
 
 2.  [`read_glatos_receivers`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/load-read_glatos_receivers.r)
-reads receiver location histories from standard GLATOS adata files to a single
+reads receiver location histories from standard GLATOS data files to a single
 structure that is compatible with other glatos functions.
 
 3.  [`read_glatos_workbook`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/load-read_glatos_workbook.r)
@@ -50,7 +50,7 @@ reads transmitter (tag) specifications and operating schedule.
 5.  [`real_sensor_values`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/proc-real_sensor_values.r)
 converts 'raw' transmitter sensor (e.g., depth, temperature) to 'real'-scale
 values (e.g., depth in meters) using transmitter specification data (e.g., from
-read_vemco_tag_specs.
+read_vemco_tag_specs).
 
 #### Filtering and summarizing
 
@@ -60,9 +60,9 @@ calculating the minimum time interval (min_lag) between successive detections.
 
 2.  [`detection_filter`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/filt-false_detections.r)
 removes potential false positive detections using "short interval" criteria
-(GLATOS min\_lag column).
+(see *min\_lag*).
 
-4.  [`detection_events`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/summ-detection_events.r)
+3.  [`detection_events`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/summ-detection_events.r)
 distills detection data down to a much smaller number of discrete detection
 events, defined as a change in location or time gap that exceeds a threshold.
 
@@ -80,41 +80,37 @@ specific type of summary requested.
 3.  [`crw_in_polygon`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/simutil-crw_in_polygon.r),
 [`transmit_along_path`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/sim-transmit_along_path.r),
 and
-[`etect_transmissions`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/sim-detect_transmissions.r)
+[`detect_transmissions`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/sim-detect_transmissions.r)
 individually simulate random fish movement paths within a water body
-(`crw_in_polygon`: a random walk in a polygon), tag signal transmissions along
-those paths (`transmit_along_path`: time series and locations of transmissions
+(*crw_in_polygon*: a random walk in a polygon), tag signal transmissions along
+those paths (*transmit_along_path*: time series and locations of transmissions
 based on tag specs), and detection of those transmittions by receivers in a
-user-defined receiver network (`detect_transmissions`: time series and locations
+user-defined receiver network (*detect_transmissions*: time series and locations
 of detections based on detection range curve). Collectively, these functions can
 be used to explore, compare, and contrast theoretical performance of a wide
 range of transmitter and receiver network designs.
 
 #### Visualization and data exploration
 
-1.
-    [`kml_workbook`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-kml_workbook.r)
-    is useful for exploring receiver and animal release locations in
-    Google Earth. *VERY EARLY VERSION and will likely change in future
-    version of package*
-
-2.
-    [`abacus_plot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-abacus_plot.r)
+1.  [`abacus_plot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-abacus_plot.r)
     is useful for exploring movement patterns of individual tagged
     animals through time.
 
-3.  [`detection_bubble_plot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-detection_bubble_plot.r) is useful for exploring distribution of tagged individuals among receivers.
+2.  [`detection_bubble_plot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-detection_bubble_plot.r) is useful for exploring distribution of tagged individuals among receivers.
 
-4.
-    [`interpolate_path`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-interpolate_path.r),
+3.  [`interpolate_path`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-interpolate_path.r),
     [`make_frames`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-make_frames.r),
     and
     [`make_video`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-make_video.r)
     Interpolate spatio-temporal movements, between detections, create
     video frames, and stitch frames together to create animated video
-    file using `FFmpeg` software. 
+    file using *FFmpeg* software. 
 
-5.
-    [`adjust_playback_time`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-adjust_playback_time.r)
+4.  [`adjust_playback_time`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-adjust_playback_time.r)
     modify playback speed of videos and optionally convert between
-    video file formats.  Requires `FFmpeg`
+    video file formats.  Requires *FFmpeg*
+    
+5.  [`kml_workbook`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-kml_workbook.r)
+    is useful for exploring receiver and animal release locations in
+    Google Earth. *VERY EARLY VERSION and will likely change in future
+    version of package*
