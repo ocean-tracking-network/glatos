@@ -31,16 +31,18 @@
 #'   \code{\link{detectTransmissions}}, which was designed to accept the result
 #'   as input (\code{trnsLoc}).
 #' 
-#' @author C. Holbrook (cholbrook@usgs.gov) 
+#' @author C. Holbrook \email{cholbrook@usgs.gov} 
+#' 
+#' @aliases transmitAlongPath
 #'
 #' @examples
 #' mypath <- data.frame(x=seq(0,1000,100),y=seq(0,1000,100))
-#' mytrns <- transmitAlongPath(mypath,vel=0.5,delayRng=c(60,180),burstDur=5.0)
+#' mytrns <- transmit_along_path(mypath,vel=0.5,delayRng=c(60,180),burstDur=5.0)
 #' plot(mypath,type="b")
 #' points(mytrns,pch=20,col="red")
 #'
 #' @export
-transmitAlongPath <- function(path=NA,vel=0.5,delayRng=c(60,180),burstDur=5.0){
+transmit_along_path <- function(path=NA,vel=0.5,delayRng=c(60,180),burstDur=5.0){
     #cumulative distance travelled in meters 
     path$cumdistm <- c(0,cumsum(sqrt(diff(path$x)^2 + diff(path$y)^2)))
     path$etime <- path$cumdistm/vel #elapse time in seconds

@@ -85,13 +85,13 @@
 #' data(lamprey_tracks)
 #' #rename columns to match input arguments
 #' names(lamprey_tracks)[c(1,2,6,7)] <- c("ID","timestamp","lat","lon")
-#' positionHeatMap(lamprey_tracks)
+#' position_heat_map(lamprey_tracks)
 #' 
 #' @export
 
-positionHeatMap <- function (positions, resolution=10, interval=3600, 
+position_heat_map <- function (positions, resolution=10, interval=3600, 
   legendPos="right", AbsOrRelFish="absolute", AbsOrRelPos="absolute", 
-  AbsOrRelInt="absolute", folder="PositionHeatMaps", x_limits=NULL,
+  AbsOrRelInt="absolute", folder="position_heat_maps", x_limits=NULL,
   y_limits=NULL,...) {
 	
 	# Check that the required columns appear in the detections dataframe

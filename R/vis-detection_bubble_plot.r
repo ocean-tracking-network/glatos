@@ -62,6 +62,8 @@
 #'
 #' @author T. R. Binder, edited by A. Dini
 #' 
+#' @aliases detectionBubblePlot
+#' 
 #' @examples
 #' 
 #' #get path to example detection file

@@ -1,6 +1,6 @@
 #' Simulate a correlated random walk inside a polygon
 #' 
-#' Uses glatos::crw to simulate a random walk as series of equal-length steps 
+#' Uses \link{crw} to simulate a random walk as series of equal-length steps 
 #'   with turning angles drawn from a normal distribution inside a polygon.
 #'
 #' @param polyg A polygon defined as data frame with columns x and y.
@@ -29,7 +29,11 @@
 #' \item{x}{x coordinates}
 #' \item{y}{y coordinates}
 #'
-#' @author C. Holbrook (cholbrook@usgs.gov) 
+#' @author C. Holbrook \email{cholbrook@usgs.gov}
+#' 
+#' @aliases crwInPolygon
+#' 
+#' @seealso \link{crw}
 #'
 #' @note 
 #' The path is constructed in 1000-step segments (currently hard coded at 1000).
@@ -41,14 +45,14 @@
 #'
 #' @examples
 #' mypolygon <- data.frame(x=c(-50,-50, 50, 50),y=c(-50,50,50,-50))
-#' foo <- crwInPolygon(mypolygon,theta=c(0,5), stepLen=10, initPos=c(0,0),
+#' foo <- crw_in_polygon(mypolygon,theta=c(0,5), stepLen=10, initPos=c(0,0),
 #'   initHeading=0, nsteps=50)
 #' plot(foo,type="o",pch=20,asp=c(1,1),xlim=range(mypolygon$x),
 #'   ylim=range(mypolygon$y))
 #' polygon(mypolygon)
 #'
 #' @export
- crwInPolygon <- function(polyg=data.frame(x=c(0,0,150000,150000),
+ crw_in_polygon <- function(polyg=data.frame(x=c(0,0,150000,150000),
    y=c(0,50000,50000,0)), theta=c(0,10), stepLen=100, initPos=c(NA,NA), 
    initHeading=NA, nsteps=30){          
               			  

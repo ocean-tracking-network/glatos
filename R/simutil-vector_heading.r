@@ -18,21 +18,22 @@
 #' This function is called from within \code{\link{crwInPolygon}}
 #' 
 #' @author C. Holbrook (cholbrook@usgs.gov) 
+#' 
+#' @aliases vectorHeading
 #'
 #' @examples
 #' x=c(2,4)
 #' y=c(2,4)
-#' vectorHeading(x, y)
+#' vector_heading(x, y)
 #' 
 #' x2=c(2,4,2)
 #' y2=c(2,4,2)
-#' vectorHeading(x2, y2)
+#' vector_heading(x2, y2)
 #'
 #' @export
-vectorHeading <- function (x, y) {
+vector_heading <- function (x, y) {
     theta.rad <- atan2(diff(x), diff(y))
     theta.deg <- theta.rad * 180/pi
-	#theta.deg <- theta.deg %% 360
-	theta.deg <- theta.deg - 360*(theta.deg > 360)
+		theta.deg <- theta.deg - 360*(theta.deg > 360)
     return(theta.deg)
 }

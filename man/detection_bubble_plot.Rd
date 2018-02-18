@@ -2,6 +2,7 @@
 % Please edit documentation in R/vis-detection_bubble_plot.r
 \name{detection_bubble_plot}
 \alias{detection_bubble_plot}
+\alias{detectionBubblePlot}
 \title{Plot number of tagged animals or detections on a map}
 \usage{
 detection_bubble_plot(det, location_col = "glatos_array",

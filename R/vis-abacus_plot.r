@@ -59,6 +59,8 @@
 #' image if \code{outFile} is specified.
 #'   
 #' @author T. R. Binder, edited by A. Dini
+#' 
+#' @aliases abacusPlot
 #'   
 #' @examples
 #' #get path to example detection file

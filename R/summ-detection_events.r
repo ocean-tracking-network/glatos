@@ -71,6 +71,8 @@
 #'  \item{event}{Integer representing the event number.}
 #'
 #' @author T. R. Binder, T. A. Hayden, C. M. Holbrook
+#' 
+#' @aliases detectionEventFilter
 #'
 #' @examples
 #'

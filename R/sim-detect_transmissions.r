@@ -24,7 +24,7 @@
 #' draws from a Bernoulli distribution with probability p (detection prob).  
 #'  
 #' This function was written to be used along with 
-#'   \code{\link{transmitAlongPath}}.
+#'   \code{\link{transmit_along_path}}.
 #' 
 #' @return A data frame containing:
 #' \item{trns_id}{Unique signal transmission ID}
@@ -35,24 +35,26 @@
 #' \item{trns_y}{Transmitter y coordinate}
 #' \item{etime}{Elapsed time}
 #'
-#' @seealso \code{\link{transmitAlongPath}} to simulate transmissions along a 
+#' @seealso \code{\link{transmit_along_path}} to simulate transmissions along a 
 #' path (i.e., create \code{trnsLoc}).
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'
+#' @aliases detectTransmissions
+#'
 #' @examples
 #' #make a simple path in polygon
-#' mypath <- crwInPolygon(data.frame(x = c(0, 0, 1000, 1000), 
+#' mypath <- crw_in_polygon(data.frame(x = c(0, 0, 1000, 1000), 
 #'   y = c(0, 1000, 1000, 0)), stepLen=100, nsteps=50)
 #' plot(mypath,type='l',xlim=c(0,1000),ylim=c(0,1000)) #view path
 #' 
 #' #add receivers
 #' recs <- expand.grid(c(250,750),c(250,750))
-#' names(recs) <- c("x","y") #needed by detectTransmissions
+#' names(recs) <- c("x","y") #needed by detect_transmissions
 #' points(recs, pch=15, col="blue")
 #' 
 #' #simulate tag transmissions
-#' mytrns <- transmitAlongPath(mypath,vel=2.0,delayRng=c(60,180),burstDur=5.0)
+#' mytrns <- transmit_along_path(mypath,vel=2.0,delayRng=c(60,180),burstDur=5.0)
 #' points(mytrns,pch=21) #add to plot
 #' 
 #' #Define detection range function (to pass as detRngFun) 
@@ -67,12 +69,12 @@
 #' pdrf(c(100,200,300,400,500)) #view detection probs. at some distances
 #' 
 #' #simulate detection
-#' mydtc <- detectTransmissions(trnsLoc=mytrns, recLoc=recs, detRngFun=pdrf)
+#' mydtc <- detect_transmissions(trnsLoc=mytrns, recLoc=recs, detRngFun=pdrf)
 #' #view transmissions that were detected
 #' points(trns_y~trns_x, data=mydtc,pch=21, bg="red")
 #'
 #' @export
-detectTransmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
+detect_transmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
 	 
   #check names of trnsLoc columns
   missingCols <- setdiff(c("x","y","et"),names(trnsLoc))

@@ -59,7 +59,9 @@
 #'   \item{detProb}{The proportion of simulated fish that were detected more  
 #'   than once on any single receiver.}
 #'
-#' @author C. Holbrook (cholbrook@usgs.gov) 
+#' @author C. Holbrook \email{cholbrook@usgs.gov}
+#' 
+#' @aliases receiverLineDetSim 
 #'
 #' @references
 #' For application example, see:  \cr\cr
@@ -87,20 +89,20 @@
 #'	xlab="Distance between receiver and transmitter")
 #' 
 #'  #Simulate detection using pdrf; default values otherwise
-#'  dp <- receiverLineDetSim(rngFun=pdrf)
+#'  dp <- receiver_line_det_sim(rngFun=pdrf)
 #'  dp
 #' 
 #'  #Again with only 10 virtual fish and optional plot to see simulated data
-#'  dp <- receiverLineDetSim(rngFun=pdrf, nsim=10, showPlot=T) #w/ optional plot
+#'  dp <- receiver_line_det_sim(rngFun=pdrf, nsim=10, showPlot=T) #w/ optional plot
 #'  dp
 #' 
 #'  #Again but six receivers and allow fish to pass to left and right of line
-#'  dp <- receiverLineDetSim(rngFun=pdrf, recSpc=rep(1000,5),
+#'  dp <- receiver_line_det_sim(rngFun=pdrf, recSpc=rep(1000,5),
 #' 	outerLim=c(1000, 1000), nsim=10, showPlot=T)
 #'  dp
 #'
 #'  #Again but four receivers with irregular spacing
-#'  dp <- receiverLineDetSim(rngFun=pdrf, recSpc=c(2000,4000,2000),
+#'  dp <- receiver_line_det_sim(rngFun=pdrf, recSpc=c(2000,4000,2000),
 #'  	outerLim=c(1000, 1000), nsim=10, showPlot=T)
 #'  dp
 #' 
@@ -113,7 +115,7 @@
 #'  #loop through scenarios, estimate detection probability for each
 #'  for(i in 1:length(spc)){
 #'    if(i==1) dp <- numeric(length(spc)) #pre-allocate
-#'    dp[i] <- receiverLineDetSim(recSpc=spc[i], rngFun=pdrf)
+#'    dp[i] <- receiver_line_det_sim(recSpc=spc[i], rngFun=pdrf)
 #'  }
 #'  cbind(spc,dp) #view results  
 #'  #plot results
@@ -129,7 +131,7 @@
 #'  swim <- seq(0.1, 5.0, 0.1) #constant velocity
 #'  for(i in 1:length(swim)){
 #'    if(i==1) dp <- numeric(length(swim)) #pre-allocate
-#'    dp[i] <- receiverLineDetSim(vel=swim[i], rngFun=pdrf)
+#'    dp[i] <- receiver_line_det_sim(vel=swim[i], rngFun=pdrf)
 #'  }
 #'  cbind(swim,dp) #view results
 #'  #plot results
@@ -160,17 +162,17 @@
 #'	  xlab="distance between receiver and transmitter, meters")
 #'
 #'  #use empirical curve (edrf) in simulation
-#'  dp <- receiverLineDetSim(rngFun=edrf, nsim=10, showPlot=T) #w/ optional plot
+#'  dp <- receiver_line_det_sim(rngFun=edrf, nsim=10, showPlot=T) #w/ optional plot
 #'  dp
 #'
 #' @export
-receiverLineDetSim <- function(vel=1,delayRng=c(120,360),burstDur=5.0,
+receiver_line_det_sim <- function(vel=1,delayRng=c(120,360),burstDur=5.0,
     recSpc=1000,maxDist=2000,rngFun,outerLim=c(0,0),nsim=1000,showPlot=FALSE)
   {	
   #check if rngFun is function
   if(any(!is.function(rngFun))) 
     stop(paste0("Error: argument 'rngFun' must be a function...\n",
-        "see ?receiverLineDetSim\n check: is.function(rngFun)"))
+        "see ?receiver_line_det_sim\n check: is.function(rngFun)"))
 
 
   #Define receiver line

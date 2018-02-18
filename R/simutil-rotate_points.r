@@ -19,19 +19,21 @@
 #' \item{y}{y coordinates}
 #'
 #' @note
-#' This function is called from \code{\link{crwInPolygon}}
+#' This function is called from \code{\link{crw_in_polygon}}
 #' 
 #' @author C. Holbrook (cholbrook@usgs.gov) 
+#' 
+#' @aliases rotatePoints
 #'
 #' @examples
 #' x <- runif(10,0,10)
 #' y <- runif(10,0,10)
 #' plot(x,y,type="b",pch=20)
-#' foo <- rotatePoints(x, y, 20, c(5, 5))
+#' foo <- rotate_points(x, y, 20, c(5, 5))
 #' points(foo$x,foo$y,type="b",pch=20,col="red")
 #'
 #' @export
-rotatePoints <- function(x, y, theta, focus){
+rotate_points <- function(x, y, theta, focus){
 	pos <- cbind(x,y) #original points
 	theta.rad <- theta*(pi/(180)) #convert to radians
 	focus <- as.numeric(focus) #coerce to vector if not

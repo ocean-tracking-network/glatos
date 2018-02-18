@@ -13,14 +13,13 @@
 #' @return For type = "lines" or "polygons": a single csv for each feature in the kml file
 #'
 #' @examples
-#' KmlToCsv()
+#' #TBD
 #'
 #' @export
 
-kmlToCsv <- function (filePath, type) { #filePath = full path to the kml file, type = c('points', 'lines', 'polygons')
+kml_to_csv <- function (filePath, type) { #filePath = full path to the kml file, type = c('points', 'lines', 'polygons')
 	
 	# Function requires the package 'rgdal' for the readOGR function, which is used to parse the kml file.
-	require(rgdal) 
 	
 	# Determine the layer name from the kml file.
 	a <- readLines(filePath)
@@ -33,7 +32,7 @@ kmlToCsv <- function (filePath, type) { #filePath = full path to the kml file, t
 	resultsFolder <- file.path(paste(dirname(filePath), gsub(".kml", "", basename(filePath)), sep="/"))
 
     # Use rgdal package function to parse the kml into usable information (NOTE: readOGR cannot handle features with different geometries (e.g., lines and polygons), so each kml file processed with this script can contain only one class of feature.	
-	kml <- readOGR(filePath, layer = layer) 
+	kml <- rgdal::readOGR(filePath, layer = layer) 
 	
 	# Retrieves the names of features in the kml file.
 	Labels <- kml@data$Name 

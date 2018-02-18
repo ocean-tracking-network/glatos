@@ -49,6 +49,8 @@
 #'
 #' @author Todd Hayden, Tom Binder, Chris Holbrook
 #' 
+#' @aliases interpolatePath
+#' 
 #' @examples
 #' 
 #' -------------------------------------------------------

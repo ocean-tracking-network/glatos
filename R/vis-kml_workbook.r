@@ -1,7 +1,6 @@
-#' @title Make a KML (or KMZ) file for viewing receiver and animal release 
+#' Make a KML (or KMZ) file for viewing receiver and animal release 
 #'   locations in Google Earth.
 #' 
-#' @description
 #' Receiver data (deployment location, deployment timestamp, and 
 #' recovery timestamp) and tagging data (release location, release timestamp) 
 #' are imported from a zipped GLATOS Workbook archive and used to make a KML 
@@ -38,16 +37,14 @@
 #'   contains the zipped GLATOS workbook. Nothing is returned to the R console.
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) 
+#' 
+#' @aliases kmlWorkbook
 #'
 #' @examples
-#' #get path to example GLATOS Data Workbook
-#' zipFile <- system.file("extdata", 
-#'   "SMRSL_GLATOS_20140828.xlsm.zip",package="glatos")
-#' kmlWorkbook(zipFile,browse=F,kmz=T,labelSize=0.6,iconSize=0.6,
-#'   showOngoing=T,endDate="2020-01-01")
+#' #TBD
 #'
 #' @export
-kmlWorkbook <- function(zipFile,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
+kml_workbook <- function(zipFile,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
 	showOngoing=T,endDate="2020-01-01") {
 
   tempDir <- gsub(".xlsm.zip|.zip","_tempR",zipFile)

@@ -46,19 +46,21 @@
 #'   temporal variation in positioning probability of acoustic telemetry arrays:
 #'   fine-scale variability and complex interactions. Animal Biotelemetry, 4(1):1.
 #'   \cr \url{http://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-016-0097-4}
+#'   
+#' @aliases calcCollisionProb
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) and T. Binder
 #'
 #' @examples
 #' #parameters analagous to Vemco tag, global coding, 45 s nominal delay
-#' foo <- calcCollisionProb(delayRng = c(45, 90), burstDur = 5.12, maxTags = 50,
+#' foo <- calc_collision_prob(delayRng = c(45, 90), burstDur = 5.12, maxTags = 50,
 #'     nTrans = 10000)
 #' # plot probability of collision by subtracting detection probability from 1
 #' plot(med~nTags, data=foo, type='p', pch=20, ylim=c(0,1),
 #'   xlab="# of transmitters within range", ylab="Probability of collision")
 #'
 #' @export
-calcCollisionProb = function(delayRng = c(60, 180), burstDur = 5.0, 
+calc_collision_prob = function(delayRng = c(60, 180), burstDur = 5.0, 
   maxTags = 50, nTrans = 10000)
     {
 
