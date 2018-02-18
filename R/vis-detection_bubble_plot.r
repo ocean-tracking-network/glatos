@@ -198,9 +198,9 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   }
   
   # Calculate the location to plot the color scale
-  scaleLoc <- c(par("usr")[1] + (par("usr")[2] - par("usr")[1])*0.01,
+  scaleLoc <- c(par("usr")[1] + (par("usr")[2] - par("usr")[1])*0.02,
   par("usr")[3] + ((par("usr")[4] - par("usr")[3])* 0.25),
-  par("usr")[1] + ((par("usr")[2] - par("usr")[1])* 0.03),
+  par("usr")[1] + ((par("usr")[2] - par("usr")[1])* 0.04),
   par("usr")[4] - ((par("usr")[4] - par("usr")[3])* 0.25))
   
   # Add color legend
