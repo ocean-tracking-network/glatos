@@ -1,4 +1,5 @@
 ReadMe.md
+CONTRIBUTING.md
 glatos.pdf
 ^data-raw$
 ^.*\.Rproj$
