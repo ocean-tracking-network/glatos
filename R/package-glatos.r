@@ -87,4 +87,6 @@
 #'             rnorm runif start step
 #' @importFrom utils capture.output read.csv setTxtProgressBar txtProgressBar
 #'             unzip write.csv write.table zip
+#' @importFrom grDevices bmp colorRampPalette dev.new dev.off jpeg png 
+#'             rainbow tiff 
 globalVariables(".") #to avoid R CMD check note
