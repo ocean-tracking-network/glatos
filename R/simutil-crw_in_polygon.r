@@ -94,7 +94,7 @@
 		  #update starting point and heading
 		  init <- as.vector(path.fwd[max(rows.i),]) #start at previous end
 		  if(i>1) {
-			initHeading <- vectorHeading(path.fwd$x[max(rows.i)-1:0],
+			initHeading <- vector_heading(path.fwd$x[max(rows.i)-1:0],
 			  path.fwd$y[max(rows.i)-1:0])
 		  }
 		  if(i==nwin & rmd>0) winSz <- rmd #size of last window
@@ -111,7 +111,7 @@
 			  #truncate turn angle distribution based on encounter with boundary
 			  
 			  constrainThetaToPolygon <- function(x,y,len,polyg,theta){
-					heading_deg <- vectorHeading(x,y)
+					heading_deg <- vector_heading(x,y)
 					heading_deg2 <- ((heading_deg-180):(heading_deg+180)) %% 360
 					heading_rad <- heading_deg2 * pi/180 #convert to radians
 					xlen <- sin(heading_rad)*len #x-component vector
