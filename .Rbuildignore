@@ -4,3 +4,5 @@ glatos.pdf
 ^data-raw$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^README\.Rmd$
+^README-.*\.png$
