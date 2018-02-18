@@ -13,21 +13,26 @@ point_offset(lon = NA, lat = NA, offsetDist = NA, offsetDir = NA,
 
 \item{lat}{vector of latitudes (dd) to calculate offset points}
 
-\item{offsetDist}{vector of distances to calculate offset point (meters or feet)}
+\item{offsetDist}{vector of distances to calculate offset point (meters or
+feet)}
 
-\item{offsetDir}{vector of directions to calculate point from starting point.  Options are NA,"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"}
+\item{offsetDir}{vector of directions to calculate point from starting point.
+Options are NA,"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S",
+"SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"}
 
 \item{distUnit}{specify meters or ft ("m" or "ft")}
 }
 \description{
-Calculates latitude and longitude for new point that is x meters away at bearing y from a geographic location (Longitude, Latitude).
-uses "destPoint" function from "geosphere" package and calculations are based on great circle distances.
+Calculates latitude and longitude for new point that is x meters
+  away at bearing y from a geographic location (Longitude, Latitude). uses
+  "destPoint" function from "geosphere" package and calculations are based on
+  great circle distances.
 }
 \examples{
 lat <- rep(44.0, 17)
 lon <- rep(-83.0, 17)
-offsetDir <- c(NA,"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW")
-offsetDist <- seq(100, 1700, by = 100)
-distUnit <- 'm'
+offsetDir <- c(NA,"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S",
+"SSW", "SW", "WSW", "W", "WNW", "NW", "NNW") offsetDist <- seq(100, 1700, by
+= 100) distUnit <- 'm'
 point_offset(lon, lat, offsetDist, offsetDir, distUnit)
 }
