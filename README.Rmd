@@ -24,13 +24,13 @@ glatos is an R package with functions useful to members of the Great Lakes Acous
 
 ### Installation
 
-Installation instructions can be found [here](https://gitlab.oceantrack.org/GreatLakes/glatos/wikis/installation-instructions)
+Installation instructions can be found at  https://gitlab.oceantrack.org/GreatLakes/glatos/wikis/installation-instructions
 
 ### Contents
 
 #### Data loading and processing
 
-	1.  [`read_glatos_detections`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/load-read_glatos_detections.r)
+1.  [`read_glatos_detections`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/load-read_glatos_detections.r)
 and
 [`read_otn_detections`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/load-read_otn_detections.r)
 provide fast data loading from standard GLATOS and OTN data files to a single
