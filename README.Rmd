@@ -27,7 +27,7 @@ Installation instructions can be found [here](https://gitlab.oceantrack.org/Grea
 
 #### Data loading and processing
 
-1.  [`read_glatos_detections`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/load-read_glatos_detections.r)
+	1.  [`read_glatos_detections`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/load-read_glatos_detections.r)
 and
 [`read_otn_detections`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/load-read_otn_detections.r)
 provide fast data loading from standard GLATOS and OTN data files to a single
@@ -89,12 +89,29 @@ range of transmitter and receiver network designs.
 
 #### Visualization and data exploration
 
-1.  [`kml_workbook`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-kml_workbook.r) is useful for exploring receiver and animal release locations in Google Earth. *VERY EARLY VERSION*
+1.
+    [`kml_workbook`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-kml_workbook.r)
+    is useful for exploring receiver and animal release locations in
+    Google Earth. *VERY EARLY VERSION and will likely change in future
+    version of package*
 
-2.  [`abacus_plot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-abacus_plot.r) is useful for exploring movement patterns of individual tagged animals.
+2.
+    [`abacus_plot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-abacus_plot.r)
+    is useful for exploring movement patterns of individual tagged
+    animals through time.
 
 3.  [`detection_bubble_plot`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-detection_bubble_plot.r) is useful for exploring distribution of tagged individuals among receivers.
 
-4.  [`interpolate_path`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-interpolate_path.r), [`make_frames`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-make_frames.r), and  [`make_video`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-make_video.r) can be used together to interpolate movement paths between detections and save animated movement paths to a video file (mp4). 
+4.
+    [`interpolate_path`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-interpolate_path.r),
+    [`make_frames`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-make_frames.r),
+    and
+    [`make_video`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-make_video.r)
+    Interpolate spatio-temporal movements, between detections, create
+    video frames, and stitch frames together to create animated video
+    file using `FFmpeg` software. 
 
-5.  [`adjust_playback_time`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-adjust_playback_time.r) can be used to modify videos.
+5.
+    [`adjust_playback_time`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-adjust_playback_time.r)
+    modify playback speed of videos and optionally convert between
+    video file formats.  Requires `FFmpeg`
