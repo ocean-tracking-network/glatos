@@ -4,13 +4,13 @@ output:
     variant: markdown_github
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- ReadMe.md is generated from ReadMe.Rmd. Please edit that file -->
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-"
+  fig.path = "ReadMe-"
 )
 ```
 ## glatos: An R package for the Great Lakes Acoustic Telemetry Observation System
