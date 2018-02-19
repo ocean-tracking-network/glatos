@@ -10,7 +10,7 @@ glatos is an R package with functions useful to members of the Great Lakes Acous
 
 ### Installation
 
-Installation instructions can be found at <https://gitlab.oceantrack.org/GreatLakes/glatos/wikis/installation-instructions>
+Installation instructions can be found at [https://gitlab.oceantrack.org/GreatLakes/glatos/wikis/installation-instructions](https://gitlab.oceantrack.org/GreatLakes/glatos/wikis/installation-instructions)
 
 ### Contents
 
@@ -54,4 +54,3 @@ Installation instructions can be found at <https://gitlab.oceantrack.org/GreatLa
 
 4.  [`adjust_playback_time`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-adjust_playback_time.r) modify playback speed of videos and optionally convert between video file formats. Requires *FFmpeg*
 
-5.  [`kml_workbook`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/workshop-version/R/vis-kml_workbook.r) is useful for exploring receiver and animal release locations in Google Earth. *VERY EARLY VERSION and will likely change in future version of package*

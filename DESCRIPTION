@@ -10,12 +10,12 @@ Imports:
 		data.table,		
 		fasttime,
 		gdistance,
-                geosphere,
+    geosphere,
 		plotrix,
 		plyr,		
 		raster,
 		readxl,
-    		rgdal,
+    rgdal,
 		rgeos,
 		sp,
 		gdalUtils
@@ -28,6 +28,7 @@ Authors@R: c(
     person("Todd", "Hayden", role = "aut"),
 		person("Thomas", "Binder", role = "aut"),
 		person("Jon", "Pye", role = "ctb"),
+		person("Alex", "Nunes", role = "ctb"),
 		person("Angela", "Dini", role = "ctb"))
 License: GPL-3
 LazyLoad: yes
