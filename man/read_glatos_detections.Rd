@@ -17,17 +17,21 @@ evaluating file structure. The only allowed values currently are
 \code{NULL} and \code{"1.3"}. Any other values will trigger an error.}
 }
 \value{
-A data.frame of class \code{glatos_detections}:
+A data.frame of class \code{glatos_detections}.
 }
 \description{
 Read data from a standard GLATOS detection (csv) file and return
 a data.frame of class \code{glatos_detections}.
 }
 \details{
-Data are loaded using the \code{fread} function in the 
-\code{data.table} package and timestamps are coerced to POSIXct usign the 
-\code{fastPOSIXct} function in the \code{fasttime} package. All times must be
-in UTC timezone per GLATOS standard.
+Data are loaded using \link[data.table]{fread} and timestamps are coerced to
+POSIXct using \link[fasttime]{fastPOSIXct}. All times must be in UTC timezone
+per GLATOS standard.
+
+Column \code{animal_id} is considered a required column by many other 
+functions in this package, so it will be created by missing. If created, 
+it will be constructed from \code{transmitter_codespace} and 
+\code{transmitter_id}, separated by '-'.
 }
 \examples{
 #get path to example detection file
