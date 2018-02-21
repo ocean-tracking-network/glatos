@@ -207,11 +207,11 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
       0)), color, gradient="y", family = "sans", cex = 1, align = 'rb')
   
   # Add x-axis and title
-  axis(1, at = xlabs, labels = parse(text = paste0(format(xlabs,4), "*degree")), cex.axis = 1)
+  axis(1, at = xlabs, labels = paste0(format(xlabs,4), intToUtf8(176)), cex.axis = 1)
   mtext("Longitude", side = 1, line = 2.5, cex = 1)
   
   # Add y-axis and title
-  axis(2, at = ylabs, labels = parse(text = paste0(format(ylabs,4), "*degree")), cex.axis = 1, 
+  axis(2, at = ylabs, labels = paste0(format(ylabs,4), intToUtf8(176)), cex.axis = 1, 
     las = 1)
   mtext("Latitude", side = 2, line = 4, cex = 1)
   
