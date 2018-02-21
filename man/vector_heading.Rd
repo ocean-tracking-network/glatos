@@ -2,7 +2,6 @@
 % Please edit documentation in R/simutil-vector_heading.r
 \name{vector_heading}
 \alias{vector_heading}
-\alias{vectorHeading}
 \title{Calculate direction (heading) of a vector (in degrees)}
 \usage{
 vector_heading(x, y)

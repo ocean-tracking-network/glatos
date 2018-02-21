@@ -2,7 +2,6 @@
 % Please edit documentation in R/sim-receiver_line_det_sim.r
 \name{receiver_line_det_sim}
 \alias{receiver_line_det_sim}
-\alias{receiverLineDetSim}
 \title{Simulate detection of acoustic-tagged fish crossing a receiver line}
 \usage{
 receiver_line_det_sim(vel = 1, delayRng = c(120, 360), burstDur = 5,

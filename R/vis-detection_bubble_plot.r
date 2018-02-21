@@ -9,10 +9,10 @@
 #'   receiver 'location', 'lat', 'lon', 'deploy_timestamp', and 
 #'   'recover_timestamp'.
 #'   
-#' @param map An optional SpatialPolygonsDataFrame or other
-#'   geo-referenced object to be plotted as the background for the plot. It is 
-#'   defined by \code{type}. If NULL, then the example Great Lakes polygon 
-#'   object (\code{data(greatLakesPoly)}) will be used.
+#' @param map An optional SpatialPolygonsDataFrame to be plotted as the 
+#'   background for the plot. It is defined by \code{type}. If NULL, then the 
+#'   example Great Lakes polygon object (\code{data(greatLakesPoly)})
+#'   will be used.
 #' 
 #' @param out_file An optional character string with the name (including 
 #'   extension) of output file created. File extension will determine type of 
@@ -61,8 +61,6 @@
 #' @seealso \code{\link{summarize_detections}}
 #'
 #' @author T. R. Binder, edited by A. Dini
-#' 
-#' @aliases detectionBubblePlot
 #' 
 #' @examples
 #' 

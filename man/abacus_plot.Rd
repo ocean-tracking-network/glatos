@@ -2,7 +2,6 @@
 % Please edit documentation in R/vis-abacus_plot.r
 \name{abacus_plot}
 \alias{abacus_plot}
-\alias{abacusPlot}
 \title{Plot detection locations of acoustic transmitters over time}
 \usage{
 abacus_plot(det, location_col = "glatos_array", locations = NULL,

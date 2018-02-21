@@ -41,8 +41,6 @@
 #'   pass the criteria.
 #'
 #' @author T. R. Binder, edited by A. Dini
-#' 
-#' @aliases falseDetectionFilter
 #'
 #' @references
 #'   Pincock, D.G., 2012. False detections: what they are and how to remove them 

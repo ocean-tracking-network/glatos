@@ -18,8 +18,6 @@
 #' This function is called from within \code{\link{crwInPolygon}}
 #' 
 #' @author C. Holbrook (cholbrook@usgs.gov) 
-#' 
-#' @aliases vectorHeading
 #'
 #' @examples
 #' x=c(2,4)

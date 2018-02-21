@@ -22,8 +22,6 @@
 #' This function is called from \code{\link{crw_in_polygon}}
 #' 
 #' @author C. Holbrook (cholbrook@usgs.gov) 
-#' 
-#' @aliases rotatePoints
 #'
 #' @examples
 #' x <- runif(10,0,10)

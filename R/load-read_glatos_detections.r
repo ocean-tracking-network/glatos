@@ -14,12 +14,17 @@
 #'   \code{NULL} and \code{"1.3"}. Any other values will trigger an error.
 #'  
 #' @details
-#' Data are loaded using the \code{fread} function in the 
-#' \code{data.table} package and timestamps are coerced to POSIXct usign the 
-#' \code{fastPOSIXct} function in the \code{fasttime} package. All times must be
-#' in UTC timezone per GLATOS standard.
+#' Data are loaded using \link[data.table]{fread} and timestamps are coerced to
+#' POSIXct using \link[fasttime]{fastPOSIXct}. All times must be in UTC timezone
+#' per GLATOS standard.
 #' 
-#' @return A data.frame of class \code{glatos_detections}:
+#' @details
+#' Column \code{animal_id} is considered a required column by many other 
+#' functions in this package, so it will be created by missing. If created, 
+#' it will be constructed from \code{transmitter_codespace} and 
+#' \code{transmitter_id}, separated by '-'.
+#' 
+#' @return A data.frame of class \code{glatos_detections}.
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'
@@ -41,7 +46,7 @@ read_glatos_detections <- function(det_file, version = NULL) {
   #Identify detection file version
   id_det_version <- function(det_file){
     det_col_names <- names(data.table::fread(det_file, nrows = 0))
-    if(all(glatos_detection_schema$v1.3$name == det_col_names)) { 
+    if(all(glatos:::glatos_detection_schema$v1.3$name == det_col_names)) { 
       return("1.3") 
     } else {
       stop("Detection file version could not be identified.")
@@ -50,14 +55,15 @@ read_glatos_detections <- function(det_file, version = NULL) {
   
   if(is.null(version)) {
     version <- id_det_version(det_file)
-  } else if (!(paste0("v",version) %in% names(glatos_detection_schema))) {
+  } else if (!(paste0("v",version) %in% 
+      names(glatos:::glatos_detection_schema))) {
     stop(paste0("Detection file version ",version," is not supported."))
   }
  
   #-Detections v1.3----------------------------------------------------------------  
   if (version == "1.3") {
 
-    col_classes <- glatos_detection_schema[["v1.3"]]$type
+    col_classes <- glatos:::glatos_detection_schema[["v1.3"]]$type
     timestamp_cols <- which(col_classes == "POSIXct")
     date_cols <- which(col_classes == "Date")
     col_classes[c(timestamp_cols, date_cols)] <- "character"
@@ -78,8 +84,18 @@ read_glatos_detections <- function(det_file, version = NULL) {
   }
   #-end v1.3----------------------------------------------------------------
 
+  #create animal_id if missing
+  anid_na <- is.na(dtc$animal_id)
+  if(any(anid_na)){
+    dtc$animal_id[anid_na] <- with(dtc, 
+      paste0(transmitter_codespace, "-", transmitter_id))
+    warning(paste0("Some or all values of required column 'animal_id' were ", 
+      "missing so they were created from 'transmitter_codespace' and ",
+      "'transmitter_id'.)"))
+  }
+  
   #assign class 
-  dtc <- glatos_detections(dtc)
+  dtc <- glatos:::glatos_detections(dtc)
   
   return(dtc)
 }

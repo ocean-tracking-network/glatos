@@ -2,7 +2,6 @@
 % Please edit documentation in R/simutil-crw_in_polygon.r
 \name{crw_in_polygon}
 \alias{crw_in_polygon}
-\alias{crwInPolygon}
 \title{Simulate a correlated random walk inside a polygon}
 \usage{
 crw_in_polygon(polyg = data.frame(x = c(0, 0, 150000, 150000), y = c(0, 50000,

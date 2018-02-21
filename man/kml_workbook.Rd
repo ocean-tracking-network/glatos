@@ -2,7 +2,6 @@
 % Please edit documentation in R/vis-kml_workbook.r
 \name{kml_workbook}
 \alias{kml_workbook}
-\alias{kmlWorkbook}
 \title{Make a KML (or KMZ) file for viewing receiver and animal release 
   locations in Google Earth.}
 \usage{
