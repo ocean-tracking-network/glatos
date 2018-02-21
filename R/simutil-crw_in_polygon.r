@@ -31,8 +31,6 @@
 #'
 #' @author C. Holbrook \email{cholbrook@usgs.gov}
 #' 
-#' @aliases crwInPolygon
-#' 
 #' @seealso \link{crw}
 #'
 #' @note 

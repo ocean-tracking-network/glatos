@@ -46,8 +46,6 @@
 #'   temporal variation in positioning probability of acoustic telemetry arrays:
 #'   fine-scale variability and complex interactions. Animal Biotelemetry, 4(1):1.
 #'   \cr \url{http://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-016-0097-4}
-#'   
-#' @aliases calcCollisionProb
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) and T. Binder
 #'

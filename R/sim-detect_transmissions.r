@@ -40,8 +40,6 @@
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'
-#' @aliases detectTransmissions
-#'
 #' @examples
 #' #make a simple path in polygon
 #' mypath <- crw_in_polygon(data.frame(x = c(0, 0, 1000, 1000), 

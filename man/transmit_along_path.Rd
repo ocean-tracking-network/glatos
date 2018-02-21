@@ -2,7 +2,6 @@
 % Please edit documentation in R/sim-transmit_along_path.r
 \name{transmit_along_path}
 \alias{transmit_along_path}
-\alias{transmitAlongPath}
 \title{Simulate telemetry transmitter signals along a path}
 \usage{
 transmit_along_path(path = NA, vel = 0.5, delayRng = c(60, 180),

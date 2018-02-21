@@ -2,7 +2,6 @@
 % Please edit documentation in R/util-point_offset.r
 \name{point_offset}
 \alias{point_offset}
-\alias{pointOffset}
 \title{Identify new location based on distance and bearing from another}
 \usage{
 point_offset(lon = NA, lat = NA, offsetDist = NA, offsetDir = NA,

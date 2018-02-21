@@ -32,8 +32,6 @@
 #'   as input (\code{trnsLoc}).
 #' 
 #' @author C. Holbrook \email{cholbrook@usgs.gov} 
-#' 
-#' @aliases transmitAlongPath
 #'
 #' @examples
 #' mypath <- data.frame(x=seq(0,1000,100),y=seq(0,1000,100))

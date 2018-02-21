@@ -37,8 +37,6 @@
 #'   contains the zipped GLATOS workbook. Nothing is returned to the R console.
 #'
 #' @author C. Holbrook (cholbrook@usgs.gov) 
-#' 
-#' @aliases kmlWorkbook
 #'
 #' @examples
 #' #TBD

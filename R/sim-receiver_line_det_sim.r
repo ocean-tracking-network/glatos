@@ -60,8 +60,6 @@
 #'   than once on any single receiver.}
 #'
 #' @author C. Holbrook \email{cholbrook@usgs.gov}
-#' 
-#' @aliases receiverLineDetSim 
 #'
 #' @references
 #' For application example, see:  \cr\cr

@@ -2,7 +2,6 @@
 % Please edit documentation in R/filt-false_detections.r
 \name{false_detections}
 \alias{false_detections}
-\alias{falseDetectionFilter}
 \title{False detection filter}
 \usage{
 false_detections(det, tf, min_lag_col = "min_lag", show_plot = FALSE)

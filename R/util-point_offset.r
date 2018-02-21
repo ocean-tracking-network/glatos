@@ -13,7 +13,7 @@
 #'   Options are NA,"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S",
 #'   "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"
 #' @param distUnit specify meters or ft ("m" or "ft")
-#' @aliases pointOffset
+#'
 #' @examples
 #' lat <- rep(44.0, 17)
 #' lon <- rep(-83.0, 17)

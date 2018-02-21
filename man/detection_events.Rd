@@ -2,7 +2,6 @@
 % Please edit documentation in R/summ-detection_events.r
 \name{detection_events}
 \alias{detection_events}
-\alias{detectionEventFilter}
 \title{Classify discrete events in detection data}
 \usage{
 detection_events(det, location_col = "glatos_array", time_sep = Inf,

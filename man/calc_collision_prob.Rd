@@ -2,7 +2,6 @@
 % Please edit documentation in R/sim-calc_collision_prob.r
 \name{calc_collision_prob}
 \alias{calc_collision_prob}
-\alias{calcCollisionProb}
 \title{Estimate probability of collision for telemetry transmitters}
 \usage{
 calc_collision_prob(delayRng = c(60, 180), burstDur = 5, maxTags = 50,

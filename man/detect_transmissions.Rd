@@ -2,7 +2,6 @@
 % Please edit documentation in R/sim-detect_transmissions.r
 \name{detect_transmissions}
 \alias{detect_transmissions}
-\alias{detectTransmissions}
 \title{Simulate detection of transmitter signals in a receiver network}
 \usage{
 detect_transmissions(trnsLoc = NA, recLoc = NA, detRngFun = NA)

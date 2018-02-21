@@ -2,7 +2,6 @@
 % Please edit documentation in R/simutil-rotate_points.r
 \name{rotate_points}
 \alias{rotate_points}
-\alias{rotatePoints}
 \title{Rotate points in a 2-d plane}
 \usage{
 rotate_points(x, y, theta, focus)

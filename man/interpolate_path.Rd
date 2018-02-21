@@ -2,7 +2,6 @@
 % Please edit documentation in R/vis-interpolate_path.r
 \name{interpolate_path}
 \alias{interpolate_path}
-\alias{interpolatePath}
 \title{Interpolate new positions within a spatiotemporal path data}
 \usage{
 interpolate_path(detections, trans = NULL, int_time_stamp = 86400,
