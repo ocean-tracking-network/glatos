@@ -57,10 +57,10 @@ Data are read from the input file using
   the structure of those columnns should be carefully reviewed in the result.
   See \link[opensxlsx]{readWorkbook} for details.
 
-Column \code{animal_id} is considered a required column by many other 
-  functions in this package, so it will be created by missing. If created, 
-  it will be constructed from \code{tag_code_space} and 
-  \code{tag_id_code}, separated by '-'.
+Column \code{animal_id} is considered a required column by many
+  other functions in this package, so it will be created if any records are
+  \code{NULL}. When created, it will be constructed from \code{tag_code_space}
+  and \code{tag_id_code}, separated by '-'.
 
 Timezone attribute of all timestamp columns (class \code{POSIXct})
   in output will be "UTC" and all 'glatos-specific' timestamp and timezone

@@ -30,10 +30,10 @@ Data are loaded using \link[data.table]{fread} and timestamps are coerced to
 POSIXct using \link[fasttime]{fastPOSIXct}. All times must be in UTC timezone
 per GLATOS standard.
 
-Column \code{animal_id} is considered a required column by many other 
-functions in this package, so it will be created by missing. If created, 
-it will be constructed from \code{transmitter_codespace} and 
-\code{transmitter_id}, separated by '-'.
+Column \code{animal_id} is considered a required column by many
+  other functions in this package, so it will be created if any records are
+  \code{NULL}. When created, it will be constructed from
+  \code{transmitter_codespace} and \code{transmitter_id}, separated by '-'.
 }
 \examples{
 #get path to example detection file
@@ -43,5 +43,5 @@ det <- read_glatos_detections(det_file)
 
 }
 \author{
-C. Holbrook (cholbrook@usgs.gov)
+C. Holbrook \email{cholbrook@usgs.gov}
 }

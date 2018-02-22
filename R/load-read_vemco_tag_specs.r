@@ -1,7 +1,5 @@
-#' @title 
 #' Read telemetry transmitter (tag) specification data from a Vemco file
 #' 
-#' @description
 #' Read telemetry transmitter (tag) specification data from a file and 
 #' return a list with tag specifications and tag operating schedule.
 #'

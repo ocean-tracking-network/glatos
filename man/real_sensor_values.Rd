@@ -8,7 +8,9 @@ real_sensor_values(det, tag_specs)
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by
-\link{read_glatos_detections}) \emph{or} a data frame containing detection
+\link{read_glatos_detections}). 
+
+\emph{OR} A data frame containing detection
 data with the following columns: 
 \describe{ 
 \item{transmitter_codespace}{A character string with transmitter code space
@@ -21,37 +23,39 @@ data with the following columns:
 (e.g., "ADC" for 'raw' Vemco sensor tag detections). }
 }}
 
-\item{tag_specs}{An object produced by \link{read_vemco_tag_specs} \emph{or}
-a data frame containing transmitter specification data with the following
-columns: 
-\describe{ 
-\item{code_space}{A character string with transmitter code space (e.g.,
-"A69-1061" for Vemco PPM coding").}
-\item{id_code}{A character string with transmitter ID code (e.g., "1363"
-for Vemco PPM coding").}
-\item{sensor_type}{A numeric sensor measurement (e.g., an integer for 'raw'
-Vemco sensor tags).}
-\item{sensor_range}{A numeric with max. range of the sensor in 'real' units
-(e.g., "Meters" for Vemco depth tags). }
-\item{sensor_units}{A character string with 'real'-scale units (e.g.,
-"Meters" for 'raw' Vemco pressure tags). }
-}
+\item{tag_specs}{An object produced by \link{read_vemco_tag_specs}.
 
-The following columns are also required for \strong{depth} and
-\strong{temperature} sensors: 
-\describe{ 
-\item{sensor_slope}{Slope parameter, for converting 'raw' (ADC) to 'real'
-measurements. }
-\item{sensor_intercept}{Intercept parameter, for converting 'raw' (ADC) to
-'real' measurements. }
-}
-
-The following columns are also required for \strong{acceleration} sensors:
-\describe{
-\item{accel_algorithm}{The algorithm used, accelerometers only. }   
-\item{accel_sample_rate}{Sample rate used, accelerometers only. }  
-\item{sensor_transmit_ratio}{Sensor transmit rate used, accelerometers only. }  
-}}
+ \emph{OR} A data frame containing transmitter specification data with the
+ following columns:
+ \describe{ 
+ \item{code_space}{A character string with transmitter code space (e.g.,
+ "A69-1061" for Vemco PPM coding").}
+ \item{id_code}{A character string with transmitter ID code (e.g., "1363"
+ for Vemco PPM coding").}
+ \item{sensor_type}{A numeric sensor measurement (e.g., an integer for 'raw'
+ Vemco sensor tags).}
+ \item{sensor_range}{A numeric with max. range of the sensor in 'real' units
+ (e.g., "Meters" for Vemco depth tags). }
+ \item{sensor_units}{A character string with 'real'-scale units (e.g.,
+ "Meters" for 'raw' Vemco pressure tags). }
+ }
+ 
+ The following columns are also required for \strong{depth} and
+ \strong{temperature} sensors: 
+ \describe{ 
+ \item{sensor_slope}{Slope parameter, for converting 'raw' (ADC) to 'real'
+ measurements. }
+ \item{sensor_intercept}{Intercept parameter, for converting 'raw' (ADC) to
+ 'real' measurements. }
+ }
+ 
+ The following columns are also required for \strong{acceleration} sensors:
+ \describe{
+ \item{accel_algorithm}{The algorithm used, accelerometers only. }   
+ \item{accel_sample_rate}{Sample rate used, accelerometers only. }  
+ \item{sensor_transmit_ratio}{Sensor transmit rate used, accelerometers
+ only. }
+ }}
 }
 \value{
 The input data frame with the following columns added (see column

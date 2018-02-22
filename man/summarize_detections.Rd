@@ -8,20 +8,30 @@ summarize_detections(det, location_col = "glatos_array",
   receiver_locs = NULL, animals = NULL, summ_type = "animal")
 }
 \arguments{
-\item{det}{A data frame containing detection data with the two columns
-('animal_id' and 'detection_timestamp_utc') described below and one column
-containing a location grouping variable, whose name is specified by
-\code{location_col} (see below).
-The following two columns must appear in \code{det}: 
-\itemize{
-  \item \code{animal_id}: Individual animal identifier; character.
- \item \code{detection_timestamp_utc}: Timestamps for the detections (MUST
- be of class 'POSIXct').
-}}
+\item{det}{A \code{glatos_detections} object (e.g., produced by
+ \link{read_glatos_detections}).
+ 
+ \emph{OR} a data frame containing detection
+ data with four columns ('animal_id' and 'detection_timestamp_utc') described
+ below and one column containing a location grouping variable, whose name is
+ specified by \code{location_col} (see below). 
+ 
+ The following four columns must appear in \code{det}, except \code{deploy_lat} and \code{deploy_lon} are not needed 
+ if \code{receiver_locs} is specified: 
+ \describe{ 
+ \item{\code{animal_id}}{Individual animal
+ identifier; character.} 
+ \item{\code{detection_timestamp_utc}}{ Timestamps for
+ the detections (MUST be of class 'POSIXct').}
+\item{\code{deploy_lat}}{Latitude of receiver deployment in decimal 
+ degrees, NAD83.}
+\item{\code{deploy_long}}{Longitude of receiver deployment in decimal 
+ degrees, NAD83.}
+ }}
 
-\item{location_col}{A character string with the name of the column 
-containing the location grouping variable (e.g., "glatos_array") in 
-quotes.}
+\item{location_col}{A character string indicating the column name in
+\code{det} (and \code{receiver_locs} if specified) that will be used as the
+location grouping variable (e.g. "glatos_array"), in quotes.}
 
 \item{receiver_locs}{An optional data frame containing receiver data with the
 two columns ('deploy_lat', 'deploy_long') described below and one column

@@ -7,11 +7,11 @@
 #' (and optionally, KMZ) for viewing receiver deployments  and release 
 #' locations in Google Earth.
 #'
-#' @param zipfile A character vector with the full path and filename of zipped 
-#'   GLATOS workbook (this is the **ZIPPED** archive that gets uploaded to 
-#'   GLATOSWeb)
+#' @param wb_file A character vector with the full path and filename of zipped 
+#'   GLATOS workbook (this is the \emph{ZIPPED} archive that gets uploaded to 
+#'   GLATOSWeb).
 #'   
-#' @param browse A logical scalar. If TRUE, user is asked to select zipfile 
+#' @param browse A logical scalar. If TRUE, user is asked to select wb_file 
 #'   using windows explorer. Default value is FALSE.
 #'   
 #' @param kmz A logical scalar; If TRUE, a KMZ file (zipped KML file) will also 
@@ -42,11 +42,11 @@
 #' #TBD
 #'
 #' @export
-kml_workbook <- function(zipFile,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
+kml_workbook <- function(wb_file,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
 	showOngoing=T,endDate="2020-01-01") {
 
-  tempDir <- gsub(".xlsm.zip|.zip","_tempR",zipFile)
-  unzip(zipFile,exdir=tempDir)
+  tempDir <- gsub(".xlsm.zip|.zip","_tempR",wb_file)
+  unzip(wb_file,exdir=tempDir)
 
   glatosFiles <- list.files(tempDir, full.names=T)
 
@@ -117,7 +117,7 @@ kml_workbook <- function(zipFile,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
   #make KML
 
   #-kml-specific values
-  kmlName <- gsub("\\.xlsm\\.zip|\\.zip", ".kml", basename(zipFile))
+  kmlName <- gsub("\\.xlsm\\.zip|\\.zip", ".kml", basename(wb_file))
   
 
 
@@ -251,7 +251,7 @@ kml_workbook <- function(zipFile,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
 
   kmlOut = c(kmlHead,folderBody,kmlFoot)
 
-  kmlFullName <- paste0(dirname(zipFile),'/',kmlName)
+  kmlFullName <- paste0(dirname(wb_file),'/',kmlName)
   write.table(kmlOut,kmlFullName,col.names=FALSE,row.names=FALSE,quote=FALSE)
   if(kmz) zip(gsub(".kml",".kmz",kmlFullName),files=kmlFullName)
 }

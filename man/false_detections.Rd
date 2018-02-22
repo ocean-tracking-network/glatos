@@ -4,13 +4,30 @@
 \alias{false_detections}
 \title{False detection filter}
 \usage{
-false_detections(det, tf, min_lag_col = "min_lag", show_plot = FALSE)
+false_detections(det, tf, min_lag_col = "min_lag", show_plot = FALSE, ...)
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by
-\link{read_glatos_detections}) \emph{or} a data frame containing detection
-data and \code{min_lag}. If \code{min_lag} is missing, then it will be 
-added using \link{min_lag}.}
+\link{read_glatos_detections}). 
+
+\emph{OR:} A data frame with one column containing 'min_lag' which for each
+detection record, is the smallest time (in seconds) to the next closest
+detection (either previous or subsequent) of the same transmitter on the
+same receiver. The name of the column containing 'min_lag' can be specified
+via \code{min_lag_col}; see below).
+
+\emph{OR} (\emph{if \code{min_lag} is missing}) A data farme containing
+detection data with the four columns described below. In that case,
+\code{min_lag} will be calculated using \link{min_lag}).
+\describe{ 
+\item{detection_timestamp_utc}{Detection timestamps; MUST be of class
+POSIXct.}
+\item{transmitter_codespace}{A character string with transmitter code space
+(e.g., "A69-1061" for Vemco PPM coding").}
+\item{transmitter_id}{A character string with transmitter ID code (e.g.,
+"1363" for Vemco PPM coding").}
+\item{receiver_sn}{A character vector with unique receiver serial number.}
+}}
 
 \item{tf}{A number indicating the time threshold (in seconds; e.g., 
 Pincock's (2012) "short interval") for identifying possible false 
@@ -22,6 +39,8 @@ in \code{det} that contains 'min_lag'.}
 \item{show_plot}{Indicates if a plot should be displayed showing the 
 proportion of detections that exceed min_lag from min_lag = 1 to 
 min_lag = 5 * tf.}
+
+\item{...}{Additional arguments passed to \link{plot}.}
 }
 \value{
 A data frame consisting of \code{det} with an additional 
@@ -29,23 +48,28 @@ A data frame consisting of \code{det} with an additional
   pass the criteria.
 }
 \description{
-Identify possible false detections based on "short interval" criteria
+Identify possible false detections based on "short interval" criteria (e.g.,
+GLATOS 'min_lag') .
 }
 \details{
 Detections are identified as potentially false when 
   \code{min_lag > tf}.
 
-A new column (\code{passed_filter}), indicating if each record (row) passed 
-the filter, is added to the input data frame. This function was written
-specifically with GLATOS standard detection export in mind, so it requires
-\code{min_lag} or equivalent.
+A new column (\code{passed_filter}), indicating if each record (row)
+passed the filter, is added to the input data frame.
 
-A common rule of thumb for choosing tf for VEMCO PPM encoded transmitters 
-  is 30 times the nominal delay (e.g., 3600 s for a transmitter with a 
-  120 s nominal delay) - see Pincock (2012).
+This function was written specifically with GLATOS standard
+  detection export in mind, but if \code{min_lag} is absent and
+  \code{min_lag_col} is not specified, then \code{min_lag} will be calculated
+  using \link{min_lag}.
 
-When \code{show_plot = TRUE} then the plot can be used to assess sensistivity 
-  of the proportion of detections removed to the choice of tf.
+A common rule of thumb for choosing \code{tf} for VEMCO PPM encoded
+transmitters is 30 times the nominal delay (e.g., 3600 s for a transmitter
+with a 120 s nominal delay) - see Pincock (2012).
+
+When \code{show_plot = TRUE} then the plot may be used to assess
+  sensitivity of the proportion of detections removed to the choice of
+  \code{tf}.
 }
 \examples{
 #get path to example detection file
@@ -71,6 +95,9 @@ Simpfendorfer, C.A., Huveneers, C., Steckenreuter, A., Tattersall, K.,
     false detections in VEMCO pulse position modulation acoustic telemetry 
     monitoring equipment. Animal Biotelemetry, 3(1), p.55.
     \cr \url{https://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-015-0094-z}
+}
+\seealso{
+\code{\link{min_lag}}
 }
 \author{
 T. R. Binder, edited by A. Dini

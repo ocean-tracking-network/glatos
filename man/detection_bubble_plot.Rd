@@ -7,49 +7,59 @@
 detection_bubble_plot(det, location_col = "glatos_array",
   receiver_locs = NULL, map = NULL, out_file = NULL,
   background_ylim = c(41.3, 49), background_xlim = c(-92.45, -75.87),
-  symbol_radius = 1, col_grad = c("white", "red"))
+  symbol_radius = 1, col_grad = c("white", "red"), scale_loc = NULL)
 }
 \arguments{
-\item{det}{A data frame containing detection data with at least 
-  five columns; four columns must be named 'animal_id', 
-  'detection_timestamp_utc', 'deploy_lat', and 'deploy_long' as described 
-  below and a fifth column containing a location grouping variable, is 
-  specified using \code{location_col}.
-  
-  The following four columns must appear in \code{det}: 
+\item{det}{A \code{glatos_detections} object (e.g., produced by
+ \link{read_glatos_detections}).
+ 
+ \emph{OR} a data frame containing detection
+ data with four columns ('animal_id' and 'detection_timestamp_utc') described
+ below and one column containing a location grouping variable, whose name is
+ specified by \code{location_col} (see below). 
+ 
+ The following four columns must appear in \code{det}, except \code{deploy_lat} and \code{deploy_lon} are not needed 
+ if \code{receiver_locs} is specified: 
+ \describe{ 
+ \item{\code{animal_id}}{Individual animal
+ identifier; character.} 
+ \item{\code{detection_timestamp_utc}}{ Timestamps for
+ the detections (MUST be of class 'POSIXct').}
+\item{\code{deploy_lat}}{Latitude of receiver deployment in decimal 
+ degrees, NAD83.}
+\item{\code{deploy_long}}{Longitude of receiver deployment in decimal 
+ degrees, NAD83.}
+ }}
+
+\item{location_col}{A character string indicating the column name in
+\code{det} (and \code{receiver_locs} if specified) that will be used as the
+location grouping variable (e.g. "glatos_array"), in quotes.}
+
+\item{receiver_locs}{An optional data frame containing receiver data with the
+two columns ('deploy_lat', 'deploy_long') described below and one column
+containing a location grouping variable, whose name is specified by
+\code{location_col} (see above). 
+The following two columns must appear in \code{receiver_locs}: 
 \itemize{
-  \item \code{animal_id} A character string with the name of the column 
-         containing the individual animal identifier.
- \item \code{detection_timestamp_utc} is a character string with the name 
-   of the column containing datetime stamps for the detections (MUST be of 
-   class 'POSIXct').
- \item \code{deploy_lat} A character string with the name of the column
-    containing latitude of the receiver in decimal degrees (NAD83).
- \item \code{deploy_long} A character string with the name of the column
-    containing longitude of the receiver in decimal degrees (NAD83).
+  \item \code{deploy_lat} Latitude of receiver deployment in decimal 
+   degrees, NAD83.
+  \item \code{deploy_long} Longitude of receiver deployment in decimal 
+   degrees, NAD83.
 }}
 
-\item{location_col}{A character string indicating the column name in the
-detections data frame that will be used as the location grouping variable
-(e.g. "glatos_array", "station").}
-
-\item{receiver_locs}{An optional data frame containing at least 5 columns with 
-receiver 'location', 'lat', 'lon', 'deploy_timestamp', and 
-'recover_timestamp'.}
-
-\item{map}{An optional SpatialPolygonsDataFrame or other
-geo-referenced object to be plotted as the background for the plot. It is 
-defined by \code{type}. If NULL, then the example Great Lakes polygon 
+\item{map}{An optional SpatialPolygonsDataFrame or other spatial object
+that can by plotted with using \code{plot} to be included as the
+background for the plot. If NULL, then the example Great Lakes polygon
 object (\code{data(greatLakesPoly)}) will be used.}
 
 \item{out_file}{An optional character string with the name (including 
 extension) of output file created. File extension will determine type of 
 file written. For example, \code{"BubblePlot.png"} will write a png 
 file to the working directory. If \code{NULL} (default) then the plot will 
-be printed to the default plot device will be used. Supported extensions: 
+be printed to the default plot device. Supported extensions: 
 png, jpeg, bmp, and tiff.}
 
-\item{background_ylim}{two-element numeric vector that defines minimum and
+\item{background_ylim}{A two-element numeric vector that defines minimum and
 maximum extents of the viewable plot area along the y-axis (i.e.,
 longitude).}
 
@@ -62,6 +72,13 @@ of x-axis scale. Default value = 1 (i.e., 1 percent of x-axis).}
 
 \item{col_grad}{A two-element character vector indicating the start and end
 colors of the gradient scale used to color-code "bubbles".}
+
+\item{scale_loc}{An optional 4-element numeric vector, to be passed to
+plotrix::color.legend, indicating the plotting location of the legend in
+the same units as \code{map}. Elements in the vector are the lower left
+and upper right coordinates of the rectangle of colors
+(i.e., c(xleft, ybottom, xright, ytop)). If \code{scale_loc} = NULL
+(default), the legend is plotted along the left edge of the plot.}
 }
 \value{
 A data frame produced by 
@@ -73,20 +90,21 @@ If not out_file is specified, then an image is printed to the
   specified type is written to \code{out_file}.
 }
 \description{
-Make bubble plots showing the number of fish detected and number of 
-  detections across a telemetry receiver network.
+Make bubble plots showing the number of fish detected across a defined set
+of receiver locations.
 }
 \details{
 Data are summarized using \link{summarize_detections}.
 
 If \code{receiver_locs} is specified (not NULL) then the plot will
-  show all receivers in \code{receiver_locs} including those that detected
+  show all receivers in \code{receiver_locs} including any that detected
   none of the transmitters in \code{det}. Although this is helpful to view
-  locations where fish were \emph{not} detections, it will also show and
-  summarize data based on receivers that were not deployed during the time
-  that a fish was at large. Therefore, \code{receiver_locs} only represent a
-  subset of receivers present during the time interval most relevant to the
-  data in \code{det}.
+  locations where fish were \emph{not} detected, the user will usually want 
+  to take care to include only receivers that were in the water during the 
+  period of interest. If you are using a glatos receiver locations file to 
+  specify location for plotting, you will likely want to filter the receiver 
+  data by depoyment and receovery dates to exclude deployments that occured 
+  outside of the period of interest.
 
 "col_grad" is used in a call to \link[grDevices]{colorRampPalette},
   which will accept a vector containing any two colors return by
@@ -113,6 +131,27 @@ rec_file <- system.file("extdata", "sample_receivers.csv",
 rec <- read_glatos_receivers(rec_file)
 
 detection_bubble_plot(det, receiver_locs = rec)
+
+
+#' #Subset receivers to include on receivers that were deployed during the
+#' detection interval.
+
+# get path to example receiver file
+rec_file <- system.file("extdata", "sample_receivers.csv",
+  package = "glatos")
+rec <- read_glatos_receivers(rec_file)
+
+first <- min(det$detection_timestamp_utc) # time of first detection
+last <- max(det$detection_timestamp_utc) # time of last detection
+
+# Subset receiver deployments oustide the detection period.
+# !is.na(rec$recover_date_time) eliminates receivers that have been
+# deployed but not yet recovered.
+plot_rec <- rec[rec$deploy_date_time < last & 
+                rec$recover_date_time > first & 
+                !is.na(rec$recover_date_time),]
+
+detection_bubble_plot(det, receiver_locs = plot_rec)
 
 
 }

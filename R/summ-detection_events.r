@@ -1,32 +1,31 @@
 #' Classify discrete events in detection data
 #'
-#' Reduce detection data from an acoustic telemetry receiver into discrete 
-#'   detection events, defined by movement between receivers (or receiver 
-#'   groups, depending on location), or sequential detections at the same 
-#'   location that are separated by a user-defined threshold period of time.
+#' Reduce detection data into discrete detection events, defined by movement
+#' between receivers (or receiver groups, depending on location), or sequential
+#' detections at the same location that are separated by a user-defined
+#' threshold period of time.
 #'
-#' @param det A data frame containing detection data with at least 
-#'   five columns; four columns must be named 'animal_id', 
-#'   'detection_timestamp_utc', 'deploy_lat', and 'deploy_long' as described 
-#'   below and a fifth column containing a location grouping variable, is 
-#'   specified using \code{location_col}.
+#' @param det A \code{glatos_detections} object (e.g., produced by
+#'   \link{read_glatos_detections}).
+#'   
+#'   \emph{OR} a data frame containing detection data with four columns
+#'   described below and one column containing a location grouping variable,
+#'   whose name is specified by \code{location_col} (see below).
 #'   
 #'   The following four columns must appear in \code{det}: 
-#' \itemize{
-#'   \item \code{animal_id} A character string with the name of the column 
-#' 		 containing the individual animal identifier.
-#'	 \item \code{detection_timestamp_utc} is a character string with the name 
-#'	   of the column containing datetime stamps for the detections (MUST be of 
-#'	   class 'POSIXct').
-#'	 \item \code{deploy_lat} A character string with the name of the column
-#'     containing latitude of the receiver in decimal degrees (NAD83).
-#'	 \item \code{deploy_long} A character string with the name of the column
-#'     containing longitude of the receiver in decimal degrees (NAD83).
-#' }
+#'   \describe{
+#'   \item{\code{animal_id}}{Individual animal identifier; character.}
+#'	 \item{\code{detection_timestamp_utc}}{Detection timestamps; MUST be of class
+#'   POSIXct.}
+#'	 \item{\code{deploy_lat}}{Latitude of receiver deployment in decimal 
+#'      degrees, NAD83.}
+#'	 \item{\code{deploy_long}}{Longitude of receiver deployment in decimal 
+#'     degrees, NAD83.}
+#'   }
 #' 
-#' @param location_col A character string indicating the column name in the
-#'   detections data frame that will be used as the location grouping variable
-#'   (e.g. "glatos_array", "station").
+#' @param location_col A character string indicating the column name in
+#'   \code{det} that will be used as the location grouping variable (e.g.
+#'   "glatos_array"), in quotes.
 #' 
 #' @param time_sep Amount of time (in seconds) that must pass between 
 #'   sequential detections on the same receiver (or group of receivers, 
@@ -49,6 +48,9 @@
 #'
 #' @return If \code{condense = TRUE}, a data frame containing discrete 
 #'   detection event data with the following columns:
+#'  \item{event}{Unique event identifier.}
+#'  \item{individual}{Unique 'animal_id'.}
+#'  \item{location}{Unique 'location'.}
 #'	\item{mean_latitude}{Mean latitude of detections comprising each event.}
 #' 	\item{mean_longitude}{Mean longitude of detections comprising each event.}
 #'  \item{first_detection}{The time of the first detection in a given detection 
@@ -157,7 +159,7 @@ detection_events <- function(det,
 	detections[ , event := cumsum(arrive)]  
 	
 	# Summarize the event data using the ddply function in the plyr package.
-	Results = detections[, .(Individual = animal_id[1],
+	Results = detections[, .(individual = animal_id[1],
 	                         location = location_col[1],
 	                         mean_latitude = mean(deploy_lat, na.rm = T),
 	                         mean_longitude = mean(deploy_long, na.rm = T),

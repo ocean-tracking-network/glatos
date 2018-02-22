@@ -8,7 +8,9 @@ min_lag(det)
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by
-\link{read_glatos_detections}) \emph{or} a data frame containing detection
+\link{read_glatos_detections}).
+
+\emph{OR} a data frame containing detection
 data with the following columns: 
 \describe{ 
 \item{detection_timestamp_utc}{Detection timestamps; MUST be of class

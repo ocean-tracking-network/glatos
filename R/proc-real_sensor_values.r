@@ -7,7 +7,9 @@
 #' column.
 #'
 #' @param det A \code{glatos_detections} object (e.g., produced by
-#'   \link{read_glatos_detections}) \emph{or} a data frame containing detection
+#'   \link{read_glatos_detections}). 
+#'   
+#'   \emph{OR} A data frame containing detection
 #'   data with the following columns: 
 #'   \describe{ 
 #'   \item{transmitter_codespace}{A character string with transmitter code space
@@ -20,9 +22,10 @@
 #'   (e.g., "ADC" for 'raw' Vemco sensor tag detections). }
 #'   }
 #'
-#' @param tag_specs An object produced by \link{read_vemco_tag_specs} \emph{or}
-#'   a data frame containing transmitter specification data with the following
-#'   columns: 
+#' @param tag_specs An object produced by \link{read_vemco_tag_specs}.
+#'  
+#'   \emph{OR} A data frame containing transmitter specification data with the
+#'   following columns:
 #'   \describe{ 
 #'   \item{code_space}{A character string with transmitter code space (e.g.,
 #'   "A69-1061" for Vemco PPM coding").}
@@ -49,7 +52,8 @@
 #'   \describe{
 #'   \item{accel_algorithm}{The algorithm used, accelerometers only. }   
 #'   \item{accel_sample_rate}{Sample rate used, accelerometers only. }  
-#'   \item{sensor_transmit_ratio}{Sensor transmit rate used, accelerometers only. }  
+#'   \item{sensor_transmit_ratio}{Sensor transmit rate used, accelerometers
+#'   only. }
 #'   }  
 #' 
 #' @details Tag spec data are joined to detection data and then raw-scale sensor
