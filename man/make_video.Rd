@@ -4,10 +4,11 @@
 \alias{make_video}
 \title{Create video from sequence of still images}
 \usage{
-make_video(dir = ".", pattern, output = "animation.mp4", output_dir = ".",
-  fps_in = 30, start_frame = 1, end_frame = NULL, size = "source",
-  preset = "medium", codec = "default", format = "yuv420p",
-  lossless = FALSE, fps_out = 30, overwrite = FALSE, ffmpeg = NA)
+make_video(dir = getwd(), pattern, output = "animation.mp4",
+  output_dir = getwd(), fps_in = 30, start_frame = 1, end_frame = NULL,
+  size = "source", preset = "medium", codec = "default",
+  format = "yuv420p", lossless = FALSE, fps_out = 30, overwrite = FALSE,
+  ffmpeg = NA)
 }
 \arguments{
 \item{dir}{directory containing images, default is working
@@ -49,13 +50,14 @@ second.}
 
 \item{overwrite}{logical, overwrite existing output file?}
 
-\item{ffmpeg}{A character string with path to install directory
-for ffmpeg.  This argument is only needed if ffmpeg has not been
-added to your path variable on your computer.  For Windows
-machines, path must point to ffmpeg.exe, typically located in
-"bin" folder.  For example,
-'c:\\path\\to\\ffmpeg\\bin\\ffmpeg.exe' or 'path/to/ffmpeg' on
-mac.}
+\item{ffmpeg}{A file path (characer) to FFmpeg executable. This
+argument is only needed if ffmpeg is not added to your system
+path. For Windows machines, path must point to 'ffmpeg.exe',
+located in the bin subfolder within the ffmpeg folder.  For
+example on Windows machines,
+"C:\\Users\\Username\\Documents\\ffmpeg-3.4.1-win64-static\\bin\\ffmpeg.exe").
+On Mac, path must point to 'ffmpeg' within the 'bin' subfolder
+"/home/directory/Documents/bin/ffmpeg".}
 }
 \value{
 One video animation will be written to \code{output_dir}
@@ -66,7 +68,7 @@ software.
 }
 \details{
 \code{animate_video} is based on \code{mapmate::ffmpeg}.
-  More information about\code{mapmate} package is found at
+  More information about \code{mapmate} package is found at
   \code{https://github.com/leonawicz/mapmate}.  This function
   converts R syntax into command line call that is submitted to
   \code{ffmpeg}.  \code{ffmpeg} must be installed and able to be

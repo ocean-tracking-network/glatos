@@ -6,7 +6,7 @@
 #' 
 #' @param detections An object of class \code{glatos_detections} or data frame
 #'   containing spatiotemporal data with at least 4 columns containing
-#'   'animal_id', 'detection_timestamp_utc','deploy_long', and
+#'   'animal_id', 'detection_timestamp_utc', 'deploy_long', and
 #'   'deploy_lat' columns.
 #'
 #' @param int_time_stamp The time step size (in seconds) of interpolated 
@@ -14,32 +14,40 @@
 #'   
 #' @param trans An optional transition matrix with the "cost" of
 #'   moving across each cell within the map extent. Must be of class
-#'   \code{TransitionLayer} (See \code{gdistance} package).
+#'   \code{TransitionLayer}. A transition layer may be
+#'   created from a polygon shapefile using \link{make_transition}.
 #'   
 #' @param lnl_thresh A numeric threshold for determining if linear or
 #'   non-linear interpolation shortest path will be used.
 #'
-#' @details Non-linear interpolation uses the 'gdistance' package to
-#'   find the shortest pathway between two locations (i.e., receivers)
-#'   that avoid 'impossible' movements (e.g., over land for fish). The
-#'   shortest non-linear path between two locations is calculated
-#'   using a 'transition matrix layer' (\code{trans}) that represents
-#'   the 'cost' of an animal moving between adjacent grid cells.  For
-#'   example, each cell in \code{rast} may be coded as water (1) or
-#'   land (0) to represent possible (1) and impossible (0) movement
-#'   paths.
+#' @details Non-linear interpolation uses the \code{gdistance} package
+#'   to find the shortest pathway between two locations (i.e.,
+#'   receivers) that avoid 'impossible' movements (e.g., over land for
+#'   fish). The shortest non-linear path between two locations is
+#'   calculated using a transition matrix layer that represents the
+#'   'cost' of an animal moving between adjacent grid cells.  The
+#'   transition matrix layer (see \link{gdistance}) is created from
+#'   a polygon shapefile using \link{make_transition} or from a
+#'   \code{RasterLayer} object using \link[gdistance]{transition}. In
+#'   \code{make_transition}, each cell in the output transition layer
+#'   is coded as water (1) or land (0) to represent possible (1) and
+#'   impossible (0) movement paths.
 #' 
 #' @details Linear interpolation is used for all points when
 #'   \code{trans} is not supplied.  When \code{trans} is supplied,
-#'   then interpolation method is determined for each pair of observed
-#'   positions. For example, linear interpolation will be used if the
-#'   two points are exactly the same and when the ratio (linear
-#'   distance:non-linear distance) between two positions is less than
-#'   \code{lnl_thresh}.  Non-linear interpolation will be used when
-#'   ratio is greater than \code{lnl_thresh}.  \code{lnl_thresh} can
-#'   be used to control whether non-linear or linear interpolation is
+#'   then interpolation method is determined for each pair of
+#'   sequential observed detections. For example, linear interpolation
+#'   will be used if the two geographical positions are exactly the
+#'   same and when the ratio (linear distance:non-linear distance)
+#'   between two positions is less than \code{lnl_thresh}.  Non-linear
+#'   interpolation will be used when ratio is greater than
+#'   \code{lnl_thresh}.  When the ratio of linear distance to
+#'   non-linear distance is greater than \code{lnl_thresh}, then the
+#'   distance of the non-linear path needed to avoid land is greater
+#'   than the linear path that crosses land.  \code{lnl_thresh} can be
+#'   used to control whether non-linear or linear interpolation is
 #'   used for all points. For example, non-linear interpolation will
-#'   be used for all points when \code{lnl_thresh} = 1 and linear
+#'   be used for all points when \code{lnl_thresh} > 1 and linear
 #'   interpolation will be used for all points when \code{lnl_thresh}
 #'   = 0.
 #'

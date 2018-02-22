@@ -4,26 +4,31 @@
 \alias{adjust_playback_time}
 \title{Modify playback time of video}
 \usage{
-adjust_playback_time(scale_factor = 1, input, output_dir = ".",
+adjust_playback_time(scale_factor = 1, input, output_dir = getwd(),
   output = "new.mp4", overwrite = FALSE, ffmpeg = NA)
 }
 \arguments{
-\item{scale_factor}{multiplicative factor changes duration of video
-playback. See details.}
+\item{scale_factor}{multiplicative factor changes duration of
+video playback. See details.}
 
-\item{input}{character, path to video file}
+\item{input}{character, path to video file (any FFmpeg supported
+file type- *.mp4, *.wmv, see \link{make_frames})}
 
-\item{output_dir}{character, output directory, default is working directory}
+\item{output_dir}{character, output directory, default is working
+directory}
 
 \item{output}{character, output file name}
 
-\item{overwrite}{logical, default is \code{TRUE}}
+\item{overwrite}{logical, default is \code{overwrite = TRUE}}
 
-\item{ffmpeg}{A character string with path to install directory for
-ffmpeg. This argument is only needed if ffmpeg is not on your computers
-system path. For Windows machines, path must point to 'ffmpeg.exe',
-located in the bin subfolder within the ffmpeg folder.  On mac, path must
-point to 'ffmpeg' within the 'bin' subfolder. see \code{\link{make_video}}}
+\item{ffmpeg}{A file path (characer) to FFmpeg executable. This
+argument is only needed if ffmpeg is not added to your system
+path. For Windows machines, path must point to 'ffmpeg.exe',
+located in the bin subfolder within the ffmpeg folder.  For
+example on Windows machines,
+"C:\\Users\\Username\\Documents\\ffmpeg-3.4.1-win64-static\\bin\\ffmpeg.exe").
+On Mac, path must point to 'ffmpeg' within the 'bin'
+subfolder "/home/directory/Documents/bin/ffmpeg".  see \link{make_video}}
 }
 \value{
 One video animation will be written to \code{output_dir}

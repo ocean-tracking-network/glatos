@@ -2,7 +2,7 @@
 #' 
 #' Create a set of frames (png image files) showing geographic location data
 #' (e.g., detections of tagged fish or interpolated path data) at discrete 
-#' points in time on top of a Great Lakes shapefil and optionally stitches
+#' points in time on top of a Great Lakes shapefile and optionally stitches
 #' frames into a video animation (mp4 file).    
 #'
 #'
@@ -22,34 +22,37 @@
 #'   directory.
 #'   
 #' @param background_ylim Vector of two values specifying the min/max values 
-#' 	 for y-scale of plot. Units are same as background argument.
+#' 	 for y-scale of plot. Units are degrees.
 #' 	 
 #' @param background_xlim Vector of two values specifying the min/max values 
-#'   for x-scale of plot. Units are same as background argument.
+#'   for x-scale of plot. Units are degrees.
 #'   
 #' @param animate Boolean. Default (TRUE) creates video animation
 #' 
 #' @param ani_name Name of animation (character string)
 #' 
-#' @param frame_delete Boolean.  Default (TRUE) delete individual
+#' @param frame_delete Boolean.  Default (\code{frame_delete = TRUE}) delete individual
 #'   image frames after animation is created
 #'   
-#' @param overwrite Overwite the animation file if it already exists. Default is
-#'   FALSE (file is not overwritten)
-#' 
-#' @param ffmpeg A character string with path to ffmpeg executable file
-#'   (Windows: "ffmpeg.exe", MacOS: "ffmpeg"). The ffmpeg executable is found in
-#'   the ffmpeg folder you can download from https://ffmpeg.org/. This argument
-#'   is only needed if ffmpeg has not been added to your path variable on your
-#'   computer.
+#' @param overwrite Overwite the animation file if it already
+#'   exists. Default (\code{overwrite = FALSE}) prevents file from being overwritten.
 #'
+#' @param ffmpeg A file path (characer) to FFmpeg executable. This
+##'   argument is only needed if ffmpeg is not added to your system
+##'   path. For Windows machines, path must point to 'ffmpeg.exe',
+##'   located in the bin subfolder within the ffmpeg folder.  For
+##'   example on Windows machines,
+##'   "C:\\Users\\Username\\Documents\\ffmpeg-3.4.1-win64-static\\bin\\ffmpeg.exe").
+##'   On Mac, path must point to 'ffmpeg' within the 'bin'
+##'   subfolder, i.e., "/home/directory/Documents/bin/ffmpeg".  
+##'
 #' @param tail_dur contains the duration (in same units as \code{proc_obj$bin_timestamp}; 
 #'     see \code{\link{interpolate_path}}) of trailing points in each frame. 
 #'     Default value is 0 (no trailing points). A value
 #'     of \code{Inf} will show all points from start.
 #'
-#' @param preview write first frame.  Useful for
-#'   checking output before processing large number of frames.  Default \code{preview = TRUE}
+#' @param preview write first frame only.  Useful for
+#'   checking output before processing large number of frames.  Default \code{preview = FALSE}
 #'
 #' @param ... Graphical parameters for plotting fish markers.  Any
 #'   argument that can be passed to \code{plot::points}, such as \code{cex =
