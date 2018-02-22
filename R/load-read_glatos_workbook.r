@@ -107,8 +107,18 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
     wb[names(glatos:::glatos_workbook_schema$v1.3)] <- NA
     
     #Get project data
-    tmp <- openxlsx::readWorkbook(wb_file, sheet = "Project", startRow = 1, 
-                                  colNames = FALSE)
+    tmp <- tryCatch(openxlsx::readWorkbook(wb_file, sheet = "Project", 
+                                     startRow = 1, 
+                                     colNames = FALSE), error = function(e){
+      if(e$message == 
+          "Expecting a single string value: [type=character; extent=0]."){
+        stop("There was a problem reading from input file specified. It may ",
+          "be protected. \nTry again after opening, saving, and closing the ",
+          "file.")
+      } else {stop(e)}
+    })
+    #tmp <- openxlsx::readWorkbook(wb_file, sheet = "Project", startRow = 1, 
+    #                              colNames = FALSE)
     
     wb$project <- list(project_code = tmp[1,2],
                         principle_investigator = tmp[2,2],
@@ -225,32 +235,37 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
           if(length(tz_cmd) > 1) stop("Multiple time zones in one column are ",
             "not supported at this time.")        
           
-          #Handle mixture of timestamps as date and char
+          if(nrow(tmp) > 0){
           
-          #identify timestamps that can be numeric; assume others character
-          posix_na <- is.na(tmp[, j]) #identify missing first
-          posix_as_num <- suppressWarnings(as.numeric(tmp[, j]))
-          posix_as_char <- !posix_na & is.na(posix_as_num)
-          if(any(posix_as_char)) warning(paste0("Some timestamps in ",
-               "column ", j , " of `", sheets_to_read[i], "` were not formatted ",
-               "as date-time objects in Excel. Double check the following rows ",
-               "in the Excel file: ", paste0(which(posix_as_char) + 2, 
-                 collapse = ", ")))
-  
-          #convert numeric
-          posix_as_num <- openxlsx::convertToDateTime(posix_as_num, 
-                                  tz = Sys.timezone())
-          #round to nearest minute and force to correct timezone
-          posix_as_num <- as.POSIXct(round(posix_as_num, "mins"), 
-                                     tz = tz_cmd)
-  
-          #do same for posix_as_char and insert into posix_as_num
-          if(any(posix_as_char)){
-            posix_as_num[posix_as_char] <- as.POSIXct(tmp[posix_as_char , j], 
-                                                      tz = tz_cmd)
+            #Handle mixture of timestamps as date and char
+            
+            #identify timestamps that can be numeric; assume others character
+            posix_na <- is.na(tmp[, j]) #identify missing first
+            posix_as_num <- suppressWarnings(as.numeric(tmp[, j]))
+            posix_as_char <- !posix_na & is.na(posix_as_num)
+            if(any(posix_as_char)) warning(paste0("Some timestamps in ",
+                 "column '", j , "' of `", sheets_to_read[i], "` were not ",
+                 "formatted as date-time objects in Excel. Double check the ",
+                 "following rows in the Excel file: ",  
+                 paste0(which(posix_as_char) + 2, collapse = ", ")))
+    
+            #convert numeric
+            posix_as_num <- openxlsx::convertToDateTime(posix_as_num, 
+                                    tz = Sys.timezone())
+            #round to nearest minute and force to correct timezone
+            posix_as_num <- as.POSIXct(round(posix_as_num, "mins"), 
+                                       tz = tz_cmd)
+    
+            #do same for posix_as_char and insert into posix_as_num
+            if(any(posix_as_char)){
+              posix_as_num[posix_as_char] <- as.POSIXct(tmp[posix_as_char , j], 
+                                                        tz = tz_cmd)
+            }
+            
+            tmp[ , j] <- posix_as_num
+          } else {
+            tmp[ , j] <- as.POSIXct(NA, tz = "UTC")[0]
           }
-          
-          tmp[ , j] <- posix_as_num
         
         } #end j
         
@@ -353,7 +368,7 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
     
     #create animal_id if missing
     anid_na <- is.na(wb2$animals$animal_id)
-    wb2$animals$animal_id[anid_na] <- with(wb2$animals, 
+    wb2$animals$animal_id[anid_na] <- with(wb2$animals[anid_na, ], 
             paste0(tag_code_space, "-", tag_id_code))
     
     #Append new sheets if required
