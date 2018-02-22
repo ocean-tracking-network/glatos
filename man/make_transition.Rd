@@ -4,16 +4,16 @@
 \alias{make_transition}
 \title{Create transition layer from polygon shapefile}
 \usage{
-make_transition(in_file = ".", output = "out.tif", output_dir = ".",
+make_transition(in_file, output = "out.tif", output_dir = getwd(),
   res = c(0.1, 0.1))
 }
 \arguments{
 \item{in_file}{character, file path to polygon shapefile (with
 extension of *.shp)}
 
-\item{output}{character, name of output file for rasterized \code{in_file}}
+\item{output}{character, name of output file with .tif extension}
 
-\item{output_dir}{character, directory that output file will be written}
+\item{output_dir}{character, directory where output file will be written}
 
 \item{res}{two element vector that specifies the x and y dimension
 of output raster cells.  Units of res are same as input
@@ -26,20 +26,23 @@ A list with two elements:
       and water=1
   (see \code{gdistance})}
    \item{rast}{rasterized input layer of class \code{raster}}}
-  Additonally, rasterized version of input shapefile is written to computer
+  Additonally, rasterized version of input shapefile (*.tif extension) is written to computer
   at \code{output_dir}
 }
 \description{
-Create transition layer for \code{interpolat_path} from polygon shapefile.
+Create transition layer for \link{interpolate_path} from polygon shapefile.
 }
 \details{
-\code{make_transition} uses gdalUtils::gdal_rasterize to
-  convert a polygon shapefile into transition layer (see
-  \code{gdistance}) where raster cell values on land = 0 and water
-  = 1. Output raster is in same projection as input shapefile and
-  has same extents as input shapefile.  Function requires that
-  gdal is working on computer.  To determine if gdal is installed
-  on your computer, see gdalUtils::gdal_rasterize.
+\code{make_transition} uses
+  \link[gdalUtils]{gdal_rasterize} to convert a polygon shapefile
+  into a raster layer, and geo-corrected transition layer
+  \link{interpolate_path}.  Raster cell values on land = 0 and
+  water = 1. Function also writes a geotiff file (*.tif) of the
+  input shapefile to the ouput directory. Both raster layer and
+  geotif output have the same extents and geographic projection as
+  input shapefile.  Function requires that gdal is working on
+  computer.  To determine if gdal is installed on your computer,
+  see \link[gdalUtils]{gdal_rasterize}.
 
 output transition layer is corrected for projection
   distortions using \code{gdistance::geoCorrection}.  Adjacent
@@ -60,9 +63,17 @@ tst <- make_transition(poly[grepl("*.shp", poly)], res = c(0.1, 0.1))
 # notice land = 1, water = 0
 raster::plot(tst$rast)
 
-# increase resolution
+# plot transition layer
+raster::plot(raster::raster(tst$transition))
+
+# increase resolution- this may take some time...
 tst1 <- make_transition(poly[grepl("*.shp", poly)], res = c(0.01, 0.01))
+
+# plot raster layer
 raster::plot(tst1$rast)
+
+# plot transition layer
+raster::plot(raster::raster(tst1$transition))
 
 }
 \author{

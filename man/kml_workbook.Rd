@@ -5,11 +5,15 @@
 \title{Make a KML (or KMZ) file for viewing receiver and animal release 
   locations in Google Earth.}
 \usage{
-kml_workbook(zipFile, browse = F, kmz = F, labelSize = 0.6,
+kml_workbook(wb_file, browse = F, kmz = F, labelSize = 0.6,
   iconSize = 0.6, showOngoing = T, endDate = "2020-01-01")
 }
 \arguments{
-\item{browse}{A logical scalar. If TRUE, user is asked to select zipfile 
+\item{wb_file}{A character vector with the full path and filename of zipped 
+GLATOS workbook (this is the \emph{ZIPPED} archive that gets uploaded to 
+GLATOSWeb).}
+
+\item{browse}{A logical scalar. If TRUE, user is asked to select wb_file 
 using windows explorer. Default value is FALSE.}
 
 \item{kmz}{A logical scalar; If TRUE, a KMZ file (zipped KML file) will also 
@@ -25,10 +29,6 @@ be created. Default value is FALSE.}
 
 \item{endDate}{End date (e.g. "YYYY-MM-DD") to be used for any ongoing 
 stations (if showOngoing == T)}
-
-\item{zipfile}{A character vector with the full path and filename of zipped 
-GLATOS workbook (this is the **ZIPPED** archive that gets uploaded to 
-GLATOSWeb)}
 }
 \value{
 A KML (and optionally, KMZ) file, written to the directory that 
