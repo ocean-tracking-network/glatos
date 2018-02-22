@@ -7,9 +7,11 @@
 read_glatos_detections(det_file, version = NULL)
 }
 \arguments{
-\item{det_file}{A character string with path and name of detection file in 
-standard GLATOS format (*.csv). If only file name is given, then the 
-file must be located in the working directory.}
+\item{det_file}{A character string with path and name of detection file in
+standard GLATOS format (*.csv). If only file name is given, then the file
+must be located in the working directory. File must be a standard GLATOS
+file (e.g., \emph{xxxxx_detectionsWithLocs_yyyymmdd_hhmmss.csv}) submitted
+via GLATOSWeb Data Portal \url{http://glatos.glos.us}.}
 
 \item{version}{An optional character string with the glatos file version
 number. If NULL (default value) then version will be determined by

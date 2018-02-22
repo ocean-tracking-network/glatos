@@ -4,9 +4,11 @@
 #' @description Read data from a standard GLATOS detection (csv) file and return
 #' a data.frame of class \code{glatos_detections}.
 #'
-#' @param det_file A character string with path and name of detection file in 
-#'  standard GLATOS format (*.csv). If only file name is given, then the 
-#'  file must be located in the working directory.
+#' @param det_file A character string with path and name of detection file in
+#'   standard GLATOS format (*.csv). If only file name is given, then the file
+#'   must be located in the working directory. File must be a standard GLATOS
+#'   file (e.g., \emph{xxxxx_detectionsWithLocs_yyyymmdd_hhmmss.csv}) submitted
+#'   via GLATOSWeb Data Portal \url{http://glatos.glos.us}.
 #'  
 #' @param version An optional character string with the glatos file version
 #'   number. If NULL (default value) then version will be determined by
@@ -18,15 +20,14 @@
 #' POSIXct using \link[fasttime]{fastPOSIXct}. All times must be in UTC timezone
 #' per GLATOS standard.
 #' 
-#' @details
-#' Column \code{animal_id} is considered a required column by many other 
-#' functions in this package, so it will be created by missing. If created, 
-#' it will be constructed from \code{transmitter_codespace} and 
-#' \code{transmitter_id}, separated by '-'.
+#' @details Column \code{animal_id} is considered a required column by many
+#'   other functions in this package, so it will be created if any records are
+#'   \code{NULL}. When created, it will be constructed from
+#'   \code{transmitter_codespace} and \code{transmitter_id}, separated by '-'.
 #' 
 #' @return A data.frame of class \code{glatos_detections}.
 #'
-#' @author C. Holbrook (cholbrook@usgs.gov) 
+#' @author C. Holbrook \email{cholbrook@usgs.gov}
 #'
 #' @examples
 #' #get path to example detection file

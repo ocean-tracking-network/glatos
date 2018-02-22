@@ -1,37 +1,64 @@
-#' @title 
-#' Read data from a GLATOS data workbook
+#' Read data from a GLATOS project workbook
 #' 
-#' @description
-#' Read data from a GLATOS workbook (xlsm file) and return a list of class 
-#' \code{glatos_workbook}.
+#' Read data from a GLATOS project workbook (xlsm file) and return a list of
+#' class \code{glatos_workbook}.
 #'
-#' @param wb_file A character string with path and name of workbook in 
-#'  standard GLATOS format (*.xlsm). If only file name is given, then the 
-#'  file must be located in the working directory.
-#'  
+#' @param wb_file A character string with path and name of workbook in standard
+#'   GLATOS format (*.xlsm). If only file name is given, then the file must be
+#'   located in the working directory. File must be a standard GLATOS file
+#'   (e.g., \emph{xxxxx_GLATOS_YYYYMMDD.xlsm}) submitted via GLATOSWeb Data
+#'   Portal \url{http://glatos.glos.us}.
+#'   
 #' @param wb_version An optional character string with the workbook version
 #'   number. If NULL (default value) then version will be determined by
 #'   evaluating workbook structure. Currently, the only allowed values are
 #'   \code{NULL} and \code{"1.3"}. Any other values will trigger an error.
 #'
-#' @param read_all If TRUE, then all columns and sheets
-#'  (e.g., user-created "project-specific" columns or sheets) in the workbook
-#'  will be imported. If FALSE (default value) then only columns in the 
-#'  standard GLATOS workbook will be imported (project-specific columns will 
-#'  be ignored.)
+#' @param read_all If TRUE, then all columns and sheets (e.g., user-created
+#'   "project-specific" columns or sheets) in the workbook will be imported. If
+#'   FALSE (default value) then only columns and sheets in the standard GLATOS
+#'   workbook will be imported (project-specific columns will be ignored.)
 #'
-#' @details
-#' If \code{read_all = TRUE} then the type of data in each user-defined 
-#' column will be 'guessed' by \code{read_excel}; this may throw some warnings.
-#' 
-#' @return A list of class \code{glatos_workbook} with three elements:
+#' @details In the standard glatos workbook (v1.3), data in workbook sheets
+#'   'Deployment', 'Recovery', and 'Location' are merged on columns
+#'   'GLATOS_PROJECT', 'GLATOS_ARRAY', 'STATION_NO', 'CONSECUTIVE_DEPLOY_NO',
+#'   AND 'INS_SERIAL_NO' to produce the output data frame \code{receivers}. Data
+#'   in workbook sheets 'Project' and 'Tagging' are passesd through to 'project'
+#'   and 'animals', respectively, and data from workbook sheet 'Proposed' is not
+#'   included in result. If \code{read_all = TRUE} then each sheet in workbook
+#'   will be included in result.
+#'   
+#' @details Data are read from the input file using
+#'   \link[opensxlsx]{readWorkbook}. If \code{read_all = TRUE} then the type of
+#'   data in each user-defined column (and sheet) will be 'guessed' by
+#'   \link[opensxlsx]{readWorkbook}. Therefore, if \code{read_all = TRUE} then
+#'   the structure of those columnns should be carefully reviewed in the result.
+#'   See \link[opensxlsx]{readWorkbook} for details.
+#'
+#' @details Column \code{animal_id} is considered a required column by many
+#'   other functions in this package, so it will be created if any records are
+#'   \code{NULL}. When created, it will be constructed from \code{tag_code_space}
+#'   and \code{tag_id_code}, separated by '-'.
+#'   
+#' @details Timezone attribute of all timestamp columns (class \code{POSIXct})
+#'   in output will be "UTC" and all 'glatos-specific' timestamp and timezone
+#'   columns will be omitted from result.
+#'   
+#' @return A list of class \code{glatos_workbook} with three elements (described
+#'   below) containing data from the standard GLATOS Workbook sheets. If
+#'   \code{read_all = TRUE}, then additional elements will be added with names
+#'   corresponding to non-standard sheet names. 
 #' \describe{
-#'   \item{metadata}{A list with data about the project.}
-#'   \item{animals}{A data frame with data about tagged animals.}
-#'   \item{receivers}{A data frame with data about receivers.}
+#'   \item{metadata}{A list with data about the project and workbook.}
+#'   \item{animals}{A data frame of class \code{glatos_animals} with data about
+#'   tagged animals.} 
+#'   \item{receivers}{A data frame of class \code{glatos_receivers} with data
+#'   about telemetry receivers.}
 #' }
 #'
-#' @author C. Holbrook (cholbrook@usgs.gov) 
+#' @author C. Holbrook \email{cholbrook@usgs.gov} 
+#'
+#' @seealso \link[opensxlsx]{readWorkbook}
 #'
 #' @examples
 #' #get path to example GLATOS Data Workbook
@@ -328,9 +355,7 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
     anid_na <- is.na(wb2$animals$animal_id)
     wb2$animals$animal_id[anid_na] <- with(wb2$animals, 
             paste0(tag_code_space, "-", tag_id_code))
-       
     
-        
     #Append new sheets if required
     if(read_all) {
       for(i in 1:length(extra_sheets)){

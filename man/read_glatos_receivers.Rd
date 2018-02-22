@@ -10,8 +10,8 @@ read_glatos_receivers(rec_file, version = NULL)
 \item{rec_file}{A character string with path and name of receiver location
 file in standard GLATOS format (*.csv). If only file name is given, then
 the file must be located in the working directory. File must be a standard
-GLATOS file provide via GLATOSWeb Data Portal (e.g.,
-\emph{GLATOS_receiverLocations_yyyymmdd_xxxxxx.csv}).}
+GLATOS file (e.g., \emph{GLATOS_receiverLocations_yyyymmdd_xxxxxx.csv})
+obtained from GLATOSWeb Data Portal \url{http://glatos.glos.us}.}
 
 \item{version}{An optional character string with the GLATOS file version
 number. If NULL (default value) then version will be determined by

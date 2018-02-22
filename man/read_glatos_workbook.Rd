@@ -2,20 +2,21 @@
 % Please edit documentation in R/load-read_glatos_workbook.r
 \name{read_glatos_workbook}
 \alias{read_glatos_workbook}
-\title{Read data from a GLATOS data workbook}
+\title{Read data from a GLATOS project workbook}
 \usage{
 read_glatos_workbook(wb_file, read_all = FALSE, wb_version = NULL)
 }
 \arguments{
-\item{wb_file}{A character string with path and name of workbook in 
-standard GLATOS format (*.xlsm). If only file name is given, then the 
-file must be located in the working directory.}
+\item{wb_file}{A character string with path and name of workbook in standard
+GLATOS format (*.xlsm). If only file name is given, then the file must be
+located in the working directory. File must be a standard GLATOS file
+(e.g., \emph{xxxxx_GLATOS_YYYYMMDD.xlsm}) submitted via GLATOSWeb Data
+Portal \url{http://glatos.glos.us}.}
 
-\item{read_all}{If TRUE, then all columns and sheets
-(e.g., user-created "project-specific" columns or sheets) in the workbook
-will be imported. If FALSE (default value) then only columns in the 
-standard GLATOS workbook will be imported (project-specific columns will 
-be ignored.)}
+\item{read_all}{If TRUE, then all columns and sheets (e.g., user-created
+"project-specific" columns or sheets) in the workbook will be imported. If
+FALSE (default value) then only columns and sheets in the standard GLATOS
+workbook will be imported (project-specific columns will be ignored.)}
 
 \item{wb_version}{An optional character string with the workbook version
 number. If NULL (default value) then version will be determined by
@@ -23,20 +24,47 @@ evaluating workbook structure. Currently, the only allowed values are
 \code{NULL} and \code{"1.3"}. Any other values will trigger an error.}
 }
 \value{
-A list of class \code{glatos_workbook} with three elements:
+A list of class \code{glatos_workbook} with three elements (described
+  below) containing data from the standard GLATOS Workbook sheets. If
+  \code{read_all = TRUE}, then additional elements will be added with names
+  corresponding to non-standard sheet names. 
 \describe{
-  \item{metadata}{A list with data about the project.}
-  \item{animals}{A data frame with data about tagged animals.}
-  \item{receivers}{A data frame with data about receivers.}
+  \item{metadata}{A list with data about the project and workbook.}
+  \item{animals}{A data frame of class \code{glatos_animals} with data about
+  tagged animals.} 
+  \item{receivers}{A data frame of class \code{glatos_receivers} with data
+  about telemetry receivers.}
 }
 }
 \description{
-Read data from a GLATOS workbook (xlsm file) and return a list of class 
-\code{glatos_workbook}.
+Read data from a GLATOS project workbook (xlsm file) and return a list of
+class \code{glatos_workbook}.
 }
 \details{
-If \code{read_all = TRUE} then the type of data in each user-defined 
-column will be 'guessed' by \code{read_excel}; this may throw some warnings.
+In the standard glatos workbook (v1.3), data in workbook sheets
+  'Deployment', 'Recovery', and 'Location' are merged on columns
+  'GLATOS_PROJECT', 'GLATOS_ARRAY', 'STATION_NO', 'CONSECUTIVE_DEPLOY_NO',
+  AND 'INS_SERIAL_NO' to produce the output data frame \code{receivers}. Data
+  in workbook sheets 'Project' and 'Tagging' are passesd through to 'project'
+  and 'animals', respectively, and data from workbook sheet 'Proposed' is not
+  included in result. If \code{read_all = TRUE} then each sheet in workbook
+  will be included in result.
+
+Data are read from the input file using
+  \link[opensxlsx]{readWorkbook}. If \code{read_all = TRUE} then the type of
+  data in each user-defined column (and sheet) will be 'guessed' by
+  \link[opensxlsx]{readWorkbook}. Therefore, if \code{read_all = TRUE} then
+  the structure of those columnns should be carefully reviewed in the result.
+  See \link[opensxlsx]{readWorkbook} for details.
+
+Column \code{animal_id} is considered a required column by many other 
+  functions in this package, so it will be created by missing. If created, 
+  it will be constructed from \code{tag_code_space} and 
+  \code{tag_id_code}, separated by '-'.
+
+Timezone attribute of all timestamp columns (class \code{POSIXct})
+  in output will be "UTC" and all 'glatos-specific' timestamp and timezone
+  columns will be omitted from result.
 }
 \examples{
 #get path to example GLATOS Data Workbook
@@ -45,6 +73,9 @@ wb_file <- system.file("extdata",
 wb <- read_glatos_workbook(wb_file)
 
 }
+\seealso{
+\link[opensxlsx]{readWorkbook}
+}
 \author{
-C. Holbrook (cholbrook@usgs.gov)
+C. Holbrook \email{cholbrook@usgs.gov}
 }
