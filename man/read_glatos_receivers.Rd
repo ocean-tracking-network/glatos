@@ -9,25 +9,26 @@ read_glatos_receivers(rec_file, version = NULL)
 \arguments{
 \item{rec_file}{A character string with path and name of receiver location
 file in standard GLATOS format (*.csv). If only file name is given, then
-the file must be located in the working directory.}
+the file must be located in the working directory. File must be a standard
+GLATOS file provide via GLATOSWeb Data Portal (e.g.,
+\emph{GLATOS_receiverLocations_yyyymmdd_xxxxxx.csv}).}
 
-\item{version}{An optional character string with the glatos file version
+\item{version}{An optional character string with the GLATOS file version
 number. If NULL (default value) then version will be determined by
 evaluating file structure. The only allowed values currently are
 \code{NULL} and \code{"1.0"}. Any other values will trigger an error.}
 }
 \value{
-A data.frame of class \code{glatos_receivers}:
+A data.frame of class \code{glatos_receivers}.
 }
 \description{
-Read data from a standard GLATOS receiver location (csv) file and return a 
+Read data from a standard GLATOS receiver location (csv) file and return a
 data.frame of class \code{glatos_receivers}.
 }
 \details{
-Data are loaded using the \code{fread} function in the
-\code{data.table} package and timestamps are coerced to POSIXct using the
-\code{fastPOSIXct} function in the \code{fasttime} package. All timestamps
-must be in UTC timezone per GLATOS standard.
+Data are loaded using \link[data.table]{fread} and timestamps are
+coerced to POSIXct using \link[fasttime]{fastPOSIXct}. All timestamps must be
+'YYYY-MM-DD HH:MM' format and in UTC timezone per GLATOS standard.
 }
 \examples{
 #get path to example receiver_locations file
