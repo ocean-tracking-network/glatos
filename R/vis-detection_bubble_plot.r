@@ -1,31 +1,27 @@
 #' Plot number of tagged animals or detections on a map
 #'
-#' Make bubble plots showing the number of fish detected and number of 
-#'   detections across a telemetry receiver network.
+#' Make bubble plots showing the number of fish detected across a defined set
+#' of receiver locations.
 #'
-#' @inheritParams detection_events 
+#' @inheritParams summarize_detections 
 #' 
-#' @param receiver_locs An optional data frame containing at least 5 columns with 
-#'   receiver 'location', 'lat', 'lon', 'deploy_timestamp', and 
-#'   'recover_timestamp'.
-#'   
-#' @param map An optional SpatialPolygonsDataFrame or other
-#'   geo-referenced object to be plotted as the background for the plot. It is 
-#'   defined by \code{type}. If NULL, then the example Great Lakes polygon 
+#' @param map An optional SpatialPolygonsDataFrame or other spatial object
+#'   that can by plotted with using \code{plot} to be included as the
+#'   background for the plot. If NULL, then the example Great Lakes polygon
 #'   object (\code{data(greatLakesPoly)}) will be used.
 #' 
 #' @param out_file An optional character string with the name (including 
 #'   extension) of output file created. File extension will determine type of 
 #'   file written. For example, \code{"BubblePlot.png"} will write a png 
 #'   file to the working directory. If \code{NULL} (default) then the plot will 
-#'   be printed to the default plot device will be used. Supported extensions: 
+#'   be printed to the default plot device. Supported extensions: 
 #'   png, jpeg, bmp, and tiff.
 #'   
 #' @param background_xlim A two-element numeric vector that defines minimum and
 #'   maximum extents of the viewable plot area along the x-axis (i.e.,
 #'   latitude).
 #'   
-#' @param background_ylim  two-element numeric vector that defines minimum and
+#' @param background_ylim  A two-element numeric vector that defines minimum and
 #'   maximum extents of the viewable plot area along the y-axis (i.e.,
 #'   longitude).
 #'   
@@ -34,17 +30,25 @@
 #'   
 #' @param col_grad A two-element character vector indicating the start and end
 #'   colors of the gradient scale used to color-code "bubbles".
+#'   
+#' @param scale_loc An optional 4-element numeric vector, to be passed to
+#'   plotrix::color.legend, indicating the plotting location of the legend in
+#'   the same units as \code{map}. Elements in the vector are the lower left
+#'   and upper right coordinates of the rectangle of colors
+#'   (i.e., c(xleft, ybottom, xright, ytop)). If \code{scale_loc} = NULL
+#'   (default), the legend is plotted along the left edge of the plot.
 #' 
 #' @details Data are summarized using \link{summarize_detections}.
 #'   
 #' @details If \code{receiver_locs} is specified (not NULL) then the plot will
-#'   show all receivers in \code{receiver_locs} including those that detected
+#'   show all receivers in \code{receiver_locs} including any that detected
 #'   none of the transmitters in \code{det}. Although this is helpful to view
-#'   locations where fish were \emph{not} detections, it will also show and
-#'   summarize data based on receivers that were not deployed during the time
-#'   that a fish was at large. Therefore, \code{receiver_locs} only represent a
-#'   subset of receivers present during the time interval most relevant to the
-#'   data in \code{det}.
+#'   locations where fish were \emph{not} detected, the user will usually want 
+#'   to take care to include only receivers that were in the water during the 
+#'   period of interest. If you are using a glatos receiver locations file to 
+#'   specify location for plotting, you will likely want to filter the receiver 
+#'   data by depoyment and receovery dates to exclude deployments that occured 
+#'   outside of the period of interest.
 #'   
 #' @details "col_grad" is used in a call to \link[grDevices]{colorRampPalette},
 #'   which will accept a vector containing any two colors return by
@@ -84,6 +88,27 @@
 #' 
 #' detection_bubble_plot(det, receiver_locs = rec)
 #' 
+#' 
+#' #' #Subset receivers to include on receivers that were deployed during the
+#' #' detection interval.
+#' 
+#' # get path to example receiver file
+#' rec_file <- system.file("extdata", "sample_receivers.csv",
+#'   package = "glatos")
+#' rec <- read_glatos_receivers(rec_file)
+#' 
+#' first <- min(det$detection_timestamp_utc) # time of first detection
+#' last <- max(det$detection_timestamp_utc) # time of last detection
+#' 
+#' # Subset receiver deployments oustide the detection period.
+#' # !is.na(rec$recover_date_time) eliminates receivers that have been
+#' # deployed but not yet recovered.
+#' plot_rec <- rec[rec$deploy_date_time < last & 
+#'                 rec$recover_date_time > first & 
+#'                 !is.na(rec$recover_date_time),]
+#' 
+#' detection_bubble_plot(det, receiver_locs = plot_rec)
+#' 
 #'
 #' @export
 
@@ -94,7 +119,8 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
                                   background_ylim = c(41.3, 49.0),
                                   background_xlim = c(-92.45, -75.87),
                                   symbol_radius = 1,
-                                  col_grad = c("white", "red")){
+                                  col_grad = c("white", "red"),
+                                  scale_loc = NULL){
   
   # Check that the specified columns appear in the det data frame
   missingCols <- setdiff(c("animal_id", "detection_timestamp_utc",
@@ -172,7 +198,7 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))	    
   
   # Plot background image
-  sp::plot(map, xlim = background_xlim, ylim = background_ylim, axes = T, 
+  plot(map, xlim = background_xlim, ylim = background_ylim, axes = T, 
     xaxs = "i", lwd = 1.5, xaxt = 'n', yaxt = 'n', col = "White", 
     bg="WhiteSmoke")
   
@@ -193,23 +219,24 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
         "X", cex = 0.6 * symbol_radius))
   }
   
-  # Calculate the location to plot the color scale
-  scaleLoc <- c(par("usr")[1] + (par("usr")[2] - par("usr")[1])*0.02,
-  par("usr")[3] + ((par("usr")[4] - par("usr")[3])* 0.25),
-  par("usr")[1] + ((par("usr")[2] - par("usr")[1])* 0.04),
-  par("usr")[4] - ((par("usr")[4] - par("usr")[3])* 0.25))
-  
+  if(is.null(scale_loc)){
+    # Calculate the location to plot the color scale
+    scale_loc <- c(par("usr")[1] + (par("usr")[2] - par("usr")[1])*0.02,
+    par("usr")[3] + ((par("usr")[4] - par("usr")[3])* 0.25),
+    par("usr")[1] + ((par("usr")[2] - par("usr")[1])* 0.03),
+    par("usr")[4] - ((par("usr")[4] - par("usr")[3])* 0.25))
+  }
   # Add color legend
-  plotrix::color.legend(scaleLoc[1], scaleLoc[2], scaleLoc[3], scaleLoc[4], 
+  plotrix::color.legend(scale_loc[1], scale_loc[2], scale_loc[3], scale_loc[4], 
     paste0(" ", round(seq(from = 1, to = max(det_summ$num_fish), length.out = 6), 
-      0)), color, gradient="y", family = "sans", cex = 1, align = 'rb')
+      0)), color, gradient="y", family = "sans", cex = 0.75, align = 'rb')
   
   # Add x-axis and title
-  axis(1, at = xlabs, labels = parse(text = paste0(format(xlabs,4), "*degree")), cex.axis = 1)
+  axis(1, at = xlabs, labels = paste0(format(xlabs,4), intToUtf8(176)), cex.axis = 1)
   mtext("Longitude", side = 1, line = 2.5, cex = 1)
   
   # Add y-axis and title
-  axis(2, at = ylabs, labels = parse(text = paste0(format(ylabs,4), "*degree")), cex.axis = 1, 
+  axis(2, at = ylabs, labels = paste0(format(ylabs,4), intToUtf8(176)), cex.axis = 1, 
     las = 1)
   mtext("Latitude", side = 2, line = 4, cex = 1)
   
