@@ -230,7 +230,7 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
           if(grepl("REFCOL", tz_cmd)) { 
             tzone_j <- REFCOL(tz_cmd)
             tz_cmd <- unique(tzone_j)
-          } 
+          } else { tzone_j <- tz_cmd }
           
           if(nrow(tmp) > 0){
           
@@ -283,7 +283,7 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
           date_as_num <- suppressWarnings(as.numeric(tmp[, j]))
           date_as_char <- !date_na & is.na(date_as_num)
           if(any(date_as_char)) warning(paste0("Some timestamps in ",
-            "column ", j , " of `", sheets_to_read[i], "` were not formatted ",
+            "column '", j , "' of `", sheets_to_read[i], "` were not formatted ",
             "as date-time objects in Excel. Double check the following rows ",
             "in the Excel file: ", paste0(which(date_as_char) + 2, 
               collapse = ", ")))
