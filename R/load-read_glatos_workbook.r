@@ -232,9 +232,6 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
             tz_cmd <- unique(tzone_j)
           } 
           
-          if(length(tz_cmd) > 1) stop("Multiple time zones in one column are ",
-            "not supported at this time.")        
-          
           if(nrow(tmp) > 0){
           
             #Handle mixture of timestamps as date and char
@@ -252,20 +249,27 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
             #convert numeric
             posix_as_num <- openxlsx::convertToDateTime(posix_as_num, 
                                     tz = Sys.timezone())
-            #round to nearest minute and force to correct timezone
-            posix_as_num <- as.POSIXct(round(posix_as_num, "mins"), 
-                                       tz = tz_cmd)
-    
-            #do same for posix_as_char and insert into posix_as_num
-            if(any(posix_as_char)){
-              posix_as_num[posix_as_char] <- as.POSIXct(tmp[posix_as_char , j], 
-                                                        tz = tz_cmd)
-            }
+            
+            #handle multiple time zones
+            for(k in 1:length(tz_cmd)){
+              rows_k <- tzone_j %in% tz_cmd[k] #get rows with kth tz
+              #round to nearest minute and force to correct timezone
+              posix_as_num[rows_k] <- as.POSIXct(round(posix_as_num[rows_k], 
+                                       "mins"), tz = tz_cmd[k])
+      
+              #do same for posix_as_char and insert into posix_as_num
+              if(any(posix_as_char[rows_k])){
+                posix_as_num[posix_as_char & rows_k] <- as.POSIXct(tmp[posix_as_char & rows_k , j], 
+                                                          tz = tz_cmd[k])
+              }
+            } # end k
             
             tmp[ , j] <- posix_as_num
           } else {
             tmp[ , j] <- as.POSIXct(NA, tz = "UTC")[0]
           }
+    
+          attr(tmp[, j], "tzone") <- "UTC"
         
         } #end j
         
