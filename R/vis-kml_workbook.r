@@ -1,5 +1,7 @@
-#' Make a KML (or KMZ) file for viewing receiver and animal release 
-#'   locations in Google Earth.
+#' Make a KML or KMZ file of receiver and animal release locations
+#' 
+#' Convert standard GLATOS receiver location and animal release data to a 
+#' KML (or optionally KMZ) file (e.g., for viewing in Google Earth).
 #' 
 #' Receiver data (deployment location, deployment timestamp, and 
 #' recovery timestamp) and tagging data (release location, release timestamp) 
@@ -39,85 +41,102 @@
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'
 #' @examples
-#' #TBD
+#' #get path to example GLATOS Data Workbook
+#' wb_file <- system.file("extdata", 
+#'   "walleye_workbook.xlsm", package = "glatos")
+#' wb <- read_glatos_workbook(wb_file)
 #'
 #' @export
-kml_workbook <- function(wb_file,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
-	showOngoing=T,endDate="2020-01-01") {
+kml_workbook <- function(wb = NULL, wb_file = NULL, receiver_locs = NULL,
+  kmz = FALSE, show_ongoing_recs = TRUE, end_date = NULL, wb_version = NULL, 
+  ...) {
 
-  tempDir <- gsub(".xlsm.zip|.zip","_tempR",wb_file)
-  unzip(wb_file,exdir=tempDir)
+  #set default and get optional kml arguments
+  kml_args <- list(labelSize = 0.6, iconSize = 0.6)
+  args_in <- list(...)
+  if(length(args_in) > 0) kml_args[[names(args_in)]] <- args_in
+  
+  #if workbook is given, check if object or file path/name
+  if(!is.null(wb_file)) {
+    if(file.exists(wb_file)) {
+      wb <- glatos::read_glatos_workbook(wb_file)
+    } else {
+      stop("Input file '", wb_file, "' does not exist or cannot be accessed.")
+    }
+      
+    #get data from workbook or other if given
+    if(is.null(receiver_locs)) { rec_loc <- wb$receivers } else {
+      rec_loc <- receiver_locs }
 
-  glatosFiles <- list.files(tempDir, full.names=T)
+    #get data from workbook or other if given
+    if(is.null(animals)) { anim <- wb$animals } else {
+      anim <- animals }    
+  }
+  
+  #remove recovery timestamps if show_ongoing_recs = FALSE
+  missing_recov <- is.na(rec_loc$recover_date_time)
+  if(show_ongoing_recs == FALSE){
+    #set end timestamp to current time if absent
+    if(is.null(end_date)) { end_date <- Sys.time() } else {
+      end_date <- as.POSIXct(end_date, tz = "UTC") }
+	  rec_loc <- rec_loc[!missing_recov, ] #omit receivers with no recoveries
+  } else { rec_loc$recover_date_date[missing_recov] <- end_date }
 
-  #Receiver stations
-	  #import deployment and recovery data
-	  dpl <- read.csv(glatosFiles[grep("_GLATOS_Deployment.csv",glatosFiles)],
-	    as.is=T)
-	  rcv <- read.csv(glatosFiles[grep("_GLATOS_Recovery.csv",glatosFiles)],
-	    as.is=T)
-	  loc <- read.csv(glatosFiles[grep("_GLATOS_Locations.csv",glatosFiles)],
-	    as.is=T)
+	  rec_pos <- data.frame(
+  		Folder = "Receivers",
+  		Name = with(rec_loc, paste0(glatos_project, "-", glatos_array, "-",  
+  		                            station_no, " (", water_body,")")),
+  		TimeSpan_start = paste0(gsub(" ", "T", rec_loc$deploy_date_time),
+  		                        "-00:00"),
+  		TimeSpan_end = paste0(gsub(" ", "T", rec_loc$recover_date_time), 
+  		                      "-00:00"),
+  		Longitude = rec_loc$deploy_long,
+  		Latitude = rec_loc$deploy_lat,
+  		stringsAsFactors = FALSE)
 
-	  recLoc <- merge(dpl,rcv,
-		by.x=c("GLATOS_ARRAY","STATION_NO","CONSECUTIVE_DEPLOY_NO","INS_SERIAL_NO"),
-		by.y=c("GLATOS_ARRAY","STATION_NO","CONSECUTIVE_DEPLOY_NO","INS_SERIAL_NUMBER"),
-		all.x=T)
-	  names(recLoc) <- gsub("\\.x",".dpl",names(recLoc)) #rename deployment fields if in both
-	  names(recLoc) <- gsub("\\.y",".rcv",names(recLoc)) #rename recovery fields if in both
-	  
-	  recLoc <- merge(recLoc, loc, by="GLATOS_ARRAY")
- 
-	  #check for UTC times
-	  if(all(is.na(recLoc$DEPLOY_DATE_TIME))) {
-		recLoc$DEPLOY_DATE_TIME <- as.POSIXct(recLoc$GLATOS_DEPLOY_DATE_TIME, tz=paste0("US/",recLoc$GLATOS_TIMEZONE.dpl[1]))
-		recLoc$RECOVER_DATE_TIME <- as.POSIXct(recLoc$GLATOS_RECOVER_DATE_TIME, tz=paste0("US/",recLoc$GLATOS_TIMEZONE.rcv[1]))
-	  }
-	  
-	  #remove recovery timestamps if showOngoing=F
-	  missingRecov <- is.na(recLoc$RECOVER_DATE_TIME)
-	  if(showOngoing == F){
-		recLoc <- recLoc[!missingRecov,] #omit receivers that have not been recovered
-	  } else { recLoc$RECOVER_DATE_TIME[missingRecov] <- as.POSIXct(endDate,tz="UTC") }
-
-	  recPos <- data.frame(
-		Folder = "Receivers",
-		Name = with(recLoc, paste0(GLATOS_ARRAY,"-",STATION_NO," (",WATER_BODY,")")),
-		TimeSpan_start = paste(gsub(" ","T",recLoc$DEPLOY_DATE_TIME),"-00:00",sep=""),
-		TimeSpan_end = paste(gsub(" ","T",recLoc$RECOVER_DATE_TIME),"-00:00",sep=""),
-		Longitude = recLoc$DEPLOY_LONG,
-		Latitude = recLoc$DEPLOY_LAT,
-		stringsAsFactors=F)
-
-	  recPos$Altitude <- 0
-	  recPos$Description <- ""
+	  rec_pos$Altitude <- 0
+	  rec_pos$Description <- ""
  
  
   #Fish releases
-	  #import tagging data
-	  tgg <- read.csv(glatosFiles[grep("_GLATOS_Tagging.csv",glatosFiles)],as.is=T)
-	  relLoc <- as.data.frame(table(tgg$RELEASE_GROUP))
-	  names(relLoc)[1] <- "RELEASE_GROUP"
-	  relLoc <- merge(relLoc,unique(tgg[c("RELEASE_GROUP","RELEASE_LOCATION","RELEASE_LATITUDE",
-		"RELEASE_LONGITUDE", "GLATOS_RELEASE_DATE_TIME")]), by="RELEASE_GROUP")
+	  
+	  #check for missing release_group
+	  missing_relgrp <- is.na(anim$release_group)
+	  if(any(missing_relgrp)) { 
+	    warning(paste0("Some or all values in column '",
+	     "release_group' are missing values and have been assigned release date ",
+	     "instead."), call. = FALSE)
+	    
+	    anim$release_group <- format(as.Date(anim$utc_release_date_time))
+	  }
+	  
+	  #make table of counts
+	  rel_loc <- as.data.frame(table(anim$release_group))
+	  names(rel_loc)[1] <- "release_group"
+	  rel_loc <- merge(rel_loc,
+	    unique(anim[, c("release_group","release_location","release_latitude",
+		"release_longitude", "utc_release_date_time")]), by = "release_group")
  
- 	  relPos <- data.frame(
-		Folder = "Releases",
-		Name = with(relLoc, paste0(RELEASE_LOCATION," (",RELEASE_GROUP,")")),
-		TimeSpan_start = paste(gsub(" ","T",relLoc$GLATOS_RELEASE_DATE_TIME),"-00:00",sep=""),
-		TimeSpan_end = paste(gsub(" ","T",relLoc$GLATOS_RELEASE_DATE_TIME),"-00:00",sep=""),
-		Longitude = relLoc$RELEASE_LONGITUDE,
-		Latitude = relLoc$RELEASE_LATITUDE,
-		stringsAsFactors=F)
+ 	  rel_pos <- data.frame(
+  		Folder = "Animal releases",
+  		Name = with(rel_loc, paste0(release_location," (",release_group,")")),
+  		TimeSpan_start = paste0(gsub(" ", "T", rel_loc$utc_release_date_time), 
+  		                       "-00:00"),
+  		TimeSpan_end = paste0(gsub(" ", "T", rel_loc$glatos_release_date_time), 
+  		                     "-00:00"),
+  		Longitude = rel_loc$release_longitude,
+  		Latitude = rel_loc$release_latitude,
+  		stringsAsFactors = FALSE)
 
-	  relPos$Altitude <- 0
-	  relPos$Description <- ""
+	  rel_pos$Altitude <- 0
+	  rel_pos$Description <- ""
  
  
   #make KML
 
   #-kml-specific values
-  kmlName <- gsub("\\.xlsm\\.zip|\\.zip", ".kml", basename(wb_file))
+  kmlName <- gsub(".xlsm$|.xlsx$", ".kml", basename(wb_file))
+  if(is.null(wb_file)) kmlName <- "uknown"
   
 
 
@@ -125,7 +144,7 @@ kml_workbook <- function(wb_file,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">',
     ',<Document>',
-    	paste('<name>',kmlName,'.kml</name>',sep=''),
+    	paste0('<name>',kmlName,'.kml</name>'),
     	'<StyleMap id="msn_placemark_circle">',
     		'<Pair>',
     			'<key>normal</key>',
@@ -145,7 +164,7 @@ kml_workbook <- function(wb_file,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
     			'</Icon>',
     		'</IconStyle>',
     		'<LabelStyle>',
-    			paste('<scale>',labelSize,'</scale>',sep=""),
+    			paste0('<scale>',kml_args$labelSize,'</scale>'),
     		'</LabelStyle>',
     		'<ListStyle>',
     		'</ListStyle>',
@@ -153,7 +172,7 @@ kml_workbook <- function(wb_file,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
     	'<Style id="sn_placemark_circle">',
     		'<IconStyle>',
     			'<color>ff0000ff</color>',
-    			paste('<scale>',iconSize,'</scale>',sep=""),
+    			paste0('<scale>',kml_args$iconSize,'</scale>'),
     			'<Icon>',
     				'<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>',
     			'</Icon>',
@@ -183,7 +202,7 @@ kml_workbook <- function(wb_file,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
     			'</Icon>',
     		'</IconStyle>',
     		'<LabelStyle>',
-    			paste('<scale>',labelSize,'</scale>',sep=""),
+    			paste0('<scale>',kml_args$labelSize,'</scale>'),
     		'</LabelStyle>',
     		'<ListStyle>',
     		'</ListStyle>',
@@ -191,7 +210,7 @@ kml_workbook <- function(wb_file,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
     	'<Style id="sn_placemark_circle_rel">',
     		'<IconStyle>',
     			'<color>ff00ffff</color>',
-    			paste('<scale>',iconSize,'</scale>',sep=""),
+    			paste0('<scale>',kml_args$iconSize,'</scale>'),
     			'<Icon>',
     				'<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>',
     			'</Icon>',
@@ -206,7 +225,7 @@ kml_workbook <- function(wb_file,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
   #two style maps; one for receivers, second for releases
   stylemaps <- c("msn_placemark_circle","msn_placemark_circle_rel")
   
-  makeKMLBody = function(myFolderName,stylemap,myPoints)
+  makeKMLBody = function(myFolderName, stylemap, myPoints)
     {
       folderHead = c(
   	   '<Folder>',
@@ -234,25 +253,28 @@ kml_workbook <- function(wb_file,browse=F,kmz=F,labelSize=0.6,iconSize=0.6,
     }
 
   #identify number of unique folders
-  folders = sort(unique(recPos$Folder))
+  folders = sort(unique(rec_pos$Folder))
 
-  for(i in 1:length(folders))
-    {
+  for(i in 1:length(folders)){
       if(i == 1) folderBody = vector()
 
       folderBody = c(folderBody, makeKMLBody(folders[i],stylemaps[1],
-		subset(recPos, Folder == folders[i])))
-    }
-
+		                 subset(rec_pos, Folder == folders[i])))
+  }
+ 
   #add releases
-  folderBody = c(folderBody, makeKMLBody(relPos$Folder[i],stylemaps[2],relPos))
+  folderBody = c(folderBody, makeKMLBody(rel_pos$Folder[i], stylemaps[2], 
+                                         rel_pos))
 	
   kmlFoot = c('</Document>','</kml>')
 
   kmlOut = c(kmlHead,folderBody,kmlFoot)
 
   kmlFullName <- paste0(dirname(wb_file),'/',kmlName)
-  write.table(kmlOut,kmlFullName,col.names=FALSE,row.names=FALSE,quote=FALSE)
-  if(kmz) zip(gsub(".kml",".kmz",kmlFullName),files=kmlFullName)
+  if(!kmz) write.table(kmlOut, kmlFullName, col.names = FALSE, row.names = FALSE,
+              quote = FALSE)
+  if(kmz) zip(gsub(".kml$", ".kmz", kmlFullName), files = kmlFullName)
+  
+  return(kmlFullName)
 }
 
