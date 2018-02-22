@@ -1,4 +1,4 @@
-#' Summarize detections by animal and location
+#' Summarize detections by animal, location, or both
 #'
 #' Calculate number of fish detected, number of detections, first and last 
 #' detection timestamps, and/or mean location of receivers or groups, 
@@ -10,26 +10,24 @@
 #'   \code{location_col} (see below).
 #'   The following two columns must appear in \code{det}: 
 #'   \itemize{
-#'     \item \code{animal_id}: A character string with the name (in quotes) of 
-#'     the column containing the individual animal identifier.
-#'	   \item \code{detection_timestamp_utc}: A character string with the name 
-#'	   of the column containing datetime stamps for the detections (MUST be of 
-#'	   class 'POSIXct').
+#'     \item \code{animal_id}: Individual animal identifier; character.
+#'	   \item \code{detection_timestamp_utc}: Timestamps for the detections (MUST
+#'	   be of class 'POSIXct').
 #'   }   
 #' 
 #' @param location_col A character string with the name of the column 
 #'   containing the location grouping variable (e.g., "glatos_array") in 
 #'   quotes.
 #'   
-#' @param receiver_locs A data frame containing receiver data with the two
-#'   columns ('deploy_lat', 'deploy_lon') described below and one column
+#' @param receiver_locs An optional data frame containing receiver data with the
+#'   two columns ('deploy_lat', 'deploy_long') described below and one column
 #'   containing a location grouping variable, whose name is specified by
-#'   \code{location_col} (see above).
+#'   \code{location_col} (see above). 
 #'   The following two columns must appear in \code{receiver_locs}: 
 #'   \itemize{
 #'     \item \code{deploy_lat} Latitude of receiver deployment in decimal 
 #'      degrees, NAD83.
-#'     \item \code{deploy_lon} Longitude of receiver deployment in decimal 
+#'     \item \code{deploy_long} Longitude of receiver deployment in decimal 
 #'      degrees, NAD83.
 #'   }   
 #'   
@@ -43,21 +41,22 @@
 #'   \code{"location"}, and \code{"both"}. See Details below.
 #' 
 #' @details Input argument \code{summ_type} determines which of three possible
-#'   summaries are conducted. If \code{summ_type = "animal"} (default), the
+#'   summaries is conducted. If \code{summ_type = "animal"} (default), the
 #'   output summary includes the following for each unique value of
 #'   \code{animal_id}: number of unique locations (defined by unique values of
 #'   \code{location_col}), total number of detections across all locations,
 #'   timestamp of first and last detection across all locations, and a
-#'   space-limited string showing all locations where each animal was detected.
-#'   If \code{summ_type = "location"}, the output summary includes the following
-#'   for each unique value of \code{location_col}: number of animals (defined by
-#'   unique values of \code{animal_id}), total number of detections across all
-#'   animals, timestamp of first and last detection across all animals, and mean
-#'   latitude and longitude of each location group. If \code{summ_type =
-#'   "both"}, the output summary includes the following for each unique
-#'   combination of \code{location_col} and \code{animal_id}: total number of
-#'   detections, timestamp of first and last detection, and mean latitude and
-#'   longitude.
+#'   space-delimited string showing all locations where each animal was
+#'   detected. If \code{summ_type = "location"}, the output summary includes the
+#'   following for each unique value of \code{location_col}: number of animals
+#'   (defined by unique values of \code{animal_id}), total number of detections
+#'   across all animals, timestamp of first and last detection across all
+#'   animals, mean latitude and longitude of each location group, and a
+#'   space-delimited string of each unique animal that was detected. If
+#'   \code{summ_type = "both"}, the output summary includes the following for
+#'   each unique combination of \code{location_col} and \code{animal_id}: total
+#'   number of detections, timestamp of first and last detection, and mean
+#'   latitude and longitude.
 #' 
 #' @details If \code{receiver_locs = NULL} (default), then mean latitude and 
 #'   longitude of each location (\code{mean_lat} and \code{mean_lon} in 
@@ -82,8 +81,8 @@
 #'     \item{\code{num_dets}: number of detections.}
 #'     \item{\code{first_det}: first detection timestamp.}
 #'     \item{\code{last_det}: last detections timestamp.}
-#'     \item{\code{locations}: space-delimited character string with 
-#'       locations detected.}
+#'     \item{\code{locations}: character string with 
+#'       locations detected, separated by spaces.}
 #'   }
 #'  If \code{summ_type = "location"} (default): A data frame containing seven
 #'   columns:
@@ -95,6 +94,8 @@
 #'     \item{\code{last_det}: last detections timestamp.}
 #'     \item{\code{mean_lat}: mean latitude of receivers at this location.}
 #'     \item{\code{mean_lon}: mean longitude of receivers at this location.}
+#'     \item{\code{animals}: character string with animal_ids detected,
+#'     separated by spaces.}
 #'   }
 #'  If \code{summ_type = "both"} (default): A data frame containing seven
 #'   columns:
@@ -214,15 +215,21 @@ summarize_detections <- function(det, location_col = "glatos_array",
   if(summ_type == "location"){
     #summarize fish detections
     loc_summary <- dtc[ , list(num_fish = length(unique(.SD$animal_id)), 
-                                 num_dets = .N,
-                                 first_det = min(detection_timestamp_utc),
-                                 last_det = max(detection_timestamp_utc)), 
-                                 by = location_col]
+                               num_dets = .N,
+                               first_det = min(detection_timestamp_utc),
+                               last_det = max(detection_timestamp_utc),
+                               animals = paste(sort(unique(.SD[["animal_id"]])),
+                                               collapse = " ")), 
+                               by = location_col]
     
     #add mean locations
     loc_summary <- merge(loc_summary, mean_locs, by = location_col, all.y = T)
     
     loc_summary[ is.na(num_fish), `:=`(num_fish = 0, num_dets = 0)]
+    
+    #reorder columns
+    data.table::setcolorder(loc_summary, c(setdiff(names(loc_summary), "animals"), 
+                               "animals"))
     
     data.table::setkeyv(loc_summary, location_col)
     
