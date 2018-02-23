@@ -2,22 +2,22 @@
 % Please edit documentation in R/vis-kml_workbook.r
 \name{kml_workbook}
 \alias{kml_workbook}
-\title{Make a KML (or KMZ) file for viewing receiver and animal release 
-  locations in Google Earth.}
+\title{Make a KML or KMZ file of receiver and animal release locations}
 \usage{
-kml_workbook(wb_file, browse = F, kmz = F, labelSize = 0.6,
-  iconSize = 0.6, showOngoing = T, endDate = "2020-01-01")
+kml_workbook(wb = NULL, wb_file = NULL, receiver_locs = NULL,
+  kmz = FALSE, show_ongoing_recs = TRUE, end_date = NULL,
+  wb_version = NULL, ...)
 }
 \arguments{
 \item{wb_file}{A character vector with the full path and filename of zipped 
 GLATOS workbook (this is the \emph{ZIPPED} archive that gets uploaded to 
 GLATOSWeb).}
 
-\item{browse}{A logical scalar. If TRUE, user is asked to select wb_file 
-using windows explorer. Default value is FALSE.}
-
 \item{kmz}{A logical scalar; If TRUE, a KMZ file (zipped KML file) will also 
 be created. Default value is FALSE.}
+
+\item{browse}{A logical scalar. If TRUE, user is asked to select wb_file 
+using windows explorer. Default value is FALSE.}
 
 \item{labelSize}{A numeric scalar with the size of placemark labels 
 (only shown when placemark is highlighted by user).}
@@ -35,19 +35,26 @@ A KML (and optionally, KMZ) file, written to the directory that
   contains the zipped GLATOS workbook. Nothing is returned to the R console.
 }
 \description{
+Convert standard GLATOS receiver location and animal release data to a 
+KML (or optionally KMZ) file (e.g., for viewing in Google Earth).
+}
+\details{
 Receiver data (deployment location, deployment timestamp, and 
 recovery timestamp) and tagging data (release location, release timestamp) 
 are imported from a zipped GLATOS Workbook archive and used to make a KML 
 (and optionally, KMZ) for viewing receiver deployments  and release 
 locations in Google Earth.
-}
-\details{
+
+
 Receiver locations will be visible between deployment and recovery 
 timestamps at each location. Release locations will be displayed when the 
 display window includes the date of release.
 }
 \examples{
-#TBD
+#get path to example GLATOS Data Workbook
+wb_file <- system.file("extdata", 
+  "walleye_workbook.xlsm", package = "glatos")
+wb <- read_glatos_workbook(wb_file)
 
 }
 \author{
