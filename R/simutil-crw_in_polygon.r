@@ -127,7 +127,7 @@
 				y=path.fwd$y[rows.i[outside]+(-2:-1)],stepLen,polyg,theta)	  
 			  
 			  #rotate track from first step outside polygon to end
-			  path.fwd[rows.i,][outside:length(rows.i),] <- rotatePoints(
+			  path.fwd[rows.i,][outside:length(rows.i),] <- rotate_points(
 				  x=path.fwd$x[rows.i][outside:length(rows.i)],
 				  y=path.fwd$y[rows.i][outside:length(rows.i)],
 				  theta=theta2, focus=path.fwd[rows.i[outside]-1,])
