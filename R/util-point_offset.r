@@ -17,10 +17,15 @@
 #' @examples
 #' lat <- rep(44.0, 17)
 #' lon <- rep(-83.0, 17)
+#' 
 #' offsetDir <- c(NA,"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S",
-#' "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW") offsetDist <- seq(100, 1700, by
-#' = 100) distUnit <- 'm'
+#' "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW") 
+#' 
+#' offsetDist <- seq(100, 1700, by = 100) 
+#' distUnit <- 'm'
+#' 
 #' point_offset(lon, lat, offsetDist, offsetDir, distUnit)
+#' 
 #' @export
 
 point_offset <- function(lon=NA, lat=NA, offsetDist=NA, offsetDir=NA, 
