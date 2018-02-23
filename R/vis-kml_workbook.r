@@ -1,34 +1,48 @@
 #' Make a KML or KMZ file of receiver and animal release locations
 #' 
 #' Convert standard GLATOS receiver location and animal release data to a 
-#' KML (or optionally KMZ) file (e.g., for viewing in Google Earth).
-#' 
-#' Receiver data (deployment location, deployment timestamp, and 
-#' recovery timestamp) and tagging data (release location, release timestamp) 
-#' are imported from a zipped GLATOS Workbook archive and used to make a KML 
-#' (and optionally, KMZ) for viewing receiver deployments  and release 
-#' locations in Google Earth.
+#' KML (or optionally KMZ) file (e.g., for viewing in Google Earth). 
+#' (NOTE: EARLY DEVELOPMENT VERSION).
 #'
-#' @param wb_file A character vector with the full path and filename of zipped 
-#'   GLATOS workbook (this is the \emph{ZIPPED} archive that gets uploaded to 
-#'   GLATOSWeb).
+#' @param wb A \code{glatos_workbook} object created by 
+#' \link{read_glatos_workbook}.
 #'   
-#' @param browse A logical scalar. If TRUE, user is asked to select wb_file 
-#'   using windows explorer. Default value is FALSE.
+#' @param wb_file A character string with path and name of workbook in standard
+#'   GLATOS format (*.xlsm). If only file name is given, then the file must be
+#'   located in the working directory. File must be a standard GLATOS file
+#'   (e.g., \emph{xxxxx_GLATOS_YYYYMMDD.xlsm}) submitted via GLATOSWeb Data
+#'   Portal \url{http://glatos.glos.us}.
 #'   
-#' @param kmz A logical scalar; If TRUE, a KMZ file (zipped KML file) will also 
-#'   be created. Default value is FALSE.
-#'   
-#' @param labelSize A numeric scalar with the size of placemark labels 
-#'   (only shown when placemark is highlighted by user).
-#'   
-#' @param iconSize A numeric scalar with the size of placemark icons.
+#' @param receiver_locs \strong{not yet implemented}
 #' 
-#' @param showOngoing A logicalscalar that indicates if ongoing stations 
+#' @param animals \strong{not yet implemented}
+#'   
+#' @param kmz logical; If TRUE, a KMZ file (zipped KML file) will  
+#'   be created. Default value is FALSE.
+#' 
+#' @param show_ongoing_recs Indicates if ongoing stations 
 #'   (missing recovery timestamp) should be included in result.
 #'   
-#' @param endDate End date (e.g. "YYYY-MM-DD") to be used for any ongoing 
-#'   stations (if showOngoing == T)
+#' @param end_date End date (e.g. "YYYY-MM-DD") to be used for any ongoing 
+#'   stations (if showOngoing == T). Defaults to current system time.
+#'   
+#' @param out_file File name (path optional) of output file. If path not
+#'  specified then file will be written to working directory. Extension 
+#'  is not checked against \code{kmz}. Required if \code{wb_file} is NULL. 
+#'  If not specified and \code{wb_file} is given, then file will be written
+#'  to file with name matching \code{wb_file}.
+#'  
+#' @param wb_version An optional character string with the workbook version
+#'   number. Passed to \link{read_glatos_workbook} when input is 
+#'   \code{wb_file}.
+#'   
+#' @param ... optional arguments that influence kml/kmz features. Curently 
+#' only two options:
+#' \describe{
+#'   \item{\code{labelSize}}{A numeric scalar with the size of placemark labels 
+#'     (only shown when placemark is highlighted by user).}
+#'   \item{\code{iconSize}}{A numeric scalar with the size of placemark icons.}
+#' }
 #'
 #' @details
 #' Receiver locations will be visible between deployment and recovery 
@@ -36,42 +50,90 @@
 #' display window includes the date of release.
 #' 
 #' @return A KML (and optionally, KMZ) file, written to the directory that 
-#'   contains the zipped GLATOS workbook. Nothing is returned to the R console.
+#'   contains the input GLATOS workbook, or \code{out_file} otherwise. 
+#'   Path to output file is returned.
 #'
-#' @author C. Holbrook (cholbrook@usgs.gov) 
+#' @author C. Holbrook \email{cholbrook@usgs.gov}
 #'
 #' @examples
+#' 
+#' \dontrun{
 #' #get path to example GLATOS Data Workbook
 #' wb_file <- system.file("extdata", 
-#'   "walleye_workbook.xlsm", package = "glatos")
+#' "walleye_workbook.xlsm", package = "glatos")
+#' 
+#' #read workbook directly
+#' kml_workbook(wb_file = wb_file)
+#' 
+#' #now with bigger label and point and out_file
+#' kml_workbook(wb_file = wb_file, labelSize = 20, iconSize = 1, 
+#'   out_file = "bigger.kml")
+#' 
+#' #read workbook directly; output kmz
+#' kml_workbook(wb_file = wb_file, kmz = TRUE)
+#' 
+#' #get path to example GLATOS Data Workbook
 #' wb <- read_glatos_workbook(wb_file)
+#' kml_workbook(wb = wb, kmz = TRUE, out_file = "bigger.kmz")
+#' }
 #'
 #' @export
 kml_workbook <- function(wb = NULL, wb_file = NULL, receiver_locs = NULL,
-  kmz = FALSE, show_ongoing_recs = TRUE, end_date = NULL, wb_version = NULL, 
-  ...) {
+  animals = NULL, kmz = FALSE, show_ongoing_recs = TRUE, end_date = NULL, 
+  out_file = NULL, wb_version = NULL, ...) {
 
+  #check for features not yet supported
+  if(!is.null(animals)) stop("use of 'animals' input not yet supported.")
+  if(!is.null(receiver_locs)) stop("use of 'receiver_locs' input not yet supported.")
+  
+  #check for correct handling of wb and wb_file
+  if(!is.null(wb) & !is.null(wb_file)) stop(paste0("You cannot specify both ",
+    "'wb' and 'wb_file'. Specify only one."))
+
+  #check for correct handling of workbook data and animals and receivers
+  if((!is.null(wb) | !is.null(wb_file)) & 
+      (!is.null(animals) & !is.null(receiver_locs))) stop(paste0("You cannot ",
+    "specify 'wb' or 'wb_file' if both 'animals' and 'receiver_locs' \n  ",
+    "are specified."))  
+  
+  #check for outfile is input is wb
+  if(is.null(wb_file) & is.null(out_file)) stop(paste0("'out_file' must be ",
+    "specified when 'wb_file = NULL.'"))
+  
   #set default and get optional kml arguments
   kml_args <- list(labelSize = 0.6, iconSize = 0.6)
   args_in <- list(...)
-  if(length(args_in) > 0) kml_args[[names(args_in)]] <- args_in
-  
-  #if workbook is given, check if object or file path/name
-  if(!is.null(wb_file)) {
+  if(length(args_in) > 0) kml_args[names(args_in)] <- args_in
+
+  #get data from workbook
+  if (!is.null(wb_file)) {
+    #if workbook is given, check if object or file path/name
     if(file.exists(wb_file)) {
-      wb <- glatos::read_glatos_workbook(wb_file)
+      wb <- glatos::read_glatos_workbook(wb_file, wb_version = wb_version)
     } else {
       stop("Input file '", wb_file, "' does not exist or cannot be accessed.")
     }
-      
-    #get data from workbook or other if given
-    if(is.null(receiver_locs)) { rec_loc <- wb$receivers } else {
-      rec_loc <- receiver_locs }
-
-    #get data from workbook or other if given
-    if(is.null(animals)) { anim <- wb$animals } else {
-      anim <- animals }    
   }
+ 
+  
+      if(!is.null(wb) | !is.null(wb_file)){
+      rec_loc <- wb$receivers
+      anim <- wb$animals
+  }
+  #get data from receiver_locs if given
+  if(!is.null(receiver_locs)) rec_loc <- receiver_locs
+
+  #get data from animals if given
+  if(!is.null(animals)) anim <- animals 
+  
+  #check for receiver_locs and animals
+  if(!exists("anim")) stop(paste0("This function requires animal data. ",
+    "Ensure that animal data exist \n  in an input workbook('wb' or 'wb_file')",
+    " or separate input 'animals'."))
+    
+  if(!exists("rec_loc")) stop(paste0("This function requires receiver data. ",
+    "Ensure that receiver data exist \n  in an input workbook('wb' or 'wb_file')",
+    " or separate input 'receiver_locs'."))
   
   #remove recovery timestamps if show_ongoing_recs = FALSE
   missing_recov <- is.na(rec_loc$recover_date_time)
@@ -135,8 +197,9 @@ kml_workbook <- function(wb = NULL, wb_file = NULL, receiver_locs = NULL,
   #make KML
 
   #-kml-specific values
-  kmlName <- gsub(".xlsm$|.xlsx$", ".kml", basename(wb_file))
-  if(is.null(wb_file)) kmlName <- "uknown"
+	if(!is.null(wb_file)){
+    kmlName <- gsub(".xlsm$|.xlsx$", ".kml", basename(wb_file))
+	} else if (!is.null(out_file)) { kmlName = basename(out_file) }
   
 
 
@@ -270,9 +333,13 @@ kml_workbook <- function(wb = NULL, wb_file = NULL, receiver_locs = NULL,
 
   kmlOut = c(kmlHead,folderBody,kmlFoot)
 
-  kmlFullName <- paste0(dirname(wb_file),'/',kmlName)
-  if(!kmz) write.table(kmlOut, kmlFullName, col.names = FALSE, row.names = FALSE,
+  kmlFullName <- ifelse(!is.null(out_file), file.path(
+    gsub("\\.", getwd(), dirname(out_file)), basename(out_file)),
+    file.path(dirname(wb_file), kmlName))
+
+  write.table(kmlOut, kmlFullName, col.names = FALSE, row.names = FALSE,
               quote = FALSE)
+  
   if(kmz) zip(gsub(".kml$", ".kmz", kmlFullName), files = kmlFullName)
   
   return(kmlFullName)
