@@ -21,18 +21,6 @@
 #' @author Todd Hayden 
 "greatLakesTrLayer"
 
-#' @title
-#' A data frame containing fish detection data
-#' 
-#' @description
-#' A data frame containing fish detection data from the GLATOS Project 
-#' HECWL. This is a sample of detection data in the standard 
-#' GLATOS export format.
-#'
-#' @author Todd Hayden 
-"walleye_detections"
-
-
 #' Sea Lamprey positions from Lake George, St. Marys River, 2012
 #' 
 #' Sea Lamprey positions from a positional acoustic telemetry array in Lake 
