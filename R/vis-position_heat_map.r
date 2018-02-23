@@ -92,7 +92,7 @@
 position_heat_map <- function (positions, resolution=10, interval=3600, 
   legendPos="right", AbsOrRelFish="absolute", AbsOrRelPos="absolute", 
   AbsOrRelInt="absolute", folder="position_heat_maps", x_limits=NULL,
-  y_limits=NULL,...) {
+  y_limits=NULL) {
 	
 	# Check that the required columns appear in the detections dataframe
     if (sum(c("location", "ID", "timestamp", "lat", "lon") %in% 

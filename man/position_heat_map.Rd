@@ -7,7 +7,7 @@
 position_heat_map(positions, resolution = 10, interval = 3600,
   legendPos = "right", AbsOrRelFish = "absolute",
   AbsOrRelPos = "absolute", AbsOrRelInt = "absolute",
-  folder = "position_heat_maps", x_limits = NULL, y_limits = NULL, ...)
+  folder = "position_heat_maps", x_limits = NULL, y_limits = NULL)
 }
 \arguments{
 \item{positions}{A dataframe containing detection data with at least 4 
