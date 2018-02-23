@@ -137,7 +137,7 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
       if(e$message == 
           "Expecting a single string value: [type=character; extent=0]."){
         stop("There was a problem reading from input file specified. It may ",
-          "be protected. \nTry again after opening, saving, and closing the ",
+          "be protected.\n  Try again after opening, saving, and closing the ",
           "file.")
       } else {stop(e)}
     })
@@ -210,10 +210,10 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
                   names(tmp)[tolower(colnames(tmp)) == name_k] <- extra_names_k
                     
                   warning(paste0("Non-standard (project-specific) columns ",
-                    "were found with names matching standard column names ",
-                    "in sheet '", sheets_to_read[i],"'. The following ",
-                    "project-specific names were assigned to avoid conflicts: ", 
-                    paste0(extra_names_k, collapse = ", "), "."))
+                    "were found with names matching standard \n  column names ",
+                    "in sheet '", sheets_to_read[i],"'.\n\n  The following ",
+                    "column names were assigned to avoid conflicts:", 
+                    "\n    ", paste0(extra_names_k, collapse = ", "), "."))
                 }
               } #end if
             }
