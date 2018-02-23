@@ -27,6 +27,8 @@
 #' @param background_xlim Vector of two values specifying the min/max values 
 #'   for x-scale of plot. Units are degrees.
 #'   
+#' @param show_interpolated Boolean. Default (TRUE) include interpolated points.
+#'   
 #' @param animate Boolean. Default (TRUE) creates video animation
 #' 
 #' @param ani_name Name of animation (character string)

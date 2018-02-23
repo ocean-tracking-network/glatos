@@ -32,6 +32,8 @@ for y-scale of plot. Units are degrees.}
 \item{background_xlim}{Vector of two values specifying the min/max values 
 for x-scale of plot. Units are degrees.}
 
+\item{show_interpolated}{Boolean. Default (TRUE) include interpolated points.}
+
 \item{tail_dur}{contains the duration (in same units as \code{proc_obj$bin_timestamp}; 
 see \code{\link{interpolate_path}}) of trailing points in each frame. 
 Default value is 0 (no trailing points). A value
