@@ -29,11 +29,11 @@
 #'   will be included in result.
 #'   
 #' @details Data are read from the input file using
-#'   \link[opensxlsx]{readWorkbook}. If \code{read_all = TRUE} then the type of
+#'   \link[openxlsx]{readWorkbook}. If \code{read_all = TRUE} then the type of
 #'   data in each user-defined column (and sheet) will be 'guessed' by
-#'   \link[opensxlsx]{readWorkbook}. Therefore, if \code{read_all = TRUE} then
+#'   \link[openxlsx]{readWorkbook}. Therefore, if \code{read_all = TRUE} then
 #'   the structure of those columnns should be carefully reviewed in the result.
-#'   See \link[opensxlsx]{readWorkbook} for details.
+#'   See \link[openxlsx]{readWorkbook} for details.
 #'
 #' @details Column \code{animal_id} is considered a required column by many
 #'   other functions in this package, so it will be created if any records are
@@ -82,7 +82,7 @@
 #'
 #' @author C. Holbrook \email{cholbrook@usgs.gov} 
 #'
-#' @seealso \link[opensxlsx]{readWorkbook}
+#' @seealso \link[openxlsx]{readWorkbook}
 #'
 #' @examples
 #' #get path to example GLATOS Data Workbook
