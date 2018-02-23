@@ -45,7 +45,7 @@ In the standard glatos workbook (v1.3), data in workbook sheets
   'Deployment', 'Recovery', and 'Location' are merged on columns
   'GLATOS_PROJECT', 'GLATOS_ARRAY', 'STATION_NO', 'CONSECUTIVE_DEPLOY_NO',
   AND 'INS_SERIAL_NO' to produce the output data frame \code{receivers}. Data
-  in workbook sheets 'Project' and 'Tagging' are passesd through to 'project'
+  in workbook sheets 'Project' and 'Tagging' are passed through to 'project'
   and 'animals', respectively, and data from workbook sheet 'Proposed' is not
   included in result. If \code{read_all = TRUE} then each sheet in workbook
   will be included in result.
@@ -65,6 +65,31 @@ Column \code{animal_id} is considered a required column by many
 Timezone attribute of all timestamp columns (class \code{POSIXct})
   in output will be "UTC" and all 'glatos-specific' timestamp and timezone
   columns will be omitted from result.
+}
+\note{
+\strong{\emph{On warnings and errors about date and timestamp
+  formats.}} Date and time columns are sometimes stored as text in Excel.
+  When those records are loaded by this function, there are two possible
+  outcomes. \cr
+  \cr
+  1. If the records are formatted according to the GLATOS Data Dictionary
+  specification (e.g., "YYYY-MM-DD" for dates and "YYYY-MM-DD HH:MM" for
+  timestamps; see \url{https:\\glatos.glos.us}) those records should be
+  properly loaded into R, but the user is encouraged to verify that they were
+  loaded correctly, so a warning points the user to those records in the
+  workbook. Users may want to format as custom date in the workbook to avoid
+  warnings in the future. \cr
+  \cr
+  2. If the format of a date-as-text column is not consistent with GLATOS
+  specification, then no data will be loaded and an error will alert the user
+  to this condition. \cr
+  \cr
+  \strong{\emph{On cells with locked formatting in Excel:}} Occassionaly the
+  format of a cell in Excel will be locked. In those cases, it is sometimes
+  possible to force date formatting in Excel by (1) highlighting the columns
+  that need reformatting, (2) select 'Text-to-columns' in the 'Data' menu,
+  (3) select 'Delimited' and 'next', (4) uncheck all delimiters and 'next',
+  (5) choose 'Date: YMD' in the 'Column data format' box, and (6) 'Finish'.
 }
 \examples{
 #get path to example GLATOS Data Workbook

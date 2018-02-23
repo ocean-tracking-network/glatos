@@ -23,7 +23,7 @@
 #'   'Deployment', 'Recovery', and 'Location' are merged on columns
 #'   'GLATOS_PROJECT', 'GLATOS_ARRAY', 'STATION_NO', 'CONSECUTIVE_DEPLOY_NO',
 #'   AND 'INS_SERIAL_NO' to produce the output data frame \code{receivers}. Data
-#'   in workbook sheets 'Project' and 'Tagging' are passesd through to 'project'
+#'   in workbook sheets 'Project' and 'Tagging' are passed through to 'project'
 #'   and 'animals', respectively, and data from workbook sheet 'Proposed' is not
 #'   included in result. If \code{read_all = TRUE} then each sheet in workbook
 #'   will be included in result.
@@ -43,6 +43,30 @@
 #' @details Timezone attribute of all timestamp columns (class \code{POSIXct})
 #'   in output will be "UTC" and all 'glatos-specific' timestamp and timezone
 #'   columns will be omitted from result.
+#'   
+#' @note \strong{\emph{On warnings and errors about date and timestamp
+#'   formats.}} Date and time columns are sometimes stored as text in Excel.
+#'   When those records are loaded by this function, there are two possible
+#'   outcomes. \cr
+#'   \cr
+#'   1. If the records are formatted according to the GLATOS Data Dictionary
+#'   specification (e.g., "YYYY-MM-DD" for dates and "YYYY-MM-DD HH:MM" for
+#'   timestamps; see \url{https:\\glatos.glos.us}) those records should be
+#'   properly loaded into R, but the user is encouraged to verify that they were
+#'   loaded correctly, so a warning points the user to those records in the
+#'   workbook. Users may want to format as custom date in the workbook to avoid
+#'   warnings in the future. \cr
+#'   \cr
+#'   2. If the format of a date-as-text column is not consistent with GLATOS
+#'   specification, then no data will be loaded and an error will alert the user
+#'   to this condition. \cr
+#'   \cr
+#'   \strong{\emph{On cells with locked formatting in Excel:}} Occassionaly the
+#'   format of a cell in Excel will be locked. In those cases, it is sometimes
+#'   possible to force date formatting in Excel by (1) highlighting the columns
+#'   that need reformatting, (2) select 'Text-to-columns' in the 'Data' menu,
+#'   (3) select 'Delimited' and 'next', (4) uncheck all delimiters and 'next',
+#'   (5) choose 'Date: YMD' in the 'Column data format' box, and (6) 'Finish'.
 #'   
 #' @return A list of class \code{glatos_workbook} with three elements (described
 #'   below) containing data from the standard GLATOS Workbook sheets. If
@@ -240,11 +264,20 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
             posix_na <- is.na(tmp[, j]) #identify missing first
             posix_as_num <- suppressWarnings(as.numeric(tmp[, j]))
             posix_as_char <- !posix_na & is.na(posix_as_num)
-            if(any(posix_as_char)) warning(paste0("Some timestamps in ",
-                 "column '", j , "' of `", sheets_to_read[i], "` were not ",
-                 "formatted as date-time objects in Excel. Double check the ",
-                 "following rows in the Excel file: ",  
-                 paste0(which(posix_as_char) + 2, collapse = ", ")))
+            if(any(posix_as_char)) {
+              bad_pc_rows <- which(posix_as_char) + 2
+              bad_pc_rows <- ifelse(length(bad_pc_rows) < 10, 
+                              paste0(bad_pc_rows, collapse = ", "),
+                              paste0(paste(bad_pc_rows[1:10], collapse = ", "), 
+                                "... +", length(bad_pc_rows) - 10, " more.",
+                                collapse = " "))
+              warning(paste0("Some records (see below) ",
+              "in '", sheets_to_read[i], "` were not recognized as Excel ",
+              "datetime objects.\n  These should have imported correctly if ",
+              "formatted as 'YYYY-MM-DD HH:MM',\n  but see 'Note' in ",
+              "help(\"read_glatos_workbook\") to avoid this warning.\n\n ",
+              "Column: '", j, "'\n   Rows:  ", bad_pc_rows, "\n "))
+            }
     
             #convert numeric
             posix_as_num <- openxlsx::convertToDateTime(posix_as_num, 
@@ -282,19 +315,43 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
           date_na <- is.na(tmp[, j]) #identify missing 
           date_as_num <- suppressWarnings(as.numeric(tmp[, j]))
           date_as_char <- !date_na & is.na(date_as_num)
-          if(any(date_as_char)) warning(paste0("Some timestamps in ",
-            "column '", j , "' of `", sheets_to_read[i], "` were not formatted ",
-            "as date-time objects in Excel. Double check the following rows ",
-            "in the Excel file: ", paste0(which(date_as_char) + 2, 
-              collapse = ", ")))
           
           #convert numeric
           date_as_num <- openxlsx::convertToDate(date_as_num)
           
           #do same for posix_as_char and insert into posix_as_num
           if(any(date_as_char)){
-            date_as_num[date_as_char] <- as.Date(tmp[date_as_char , j])
+            bad_dc_rows <- which(date_as_char) + 2
+            bad_dc_rows <- ifelse(length(bad_dc_rows) < 10, 
+              paste0(bad_dc_rows, collapse = ", "),
+              paste0(paste(bad_dc_rows[1:10], collapse = ", "), 
+                "... +", length(bad_dc_rows) - 10, " more.",
+                collapse = " "))
+            date_as_num[date_as_char] <- tryCatch(as.Date(tmp[date_as_char , j]), 
+              error = function(e) {
+                if(e$message == "character string is not in a standard unambiguous format"){
+                  stop(paste0("At least one of the records identified below in '",
+                    sheets_to_read[i], "`\n  could not be coerced to Date because ",
+                    "the format was invalid.\n  Dates stored as ",
+                    "text in GLATOS Workbooks must be formatted \n  ",
+                    "'YYYY-MM-DD'. See 'Note' in ",
+                    "help(\"read_glatos_workbook\") \n  about formatting ",
+                    "dates and times ", 
+                    "in GLATOS Workbooks.\n\n ",
+                    "Column: '", j, "'\n   Row:  ", bad_dc_rows, "\n"))
+                } else{ return(e) }
+              }
+            )
           }
+          
+          #warn user if no error
+          if(any(date_as_char)) warning(paste0("Some records (see below) in '",
+            sheets_to_read[i], "` were not recognized as Excel date objects.\n",
+            "  These should have imported correctly if formatted as ",
+            "'YYYY-MM-DD',\n  but see 'Note' in ",
+            "help(\"read_glatos_workbook\") to avoid this warning.\n\n ",
+            "Column: '", j, "'\n    Row:  ", bad_dc_rows, "\n"))
+          
           
           tmp[ , j] <- date_as_num
           
