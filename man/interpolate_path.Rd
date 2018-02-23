@@ -4,11 +4,11 @@
 \alias{interpolate_path}
 \title{Interpolate new positions within a spatiotemporal path data}
 \usage{
-interpolate_path(detections, trans = NULL, int_time_stamp = 86400,
+interpolate_path(det, trans = NULL, int_time_stamp = 86400,
   lnl_thresh = 0.9)
 }
 \arguments{
-\item{detections}{An object of class \code{glatos_detections} or data frame
+\item{det}{An object of class \code{glatos_detections} or data frame
 containing spatiotemporal data with at least 4 columns containing
 'animal_id', 'detection_timestamp_utc', 'deploy_long', and
 'deploy_lat' columns.}
@@ -67,12 +67,12 @@ Linear interpolation is used for all points when
 }
 \examples{
 
--------------------------------------------------------
+#-------------------------------------------------------
 # EXAMPLE #1 - simple example
   
-# example map background
+# get example map background
+library(sp) #for loading greatLakesPoly because spatial object
 data(greatLakesPoly)
-library(sp) #to plot SpatialPolygon without error
 plot(greatLakesPoly)
 
 # make up points
@@ -110,14 +110,14 @@ path3 <- interpolate_path(pos, trans=greatLakesTrLayer, lnl_thresh=0)
 # coerce to SpatialPoints object and plot
 pts3 <- SpatialPoints(path3[,c("longitude","latitude")])
 points(pts3, pch=20, col='magenta', lwd=2, cex=1.5) 
---------------------------------------------------
+#--------------------------------------------------
 # EXAMPLE #2 - GLATOS detection data
 
- # load detection data
- det_file <- system.file("extdata", "walleye_detections.csv",
+# load detection data
+det_file <- system.file("extdata", "walleye_detections.csv",
                          package = "glatos")
- det <- read_glatos_detections(det_file)
-#'
+det <- read_glatos_detections(det_file)
+
 # take a look
 head(det)
  
