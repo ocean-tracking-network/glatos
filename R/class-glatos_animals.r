@@ -10,13 +10,8 @@
 #' @return A data.frame of class \code{glatos_animals}:
 #'
 #' @note
-#' This function may be expanded in the future to dictate conversion 
-#' between various data sources (glatos, otn, other) and versions to 
-#' a single 'glatos_animals' standard format. One way to do this might
-#' be to (1) specify name_in, name_out, and type_in, type_out eg in the 
-#' schema data files, (2) use "..." argument to this constructor function to
-#' allow each standard column to be mapped directly from source, and (3) 
-#' check that requirements are met. 
+#' This function may be developed in the future to dictate conversion 
+#' constuction from a data frame. 
 
 glatos_animals <- function(x)  {
 
