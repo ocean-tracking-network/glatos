@@ -24,7 +24,7 @@ k = length(x) - 1 = length(y). Lenghts of \code{x} and \code{y} must be
 equal.
 }
 \note{
-This function is called from within \code{\link{crwInPolygon}}
+This function is called from within \code{\link{crw_in_polygon}}
 }
 \examples{
 x=c(2,4)

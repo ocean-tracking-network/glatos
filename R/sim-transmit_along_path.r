@@ -28,7 +28,7 @@
 #'
 #' @note
 #' This function was written to be called before 
-#'   \code{\link{detectTransmissions}}, which was designed to accept the result
+#'   \code{\link{detect_transmissions}}, which was designed to accept the result
 #'   as input (\code{trnsLoc}).
 #' 
 #' @author C. Holbrook \email{cholbrook@usgs.gov} 

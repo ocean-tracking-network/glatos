@@ -15,7 +15,7 @@
 #' headings if \code{length(x) > 2}.
 #'
 #' @note
-#' This function is called from within \code{\link{crwInPolygon}}
+#' This function is called from within \code{\link{crw_in_polygon}}
 #' 
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'

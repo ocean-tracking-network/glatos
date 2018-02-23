@@ -43,7 +43,7 @@
 #'   calculating the minimum time interval (min\_lag) between successive
 #'   detections.}
 #'
-#'  \item{\link{detection_filter}}{ Removes potential false positive detections
+#'  \item{\link{false_detections}}{ Removes potential false positive detections
 #'  using "short interval" criteria (see \link{min_lag}).}
 #'  
 #'  \item{\link{detection_events}}{ Distills detection data down to a much
