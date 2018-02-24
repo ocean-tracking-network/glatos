@@ -1,21 +1,37 @@
 Package: glatos
 Type: Package
-Title: glatos: A package for the Great Lakes Acoustic Telemetry Observation System
-Version: 0.1.3
-Date: 2017-02-16
-Authors: Chris Holbrook, Todd Hayden, Tom Binder
-Maintainer: Chris Holbrook <cholbrook@usgs.gov>
+Title: A package for the Great Lakes Acoustic Telemetry Observation System
 Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System www.glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
-Depends: R (>= 3.1.1)
+Version: 0.2.0.9001
+Date: 2018-02-23
+Depends: R (>= 3.2.0)
 Imports: 
+		cellranger,
+		data.table,		
+		fasttime,
 		gdistance,
     geosphere,
+		openxlsx (>= 4.0.0),
 		plotrix,
 		plyr,		
 		raster,
+		readxl,
     rgdal,
+		rgeos,
 		sp,
-		data.table
-License: GPL (2.0 or later)
+		gdalUtils
+Suggests: testthat
+URL: https://gitlab.oceantrack.org/GreatLakes/glatos
+BugReports: https://gitlab.oceantrack.org/GreatLakes/glatos/issues
+Authors@R: c(
+    person("Christopher", "Holbrook", email = "cholbrook@usgs.gov", 
+			role = c("cre", "aut")),
+    person("Todd", "Hayden", role = "aut"),
+		person("Thomas", "Binder", role = "aut"),
+		person("Jon", "Pye", role = "ctb"),
+		person("Alex", "Nunes", role = "ctb"),
+		person("Angela", "Dini", role = "ctb"))
+License: GPL-3
 LazyLoad: yes
+LazyData: true
 RoxygenNote: 6.0.1
