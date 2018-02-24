@@ -31,7 +31,7 @@ Authors@R: c(
 		person("Jon", "Pye", role = "ctb"),
 		person("Alex", "Nunes", role = "ctb"),
 		person("Angela", "Dini", role = "ctb"))
-License: GPL-3
+License: GPL-2
 LazyLoad: yes
 LazyData: true
 RoxygenNote: 6.0.1
