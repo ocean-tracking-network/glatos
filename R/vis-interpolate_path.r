@@ -59,15 +59,16 @@
 #' 
 #' @examples
 #' 
-#' #-------------------------------------------------------
-#' # EXAMPLE #1 - simple example
+#' #--------------------------------------------------
+#' # EXAMPLE #1 - simple interpolate among lakes
 #'   
-#' # get example map background
-#' library(sp) #for loading greatLakesPoly because spatial object
-#' data(greatLakesPoly)
-#' plot(greatLakesPoly)
-#' 
-#' # make up points
+#' library(sp) #for loading greatLakesPoly because spatial object   
+#'   
+#' # get polygon of the Great Lakes 
+#' data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+#' plot(greatLakesPoly, xlim = c(-92, -76))
+#'   
+#' # make sample detections data frame
 #' pos <- data.frame(
 #'    animal_id=1,
 #'    deploy_long=c(-87,-82.5, -78),
@@ -75,66 +76,90 @@
 #'    detection_timestamp_utc=as.POSIXct(c("2000-01-01 00:00",
 #'      "2000-02-01 00:00", "2000-03-01 00:00"), tz = "UTC"))
 #' 
-#' # coerce to SpatialPoints object and plot
-#'  pts <- SpatialPoints(pos[,c("deploy_long","deploy_lat")])
-#'  points(pts, pch=20, col='red', cex=3)
+#' #add to plot
+#' points(deploy_lat ~ deploy_long, data = pos, pch = 20, cex = 2, col = 'red')
 #' 
 #' # interpolate path using linear method
 #' path1 <- interpolate_path(pos)
+#' nrow(path1) #now 61 points
+#' sum(path1$record_type == "interpolated") #58 interpolated points
 #'  
-#' # coerce to SpatialPoints object and plot
-#' pts1 <- SpatialPoints(path1[,c("longitude","latitude")])
-#' points(pts1, pch=20, col='blue', lwd=2, cex=1.5) 
+#' #add linear path to plot
+#' points(latitude ~ longitude, data = path1, pch = 20, cex = 0.8, col = 'blue')
 #' 
-#' # example transition matrix
-#' data(greatLakesTrLayer)
+#' # load a transition matrix of Great Lakes
+#' # NOTE: This is a LOW RESOLUTION TransitionLayer suitable only for 
+#' #       coarse/large scale interpolation only. Most realistic uses
+#' #       will need to create a TransitionLayer; see ?make_transition.
+#' data(greatLakesTrLayer) #glatos example data; a TransitionLayer
 #'  
 #' # interpolate path using non-linear method (requires 'trans')
-#' path2 <- interpolate_path(pos, trans=greatLakesTrLayer)
+#' path2 <- interpolate_path(pos, trans = greatLakesTrLayer)
 #' 
-#' # coerce to SpatialPoints object and plot
-#' pts2 <- SpatialPoints(path2[,c("longitude","latitude")])
-#' points(pts2, pch=20, col='green', lwd=2, cex=1.5) 
+#' # add non-linear path to plot
+#' points(latitude ~ longitude, data = path2, pch = 20, cex = 1, 
+#'        col = 'green')
 #'  
-#' # can also force linear-interpolation with lnlThresh=0
-#' path3 <- interpolate_path(pos, trans=greatLakesTrLayer, lnl_thresh=0)
+#' # can also force linear-interpolation with lnlThresh = 0
+#' path3 <- interpolate_path(pos, trans = greatLakesTrLayer, lnl_thresh = 0)
 #' 
-#' # coerce to SpatialPoints object and plot
-#' pts3 <- SpatialPoints(path3[,c("longitude","latitude")])
-#' points(pts3, pch=20, col='magenta', lwd=2, cex=1.5) 
+#' # add new linear path to plot
+#' points(latitude ~ longitude, data = path3, pch = 20, cex = 1, 
+#'           col = 'magenta')
+#'           
 #' #--------------------------------------------------
-#' # EXAMPLE #2 - GLATOS detection data
+#' # EXAMPLE #2 - walleye in western Lake Erie
 #'
-#' # load detection data
+#'
+#' library(sp) #for loading greatLakesPoly
+#'
+#' # get example walleye detection data
 #' det_file <- system.file("extdata", "walleye_detections.csv",
-#'                          package = "glatos")
+#'                         package = "glatos")
 #' det <- read_glatos_detections(det_file)
 #' 
 #' # take a look
 #' head(det)
-#'  
-#' # call with defaults; linear interpolation
-#' pos1 <- interpolate_path(det)
-#'  
-#' # plot on example map background
-#' data(greatLakesPoly)
-#' library(sp) # to plot SpatialPolygon without error
-#' plot(greatLakesPoly)
-#'  
-#' # coerce to SpatialPoints object and plot
-#' pts1 <- SpatialPoints(pos1[, c("longitude", "latitude")])
-#' points(pts1, pch=20, col='red', cex=0.5)
-#'  
-#' # example transition matrix
-#' data(greatLakesTrLayer)
-#'  
+#' 
+#' # extract one fish and subset date
+#' det <- det[det$animal_id == 22 & 
+#'            det$detection_timestamp_utc > as.POSIXct("2012-04-08") &
+#'            det$detection_timestamp_utc < as.POSIXct("2013-04-15") , ]
+#' 
+#' # get polygon of the Great Lakes 
+#' data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+#' 
+#' # crop polygon to western Lake Erie
+#' maumee <-  crop(greatLakesPoly, extent(-83.7, -82.5, 41.3, 42.4))
+#' plot(maumee, col = "grey")
+#' points(deploy_lat ~ deploy_long, data = det, pch = 20, col = "red", 
+#'   x_lim = c(-83.7, -80))
+#' 
+#' #make TransitionLayer using make_transition2
+#' tran <- make_transition2(maumee, res = c(0.1, 0.1))
+#' 
+#' plot(tran$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
+#' plot(maumee, add = TRUE)
+#' 
+#' # not high enough resolution- bump up resolution
+#' tran1 <- make_transition2(maumee, res = c(0.001, 0.001))
+#' 
+#' # plot to check resolution- much better
+#' plot(tran1$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
+#' plot(maumee, add = TRUE)
+#' 
+#' 
+#' # add fish detections to make sure they are "on the map"
+#' # plot unique values only for simplicity
+#' foo <- unique(det[, c("deploy_lat", "deploy_long")]) 
+#' points(foo$deploy_long, foo$deploy_lat, pch = 20, col = "red")
+#' 
 #' # call with "transition matrix" (non-linear interpolation), other options
 #' # note that it is quite a bit slower due than linear interpolation
-#' pos2 <- interpolate_path(det, trans=greatLakesTrLayer)
+#' pos2 <- interpolate_path(det, trans = tran1$transition)
 #' 
-#' # coerce to SpatialPoints object and plot
-#' pts2 <- SpatialPoints(pos2[, c("longitude","latitude")])
-#' points(pts2, pch=20, col='blue', cex=0.5)
+#' plot(maumee, col = "grey")
+#' points(latitude ~ longitude, data = pos2, pch=20, col='red', cex=0.5)
 #' 
 #' @export 
 
