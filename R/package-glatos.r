@@ -107,3 +107,9 @@
 #' @importFrom grDevices bmp colorRampPalette dev.new dev.off jpeg png rainbow
 #'   tiff
 globalVariables(".") #to avoid R CMD check note
+
+#package startup message
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage(paste0("version ",packageVersion("glatos"), 
+    " ('three-meat-pizza')"))
+}
