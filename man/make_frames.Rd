@@ -34,20 +34,20 @@ for x-scale of plot. Units are degrees.}
 
 \item{show_interpolated}{Boolean. Default (TRUE) include interpolated points.}
 
-\item{tail_dur}{contains the duration (in same units as \code{proc_obj$bin_timestamp}; 
-see \code{\link{interpolate_path}}) of trailing points in each frame. 
-Default value is 0 (no trailing points). A value
-of \code{Inf} will show all points from start.}
+\item{tail_dur}{contains the duration (in same units as
+\code{proc_obj$bin_timestamp}; see \code{\link{interpolate_path}}) of
+trailing points in each frame. Default value is 0 (no trailing points). A
+value of \code{Inf} will show all points from start.}
 
 \item{animate}{Boolean. Default (TRUE) creates video animation}
 
 \item{ani_name}{Name of animation (character string)}
 
-\item{frame_delete}{Boolean.  Default (\code{frame_delete = TRUE}) delete individual
-image frames after animation is created}
+\item{frame_delete}{Boolean.  Default (\code{frame_delete = TRUE}) delete
+individual image frames after animation is created}
 
-\item{overwrite}{Overwite the animation file if it already
-exists. Default (\code{overwrite = FALSE}) prevents file from being overwritten.}
+\item{overwrite}{Overwite the animation file if it already exists. Default
+(\code{overwrite = FALSE}) prevents file from being overwritten.}
 
 \item{ffmpeg}{A file path (characer) to FFmpeg executable. This
 argument is only needed if ffmpeg is not added to your system
@@ -58,39 +58,67 @@ example on Windows machines,
 On Mac, path must point to 'ffmpeg' within the 'bin'
 subfolder, i.e., "/home/directory/Documents/bin/ffmpeg".}
 
-\item{preview}{write first frame only.  Useful for
-checking output before processing large number of frames.  Default \code{preview = FALSE}}
+\item{preview}{write first frame only.  Useful for checking output before
+processing large number of frames.  Default \code{preview = FALSE}}
 
-\item{...}{Optional graphing parameters that determine the size, style, and 
-positions of (1) fish location points, (2) plot device, 
-(3) receiver location points, (4) timeline and (5) slider (moves along 
-the timeline). 
+\item{...}{Optional graphing parameters for customizing elments of 
+ fish location points, receiver location points, timeline, and 
+ slider (moves along the timeline). 
 
-Most aspects of these objects can be modified using standard plot functions, 
-but a prefix (e.g., 'rcv.cex' vs. 'timeline.cex' vs. 'timeslider.cex')
-is used for the last three object types. 
+\strong{\emph{To customize fish location points:}} Add any argument that can 
+be passed to \link[graphics]{points}. The following values will 
+create the default plot: 
+\itemize{
+\item{\code{cex}}{ symbol size; default = 2}
+\item{\code{col}}{ symbol color; default = "blue"}
+\item{\code{pch}}{ symbol type; default = 16}
+}
 
-\describe{
-\item{\code{interpolated fish positions}}{
-Any argument that can be passed to \code{plot::points}, such as \code{cex =
-  2}, \code{pch = 21}. No prefix is used. Defaults are pch = 16, 
-  col = "blue", cex = 2.}
-\item{\code{receiver locations}}{Add prefix "rcv." to arguments of 
-\link[graphics]{points}. 
-Defaults are rcv.pch = 16, rcv.cex = 1.5.}
-\item{\code{plot device}}{Add prefix "par." 
-to plot argument. Defaults are par.oma=c(0,0,0,0), par.mar=c(6,0,0,0), 
-par.xpd=FALSE.}
-\item{\code{timeline}}{Add prefix "timeline." to arguments of 
-\link[graphics]{axis}. Defaults are timeline.side=1, at = timeline.labels_x, 
-pos = timeline_y[1], 
-timeline.labels = format(labels, "%Y-%m-%d"), timeline.col = "grey70", 
-timeline.lwd = 20*figRatio, timeline.lend = 0, timeline.lwd.ticks = NA, 
-timeline.col.ticks = 1,timeline. cex.axis = 2, timeline.padj = 0.5)}
-\item{\code{timeslider}}{Add prefix "timeslider." to arguments of 
-\link[graphics]{points}. 
-Defaults are timeslider.pch = 21, timeslider.cex = 2, 
-timeslider.bg = "grey40", timeslider.col = "grey20", timeslider.lwd = 1.}
+\strong{\emph{To customize receiver location points:}} Add add prefix
+\code{rcv.}any argument that can be passed to \link[graphics]{points}. The
+following values will create the default plot:
+\itemize{
+\item{\code{rcv.cex}}{ symbol size; default = 1.5}
+\item{\code{rcv.pch}}{ symbol type; default = 16}
+}
+ 
+\strong{\emph{To customize timeline:}} Add add prefix \code{timeline.} to any
+argument of \link[graphics]{axis}.  Note all elements of the timeline except
+the sliding symbol (see 'slider' below) are created by a call to \code{axis}.
+The following values will create the default plot:
+\itemize{
+\item{\code{timeline.at}}{ a sequence with locations of labels (with first
+and last being start and end) along x-axis; in units of longitude; by default
+this will center the timeline with five equally-spaced labels in the middle
+80\% of background_xlim.}
+\item{\code{timeline.pos}}{ location along the y-axis; in units of latitude;
+by default this will place the timeline up from the bottom 6\% of the range
+of \code{background_ylim}}
+\item{\code{timeline.labels}}{ text used for labels; default =
+format(labels, "\%Y-\%m-\%d"), where labels are values of proc_obj$bin_timestamp}
+\item{\code{timeline.col}}{ color of line; default = "grey70"} 
+\item{\code{timeline.lwd}}{ width of line; default = 20 times the aspect
+ratio of the plot device}
+\item{\code{timeline.cex.axis}}{size of labels; default = 2}
+}
+ 
+\strong{\emph{To customize time slider (symbol that slides):}} Add prefix
+\code{timeline.} to any argument that can be passed to
+\link[graphics]{points}. The following values will create the default plot:
+\itemize{
+\item{\code{timeslider.bg}}{ symbol bg color; default = "grey40"}
+\item{\code{timeslider.cex}}{ symbol size; default = 2}
+\item{\code{timeslider.col}}{ sumbol type; default = "grey20"}
+\item{\code{timeslider.pch}}{ symbol type; default = 21}
+}
+
+\strong{\emph{To customize parameters controlled by \code{par}:}} Add prefix
+\code{par.} to any argument that can be passed to \link[graphics]{par}. Note
+that \code{par.mar} controls whitespace behind default timeslider. The
+following values will create the default plot:
+\itemize{
+\item{\code{par.oma}}{ plot outer margins; default = c(0,0,0,0)}
+\item{\code{par.mar}}{ plot inner margins; default = c(6,0,0,0)}
 }}
 }
 \value{
