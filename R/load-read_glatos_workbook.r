@@ -23,17 +23,18 @@
 #'   'Deployment', 'Recovery', and 'Location' are merged on columns
 #'   'GLATOS_PROJECT', 'GLATOS_ARRAY', 'STATION_NO', 'CONSECUTIVE_DEPLOY_NO',
 #'   AND 'INS_SERIAL_NO' to produce the output data frame \code{receivers}. Data
-#'   in workbook sheets 'Project' and 'Tagging' are passed through to 'project'
-#'   and 'animals', respectively, and data from workbook sheet 'Proposed' is not
-#'   included in result. If \code{read_all = TRUE} then each sheet in workbook
-#'   will be included in result.
+#'   in workbook sheets 'Project' and 'Tagging' are passed through to new data
+#'   frames named 'project' and 'animals', respectively, and data from workbook
+#'   sheet 'Proposed' is not included in result. If \code{read_all = TRUE} then
+#'   each sheet in workbook will be included in result.
 #'   
 #' @details Data are read from the input file using
-#'   \link[openxlsx]{readWorkbook}. If \code{read_all = TRUE} then the type of
-#'   data in each user-defined column (and sheet) will be 'guessed' by
-#'   \link[openxlsx]{readWorkbook}. Therefore, if \code{read_all = TRUE} then
-#'   the structure of those columnns should be carefully reviewed in the result.
-#'   See \link[openxlsx]{readWorkbook} for details.
+#'   \link[openxlsx]{readWorkbook} in the package 'openxlsx' package. If
+#'   \code{read_all = TRUE} then the type of data in each user-defined column
+#'   (and sheet) will be 'guessed' by \link[openxlsx]{readWorkbook}. Therefore,
+#'   if \code{read_all = TRUE} then the structure of those columnns should be
+#'   carefully reviewed in the result. See \link[openxlsx]{readWorkbook} for
+#'   details.
 #'
 #' @details Column \code{animal_id} is considered a required column by many
 #'   other functions in this package, so it will be created if any records are
@@ -61,7 +62,7 @@
 #'   specification, then no data will be loaded and an error will alert the user
 #'   to this condition. \cr
 #'   \cr
-#'   \strong{\emph{On cells with locked formatting in Excel:}} Occassionaly the
+#'   \strong{\emph{On cells with locked formatting in Excel:}} Occasionally the
 #'   format of a cell in Excel will be locked. In those cases, it is sometimes
 #'   possible to force date formatting in Excel by (1) highlighting the columns
 #'   that need reformatting, (2) select 'Text-to-columns' in the 'Data' menu,
@@ -88,6 +89,11 @@
 #' #get path to example GLATOS Data Workbook
 #' wb_file <- system.file("extdata", 
 #'   "walleye_workbook.xlsm", package = "glatos")
+#'   
+#' #note that code above is needed to find the example file
+#' #for real glatos data, use something like below
+#' #wb_file <- "c:/path_to_file/HECWL_GLATOS_20150321.csv"
+#'   
 #' wb <- read_glatos_workbook(wb_file)
 #'
 #' @export

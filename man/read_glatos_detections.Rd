@@ -39,6 +39,11 @@ Column \code{animal_id} is considered a required column by many
 #get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
                          package = "glatos")
+                         
+#note that code above is needed to find the example file
+#for real glatos data, use something like below
+#det_file <- "c:/path_to_file/HECWL_detectionsWithLocs_20150321_132242.csv"           
+                         
 det <- read_glatos_detections(det_file)
 
 }
