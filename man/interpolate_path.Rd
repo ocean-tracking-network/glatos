@@ -117,7 +117,7 @@ points(latitude ~ longitude, data = path3, pch = 20, cex = 1,
           
 #--------------------------------------------------
 # EXAMPLE #2 - walleye in western Lake Erie
-
+\dontrun{
 
 library(sp) #for loading greatLakesPoly
 library(raster) #for raster manipulation (e.g., crop)
@@ -172,6 +172,8 @@ pos2 <- interpolate_path(det, trans = tran1$transition)
 
 plot(maumee, col = "grey")
 points(latitude ~ longitude, data = pos2, pch=20, col='red', cex=0.5)
+
+} 
 
 }
 \author{

@@ -109,7 +109,7 @@
 #'           
 #' #--------------------------------------------------
 #' # EXAMPLE #2 - walleye in western Lake Erie
-#'
+#' \dontrun{
 #'
 #' library(sp) #for loading greatLakesPoly
 #' library(raster) #for raster manipulation (e.g., crop)
@@ -164,6 +164,8 @@
 #' 
 #' plot(maumee, col = "grey")
 #' points(latitude ~ longitude, data = pos2, pch=20, col='red', cex=0.5)
+#' 
+#' } 
 #' 
 #' @export 
 
