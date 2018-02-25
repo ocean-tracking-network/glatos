@@ -242,17 +242,20 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   timeline_inargs <- inargs[grepl("^timeline\\.", names(inargs))]
   #identify and subset timeslider arguments
   timeslider_inargs <- inargs[grepl("^timeslider\\.", names(inargs))]
+  
+  #identify dtc input arguments
+  dtc_inarg_names <- setdiff(names(inargs), c(names(par_inargs),
+    names(rcv_inargs),
+    names(timeline_inargs),
+    names(timeslider_inargs)))
+  
   #identify and subset detection point arguments
-  dtc_inargs <- inargs[setdiff(names(inargs), c(names(par_inargs),
-                                                names(rcv_inargs),
-                                                names(timeline_inargs),
-                                                names(timeslider_inargs)))]
+  dtc_inargs <- inargs[dtc_inarg_names]
   #strip argument names
   names(par_inargs) <- gsub("^par\\.", "", names(par_inargs))
   names(timeline_inargs) <- gsub("^timeline\\.", "", names(timeline_inargs))
   names(timeslider_inargs) <- gsub("^timeslider\\.", "", names(timeslider_inargs))
   names(rcv_inargs) <- gsub("^rec\\.", "", names(rcv_inargs))
-  names(dtc_inargs) <- gsub("^dtc\\.", "", names(dtc_inargs))
   
   #update from ...
   if(length(rcv_inargs) > 0) rcv_args[names(rcv_inargs)] <- rcv_inargs
@@ -458,7 +461,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     sub_dtc_args <- dtc_args[match(x$row_in, dtc_args$row_in), ] 
     
     do.call(points, c(list(x = x$longitude, y = x$latitude), 
-                      dtc_args[ , !"row_in", with = FALSE]))
+                      sub_dtc_args[ , !"row_in", with = FALSE]))
 
     dev.off()
   }
