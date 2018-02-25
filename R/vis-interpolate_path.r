@@ -112,6 +112,7 @@
 #'
 #'
 #' library(sp) #for loading greatLakesPoly
+#' library(raster) #for raster manipulation (e.g., crop)
 #'
 #' # get example walleye detection data
 #' det_file <- system.file("extdata", "walleye_detections.csv",
@@ -133,9 +134,12 @@
 #' maumee <-  crop(greatLakesPoly, extent(-83.7, -82.5, 41.3, 42.4))
 #' plot(maumee, col = "grey")
 #' points(deploy_lat ~ deploy_long, data = det, pch = 20, col = "red", 
-#'   x_lim = c(-83.7, -80))
+#'   xlim = c(-83.7, -80))
 #' 
-#' #make TransitionLayer using make_transition2
+#' #make transition layer object
+#' # Note: using make_transition2 here for simplicity, but 
+#' #       make_transition is generally preferred for real application  
+#' #       if your system can run it see ?make_transition
 #' tran <- make_transition2(maumee, res = c(0.1, 0.1))
 #' 
 #' plot(tran$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
