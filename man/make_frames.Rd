@@ -63,23 +63,24 @@ processing large number of frames.  Default \code{preview = FALSE}}
 
 \item{...}{Optional graphing parameters for customizing elments of 
  fish location points, receiver location points, timeline, and 
- slider (moves along the timeline). 
+ slider (moves along the timeline). See also \strong{Note} section.
 
-\strong{\emph{To customize fish location points:}} Add any argument that can 
-be passed to \link[graphics]{points}. The following values will 
-create the default plot: 
+\strong{\emph{To customize fish location points (from
+\code{proc_obj}):}} Add any argument that can be passed to
+\link[graphics]{points}. The following values will create the default plot:
 \itemize{
-\item{\code{cex}}{ symbol size; default = 2}
-\item{\code{col}}{ symbol color; default = "blue"}
-\item{\code{pch}}{ symbol type; default = 16}
+\item{\code{cex:}}{ symbol size; default = 2}
+\item{\code{col:}}{ symbol color; default = "blue"}
+\item{\code{pch:}}{ symbol type; default = 16}
 }
 
-\strong{\emph{To customize receiver location points:}} Add add prefix
-\code{rcv.}any argument that can be passed to \link[graphics]{points}. The
-following values will create the default plot:
+\strong{\emph{To customize receiver location points (from
+\code{recs}):}} Add add prefix
+\code{recs.} to any argument that can be passed to \link[graphics]{points}.
+The following values will create the default plot:
 \itemize{
-\item{\code{rcv.cex}}{ symbol size; default = 1.5}
-\item{\code{rcv.pch}}{ symbol type; default = 16}
+\item{\code{recs.cex:}}{ symbol size; default = 1.5}
+\item{\code{recs.pch:}}{ symbol type; default = 16}
 }
  
 \strong{\emph{To customize timeline:}} Add add prefix \code{timeline.} to any
@@ -87,29 +88,31 @@ argument of \link[graphics]{axis}.  Note all elements of the timeline except
 the sliding symbol (see 'slider' below) are created by a call to \code{axis}.
 The following values will create the default plot:
 \itemize{
-\item{\code{timeline.at}}{ a sequence with locations of labels (with first
+\item{\code{timeline.at:}}{ a sequence with locations of labels (with first
 and last being start and end) along x-axis; in units of longitude; by default
 this will center the timeline with five equally-spaced labels in the middle
 80\% of background_xlim.}
-\item{\code{timeline.pos}}{ location along the y-axis; in units of latitude;
+\item{\code{timeline.pos:}}{ location along the y-axis; in units of latitude;
 by default this will place the timeline up from the bottom 6\% of the range
 of \code{background_ylim}}
-\item{\code{timeline.labels}}{ text used for labels; default =
+\item{\code{timeline.labels:}}{ text used for labels; default =
 format(labels, "\%Y-\%m-\%d"), where labels are values of proc_obj$bin_timestamp}
-\item{\code{timeline.col}}{ color of line; default = "grey70"} 
-\item{\code{timeline.lwd}}{ width of line; default = 20 times the aspect
+\item{\code{timeline.col:}}{ color of line; default = "grey70"} 
+\item{\code{timeline.lwd:}}{ width of line; default = 20 times the aspect
 ratio of the plot device}
-\item{\code{timeline.cex.axis}}{size of labels; default = 2}
+\item{\code{timeline.cex.axis:}}{size of labels; default = 2}
 }
  
 \strong{\emph{To customize time slider (symbol that slides):}} Add prefix
 \code{timeline.} to any argument that can be passed to
 \link[graphics]{points}. The following values will create the default plot:
 \itemize{
-\item{\code{timeslider.bg}}{ symbol bg color; default = "grey40"}
-\item{\code{timeslider.cex}}{ symbol size; default = 2}
-\item{\code{timeslider.col}}{ sumbol type; default = "grey20"}
-\item{\code{timeslider.pch}}{ symbol type; default = 21}
+\item{\code{timeslider.bg:}}{ a single value with symbol bg color; default =
+"grey40"} 
+\item{\code{timeslider.cex:}}{ a single value with symbol size; default = 2}
+\item{\code{timeslider.col:}}{ a single value with symbol type; default =
+"grey20"}
+\item{\code{timeslider.pch:}}{ a single value with symbol type; default = 21}
 }
 
 \strong{\emph{To customize parameters controlled by \code{par}:}} Add prefix
@@ -130,6 +133,15 @@ Create a set of frames (png image files) showing geographic location data
 (e.g., detections of tagged fish or interpolated path data) at discrete 
 points in time on top of a Great Lakes shapefile and optionally stitches
 frames into a video animation (mp4 file).
+}
+\note{
+\emph{Customizing plot elements with input argument `\code{...}`}\cr
+The option to allow customization of plot elements with input argument 
+\code{...} provides a great deal of flexibility, but users will need to 
+be familiar with each associated graphics functions (e.g., 
+\link[graphics]{axis} for timeline arguments). We expect that this will 
+require some trial and error and that input argument \code{preview = TRUE} 
+will be useful while exploring optional plot arguments.
 }
 \examples{
 
