@@ -263,13 +263,15 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   if(length(dtc_inargs) > 0) dtc_args[names(dtc_inargs)] <- dtc_inargs
       
   #expand single rcv_args elements to equal number of rows in recs
-  for(i in 1:length(rcv_args)) {
-    if(length(rcv_args[[i]] == 1)) {
-      rcv_args[[i]] <- rep(rcv_args[[i]], nrow(recs))
-    } else if (length(rcv_args[[i]]) != nrow(recs)) {
-         stop(paste0("Length of optional plot parameters pass via '...' ",
-           "must be 1 or equal to\n number of rows in input data."))
-      }
+  if(!is.null(recs)){
+    for(i in 1:length(rcv_args)) {
+      if(length(rcv_args[[i]] == 1)) {
+        rcv_args[[i]] <- rep(rcv_args[[i]], nrow(recs))
+      } else if (length(rcv_args[[i]]) != nrow(recs)) {
+           stop(paste0("Length of optional plot parameters pass via '...' ",
+             "must be 1 or equal to\n number of rows in input data."))
+        }
+    }
   }
 
   #expand single dtc_args elements to equal number of rows in work_proc_obj
