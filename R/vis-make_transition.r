@@ -43,7 +43,7 @@
 ##' @author Todd Hayden, Tom Binder, Chris Holbrook
 ##'
 ##' @examples
-##'
+##' \dontrun{
 ##' # path to polygon shapefile
 ##' poly <- system.file("extdata", "shoreline.zip", package = "glatos")
 ##' poly <- unzip(poly, exdir = tempdir())
@@ -66,7 +66,8 @@
 ##'
 ##' # plot transition layer
 ##' raster::plot(raster::raster(tst1$transition))
-##'
+##' }
+##' 
 ##' @export
 
 

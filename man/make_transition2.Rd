@@ -68,6 +68,7 @@ plot(tst$rast)
 # plot transition layer
 plot(raster(tst$transition))
 
+\dontrun{
 # increase resolution- this may take some time...
 tst1 <- make_transition2(greatLakesPoly, res = c(0.01, 0.01))
 
@@ -76,6 +77,7 @@ plot(tst1$rast)
 
 # plot transition layer
 plot(raster(tst1$transition))
+}
 
 }
 \seealso{

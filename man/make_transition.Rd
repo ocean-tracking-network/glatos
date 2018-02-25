@@ -51,7 +51,7 @@ output transition layer is corrected for projection
   all over-water movements.
 }
 \examples{
-
+\dontrun{
 # path to polygon shapefile
 poly <- system.file("extdata", "shoreline.zip", package = "glatos")
 poly <- unzip(poly, exdir = tempdir())
@@ -74,6 +74,7 @@ raster::plot(tst1$rast)
 
 # plot transition layer
 raster::plot(raster::raster(tst1$transition))
+}
 
 }
 \author{
