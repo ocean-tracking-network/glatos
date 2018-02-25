@@ -61,9 +61,37 @@ subfolder, i.e., "/home/directory/Documents/bin/ffmpeg".}
 \item{preview}{write first frame only.  Useful for
 checking output before processing large number of frames.  Default \code{preview = FALSE}}
 
-\item{...}{Graphical parameters for plotting fish markers.  Any
-argument that can be passed to \code{plot::points}, such as \code{cex =
-2}, \code{pch = 21}.}
+\item{...}{Optional graphing parameters that determine the size, style, and 
+positions of (1) fish location points, (2) plot device, 
+(3) receiver location points, (4) timeline and (5) slider (moves along 
+the timeline). 
+
+Most aspects of these objects can be modified using standard plot functions, 
+but a prefix (e.g., 'rcv.cex' vs. 'timeline.cex' vs. 'timeslider.cex')
+is used for the last three object types. 
+
+\describe{
+\item{\code{interpolated fish positions}}{
+Any argument that can be passed to \code{plot::points}, such as \code{cex =
+  2}, \code{pch = 21}. No prefix is used. Defaults are pch = 16, 
+  col = "blue", cex = 2.}
+\item{\code{receiver locations}}{Add prefix "rcv." to arguments of 
+\link[graphics]{points}. 
+Defaults are rcv.pch = 16, rcv.cex = 1.5.}
+\item{\code{plot device}}{Add prefix "par." 
+to plot argument. Defaults are par.oma=c(0,0,0,0), par.mar=c(6,0,0,0), 
+par.xpd=FALSE.}
+\item{\code{timeline}}{Add prefix "timeline." to arguments of 
+\link[graphics]{axis}. Defaults are timeline.side=1, at = timeline.labels_x, 
+pos = timeline_y[1], 
+timeline.labels = format(labels, "%Y-%m-%d"), timeline.col = "grey70", 
+timeline.lwd = 20*figRatio, timeline.lend = 0, timeline.lwd.ticks = NA, 
+timeline.col.ticks = 1,timeline. cex.axis = 2, timeline.padj = 0.5)}
+\item{\code{timeslider}}{Add prefix "timeslider." to arguments of 
+\link[graphics]{points}. 
+Defaults are timeslider.pch = 21, timeslider.cex = 2, 
+timeslider.bg = "grey40", timeslider.col = "grey20", timeslider.lwd = 1.}
+}}
 }
 \value{
 Sequentially-numbered png files (one for each frame) and 

@@ -56,9 +56,37 @@
 #' @param preview write first frame only.  Useful for
 #'   checking output before processing large number of frames.  Default \code{preview = FALSE}
 #'
-#' @param ... Graphical parameters for plotting fish markers.  Any
-#'   argument that can be passed to \code{plot::points}, such as \code{cex =
-#'   2}, \code{pch = 21}.
+#' @param ... Optional graphing parameters that determine the size, style, and 
+#' positions of (1) fish location points, (2) plot device, 
+#' (3) receiver location points, (4) timeline and (5) slider (moves along 
+#' the timeline). 
+#' 
+#' Most aspects of these objects can be modified using standard plot functions, 
+#' but a prefix (e.g., 'rcv.cex' vs. 'timeline.cex' vs. 'timeslider.cex')
+#' is used for the last three object types. 
+#' 
+#' \describe{
+#' \item{\code{interpolated fish positions}}{
+#' Any argument that can be passed to \code{plot::points}, such as \code{cex =
+#'   2}, \code{pch = 21}. No prefix is used. Defaults are pch = 16, 
+#'   col = "blue", cex = 2.}
+#' \item{\code{receiver locations}}{Add prefix "rcv." to arguments of 
+#' \link[graphics]{points}. 
+#' Defaults are rcv.pch = 16, rcv.cex = 1.5.}
+#' \item{\code{plot device}}{Add prefix "par." 
+#' to plot argument. Defaults are par.oma=c(0,0,0,0), par.mar=c(6,0,0,0), 
+#' par.xpd=FALSE.}
+#' \item{\code{timeline}}{Add prefix "timeline." to arguments of 
+#' \link[graphics]{axis}. Defaults are timeline.side=1, at = timeline.labels_x, 
+#' pos = timeline_y[1], 
+#' timeline.labels = format(labels, "%Y-%m-%d"), timeline.col = "grey70", 
+#' timeline.lwd = 20*figRatio, timeline.lend = 0, timeline.lwd.ticks = NA, 
+#' timeline.col.ticks = 1,timeline. cex.axis = 2, timeline.padj = 0.5)}
+#' \item{\code{timeslider}}{Add prefix "timeslider." to arguments of 
+#' \link[graphics]{points}. 
+#' Defaults are timeslider.pch = 21, timeslider.cex = 2, 
+#' timeslider.bg = "grey40", timeslider.col = "grey20", timeslider.lwd = 1.}
+#' }
 #' 
 #' @return Sequentially-numbered png files (one for each frame) and 
 #'   one mp4 file will be written to \code{out_dir}.
@@ -151,17 +179,83 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   }
 
   # Convert proc_obj and recs dataframes into data.table objects
-  work_proc_obj <- as.data.table(proc_obj)
-  
+  work_proc_obj <- data.table::as.data.table(proc_obj)
+
+  #make column to identify original row to join with option plot arguments
+  work_proc_obj[ , row_in := 1:.N]  
+    
   # set recs to data.table  
   if(!is.null(recs)){
-    setDT(recs)
+    recs <- data.table::as.data.table(recs)
 
+    #make column to identify original row to join with option plot arguments
+    recs[ , row_in := 1:.N]    
+    
     # Remove receivers not recovered (records with NA in recover_date_time)
-    setkey(recs, recover_date_time)
-    recs <- recs[!J(NA_real_), c("station", "deploy_lat", "deploy_long",
-                                 "deploy_date_time", "recover_date_time")]
+    data.table::setkey(recs, recover_date_time)
+    recs <- recs[!J(NA_real_), c("station", "deploy_lat", "deploy_long", 
+                                 "deploy_date_time", "recover_date_time",
+                                 "row_in")]
   }
+  
+  # capture optional plot arguments passed via ellipses
+  #  and add original row indices to join on both
+  inargs <- list(...)
+  #set defaults and apply if needed
+  rcv_args <- list(pch = 16, cex = 1.5)
+  dtc_args <- list(pch = 16, col = "blue", cex = 2)
+  #if(length(inargs) > 0){
+    #identify and subset par arguments
+    par_inargs <- inargs[grepl("^par\\.", names(inargs))] #temporary
+    #identify and subset receiver point arguments
+    rcv_inargs <- inargs[grepl("^rec\\.", names(inargs))] #temporary
+    #identify and subset timeline arguments
+    timeline_inargs <- inargs[grepl("^timeline\\.", names(inargs))]
+    #identify and subset timeslider arguments
+    timeslider_inargs <- inargs[grepl("^timeslider\\.", names(inargs))]
+    #identify and subset detection point arguments
+    dtc_inargs <- inargs[setdiff(names(inargs), c(names(par_inargs),
+                                                  names(rcv_inargs),
+                                                  names(timeline_inargs),
+                                                  names(timeslider_inargs)))]
+    #strip argument names
+    names(par_inargs) <- gsub("^par\\.", "", names(par_inargs))
+    names(timeline_inargs) <- gsub("^timeline\\.", "", names(timeline_inargs))
+    names(timeslider_inargs) <- gsub("^timeslider\\.", "", names(timeslider_inargs))
+    names(rcv_inargs) <- gsub("^rec\\.", "", names(rcv_inargs))
+    names(dtc_inargs) <- gsub("^dtc\\.", "", names(dtc_inargs))
+    
+    #update from ...
+    if(length(rcv_inargs) > 0) rcv_args[names(rcv_inargs)] <- rcv_inargs
+    #update from ...
+    if(length(dtc_inargs) > 0) dtc_args[names(dtc_inargs)] <- dtc_inargs
+        
+    #expand single rcv_args elements to equal number of rows in recs
+    for(i in 1:length(rcv_args)) {
+      if(length(rcv_args[[i]] == 1)) {
+        rcv_args[[i]] <- rep(rcv_args[[i]], nrow(recs))
+      } else if (length(rcv_args[[i]]) != nrow(recs)) {
+           stop(paste0("Length of optional plot parameters pass via '...' ",
+             "must be 1 or equal to\n number of rows in input data."))
+        }
+    }
+
+    #expand single dtc_args elements to equal number of rows in work_proc_obj
+    for(i in 1:length(dtc_args)) {
+      if(length(dtc_args[[i]] == 1)) {
+        dtc_args[[i]] <- rep(dtc_args[[i]], nrow(work_proc_obj))
+      } else if (length(dtc_args[[i]]) != nrow(work_proc_obj)) {
+        stop(paste0("Length of optional plot parameters pass via '...' ",
+          "must be 1 or equal to\n number of rows in input data."))
+      }
+    }    
+    
+    #coerce to data.table and add original row index (for join to recs)
+    rcv_args <- as.data.table(rcv_args)
+    rcv_args[ , row_in := 1:.N]
+    dtc_args <- as.data.table(dtc_args)
+    dtc_args[ , row_in := 1:.N]
+  #} 
 
   # Make output directory if it does not already exist
   if(!dir.exists(out_dir)) dir.create(out_dir)
@@ -186,54 +280,48 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
 
     # group obs for tails
     work_proc_obj[, t_end := bin_timestamp]
-    setkey(dur, t_end, t_seq)
+    data.table::setkey(dur, t_end, t_seq)
 
     # merge by overlap
-    work_proc_obj <- foverlaps(work_proc_obj, dur, type = "within",
+    work_proc_obj <- data.table::foverlaps(work_proc_obj, dur, type = "within",
                           nomatch = 0L, by.x = c("bin_timestamp", "t_end"))
     work_proc_obj <- work_proc_obj[, c("animal_id", "t_seq", "latitude",
-                                       "longitude", "record_type")]
-    setnames(work_proc_obj, c("animal_id", "bin_timestamp", "latitude",
-                              "longitude", "record_type"))
+                                       "longitude", "record_type", "row_in")]
+    data.table::setnames(work_proc_obj, c("animal_id", "bin_timestamp", "latitude",
+                              "longitude", "record_type", "row_in"))
     work_proc_obj[, grp := bin_timestamp]
   }
 
   # set rows in time order
-  setorder(work_proc_obj, bin_timestamp)
+  data.table::setorder(work_proc_obj, bin_timestamp)
   
   # create num group for later
   work_proc_obj[, grp_num := .GRP, by = bin_timestamp]
   
   # determine leading zeros needed by ffmpeg and add as new column
   char <- paste0("%", 0, nchar((length(t_seq))), "d")
-  setkey(work_proc_obj, bin_timestamp)
+  data.table::setkey(work_proc_obj, bin_timestamp)
   work_proc_obj[, f_name := .GRP, by = grp]
   work_proc_obj[, f_name := paste0(sprintf(char, f_name), ".png")]
 
   # order data for plotting
-    setkey(work_proc_obj, bin_timestamp, animal_id,  record_type)
+  data.table::setkey(work_proc_obj, bin_timestamp, animal_id,  record_type)
 
   # Load Great lakes background
   background <- greatLakesPoly #example in glatos package
 
   # turn off interpolated points if show_interpolated = FALSE
-    if(!show_interpolated){
-      work_proc_obj[record_type == "interpolated", latitude := NA]
-      work_proc_obj[record_type == "interpolated", longitude := NA]
-    }
+  if(!show_interpolated){
+    work_proc_obj[record_type == "interpolated", latitude := NA]
+    work_proc_obj[record_type == "interpolated", longitude := NA]
+  }
+  
+  # Calculate the duration of the animation for timeline
+  time_period <- range(work_proc_obj$bin_timestamp) 
   
   # define custom plot function
-  cust_plot <- function(x, obj, sub_recs, out_dir, background,
-                        background_xlim, background_ylim, show_interpolated){
-
-    # graphical params for fish markers
-    dots <- list(...)
-
-    if(!is.null(recs)){
-      # extract receivers in the water during plot interval
-      sub_recs <- recs[between(x$bin_timestamp[1], lower = recs$deploy_date_time,
-                              upper = recs$recover_date_time)]
-    }
+  cust_plot <- function(x, time_period, recs, out_dir, background,
+                        background_xlim, background_ylim){
 
     # Calculate great circle distance in meters of x and y limits.
     # needed to determine aspect ratio of the output
@@ -255,17 +343,33 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
 
     # Plot background image
     # Set bottom margin to plot timeline outside of plot window
-    par(oma=c(0,0,0,0), mar=c(6,0,0,0), xpd=FALSE)
+    
+    #set defaults and apply if needed
+    par_args <- list(oma=c(0,0,0,0), mar=c(6,0,0,0), xpd=FALSE)
+    #update from defaults...
+    if(length(par_inargs) > 0) par_args[names(par_inargs)] <- par_inargs
+    
+    do.call(par, par_args)
 
     # Note call to plot with sp
     sp::plot(background, ylim = c(background_ylim), xlim = c(background_xlim),
              axes = FALSE, lwd = 2*figRatio, col = "white", bg = "gray74")
 
     box(lwd = 3*figRatio)
+    
+    # Add receiver locations
     if(!is.null(recs)){
-      # plot receivers
-      points(x = sub_recs$deploy_long, y = sub_recs$deploy_lat, pch = 16,
-             cex = 1.5)
+      # extract receivers in the water during plot interval
+      sub_recs <- recs[data.table::between(x$bin_timestamp[1], 
+                       lower = recs$deploy_date_time,
+                       upper = recs$recover_date_time)]
+      
+      # get optional plot arguments that correspond with sub_recs
+      sub_rcv_args <- rcv_args[match(sub_recs$row_in,rcv_args$row_in), ] 
+      
+      # plot receivers; not do.call to include optional input arguments
+      do.call(points, c(list(x = sub_recs$deploy_long, y = sub_recs$deploy_lat), 
+                        sub_rcv_args[ , !"row_in", with = FALSE]))
     }
 
     # Add timeline
@@ -278,72 +382,88 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     timeline_x <- c(background_xlim[1] + (0.10*xlim_diff),
                     background_xlim[2] - (0.10*xlim_diff))
 
-    # Initalize timeline
-    lines(timeline_x, timeline_y, col = "grey70", lwd = 20*figRatio, lend = 0)
-    
-    # Calculate the duration of the animation based on data extents
-    time_dur <- (as.numeric(max(obj$grp)) - as.numeric(min(obj$grp)))
+    time_dur <- diff(as.numeric(time_period))
     
     # Add labels to timeline
-    labels <- seq(as.POSIXct(format(min(obj$grp), "%Y-%m-%d")),
-                  as.POSIXct(format(max(obj$grp), "%Y-%m-%d")),
+    labels <- seq(as.POSIXct(format(min(time_period), "%Y-%m-%d")),
+                  as.POSIXct(format(max(time_period), "%Y-%m-%d")),
                   length.out = 5)
     labels_ticks <- as.POSIXct(format(labels, "%Y-%m-%d"), tz = "GMT")
-    ptime <- (as.numeric(labels_ticks) - as.numeric(min(obj$grp))) / time_dur
+    ptime <- (as.numeric(labels_ticks) - as.numeric(min(time_period))) / time_dur
     labels_x <- timeline_x[1] + (diff(timeline_x) * ptime)
-    text(x = labels_x,
-         y = timeline_y[1]-0.01*(ylim_diff),
-         labels = format(labels, "%Y-%m-%d"),
-         cex = 2,
-         pos = 1)
-
+    
+    #set defaults and apply if needed
+    timeline_args = list(side=1, at = labels_x, pos = timeline_y[1], 
+                         labels = format(labels, "%Y-%m-%d"), col = "grey70", 
+                         lwd = 20*figRatio, lend = 0, lwd.ticks = NA, 
+                         col.ticks = 1, cex.axis = 2, padj = 0.5)
+ 
+    #update from ...
+    if(length(timeline_inargs) > 0) timeline_args[names(timeline_inargs)] <- 
+                                      timeline_inargs    
+       
+    do.call(axis, timeline_args)
+    
+    
     # Update timeline
-    ptime <- (as.numeric(x[1,"grp"]) - as.numeric(min(obj$grp))) / time_dur
+    ptime <- (as.numeric(x[1,"grp"]) - as.numeric(min(time_period))) / time_dur
 
     # Proportion of timeline elapsed
     timeline_x_i <- timeline_x[1] + diff(timeline_x) * ptime
 
-    # Plot slider along timeline at appropriate location
-    points(timeline_x_i, timeline_y[1], pch = 21, cex = 2, bg = "grey40",
-           col = "grey20", lwd = 1)
+    #set defaults and apply if needed
+    timeslider_args = list(pch = 21, 
+                          cex = 2, bg = "grey40", col = "grey20", lwd = 1)
     
-if(length(dots) == 0){
-  plot_params <- points(x = x$longitude, y=x$latitude, pch = 16, col = "blue", cex = 2) } else {
-      points(x = x$longitude, y = x$latitude, ...)}
+    #update from ...
+    if(length(timeslider_inargs) > 0) timeslider_args[names(timeslider_inargs)] <- 
+                                        timeslider_inargs    
+    
+    # Plot slider along timeline at appropriate location
+    do.call(points, c(list(x=timeline_x_i, y=timeline_args$pos), 
+                      timeslider_args))
+   
+    
+    # Add fish positions
+    # get optional plot arguments that correspond with x
+    sub_dtc_args <- dtc_args[match(x$row_in, dtc_args$row_in), ] 
+    
+    do.call(points, c(list(x = x$longitude, y = x$latitude), 
+                      dtc_args[ , !"row_in", with = FALSE]))
 
     dev.off()
   }
 
   # order for plotting
-  setkey(work_proc_obj, grp_num)
+  data.table::setkey(work_proc_obj, grp_num)
 
-  if(preview == TRUE){
-    work_proc_obj[grp_num == 1, cust_plot(x = .SD, work_proc_obj, sub_recs, out_dir,
-                                      background, background_xlim, background_ylim,
-                                      show_interpolated), by = grp,
-                  .SDcols = c("bin_timestamp", "longitude", "latitude",
-                              "record_type", "f_name", "grp")]
 
-    return(paste("preview frames are in \n", out_dir))
-  }
-  
-  if(preview == FALSE){
-
+  if(preview){ grpn <- 1 } else {
     # start progress bar
-    grpn <- uniqueN(work_proc_obj$grp)
+    grpn <- data.table::uniqueN(work_proc_obj$grp)
     pb <- txtProgressBar(min = 0, max = grpn, style = 3)
-
-    # create images
-     work_proc_obj[, {setTxtProgressBar(pb, .GRP);
-    cust_plot(x = .SD, work_proc_obj, sub_recs, out_dir, background, background_xlim,
-              background_ylim, show_interpolated)}, by = grp,
-    .SDcols = c("bin_timestamp", "longitude", "latitude", "record_type",
-                "f_name", "grp")]
-    close(pb)
   }
   
-  if(animate == FALSE & frame_delete == TRUE){message("are you sure?")}
-  if(animate == FALSE){message(paste("frames are in\n", out_dir))}
+  # call cust_plot witin data.table
+  work_proc_obj[grp_num <= grpn, 
+               {if(!preview) setTxtProgressBar(pb, .GRP)
+                cust_plot(x = .SD, 
+                          time_period = time_period, 
+                          recs = recs, 
+                          out_dir = out_dir,
+                          background = background, 
+                          background_xlim = background_xlim, 
+                          background_ylim = background_ylim 
+                )}
+                , by = grp,
+                .SDcols = c("bin_timestamp", "longitude", "latitude",
+                  "record_type", "f_name", "grp", "row_in")]
+  
+  if(preview) { return(paste("preview frames are in \n", out_dir)) } else {
+     close(pb) }
+  
+  if(animate == FALSE & frame_delete == TRUE) message("are you sure?")
+  if(animate == FALSE) message(paste("frames are in\n", out_dir))
 
   if(animate & frame_delete){
     make_video(dir = out_dir, pattern = paste0(char, ".png"), output = ani_name,
