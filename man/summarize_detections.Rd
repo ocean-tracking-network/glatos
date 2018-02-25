@@ -12,7 +12,7 @@ summarize_detections(det, location_col = "glatos_array",
  \link{read_glatos_detections}).
  
  \emph{OR} a data frame containing detection
- data with four columns ('animal_id' and 'detection_timestamp_utc') described
+ data with four columns described
  below and one column containing a location grouping variable, whose name is
  specified by \code{location_col} (see below). 
  
