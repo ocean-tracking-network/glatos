@@ -9,7 +9,7 @@ make_transition2(poly, res = c(0.1, 0.1), extent_out = NULL, x_lim = NULL,
 }
 \arguments{
 \item{poly}{A spatial polygon object of class
-\link[sp]{SpatialPolygonsDataFrame}.}
+\link[=SpatialPolygons]{SpatialPolygonsDataFrame}.}
 
 \item{res}{two element vector that specifies the x and y dimension
 of output raster cells.  Units of res are same as input
@@ -35,14 +35,13 @@ A list with two elements:
 }
 \description{
 Create transition layer for \link{interpolate_path} from
-\link[sp]{SpatialPolygonsDataFrame}.
+\link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
 }
 \details{
-\code{make_transition} uses
-  \link[raster]{rasterize} to convert a \link[sp]{SpatialPolygonsDataFrame}
-  into a raster layer, and geo-corrected transition layer
-  \link[gdistance]{transition}.  Raster cell values on land = 0 and
-  water = 1.
+\code{make_transition} uses \link[raster]{rasterize} to convert a
+  \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
+  geo-corrected transition layer \link[gdistance]{transition}.  Raster cell
+  values on land = 0 and water = 1.
 
 output transition layer is corrected for projection
   distortions using \link[gdistance]{geoCorrection}.  Adjacent
