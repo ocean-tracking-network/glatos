@@ -1,10 +1,10 @@
 #' Create transition layer from a spatial polygon
 #'
 #' Create transition layer for \link{interpolate_path} from
-#' \link[sp]{SpatialPolygonsDataFrame}.
+#' \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
 #'
 #' @param poly A spatial polygon object of class
-#' \link[sp]{SpatialPolygonsDataFrame}.
+#' \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
 #'
 #' @param res two element vector that specifies the x and y dimension
 #'   of output raster cells.  Units of res are same as input
@@ -20,11 +20,10 @@
 #'
 #' @param y_lim An optional two-element vector with extents of x axis.
 #'
-#' @details \code{make_transition} uses
-#'   \link[raster]{rasterize} to convert a \link[sp]{SpatialPolygonsDataFrame}
-#'   into a raster layer, and geo-corrected transition layer
-#'   \link[gdistance]{transition}.  Raster cell values on land = 0 and
-#'   water = 1.
+#' @details \code{make_transition} uses \link[raster]{rasterize} to convert a
+#'   \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
+#'   geo-corrected transition layer \link[gdistance]{transition}.  Raster cell
+#'   values on land = 0 and water = 1.
 #'
 #' @details output transition layer is corrected for projection
 #'   distortions using \link[gdistance]{geoCorrection}.  Adjacent

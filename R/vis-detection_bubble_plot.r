@@ -50,7 +50,7 @@
 #'   data by depoyment and receovery dates to exclude deployments that occured 
 #'   outside of the period of interest.
 #'   
-#' @details "col_grad" is used in a call to \link[grDevices]{colorRampPalette},
+#' @details "col_grad" is used in a call to \link[=colorRamp]{colorRampPalette},
 #'   which will accept a vector containing any two colors return by
 #'   \link[grDevices]{colors} as character strings.
 #' 
