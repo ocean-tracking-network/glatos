@@ -86,13 +86,13 @@ make_transition2 <- function(poly, res = c(0.1, 0.1), extent_out = NULL,
     "with exactly two elements.")
 
   if(is.null(x_lim) & is.null(extent_out)){ 
-    extent_out <-extent(poly) 
+    extent_out <- raster::extent(poly) 
     } else if (!is.null(x_lim)) { 
       extent_out <- raster::extent(c(x_lim[1], x_lim[2],
                                       y_lim[1], y_lim[2]))
   }
     
-  burned = raster::rasterize(poly, y = raster(res = res, ext = extent_out), 
+  burned = raster::rasterize(poly, y = raster::raster(res = res, ext = extent_out), 
     field = 1, background = 0)
   
   tran <- function(x) if(x[1] * x[2] == 0){ return(0) } else { return(1) }
