@@ -8,7 +8,7 @@ make_frames(proc_obj, recs = NULL, out_dir = getwd(),
   background_ylim = c(41.3, 49), background_xlim = c(-92.45, -75.87),
   show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
   ani_name = "animation.mp4", frame_delete = FALSE, overwrite = FALSE,
-  ffmpeg = NA, preview = FALSE, ...)
+  ffmpeg = NA, preview = FALSE, bg_map = NULL, ...)
 }
 \arguments{
 \item{proc_obj}{A data frame created by
@@ -60,6 +60,8 @@ subfolder, i.e., "/home/directory/Documents/bin/ffmpeg".}
 
 \item{preview}{write first frame only.  Useful for checking output before
 processing large number of frames.  Default \code{preview = FALSE}}
+
+\item{bg_map}{A spatial points, lines, or polygons object.}
 
 \item{...}{Optional graphing parameters for customizing elments of 
  fish location points, receiver location points, timeline, and 

@@ -55,6 +55,8 @@
 #'
 #' @param preview write first frame only.  Useful for checking output before
 #'   processing large number of frames.  Default \code{preview = FALSE}
+#'   
+#' @param bg_map A spatial points, lines, or polygons object.
 #'
 #' @param ... Optional graphing parameters for customizing elments of 
 #'  fish location points, receiver location points, timeline, and 
@@ -201,7 +203,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         background_xlim = c(-92.45, -75.87),
                         show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
                         ani_name = "animation.mp4", frame_delete = FALSE,
-                        overwrite = FALSE, ffmpeg = NA, preview = FALSE, ...){
+                        overwrite = FALSE, ffmpeg = NA, preview = FALSE, bg_map = NULL, ...){
   
   # Try calling ffmpeg if animate = TRUE.
   # If animate = FALSE, video file is not produced- no need to check for package.
@@ -354,8 +356,17 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   # order data for plotting
   data.table::setkey(work_proc_obj, bin_timestamp, animal_id,  record_type)
 
-  # Load Great lakes background
-  background <- greatLakesPoly #example in glatos package
+  # Load background (use example Great Lakes if null)
+  if(is.null(bg_map)){
+    background <- greatLakesPoly #example in glatos package
+  } else { 
+    background <- bg_map 
+    #if not equal to default or NULL, then set to extent of bg_map
+    if(is.null(background_ylim) | all(background_ylim == c(41.3, 49.0))) background_ylim <- 
+                                              as.numeric(bbox(bg_map)[ "y", ])
+    if(is.null(background_xlim) | all(background_xlim == c(-92.45, -75.87))) background_xlim <- 
+        as.numeric(bbox(bg_map)[ "x", ])
+  }
 
   # turn off interpolated points if show_interpolated = FALSE
   if(!show_interpolated){
@@ -376,7 +387,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                                     c(background_xlim[2],background_ylim[1]))
     linear_y = geosphere::distMeeus(c(background_xlim[1],background_ylim[1]),
                                     c(background_xlim[1],background_ylim[2]))
-
+    
     # aspect ratio of image
     figRatio <- linear_y/linear_x
 
