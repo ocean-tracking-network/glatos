@@ -8,7 +8,8 @@
 ##' @param pattern character, pattern for matching image file names.
 ##'   See details.
 ##' @param output character, output file name.  See details.
-##' @param output_dir output directory, default is working directory.
+##' @param output_dir output directory, default is working directory, but will be 
+##'   created if it does not exist.
 ##' @param fps_in integer, intended framerate of input image sequence
 ##'   in frames per second.
 ##' @param start_frame integer, start frame. Defaults to
@@ -201,8 +202,14 @@ make_video  <- function(dir = getwd(),
                   ' animate argument to FALSE.'),
            call. = FALSE)
 
+  #check if dir exists
+  if(!dir.exists(dir)) stop(paste0("Input dir '", dir , "' not found."), .call = FALSE)
+    
+  #make output directory if it does not already exist
+  if(!dir.exists(output_dir)) dir.create(output_dir)  
+    
   input <- file.path(dir, pattern)
-  input <- paste("-i", input)
+  input <- paste0("-i ", "\"", input, "\"" )
   inrate <- paste("-framerate", fps_in)
   start <- paste("-start_number", start_frame)
   input <- paste0(paste(inrate, start, input), collapse = " ")
@@ -215,6 +222,7 @@ make_video  <- function(dir = getwd(),
     if (!ext %in% c("mp4", "mov", "mkv", "gif", "wmv", "mpeg"))
         stop(ext_stop)
   output <- file.path(output_dir, output)
+  output <- paste0("\"", output, "\"")
 
 if (!is.null(end_frame)){
     nframes <- end_frame - start_frame

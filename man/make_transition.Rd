@@ -60,7 +60,7 @@ poly <- unzip(poly, exdir = tempdir())
 tst <- make_transition(poly[grepl("*.shp", poly)], res = c(0.1, 0.1))
 
 # plot raster layer
-# notice land = 1, water = 0
+# notice land = 0, water = 1
 raster::plot(tst$rast)
 
 # plot transition layer

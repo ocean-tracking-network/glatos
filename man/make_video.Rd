@@ -19,7 +19,8 @@ See details.}
 
 \item{output}{character, output file name.  See details.}
 
-\item{output_dir}{output directory, default is working directory.}
+\item{output_dir}{output directory, default is working directory, but will be 
+created if it does not exist.}
 
 \item{fps_in}{integer, intended framerate of input image sequence
 in frames per second.}
