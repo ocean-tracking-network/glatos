@@ -5,7 +5,7 @@
 
 - make_video()
     - added support for input and output directories containing spaces (issue #38)
-		- check in input directory exists and error/message if notation
+		- check if input directory exists and error/message if not
 		- create output directory if it does not exist
 
 
