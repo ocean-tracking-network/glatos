@@ -4,16 +4,18 @@
 \alias{make_transition}
 \title{Create transition layer from polygon shapefile}
 \usage{
-make_transition(in_file, output = "out.tif", output_dir = getwd(),
+make_transition(in_file, output = "out.tif", output_dir = NULL,
   res = c(0.1, 0.1))
 }
 \arguments{
-\item{in_file}{character, file path to polygon shapefile (with
-extension of *.shp)}
+\item{in_file}{A SpatialPolygonsDataFrame object or a character string with file path to 
+polygon shapefile (with extension of *.shp).}
 
 \item{output}{character, name of output file with .tif extension}
 
-\item{output_dir}{character, directory where output file will be written}
+\item{output_dir}{character, directory where output file will be written. If NULL (default), 
+then files will be written to temporary directory that will be deleted after R session 
+is closed (see \link[=tempfile]{tempdir}).}
 
 \item{res}{two element vector that specifies the x and y dimension
 of output raster cells.  Units of res are same as input
@@ -44,6 +46,11 @@ Create transition layer for \link{interpolate_path} from polygon shapefile.
   computer.  To determine if gdal is installed on your computer,
   see \link[gdalUtils]{gdal_rasterize}.
 
+Returned objects will be projected in longlat WGS84 
+  (i.e., CRS("+init=epsg:4326"). If the input object is not in 
+  longlat WGS84 then transformation will be attempted and a 
+  warning will tell the user this was done.
+
 output transition layer is corrected for projection
   distortions using \code{gdistance::geoCorrection}.  Adjacent
   cells are connected by 16 directions and transition function
@@ -52,6 +59,29 @@ output transition layer is corrected for projection
 }
 \examples{
 \dontrun{
+#Example 1 - read from SpatialPolygonsDataFrame
+# use example polygon for Great lakes
+
+library(sp) #for loading greatLakesPoly
+library(raster) # for plotting rasters
+
+#get polygon of the Great Lakes
+data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+
+# make_transition layer
+tst <- make_transition(greatLakesPoly, res = c(0.1, 0.1))
+
+# plot raster layer
+# notice land = 1, water = 0
+plot(tst$rast)
+
+#compare to polygon
+plot(greatLakesPoly, add = TRUE)
+
+# increase resolution and repeat if needed
+
+#------------------------------------------
+#Example 2 - read from ESRI Shapefile
 # path to polygon shapefile
 poly <- system.file("extdata", "shoreline.zip", package = "glatos")
 poly <- unzip(poly, exdir = tempdir())

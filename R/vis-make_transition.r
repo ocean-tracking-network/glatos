@@ -2,12 +2,14 @@
 ##'
 ##' Create transition layer for \link{interpolate_path} from polygon shapefile.
 ##' 
-##' @param in_file character, file path to polygon shapefile (with
-##'   extension of *.shp)
+##' @param in_file A SpatialPolygonsDataFrame object or a character string with file path to 
+##'   polygon shapefile (with extension of *.shp).
 ##'
 ##' @param output character, name of output file with .tif extension
 ##'
-##' @param output_dir character, directory where output file will be written
+##' @param output_dir character, directory where output file will be written. If NULL (default), 
+##'   then files will be written to temporary directory that will be deleted after R session 
+##'   is closed (see \link[=tempfile]{tempdir}).
 ##' 
 ##' @param res two element vector that specifies the x and y dimension
 ##'   of output raster cells.  Units of res are same as input
@@ -23,6 +25,11 @@
 ##'   input shapefile.  Function requires that gdal is working on
 ##'   computer.  To determine if gdal is installed on your computer,
 ##'   see \link[gdalUtils]{gdal_rasterize}.
+##'   
+##' @details Returned objects will be projected in longlat WGS84 
+##'   (i.e., CRS("+init=epsg:4326"). If the input object is not in 
+##'   longlat WGS84 then transformation will be attempted and a 
+##'   warning will tell the user this was done.   
 ##'
 ##' @details output transition layer is corrected for projection
 ##'   distortions using \code{gdistance::geoCorrection}.  Adjacent
@@ -44,6 +51,29 @@
 ##'
 ##' @examples
 ##' \dontrun{
+##' #Example 1 - read from SpatialPolygonsDataFrame
+##' # use example polygon for Great lakes
+##' 
+##' library(sp) #for loading greatLakesPoly
+##' library(raster) # for plotting rasters
+##' 
+##' #get polygon of the Great Lakes
+##' data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+##' 
+##' # make_transition layer
+##' tst <- make_transition(greatLakesPoly, res = c(0.1, 0.1))
+##' 
+##' # plot raster layer
+##' # notice land = 1, water = 0
+##' plot(tst$rast)
+##' 
+##' #compare to polygon
+##' plot(greatLakesPoly, add = TRUE)
+##'
+##' # increase resolution and repeat if needed
+##' 
+##' #------------------------------------------
+##' #Example 2 - read from ESRI Shapefile
 ##' # path to polygon shapefile
 ##' poly <- system.file("extdata", "shoreline.zip", package = "glatos")
 ##' poly <- unzip(poly, exdir = tempdir())
@@ -72,8 +102,73 @@
 
 
 make_transition <- function(in_file, output = "out.tif",
-                            output_dir = getwd(), res = c(0.1, 0.1)){
-  burned <- gdalUtils::gdal_rasterize(path.expand(in_file),
+                            output_dir = NULL, res = c(0.1, 0.1)){
+  
+  #Check if in_file is file, directory, or SpatialPolygonsDataFrame
+  if(inherits(in_file, "character")) { 
+
+    #check if in_file exists
+    if(!file.exists(in_file)) stop(paste0("Input file or folder '", in_file, "' not found."))
+        
+    #check if file or directory and set layer name accordingly
+    if(grepl("\\.shp$", in_file)){
+      
+      in_dir <- dirname(in_file)
+      
+      if(!file.exists(in_dir)) stop(paste0("'in_file' directory '", in_dir, "' not found."))
+      
+      #get layer name from file name
+      in_layer <- basename(tools::file_path_sans_ext(basename(in_file)))
+      
+    } else { 
+     
+      in_dir <- in_file
+      
+      #use layer name as file name
+      in_layer <- rgdal::ogrListLayers(in_dir)[1]      
+       
+    }
+    
+    #read shape file
+    in_shp <- rgdal::readOGR(in_dir, layer = in_layer, verbose = FALSE) 
+  
+    #check if SpatialPolygonsDataFrame
+    if (!inherits(in_shp, "SpatialPolygonsDataFrame")) stop(paste0("Input can only contain ",
+            "polygon data."))
+    
+  } else if (inherits(in_file, "SpatialPolygonsDataFrame")) {
+    
+    in_shp <- in_file 
+    
+    #use incoming object name as layer
+    in_layer <- deparse(substitute(in_file))
+    
+  } else {
+    
+    stop(paste0("'in_file' must be either an object of class 'SpatialPolygonsDataFrame' or\n", 
+                " path to an ESRI Shapefile."))
+  
+  }
+  
+  
+  #check projection and change if needed
+  default_proj <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+  if(sp::proj4string(in_shp) != default_proj) {
+    warning(paste0("Projection of input was not longlat WGS84, so conversion was attempted."),
+            call. = FALSE)
+    in_shp <- sp::spTransform(in_shp, sp::CRS(default_proj))
+  }
+  
+  #write to temp dir and call gdal_rasterize
+  temp_dir <- path.expand(file.path(tempdir(), in_layer))
+  rgdal::writeOGR(in_shp, dsn = temp_dir, 
+                  layer = in_layer,
+                  driver = "ESRI Shapefile", 
+                  overwrite_layer = TRUE)
+
+  if(is.null(output_dir)) output_dir <- temp_dir
+  
+  burned <- gdalUtils::gdal_rasterize(temp_dir,
                                       dst_filename = path.expand(file.path(output_dir, output)),
                                       burn = 1,
                                       tr = res,
