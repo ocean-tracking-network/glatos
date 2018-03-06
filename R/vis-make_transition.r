@@ -17,7 +17,7 @@
 ##' 
 ##' @details \code{make_transition} uses
 ##'   \link[gdalUtils]{gdal_rasterize} to convert a polygon shapefile
-##'   into a raster layer, and geo-corrected transition layer
+##'   into a raster layer and geo-corrected transition layer
 ##'   \link{interpolate_path}.  Raster cell values on land = 0 and
 ##'   water = 1. Function also writes a geotiff file (*.tif) of the
 ##'   input shapefile to the ouput directory. Both raster layer and
@@ -26,10 +26,11 @@
 ##'   computer.  To determine if gdal is installed on your computer,
 ##'   see \link[gdalUtils]{gdal_rasterize}.
 ##'   
-##' @details Returned objects will be projected in longlat WGS84 
-##'   (i.e., CRS("+init=epsg:4326"). If the input object is not in 
-##'   longlat WGS84 then transformation will be attempted and a 
-##'   warning will tell the user this was done.   
+##' @details Returned objects will be projected in longlat WGS84
+##'   (i.e., CRS("+init=epsg:4326"). If the input object is not in
+##'   longlat WGS84 then transformation will be attempted and a
+##'   warning will tell the user this was done.  Input shapefile must
+##'   include an optional *.prj file that specifies the geographic projection.
 ##'
 ##' @details output transition layer is corrected for projection
 ##'   distortions using \code{gdistance::geoCorrection}.  Adjacent

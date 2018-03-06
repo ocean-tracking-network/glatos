@@ -3,6 +3,7 @@
 export(abacus_plot)
 export(adjust_playback_time)
 export(calc_collision_prob)
+export(check_dependencies)
 export(crw)
 export(crw_in_polygon)
 export(detect_transmissions)
