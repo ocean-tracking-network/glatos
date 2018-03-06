@@ -1,3 +1,15 @@
+# glatos 0.2.4
+
+    
+### Minor changes and bug fixes
+
+- make_video()
+    - added support for input and output directories containing spaces (issue #38)
+		- check if input directory exists and error/message if not
+		- create output directory if it does not exist
+
+
+----------------------------------------------------
 # glatos 0.2.3 
 
     
