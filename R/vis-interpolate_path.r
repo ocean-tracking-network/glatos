@@ -161,7 +161,7 @@
 #' # call with "transition matrix" (non-linear interpolation), other options
 #' # note that it is quite a bit slower due than linear interpolation
 #' pos2 <- interpolate_path(det, trans = tran1$transition)
-#' interpolate_path(det, trans = as.matrix(1:10))
+#'
 #' plot(maumee, col = "grey")
 #' points(latitude ~ longitude, data = pos2, pch=20, col='red', cex=0.5)
 #' 

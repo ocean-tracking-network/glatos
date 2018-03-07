@@ -148,13 +148,13 @@ points(deploy_lat ~ deploy_long, data = det, pch = 20, col = "red",
 # Note: using make_transition2 here for simplicity, but 
 #       make_transition is generally preferred for real application  
 #       if your system can run it see ?make_transition
-tran <- make_transition2(maumee, res = c(0.1, 0.1))
+tran <- make_transition(maumee, res = c(0.1, 0.1))
 
 plot(tran$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
 plot(maumee, add = TRUE)
 
 # not high enough resolution- bump up resolution
-tran1 <- make_transition2(maumee, res = c(0.001, 0.001))
+tran1 <- make_transition(maumee, res = c(0.001, 0.001))
 
 # plot to check resolution- much better
 plot(tran1$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
