@@ -140,13 +140,13 @@
 #' # Note: using make_transition2 here for simplicity, but 
 #' #       make_transition is generally preferred for real application  
 #' #       if your system can run it see ?make_transition
-#' tran <- make_transition2(maumee, res = c(0.1, 0.1))
+#' tran <- make_transition(maumee, res = c(0.1, 0.1))
 #' 
 #' plot(tran$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
 #' plot(maumee, add = TRUE)
 #' 
 #' # not high enough resolution- bump up resolution
-#' tran1 <- make_transition2(maumee, res = c(0.001, 0.001))
+#' tran1 <- make_transition(maumee, res = c(0.001, 0.001))
 #' 
 #' # plot to check resolution- much better
 #' plot(tran1$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
@@ -161,7 +161,7 @@
 #' # call with "transition matrix" (non-linear interpolation), other options
 #' # note that it is quite a bit slower due than linear interpolation
 #' pos2 <- interpolate_path(det, trans = tran1$transition)
-#' 
+#' interpolate_path(det, trans = as.matrix(1:10))
 #' plot(maumee, col = "grey")
 #' points(latitude ~ longitude, data = pos2, pch=20, col='red', cex=0.5)
 #' 
@@ -171,7 +171,13 @@
 
 interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
                              lnl_thresh = 0.9){
-  
+
+  # check to see that trans is a transition Layer or transition stack.
+  if(!is.null(trans) & inherits(trans, c("TransitionLayer", "TransitionStack")) == FALSE){
+    stop("Supplied object for trans argument is not class TransitionLayer or TransitionStack",
+         call. = FALSE)
+  }
+ 
   # make copy of detections for function
   dtc <- data.table::as.data.table(det)
 
