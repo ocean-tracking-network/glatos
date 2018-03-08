@@ -110,6 +110,7 @@ make_transition <- function(in_file, output = "out.tif",
   valid_install <- !is.null(getOption("gdalUtils_gdalPath"))
   if(!valid_install){
     stop("No GDAL installation found. Please install 'gdal' before continuing:\n\t- see: www.gdal.org\n\t- https://trac.osgeo.org/osgeo4w/ (windows)\n")
+    }
 
   #Check if in_file is file, directory, or SpatialPolygonsDataFrame
   if(inherits(in_file, "character")) { 
