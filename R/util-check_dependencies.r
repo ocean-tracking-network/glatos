@@ -68,11 +68,11 @@ check_dependencies <- function(){
   message("checking for ffmpeg...")
 
   # check for FFmpeg
-  ffmpeg <-  !is.null(Sys.which("ffmpeg"))
-  if(ffmpeg){
+  ffmpeg <-  Sys.which("ffmpeg")
+  if(ffmpeg != ""){
     message("ok... FFmpeg installed and on system PATH")
   } else {
-    message("FFmpeg not installed or ffmpeg may be installed but not\n
+    message("FFmpeg not installed. ffmpeg may be on your computer but not\n
             added to your system PATH")
   }
 }
