@@ -35,7 +35,12 @@ Installation of the GDAL library and a number of other
   windows is accomplished by downloading the network installer for
   your appropriate windows computer (32 or 64 bit) at
   \url{https://trac.osgeo.org/osgeo4w/}. Installation of the GDAL
-  library on Mac is possible using Homebrew (good luck).
+  library on Mac is possible using Homebrew or KyngChaos 3rd party
+  repositories.  Alternatively, the GDAL library is incorporated
+  in QGIS (open source desktop GIS) software and may be obtained
+  by installing QGIS.  Standalone installers for QGIS are
+  available (Windows, Mac, and Linux) at
+  \url{https://qgis.org/en/site/forusers/download.html}.
 
 Installation of the ffmpeg library on windows is
   accomplished by downloading the recent 'static' build from
