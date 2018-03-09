@@ -59,6 +59,7 @@
 ##' @export
 ##'
 
+
 adjust_playback_time <- function(scale_factor = 1,
                                  input, output_dir = getwd(),
                                  output = "new.mp4",
@@ -78,8 +79,10 @@ adjust_playback_time <- function(scale_factor = 1,
                   '(e.g., Windows Movie Maker or iMovie) by setting the animate\n',
                   'argument to FALSE.'),
            call. = FALSE)
-  ffcall <- sprintf('-i %s -filter:v "setpts=%f*PTS" %s/%s %s', input,
-                    scale_factor, output_dir, output, (ifelse(overwrite, "-y", "-n")))
+  input <- shQuote(input)
+  out <- shQuote(file.path(output_dir, output))
+  ffcall <- sprintf('-i %s -filter:v "setpts=%f*PTS" %s %s', input,
+                    scale_factor, out, (ifelse(overwrite, "-y", "-n")))
   system2(cmd, ffcall, stdout = FALSE)
 
 }
