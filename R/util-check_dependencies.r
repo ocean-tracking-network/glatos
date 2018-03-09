@@ -76,6 +76,6 @@ check_dependencies <- function(){
             if(ffmpeg != ""){
               message("ok... FFmpeg installed and on system PATH")
             } else {
-              message("FFmpeg not found")
+              message("FFmpeg not found- please install before continuing")
             }
 }
