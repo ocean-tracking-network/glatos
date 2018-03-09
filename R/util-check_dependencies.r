@@ -24,7 +24,12 @@
 ##'   windows is accomplished by downloading the network installer for
 ##'   your appropriate windows computer (32 or 64 bit) at
 ##'   \url{https://trac.osgeo.org/osgeo4w/}. Installation of the GDAL
-##'   library on Mac is possible using Homebrew (good luck).
+##'   library on Mac is possible using Homebrew or KyngChaos 3rd party
+##'   repositories.  Alternatively, the GDAL library is incorporated
+##'   in QGIS (open source desktop GIS) software and may be obtained
+##'   by installing QGIS.  Standalone installers for QGIS are
+##'   available (Windows, Mac, and Linux) at
+##'   \url{https://qgis.org/en/site/forusers/download.html}.
 ##'
 ##' @details Installation of the ffmpeg library on windows is
 ##'   accomplished by downloading the recent 'static' build from
@@ -56,23 +61,22 @@
 check_dependencies <- function(){
   # check for gdal
   message("checking for gdal...")
-  gdalUtils::gdal_setInstallation()
+  suppressWarnings(gdalUtils::gdal_setInstallation())
   valid_install <- !is.null(getOption("gdalUtils_gdalPath"))
   if(valid_install){
     message(sprintf("ok... gdal version %s installed",
                     getOption("gdalUtils_gdalPath")[[1]]$version))
   } else {
-    message("gdal not found")}
-  
-  # check for ffmpeg installation
-  message("checking for ffmpeg...")
-
-  # check for FFmpeg
-  ffmpeg <-  Sys.which("ffmpeg")
-  if(ffmpeg != ""){
-    message("ok... FFmpeg installed and on system PATH")
-  } else {
-    message("FFmpeg not installed. ffmpeg may be on your computer but not\n\t
-            added to your system PATH\n")
+    message("gdal not found- please install before continuing:\n\t- www.gdal.org\n\t- www.trac.osgeo.org/osgeo4w/\nor install QGIS (gis software):\n\t- https://qgis.org/en/site/forusers/download.html")
   }
+    # check for ffmpeg installation
+            message("checking for ffmpeg...") 
+            # check for FFmpeg
+            ffmpeg <-  Sys.which("ffmpeg")
+            if(ffmpeg != ""){
+              message("ok... FFmpeg installed and on system PATH")
+            } else {
+              message("FFmpeg not installed. ffmpeg may be on your computer but not\n\t
+            added to your system PATH\n")
+            }
 }
