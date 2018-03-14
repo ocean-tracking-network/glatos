@@ -21,8 +21,8 @@ adjust_playback_time(scale_factor = 0.1, input = temp_file,
 
 # call from input path and name containing spaces and parentheses
 temp_dir_3 <- file.path(temp_dir, "path with ( spaces)")
-dir.create(temp_dir_2)
-temp_file_3 <- tempfile(pattern = "fname with ( special)", tmpdir = temp_dir_2, 
+dir.create(temp_dir_3)
+temp_file_3 <- tempfile(pattern = "fname with ( special)", tmpdir = temp_dir_3, 
                        fileext = ".mp4")
 adjust_playback_time(scale_factor = 0.1, input = temp_file, 
   output_dir = temp_dir_3, output = basename(temp_file_3))

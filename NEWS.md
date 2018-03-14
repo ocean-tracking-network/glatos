@@ -10,7 +10,8 @@
     - trigger error when 'trans' is not a transition object (issue #42)
 - make_frames()
     - fixed "cannot allocate vector" error when optional plot arg is vector (issue #47)
-
+- make_transition()
+    - allow polygon to be input as SpatialPolygonsDataFrame (issue #37)
 
 ----------------------------------------------------  
 
