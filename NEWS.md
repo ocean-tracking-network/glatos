@@ -1,3 +1,13 @@
+# glatos 0.2.5
+
+    
+### Minor changes and bug fixes
+
+- make_frames()
+    - fixed "cannot allocate vector" error when optional plot arg vector (issue #47)
+
+
+----------------------------------------------------
 # glatos 0.2.4
 
     
