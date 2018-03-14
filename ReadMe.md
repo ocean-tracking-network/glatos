@@ -6,7 +6,7 @@ glatos is an R package with functions useful to members of the Great Lakes Acous
 
 ### Package status
 
-*This package is in early development and its contents are evolving.* The current version (v0.2.x); released Feb 2018) is **not** compatible with the previous version (v0.1.3). To access the package or contribute code, join the project at (<https://gitlab.oceantrack.org/GreatLakes/glatos>). If you encounter problems or have questions or suggestions, please post a new issue or email <cholbrook@usgs.gov> (maintainer: Chris Holbrook).
+*This package is in early development and its contents are evolving.* The current version (v0.2.x); released Feb 2018) is **not** compatible with the previous version (v0.1.3). See [NEWS](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/NEWS.md) for recent changes. To access the package or contribute code, join the project at (<https://gitlab.oceantrack.org/GreatLakes/glatos>). If you encounter problems or have questions or suggestions, please post a new issue or email <cholbrook@usgs.gov> (maintainer: Chris Holbrook).
 
 ### Installation
 
