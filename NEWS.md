@@ -1,8 +1,9 @@
-# glatos 0.2.5
+# glatos 0.2.5 (2018-03-14)
 
     
 ### Minor changes and bug fixes
-
+- adjust_playback_time()
+    - allow spaces in file names and paths (issue #45)
 - make_frames()
     - fixed "cannot allocate vector" error when optional plot arg vector (issue #47)
 
