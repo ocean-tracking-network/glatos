@@ -64,5 +64,5 @@ Installation of ffmpeg on Mac is similar to
 check_dependencies() 
 }
 \author{
-Todd Hayden, Tom Binder, Chris Holbrook
+Todd Hayden
 }
