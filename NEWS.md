@@ -6,6 +6,8 @@
 ### Minor changes and bug fixes
 - adjust_playback_time()
     - allow spaces in file names and paths (issue #45)
+- interpolate_path()
+    - trigger error when 'trans' is not a transition object (issue #42)
 - make_frames()
     - fixed "cannot allocate vector" error when optional plot arg is vector (issue #47)
 
