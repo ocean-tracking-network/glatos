@@ -173,8 +173,10 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
                              lnl_thresh = 0.9){
 
   # check to see that trans is a transition Layer or transition stack.
-  if(!is.null(trans) & inherits(trans, c("TransitionLayer", "TransitionStack")) == FALSE){
-    stop("Supplied object for trans argument is not class TransitionLayer or TransitionStack",
+  if(!is.null(trans) & 
+     inherits(trans, c("TransitionLayer", "TransitionStack")) == FALSE){
+    stop(paste0("Supplied object for 'trans' argument is not class ", 
+         "TransitionLayer or TransitionStack."),
          call. = FALSE)
   }
  
@@ -211,7 +213,8 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
   dtc[, bin := t_seq[findInterval(detection_timestamp_utc, t_seq)] ]
 
   # make all combinations of animals and detection bins
-  dtc <- merge(data.table::CJ(bin = t_seq, animal_id = unique(dtc$animal_id)), dtc,
+  dtc <- merge(data.table::CJ(bin = t_seq, animal_id = unique(dtc$animal_id)), 
+               dtc,
                by = c("bin", "animal_id"), all.x = TRUE)
   data.table::setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
@@ -336,7 +339,8 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
       ln[, i_lon := {tmp = .SD[c(1, .N),
                                c("detection_timestamp_utc", "deploy_long")];
                                approx(c(tmp$detection_timestamp_utc),
-                                      c(tmp$deploy_long), xout = c(bin_stamp))$y},
+                                      c(tmp$deploy_long), 
+                                      xout = c(bin_stamp))$y},
          by = i.start]
       ln[is.na(deploy_long), record_type := "interpolated"]
     }
@@ -358,7 +362,7 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
                                allow.cartesian = TRUE])
 
     message("starting non-linear interpolation")
-    # calculate non-linear interpolation for all unique movements in lookup table
+    # calculate non-linear interpolation for all unique movements in lookup
     lookup[, coord := {sp::coordinates(
       gdistance::shortestPath(trans, as.matrix(
       .SD[1, c("deploy_long", "deploy_lat")]), as.matrix(
@@ -432,8 +436,10 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
   out <- rbind(ln[record_type == "interpolated",
                   c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")],
                nln[record_type == "interpolated",
-                   c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")],
-               det[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")])
+                   c("animal_id", "bin_stamp", "i_lat", "i_lon", 
+                     "record_type")],
+               det[, c("animal_id", "bin_stamp", "i_lat", "i_lon", 
+                       "record_type")])
 
   out[, !c("animal_id")]
   data.table::setkey(out, animal_id, bin_stamp)

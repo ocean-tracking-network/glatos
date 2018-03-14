@@ -1,15 +1,20 @@
-# glatos 0.2.5 (2018-03-14)
+# glatos 0.2.5 
+
+#### 2018-03-14
 
     
 ### Minor changes and bug fixes
 - adjust_playback_time()
     - allow spaces in file names and paths (issue #45)
 - make_frames()
-    - fixed "cannot allocate vector" error when optional plot arg vector (issue #47)
+    - fixed "cannot allocate vector" error when optional plot arg is vector (issue #47)
 
 
-----------------------------------------------------
-# glatos 0.2.4
+----------------------------------------------------  
+
+# glatos 0.2.4 
+
+#### 2018-03-06
 
     
 ### Minor changes and bug fixes
@@ -20,8 +25,11 @@
 		- create output directory if it does not exist
 
 
-----------------------------------------------------
-# glatos 0.2.3 
+----------------------------------------------------  
+
+# glatos 0.2.3  
+
+#### 2018-02-25
 
     
 ### Major changes
@@ -50,8 +58,11 @@ with previous.
     - make_transition
 
 
-----------------------------------------------------
+----------------------------------------------------  
+
 # glatos 0.1.3 
 
-###- initial release on OTN gitlab - 2017-03-01
+#### 2017-03-01
+
+### - initial release on OTN gitlab
 
