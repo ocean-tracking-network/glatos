@@ -2,6 +2,8 @@
 
 #### 2018-03-14
 
+### New features
+- added check_dependencies() for checking if gdal and ffmpeg can be called (issue #40)
     
 ### Minor changes and bug fixes
 - adjust_playback_time()

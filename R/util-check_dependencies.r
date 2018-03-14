@@ -49,7 +49,7 @@
 ##' 
 ##' @return results of checks to your terminal
 ##' 
-##' @author Todd Hayden, Tom Binder, Chris Holbrook
+##' @author Todd Hayden
 ##'
 ##' @examples
 ##'
@@ -59,23 +59,34 @@
 
 
 check_dependencies <- function(){
+  
   # check for gdal
-  message("checking for gdal...")
+  message("Checking for gdal...")
   suppressWarnings(gdalUtils::gdal_setInstallation())
   valid_install <- !is.null(getOption("gdalUtils_gdalPath"))
   if(valid_install){
-    message(sprintf("ok... gdal version %s installed",
+    message(sprintf("OK... gdal version %s is installed",
                     getOption("gdalUtils_gdalPath")[[1]]$version))
   } else {
-    message("gdal not found- please install before continuing:\n\t- www.gdal.org\n\t- www.trac.osgeo.org/osgeo4w/\nor install QGIS (gis software):\n\t- https://qgis.org/en/site/forusers/download.html")
+    message(paste0("gdal not found.\n",
+                   "To install gdal, see:\n",
+                   "\t- http://www.gdal.org\n",
+                   "\t- https://trac.osgeo.org/osgeo4w\n",
+                   "\t- https://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries\n",
+                   "or to install QGIS (gis software), see:\n",
+                   "\t- https://qgis.org/en/site/forusers/download.html"))
   }
-    # check for ffmpeg installation
-            message("checking for ffmpeg...") 
-            # check for FFmpeg
-            ffmpeg <-  Sys.which("ffmpeg")
-            if(ffmpeg != ""){
-              message("ok... FFmpeg installed and on system PATH")
-            } else {
-              message("FFmpeg not found- please install before continuing")
-            }
+  
+  # check for ffmpeg installation
+  message("Checking for ffmpeg...") 
+  # check for FFmpeg
+  ffmpeg <-  Sys.which("ffmpeg")
+  if(ffmpeg != ""){
+    message("OK... FFmpeg is installed and on system PATH.")
+  } else {
+    message(paste0("FFmpeg not found.\n",
+                   "To install and set system PATH variable, see:\n",
+                   "\t- https://www.ffmpeg.org\n",
+                   "\t- ?check_dependencies"))
+  }
 }
