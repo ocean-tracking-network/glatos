@@ -1,4 +1,25 @@
-# glatos 0.2.4
+# glatos 0.2.5 
+
+#### 2018-03-14
+
+### New features
+- added check_dependencies() for checking if gdal and ffmpeg can be called (issue #40)
+    
+### Minor changes and bug fixes
+- adjust_playback_time()
+    - allow spaces in file names and paths (issue #45)
+- interpolate_path()
+    - trigger error when 'trans' is not a transition object (issue #42)
+- make_frames()
+    - fixed "cannot allocate vector" error when optional plot arg is vector (issue #47)
+- make_transition()
+    - allow polygon to be input as SpatialPolygonsDataFrame (issue #37)
+
+----------------------------------------------------  
+
+# glatos 0.2.4 
+
+#### 2018-03-06
 
     
 ### Minor changes and bug fixes
@@ -9,8 +30,11 @@
 		- create output directory if it does not exist
 
 
-----------------------------------------------------
-# glatos 0.2.3 
+----------------------------------------------------  
+
+# glatos 0.2.3  
+
+#### 2018-02-25
 
     
 ### Major changes
@@ -39,8 +63,11 @@ with previous.
     - make_transition
 
 
-----------------------------------------------------
+----------------------------------------------------  
+
 # glatos 0.1.3 
 
-###- initial release on OTN gitlab - 2017-03-01
+#### 2017-03-01
+
+### - initial release on OTN gitlab
 

@@ -291,7 +291,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
 
   #expand single dtc_args elements to equal number of rows in work_proc_obj
   for(i in 1:length(dtc_args)) {
-    if(length(dtc_args[[i]] == 1)) {
+    if(length(dtc_args[[i]]) == 1) {
       dtc_args[[i]] <- rep(dtc_args[[i]], nrow(work_proc_obj))
     } else if (length(dtc_args[[i]]) != nrow(work_proc_obj)) {
       stop(paste0("Length of optional plot parameters pass via '...' ",
@@ -300,9 +300,9 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   }    
   
   #coerce to data.table and add original row index (for join to recs)
-  rcv_args <- as.data.table(rcv_args)
+  rcv_args <- data.table::as.data.table(rcv_args)
   rcv_args[ , row_in := 1:.N]
-  dtc_args <- as.data.table(dtc_args)
+  dtc_args <- data.table::as.data.table(dtc_args)
   dtc_args[ , row_in := 1:.N]
   
 

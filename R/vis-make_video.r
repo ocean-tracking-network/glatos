@@ -39,21 +39,21 @@
 ##'   On Mac, path must point to 'ffmpeg' within the 'bin' subfolder
 ##'   "/home/directory/Documents/bin/ffmpeg".
 ##' 
-##' @details \code{animate_video} is based on \code{mapmate::ffmpeg}.
+##' @details \code{make_video} is based on \code{mapmate::ffmpeg}.
 ##'   More information about \code{mapmate} package is found at
 ##'   \code{https://github.com/leonawicz/mapmate}.  This function
 ##'   converts R syntax into command line call that is submitted to
 ##'   \code{ffmpeg}.  \code{ffmpeg} must be installed and able to be
 ##'   accessed by the system command line prior to running
-##'   \code{animate_video}.  See \code{https://www.ffmpeg.org} for
+##'   \code{make_video}.  See \code{https://www.ffmpeg.org} for
 ##'   information on installing ffmpeg.
 ##'
 ##' @details The FFmpeg multimedia framework provides extensive
 ##'   flexibility and options for converting and manipulating video
-##'   and audio content.  \code{animate_video} provides a small subset
+##'   and audio content.  \code{make_video} provides a small subset
 ##'   of options useful for creating simple animated videos.  If
 ##'   additional flexibility or options are needed, the user may need
-##'   to develop or modify \code{animate_video} or submit calls
+##'   to develop or modify \code{make_video} or submit calls
 ##'   directly to FFmpeg using the system command line.
 ##'
 ##' @details Sequenced image files are input into FFmpeg using a file name
@@ -72,7 +72,7 @@
 ##' @details Function can create .mp4, .mov, .mkv, .gif, .wmv, or
 ##'   .mpeg animations.  Format of created animation is determined by
 ##'   file extension of \code{output}.
-##' @details \code{animate_video} allows
+##' @details \code{make_video} allows
 ##'   user to specify input framerate \code{fps_in} of image sequence
 ##'   and output \code{fps_out} framerate of animation.
 ##'
