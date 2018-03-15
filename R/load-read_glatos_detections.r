@@ -41,8 +41,18 @@
 #' det <- read_glatos_detections(det_file)
 #'
 #' @export
-read_glatos_detections <- function(det_file, version = NULL) {
 
+
+det_file <- "~/Documents/HECWL_analysis/HEC_move/HECWL_20180109/HECWL_detectionsWithLocs_20180109_144601.csv"
+det_version = NULL
+data.table = FALSE
+
+
+foo <- read_glatos_detections("~/Documents/HECWL_analysis/HEC_move/HECWL_20180109/HECWL_detectionsWithLocs_20180109_144601.csv", det_version = NULL, data.table = TRUE, select = c(1,3,5,9))
+
+read_glatos_detections <- function(det_file, det_version = NULL, data.table = FALSE, ...) {
+
+ 
   #Read detection file-------------------------------------------------------
   
   #see version-specific file specifications
@@ -59,24 +69,27 @@ read_glatos_detections <- function(det_file, version = NULL) {
     }
   }
   
-  if(is.null(version)) {
-    version <- id_det_version(det_file)
-  } else if (!(paste0("v",version) %in% 
+  if(is.null(det_version)) {
+    det_version <- id_det_version(det_file)
+  } else if (!(paste0("v", det_version) %in% 
       names(glatos:::glatos_detection_schema))) {
-    stop(paste0("Detection file version ",version," is not supported."))
+    stop(paste0("Detection file version ", det_version," is not supported."))
   }
- 
-  #-Detections v1.3----------------------------------------------------------------  
-  if (version == "1.3") {
+
+ #-Detections v1.3----------------------------------------------------------------  
+  if (det_version == "1.3") {
 
     col_classes <- glatos:::glatos_detection_schema[["v1.3"]]$type
     timestamp_cols <- which(col_classes == "POSIXct")
     date_cols <- which(col_classes == "Date")
     col_classes[c(timestamp_cols, date_cols)] <- "character"
-    
+
+    # fix of bug in data.table v1.10.4.3 when specifying "select" argument
+    # to extract subset of columns
+
     #read data
     dtc <- data.table::fread(det_file, sep = ",", colClasses = col_classes,
-                             na.strings = c("", "NA"))
+                             na.strings = c("", "NA"), ...)
     
     #coerce timestamps to POSIXct; note that with fastPOSIXct raw
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
@@ -88,6 +101,7 @@ read_glatos_detections <- function(det_file, version = NULL) {
       data.table::set(dtc, j = j, value = as.Date(dtc[[j]]))
     }
   }
+  
   #-end v1.3----------------------------------------------------------------
 
   #create animal_id if missing
@@ -101,7 +115,7 @@ read_glatos_detections <- function(det_file, version = NULL) {
   }
   
   #assign class 
-  dtc <- glatos:::glatos_detections(dtc)
+  dtc <- glatos:::glatos_detections(dtc, data.table)
   
   return(dtc)
 }

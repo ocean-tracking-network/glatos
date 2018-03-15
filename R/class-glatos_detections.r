@@ -13,13 +13,13 @@
 #' This function may be developed in the future to dictate conversion 
 #' constuction from a data frame.  
 
-glatos_detections <- function(x)  {
+glatos_detections <- function(x, dt)  {
 
   #coerce to data.frame if not
-  if(inherits(x, "data.table")) x <- as.data.frame(x)
-  if(!inherits(x, "data.frame")) stop("x must be data.frame")
+  if(inherits(x, c("data.table", "data.frame")) & dt == FALSE) x <- as.data.frame(x)
+  if(!inherits(x, c("data.frame", "data.table"))) stop("x must be data.frame or data.table")
   
-  #add new class as first but keep existing (e.g., data.frame)
+  # add new class as first but keep existing (e.g., data.frame)
   class(x) <- c("glatos_detections", class(x))
   
   return (x)
