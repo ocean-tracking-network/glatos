@@ -43,12 +43,7 @@
 #' @export
 
 
-det_file <- "~/Documents/HECWL_analysis/HEC_move/HECWL_20180109/HECWL_detectionsWithLocs_20180109_144601.csv"
-det_version = NULL
-data.table = FALSE
 
-
-foo <- read_glatos_detections("~/Documents/HECWL_analysis/HEC_move/HECWL_20180109/HECWL_detectionsWithLocs_20180109_144601.csv", det_version = NULL, data.table = TRUE, select = c(1,3,5,9))
 
 read_glatos_detections <- function(det_file, det_version = NULL, data.table = FALSE, ...) {
 
@@ -84,13 +79,15 @@ read_glatos_detections <- function(det_file, det_version = NULL, data.table = FA
     date_cols <- which(col_classes == "Date")
     col_classes[c(timestamp_cols, date_cols)] <- "character"
 
-    # fix of bug in data.table v1.10.4.3 when specifying "select" argument
-    # to extract subset of columns
-
     #read data
     dtc <- data.table::fread(det_file, sep = ",", colClasses = col_classes,
                              na.strings = c("", "NA"), ...)
-    
+
+    # recalculate
+    sub_cols <- glatos:::glatos_detection_schema[["v1.3"]]$type[glatos:::glatos_detection_schema[["v1.3"]]$name %in% names(dtc)]
+    timestamp_cols <- which(sub_cols  == "POSIXct")
+    date_cols <- which(sub_cols == "Date")
+
     #coerce timestamps to POSIXct; note that with fastPOSIXct raw
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
     for (j in timestamp_cols) data.table::set(dtc, j = j, 
@@ -104,18 +101,30 @@ read_glatos_detections <- function(det_file, det_version = NULL, data.table = FA
   
   #-end v1.3----------------------------------------------------------------
 
-  #create animal_id if missing
-  anid_na <- is.na(dtc$animal_id)
-  if(any(anid_na)){
-    dtc$animal_id[anid_na] <- with(dtc, 
-      paste0(transmitter_codespace, "-", transmitter_id))
-    warning(paste0("Some or all values of required column 'animal_id' were ", 
-      "missing so they were created from 'transmitter_codespace' and ",
-      "'transmitter_id'.)"))
-  }
+##   # create animal_id if missing but only if animal_id, transmitter_codespace, and
+##   # transmitter_id are in dataset...
+
+
+
+## cols_present <- all(is.element(c("animal_id", "transmitter_codespace",
+##                                  "transmitter_id"), names(dtc)))
   
+##   if(cols_present & any(is.na(dtc$animal_id))){
+##     anid_na <- is.na(dtc$animal_id)
+##     dtc$animal_id[anid_na] <- with(dtc,
+##       paste0(transmitter_codespace, "-", transmitter_id))
+##     warning(paste0("Some or all values of required column 'animal_id' were ", 
+##       "missing so they were created from 'transmitter_codespace' and ",
+##       "'transmitter_id'."))
+##   }
+##   if(!is.element(c("animal_id"), names(dtc))){
+##       warning(paste0("Missing 'animal_id' column.  Revise subset to include ",
+##                      "'animal_id' or include 'transmitter_codespace' and 'transmitter_id' ",
+##                      "in subset to automatically create 'animal_id'"))
+##   }
+ 
   #assign class 
   dtc <- glatos:::glatos_detections(dtc, data.table)
-  
+
   return(dtc)
 }
