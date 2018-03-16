@@ -10,7 +10,7 @@
 #'   file (e.g., \emph{xxxxx_detectionsWithLocs_yyyymmdd_hhmmss.csv}) submitted
 #'   via GLATOSWeb Data Portal \url{http://glatos.glos.us}.
 #'  
-#' @param version An optional character string with the glatos file version
+#' @param det_version An optional character string with the glatos file version
 #'   number. If NULL (default value) then version will be determined by
 #'   evaluating file structure. The only allowed values currently are
 #'   \code{NULL} and \code{"1.3"}. Any other values will trigger an error.
@@ -27,7 +27,7 @@
 #' 
 #' @return A data.frame of class \code{glatos_detections}.
 #'
-#' @author C. Holbrook \email{cholbrook@usgs.gov}
+#' @author C. Holbrook \email{cholbrook@usgs.gov} and T. Hayden
 #'
 #' @examples
 #' #get path to example detection file
@@ -40,10 +40,21 @@
 #'                          
 #' det <- read_glatos_detections(det_file)
 #'
+#' #return data.table object
+#' det <- read_glatos_detections(det_file, data.table = TRUE)
+#' 
+#' #return a subset of rows containing specific values in specific columns
+#' det <- read_glatos_detections(det_file, 
+#'          select_rows = list(relase_location = "Tattabawassee", 
+#'                             glatos_array = c("TTB", "SGR", "SBO")))
+#'                             
+#'
 #' @export
 
 
-read_glatos_detections <- function(det_file, det_version = NULL, data.table = FALSE, ...) {
+read_glatos_detections <- function(det_file, det_version = NULL, 
+  select_rows = NULL, select_type = c("any", "all"), 
+  data.table = FALSE, ...) {
 
  
   #Read detection file-------------------------------------------------------
@@ -78,10 +89,56 @@ read_glatos_detections <- function(det_file, det_version = NULL, data.table = FA
     col_classes[c(timestamp_cols, date_cols)] <- "character"
 
     #read data
-    dtc <- data.table::fread(det_file, sep = ",", colClasses = col_classes,
+    
+    if(is.null(select_rows)){
+      dtc <- data.table::fread(det_file, sep = ",", colClasses = col_classes,
                              na.strings = c("", "NA"), ...)
+    } else {
 
-    # recalculate
+      #check row_select_type
+      if(!missing(select_type)) { select_type <- match.arg(select_type) }
+      else { select_type <- select_type[1] }
+      
+      #TODO: check column validity in pattern (i.e., names(pattern))
+      
+      #get column names and indices
+      col_names <- names(data.table::fread(det_file, nrows = 0))
+      cols_to_match <- match(names(select_rows), col_names)
+      
+      for(i in 1:length(cols_to_match)){
+        #make the pattern part of regex for ith column
+        pattern_i <- paste0(select_rows[[i]], collapse = "|")
+        grep_string_i <- paste0("^([^,]+,){", cols_to_match[i] - 1, "}(", 
+          pattern_i, "),")
+        
+        #if select rows matching any condition in pattern ("OR"-type match)
+        if(select_type == "any"){
+          if(i == 1) { 
+            grep_string <- grep_string_i 
+          } else {
+            grep_string <- paste0(grep_string, "|", grep_string_i)
+          }
+          sys_cmd <- paste("grep -E", shQuote(grep_string), shQuote(det_file))
+        } else if(row_select_type == "all") {
+          if(i == 1) { 
+            sys_cmd <- paste("grep -E", shQuote(grep_string_i), shQuote(det_file))        
+          } else {
+            sys_cmd <- paste(sys_cmd, "| grep -E", shQuote(grep_string_i))
+          }      
+        }
+      }
+    
+      if(!"select" %in% names(list(...))){
+         cols_to_load <- seq_len(length(col_names))
+       } else {
+         cols_to_load <- match(select, col_names) 
+       }
+      
+      dtc <- data.table::fread(sys_cmd, ...)
+      names(dtc) <- col_names[cols_to_load]
+    }
+  
+    # Coerce timestamp and date columns
     sub_cols <- glatos:::glatos_detection_schema[["v1.3"]]$type[match(
       names(dtc), glatos:::glatos_detection_schema[["v1.3"]]$name)]
     timestamp_cols <- which(sub_cols  == "POSIXct")
