@@ -43,8 +43,6 @@
 #' @export
 
 
-
-
 read_glatos_detections <- function(det_file, det_version = NULL, data.table = FALSE, ...) {
 
  
@@ -84,7 +82,8 @@ read_glatos_detections <- function(det_file, det_version = NULL, data.table = FA
                              na.strings = c("", "NA"), ...)
 
     # recalculate
-    sub_cols <- glatos:::glatos_detection_schema[["v1.3"]]$type[glatos:::glatos_detection_schema[["v1.3"]]$name %in% names(dtc)]
+    sub_cols <- glatos:::glatos_detection_schema[["v1.3"]]$type[match(
+      names(dtc), glatos:::glatos_detection_schema[["v1.3"]]$name)]
     timestamp_cols <- which(sub_cols  == "POSIXct")
     date_cols <- which(sub_cols == "Date")
 

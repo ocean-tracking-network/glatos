@@ -4,7 +4,8 @@
 \alias{read_glatos_detections}
 \title{Read data from a GLATOS detection file}
 \usage{
-read_glatos_detections(det_file, version = NULL)
+read_glatos_detections(det_file, det_version = NULL, data.table = FALSE,
+  ...)
 }
 \arguments{
 \item{det_file}{A character string with path and name of detection file in

@@ -4,7 +4,7 @@
 \alias{glatos_detections}
 \title{Constructor function for the class glatos_detections}
 \usage{
-glatos_detections(x)
+glatos_detections(x, dt)
 }
 \arguments{
 \item{x}{A data.frame or data.table created from a standard glatos 
