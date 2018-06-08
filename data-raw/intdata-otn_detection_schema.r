@@ -23,11 +23,11 @@ bottom_depth         integer            bottom_depth
 receiver_depth       integer          receiver_depth
 tagname            character          transmitter_id
 codespace          character   transmitter_codespace
-sensorname           logical              sensorname
-sensorraw            logical               sensorraw
+sensorname         character              sensorname
+sensorraw            numeric               sensorraw
 sensortype         character              sensortype
-sensorvalue          logical             sensorvalue
-sensorunit           logical              sensorunit
+sensorvalue          numeric             sensorvalue
+sensorunit         character              sensorunit
 datecollected        POSIXct detection_timestamp_utc
 timezone           character                timezone
 longitude            numeric             deploy_long
@@ -38,8 +38,8 @@ monthcollected       integer          monthcollected
 daycollected         integer            daycollected
 julianday            integer               julianday
 timeofday            numeric               timeofday
-datereleasedtagger   logical      datereleasedtagger
-datereleasedpublic   logical      datereleasedpublic
+datereleasedtagger      Date      datereleasedtagger
+datereleasedpublic      Date      datereleasedpublic
 local_area         character              local_area
 notes              character                   notes
 citation           character                citation
