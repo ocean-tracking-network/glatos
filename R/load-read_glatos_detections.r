@@ -52,7 +52,7 @@ read_glatos_detections <- function(det_file, version = NULL) {
   #Identify detection file version
   id_det_version <- function(det_file){
     det_col_names <- names(data.table::fread(det_file, nrows = 0))
-    if(all(glatos:::glatos_detection_schema$v1.3$name == det_col_names)) { 
+    if(all(glatos:::glatos_detection_schema$v1.3$name %in% det_col_names)) { 
       return("1.3") 
     } else {
       stop("Detection file version could not be identified.")
@@ -63,7 +63,7 @@ read_glatos_detections <- function(det_file, version = NULL) {
     version <- id_det_version(det_file)
   } else if (!(paste0("v",version) %in% 
       names(glatos:::glatos_detection_schema))) {
-    stop(paste0("Detection file version ",version," is not supported."))
+    stop(paste0("Detection file version ", version," is not supported."))
   }
  
   #-Detections v1.3----------------------------------------------------------------  
@@ -80,12 +80,19 @@ read_glatos_detections <- function(det_file, version = NULL) {
     
     #coerce timestamps to POSIXct; note that with fastPOSIXct raw
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
-    for (j in timestamp_cols) data.table::set(dtc, j = j, 
-                      value = fasttime::fastPOSIXct(dtc[[j]], tz = "UTC"))
+    for (j in timestamp_cols) data.table::set(dtc, 
+                                  j = glatos_detection_schema[["v1.3"]]$name[j], 
+                      value = fasttime::fastPOSIXct(
+                           dtc[[glatos_detection_schema[["v1.3"]]$name[j]]], 
+                                tz = "UTC"))
     #coerce dates to date
     for (j in date_cols) {
-      data.table::set(dtc, j = j, value = ifelse(dtc[[j]] == "", NA, dtc[[j]]))
-      data.table::set(dtc, j = j, value = as.Date(dtc[[j]]))
+      data.table::set(dtc, j = glatos_detection_schema[["v1.3"]]$name[j], 
+        value = ifelse(dtc[[glatos_detection_schema[["v1.3"]]$name[j]]] == "", 
+                       NA, 
+                       dtc[[glatos_detection_schema[["v1.3"]]$name[j]]]))
+      data.table::set(dtc, j = glatos_detection_schema[["v1.3"]]$name[j], 
+        value = as.Date(dtc[[glatos_detection_schema[["v1.3"]]$name[j]]]))
     }
   }
   #-end v1.3----------------------------------------------------------------
