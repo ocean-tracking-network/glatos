@@ -19,8 +19,8 @@ detectedby         character              detectedby
 receiver_group     character             receiver_sn
 station            character            glatos_array
 receiver           character                receiver
-bottom_depth         integer            bottom_depth
-receiver_depth       integer          receiver_depth
+bottom_depth         numeric            bottom_depth
+receiver_depth       numeric          receiver_depth
 tagname            character          transmitter_id
 codespace          character   transmitter_codespace
 sensorname         character              sensorname
