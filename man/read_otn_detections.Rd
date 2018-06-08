@@ -7,12 +7,12 @@
 read_otn_detections(det_file)
 }
 \arguments{
-\item{det_file}{A character string with path and name of detection file in 
-OTN detection extract format (*.csv). If only file name is given, then the 
+\item{det_file}{A character string with path and name of detection file in
+OTN detection extract format (*.csv). If only file name is given, then the
 file must be located in the working directory.}
 }
 \value{
-A data.frame of class \code{glatos_detections} that includes OTN 
+A data.frame of class \code{glatos_detections} that includes OTN
 columns that do not map directly to GLATOS columns.
 }
 \description{
@@ -24,7 +24,7 @@ Data are loaded using \code{\link[data.table]{fread}} package and timestamps
 are coerced to POSIXct using the \code{\link[fasttime]{fastPOSIXct}}. All
 times must be in UTC timezone per GLATOS standard.
 
-Column names are changed to match GLATOS standard columns when possible. 
+Column names are changed to match GLATOS standard columns when possible.
 Otherwise, OTN columns and column names are retained.
 }
 \examples{
