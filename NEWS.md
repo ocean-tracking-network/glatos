@@ -1,3 +1,20 @@
+# glatos 0.2.6
+
+#### 2018-06-11
+   
+### Minor changes and bug fixes
+- read_otn_detections
+    - fix bug that indexed columns by position, meaning columns had to be 
+      orderd exactly as in spec (issue #52)
+- read_glatos_detections
+    - fix bug that indexed columns by position, meaning columns had to be 
+      orderd exactly as in spec (issue #52)
+- read_glatos_receivers
+    - fix bug that indexed columns by position, meaning columns had to be 
+      orderd exactly as in spec (issue #52)
+
+----
+
 # glatos 0.2.5 
 
 #### 2018-03-14
