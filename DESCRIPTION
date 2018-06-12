@@ -2,8 +2,8 @@ Package: glatos
 Type: Package
 Title: A package for the Great Lakes Acoustic Telemetry Observation System
 Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System www.glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
-Version: 0.2.5.9000
-Date: 2018-03-14
+Version: 0.2.6
+Date: 2018-06-11
 Depends: R (>= 3.2.0)
 Imports: 
 		cellranger,
@@ -28,8 +28,8 @@ Authors@R: c(
 			role = c("cre", "aut")),
     person("Todd", "Hayden", role = "aut"),
 		person("Thomas", "Binder", role = "aut"),
-		person("Jon", "Pye", role = "ctb"),
-		person("Alex", "Nunes", role = "ctb"),
+		person("Jon", "Pye", role = "aut"),
+		person("Alex", "Nunes", role = "aut"),
 		person("Angela", "Dini", role = "ctb"))
 License: GPL-2
 LazyLoad: yes

@@ -45,7 +45,7 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
   #Identify file version
   id_file_version <- function(rec_file){
     col_names <- names(data.table::fread(rec_file, nrows = 0))
-    if(all(glatos:::glatos_receivers_schema$v1.0$name == col_names)) { 
+    if(all(glatos:::glatos_receivers_schema$v1.0$name %in% col_names)) { 
       return("1.0") 
     } else {
       stop("Receiver location file version could not be identified.")
@@ -73,12 +73,18 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
     
     #coerce timestamps to POSIXct; note that with fastPOSIXct raw
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
-    for (j in timestamp_cols) data.table::set(rec, j = j, 
-                      value = fasttime::fastPOSIXct(rec[[j]], tz = "UTC"))
+    for (j in timestamp_cols) data.table::set(rec, 
+                                j = glatos_receivers_schema[["v1.0"]]$name[j], 
+                      value = fasttime::fastPOSIXct(
+                        rec[[glatos_receivers_schema[["v1.0"]]$name[j]]], 
+                        tz = "UTC"))
     #coerce dates to date
     for (j in date_cols) {
-      data.table::set(rec, j = j, value = ifelse(rec[[j]] == "", NA, rec[[j]]))
-      data.table::set(rec, j = j, value = as.Date(rec[[j]]))
+      data.table::set(rec, j = glatos_receivers_schema[["v1.0"]]$name[j], 
+        value = ifelse(rec[[glatos_receivers_schema[["v1.0"]]$name[j]]] == "", 
+                       NA, rec[[glatos_receivers_schema[["v1.0"]]$name[j]]]))
+      data.table::set(rec, j = glatos_receivers_schema[["v1.0"]]$name[j], 
+        value = as.Date(rec[[glatos_receivers_schema[["v1.0"]]$name[j]]]))
     }
   }
   #-end v1.0----------------------------------------------------------------
