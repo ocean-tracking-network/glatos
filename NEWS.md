@@ -1,3 +1,14 @@
+# glatos 0.2.7
+
+#### 2018-08-03
+   
+### Minor changes 
+- vector_heading
+    - allow input coordinates as longitude and latitude (decimal degrees)
+
+----
+
+
 # glatos 0.2.6
 
 #### 2018-06-11
