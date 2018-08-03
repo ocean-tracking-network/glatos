@@ -7,8 +7,8 @@
 vector_heading(x, y = NULL, coord_sys = NA)
 }
 \arguments{
-\item{x}{A numeric vector of x coordinates; minimum of 2.\n
-OR \n
+\item{x}{A numeric vector of x coordinates; minimum of 2.\cr
+OR \cr
 A two-column matrix or data frame with x coordinates in 
 column 1 and y coordinates in column 2.}
 
@@ -30,7 +30,7 @@ Calculate direction (heading) of each link of a vector (in degrees)
 }
 \details{
 Calculates direction (in degrees) for each of k-1 vectors, where 
-k = length(x) - 1 = length(y). Lengths of \code{x} and \code{y} must be 
+k = length(x) - 1. Lengths of \code{x} and \code{y} must be 
 equal.
 }
 \note{
@@ -62,7 +62,7 @@ vector_heading(x = c(-92.1005, -79.3832, -83.0458),
                
 #example using the x-only input method
 vector_heading(x = path1[ , c("longitude", "latitude")], 
-              
+               coord_sys = "longlat")
 
 }
 \author{
