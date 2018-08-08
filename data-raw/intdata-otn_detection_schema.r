@@ -13,11 +13,11 @@ otn_detection_schema <- read.table(text = "
 collectioncode     character          collectioncode
 catalognumber      character               animal_id
 scientificname     character          scientificname
-commonname         character              commonname
+commonname         character           common_name_e
 datelastmodified        Date        datelastmodified
 detectedby         character              detectedby
-receiver_group     character             receiver_sn
-station            character            glatos_array
+receiver_group     character            glatos_array
+station            character                 station
 receiver           character                receiver
 bottom_depth         numeric            bottom_depth
 receiver_depth       numeric          receiver_depth
