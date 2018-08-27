@@ -1,7 +1,16 @@
-library(dplyr)
-library(lubridate)
-library(glatos)
-
+#' Calculates a returns a list of each station and the REI (defined here)
+#' 
+#' @param detections a glatos detections class data table
+#' 
+#' @param deployments a glatos receivers class data table
+#' 
+#' @return 
+#' 
+#' @author Alex Nunes
+#'
+#' @examples
+require(dplyr)
+require(lubridate)
 
 REI <- function(detections, deployments) {
   # Check for proper columns
@@ -59,8 +68,6 @@ REI <- function(detections, deployments) {
     station_reis <- station_reis[,c('station', 'latitude', 'longitude', 'rei')]
 
     return(station_reis)
-
-
   } else {
     # print column errors
   }
