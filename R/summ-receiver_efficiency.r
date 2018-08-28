@@ -1,16 +1,39 @@
 #' Calculates a returns a list of each station and the REI (defined here)
+#'
+#' @description  The receiver efficiency index is number between 0 and 1 indicating the amount of relative activity at each receiver compared to the
+#' entire set of receivers, regardless of positioning. The function takes a set detections and a deployment history of the receivers to
+#' create a context for the detections. Both the amount of unique tags and number of species are taken into consideration in the calculation.
+#'
+#' REI() takes two arguments. The first is a dataframe of detections the detection timstamp, the station identifier, the species, and the
+#' tag identifier. The next is a dataframe of deployments for each station. The station name should match the stations in the detections.
+#' The deployments need to include a deployment date and recovery date.
+#'
+#'  \deqn{
+#' REI = (Tr/Ta) x (Sr/Sa) / (DDa/DDr) / Dr
 #' 
+#' Tr = The number of tags detected on the receievr
+#' Ta = The number of tags detected across all receivers
+#' Sr = The number of species detected on the receiver
+#' Sa = The number of species detected across all receivers
+#' DDa = The number of unique days with detections across all receivers
+#' DDr = The number of unique days with detections on the receiver
+#' Dr = The number of days the receiver was active
+#' }
+#'
 #' @param detections a glatos detections class data table
-#' 
+#'
 #' @param deployments a glatos receivers class data table
-#' 
-#' @return 
-#' 
-#' @author Alex Nunes
+#'
+#' @return
+#'
+#' @author Alex Nunes  \email{anunes@dal.ca}
 #'
 #' @examples
-require(dplyr)
-require(lubridate)
+#'
+#'
+#' @importFrom dplyr group_by
+#'
+#' @export
 
 REI <- function(detections, deployments) {
   # Check for proper columns

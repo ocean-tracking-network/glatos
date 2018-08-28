@@ -5,10 +5,10 @@
 \title{Create video from sequence of still images}
 \usage{
 make_video(dir = getwd(), pattern, output = "animation.mp4",
-  output_dir = getwd(), fps_in = 30, start_frame = 1, end_frame = NULL,
-  size = "source", preset = "medium", codec = "default",
-  format = "yuv420p", lossless = FALSE, fps_out = 30, overwrite = FALSE,
-  ffmpeg = NA)
+  output_dir = getwd(), fps_in = 30, start_frame = 1,
+  end_frame = NULL, size = "source", preset = "medium",
+  codec = "default", format = "yuv420p", lossless = FALSE,
+  fps_out = 30, overwrite = FALSE, ffmpeg = NA)
 }
 \arguments{
 \item{dir}{directory containing images, default is working

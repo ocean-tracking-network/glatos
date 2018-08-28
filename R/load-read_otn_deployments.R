@@ -22,13 +22,33 @@
 #' @author A. Nunes, \email{anunes@dal.ca}
 #'
 #' @examples
-#' #get path to example detection file
-#' det_file <- system.file("extdata", "blue_shark_detections.csv",
+#' #get path to example deployments file
+#' deployment_file <- system.file("extdata", "blue_shark_detections.csv",
 #'                          package = "glatos")
-#' det <- read_otn_detections(det_file)
+#' det <- read_otn_deploymentss(deployment_file)
 #'
 #' @export
 read_otn_deployments <- function(deployment_file) {
-  # Create a named vector for the column classes
-
+  col_classes <- otn_deployments_schema$type
+  names(col_classes) <- otn_deployments_schema$name
+  timestamp_cols <- which(col_classes == "POSIXct")
+  date_cols <- which(col_classes == "Date")
+  col_classes[c(timestamp_cols, date_cols)] <- "character"
+  
+  #read data
+  dtc <- data.table::fread(deployment_file, sep = ",", colClasses = col_classes,
+                           na.strings = c("", "NA"))
+  
+  #coerce timestamps to POSIXct; note that with fastPOSIXct raw
+  #  timestamp must be in UTC; and tz argument sets the tzone attr only
+  for (j in timestamp_cols) data.table::set(dtc, j = otn_deployments_schema$name[j],
+                                            value = fasttime::fastPOSIXct(dtc[[otn_deployments_schema$name[j]]], tz = "UTC"))
+  #coerce dates to date
+  for (j in date_cols) {
+    data.table::set(dtc, j = otn_deployments_schema$name[j], value = ifelse(dtc[[otn_deployments_schema$name[j]]] == "", NA, dtc[[otn_deployments_schema$name[j]]]))
+    data.table::set(dtc, j = otn_deployments_schema$name[j], value = as.Date(dtc[[otn_deployments_schema$name[j]]]))
+  }
+  data.table::setnames(dtc, old=otn_deployments_schema$name, new=otn_deployments_schema$mapping)
+  dtc <- glatos_receivers(dtc)
+  return(dtc)
 }

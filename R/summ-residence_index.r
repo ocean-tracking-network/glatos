@@ -11,7 +11,8 @@
 #'
 #'
 #' @param Detections - data frame pulled from the compressed detections CSV
-require(dplyr)
+#'
+#' @importFrom dplyr distinct mutate select
 total_days_count <- function(detections) {
   startdays <- distinct(select(mutate(detections, days = as.Date(first_detection)), days))
   enddays <- distinct(select(mutate(detections, days = as.Date(last_detection)), days))
@@ -29,7 +30,7 @@ total_days_count <- function(detections) {
 #' returns a floating point number of days (i.e. 503.76834).
 #'
 #' @param Detections - data frame pulled from the compressed detections CSV
-require(dplyr)
+#'
 total_diff_days <- function(detections) {
   first <- detections$first_detection[which.min(detections$first_detection)]
   last <- detections$first_detection[which.max(detections$first_detection)]
@@ -43,8 +44,8 @@ total_diff_days <- function(detections) {
 #' are the same, a timedelta of one second is assumed.
 #'
 #' @param Detections -data frame pulled from the compressed detections CSV
-require(lubridate)
-require(dplyr)
+#'
+#' @importFrom dplyr mutate 
 aggregate_total_with_overlap <- function(detections) {
   detections <- mutate(detections, timedelta = as.double(difftime(as.Date(last_detection),as.Date(first_detection), units="secs")))
   detections <- mutate(detections, timedelta = dplyr::recode(detections$timedelta, `0` = 1))
@@ -59,9 +60,53 @@ aggregate_total_with_overlap <- function(detections) {
 #' second is assumed.
 #'
 #' @param Detections - data frame pulled from the compressed detections CSV
-require(lubridate)
-require(dplyr)
-aggregate_total_no_overlap <- function(detections) 
+#' 
+#' @importFrom lubridate interval
+#' @importFrom dplyr mutate
+aggregate_total_no_overlap <- function(detections) {
+  total <- 0.0
+  detections <- arrange(detections, first_detection)
+  detcount <- as.integer(dplyr::count(detections))
+  detections <- mutate(detections, interval = interval(first_detection,last_detection))
+  detections <- mutate(detections, timedelta = as.double(difftime(as.Date(last_detection),as.Date(first_detection), units="secs")))
+  detections <- mutate(detections, timedelta = dplyr::recode(detections$timedelta, `0` = 1))
+  
+  next_block <- 2
+  start_block <- 1
+  end_block <- 1
+  while(next_block <= detcount) {
+    # if it overlaps
+    if(next_block < detcount && int_overlaps(dplyr::nth(detections$interval, end_block), dplyr::nth(detections$interval, next_block))) {
+      if(dplyr::nth(detections$interval, next_block) >= dplyr::nth(detections$interval, end_block)) {
+        end_block <- next_block
+      }
+      
+      if(end_block == detcount) {
+        tdiff <- as.double(difftime(dplyr::nth(detections$last_detection,end_block), dplyr::nth(detections$first_detection, start_block), units="secs"))
+        
+        if(tdiff == 0.0) {
+          tdiff <- 1
+        }
+        start_block <- next_block
+        end_block <- next_block + 1
+        total <- total + as.double(tdiff)
+      }
+    } else {
+      #if it doesn't overlap
+      tdiff <- 0.0
+      
+      # Generate the time difference between the start of the start block and the end of the end block
+      tdiff <- as.double(difftime(dplyr::nth(detections$last_detection,end_block), dplyr::nth(detections$first_detection, start_block), units="secs"))
+      
+      start_block <- next_block
+      end_block <- next_block
+      total <- total + as.double(tdiff)
+    }
+    next_block <- next_block + 1
+  }
+  total <- total/86400.0
+  return(total)
+}
   
 
 #' Determines which calculation method to use for the residency index.
@@ -181,7 +226,7 @@ get_days <- function(dets, calculation_method='kessel') {
 #' riawo_data <- glatos::residence_index(cdata, calculation_method = 'aggregate_with_overlap')
 #' riano_data <- glatos::residence_index(cdata, calculation_method = 'aggregate_no_overlap')
 #'
-#' @importFrom dplyr count distinct 
+#' @importFrom dplyr count distinct select
 #' @export
 residence_index <- function(detections, calculation_method='kessel') {
   
