@@ -310,7 +310,7 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
 
   capture <- function(x)paste(capture.output(print(x)), collapse = "\n")
   
-  if (nrow(land_chk) > 0) {stop("coordinates outside extent of transition layer.
+  if (nrow(land_chk) > 0) {stop("Some coordinates are on land or beyond extent.
     Interpolation impossible! Check receiver locations or extents of transition
     layer:\n", capture(as.data.table(land_chk)), call. = FALSE)
   }
