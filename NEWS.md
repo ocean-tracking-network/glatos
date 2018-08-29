@@ -1,10 +1,15 @@
 # glatos 0.2.7
 
-#### 2018-08-03
+#### 2018-08-29
    
 ### Minor changes 
+- interpolate_path
+    - added status bars during each of three major steps and improved 
+      messaging (2018-08-29)
+
 - vector_heading
-    - allow input coordinates as longitude and latitude (decimal degrees)
+    - allow input coordinates as longitude and latitude (decimal degrees) 
+      (2018-08-03)
 
 ----
 
