@@ -15,7 +15,6 @@ commonname         character           common_name_e
 receiver_group     character            glatos_array
 station            character                 station
 tagname            character          transmitter_id
-codespace          character   transmitter_codespace
 datecollected        POSIXct detection_timestamp_utc
 longitude            numeric             deploy_long
 latitude             numeric              deploy_lat

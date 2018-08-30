@@ -2,24 +2,6 @@
 # (internal data object for read_otn_deployments)
 #Specify column names and data types for each receiver locations file version
 
-# name                  type          mapping
-# FID              character          FID
-# collectioncode   character          glatos_project
-# seriescode       character          seriescode
-# ocean            character          ocean
-# station_name     character          station
-# station_type     character          station_type
-# stn_lat            numeric          deploy_lat
-# stn_long           numeric          deploy_long
-# stationstatus    character          stationstatus
-# locality         character          locality
-# model            character          ins_model_no
-# instrumenttype   character          instrumenttype
-# deploy_date        POSIXct          deploy_date_time
-# last_download      POSIXct          last_download
-# recovery_date      POSIXct          receover_date_time
-# downloads          numeric          downloads
-# off_set            numeric          off_set
 
 #----------------------------------------------------
 #Version 1.0
@@ -32,7 +14,8 @@ otn_deployments_schema <- read.table(text = "
   stn_long           numeric          deploy_long
   model            character          ins_model_no
   deploy_date        POSIXct          deploy_date_time
-  recovery_date      POSIXct          receover_date_time
+  recovery_date      POSIXct          recover_date_time
+  last_download      POSIXct          last_download
   ",
   header = TRUE,
   stringsAsFactors = FALSE)

@@ -61,7 +61,7 @@ aggregate_total_with_overlap <- function(detections) {
 #'
 #' @param Detections - data frame pulled from the compressed detections CSV
 #' 
-#' @importFrom lubridate interval
+#' @importFrom lubridate interval int_overlaps
 #' @importFrom dplyr mutate
 aggregate_total_no_overlap <- function(detections) {
   total <- 0.0

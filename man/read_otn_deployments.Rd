@@ -29,9 +29,9 @@ Otherwise, OTN columns and column names are retained.
 }
 \examples{
 #get path to example deployments file
-det_file <- system.file("extdata", "blue_shark_detections.csv",
+deployment_file <- system.file("extdata", "blue_shark_detections.csv",
                          package = "glatos")
-det <- read_otn_deploymentss(det_file)
+det <- read_otn_deploymentss(deployment_file)
 
 }
 \author{

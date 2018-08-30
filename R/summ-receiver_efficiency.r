@@ -31,7 +31,7 @@
 #' @examples
 #'
 #'
-#' @importFrom dplyr group_by
+#' @importFrom dplyr group_by mutate
 #'
 #' @export
 
@@ -40,8 +40,15 @@ REI <- function(detections, deployments) {
   required_deployment_columns <-  c('station', 'deploy_date_time', 'recover_date_time')
   required_detection_columns <- c('station', 'common_name_e', 'animal_id', 'detection_timestamp_utc')
 
-  if (all(required_deployment_columns %in% colnames(deployments)) & all(required_detection_columns %in% colnames(detection))) {
-
+  if (all(required_deployment_columns %in% colnames(deployments)) & all(required_detection_columns %in% colnames(detections))) {
+    if('last_download' %in% colnames(deployments)) {
+      deployments <-deployments %>%
+        dplyr::mutate(recover_date_time = coalesce(recover_date_time, last_download))
+      deployments <- deployments %>% filter(!is.na(last_download) | !is.na(recover_date_time))
+    }
+    
+    
+    
     # Make sure all dates are a POSIXct type
     if( !inherits(deployments$deploy_date_time, "POSIXct")) {
       deployments$deploy_date_time <- as.POSIXct(deployments$deploy_date_time,format="%Y-%m-%d %H:%M:%S")
@@ -58,6 +65,7 @@ REI <- function(detections, deployments) {
     # Calculate each receivers total days deployed
     deployments$days_deployed <- round(difftime(deployments$recover_date_time, deployments$deploy_date_time, units='days'), 0)
     deployments <- deployments[,c('station', 'days_deployed')]
+    
     deployments <- group_by(deployments, station) %>% summarise(
       receiver_days_active = as.numeric(sum(days_deployed))
     )
@@ -70,6 +78,7 @@ REI <- function(detections, deployments) {
     array_unique_tags <- length(unique(detections$animal_id))
     array_unique_species <- length (unique(detections$common_name_e))
     days_with_detections <- length(unique(as.Date(detections$detection_timestamp_utc)))
+
 
     # Loop through each station in the detections and Calculate REI for each station
     station_stats <- group_by(detections, station) %>% summarise(
