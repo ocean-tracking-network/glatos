@@ -31,7 +31,7 @@
 #' @examples
 #'
 #'
-#' @importFrom dplyr group_by mutate
+#' @importFrom dplyr group_by mutate coalesce
 #'
 #' @export
 

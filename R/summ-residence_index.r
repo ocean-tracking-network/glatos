@@ -12,7 +12,7 @@
 #'
 #' @param Detections - data frame pulled from the compressed detections CSV
 #'
-#' @importFrom dplyr distinct mutate select
+#' @importFrom dplyr distinct mutate select bind_rows
 total_days_count <- function(detections) {
   startdays <- distinct(select(mutate(detections, days = as.Date(first_detection)), days))
   enddays <- distinct(select(mutate(detections, days = as.Date(last_detection)), days))
