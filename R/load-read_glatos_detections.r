@@ -87,7 +87,7 @@ read_glatos_detections <- function(det_file, version = NULL) {
                                   j = glatos_detection_schema[["v1.3"]]$name[j], 
                       value = lubridate::parse_date_time(
                            dtc[[glatos_detection_schema[["v1.3"]]$name[j]]], 
-                           orders="ymd hms",
+                           orders="ymd HMS",
                                 tz = "UTC"))
     #coerce dates to date
     for (j in date_cols) {

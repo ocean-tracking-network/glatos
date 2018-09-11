@@ -46,7 +46,7 @@ read_otn_detections <- function(det_file) {
   #  timestamp must be in UTC; and tz argument sets the tzone attr only
   options(lubridate.fasttime = TRUE)
   for (j in timestamp_cols) data.table::set(dtc, j = otn_detection_schema$name[j],
-                                            value = lubridate::parse_date_time(dtc[[otn_detection_schema$name[j]]], orders="ymd hms", tz = "UTC"))
+                                            value = lubridate::parse_date_time(dtc[[otn_detection_schema$name[j]]], orders="ymd HMS", tz = "UTC"))
   #coerce dates to date
   for (j in date_cols) {
     data.table::set(dtc, j = otn_detection_schema$name[j], value = ifelse(dtc[[otn_detection_schema$name[j]]] == "", NA, dtc[[otn_detection_schema$name[j]]]))

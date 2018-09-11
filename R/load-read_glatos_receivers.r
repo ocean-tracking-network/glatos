@@ -80,7 +80,7 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
                                 j = glatos_receivers_schema[["v1.0"]]$name[j], 
                       value = lubridate::parse_date_time(
                         rec[[glatos_receivers_schema[["v1.0"]]$name[j]]], 
-                        orders="ymd hms",
+                        orders="ymd HMS",
                         tz = "UTC"))
     #coerce dates to date
     for (j in date_cols) {
