@@ -39,6 +39,8 @@
 #' #det_file <- "c:/path_to_file/HECWL_detectionsWithLocs_20150321_132242.csv"           
 #'                          
 #' det <- read_glatos_detections(det_file)
+#' 
+#' @importFrom lubridate parse_date_time
 #'
 #' @export
 read_glatos_detections <- function(det_file, version = NULL) {
@@ -80,10 +82,12 @@ read_glatos_detections <- function(det_file, version = NULL) {
     
     #coerce timestamps to POSIXct; note that with fastPOSIXct raw
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
+    options(lubridate.fasttime = TRUE)
     for (j in timestamp_cols) data.table::set(dtc, 
                                   j = glatos_detection_schema[["v1.3"]]$name[j], 
-                      value = fasttime::fastPOSIXct(
+                      value = lubridate::parse_date_time(
                            dtc[[glatos_detection_schema[["v1.3"]]$name[j]]], 
+                           orders="ymd hms",
                                 tz = "UTC"))
     #coerce dates to date
     for (j in date_cols) {
