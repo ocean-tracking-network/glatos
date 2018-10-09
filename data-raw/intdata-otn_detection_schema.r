@@ -1,5 +1,5 @@
 
-#Make glatos_detection_schema (internal data object for read_glatos_detections)
+#Make otn_detection_schema (internal data object for read_otn_detections)
 #Specify column names and data types for each detection file version
 
 
@@ -24,7 +24,7 @@ stringsAsFactors = FALSE)
 
 #\OTN
 #----------------------------------------------------
-  
+
 
 #add to sysdata.rda
 rda_file <- file.path("..","R/sysdata.rda")

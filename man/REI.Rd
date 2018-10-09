@@ -36,6 +36,16 @@ Dr = The number of days the receiver was active
 }
 }
 \examples{
+det_file <- system.file("extdata", "hfx_detections.csv",
+package = "glatos")
+
+dep_file <- system.file("extdata", "hfx_deployments.csv",
+                        package = "glatos")
+
+hfx_deployments <- glatos::read_otn_deployments(dep_file)
+dets <- glatos::read_otn_detections(det_file)
+
+hfx_receiver_efficiency_index <- glatos::REI(dets,hfx_deployments)
 
 
 }

@@ -29,6 +29,16 @@
 #' @author Alex Nunes  \email{anunes@dal.ca}
 #'
 #' @examples
+#' det_file <- system.file("extdata", "hfx_detections.csv",
+#' package = "glatos")
+#'
+#' dep_file <- system.file("extdata", "hfx_deployments.csv",
+#'                         package = "glatos")
+#'
+#' hfx_deployments <- glatos::read_otn_deployments(dep_file)
+#' dets <- glatos::read_otn_detections(det_file)
+#' 
+#' hfx_receiver_efficiency_index <- glatos::REI(dets,hfx_deployments)
 #'
 #'
 #' @importFrom dplyr group_by mutate coalesce
@@ -61,6 +71,10 @@ REI <- function(detections, deployments) {
     if( !inherits(detections$detection_timestamp_utc, "POSIXct")) {
       detections$detection_timestamp_utc <- as.POSIXct(detections$detection_timestamp_utc,format="%Y-%m-%d %H:%M:%S")
     }
+    
+    # Get the total number of days the array/line was active
+    array_days_active <- as.integer(max(deployments$recover_date_time) - min(deployments$deploy_date_time))
+    
 
     # Calculate each receivers total days deployed
     deployments$days_deployed <- round(difftime(deployments$recover_date_time, deployments$deploy_date_time, units='days'), 0)
@@ -91,7 +105,7 @@ REI <- function(detections, deployments) {
 
     station_reis <- merge(station_stats,deployments,by='station', all.x=TRUE)
 
-    station_reis$rei <- ((station_reis$receiver_unique_tags / array_unique_tags) * (station_reis$receiver_unique_species / array_unique_species)) / (days_with_detections / station_reis$receiver_days_with_detections) / station_reis$receiver_days_active
+    station_reis$rei <- (station_reis$receiver_unique_tags / array_unique_tags) * (station_reis$receiver_unique_species / array_unique_species) * (station_reis$receiver_days_with_detections / days_with_detections) * (array_days_active / station_reis$receiver_days_active)
 
     # Normalize REIs to value from 0 to 1
     station_reis$rei <- station_reis$rei/sum(station_reis$rei)
