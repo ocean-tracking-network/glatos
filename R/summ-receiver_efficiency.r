@@ -4,21 +4,27 @@
 #' entire set of receivers, regardless of positioning. The function takes a set detections and a deployment history of the receivers to
 #' create a context for the detections. Both the amount of unique tags and number of species are taken into consideration in the calculation.
 #'
+#' \emph{(Ellis, R., Flaherty-Walia, K., Collins, A., Bickford, J., Walters Burnsed, Lowerre-Barbieri S. 2018. Acoustic telemetry array evolution: from species- and project-specific designs to large-scale, multispecies, cooperative networks, 
+#'  \url{https://doi.org/10.1016/j.fishres.2018.09.015})}
+#'
 #' REI() takes two arguments. The first is a dataframe of detections the detection timstamp, the station identifier, the species, and the
 #' tag identifier. The next is a dataframe of deployments for each station. The station name should match the stations in the detections.
 #' The deployments need to include a deployment date and recovery date.
 #'
 #'  \deqn{
-#' REI = (Tr/Ta) x (Sr/Sa) / (DDa/DDr) / Dr
-#' 
-#' Tr = The number of tags detected on the receievr
-#' Ta = The number of tags detected across all receivers
-#' Sr = The number of species detected on the receiver
-#' Sa = The number of species detected across all receivers
-#' DDa = The number of unique days with detections across all receivers
-#' DDr = The number of unique days with detections on the receiver
-#' Dr = The number of days the receiver was active
+#' REI = (Tr/Ta) x (Sr/Sa) x (DDr/DDa) x (Da/Dr)
 #' }
+#' \itemize{
+#' \item{Tr = The number of tags detected on the receievr}
+#' \item{Ta = The number of tags detected across all receivers}
+#' \item{Sr = The number of species detected on the receiver}
+#' \item{Sa = The number of species detected across all receivers}
+#' \item{DDa = The number of unique days with detections across all receivers}
+#' \item{DDr = The number of unique days with detections on the receiver}
+#' \item{Da = The number of days the array was active}
+#' \item{Dr = The number of days the receiver was active}
+#' }
+#' 
 #'
 #' @param detections a glatos detections class data table
 #'
@@ -37,7 +43,7 @@
 #'
 #' hfx_deployments <- glatos::read_otn_deployments(dep_file)
 #' dets <- glatos::read_otn_detections(det_file)
-#' 
+#'
 #' hfx_receiver_efficiency_index <- glatos::REI(dets,hfx_deployments)
 #'
 #'
@@ -56,9 +62,9 @@ REI <- function(detections, deployments) {
         dplyr::mutate(recover_date_time = coalesce(recover_date_time, last_download))
       deployments <- deployments %>% filter(!is.na(last_download) | !is.na(recover_date_time))
     }
-    
-    
-    
+
+
+
     # Make sure all dates are a POSIXct type
     if( !inherits(deployments$deploy_date_time, "POSIXct")) {
       deployments$deploy_date_time <- as.POSIXct(deployments$deploy_date_time,format="%Y-%m-%d %H:%M:%S")
@@ -71,15 +77,15 @@ REI <- function(detections, deployments) {
     if( !inherits(detections$detection_timestamp_utc, "POSIXct")) {
       detections$detection_timestamp_utc <- as.POSIXct(detections$detection_timestamp_utc,format="%Y-%m-%d %H:%M:%S")
     }
-    
+
     # Get the total number of days the array/line was active
     array_days_active <- as.integer(max(deployments$recover_date_time) - min(deployments$deploy_date_time))
-    
+
 
     # Calculate each receivers total days deployed
     deployments$days_deployed <- round(difftime(deployments$recover_date_time, deployments$deploy_date_time, units='days'), 0)
     deployments <- deployments[,c('station', 'days_deployed')]
-    
+
     deployments <- group_by(deployments, station) %>% summarise(
       receiver_days_active = as.numeric(sum(days_deployed))
     )
