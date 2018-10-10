@@ -1,0 +1,938 @@
+collectioncode,seriescode,ocean,station_name,station_type,stn_lat,stn_long,stationstatus,locality,model,instrumenttype,deploy_date,last_download,recovery_date,downloads,off_set
+HFX,OTNGlobal,NW ATLANTIC,HFX001,Acoustic,44.47833,-63.53333,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-21,2009-02-26,2009-02-26,4,6.8
+HFX,OTNGlobal,NW ATLANTIC,HFX001,Acoustic,44.47833,-63.53333,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2009-02-26,2011-01-11,2011-01-06,3,20.3
+HFX,OTNGlobal,NW ATLANTIC,HFX001,Acoustic,44.47833,-63.53333,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,2013-10-30,2014-06-22,5,11.4
+HFX,OTNGlobal,NW ATLANTIC,HFX001,Acoustic,44.47833,-63.53333,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2014-06-22,2014-12-13,-,1,15.8
+HFX,OTNGlobal,NW ATLANTIC,HFX002,Acoustic,44.47255,-63.52685,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-21,2016-03-15,2008-05-30,3,10.1
+HFX,OTNGlobal,NW ATLANTIC,HFX002,Acoustic,44.47255,-63.52685,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-05-30,2010-03-09,2010-03-07,5,1.4
+HFX,OTNGlobal,NW ATLANTIC,HFX002,Acoustic,44.47255,-63.52685,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2010-03-08,2011-01-11,2011-01-06,2,7.4
+HFX,OTNGlobal,NW ATLANTIC,HFX002,Acoustic,44.47255,-63.52685,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,-,turned off: 2011-07-11,-,11.1
+HFX,OTNGlobal,NW ATLANTIC,HFX002,Acoustic,44.47255,-63.52685,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-07-11,2013-10-30,2014-06-22,4,18.2
+HFX,OTNGlobal,NW ATLANTIC,HFX002,Acoustic,44.47255,-63.52685,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2014-06-22,2014-12-13,-,1,39.7
+HFX,OTNGlobal,NW ATLANTIC,HFX003,Acoustic,44.46676,-63.52037,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-21,2009-02-26,2009-02-26,4,11.6
+HFX,OTNGlobal,NW ATLANTIC,HFX003,Acoustic,44.46676,-63.52037,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2009-02-26,2011-01-11,2011-01-06,3,11.7
+HFX,OTNGlobal,NW ATLANTIC,HFX003,Acoustic,44.46676,-63.52037,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,-,turned off: 2011-07-11,-,15.1
+HFX,OTNGlobal,NW ATLANTIC,HFX003,Acoustic,44.46676,-63.52037,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-07-11,2013-10-30,2014-06-22,4,17.0
+HFX,OTNGlobal,NW ATLANTIC,HFX003,Acoustic,44.46676,-63.52037,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2014-06-22,2014-12-13,-,1,56.5
+HFX,OTNGlobal,NW ATLANTIC,HFX004,Acoustic,44.46097,-63.51389,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-21,2009-03-11,2009-03-17,5,19.0
+HFX,OTNGlobal,NW ATLANTIC,HFX004,Acoustic,44.46097,-63.51389,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2009-03-17,2011-01-11,2011-01-06,3,24.8
+HFX,OTNGlobal,NW ATLANTIC,HFX004,Acoustic,44.46097,-63.51389,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,-,turned off: 2011-07-11,-,11.2
+HFX,OTNGlobal,NW ATLANTIC,HFX004,Acoustic,44.46097,-63.51389,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-07-11,2011-12-07,2011-12-06,2,19.6
+HFX,OTNGlobal,NW ATLANTIC,HFX004,Acoustic,44.46097,-63.51389,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-12-06,2014-12-13,failed,5,13.3
+HFX,OTNGlobal,NW ATLANTIC,HFX004,Acoustic,44.46097,-63.51389,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2017-12-18,-,-,-,16.1
+HFX,OTNGlobal,NW ATLANTIC,HFX005,Acoustic; Environmental,44.45519,-63.50741,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-21,2010-03-29,failed: 2010-03-28,8,11.8
+HFX,OTNGlobal,NW ATLANTIC,HFX005,Acoustic; Environmental,44.45519,-63.50741,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-01-11,2011-01-06,2,20.0
+HFX,OTNGlobal,NW ATLANTIC,HFX005,Acoustic; Environmental,44.45519,-63.50741,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,-,failed: 2011-10-24,-,16.2
+HFX,OTNGlobal,NW ATLANTIC,HFX005,Acoustic; Environmental,44.45519,-63.50741,active,Off the coast of Nova Scotia near Halifax Harbour,VR2W,rcvr,2011-09-18,2011-10-31,2011-10-24,1,25.1
+HFX,OTNGlobal,NW ATLANTIC,HFX005,Acoustic; Environmental,44.45519,-63.50741,active,Off the coast of Nova Scotia near Halifax Harbour,DST tilt,envrn,2011-09-18,-,2011-10-24,-,25.1
+HFX,OTNGlobal,NW ATLANTIC,HFX005,Acoustic; Environmental,44.45519,-63.50741,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-10-24,2014-12-13,lost/found: 2016-01-01,7,27.1
+HFX,OTNGlobal,NW ATLANTIC,HFX005,Acoustic; Environmental,44.45519,-63.50741,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2017-12-18,-,-,-,19.7
+HFX,OTNGlobal,NW ATLANTIC,HFX006,Acoustic,44.4494,-63.50093,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-21,2016-01-23,failed: 2010-03-07,8,10.8
+HFX,OTNGlobal,NW ATLANTIC,HFX006,Acoustic,44.4494,-63.50093,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2016-03-15,2011-01-06,3,6.0
+HFX,OTNGlobal,NW ATLANTIC,HFX006,Acoustic,44.4494,-63.50093,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,2013-10-31,2014-06-22,7,5.2
+HFX,OTNGlobal,NW ATLANTIC,HFX006,Acoustic,44.4494,-63.50093,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2014-06-22,2014-12-13,-,1,43.7
+HFX,OTNGlobal,NW ATLANTIC,HFX007,Acoustic,44.44361,-63.49444,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-21,2009-07-10,2010-03-07,6,43.2
+HFX,OTNGlobal,NW ATLANTIC,HFX007,Acoustic,44.44361,-63.49444,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-01-11,2011-01-06,2,43.8
+HFX,OTNGlobal,NW ATLANTIC,HFX007,Acoustic,44.44361,-63.49444,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,2013-10-30,2014-06-22,6,37.4
+HFX,OTNGlobal,NW ATLANTIC,HFX007,Acoustic,44.44361,-63.49444,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2014-06-22,2014-12-12,-,1,11.0
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-21,2009-03-17,2009-03-17,4,3.9
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2009-03-17,2011-01-07,2011-01-06,4,17.5
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2011-03-29,-,2011-06-08,-,2.7
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,2011-06-27,2011-06-08,1,2.7
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-06-08,2015-12-01,2011-12-06,4,16.7
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2011-11-23,2012-11-15,2012-11-11,1,81.2
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-11-23,2012-11-15,2012-11-11,2,81.2
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2012-11-11,-,failed,-,100.6
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-11,2015-08-11,failed,5,100.6
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2013-10-30,2015-12-04,2015-04-20,4,59.1
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2013-10-30,-,2015-04-20,-,59.1
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2015-04-20,-,-,-,77.7
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2015-04-20,-,-,-,77.7
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2016-04-22,-,2017-04-20,-,357.0
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-04-22,-,2017-04-20,1,357.0
+HFX,OTNGlobal,NW ATLANTIC,HFX008,Acoustic; Environmental,44.43782,-63.48796,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2017-04-20,-,-,-,91.2
+HFX,OTNGlobal,NW ATLANTIC,HFX009,Acoustic,44.43204,-63.48148,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-22,2009-03-17,2009-03-17,4,14.6
+HFX,OTNGlobal,NW ATLANTIC,HFX009,Acoustic,44.43204,-63.48148,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2009-03-17,2011-01-11,2011-01-06,4,13.2
+HFX,OTNGlobal,NW ATLANTIC,HFX009,Acoustic,44.43204,-63.48148,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,2013-10-30,2014-06-22,7,20.2
+HFX,OTNGlobal,NW ATLANTIC,HFX009,Acoustic,44.43204,-63.48148,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2014-06-22,2014-12-12,-,1,47.2
+HFX,OTNGlobal,NW ATLANTIC,HFX010,Acoustic; Transceiver,44.42625,-63.475,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-22,2009-03-17,2009-03-17,4,14.5
+HFX,OTNGlobal,NW ATLANTIC,HFX010,Acoustic; Transceiver,44.42625,-63.475,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2009-03-17,2014-02-13,failed/lost/found: 2014-01-20,6,10.5
+HFX,OTNGlobal,NW ATLANTIC,HFX010,Acoustic; Transceiver,44.42625,-63.475,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,2015-12-03,turned off: 2011-07-11,1,8.7
+HFX,OTNGlobal,NW ATLANTIC,HFX010,Acoustic; Transceiver,44.42625,-63.475,active,Off the coast of Nova Scotia near Halifax Harbour,VR2W,rcvr,2011-03-29,2011-07-11,2011-07-11,1,8.7
+HFX,OTNGlobal,NW ATLANTIC,HFX010,Acoustic; Transceiver,44.42625,-63.475,active,Off the coast of Nova Scotia near Halifax Harbour,VR2W,rcvr,2011-07-11,2012-11-15,2012-11-11,1,29.7
+HFX,OTNGlobal,NW ATLANTIC,HFX010,Acoustic; Transceiver,44.42625,-63.475,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-07-11,2012-11-16,2012-11-11,4,29.7
+HFX,OTNGlobal,NW ATLANTIC,HFX010,Acoustic; Transceiver,44.42625,-63.475,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-15,2016-01-23,4,9.4
+HFX,OTNGlobal,NW ATLANTIC,HFX010,Acoustic; Transceiver,44.42625,-63.475,active,Off the coast of Nova Scotia near Halifax Harbour,VR2AR,trncvr,2016-01-23,-,2017-04-14,2,11.3
+HFX,OTNGlobal,NW ATLANTIC,HFX010,Acoustic; Transceiver,44.42625,-63.475,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2017-04-14,-,-,-,20.5
+HFX,OTNGlobal,NW ATLANTIC,HFX011,Acoustic,44.42046,-63.46852,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-22,2009-03-17,2009-03-17,4,13.8
+HFX,OTNGlobal,NW ATLANTIC,HFX011,Acoustic,44.42046,-63.46852,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2009-03-17,2011-01-07,2011-01-06,5,30.2
+HFX,OTNGlobal,NW ATLANTIC,HFX011,Acoustic,44.42046,-63.46852,active,Off the coast of Nova Scotia near Halifax Harbour,VR2W,rcvr,2011-03-29,2011-07-11,2011-07-11,1,36.4
+HFX,OTNGlobal,NW ATLANTIC,HFX011,Acoustic,44.42046,-63.46852,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,-,turned off: 2011-07-11,-,36.4
+HFX,OTNGlobal,NW ATLANTIC,HFX011,Acoustic,44.42046,-63.46852,active,Off the coast of Nova Scotia near Halifax Harbour,VR2W,rcvr,2011-07-11,2012-11-15,2012-11-11,1,7.2
+HFX,OTNGlobal,NW ATLANTIC,HFX011,Acoustic,44.42046,-63.46852,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-07-11,2016-04-29,2012-11-11,3,7.2
+HFX,OTNGlobal,NW ATLANTIC,HFX011,Acoustic,44.42046,-63.46852,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-14,2016-02-22,3,48.6
+HFX,OTNGlobal,NW ATLANTIC,HFX011,Acoustic,44.42046,-63.46852,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,40.2
+HFX,OTNGlobal,NW ATLANTIC,HFX012,Acoustic,44.41468,-63.46204,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-22,2010-03-08,failed: 2010-03-08,5,16.8
+HFX,OTNGlobal,NW ATLANTIC,HFX012,Acoustic,44.41468,-63.46204,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2010-04-02,2011-01-11,2011-01-06,2,10.5
+HFX,OTNGlobal,NW ATLANTIC,HFX012,Acoustic,44.41468,-63.46204,active,Off the coast of Nova Scotia near Halifax Harbour,VR2W,rcvr,2011-03-29,2012-11-15,2012-11-11,1,10.1
+HFX,OTNGlobal,NW ATLANTIC,HFX012,Acoustic,44.41468,-63.46204,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-29,2012-11-16,2012-11-11,3,10.1
+HFX,OTNGlobal,NW ATLANTIC,HFX012,Acoustic,44.41468,-63.46204,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-14,2016-02-22,3,15.7
+HFX,OTNGlobal,NW ATLANTIC,HFX012,Acoustic,44.41468,-63.46204,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,30.2
+HFX,OTNGlobal,NW ATLANTIC,HFX013,Acoustic,44.40889,-63.45556,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-22,2016-05-06,2010-03-07,6,12.2
+HFX,OTNGlobal,NW ATLANTIC,HFX013,Acoustic,44.40889,-63.45556,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,23.3
+HFX,OTNGlobal,NW ATLANTIC,HFX013,Acoustic,44.40889,-63.45556,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,6.9
+HFX,OTNGlobal,NW ATLANTIC,HFX013,Acoustic,44.40889,-63.45556,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-14,2016-02-22,3,39.1
+HFX,OTNGlobal,NW ATLANTIC,HFX013,Acoustic,44.40889,-63.45556,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,17.5
+HFX,OTNGlobal,NW ATLANTIC,HFX014,Acoustic,44.4031,-63.44907,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-22,2010-03-09,2010-03-07,5,31.1
+HFX,OTNGlobal,NW ATLANTIC,HFX014,Acoustic,44.4031,-63.44907,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-03-08,2011-11-22,2011-11-22,3,48.0
+HFX,OTNGlobal,NW ATLANTIC,HFX014,Acoustic,44.4031,-63.44907,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2016-01-27,2012-11-11,2,35.2
+HFX,OTNGlobal,NW ATLANTIC,HFX014,Acoustic,44.4031,-63.44907,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-14,2016-02-22,3,27.8
+HFX,OTNGlobal,NW ATLANTIC,HFX014,Acoustic,44.4031,-63.44907,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,23.4
+HFX,OTNGlobal,NW ATLANTIC,HFX015,Acoustic,44.39731,-63.44259,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-28,2010-03-09,2010-03-07,4,8.4
+HFX,OTNGlobal,NW ATLANTIC,HFX015,Acoustic,44.39731,-63.44259,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-03-08,2011-11-24,2011-11-22,3,12.8
+HFX,OTNGlobal,NW ATLANTIC,HFX015,Acoustic,44.39731,-63.44259,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2016-05-06,2012-11-11,2,27.6
+HFX,OTNGlobal,NW ATLANTIC,HFX015,Acoustic,44.39731,-63.44259,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-15,2016-02-22,3,31.1
+HFX,OTNGlobal,NW ATLANTIC,HFX015,Acoustic,44.39731,-63.44259,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,30.9
+HFX,OTNGlobal,NW ATLANTIC,HFX016,Acoustic,44.39153,-63.43611,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-28,2010-03-09,2010-03-07,4,17.8
+HFX,OTNGlobal,NW ATLANTIC,HFX016,Acoustic,44.39153,-63.43611,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-03-08,2011-11-24,2011-11-22,3,13.8
+HFX,OTNGlobal,NW ATLANTIC,HFX016,Acoustic,44.39153,-63.43611,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,20.0
+HFX,OTNGlobal,NW ATLANTIC,HFX016,Acoustic,44.39153,-63.43611,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2014-12-12,-,2,11.9
+HFX,OTNGlobal,NW ATLANTIC,HFX017,Acoustic,44.38574,-63.42963,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-28,2010-03-09,2010-03-07,4,6.0
+HFX,OTNGlobal,NW ATLANTIC,HFX017,Acoustic,44.38574,-63.42963,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-03-08,2011-11-24,2011-11-22,3,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX017,Acoustic,44.38574,-63.42963,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-16,2012-11-11,1,15.9
+HFX,OTNGlobal,NW ATLANTIC,HFX017,Acoustic,44.38574,-63.42963,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-14,2016-02-22,3,38.0
+HFX,OTNGlobal,NW ATLANTIC,HFX017,Acoustic,44.38574,-63.42963,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,57.8
+HFX,OTNGlobal,NW ATLANTIC,HFX018,Acoustic,44.37995,-63.42315,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-28,2010-03-09,2010-03-07,4,14.7
+HFX,OTNGlobal,NW ATLANTIC,HFX018,Acoustic,44.37995,-63.42315,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,17.3
+HFX,OTNGlobal,NW ATLANTIC,HFX018,Acoustic,44.37995,-63.42315,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,7.9
+HFX,OTNGlobal,NW ATLANTIC,HFX018,Acoustic,44.37995,-63.42315,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-14,2016-02-22,3,13.7
+HFX,OTNGlobal,NW ATLANTIC,HFX018,Acoustic,44.37995,-63.42315,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,35.1
+HFX,OTNGlobal,NW ATLANTIC,HFX019,Acoustic,44.37417,-63.41667,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-28,2010-03-09,2010-03-07,4,15.4
+HFX,OTNGlobal,NW ATLANTIC,HFX019,Acoustic,44.37417,-63.41667,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2016-05-06,2011-11-22,4,24.2
+HFX,OTNGlobal,NW ATLANTIC,HFX019,Acoustic,44.37417,-63.41667,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,14.3
+HFX,OTNGlobal,NW ATLANTIC,HFX019,Acoustic,44.37417,-63.41667,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-15,2016-02-22,3,18.3
+HFX,OTNGlobal,NW ATLANTIC,HFX019,Acoustic,44.37417,-63.41667,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,22.4
+HFX,OTNGlobal,NW ATLANTIC,HFX020,Acoustic,44.36838,-63.41019,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-04-28,2016-05-06,2010-03-07,5,12.4
+HFX,OTNGlobal,NW ATLANTIC,HFX020,Acoustic,44.36838,-63.41019,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,17.1
+HFX,OTNGlobal,NW ATLANTIC,HFX020,Acoustic,44.36838,-63.41019,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,7.8
+HFX,OTNGlobal,NW ATLANTIC,HFX020,Acoustic,44.36838,-63.41019,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-14,2016-02-22,3,6.8
+HFX,OTNGlobal,NW ATLANTIC,HFX020,Acoustic,44.36838,-63.41019,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,2.4
+HFX,OTNGlobal,NW ATLANTIC,HFX021,Acoustic,44.36259,-63.4037,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-05-05,2010-03-21,failed/moved: 2010-03-19,5,84.8
+HFX,OTNGlobal,NW ATLANTIC,HFX021,Acoustic,44.36259,-63.4037,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-23,2011-11-22,3,199.7
+HFX,OTNGlobal,NW ATLANTIC,HFX021,Acoustic,44.36259,-63.4037,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,86.2
+HFX,OTNGlobal,NW ATLANTIC,HFX021,Acoustic,44.36259,-63.4037,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-15,2016-02-22,3,87.3
+HFX,OTNGlobal,NW ATLANTIC,HFX021,Acoustic,44.36259,-63.4037,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,204.4
+HFX,OTNGlobal,NW ATLANTIC,HFX022,Acoustic,44.35681,-63.39722,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-05-05,2016-01-23,2010-03-07,5,46.5
+HFX,OTNGlobal,NW ATLANTIC,HFX022,Acoustic,44.35681,-63.39722,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-23,2011-11-22,3,52.7
+HFX,OTNGlobal,NW ATLANTIC,HFX022,Acoustic,44.35681,-63.39722,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-16,2012-11-11,1,23.4
+HFX,OTNGlobal,NW ATLANTIC,HFX022,Acoustic,44.35681,-63.39722,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-14,2016-02-22,3,44.7
+HFX,OTNGlobal,NW ATLANTIC,HFX022,Acoustic,44.35681,-63.39722,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,40.6
+HFX,OTNGlobal,NW ATLANTIC,HFX023,Acoustic,44.35102,-63.39074,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-05-05,2010-03-09,2010-03-07,4,4.5
+HFX,OTNGlobal,NW ATLANTIC,HFX023,Acoustic,44.35102,-63.39074,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,8.4
+HFX,OTNGlobal,NW ATLANTIC,HFX023,Acoustic,44.35102,-63.39074,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-16,2012-11-11,1,2.4
+HFX,OTNGlobal,NW ATLANTIC,HFX023,Acoustic,44.35102,-63.39074,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2013-10-30,2014-06-22,1,48.2
+HFX,OTNGlobal,NW ATLANTIC,HFX023,Acoustic,44.35102,-63.39074,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2016-03-14,2016-02-22,2,31.3
+HFX,OTNGlobal,NW ATLANTIC,HFX023,Acoustic,44.35102,-63.39074,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,12.6
+HFX,OTNGlobal,NW ATLANTIC,HFX024,Acoustic,44.34523,-63.38426,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-05-05,2010-03-09,2010-03-07,4,9.7
+HFX,OTNGlobal,NW ATLANTIC,HFX024,Acoustic,44.34523,-63.38426,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,6.8
+HFX,OTNGlobal,NW ATLANTIC,HFX024,Acoustic,44.34523,-63.38426,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,28.2
+HFX,OTNGlobal,NW ATLANTIC,HFX024,Acoustic,44.34523,-63.38426,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-14,2016-02-22,3,15.9
+HFX,OTNGlobal,NW ATLANTIC,HFX024,Acoustic,44.34523,-63.38426,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,33.1
+HFX,OTNGlobal,NW ATLANTIC,HFX025,Acoustic,44.33944,-63.37778,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-05-05,2010-03-09,2010-03-07,4,34.1
+HFX,OTNGlobal,NW ATLANTIC,HFX025,Acoustic,44.33944,-63.37778,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-07-08,2010-03-09,2010-03-07,3,2.4
+HFX,OTNGlobal,NW ATLANTIC,HFX025,Acoustic,44.33944,-63.37778,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,20.2
+HFX,OTNGlobal,NW ATLANTIC,HFX025,Acoustic,44.33944,-63.37778,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-16,2012-11-11,1,21.4
+HFX,OTNGlobal,NW ATLANTIC,HFX025,Acoustic,44.33944,-63.37778,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-15,2016-02-22,3,22.4
+HFX,OTNGlobal,NW ATLANTIC,HFX025,Acoustic,44.33944,-63.37778,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,42.3
+HFX,OTNGlobal,NW ATLANTIC,HFX026,Acoustic,44.33366,-63.3713,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-05-05,2010-03-09,2010-03-07,5,6.0
+HFX,OTNGlobal,NW ATLANTIC,HFX026,Acoustic,44.33366,-63.3713,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,31.0
+HFX,OTNGlobal,NW ATLANTIC,HFX026,Acoustic,44.33366,-63.3713,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2016-05-09,2012-11-11,2,4.5
+HFX,OTNGlobal,NW ATLANTIC,HFX026,Acoustic,44.33366,-63.3713,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-01-23,lost,4,46.7
+HFX,OTNGlobal,NW ATLANTIC,HFX027,Acoustic,44.32787,-63.36481,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2008-05-05,2016-05-06,2010-03-07,5,5.3
+HFX,OTNGlobal,NW ATLANTIC,HFX027,Acoustic,44.32787,-63.36481,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX027,Acoustic,44.32787,-63.36481,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,16.8
+HFX,OTNGlobal,NW ATLANTIC,HFX027,Acoustic,44.32787,-63.36481,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-15,2016-02-22,4,17.9
+HFX,OTNGlobal,NW ATLANTIC,HFX027,Acoustic,44.32787,-63.36481,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,34.1
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2008-09-05,2009-07-09,2009-07-09,5,0.8
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2009-07-09,2011-06-09,2011-06-08,3,16.0
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-06-08,2011-11-24,2011-11-22,2,19.4
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-11-22,2012-11-16,2012-11-11,2,24.2
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2011-11-22,2012-11-16,2012-11-11,2,24.2
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2012-11-11,2013-10-28,2013-10-23,1,39.9
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-11,2013-10-25,2013-10-23,1,39.9
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2013-10-23,-,2015-04-20,-,232.2
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2013-10-23,2015-12-03,2015-04-20,4,232.2
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2015-04-20,-,2016-04-22,-,267.8
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2015-04-20,-,2016-04-22,-,267.8
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2016-04-22,-,2017-04-20,-,238.4
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-04-22,-,2017-04-20,1,238.4
+HFX,OTNGlobal,NW ATLANTIC,HFX028,Acoustic; Environmental,44.32208,-63.35833,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2017-04-20,-,-,-,210.6
+HFX,OTNGlobal,NW ATLANTIC,HFX029,Acoustic,44.3163,-63.35185,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2009-01-13,2010-03-09,2010-03-07,3,48.4
+HFX,OTNGlobal,NW ATLANTIC,HFX029,Acoustic,44.3163,-63.35185,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2012-12-13,failed,6,42.0
+HFX,OTNGlobal,NW ATLANTIC,HFX029,Acoustic,44.3163,-63.35185,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-04-02,2012-11-15,2012-11-11,1,106.6
+HFX,OTNGlobal,NW ATLANTIC,HFX029,Acoustic,44.3163,-63.35185,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-15,2016-02-22,3,48.9
+HFX,OTNGlobal,NW ATLANTIC,HFX029,Acoustic,44.3163,-63.35185,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,30.9
+HFX,OTNGlobal,NW ATLANTIC,HFX030,Acoustic,44.31051,-63.34537,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,11.4
+HFX,OTNGlobal,NW ATLANTIC,HFX030,Acoustic,44.31051,-63.34537,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,4.9
+HFX,OTNGlobal,NW ATLANTIC,HFX030,Acoustic,44.31051,-63.34537,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-14,2016-02-22,3,10.3
+HFX,OTNGlobal,NW ATLANTIC,HFX030,Acoustic,44.31051,-63.34537,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,16.6
+HFX,OTNGlobal,NW ATLANTIC,HFX031,Acoustic,44.30472,-63.33889,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-23,2011-11-22,3,9.4
+HFX,OTNGlobal,NW ATLANTIC,HFX031,Acoustic,44.30472,-63.33889,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,6.0
+HFX,OTNGlobal,NW ATLANTIC,HFX031,Acoustic,44.30472,-63.33889,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2014-12-12,2016-02-22,2,19.2
+HFX,OTNGlobal,NW ATLANTIC,HFX031,Acoustic,44.30472,-63.33889,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,8.2
+HFX,OTNGlobal,NW ATLANTIC,HFX032,Acoustic,44.29894,-63.33241,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,2.6
+HFX,OTNGlobal,NW ATLANTIC,HFX032,Acoustic,44.29894,-63.33241,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,4.9
+HFX,OTNGlobal,NW ATLANTIC,HFX032,Acoustic,44.29894,-63.33241,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-15,2016-02-22,3,13.7
+HFX,OTNGlobal,NW ATLANTIC,HFX032,Acoustic,44.29894,-63.33241,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,31.1
+HFX,OTNGlobal,NW ATLANTIC,HFX033,Acoustic,44.29315,-63.32593,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX033,Acoustic,44.29315,-63.32593,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,5.5
+HFX,OTNGlobal,NW ATLANTIC,HFX033,Acoustic,44.29315,-63.32593,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-11-11,2016-03-15,2016-02-22,3,6.0
+HFX,OTNGlobal,NW ATLANTIC,HFX033,Acoustic,44.29315,-63.32593,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,28.9
+HFX,OTNGlobal,NW ATLANTIC,HFX034,Acoustic,44.28736,-63.31944,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-23,2011-11-22,3,9.1
+HFX,OTNGlobal,NW ATLANTIC,HFX034,Acoustic,44.28736,-63.31944,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-16,2012-11-11,1,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX034,Acoustic,44.28736,-63.31944,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-11,2014-06-26,2014-06-22,3,7.9
+HFX,OTNGlobal,NW ATLANTIC,HFX034,Acoustic,44.28736,-63.31944,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2016-03-14,2016-02-22,3,39.1
+HFX,OTNGlobal,NW ATLANTIC,HFX034,Acoustic,44.28736,-63.31944,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-02-22,-,-,-,67.1
+HFX,OTNGlobal,NW ATLANTIC,HFX035,Acoustic,44.28157,-63.31296,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-22,failed/lost,3,6.8
+HFX,OTNGlobal,NW ATLANTIC,HFX035,Acoustic,44.28157,-63.31296,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-04-02,2012-11-15,2012-11-11,1,4.8
+HFX,OTNGlobal,NW ATLANTIC,HFX035,Acoustic,44.28157,-63.31296,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-11,2014-06-26,2014-06-22,3,3.3
+HFX,OTNGlobal,NW ATLANTIC,HFX035,Acoustic,44.28157,-63.31296,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2014-12-12,2016-07-27,1,21.0
+HFX,OTNGlobal,NW ATLANTIC,HFX035,Acoustic,44.28157,-63.31296,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-07-27,-,-,-,9.7
+HFX,OTNGlobal,NW ATLANTIC,HFX036,Acoustic; Transceiver,44.27579,-63.30648,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,21.0
+HFX,OTNGlobal,NW ATLANTIC,HFX036,Acoustic; Transceiver,44.27579,-63.30648,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-16,2012-11-11,1,10.5
+HFX,OTNGlobal,NW ATLANTIC,HFX036,Acoustic; Transceiver,44.27579,-63.30648,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-11,2014-01-15,caught/lost/found: 2013-10-01,1,45.2
+HFX,OTNGlobal,NW ATLANTIC,HFX036,Acoustic; Transceiver,44.27579,-63.30648,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,-,lost,-,19.2
+HFX,OTNGlobal,NW ATLANTIC,HFX036,Acoustic; Transceiver,44.27579,-63.30648,active,Off the coast of Nova Scotia near Halifax Harbour,VR2AR,trncvr,2015-05-19,2016-05-04,2016-04-30,1,281.9
+HFX,OTNGlobal,NW ATLANTIC,HFX036,Acoustic; Transceiver,44.27579,-63.30648,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-30,-,-,-,280.3
+HFX,OTNGlobal,NW ATLANTIC,HFX037,Acoustic; Transceiver,44.27,-63.3,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2010-04-02,2011-11-24,2011-11-22,3,4.1
+HFX,OTNGlobal,NW ATLANTIC,HFX037,Acoustic; Transceiver,44.27,-63.3,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2012-02-15,2012-11-15,2012-11-11,1,6.7
+HFX,OTNGlobal,NW ATLANTIC,HFX037,Acoustic; Transceiver,44.27,-63.3,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-11,2014-06-26,2014-06-22,3,6.5
+HFX,OTNGlobal,NW ATLANTIC,HFX037,Acoustic; Transceiver,44.27,-63.3,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2014-10-09,caught/found: 2014-07-25,1,18.9
+HFX,OTNGlobal,NW ATLANTIC,HFX037,Acoustic; Transceiver,44.27,-63.3,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-12-12,-,caught/lost,-,346.2
+HFX,OTNGlobal,NW ATLANTIC,HFX037,Acoustic; Transceiver,44.27,-63.3,active,Off the coast of Nova Scotia near Halifax Harbour,VR2AR,trncvr,2015-05-19,2016-05-04,2016-04-30,1,200.2
+HFX,OTNGlobal,NW ATLANTIC,HFX037,Acoustic; Transceiver,44.27,-63.3,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-30,-,-,-,200.2
+HFX,OTNGlobal,NW ATLANTIC,HFX038,Acoustic; Transceiver,44.26434,-63.29373,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,2012-12-13,turned off: 2011-07-28,1,14.8
+HFX,OTNGlobal,NW ATLANTIC,HFX038,Acoustic; Transceiver,44.26434,-63.29373,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-07-28,2014-01-18,lost,2,11.1
+HFX,OTNGlobal,NW ATLANTIC,HFX038,Acoustic; Transceiver,44.26434,-63.29373,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2015-02-27,lost/found: 2014-12-17,1,43.0
+HFX,OTNGlobal,NW ATLANTIC,HFX038,Acoustic; Transceiver,44.26434,-63.29373,active,Off the coast of Nova Scotia near Halifax Harbour,VR2AR,trncvr,2015-05-19,2016-05-04,2016-04-30,1,366.1
+HFX,OTNGlobal,NW ATLANTIC,HFX038,Acoustic; Transceiver,44.26434,-63.29373,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-04-30,-,-,-,366.1
+HFX,OTNGlobal,NW ATLANTIC,HFX039,Acoustic,44.25869,-63.28746,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,2014-06-26,2014-06-22,5,7.9
+HFX,OTNGlobal,NW ATLANTIC,HFX039,Acoustic,44.25869,-63.28746,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2014-12-12,2016-07-27,1,30.7
+HFX,OTNGlobal,NW ATLANTIC,HFX039,Acoustic,44.25869,-63.28746,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-07-27,-,-,-,54.6
+HFX,OTNGlobal,NW ATLANTIC,HFX040,Acoustic,44.25303,-63.28119,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-29,2012-11-16,2012-11-11,3,2.7
+HFX,OTNGlobal,NW ATLANTIC,HFX040,Acoustic,44.25303,-63.28119,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-11,2014-01-18,lost,1,27.1
+HFX,OTNGlobal,NW ATLANTIC,HFX040,Acoustic,44.25303,-63.28119,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2014-12-12,2016-07-27,1,17.5
+HFX,OTNGlobal,NW ATLANTIC,HFX040,Acoustic,44.25303,-63.28119,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-07-27,-,-,-,579.3
+HFX,OTNGlobal,NW ATLANTIC,HFX041,Acoustic,44.24737,-63.27493,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-29,2012-12-13,failed,4,5.0
+HFX,OTNGlobal,NW ATLANTIC,HFX041,Acoustic,44.24737,-63.27493,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-19,2014-06-26,2014-06-22,2,49.7
+HFX,OTNGlobal,NW ATLANTIC,HFX041,Acoustic,44.24737,-63.27493,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2014-12-12,2016-07-27,1,26.5
+HFX,OTNGlobal,NW ATLANTIC,HFX041,Acoustic,44.24737,-63.27493,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-07-27,-,-,-,16.2
+HFX,OTNGlobal,NW ATLANTIC,HFX042,Acoustic; Transceiver,44.24172,-63.26866,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-29,2012-11-27,2012-11-19,3,2.6
+HFX,OTNGlobal,NW ATLANTIC,HFX042,Acoustic; Transceiver,44.24172,-63.26866,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-19,2014-05-26,caught: 2014-05-09,2,83.1
+HFX,OTNGlobal,NW ATLANTIC,HFX042,Acoustic; Transceiver,44.24172,-63.26866,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,-,lost/found: 2016-07-08,1,21.4
+HFX,OTNGlobal,NW ATLANTIC,HFX042,Acoustic; Transceiver,44.24172,-63.26866,active,Off the coast of Nova Scotia near Halifax Harbour,VR2AR,trncvr,2015-05-19,2016-05-04,2016-04-30,1,628.1
+HFX,OTNGlobal,NW ATLANTIC,HFX042,Acoustic; Transceiver,44.24172,-63.26866,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-04-30,-,-,-,628.1
+HFX,OTNGlobal,NW ATLANTIC,HFX043,Acoustic,44.23606,-63.26239,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,2014-06-26,2014-06-22,5,11.1
+HFX,OTNGlobal,NW ATLANTIC,HFX043,Acoustic,44.23606,-63.26239,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2014-12-12,2016-07-27,1,41.6
+HFX,OTNGlobal,NW ATLANTIC,HFX043,Acoustic,44.23606,-63.26239,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-07-27,-,-,-,17.4
+HFX,OTNGlobal,NW ATLANTIC,HFX044,Acoustic,44.23041,-63.25612,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,2014-06-26,2014-06-22,5,5.0
+HFX,OTNGlobal,NW ATLANTIC,HFX044,Acoustic,44.23041,-63.25612,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,-,lost,-,56.0
+HFX,OTNGlobal,NW ATLANTIC,HFX044,Acoustic,44.23041,-63.25612,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-12-12,-,2016-07-27,-,334.6
+HFX,OTNGlobal,NW ATLANTIC,HFX044,Acoustic,44.23041,-63.25612,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-07-27,-,-,-,549.7
+HFX,OTNGlobal,NW ATLANTIC,HFX045,Acoustic,44.22475,-63.24985,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-29,2012-11-19,2012-11-19,3,5.0
+HFX,OTNGlobal,NW ATLANTIC,HFX045,Acoustic,44.22475,-63.24985,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-19,-,caught: 2013-06-28,-,15.2
+HFX,OTNGlobal,NW ATLANTIC,HFX045,Acoustic,44.22475,-63.24985,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2013-07-08,2014-06-26,2014-06-22,2,483.5
+HFX,OTNGlobal,NW ATLANTIC,HFX045,Acoustic,44.22475,-63.24985,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2014-07-16,caught: 2014-06-22,1,12.8
+HFX,OTNGlobal,NW ATLANTIC,HFX045,Acoustic,44.22475,-63.24985,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-12-12,-,caught: 2015-08-31,-,251.2
+HFX,OTNGlobal,NW ATLANTIC,HFX045,Acoustic,44.22475,-63.24985,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-01-23,-,-,-,251.2
+HFX,OTNGlobal,NW ATLANTIC,HFX045,Acoustic,44.22475,-63.24985,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-07-27,-,caught/moved/lost,-,385.6
+HFX,OTNGlobal,NW ATLANTIC,HFX046,Acoustic,44.21909,-63.24358,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-29,2014-06-26,2014-06-22,5,5.0
+HFX,OTNGlobal,NW ATLANTIC,HFX046,Acoustic,44.21909,-63.24358,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2014-12-12,2016-07-27,1,18.1
+HFX,OTNGlobal,NW ATLANTIC,HFX046,Acoustic,44.21909,-63.24358,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-07-27,-,-,-,8.4
+HFX,OTNGlobal,NW ATLANTIC,HFX047,Acoustic,44.21344,-63.23732,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2011-12-06,turned off: 2011-07-28,1,6.5
+HFX,OTNGlobal,NW ATLANTIC,HFX047,Acoustic,44.21344,-63.23732,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-07-28,2014-06-26,2014-06-22,3,21.8
+HFX,OTNGlobal,NW ATLANTIC,HFX047,Acoustic,44.21344,-63.23732,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2016-01-23,2016-07-27,2,20.7
+HFX,OTNGlobal,NW ATLANTIC,HFX047,Acoustic,44.21344,-63.23732,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-07-27,-,-,-,403.9
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2011-11-25,2011-11-22,2,1.9
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2011-11-22,2012-11-27,2012-11-19,2,7.5
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-11-22,2012-11-27,2012-11-19,2,7.5
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2012-11-19,2013-10-28,2013-10-23,1,18.1
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-19,2013-10-25,2013-10-23,1,18.1
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2013-10-23,2015-05-11,2015-04-20,3,94.2
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2013-10-23,-,2015-04-20,-,94.2
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2015-04-20,-,2016-04-22,-,221.2
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2015-04-20,-,2016-04-22,1,221.2
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-04-22,-,2017-04-20,1,102.5
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2016-04-22,-,2017-04-20,-,102.5
+HFX,OTNGlobal,NW ATLANTIC,HFX048,Acoustic; Environmental,44.20778,-63.23105,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2017-04-20,-,-,-,70.2
+HFX,OTNGlobal,NW ATLANTIC,HFX049,Acoustic,44.20212,-63.22478,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2014-06-26,2014-06-22,5,4.6
+HFX,OTNGlobal,NW ATLANTIC,HFX049,Acoustic,44.20212,-63.22478,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-06-22,2014-12-12,2016-07-27,1,17.5
+HFX,OTNGlobal,NW ATLANTIC,HFX049,Acoustic,44.20212,-63.22478,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-07-27,-,-,-,3.9
+HFX,OTNGlobal,NW ATLANTIC,HFX050,Acoustic,44.19647,-63.21851,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,1.6
+HFX,OTNGlobal,NW ATLANTIC,HFX050,Acoustic,44.19647,-63.21851,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-05-09,2016-04-23,2,48.4
+HFX,OTNGlobal,NW ATLANTIC,HFX050,Acoustic,44.19647,-63.21851,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,71.2
+HFX,OTNGlobal,NW ATLANTIC,HFX051,Acoustic,44.19081,-63.21224,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,1.4
+HFX,OTNGlobal,NW ATLANTIC,HFX051,Acoustic,44.19081,-63.21224,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-05-06,2016-04-23,2,36.9
+HFX,OTNGlobal,NW ATLANTIC,HFX051,Acoustic,44.19081,-63.21224,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,65.6
+HFX,OTNGlobal,NW ATLANTIC,HFX052,Acoustic,44.18515,-63.20597,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,1.9
+HFX,OTNGlobal,NW ATLANTIC,HFX052,Acoustic,44.18515,-63.20597,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2014-12-12,2016-04-23,1,29.0
+HFX,OTNGlobal,NW ATLANTIC,HFX052,Acoustic,44.18515,-63.20597,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,57.0
+HFX,OTNGlobal,NW ATLANTIC,HFX053,Acoustic,44.1795,-63.1997,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,0.8
+HFX,OTNGlobal,NW ATLANTIC,HFX053,Acoustic,44.1795,-63.1997,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-05-06,2016-04-23,2,29.7
+HFX,OTNGlobal,NW ATLANTIC,HFX053,Acoustic,44.1795,-63.1997,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,33.0
+HFX,OTNGlobal,NW ATLANTIC,HFX054,Acoustic,44.17384,-63.19344,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,8.7
+HFX,OTNGlobal,NW ATLANTIC,HFX054,Acoustic,44.17384,-63.19344,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2014-12-12,2016-04-23,1,25.8
+HFX,OTNGlobal,NW ATLANTIC,HFX054,Acoustic,44.17384,-63.19344,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,40.9
+HFX,OTNGlobal,NW ATLANTIC,HFX055,Acoustic,44.16819,-63.18717,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,1.9
+HFX,OTNGlobal,NW ATLANTIC,HFX055,Acoustic,44.16819,-63.18717,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-05-06,2016-04-23,2,36.4
+HFX,OTNGlobal,NW ATLANTIC,HFX055,Acoustic,44.16819,-63.18717,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,53.1
+HFX,OTNGlobal,NW ATLANTIC,HFX056,Acoustic,44.16253,-63.1809,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,7.3
+HFX,OTNGlobal,NW ATLANTIC,HFX056,Acoustic,44.16253,-63.1809,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2014-12-12,2016-04-23,1,24.7
+HFX,OTNGlobal,NW ATLANTIC,HFX056,Acoustic,44.16253,-63.1809,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,7.0
+HFX,OTNGlobal,NW ATLANTIC,HFX057,Acoustic,44.15687,-63.17463,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,1.4
+HFX,OTNGlobal,NW ATLANTIC,HFX057,Acoustic,44.15687,-63.17463,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2014-12-12,2016-04-23,1,28.8
+HFX,OTNGlobal,NW ATLANTIC,HFX057,Acoustic,44.15687,-63.17463,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,26.2
+HFX,OTNGlobal,NW ATLANTIC,HFX058,Acoustic,44.15122,-63.16836,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,2.4
+HFX,OTNGlobal,NW ATLANTIC,HFX058,Acoustic,44.15122,-63.16836,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2014-12-12,2016-04-23,1,23.3
+HFX,OTNGlobal,NW ATLANTIC,HFX058,Acoustic,44.15122,-63.16836,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,16.1
+HFX,OTNGlobal,NW ATLANTIC,HFX059,Acoustic,44.14556,-63.16209,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-30,2012-11-27,2012-11-19,3,9.4
+HFX,OTNGlobal,NW ATLANTIC,HFX059,Acoustic,44.14556,-63.16209,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-19,2013-11-19,2013-11-16,1,13.0
+HFX,OTNGlobal,NW ATLANTIC,HFX059,Acoustic,44.14556,-63.16209,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2014-10-09,lost/found: 2014-09-18,1,12.1
+HFX,OTNGlobal,NW ATLANTIC,HFX059,Acoustic,44.14556,-63.16209,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2014-12-12,2016-05-06,2016-04-23,1,319.8
+HFX,OTNGlobal,NW ATLANTIC,HFX059,Acoustic,44.14556,-63.16209,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,451.9
+HFX,OTNGlobal,NW ATLANTIC,HFX060,Acoustic,44.1399,-63.15583,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,12.5
+HFX,OTNGlobal,NW ATLANTIC,HFX060,Acoustic,44.1399,-63.15583,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2014-12-12,2016-04-23,1,33.5
+HFX,OTNGlobal,NW ATLANTIC,HFX060,Acoustic,44.1399,-63.15583,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,33.0
+HFX,OTNGlobal,NW ATLANTIC,HFX061,Acoustic; Transceiver,44.13425,-63.14956,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,4.0
+HFX,OTNGlobal,NW ATLANTIC,HFX061,Acoustic; Transceiver,44.13425,-63.14956,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,-,2016-01-23,-,43.5
+HFX,OTNGlobal,NW ATLANTIC,HFX061,Acoustic; Transceiver,44.13425,-63.14956,active,Off the coast of Nova Scotia near Halifax Harbour,VR2AR,trncvr,2016-02-23,-,2016-04-29,-,72.4
+HFX,OTNGlobal,NW ATLANTIC,HFX061,Acoustic; Transceiver,44.13425,-63.14956,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,3.8
+HFX,OTNGlobal,NW ATLANTIC,HFX062,Acoustic,44.12859,-63.14329,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,4.8
+HFX,OTNGlobal,NW ATLANTIC,HFX062,Acoustic,44.12859,-63.14329,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-05-06,2016-04-23,2,52.2
+HFX,OTNGlobal,NW ATLANTIC,HFX062,Acoustic,44.12859,-63.14329,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,18.3
+HFX,OTNGlobal,NW ATLANTIC,HFX063,Acoustic,44.12294,-63.13702,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,5.7
+HFX,OTNGlobal,NW ATLANTIC,HFX063,Acoustic,44.12294,-63.13702,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-05-09,2016-04-23,2,50.7
+HFX,OTNGlobal,NW ATLANTIC,HFX063,Acoustic,44.12294,-63.13702,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,93.4
+HFX,OTNGlobal,NW ATLANTIC,HFX064,Acoustic,44.11728,-63.13075,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,6.5
+HFX,OTNGlobal,NW ATLANTIC,HFX064,Acoustic,44.11728,-63.13075,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-05-06,2016-04-23,3,23.4
+HFX,OTNGlobal,NW ATLANTIC,HFX064,Acoustic,44.11728,-63.13075,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,33.4
+HFX,OTNGlobal,NW ATLANTIC,HFX065,Acoustic,44.11162,-63.12448,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX065,Acoustic,44.11162,-63.12448,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-05-06,2016-04-23,3,37.7
+HFX,OTNGlobal,NW ATLANTIC,HFX065,Acoustic,44.11162,-63.12448,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2016-04-23,-,-,-,22.7
+HFX,OTNGlobal,NW ATLANTIC,HFX066,Acoustic,44.10597,-63.11822,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-03-30,2013-11-19,2013-11-16,4,6.5
+HFX,OTNGlobal,NW ATLANTIC,HFX066,Acoustic,44.10597,-63.11822,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-01-23,2016-07-27,2,21.2
+HFX,OTNGlobal,NW ATLANTIC,HFX067,Acoustic,44.10031,-63.11195,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-30,2012-11-27,2012-11-19,3,3.3
+HFX,OTNGlobal,NW ATLANTIC,HFX067,Acoustic,44.10031,-63.11195,active,Off the coast of Nova Scotia near Halifax Harbour,VR2W,rcvr,2011-03-30,2012-11-27,2012-11-19,1,3.3
+HFX,OTNGlobal,NW ATLANTIC,HFX067,Acoustic,44.10031,-63.11195,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-19,2013-11-19,2013-11-16,1,24.3
+HFX,OTNGlobal,NW ATLANTIC,HFX067,Acoustic,44.10031,-63.11195,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-01-23,2016-07-27,2,35.4
+HFX,OTNGlobal,NW ATLANTIC,HFX068,Acoustic,44.09465,-63.10568,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-30,2012-11-27,2012-11-19,3,6.8
+HFX,OTNGlobal,NW ATLANTIC,HFX068,Acoustic,44.09465,-63.10568,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-19,2013-11-19,2013-11-16,1,14.6
+HFX,OTNGlobal,NW ATLANTIC,HFX068,Acoustic,44.09465,-63.10568,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2014-12-12,2016-07-27,1,26.6
+HFX,OTNGlobal,NW ATLANTIC,HFX069,Acoustic; Environmental,44.089,-63.09941,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-30,2016-07-08,2011-11-22,3,31.3
+HFX,OTNGlobal,NW ATLANTIC,HFX069,Acoustic; Environmental,44.089,-63.09941,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2011-11-22,2012-11-27,2012-11-19,1,68.9
+HFX,OTNGlobal,NW ATLANTIC,HFX069,Acoustic; Environmental,44.089,-63.09941,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2011-11-22,2012-11-27,2012-11-19,1,68.9
+HFX,OTNGlobal,NW ATLANTIC,HFX069,Acoustic; Environmental,44.089,-63.09941,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-19,2013-10-25,2013-10-23,1,72.2
+HFX,OTNGlobal,NW ATLANTIC,HFX069,Acoustic; Environmental,44.089,-63.09941,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2012-11-19,2013-10-28,2013-10-23,1,72.2
+HFX,OTNGlobal,NW ATLANTIC,HFX069,Acoustic; Environmental,44.089,-63.09941,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2013-10-23,-,2015-04-20,-,164.3
+HFX,OTNGlobal,NW ATLANTIC,HFX069,Acoustic; Environmental,44.089,-63.09941,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2013-10-23,2015-05-11,2015-04-20,3,164.3
+HFX,OTNGlobal,NW ATLANTIC,HFX069,Acoustic; Environmental,44.089,-63.09941,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2015-04-20,-,2016-04-22,-,377.3
+HFX,OTNGlobal,NW ATLANTIC,HFX069,Acoustic; Environmental,44.089,-63.09941,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2015-04-20,-,2016-04-22,-,377.3
+HFX,OTNGlobal,NW ATLANTIC,HFX069,Acoustic; Environmental,44.089,-63.09941,active,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2016-04-22,-,2017-04-20,-,208.6
+HFX,OTNGlobal,NW ATLANTIC,HFX069,Acoustic; Environmental,44.089,-63.09941,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2016-04-22,-,2017-04-20,1,208.6
+HFX,OTNGlobal,NW ATLANTIC,HFX070,Acoustic,44.08334,-63.09314,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-30,2012-11-27,2012-11-19,3,14.8
+HFX,OTNGlobal,NW ATLANTIC,HFX070,Acoustic,44.08334,-63.09314,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-19,2013-11-19,2013-11-16,1,14.5
+HFX,OTNGlobal,NW ATLANTIC,HFX070,Acoustic,44.08334,-63.09314,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-01-23,2016-07-27,2,27.1
+HFX,OTNGlobal,NW ATLANTIC,HFX071,Acoustic,44.07768,-63.08687,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-30,2012-11-27,2012-11-19,3,7.5
+HFX,OTNGlobal,NW ATLANTIC,HFX071,Acoustic,44.07768,-63.08687,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-19,2013-11-19,2013-11-16,1,9.1
+HFX,OTNGlobal,NW ATLANTIC,HFX071,Acoustic,44.07768,-63.08687,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-01-23,2016-07-27,2,19.3
+HFX,OTNGlobal,NW ATLANTIC,HFX072,Acoustic,44.07203,-63.0806,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2011-03-30,2012-11-27,2012-11-19,3,5.8
+HFX,OTNGlobal,NW ATLANTIC,HFX072,Acoustic,44.07203,-63.0806,active,Off the coast of Nova Scotia near Halifax Harbour,VR4,rcvr,2012-11-19,2013-11-19,2013-11-16,1,13.8
+HFX,OTNGlobal,NW ATLANTIC,HFX072,Acoustic,44.07203,-63.0806,active,Off the coast of Nova Scotia near Halifax Harbour,VR3,rcvr,2013-11-16,2016-01-23,2016-07-27,2,21.9
+HFX,OTNGlobal,NW ATLANTIC,HFX074,Acoustic,44.06001,-63.07912,active,SAM,VR4,rcvr,2012-02-15,2016-08-15,2016-08-15,5,9.9
+HFX,OTNGlobal,NW ATLANTIC,HFX075,Acoustic,44.05364,-63.0839,active,SAM,VR4,rcvr,2012-02-15,2014-11-25,failed,3,29.0
+HFX,OTNGlobal,NW ATLANTIC,HFX076,Acoustic,44.04728,-63.08868,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,208.8
+HFX,OTNGlobal,NW ATLANTIC,HFX077,Acoustic,44.04092,-63.09347,active,SAM,VR4,rcvr,2012-02-16,2015-11-29,moved: 2014-01-17,3,4.5
+HFX,OTNGlobal,NW ATLANTIC,HFX077,Acoustic,44.04092,-63.09347,active,SAM,VR4,rcvr,2014-01-17,2014-11-25,failed,1,34.6
+HFX,OTNGlobal,NW ATLANTIC,HFX078,Acoustic,44.03455,-63.09825,active,SAM,VR4,rcvr,2012-02-16,2015-03-16,lost/moved/found: 2015-03-13,2,8.3
+HFX,OTNGlobal,NW ATLANTIC,HFX078,Acoustic,44.03455,-63.09825,active,SAM,VR4,rcvr,2014-01-17,2014-11-25,2016-08-15,1,31.6
+HFX,OTNGlobal,NW ATLANTIC,HFX079,Acoustic,44.02819,-63.10303,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,76.3
+HFX,OTNGlobal,NW ATLANTIC,HFX080,Acoustic,44.02183,-63.10782,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,82.3
+HFX,OTNGlobal,NW ATLANTIC,HFX081,Acoustic,44.01546,-63.1126,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,74.2
+HFX,OTNGlobal,NW ATLANTIC,HFX082,Acoustic,44.0091,-63.11738,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,76.8
+HFX,OTNGlobal,NW ATLANTIC,HFX083,Acoustic,44.00273,-63.12216,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,69.4
+HFX,OTNGlobal,NW ATLANTIC,HFX084,Acoustic,43.99637,-63.12695,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,72.9
+HFX,OTNGlobal,NW ATLANTIC,HFX085,Acoustic,43.99001,-63.13173,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,7.5
+HFX,OTNGlobal,NW ATLANTIC,HFX086,Acoustic,43.98364,-63.13651,active,SAM,VR4,rcvr,2012-02-16,2014-11-25,lost,3,7.1
+HFX,OTNGlobal,NW ATLANTIC,HFX087,Acoustic,43.97728,-63.14129,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,18.6
+HFX,OTNGlobal,NW ATLANTIC,HFX088,Acoustic,43.97092,-63.14608,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,21.5
+HFX,OTNGlobal,NW ATLANTIC,HFX089,Acoustic,43.96455,-63.15086,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,11.2
+HFX,OTNGlobal,NW ATLANTIC,HFX090,Acoustic,43.95819,-63.15564,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,9.3
+HFX,OTNGlobal,NW ATLANTIC,HFX091,Acoustic,43.95182,-63.16043,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,16.9
+HFX,OTNGlobal,NW ATLANTIC,HFX092,Acoustic,43.94546,-63.16521,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,15.7
+HFX,OTNGlobal,NW ATLANTIC,HFX093,Acoustic,43.9391,-63.16999,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,6.3
+HFX,OTNGlobal,NW ATLANTIC,HFX094,Acoustic,43.93273,-63.17477,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,9.7
+HFX,OTNGlobal,NW ATLANTIC,HFX095,Acoustic,43.92637,-63.17956,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,6.7
+HFX,OTNGlobal,NW ATLANTIC,HFX096,Acoustic,43.92001,-63.18434,active,SAM,VR4,rcvr,2012-02-16,2016-08-15,2016-08-15,5,8.4
+HFX,OTNGlobal,NW ATLANTIC,HFX097,Acoustic; Environmental,43.91364,-63.18912,active,SAM,Benthic Pod,envrn,2012-02-16,-,2012-12-13,-,5.4
+HFX,OTNGlobal,NW ATLANTIC,HFX097,Acoustic; Environmental,43.91364,-63.18912,active,SAM,VR4,rcvr,2012-02-16,2015-12-06,2012-12-13,2,5.4
+HFX,OTNGlobal,NW ATLANTIC,HFX097,Acoustic; Environmental,43.91364,-63.18912,active,SAM,Benthic Pod,envrn,2012-12-13,2013-10-28,2013-10-23,1,58.5
+HFX,OTNGlobal,NW ATLANTIC,HFX097,Acoustic; Environmental,43.91364,-63.18912,active,SAM,VR4,rcvr,2012-12-13,2013-10-25,2013-10-23,1,58.5
+HFX,OTNGlobal,NW ATLANTIC,HFX097,Acoustic; Environmental,43.91364,-63.18912,active,SAM,VR4,rcvr,2013-10-23,2015-05-11,2015-04-20,3,21.8
+HFX,OTNGlobal,NW ATLANTIC,HFX097,Acoustic; Environmental,43.91364,-63.18912,active,SAM,Benthic Pod,envrn,2013-10-23,-,2015-04-20,-,21.8
+HFX,OTNGlobal,NW ATLANTIC,HFX097,Acoustic; Environmental,43.91364,-63.18912,active,SAM,VR4,rcvr,2015-04-20,-,2016-04-22,1,59.8
+HFX,OTNGlobal,NW ATLANTIC,HFX097,Acoustic; Environmental,43.91364,-63.18912,active,SAM,Benthic Pod,envrn,2015-04-20,-,2016-04-22,-,59.8
+HFX,OTNGlobal,NW ATLANTIC,HFX097,Acoustic; Environmental,43.91364,-63.18912,active,SAM,Benthic Pod,envrn,2016-04-22,-,2017-04-20,-,163.3
+HFX,OTNGlobal,NW ATLANTIC,HFX097,Acoustic; Environmental,43.91364,-63.18912,active,SAM,VR4,rcvr,2016-04-22,-,2017-04-20,-,163.3
+HFX,OTNGlobal,NW ATLANTIC,HFX097,Acoustic; Environmental,43.91364,-63.18912,active,SAM,VR4,rcvr,2017-04-20,-,-,-,203.5
+HFX,OTNGlobal,NW ATLANTIC,HFX098,Acoustic,43.90728,-63.1939,active,SAM,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,2.0
+HFX,OTNGlobal,NW ATLANTIC,HFX099,Acoustic,43.90091,-63.19869,active,SAM,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,6,5.7
+HFX,OTNGlobal,NW ATLANTIC,HFX100,Acoustic,43.89455,-63.20347,active,SAM,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,6,8.1
+HFX,OTNGlobal,NW ATLANTIC,HFX101,Acoustic,43.88819,-63.20825,active,SAM,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,6,7.5
+HFX,OTNGlobal,NW ATLANTIC,HFX102,Acoustic,43.88182,-63.21304,active,SAM,VR4,rcvr,2012-02-16,2016-08-28,-,6,9.3
+HFX,OTNGlobal,NW ATLANTIC,HFX103,Acoustic,43.87546,-63.21782,active,SAM,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,6,9.2
+HFX,OTNGlobal,NW ATLANTIC,HFX104,Acoustic,43.8691,-63.2226,active,SAM,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,7.1
+HFX,OTNGlobal,NW ATLANTIC,HFX105,Acoustic,43.86273,-63.22738,active,SAM,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,11.6
+HFX,OTNGlobal,NW ATLANTIC,HFX106,Acoustic,43.85637,-63.23217,active,SAM,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,12.1
+HFX,OTNGlobal,NW ATLANTIC,HFX107,Acoustic,43.85203,-63.23995,active,SBW,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,13.0
+HFX,OTNGlobal,NW ATLANTIC,HFX108,Acoustic,43.8477,-63.24773,active,SBW,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,75.5
+HFX,OTNGlobal,NW ATLANTIC,HFX109,Acoustic,43.84336,-63.25551,active,SBW,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,33.7
+HFX,OTNGlobal,NW ATLANTIC,HFX110,Acoustic,43.83902,-63.26329,active,SBW,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,85.0
+HFX,OTNGlobal,NW ATLANTIC,HFX111,Acoustic,43.83469,-63.27108,active,SBW,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,86.6
+HFX,OTNGlobal,NW ATLANTIC,HFX112,Acoustic,43.83035,-63.27886,active,SBW,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,74.4
+HFX,OTNGlobal,NW ATLANTIC,HFX113,Acoustic,43.82602,-63.28664,active,SBW,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,73.2
+HFX,OTNGlobal,NW ATLANTIC,HFX114,Acoustic,43.82168,-63.29442,active,SBW,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,5,22.0
+HFX,OTNGlobal,NW ATLANTIC,HFX115,Acoustic,43.81734,-63.30221,active,SBW,VR4,rcvr,2012-02-16,2016-08-28,2016-08-28,6,72.2
+HFX,OTNGlobal,NW ATLANTIC,HFX116,Acoustic,43.81301,-63.30999,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,12.4
+HFX,OTNGlobal,NW ATLANTIC,HFX116,Acoustic,43.81301,-63.30999,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,10.3
+HFX,OTNGlobal,NW ATLANTIC,HFX116,Acoustic,43.81301,-63.30999,active,SBW,VR4,rcvr,2013-05-28,2016-08-28,2016-08-28,4,69.9
+HFX,OTNGlobal,NW ATLANTIC,HFX117,Acoustic,43.80867,-63.31777,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,5.5
+HFX,OTNGlobal,NW ATLANTIC,HFX117,Acoustic,43.80867,-63.31777,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,12.4
+HFX,OTNGlobal,NW ATLANTIC,HFX117,Acoustic,43.80867,-63.31777,active,SBW,VR4,rcvr,2013-05-28,2016-08-28,2016-08-28,4,70.0
+HFX,OTNGlobal,NW ATLANTIC,HFX118,Acoustic,43.80434,-63.32555,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,12.8
+HFX,OTNGlobal,NW ATLANTIC,HFX118,Acoustic,43.80434,-63.32555,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,34.3
+HFX,OTNGlobal,NW ATLANTIC,HFX118,Acoustic,43.80434,-63.32555,active,SBW,VR4,rcvr,2013-05-28,2016-08-28,2016-08-28,4,4.7
+HFX,OTNGlobal,NW ATLANTIC,HFX119,Acoustic,43.8,-63.33333,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,6.9
+HFX,OTNGlobal,NW ATLANTIC,HFX119,Acoustic,43.8,-63.33333,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,46.4
+HFX,OTNGlobal,NW ATLANTIC,HFX119,Acoustic,43.8,-63.33333,active,SBW,VR4,rcvr,2013-05-28,2016-08-28,2016-04-29,5,24.4
+HFX,OTNGlobal,NW ATLANTIC,HFX119,Acoustic,43.8,-63.33333,active,SBW,VR4,rcvr,2016-04-29,-,2016-08-28,-,24.4
+HFX,OTNGlobal,NW ATLANTIC,HFX119,Acoustic,43.8,-63.33333,active,SBW,VR4,rcvr,2016-08-28,-,-,1,46.7
+HFX,OTNGlobal,NW ATLANTIC,HFX120,Acoustic,43.79333,-63.33778,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,7.4
+HFX,OTNGlobal,NW ATLANTIC,HFX120,Acoustic,43.79333,-63.33778,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,22.4
+HFX,OTNGlobal,NW ATLANTIC,HFX120,Acoustic,43.79333,-63.33778,active,SBW,VR4,rcvr,2013-05-28,2016-08-28,2016-04-29,5,37.8
+HFX,OTNGlobal,NW ATLANTIC,HFX120,Acoustic,43.79333,-63.33778,active,SBW,VR4,rcvr,2016-04-29,-,2016-08-28,-,37.8
+HFX,OTNGlobal,NW ATLANTIC,HFX120,Acoustic,43.79333,-63.33778,active,SBW,VR4,rcvr,2016-08-28,-,-,1,25.3
+HFX,OTNGlobal,NW ATLANTIC,HFX121,Acoustic,43.78667,-63.34222,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,10.4
+HFX,OTNGlobal,NW ATLANTIC,HFX121,Acoustic,43.78667,-63.34222,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,27.9
+HFX,OTNGlobal,NW ATLANTIC,HFX121,Acoustic,43.78667,-63.34222,active,SBW,VR4,rcvr,2013-05-28,2016-08-28,2016-04-29,5,19.8
+HFX,OTNGlobal,NW ATLANTIC,HFX121,Acoustic,43.78667,-63.34222,active,SBW,VR4,rcvr,2016-04-29,-,2016-08-28,-,19.8
+HFX,OTNGlobal,NW ATLANTIC,HFX121,Acoustic,43.78667,-63.34222,active,SBW,VR4,rcvr,2016-08-28,-,-,1,38.7
+HFX,OTNGlobal,NW ATLANTIC,HFX122,Acoustic,43.78,-63.34667,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,13.0
+HFX,OTNGlobal,NW ATLANTIC,HFX122,Acoustic,43.78,-63.34667,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,43.4
+HFX,OTNGlobal,NW ATLANTIC,HFX122,Acoustic,43.78,-63.34667,active,SBW,VR4,rcvr,2013-05-28,2016-08-28,2014-06-12,3,36.5
+HFX,OTNGlobal,NW ATLANTIC,HFX122,Acoustic,43.78,-63.34667,active,SBW,VR4,rcvr,2014-06-12,2016-04-29,2016-08-28,3,20.1
+HFX,OTNGlobal,NW ATLANTIC,HFX122,Acoustic,43.78,-63.34667,active,SBW,VR4,rcvr,2016-08-28,-,-,1,9.7
+HFX,OTNGlobal,NW ATLANTIC,HFX123,Acoustic,43.77333,-63.35111,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,10.1
+HFX,OTNGlobal,NW ATLANTIC,HFX123,Acoustic,43.77333,-63.35111,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,26.7
+HFX,OTNGlobal,NW ATLANTIC,HFX123,Acoustic,43.77333,-63.35111,active,SBW,VR4,rcvr,2013-05-28,2016-08-28,2016-04-29,5,46.1
+HFX,OTNGlobal,NW ATLANTIC,HFX123,Acoustic,43.77333,-63.35111,active,SBW,VR4,rcvr,2016-04-29,-,2016-08-28,-,46.1
+HFX,OTNGlobal,NW ATLANTIC,HFX123,Acoustic,43.77333,-63.35111,active,SBW,VR4,rcvr,2016-08-28,-,-,1,23.7
+HFX,OTNGlobal,NW ATLANTIC,HFX124,Acoustic,43.76667,-63.35556,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,12.7
+HFX,OTNGlobal,NW ATLANTIC,HFX124,Acoustic,43.76667,-63.35556,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,28.7
+HFX,OTNGlobal,NW ATLANTIC,HFX124,Acoustic,43.76667,-63.35556,active,SBW,VR4,rcvr,2013-05-28,2016-08-28,2016-04-29,5,12.3
+HFX,OTNGlobal,NW ATLANTIC,HFX124,Acoustic,43.76667,-63.35556,active,SBW,VR4,rcvr,2016-04-29,-,2016-08-28,-,12.3
+HFX,OTNGlobal,NW ATLANTIC,HFX124,Acoustic,43.76667,-63.35556,active,SBW,VR4,rcvr,2016-08-28,-,-,1,69.4
+HFX,OTNGlobal,NW ATLANTIC,HFX125,Acoustic,43.76,-63.36,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,8.9
+HFX,OTNGlobal,NW ATLANTIC,HFX125,Acoustic,43.76,-63.36,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,35.8
+HFX,OTNGlobal,NW ATLANTIC,HFX125,Acoustic,43.76,-63.36,active,SBW,VR4,rcvr,2013-05-28,2016-08-28,2016-04-29,5,27.9
+HFX,OTNGlobal,NW ATLANTIC,HFX125,Acoustic,43.76,-63.36,active,SBW,VR4,rcvr,2016-04-29,-,2016-08-28,-,27.9
+HFX,OTNGlobal,NW ATLANTIC,HFX125,Acoustic,43.76,-63.36,active,SBW,VR4,rcvr,2016-08-28,-,-,1,39.0
+HFX,OTNGlobal,NW ATLANTIC,HFX126,Acoustic; Environmental,43.75333,-63.36444,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,11.6
+HFX,OTNGlobal,NW ATLANTIC,HFX126,Acoustic; Environmental,43.75333,-63.36444,active,SBW,VR4,rcvr,2012-10-25,2015-12-05,2013-05-28,2,52.5
+HFX,OTNGlobal,NW ATLANTIC,HFX126,Acoustic; Environmental,43.75333,-63.36444,active,SBW,Benthic Pod,envrn,2012-10-25,2013-05-30,2013-05-28,1,52.5
+HFX,OTNGlobal,NW ATLANTIC,HFX126,Acoustic; Environmental,43.75333,-63.36444,active,SBW,VR4,rcvr,2013-05-28,2016-01-23,2014-06-12,3,77.1
+HFX,OTNGlobal,NW ATLANTIC,HFX126,Acoustic; Environmental,43.75333,-63.36444,active,SBW,Benthic Pod,envrn,2013-05-28,2014-06-18,2014-06-12,1,77.1
+HFX,OTNGlobal,NW ATLANTIC,HFX126,Acoustic; Environmental,43.75333,-63.36444,active,SBW,VR4,rcvr,2014-06-12,2014-11-24,2015-11-18,1,49.7
+HFX,OTNGlobal,NW ATLANTIC,HFX126,Acoustic; Environmental,43.75333,-63.36444,active,SBW,Benthic Pod,envrn,2014-06-12,-,2015-11-18,-,49.7
+HFX,OTNGlobal,NW ATLANTIC,HFX126,Acoustic; Environmental,43.75333,-63.36444,active,SBW,Benthic Pod,envrn,2015-11-18,-,2017-04-20,-,30.3
+HFX,OTNGlobal,NW ATLANTIC,HFX126,Acoustic; Environmental,43.75333,-63.36444,active,SBW,VR4,rcvr,2015-11-18,-,2017-04-20,4,30.3
+HFX,OTNGlobal,NW ATLANTIC,HFX126,Acoustic; Environmental,43.75333,-63.36444,active,SBW,VR4,rcvr,2017-04-20,-,-,-,100.3
+HFX,OTNGlobal,NW ATLANTIC,HFX127,Acoustic,43.74667,-63.36889,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,24.0
+HFX,OTNGlobal,NW ATLANTIC,HFX127,Acoustic,43.74667,-63.36889,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,35.4
+HFX,OTNGlobal,NW ATLANTIC,HFX127,Acoustic,43.74667,-63.36889,active,SBW,VR4,rcvr,2013-05-28,2016-08-28,2016-04-29,5,23.3
+HFX,OTNGlobal,NW ATLANTIC,HFX127,Acoustic,43.74667,-63.36889,active,SBW,VR4,rcvr,2016-04-29,-,2016-08-28,-,23.3
+HFX,OTNGlobal,NW ATLANTIC,HFX127,Acoustic,43.74667,-63.36889,active,SBW,VR4,rcvr,2016-08-28,-,-,1,28.1
+HFX,OTNGlobal,NW ATLANTIC,HFX128,Acoustic,43.74,-63.37333,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,10.4
+HFX,OTNGlobal,NW ATLANTIC,HFX128,Acoustic,43.74,-63.37333,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,17.7
+HFX,OTNGlobal,NW ATLANTIC,HFX128,Acoustic,43.74,-63.37333,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,54.4
+HFX,OTNGlobal,NW ATLANTIC,HFX128,Acoustic,43.74,-63.37333,active,SBW,VR4,rcvr,2016-04-29,-,-,1,54.4
+HFX,OTNGlobal,NW ATLANTIC,HFX129,Acoustic,43.73333,-63.37778,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,15.4
+HFX,OTNGlobal,NW ATLANTIC,HFX129,Acoustic,43.73333,-63.37778,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,29.1
+HFX,OTNGlobal,NW ATLANTIC,HFX129,Acoustic,43.73333,-63.37778,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,24.9
+HFX,OTNGlobal,NW ATLANTIC,HFX129,Acoustic,43.73333,-63.37778,active,SBW,VR4,rcvr,2016-04-29,-,-,1,24.9
+HFX,OTNGlobal,NW ATLANTIC,HFX130,Acoustic,43.72667,-63.38222,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,9.6
+HFX,OTNGlobal,NW ATLANTIC,HFX130,Acoustic,43.72667,-63.38222,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,43.5
+HFX,OTNGlobal,NW ATLANTIC,HFX130,Acoustic,43.72667,-63.38222,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,24.9
+HFX,OTNGlobal,NW ATLANTIC,HFX130,Acoustic,43.72667,-63.38222,active,SBW,VR4,rcvr,2016-04-29,-,-,1,24.9
+HFX,OTNGlobal,NW ATLANTIC,HFX131,Acoustic,43.72,-63.38667,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,14.6
+HFX,OTNGlobal,NW ATLANTIC,HFX131,Acoustic,43.72,-63.38667,active,SBW,VR2W,rcvr,2012-10-25,-,failed,-,60.1
+HFX,OTNGlobal,NW ATLANTIC,HFX131,Acoustic,43.72,-63.38667,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,27.9
+HFX,OTNGlobal,NW ATLANTIC,HFX131,Acoustic,43.72,-63.38667,active,SBW,VR4,rcvr,2016-04-29,-,-,1,27.9
+HFX,OTNGlobal,NW ATLANTIC,HFX132,Acoustic,43.71333,-63.39111,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,14.9
+HFX,OTNGlobal,NW ATLANTIC,HFX132,Acoustic,43.71333,-63.39111,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,52.9
+HFX,OTNGlobal,NW ATLANTIC,HFX132,Acoustic,43.71333,-63.39111,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,10.6
+HFX,OTNGlobal,NW ATLANTIC,HFX132,Acoustic,43.71333,-63.39111,active,SBW,VR4,rcvr,2016-04-29,-,-,1,10.6
+HFX,OTNGlobal,NW ATLANTIC,HFX133,Acoustic,43.70667,-63.39556,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,6.6
+HFX,OTNGlobal,NW ATLANTIC,HFX133,Acoustic,43.70667,-63.39556,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,25.1
+HFX,OTNGlobal,NW ATLANTIC,HFX133,Acoustic,43.70667,-63.39556,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,35.1
+HFX,OTNGlobal,NW ATLANTIC,HFX133,Acoustic,43.70667,-63.39556,active,SBW,VR4,rcvr,2016-04-29,-,-,1,35.1
+HFX,OTNGlobal,NW ATLANTIC,HFX134,Acoustic,43.7,-63.4,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,5.8
+HFX,OTNGlobal,NW ATLANTIC,HFX134,Acoustic,43.7,-63.4,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,16.8
+HFX,OTNGlobal,NW ATLANTIC,HFX134,Acoustic,43.7,-63.4,active,SBW,VR4,rcvr,2013-05-28,2015-12-01,2016-04-29,3,23.6
+HFX,OTNGlobal,NW ATLANTIC,HFX134,Acoustic,43.7,-63.4,active,SBW,VR4,rcvr,2016-04-29,-,-,1,9.7
+HFX,OTNGlobal,NW ATLANTIC,HFX135,Acoustic,43.69263,-63.39995,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,1.8
+HFX,OTNGlobal,NW ATLANTIC,HFX135,Acoustic,43.69263,-63.39995,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,28.7
+HFX,OTNGlobal,NW ATLANTIC,HFX135,Acoustic,43.69263,-63.39995,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,6.7
+HFX,OTNGlobal,NW ATLANTIC,HFX135,Acoustic,43.69263,-63.39995,active,SBW,VR4,rcvr,2016-04-29,-,-,1,28.0
+HFX,OTNGlobal,NW ATLANTIC,HFX136,Acoustic,43.68525,-63.3999,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,9.2
+HFX,OTNGlobal,NW ATLANTIC,HFX136,Acoustic,43.68525,-63.3999,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,25.5
+HFX,OTNGlobal,NW ATLANTIC,HFX136,Acoustic,43.68525,-63.3999,active,SBW,VR4,rcvr,2013-05-28,2015-12-02,lost,3,23.9
+HFX,OTNGlobal,NW ATLANTIC,HFX136,Acoustic,43.68525,-63.3999,active,SBW,VR4,rcvr,2016-04-29,-,-,1,12.2
+HFX,OTNGlobal,NW ATLANTIC,HFX137,Acoustic,43.67788,-63.39985,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,3.3
+HFX,OTNGlobal,NW ATLANTIC,HFX137,Acoustic,43.67788,-63.39985,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,28.9
+HFX,OTNGlobal,NW ATLANTIC,HFX137,Acoustic,43.67788,-63.39985,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,34.7
+HFX,OTNGlobal,NW ATLANTIC,HFX137,Acoustic,43.67788,-63.39985,active,SBW,VR4,rcvr,2016-04-29,-,-,1,57.4
+HFX,OTNGlobal,NW ATLANTIC,HFX138,Acoustic,43.67051,-63.39981,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,6.0
+HFX,OTNGlobal,NW ATLANTIC,HFX138,Acoustic,43.67051,-63.39981,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,43.8
+HFX,OTNGlobal,NW ATLANTIC,HFX138,Acoustic,43.67051,-63.39981,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,3,32.9
+HFX,OTNGlobal,NW ATLANTIC,HFX138,Acoustic,43.67051,-63.39981,active,SBW,VR4,rcvr,2016-04-29,-,-,-,41.4
+HFX,OTNGlobal,NW ATLANTIC,HFX139,Acoustic,43.66313,-63.39976,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,6.5
+HFX,OTNGlobal,NW ATLANTIC,HFX139,Acoustic,43.66313,-63.39976,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,17.9
+HFX,OTNGlobal,NW ATLANTIC,HFX139,Acoustic,43.66313,-63.39976,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,14.3
+HFX,OTNGlobal,NW ATLANTIC,HFX139,Acoustic,43.66313,-63.39976,active,SBW,VR4,rcvr,2016-04-29,-,-,1,40.7
+HFX,OTNGlobal,NW ATLANTIC,HFX140,Acoustic,43.65576,-63.39971,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,7.8
+HFX,OTNGlobal,NW ATLANTIC,HFX140,Acoustic,43.65576,-63.39971,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,7.0
+HFX,OTNGlobal,NW ATLANTIC,HFX140,Acoustic,43.65576,-63.39971,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,39.4
+HFX,OTNGlobal,NW ATLANTIC,HFX140,Acoustic,43.65576,-63.39971,active,SBW,VR4,rcvr,2016-04-29,-,-,1,33.8
+HFX,OTNGlobal,NW ATLANTIC,HFX141,Acoustic,43.64839,-63.39966,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,14.0
+HFX,OTNGlobal,NW ATLANTIC,HFX141,Acoustic,43.64839,-63.39966,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,19.7
+HFX,OTNGlobal,NW ATLANTIC,HFX141,Acoustic,43.64839,-63.39966,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,46.6
+HFX,OTNGlobal,NW ATLANTIC,HFX141,Acoustic,43.64839,-63.39966,active,SBW,VR4,rcvr,2016-04-29,-,-,1,36.0
+HFX,OTNGlobal,NW ATLANTIC,HFX142,Acoustic,43.64101,-63.39961,active,SBW,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,4.0
+HFX,OTNGlobal,NW ATLANTIC,HFX142,Acoustic,43.64101,-63.39961,active,SBW,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,36.1
+HFX,OTNGlobal,NW ATLANTIC,HFX142,Acoustic,43.64101,-63.39961,active,SBW,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,5,32.5
+HFX,OTNGlobal,NW ATLANTIC,HFX142,Acoustic,43.64101,-63.39961,active,SBW,VR4,rcvr,2016-04-29,-,-,1,48.6
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Sentinel ADCP,envrn,2008-04-15,2008-10-07,2008-10-07,1,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6,envrn,2008-04-15,2008-10-07,2008-10-07,1,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6,envrn,2008-10-14,2009-04-20,2009-04-20,1,38.9
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Sentinel ADCP,envrn,2008-10-14,2009-04-20,2009-04-20,1,38.9
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2009-04-10,2009-10-03,2009-10-03,1,42.2
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Sentinel ADCP,envrn,2009-04-10,2009-10-03,2009-10-03,1,42.2
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Sentinel ADCP,envrn,2009-10-03,2010-04-12,2010-04-10,1,33.4
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6A,envrn,2009-10-03,2010-04-12,2010-04-10,1,33.4
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Sentinel ADCP,envrn,2010-04-10,2011-01-05,2011-01-01,1,40.8
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM,envrn,2010-04-10,2011-01-05,2011-01-01,1,40.8
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Sentinel ADCP,envrn,2010-10-31,2011-04-18,2011-04-17,1,211.2
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2010-10-31,2011-04-18,2011-04-17,1,211.2
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Sentinel ADCP,envrn,2011-05-06,-,-,-,486.5
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP001,Environmental,44.3519,-63.3047,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2011-05-06,-,-,-,486.5
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2008-04-15,-,2008-05-08,-,6136.5
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2008-04-15,-,2008-05-08,-,6136.5
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2008-05-08,2008-10-07,2008-10-07,1,327.5
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2008-05-08,2008-10-08,2008-10-07,1,327.5
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2008-10-14,2009-04-20,2009-04-20,1,273.9
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2008-10-14,2009-04-20,2009-04-20,1,273.9
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2009-04-10,2009-10-03,2009-09-27,1,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2009-04-10,2009-10-02,2009-09-27,1,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.5,envrn,2009-09-27,2010-04-12,2010-04-10,1,342.7
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2009-09-27,2010-04-12,2010-04-10,1,342.7
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2010-04-16,2010-10-30,2010-10-30,1,347.0
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM,envrn,2010-04-16,2010-11-01,2010-10-30,1,347.0
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2010-10-30,2011-04-27,2011-04-08,1,329.5
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2010-10-30,2011-04-27,2011-04-08,1,329.5
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2011-04-08,-,-,-,326.2
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP002,Environmental,44.25112,-63.16337,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2011-04-08,-,-,-,326.2
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2008-06-03,2008-10-08,2008-10-08,1,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2008-06-03,2008-10-07,2008-10-08,1,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2008-10-15,2009-04-20,2009-04-20,1,18.8
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2008-10-15,2009-04-20,2009-04-20,1,18.8
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2009-04-10,2009-10-03,2009-10-03,1,15.2
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2009-04-10,2009-10-03,2009-10-03,1,15.2
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.5,envrn,2009-10-03,2010-04-12,2010-04-10,1,15.2
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2009-10-03,2010-04-12,2010-04-10,1,15.2
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2010-04-10,2010-11-01,2010-10-30,1,68.0
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2010-04-10,2010-10-30,2010-10-30,1,68.0
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2010-10-30,2011-04-26,2011-04-08,1,135.9
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2010-10-30,2011-04-27,2011-04-08,1,135.9
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,MICROCAT SBE 37-SM V2.6B,envrn,2011-04-08,-,-,-,134.4
+HFX,OTNGlobal,NW ATLANTIC,HFX-ADCP003,Environmental,44.134,-63.0331,active,Off the coast of Nova Scotia near Halifax Harbour,RDI Workshorse Quartermaster ADCP,envrn,2011-04-08,-,-,-,134.4
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST01,Sentinel,44.42347,-63.47173,active,"hfx010,hfx011",V9-2X,trnm,2009-06-04,-,2009-10-02,-,15.8
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST01,Sentinel,44.42347,-63.47173,active,"hfx010,hfx011",V9-1X,trnm,2010-04-07,-,2013-11-17,-,11.7
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST02,Sentinel,44.42275,-63.47091,active,"hfx010,hfx011",V9-2X,trnm,2009-06-04,-,2009-10-02,-,27.4
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST02,Sentinel,44.42275,-63.47091,active,"hfx010,hfx011",V9-1X,trnm,2010-04-07,-,2013-11-17,-,9.8
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST03,Sentinel,44.42202,-63.47016,active,"hfx010,hfx011",V9-2X,trnm,2009-06-04,-,2009-10-02,-,18.8
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST03,Sentinel,44.42202,-63.47016,active,"hfx010,hfx011",V9-1X,trnm,2010-04-07,-,2013-11-17,-,83.4
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST04,Sentinel,44.41789,-63.46546,active,"hfx011,hfx012",V16-6X,trnm,2010-04-07,-,2020-04-04,-,542.3
+HFX,OTNGlobal,NW ATLANTIC,HFX073,Acoustic,44.06637,-63.07434,active,,VR4,rcvr,2012-02-15,2014-11-25,lost,4,20.8
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST01B,Sentinel,44.3292,-63.3663,active,Near stations HFX26 and HFX27,V16-5X,trnm,2012-12-13,-,2022-12-11,-,5.1
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST01B,Sentinel,44.3292,-63.3663,active,Near stations HFX26 and HFX27,V9-2X,trnm,2012-12-13,-,2014-06-22,-,5.1
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST01B,Sentinel,44.3292,-63.3663,active,Near stations HFX26 and HFX27,V16-5X,trnm,2012-12-13,-,2014-06-22,-,5.1
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST01B,Sentinel,44.3292,-63.3663,active,Near stations HFX26 and HFX27,V9-2X,trnm,2012-12-13,-,2015-12-18,-,5.1
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST02B,Sentinel,44.3305,-63.3677,active,Near stations HFX26 and HFX27,V9-2X,trnm,2012-12-13,-,2015-12-18,-,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST02B,Sentinel,44.3305,-63.3677,active,Near stations HFX26 and HFX27,V16-5X,trnm,2012-12-13,-,2014-06-22,-,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST02B,Sentinel,44.3305,-63.3677,active,Near stations HFX26 and HFX27,V9-2X,trnm,2012-12-13,-,2014-06-22,-,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST02B,Sentinel,44.3305,-63.3677,active,Near stations HFX26 and HFX27,V16-5X,trnm,2012-12-13,-,2022-12-11,-,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST03B,Sentinel,44.3313,-63.3688,active,Near stations HFX26 and HFX27,V9-2X,trnm,2012-12-13,-,2015-12-18,-,1.7
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST03B,Sentinel,44.3313,-63.3688,active,Near stations HFX26 and HFX27,V16-5X,trnm,2012-12-13,-,2022-12-11,-,1.7
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST03B,Sentinel,44.3313,-63.3688,active,Near stations HFX26 and HFX27,V9-2X,trnm,2012-12-13,-,2014-06-22,-,1.7
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST03B,Sentinel,44.3313,-63.3688,active,Near stations HFX26 and HFX27,V16-5X,trnm,2012-12-13,-,2014-06-22,-,1.7
+HFX,OTNGlobal,NW ATLANTIC,HFX143,Acoustic,43.63364,-63.39956,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,27.1
+HFX,OTNGlobal,NW ATLANTIC,HFX143,Acoustic,43.63364,-63.39956,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,8.9
+HFX,OTNGlobal,NW ATLANTIC,HFX143,Acoustic,43.63364,-63.39956,active,SAM,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,4,31.1
+HFX,OTNGlobal,NW ATLANTIC,HFX143,Acoustic,43.63364,-63.39956,active,SAM,VR4,rcvr,2016-04-29,-,-,1,52.3
+HFX,OTNGlobal,NW ATLANTIC,HFX144,Acoustic,43.62727,-63.40435,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,2.4
+HFX,OTNGlobal,NW ATLANTIC,HFX144,Acoustic,43.62727,-63.40435,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,32.7
+HFX,OTNGlobal,NW ATLANTIC,HFX144,Acoustic,43.62727,-63.40435,active,SAM,VR4,rcvr,2013-05-28,2016-04-29,2016-04-29,5,27.6
+HFX,OTNGlobal,NW ATLANTIC,HFX144,Acoustic,43.62727,-63.40435,active,SAM,VR4,rcvr,2016-04-29,-,-,1,19.1
+HFX,OTNGlobal,NW ATLANTIC,HFX145,Acoustic,43.62091,-63.40913,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,5.6
+HFX,OTNGlobal,NW ATLANTIC,HFX145,Acoustic,43.62091,-63.40913,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,20.9
+HFX,OTNGlobal,NW ATLANTIC,HFX145,Acoustic,43.62091,-63.40913,active,SAM,VR4,rcvr,2013-05-28,2015-12-02,2017-02-22,5,26.0
+HFX,OTNGlobal,NW ATLANTIC,HFX145,Acoustic,43.62091,-63.40913,active,SAM,VR4,rcvr,2017-04-14,-,-,-,58.6
+HFX,OTNGlobal,NW ATLANTIC,HFX146,Acoustic,43.61455,-63.41391,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,5.0
+HFX,OTNGlobal,NW ATLANTIC,HFX146,Acoustic,43.61455,-63.41391,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX146,Acoustic,43.61455,-63.41391,active,SAM,VR4,rcvr,2013-05-28,2015-12-02,2017-02-22,5,56.6
+HFX,OTNGlobal,NW ATLANTIC,HFX146,Acoustic,43.61455,-63.41391,active,SAM,VR4,rcvr,2017-04-14,-,-,-,28.3
+HFX,OTNGlobal,NW ATLANTIC,HFX147,Acoustic,43.60818,-63.41869,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,5.0
+HFX,OTNGlobal,NW ATLANTIC,HFX147,Acoustic,43.60818,-63.41869,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,17.1
+HFX,OTNGlobal,NW ATLANTIC,HFX147,Acoustic,43.60818,-63.41869,active,SAM,VR4,rcvr,2013-05-28,2015-12-02,lost,2,76.5
+HFX,OTNGlobal,NW ATLANTIC,HFX147,Acoustic,43.60818,-63.41869,active,SAM,VR4,rcvr,2017-04-19,-,-,-,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX148,Acoustic,43.60182,-63.42348,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,5.8
+HFX,OTNGlobal,NW ATLANTIC,HFX148,Acoustic,43.60182,-63.42348,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,7.8
+HFX,OTNGlobal,NW ATLANTIC,HFX148,Acoustic,43.60182,-63.42348,active,SAM,VR4,rcvr,2013-05-28,2015-12-02,2017-02-22,5,19.2
+HFX,OTNGlobal,NW ATLANTIC,HFX148,Acoustic,43.60182,-63.42348,active,SAM,VR4,rcvr,2017-04-14,-,-,-,13.3
+HFX,OTNGlobal,NW ATLANTIC,HFX149,Acoustic,43.59546,-63.42826,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,6.6
+HFX,OTNGlobal,NW ATLANTIC,HFX149,Acoustic,43.59546,-63.42826,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,15.8
+HFX,OTNGlobal,NW ATLANTIC,HFX149,Acoustic,43.59546,-63.42826,active,SAM,VR4,rcvr,2013-05-28,2015-12-02,2017-02-22,5,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX149,Acoustic,43.59546,-63.42826,active,SAM,VR4,rcvr,2017-04-14,-,-,-,19.7
+HFX,OTNGlobal,NW ATLANTIC,HFX150,Acoustic,43.58909,-63.43304,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,3.9
+HFX,OTNGlobal,NW ATLANTIC,HFX150,Acoustic,43.58909,-63.43304,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,22.4
+HFX,OTNGlobal,NW ATLANTIC,HFX150,Acoustic,43.58909,-63.43304,active,SAM,VR4,rcvr,2013-05-28,2015-12-03,2017-02-22,5,22.4
+HFX,OTNGlobal,NW ATLANTIC,HFX150,Acoustic,43.58909,-63.43304,active,SAM,VR4,rcvr,2017-04-14,-,-,-,56.0
+HFX,OTNGlobal,NW ATLANTIC,HFX151,Acoustic,43.58273,-63.43782,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,5.5
+HFX,OTNGlobal,NW ATLANTIC,HFX151,Acoustic,43.58273,-63.43782,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,27.0
+HFX,OTNGlobal,NW ATLANTIC,HFX151,Acoustic,43.58273,-63.43782,active,SAM,VR4,rcvr,2013-05-28,2015-12-03,-,5,29.8
+HFX,OTNGlobal,NW ATLANTIC,HFX152,Acoustic,43.57636,-63.44261,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,8.7
+HFX,OTNGlobal,NW ATLANTIC,HFX152,Acoustic,43.57636,-63.44261,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,11.9
+HFX,OTNGlobal,NW ATLANTIC,HFX152,Acoustic,43.57636,-63.44261,active,SAM,VR4,rcvr,2013-05-28,2015-12-03,2017-02-22,5,31.1
+HFX,OTNGlobal,NW ATLANTIC,HFX152,Acoustic,43.57636,-63.44261,active,SAM,VR4,rcvr,2017-04-14,-,-,-,36.8
+HFX,OTNGlobal,NW ATLANTIC,HFX153,Acoustic; Environmental,43.57,-63.44739,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,0.8
+HFX,OTNGlobal,NW ATLANTIC,HFX153,Acoustic; Environmental,43.57,-63.44739,active,SAM,Benthic Pod,envrn,2012-10-25,2013-05-23,2013-05-18,1,53.7
+HFX,OTNGlobal,NW ATLANTIC,HFX153,Acoustic; Environmental,43.57,-63.44739,active,SAM,VR4,rcvr,2012-10-25,2013-05-21,2013-05-18,1,53.7
+HFX,OTNGlobal,NW ATLANTIC,HFX153,Acoustic; Environmental,43.57,-63.44739,active,SAM,VR4,rcvr,2013-05-18,2014-06-18,2014-06-12,2,42.6
+HFX,OTNGlobal,NW ATLANTIC,HFX153,Acoustic; Environmental,43.57,-63.44739,active,SAM,Benthic Pod,envrn,2013-05-18,2014-06-18,2014-06-12,1,42.6
+HFX,OTNGlobal,NW ATLANTIC,HFX153,Acoustic; Environmental,43.57,-63.44739,active,SAM,VR4,rcvr,2014-06-12,2014-11-20,2015-11-18,1,40.3
+HFX,OTNGlobal,NW ATLANTIC,HFX153,Acoustic; Environmental,43.57,-63.44739,active,SAM,Benthic Pod,envrn,2014-06-12,-,2015-11-18,-,40.3
+HFX,OTNGlobal,NW ATLANTIC,HFX153,Acoustic; Environmental,43.57,-63.44739,active,SAM,VR4,rcvr,2015-11-18,-,2017-04-19,2,91.2
+HFX,OTNGlobal,NW ATLANTIC,HFX153,Acoustic; Environmental,43.57,-63.44739,active,SAM,Benthic Pod,envrn,2015-11-18,-,2017-04-19,-,91.2
+HFX,OTNGlobal,NW ATLANTIC,HFX153,Acoustic; Environmental,43.57,-63.44739,active,SAM,VR4,rcvr,2017-04-20,-,-,-,17.0
+HFX,OTNGlobal,NW ATLANTIC,HFX154,Acoustic,43.56364,-63.45217,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,4.6
+HFX,OTNGlobal,NW ATLANTIC,HFX154,Acoustic,43.56364,-63.45217,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,32.6
+HFX,OTNGlobal,NW ATLANTIC,HFX154,Acoustic,43.56364,-63.45217,active,SAM,VR4,rcvr,2013-05-28,2015-12-03,-,5,30.0
+HFX,OTNGlobal,NW ATLANTIC,HFX155,Acoustic,43.55727,-63.45696,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,7.9
+HFX,OTNGlobal,NW ATLANTIC,HFX155,Acoustic,43.55727,-63.45696,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,14.2
+HFX,OTNGlobal,NW ATLANTIC,HFX155,Acoustic,43.55727,-63.45696,active,SAM,VR4,rcvr,2013-05-28,2015-12-03,2017-02-22,5,27.6
+HFX,OTNGlobal,NW ATLANTIC,HFX155,Acoustic,43.55727,-63.45696,active,SAM,VR4,rcvr,2017-04-14,-,-,-,21.4
+HFX,OTNGlobal,NW ATLANTIC,HFX156,Acoustic,43.55091,-63.46174,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,5.6
+HFX,OTNGlobal,NW ATLANTIC,HFX156,Acoustic,43.55091,-63.46174,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,18.9
+HFX,OTNGlobal,NW ATLANTIC,HFX156,Acoustic,43.55091,-63.46174,active,SAM,VR4,rcvr,2013-05-28,2015-12-03,2017-02-22,5,37.7
+HFX,OTNGlobal,NW ATLANTIC,HFX156,Acoustic,43.55091,-63.46174,active,SAM,VR4,rcvr,2017-04-14,-,-,-,38.5
+HFX,OTNGlobal,NW ATLANTIC,HFX157,Acoustic,43.54455,-63.46652,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,10.5
+HFX,OTNGlobal,NW ATLANTIC,HFX157,Acoustic,43.54455,-63.46652,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,23.6
+HFX,OTNGlobal,NW ATLANTIC,HFX157,Acoustic,43.54455,-63.46652,active,SAM,VR4,rcvr,2013-05-28,2015-12-03,2017-02-22,5,42.1
+HFX,OTNGlobal,NW ATLANTIC,HFX157,Acoustic,43.54455,-63.46652,active,SAM,VR4,rcvr,2017-04-14,-,-,-,87.6
+HFX,OTNGlobal,NW ATLANTIC,HFX158,Acoustic,43.53818,-63.4713,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,2.4
+HFX,OTNGlobal,NW ATLANTIC,HFX158,Acoustic,43.53818,-63.4713,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,7.8
+HFX,OTNGlobal,NW ATLANTIC,HFX158,Acoustic,43.53818,-63.4713,active,SAM,VR4,rcvr,2013-05-28,2014-06-12,2014-06-12,2,22.9
+HFX,OTNGlobal,NW ATLANTIC,HFX158,Acoustic,43.53818,-63.4713,active,SAM,VR4,rcvr,2014-06-12,2014-11-18,2017-02-22,3,20.2
+HFX,OTNGlobal,NW ATLANTIC,HFX158,Acoustic,43.53818,-63.4713,active,SAM,VR4,rcvr,2017-04-14,-,-,-,42.4
+HFX,OTNGlobal,NW ATLANTIC,HFX159,Acoustic,43.53182,-63.47609,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,4.9
+HFX,OTNGlobal,NW ATLANTIC,HFX159,Acoustic,43.53182,-63.47609,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,12.2
+HFX,OTNGlobal,NW ATLANTIC,HFX159,Acoustic,43.53182,-63.47609,active,SAM,VR4,rcvr,2013-05-28,2015-12-03,2014-06-12,3,52.5
+HFX,OTNGlobal,NW ATLANTIC,HFX159,Acoustic,43.53182,-63.47609,active,SAM,VR4,rcvr,2014-06-12,2014-11-18,2017-02-22,3,7.3
+HFX,OTNGlobal,NW ATLANTIC,HFX159,Acoustic,43.53182,-63.47609,active,SAM,VR4,rcvr,2017-04-14,-,-,-,66.1
+HFX,OTNGlobal,NW ATLANTIC,HFX160,Acoustic,43.52545,-63.48087,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX160,Acoustic,43.52545,-63.48087,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,14.9
+HFX,OTNGlobal,NW ATLANTIC,HFX160,Acoustic,43.52545,-63.48087,active,SAM,VR4,rcvr,2013-05-28,2015-12-03,2017-02-22,5,21.6
+HFX,OTNGlobal,NW ATLANTIC,HFX160,Acoustic,43.52545,-63.48087,active,SAM,VR4,rcvr,2017-04-14,-,-,-,71.4
+HFX,OTNGlobal,NW ATLANTIC,HFX161,Acoustic,43.51909,-63.48565,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,5.3
+HFX,OTNGlobal,NW ATLANTIC,HFX161,Acoustic,43.51909,-63.48565,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,11.1
+HFX,OTNGlobal,NW ATLANTIC,HFX161,Acoustic,43.51909,-63.48565,active,SAM,VR4,rcvr,2013-05-28,2015-12-03,2017-02-22,5,21.2
+HFX,OTNGlobal,NW ATLANTIC,HFX161,Acoustic,43.51909,-63.48565,active,SAM,VR4,rcvr,2017-04-14,-,-,-,70.2
+HFX,OTNGlobal,NW ATLANTIC,HFX162,Acoustic,43.51273,-63.49043,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,5.1
+HFX,OTNGlobal,NW ATLANTIC,HFX162,Acoustic,43.51273,-63.49043,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,8.7
+HFX,OTNGlobal,NW ATLANTIC,HFX162,Acoustic,43.51273,-63.49043,active,SAM,VR4,rcvr,2013-05-28,2015-12-04,2017-02-22,5,27.1
+HFX,OTNGlobal,NW ATLANTIC,HFX162,Acoustic,43.51273,-63.49043,active,SAM,VR4,rcvr,2017-04-14,-,-,-,51.6
+HFX,OTNGlobal,NW ATLANTIC,HFX163,Acoustic,43.50636,-63.49522,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,5.8
+HFX,OTNGlobal,NW ATLANTIC,HFX163,Acoustic,43.50636,-63.49522,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,27.9
+HFX,OTNGlobal,NW ATLANTIC,HFX163,Acoustic,43.50636,-63.49522,active,SAM,VR4,rcvr,2013-05-28,2015-12-04,2017-02-22,5,17.9
+HFX,OTNGlobal,NW ATLANTIC,HFX163,Acoustic,43.50636,-63.49522,active,SAM,VR4,rcvr,2017-04-14,-,-,-,32.5
+HFX,OTNGlobal,NW ATLANTIC,HFX164,Acoustic,43.5,-63.5,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,4.2
+HFX,OTNGlobal,NW ATLANTIC,HFX164,Acoustic,43.5,-63.5,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,9.2
+HFX,OTNGlobal,NW ATLANTIC,HFX164,Acoustic,43.5,-63.5,active,SAM,VR4,rcvr,2013-05-28,2015-12-04,2017-02-22,5,21.6
+HFX,OTNGlobal,NW ATLANTIC,HFX164,Acoustic,43.5,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,91.0
+HFX,OTNGlobal,NW ATLANTIC,HFX165,Acoustic,43.49279,-63.5,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,15.1
+HFX,OTNGlobal,NW ATLANTIC,HFX165,Acoustic,43.49279,-63.5,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,35.8
+HFX,OTNGlobal,NW ATLANTIC,HFX165,Acoustic,43.49279,-63.5,active,SAM,VR4,rcvr,2013-05-28,2015-12-04,2017-02-22,5,21.1
+HFX,OTNGlobal,NW ATLANTIC,HFX165,Acoustic,43.49279,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,78.1
+HFX,OTNGlobal,NW ATLANTIC,HFX166,Acoustic,43.48559,-63.5,active,SAM,VR2W,rcvr,2012-03-20,2012-10-30,2012-10-25,1,15.7
+HFX,OTNGlobal,NW ATLANTIC,HFX166,Acoustic,43.48559,-63.5,active,SAM,VR2W,rcvr,2012-10-25,2013-05-29,2013-05-28,1,18.9
+HFX,OTNGlobal,NW ATLANTIC,HFX166,Acoustic,43.48559,-63.5,active,SAM,VR4,rcvr,2013-05-28,2015-12-04,2017-02-22,5,30.5
+HFX,OTNGlobal,NW ATLANTIC,HFX166,Acoustic,43.48559,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,29.3
+HFX,OTNGlobal,NW ATLANTIC,HFX167,Acoustic,43.47838,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,12.2
+HFX,OTNGlobal,NW ATLANTIC,HFX167,Acoustic,43.47838,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,53.6
+HFX,OTNGlobal,NW ATLANTIC,HFX168,Acoustic,43.47118,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,5,8.7
+HFX,OTNGlobal,NW ATLANTIC,HFX168,Acoustic,43.47118,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,89.5
+HFX,OTNGlobal,NW ATLANTIC,HFX169,Acoustic,43.46397,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,12.6
+HFX,OTNGlobal,NW ATLANTIC,HFX169,Acoustic,43.46397,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,94.7
+HFX,OTNGlobal,NW ATLANTIC,HFX170,Acoustic,43.45677,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,22.5
+HFX,OTNGlobal,NW ATLANTIC,HFX170,Acoustic,43.45677,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,105.8
+HFX,OTNGlobal,NW ATLANTIC,HFX171,Acoustic,43.44956,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,16.8
+HFX,OTNGlobal,NW ATLANTIC,HFX171,Acoustic,43.44956,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,21.5
+HFX,OTNGlobal,NW ATLANTIC,HFX172,Acoustic,43.44236,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,29.1
+HFX,OTNGlobal,NW ATLANTIC,HFX172,Acoustic,43.44236,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,48.5
+HFX,OTNGlobal,NW ATLANTIC,HFX173,Acoustic,43.43515,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,26.8
+HFX,OTNGlobal,NW ATLANTIC,HFX173,Acoustic,43.43515,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,36.1
+HFX,OTNGlobal,NW ATLANTIC,HFX174,Acoustic,43.42794,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,17.9
+HFX,OTNGlobal,NW ATLANTIC,HFX174,Acoustic,43.42794,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,76.7
+HFX,OTNGlobal,NW ATLANTIC,HFX175,Acoustic,43.42074,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,26.6
+HFX,OTNGlobal,NW ATLANTIC,HFX175,Acoustic,43.42074,-63.5,active,SAM,VR4,rcvr,2017-04-14,-,-,-,96.6
+HFX,OTNGlobal,NW ATLANTIC,HFX176,Acoustic,43.41353,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,33.4
+HFX,OTNGlobal,NW ATLANTIC,HFX176,Acoustic,43.41353,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,35.6
+HFX,OTNGlobal,NW ATLANTIC,HFX177,Acoustic,43.40633,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,10.5
+HFX,OTNGlobal,NW ATLANTIC,HFX177,Acoustic,43.40633,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,10.5
+HFX,OTNGlobal,NW ATLANTIC,HFX178,Acoustic,43.39912,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,15.7
+HFX,OTNGlobal,NW ATLANTIC,HFX178,Acoustic,43.39912,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,105024.1
+HFX,OTNGlobal,NW ATLANTIC,HFX179,Acoustic,43.39192,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,7,3.3
+HFX,OTNGlobal,NW ATLANTIC,HFX179,Acoustic,43.39192,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,44.0
+HFX,OTNGlobal,NW ATLANTIC,HFX180,Acoustic; Environmental,43.38471,-63.5,active,SAM,Benthic Pod,envrn,2012-05-23,2013-10-11,failed: 2013-10-10,3,28.1
+HFX,OTNGlobal,NW ATLANTIC,HFX180,Acoustic; Environmental,43.38471,-63.5,active,SAM,VR4,rcvr,2012-05-23,2013-10-17,failed: 2013-10-10,3,28.1
+HFX,OTNGlobal,NW ATLANTIC,HFX180,Acoustic; Environmental,43.38471,-63.5,active,SAM,Benthic Pod,envrn,2013-05-18,2014-06-18,2014-06-12,1,148.6
+HFX,OTNGlobal,NW ATLANTIC,HFX180,Acoustic; Environmental,43.38471,-63.5,active,SAM,VR4,rcvr,2013-05-18,2014-06-18,2014-06-12,2,148.6
+HFX,OTNGlobal,NW ATLANTIC,HFX180,Acoustic; Environmental,43.38471,-63.5,active,SAM,VR4,rcvr,2014-06-12,2014-11-18,2015-11-18,1,199.1
+HFX,OTNGlobal,NW ATLANTIC,HFX180,Acoustic; Environmental,43.38471,-63.5,active,SAM,Benthic Pod,envrn,2014-06-12,-,2015-11-18,-,199.1
+HFX,OTNGlobal,NW ATLANTIC,HFX180,Acoustic; Environmental,43.38471,-63.5,active,SAM,Benthic Pod,envrn,2015-11-18,-,2017-04-19,-,31.6
+HFX,OTNGlobal,NW ATLANTIC,HFX180,Acoustic; Environmental,43.38471,-63.5,active,SAM,VR4,rcvr,2015-11-18,-,2017-04-19,2,31.6
+HFX,OTNGlobal,NW ATLANTIC,HFX180,Acoustic; Environmental,43.38471,-63.5,active,SAM,VR4,rcvr,2017-04-19,-,-,-,204.5
+HFX,OTNGlobal,NW ATLANTIC,HFX181,Acoustic,43.3775,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,15.0
+HFX,OTNGlobal,NW ATLANTIC,HFX181,Acoustic,43.3775,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,24.4
+HFX,OTNGlobal,NW ATLANTIC,HFX182,Acoustic,43.3703,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,7,43.3
+HFX,OTNGlobal,NW ATLANTIC,HFX182,Acoustic,43.3703,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,34.5
+HFX,OTNGlobal,NW ATLANTIC,HFX183,Acoustic,43.36309,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,7,2.7
+HFX,OTNGlobal,NW ATLANTIC,HFX183,Acoustic,43.36309,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,13.2
+HFX,OTNGlobal,NW ATLANTIC,HFX184,Acoustic,43.35589,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,25.5
+HFX,OTNGlobal,NW ATLANTIC,HFX184,Acoustic,43.35589,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,16.2
+HFX,OTNGlobal,NW ATLANTIC,HFX185,Acoustic,43.34868,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,6,18.2
+HFX,OTNGlobal,NW ATLANTIC,HFX185,Acoustic,43.34868,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,6.7
+HFX,OTNGlobal,NW ATLANTIC,HFX186,Acoustic,43.34148,-63.5,active,SAM,VR4,rcvr,2012-05-23,2015-12-04,2017-02-22,5,18.9
+HFX,OTNGlobal,NW ATLANTIC,HFX186,Acoustic,43.34148,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,8.4
+HFX,OTNGlobal,NW ATLANTIC,HFX187,Acoustic,43.33427,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-04,2017-02-22,6,194.8
+HFX,OTNGlobal,NW ATLANTIC,HFX187,Acoustic,43.33427,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,176.7
+HFX,OTNGlobal,NW ATLANTIC,HFX188,Acoustic,43.32707,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-04,2017-02-22,6,15.7
+HFX,OTNGlobal,NW ATLANTIC,HFX188,Acoustic,43.32707,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,9.7
+HFX,OTNGlobal,NW ATLANTIC,HFX189,Acoustic,43.31986,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-04,2017-02-22,6,11.1
+HFX,OTNGlobal,NW ATLANTIC,HFX189,Acoustic,43.31986,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,6.6
+HFX,OTNGlobal,NW ATLANTIC,HFX190,Acoustic,43.31265,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-04,2017-02-22,6,3.9
+HFX,OTNGlobal,NW ATLANTIC,HFX190,Acoustic,43.31265,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,14.2
+HFX,OTNGlobal,NW ATLANTIC,HFX191,Acoustic,43.30545,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-04,2017-02-22,6,11.1
+HFX,OTNGlobal,NW ATLANTIC,HFX191,Acoustic,43.30545,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,8.9
+HFX,OTNGlobal,NW ATLANTIC,HFX192,Acoustic,43.29824,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-04,2017-02-22,6,17.4
+HFX,OTNGlobal,NW ATLANTIC,HFX192,Acoustic,43.29824,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,8.0
+HFX,OTNGlobal,NW ATLANTIC,HFX193,Acoustic,43.29104,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-04,2017-02-22,6,6.9
+HFX,OTNGlobal,NW ATLANTIC,HFX193,Acoustic,43.29104,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,22.9
+HFX,OTNGlobal,NW ATLANTIC,HFX194,Acoustic,43.28383,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-04,2017-02-22,6,4.5
+HFX,OTNGlobal,NW ATLANTIC,HFX194,Acoustic,43.28383,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,2.4
+HFX,OTNGlobal,NW ATLANTIC,HFX195,Acoustic,43.27663,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-04,2017-02-22,6,26.0
+HFX,OTNGlobal,NW ATLANTIC,HFX195,Acoustic,43.27663,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,18.7
+HFX,OTNGlobal,NW ATLANTIC,HFX196,Acoustic,43.26942,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-04,2017-02-22,6,48.4
+HFX,OTNGlobal,NW ATLANTIC,HFX196,Acoustic,43.26942,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,40.3
+HFX,OTNGlobal,NW ATLANTIC,HFX197,Acoustic,43.26221,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-04,2017-02-22,6,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX197,Acoustic,43.26221,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,13.1
+HFX,OTNGlobal,NW ATLANTIC,HFX198,Acoustic,43.25501,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-02-22,6,15.5
+HFX,OTNGlobal,NW ATLANTIC,HFX198,Acoustic,43.25501,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,1.1
+HFX,OTNGlobal,NW ATLANTIC,HFX199,Acoustic,43.2478,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-02-22,6,23.2
+HFX,OTNGlobal,NW ATLANTIC,HFX199,Acoustic,43.2478,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,42.1
+HFX,OTNGlobal,NW ATLANTIC,HFX200,Acoustic,43.2406,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-02-22,6,12.2
+HFX,OTNGlobal,NW ATLANTIC,HFX200,Acoustic,43.2406,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,28.9
+HFX,OTNGlobal,NW ATLANTIC,HFX201,Acoustic,43.23339,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-12-07,6,9.9
+HFX,OTNGlobal,NW ATLANTIC,HFX201,Acoustic,43.23339,-63.5,active,SAM,VR4,rcvr,2017-02-22,-,-,-,28.7
+HFX,OTNGlobal,NW ATLANTIC,HFX202,Acoustic,43.22619,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-12-07,6,16.6
+HFX,OTNGlobal,NW ATLANTIC,HFX202,Acoustic,43.22619,-63.5,active,SAM,VR4,rcvr,2016-12-07,-,-,-,42.5
+HFX,OTNGlobal,NW ATLANTIC,HFX203,Acoustic,43.21898,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-12-07,6,14.7
+HFX,OTNGlobal,NW ATLANTIC,HFX203,Acoustic,43.21898,-63.5,active,SAM,VR4,rcvr,2016-12-07,-,-,-,44.7
+HFX,OTNGlobal,NW ATLANTIC,HFX204,Acoustic,43.21178,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-12-07,6,20.0
+HFX,OTNGlobal,NW ATLANTIC,HFX204,Acoustic,43.21178,-63.5,active,SAM,VR4,rcvr,2016-12-07,-,-,-,41.7
+HFX,OTNGlobal,NW ATLANTIC,HFX205,Acoustic,43.20457,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-12-07,6,35.6
+HFX,OTNGlobal,NW ATLANTIC,HFX205,Acoustic,43.20457,-63.5,active,SAM,VR4,rcvr,2016-12-07,-,-,-,74.8
+HFX,OTNGlobal,NW ATLANTIC,HFX206,Acoustic,43.19736,-63.5,active,SAM,VR4,rcvr,2012-05-24,2016-08-15,2014-01-10,4,13.7
+HFX,OTNGlobal,NW ATLANTIC,HFX206,Acoustic,43.19736,-63.5,active,SAM,VR4,rcvr,2014-01-10,2015-12-05,2016-12-07,4,32.9
+HFX,OTNGlobal,NW ATLANTIC,HFX206,Acoustic,43.19736,-63.5,active,SAM,VR4,rcvr,2016-12-07,-,-,-,63.3
+HFX,OTNGlobal,NW ATLANTIC,HFX207,Acoustic,43.19016,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-12-07,6,20.1
+HFX,OTNGlobal,NW ATLANTIC,HFX207,Acoustic,43.19016,-63.5,active,SAM,VR4,rcvr,2016-12-07,-,-,-,24.7
+HFX,OTNGlobal,NW ATLANTIC,HFX208,Acoustic,43.18295,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-12-07,6,204.8
+HFX,OTNGlobal,NW ATLANTIC,HFX208,Acoustic,43.18295,-63.5,active,SAM,VR4,rcvr,2016-12-07,-,-,-,200.7
+HFX,OTNGlobal,NW ATLANTIC,HFX209,Acoustic,43.17575,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,failed,6,91.6
+HFX,OTNGlobal,NW ATLANTIC,HFX210,Acoustic,43.16854,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-12-07,6,26.4
+HFX,OTNGlobal,NW ATLANTIC,HFX210,Acoustic,43.16854,-63.5,active,SAM,VR4,rcvr,2016-12-07,-,-,-,41.1
+HFX,OTNGlobal,NW ATLANTIC,HFX211,Acoustic,43.16134,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-12-07,6,28.7
+HFX,OTNGlobal,NW ATLANTIC,HFX211,Acoustic,43.16134,-63.5,active,SAM,VR4,rcvr,2016-12-07,-,-,-,16.8
+HFX,OTNGlobal,NW ATLANTIC,HFX212,Acoustic; Environmental,43.15413,-63.5,active,SAM,VR4,rcvr,2012-05-24,2013-05-23,2013-05-18,2,78.1
+HFX,OTNGlobal,NW ATLANTIC,HFX212,Acoustic; Environmental,43.15413,-63.5,active,SAM,Benthic Pod,envrn,2012-05-24,2013-05-23,2013-05-18,2,78.1
+HFX,OTNGlobal,NW ATLANTIC,HFX212,Acoustic; Environmental,43.15413,-63.5,active,SAM,Benthic Pod,envrn,2013-05-18,-,failed,-,176.2
+HFX,OTNGlobal,NW ATLANTIC,HFX212,Acoustic; Environmental,43.15413,-63.5,active,SAM,VR4,rcvr,2013-05-18,2015-12-05,failed,5,176.2
+HFX,OTNGlobal,NW ATLANTIC,HFX212,Acoustic; Environmental,43.15413,-63.5,active,SAM,VR4,rcvr,2015-11-18,-,2017-04-19,2,60.0
+HFX,OTNGlobal,NW ATLANTIC,HFX212,Acoustic; Environmental,43.15413,-63.5,active,SAM,Benthic Pod,envrn,2015-11-18,-,2017-04-19,-,60.0
+HFX,OTNGlobal,NW ATLANTIC,HFX212,Acoustic; Environmental,43.15413,-63.5,active,SAM,VR4,rcvr,2017-04-19,-,-,-,74.7
+HFX,OTNGlobal,NW ATLANTIC,HFX213,Acoustic,43.14692,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-12-07,6,22.9
+HFX,OTNGlobal,NW ATLANTIC,HFX213,Acoustic,43.14692,-63.5,active,SAM,VR4,rcvr,2016-12-07,-,-,-,52.3
+HFX,OTNGlobal,NW ATLANTIC,HFX214,Acoustic,43.13972,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-12-07,6,21.6
+HFX,OTNGlobal,NW ATLANTIC,HFX214,Acoustic,43.13972,-63.5,active,SAM,VR4,rcvr,2016-12-07,-,-,-,36.1
+HFX,OTNGlobal,NW ATLANTIC,HFX215,Acoustic,43.13251,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,17.2
+HFX,OTNGlobal,NW ATLANTIC,HFX215,Acoustic,43.13251,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,48.0
+HFX,OTNGlobal,NW ATLANTIC,HFX216,Acoustic,43.12531,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,14.0
+HFX,OTNGlobal,NW ATLANTIC,HFX216,Acoustic,43.12531,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,35.8
+HFX,OTNGlobal,NW ATLANTIC,HFX217,Acoustic,43.1181,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,41.2
+HFX,OTNGlobal,NW ATLANTIC,HFX217,Acoustic,43.1181,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,57.6
+HFX,OTNGlobal,NW ATLANTIC,HFX218,Acoustic,43.1109,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,14.7
+HFX,OTNGlobal,NW ATLANTIC,HFX218,Acoustic,43.1109,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,16.7
+HFX,OTNGlobal,NW ATLANTIC,HFX219,Acoustic,43.10369,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,21.6
+HFX,OTNGlobal,NW ATLANTIC,HFX219,Acoustic,43.10369,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,30.9
+HFX,OTNGlobal,NW ATLANTIC,HFX220,Acoustic,43.09649,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,5.6
+HFX,OTNGlobal,NW ATLANTIC,HFX220,Acoustic,43.09649,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,28.9
+HFX,OTNGlobal,NW ATLANTIC,HFX221,Acoustic,43.08928,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX221,Acoustic,43.08928,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX222,Acoustic,43.08207,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,32.4
+HFX,OTNGlobal,NW ATLANTIC,HFX222,Acoustic,43.08207,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,13.4
+HFX,OTNGlobal,NW ATLANTIC,HFX223,Acoustic,43.07487,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,16.1
+HFX,OTNGlobal,NW ATLANTIC,HFX223,Acoustic,43.07487,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,11.5
+HFX,OTNGlobal,NW ATLANTIC,HFX224,Acoustic,43.06766,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,5,24.3
+HFX,OTNGlobal,NW ATLANTIC,HFX224,Acoustic,43.06766,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,22.3
+HFX,OTNGlobal,NW ATLANTIC,HFX225,Acoustic,43.06046,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,5,9.5
+HFX,OTNGlobal,NW ATLANTIC,HFX225,Acoustic,43.06046,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,8.2
+HFX,OTNGlobal,NW ATLANTIC,HFX226,Acoustic,43.05325,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,14.5
+HFX,OTNGlobal,NW ATLANTIC,HFX226,Acoustic,43.05325,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,8.8
+HFX,OTNGlobal,NW ATLANTIC,HFX227,Acoustic,43.04605,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,30.3
+HFX,OTNGlobal,NW ATLANTIC,HFX227,Acoustic,43.04605,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,48.9
+HFX,OTNGlobal,NW ATLANTIC,HFX228,Acoustic,43.03884,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,7,28.9
+HFX,OTNGlobal,NW ATLANTIC,HFX228,Acoustic,43.03884,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX229,Acoustic,43.03163,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,failed,6,27.0
+HFX,OTNGlobal,NW ATLANTIC,HFX230,Acoustic,43.02443,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2017-04-19,6,13.4
+HFX,OTNGlobal,NW ATLANTIC,HFX230,Acoustic,43.02443,-63.5,active,SAM,VR4,rcvr,2017-04-20,-,-,-,22.0
+HFX,OTNGlobal,NW ATLANTIC,HFX231,Acoustic,43.01722,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,33.6
+HFX,OTNGlobal,NW ATLANTIC,HFX231,Acoustic,43.01722,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,-,37.6
+HFX,OTNGlobal,NW ATLANTIC,HFX232,Acoustic,43.01002,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,18.0
+HFX,OTNGlobal,NW ATLANTIC,HFX232,Acoustic,43.01002,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,25.8
+HFX,OTNGlobal,NW ATLANTIC,HFX233,Acoustic,43.00281,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,25.8
+HFX,OTNGlobal,NW ATLANTIC,HFX233,Acoustic,43.00281,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,12.9
+HFX,OTNGlobal,NW ATLANTIC,HFX234,Acoustic,42.99561,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,21.1
+HFX,OTNGlobal,NW ATLANTIC,HFX234,Acoustic,42.99561,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,18.0
+HFX,OTNGlobal,NW ATLANTIC,HFX235,Acoustic,42.9884,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,18.4
+HFX,OTNGlobal,NW ATLANTIC,HFX235,Acoustic,42.9884,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,30.6
+HFX,OTNGlobal,NW ATLANTIC,HFX236,Acoustic,42.9812,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,29.1
+HFX,OTNGlobal,NW ATLANTIC,HFX236,Acoustic,42.9812,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,12.5
+HFX,OTNGlobal,NW ATLANTIC,HFX237,Acoustic,42.97399,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,19.7
+HFX,OTNGlobal,NW ATLANTIC,HFX237,Acoustic,42.97399,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,29.6
+HFX,OTNGlobal,NW ATLANTIC,HFX238,Acoustic,42.96678,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,33.4
+HFX,OTNGlobal,NW ATLANTIC,HFX238,Acoustic,42.96678,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,61.4
+HFX,OTNGlobal,NW ATLANTIC,HFX239,Acoustic,42.95958,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,10.3
+HFX,OTNGlobal,NW ATLANTIC,HFX239,Acoustic,42.95958,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,21.4
+HFX,OTNGlobal,NW ATLANTIC,HFX240,Acoustic,42.95237,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,11.9
+HFX,OTNGlobal,NW ATLANTIC,HFX240,Acoustic,42.95237,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,10.5
+HFX,OTNGlobal,NW ATLANTIC,HFX241,Acoustic,42.94517,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,17.8
+HFX,OTNGlobal,NW ATLANTIC,HFX241,Acoustic,42.94517,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,15.3
+HFX,OTNGlobal,NW ATLANTIC,HFX242,Acoustic,42.93796,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,7.3
+HFX,OTNGlobal,NW ATLANTIC,HFX242,Acoustic,42.93796,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,13.6
+HFX,OTNGlobal,NW ATLANTIC,HFX243,Acoustic,42.93076,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-05,2016-09-16,4,11.1
+HFX,OTNGlobal,NW ATLANTIC,HFX243,Acoustic,42.93076,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,16.7
+HFX,OTNGlobal,NW ATLANTIC,HFX244,Acoustic,42.92355,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-06,2016-09-16,4,19.2
+HFX,OTNGlobal,NW ATLANTIC,HFX244,Acoustic,42.92355,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,25.8
+HFX,OTNGlobal,NW ATLANTIC,HFX245,Acoustic; Environmental,42.91635,-63.5,active,SAM,VR4,rcvr,2012-05-24,2013-05-23,2013-05-18,3,27.0
+HFX,OTNGlobal,NW ATLANTIC,HFX245,Acoustic; Environmental,42.91635,-63.5,active,SAM,Benthic Pod,envrn,2012-05-24,2013-05-23,2013-05-18,2,27.0
+HFX,OTNGlobal,NW ATLANTIC,HFX245,Acoustic; Environmental,42.91635,-63.5,active,SAM,Benthic Pod,envrn,2013-05-18,2014-06-18,2014-06-12,1,83.9
+HFX,OTNGlobal,NW ATLANTIC,HFX245,Acoustic; Environmental,42.91635,-63.5,active,SAM,VR4,rcvr,2013-05-18,2014-06-18,2014-06-12,2,83.9
+HFX,OTNGlobal,NW ATLANTIC,HFX245,Acoustic; Environmental,42.91635,-63.5,active,SAM,VR4,rcvr,2014-06-12,2014-11-14,2015-11-19,1,38.4
+HFX,OTNGlobal,NW ATLANTIC,HFX245,Acoustic; Environmental,42.91635,-63.5,active,SAM,Benthic Pod,envrn,2014-06-12,-,2015-11-19,-,38.4
+HFX,OTNGlobal,NW ATLANTIC,HFX245,Acoustic; Environmental,42.91635,-63.5,active,SAM,Benthic Pod,envrn,2015-11-19,-,2017-04-19,-,100.0
+HFX,OTNGlobal,NW ATLANTIC,HFX245,Acoustic; Environmental,42.91635,-63.5,active,SAM,VR4,rcvr,2015-11-19,-,2017-04-19,2,100.0
+HFX,OTNGlobal,NW ATLANTIC,HFX245,Acoustic; Environmental,42.91635,-63.5,active,SAM,VR4,rcvr,2017-04-19,-,-,-,140.8
+HFX,OTNGlobal,NW ATLANTIC,HFX246,Acoustic,42.90914,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-06,2016-09-16,4,12.2
+HFX,OTNGlobal,NW ATLANTIC,HFX246,Acoustic,42.90914,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,35.6
+HFX,OTNGlobal,NW ATLANTIC,HFX247,Acoustic,42.90193,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-07,2016-09-16,4,11.8
+HFX,OTNGlobal,NW ATLANTIC,HFX247,Acoustic,42.90193,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,29.7
+HFX,OTNGlobal,NW ATLANTIC,HFX248,Acoustic,42.89473,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-07,2016-09-16,4,15.6
+HFX,OTNGlobal,NW ATLANTIC,HFX248,Acoustic,42.89473,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,23.7
+HFX,OTNGlobal,NW ATLANTIC,HFX249,Acoustic,42.88752,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-07,2016-09-16,4,13.4
+HFX,OTNGlobal,NW ATLANTIC,HFX249,Acoustic,42.88752,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,19.6
+HFX,OTNGlobal,NW ATLANTIC,HFX250,Acoustic,42.88032,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-07,2016-09-16,3,12.5
+HFX,OTNGlobal,NW ATLANTIC,HFX250,Acoustic,42.88032,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,4.7
+HFX,OTNGlobal,NW ATLANTIC,HFX251,Acoustic,42.87311,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-07,2016-09-16,4,7.4
+HFX,OTNGlobal,NW ATLANTIC,HFX251,Acoustic,42.87311,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,19.5
+HFX,OTNGlobal,NW ATLANTIC,HFX252,Acoustic,42.86591,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-06,2016-09-16,4,8.8
+HFX,OTNGlobal,NW ATLANTIC,HFX252,Acoustic,42.86591,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,41.7
+HFX,OTNGlobal,NW ATLANTIC,HFX253,Acoustic,42.8587,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-06,lost/found: 2016-10-01,4,11.4
+HFX,OTNGlobal,NW ATLANTIC,HFX253,Acoustic,42.8587,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,33.5
+HFX,OTNGlobal,NW ATLANTIC,HFX254,Acoustic,42.85149,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-06,2016-09-16,4,19.3
+HFX,OTNGlobal,NW ATLANTIC,HFX254,Acoustic,42.85149,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,15.3
+HFX,OTNGlobal,NW ATLANTIC,HFX255,Acoustic,42.84429,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-06,2016-09-16,4,14.6
+HFX,OTNGlobal,NW ATLANTIC,HFX255,Acoustic,42.84429,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,16.2
+HFX,OTNGlobal,NW ATLANTIC,HFX256,Acoustic,42.83708,-63.5,active,SAM,VR4,rcvr,2012-05-24,2015-12-06,2016-09-16,4,35.8
+HFX,OTNGlobal,NW ATLANTIC,HFX256,Acoustic,42.83708,-63.5,active,SAM,VR4,rcvr,2016-09-16,-,-,1,25.4
+HFX,OTNGlobal,NW ATLANTIC,HFX-ST-lost-overboard,Sentinel,44.5333,-63.4167,active,HFX line,V16-5X,trnm,2014-10-01,-,2016-10-01,-,0.0
+HFX,OTNGlobal,NW ATLANTIC,HFX257,Acoustic,44.1054,-63.1287,active,Halifax Line Extension,VR3,rcvr,2016-07-27,-,-,-,3.9
+HFX,OTNGlobal,NW ATLANTIC,HFX258,Acoustic,44.0991,-63.133,active,Halifax Line Extension,VR3,rcvr,2016-07-27,-,-,-,3.7
+HFX,OTNGlobal,NW ATLANTIC,HFX259,Acoustic,44.0926,-63.1373,active,Halifax Line Extension,VR3,rcvr,2016-07-27,-,-,-,3.8
+HFX,OTNGlobal,NW ATLANTIC,HFX260,Acoustic,44.0862,-63.1415,active,Halifax Line Extension,VR3,rcvr,2016-07-27,-,-,-,2.6
+HFX,OTNGlobal,NW ATLANTIC,HFX261,Acoustic,44.0799,-63.1454,active,Halifax Line Extension,VR3,rcvr,2016-07-27,-,-,-,6.0
+HFX,OTNGlobal,NW ATLANTIC,HFX262,Acoustic,44.0736,-63.1499,active,Halifax Line Extension,VR3,rcvr,2016-07-27,-,-,-,4.8
+HFX,OTNGlobal,NW ATLANTIC,HFX263,Acoustic,44.0673,-63.1543,active,Halifax Line Extension,VR3,rcvr,2016-07-27,-,-,-,2.1
+HFX,OTNGlobal,NW ATLANTIC,HFX264,Acoustic,44.0609,-63.1585,active,Halifax Line Extension,VR3,rcvr,2016-07-27,-,-,-,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX265,Acoustic,44.0544,-63.1626,active,Halifax Line Extension,VR3,rcvr,2016-07-27,-,-,-,5.6
+HFX,OTNGlobal,NW ATLANTIC,HFX266,Acoustic,44.0481,-63.1667,active,Halifax Line Extension,VR3,rcvr,2016-07-27,-,-,-,3.5
+HFX,OTNGlobal,NW ATLANTIC,HFX267,Acoustic,44.0417,-63.1713,active,Halifax Line Extension,VR3,rcvr,2016-07-27,-,-,-,3.3
+HFX,OTNGlobal,NW ATLANTIC,HFX268,Acoustic,44.0355,-63.1758,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,3.0
+HFX,OTNGlobal,NW ATLANTIC,HFX269,Acoustic,44.0292,-63.1796,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,1.7
+HFX,OTNGlobal,NW ATLANTIC,HFX270,Acoustic,44.0226,-63.1843,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,3.5
+HFX,OTNGlobal,NW ATLANTIC,HFX271,Acoustic,44.0167,-63.1886,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,5.2
+HFX,OTNGlobal,NW ATLANTIC,HFX272,Acoustic,44.0102,-63.1929,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,0.6
+HFX,OTNGlobal,NW ATLANTIC,HFX273,Acoustic,44.004,-63.1971,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,4.4
+HFX,OTNGlobal,NW ATLANTIC,HFX274,Acoustic,43.9975,-63.2009,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,5.0
+HFX,OTNGlobal,NW ATLANTIC,HFX275,Acoustic,43.9911,-63.2053,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,2017-09-05,1,4.6
+HFX,OTNGlobal,NW ATLANTIC,HFX275,Acoustic,43.9911,-63.2053,active,Halifax Line Extension,VR4,rcvr,2017-09-05,-,-,-,12.7
+HFX,OTNGlobal,NW ATLANTIC,HFX276,Acoustic,43.9847,-63.2099,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,4.9
+HFX,OTNGlobal,NW ATLANTIC,HFX277,Acoustic,43.9782,-63.2142,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,3.9
+HFX,OTNGlobal,NW ATLANTIC,HFX278,Acoustic,43.9723,-63.2178,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,3.1
+HFX,OTNGlobal,NW ATLANTIC,HFX279,Acoustic,43.9652,-63.2224,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,4.5
+HFX,OTNGlobal,NW ATLANTIC,HFX280,Acoustic,43.9591,-63.2268,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,5.3
+HFX,OTNGlobal,NW ATLANTIC,HFX281,Acoustic,43.953,-63.2312,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,1.7
+HFX,OTNGlobal,NW ATLANTIC,HFX282,Acoustic,43.9466,-63.2349,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,5.3
+HFX,OTNGlobal,NW ATLANTIC,HFX283,Acoustic,43.9402,-63.2399,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,0.9
+HFX,OTNGlobal,NW ATLANTIC,HFX284,Acoustic,43.9334,-63.2442,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,3.4
+HFX,OTNGlobal,NW ATLANTIC,HFX285,Acoustic,43.927,-63.2483,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,4.0
+HFX,OTNGlobal,NW ATLANTIC,HFX286,Acoustic,43.9208,-63.2523,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,5.3
+HFX,OTNGlobal,NW ATLANTIC,HFX287,Acoustic,43.9143,-63.2569,active,Halifax Line Extension,VR4,rcvr,2016-08-15,-,-,1,2.0
+HFX,OTNGlobal,NW ATLANTIC,HFX288,Acoustic,43.908,-63.2614,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,3.5
+HFX,OTNGlobal,NW ATLANTIC,HFX289,Acoustic,43.9015,-63.2646,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,2.5
+HFX,OTNGlobal,NW ATLANTIC,HFX290,Acoustic,43.8953,-63.2686,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,3.8
+HFX,OTNGlobal,NW ATLANTIC,HFX291,Acoustic,43.8893,-63.2741,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,2.5
+HFX,OTNGlobal,NW ATLANTIC,HFX292,Acoustic,43.8828,-63.2783,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,5.5
+HFX,OTNGlobal,NW ATLANTIC,HFX293,Acoustic,43.876,-63.2822,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,5.4
+HFX,OTNGlobal,NW ATLANTIC,HFX294,Acoustic,43.8696,-63.2859,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,5.6
+HFX,OTNGlobal,NW ATLANTIC,HFX295,Acoustic,43.8635,-63.2901,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,0.8
+HFX,OTNGlobal,NW ATLANTIC,HFX296,Acoustic,43.8571,-63.2952,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,6.2
+HFX,OTNGlobal,NW ATLANTIC,HFX297,Acoustic,43.8506,-63.2997,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,2.8
+HFX,OTNGlobal,NW ATLANTIC,HFX298,Acoustic,43.8444,-63.3037,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,3.6
+HFX,OTNGlobal,NW ATLANTIC,HFX299,Acoustic,43.8382,-63.3079,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,1.3
+HFX,OTNGlobal,NW ATLANTIC,HFX300,Acoustic,43.8318,-63.3121,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,2.1
+HFX,OTNGlobal,NW ATLANTIC,HFX301,Acoustic,43.8255,-63.3161,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,6.7
+HFX,OTNGlobal,NW ATLANTIC,HFX302,Acoustic,43.819,-63.3203,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,4.1
+HFX,OTNGlobal,NW ATLANTIC,HFX303,Acoustic,43.8127,-63.325,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,4.0
+HFX,OTNGlobal,NW ATLANTIC,HFX304,Acoustic,43.8067,-63.3295,active,Halifax Line Extension,VR4,rcvr,2016-08-28,-,-,1,4.0
+HFX,OTNGlobal,NW ATLANTIC,HFX008B,Environmental,44.43781,-63.4876,closed,Off the coast of Nova Scotia near Halifax Harbour,Benthic Pod,envrn,2011-03-29,-,2011-06-08,-,0.0

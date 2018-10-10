@@ -4,9 +4,9 @@
 \alias{crw_in_polygon}
 \title{Simulate a correlated random walk inside a polygon}
 \usage{
-crw_in_polygon(polyg = data.frame(x = c(0, 0, 150000, 150000), y = c(0, 50000,
-  50000, 0)), theta = c(0, 10), stepLen = 100, initPos = c(NA, NA),
-  initHeading = NA, nsteps = 30)
+crw_in_polygon(polyg = data.frame(x = c(0, 0, 150000, 150000), y = c(0,
+  50000, 50000, 0)), theta = c(0, 10), stepLen = 100, initPos = c(NA,
+  NA), initHeading = NA, nsteps = 30)
 }
 \arguments{
 \item{polyg}{A polygon defined as data frame with columns x and y.}
