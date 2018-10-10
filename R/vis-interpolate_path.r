@@ -281,11 +281,19 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
     .SD[1, c("deploy_long", "deploy_lat")]),
     as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = i.start]
 
+  
+  
   # calculate least cost (non-linear) distance between points
-  dtc[, lcd := gdistance::costDistance(trans, fromCoords = as.matrix(
+  message("Calculating least-cost (non-linear) distances... (step 1 of 3)")
+  grpn = uniqueN(ln$i.start)
+  pb <- txtProgressBar(min = 0, max = grpn, style = 3) 
+  
+   dtc[, lcd := {setTxtProgressBar(pb, value = .GRP);
+     gdistance::costDistance(trans, fromCoords = as.matrix(
     .SD[1, c("deploy_long", "deploy_lat")]),
-    toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])),
+    toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")]))},
     by = i.start]
+  
 
   # calculate ratio of gcd:lcd
   dtc[, crit := gcd / lcd]
@@ -310,7 +318,7 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
 
   capture <- function(x)paste(capture.output(print(x)), collapse = "\n")
   
-  if (nrow(land_chk) > 0) {stop("coordinates outside extent of transition layer.
+  if (nrow(land_chk) > 0) {stop("Some coordinates are on land or beyond extent.
     Interpolation impossible! Check receiver locations or extents of transition
     layer:\n", capture(as.data.table(land_chk)), call. = FALSE)
   }
@@ -327,11 +335,14 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
                      record_type = character())
     } else {
 
-    message("starting linear interpolation")
+    message("\nStarting linear interpolation... (step 2 of 3)")
     # linear interpolation
+      grpn = uniqueN(ln$i.start)
+      pb <- txtProgressBar(min = 0, max = grpn, style = 3)
       ln[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc),
                                                  bin_stamp := bin]
-      ln[, i_lat := {tmp = .SD[c(1, .N),
+      ln[, i_lat := {setTxtProgressBar(pb, .GRP);
+                              tmp = .SD[c(1, .N),
                                c("detection_timestamp_utc", "deploy_lat")];
                                approx(c(tmp$detection_timestamp_utc),
                                       c(tmp$deploy_lat),
@@ -344,7 +355,6 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
          by = i.start]
       ln[is.na(deploy_long), record_type := "interpolated"]
     }
-  message("finished linear interpolation")
   
   # extract records to lookup
   nln_small <- nln[ !is.na(detection_timestamp_utc)][!is.na(t_lat)]
@@ -361,15 +371,18 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
     lookup <- unique(nln_small[, .(deploy_lat, deploy_long, t_lat, t_lon),
                                allow.cartesian = TRUE])
 
-    message("starting non-linear interpolation")
+    message("\nStarting non-linear interpolation... (step 3 of 3)")
+    grpn <- nrow(lookup)
+    pb <- txtProgressBar(min = 0, max = grpn, style = 3)
     # calculate non-linear interpolation for all unique movements in lookup
-    lookup[, coord := {sp::coordinates(
-      gdistance::shortestPath(trans, as.matrix(
-      .SD[1, c("deploy_long", "deploy_lat")]), as.matrix(
-        .SD[1, c("t_lon", "t_lat")]), output = "SpatialLines"))},
+    lookup[, coord := { setTxtProgressBar(pb, value = .GRP);
+              sp::coordinates(
+              gdistance::shortestPath(trans, as.matrix(
+              .SD[1, c("deploy_long", "deploy_lat")]), as.matrix(
+                .SD[1, c("t_lon", "t_lat")]), output = "SpatialLines"))},
       by = 1:nrow(lookup)]
 
-    message("finished non-linear interpolation")
+    message("\nFinalizing results.")
     
     lookup[, grp := 1:.N]
 
