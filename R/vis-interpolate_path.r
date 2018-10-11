@@ -285,7 +285,7 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
   
   # calculate least cost (non-linear) distance between points
   message("Calculating least-cost (non-linear) distances... (step 1 of 3)")
-  grpn = uniqueN(ln$i.start)
+  grpn = uniqueN(dtc$i.start)
   pb <- txtProgressBar(min = 0, max = grpn, style = 3) 
   
    dtc[, lcd := {setTxtProgressBar(pb, value = .GRP);
