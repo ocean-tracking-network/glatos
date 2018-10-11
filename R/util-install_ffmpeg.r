@@ -1,7 +1,10 @@
+##' install ffmpeg
+##' @details checks for and installs ffmpeg into package directory for making animations
+##' @return value
+##' @author Todd Hayden
+##' @export
 
 # install ffmpeg to GLATOS package
-
-
 get_os <- function(){
   sysinf <- Sys.info()
   if (!is.null(sysinf)){
