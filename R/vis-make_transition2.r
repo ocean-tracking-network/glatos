@@ -20,6 +20,10 @@
 #'
 #' @param y_lim An optional two-element vector with extents of x axis.
 #'
+#' @param water value coded as water in transition layer
+#' 
+#' @param land value coded as land in transition layer
+#' 
 #' @details \code{make_transition} uses \link[raster]{rasterize} to convert a
 #'   \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
 #'   geo-corrected transition layer \link[gdistance]{transition}.  Raster cell
@@ -31,6 +35,15 @@
 #'   returns 0 (land) for movements between land and water and 1 for
 #'   all over-water movements.
 #'
+#' @details default values for "land" and "water" arguments allow
+#'     interpolation of fish movements over land when receiver is
+#'     coded as on "land" in transition layer.  This often occurs for
+#'     receivers in rivers when pixel size of transition layer is too
+#'     large to distinguish between water and land.  Changing land
+#'     argument to 0 with eliminate this behavior.
+
+#' 
+#' 
 #' @return A list with two elements:
 #' \describe{
 #'    \item{transition}{a geo-corrected transition raster layer where land = 0
@@ -74,7 +87,7 @@
 #' @export
 
 make_transition2 <- function(poly, res = c(0.1, 0.1), extent_out = NULL,
-                             x_lim = NULL, y_lim = NULL){
+                             x_lim = NULL, y_lim = NULL, water = 1, land = 1e-10){
   
   message("Making transition layer...")
   
@@ -93,9 +106,9 @@ make_transition2 <- function(poly, res = c(0.1, 0.1), extent_out = NULL,
   }
     
   burned = raster::rasterize(poly, y = raster::raster(res = res, ext = extent_out), 
-    field = 1, background = 0)
+    field = water, background = land)
   
-  tran <- function(x) if(x[1] * x[2] == 0){ return(0) } else { return(1) }
+  tran <- function(x) if(x[1] == land | x[2] == land){ return(land) } else { return(water) }
   tr1 <- gdistance::transition(burned, transitionFunction = tran, 
     directions = 16)
   tr1 <- gdistance::geoCorrection(tr1, type="c")

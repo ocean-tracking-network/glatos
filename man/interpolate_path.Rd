@@ -4,8 +4,8 @@
 \alias{interpolate_path}
 \title{Interpolate new positions within a spatiotemporal path data}
 \usage{
-interpolate_path(det, trans = NULL, int_time_stamp = 86400,
-  lnl_thresh = 0.9)
+interpolate_path(det, trans = NULL, start_time = NULL,
+  int_time_stamp = 86400, lnl_thresh = 0.9)
 }
 \arguments{
 \item{det}{An object of class \code{glatos_detections} or data frame
@@ -17,6 +17,12 @@ containing spatiotemporal data with at least 4 columns containing
 moving across each cell within the map extent. Must be of class
 \code{TransitionLayer}. A transition layer may be
 created from a polygon shapefile using \link{make_transition}.}
+
+\item{start_time}{specify the first time bin for interpolated data.
+If not supplied, default is first timestamp in the input data
+set.  Must be a character string that can be coerced to
+'POSIXt' or 'POSIXct' or an object of class 'POSIXt' or
+'POSIXct'}
 
 \item{int_time_stamp}{The time step size (in seconds) of interpolated 
 positions. Default is 86400 (one day).}

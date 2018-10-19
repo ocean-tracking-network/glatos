@@ -14,6 +14,10 @@
 ##' @param res two element vector that specifies the x and y dimension
 ##'   of output raster cells.  Units of res are same as input
 ##'   shapefile.
+##'
+##' @param water value coded as water in transition layer
+##'
+##' @param land value coded as land in transition layer
 ##' 
 ##' @details \code{make_transition} uses
 ##'   \link[gdalUtils]{gdal_rasterize} to convert a polygon shapefile
@@ -37,6 +41,13 @@
 ##'   cells are connected by 16 directions and transition function
 ##'   returns 0 (land) for movements between land and water and 1 for
 ##'   all over-water movements.
+##'
+##' @details default values for "land" and "water" arguments allow
+##'     interpolation of fish movements over land when receiver is
+##'     coded as on "land" in transition layer.  This often occurs for
+##'     receivers in rivers when pixel size of transition layer is too
+##'     large to distinguish between water and land.  Changing land
+##'     argument to 0 with eliminate this behavior.
 ##' 
 ##' @return A list with two elements:
 ##' \describe{
@@ -101,92 +112,68 @@
 ##' 
 ##' @export
 
-
-make_transition <- function(in_file, output = "out.tif",
-                            output_dir = NULL, res = c(0.1, 0.1)){
-
-  # check to see if gdal is installed on machine- stop if not.
-  gdalUtils::gdal_setInstallation()
-  valid_install <- !is.null(getOption("gdalUtils_gdalPath"))
-  if(!valid_install){
-    stop("No GDAL installation found. Please install 'gdal' before continuing:\n\t- see: www.gdal.org\n\t- https://trac.osgeo.org/osgeo4w/ (windows)\n")
+make_transition <- function (in_file, output = "out.tif", output_dir = NULL,
+                             res = c(0.1, 0.1), water = 1, land = 1e-10)
+{
+    gdalUtils::gdal_setInstallation()
+    valid_install <- !is.null(getOption("gdalUtils_gdalPath"))
+    if (!valid_install) {
+        stop("No GDAL installation found. Please install 'gdal' before continuing:\n\t- see: www.gdal.org\n\t- https://trac.osgeo.org/osgeo4w/ (windows)\n")
     }
-
-  #Check if in_file is file, directory, or SpatialPolygonsDataFrame
-  if(inherits(in_file, "character")) { 
-
-    #check if in_file exists
-    if(!file.exists(in_file)) stop(paste0("Input file or folder '", in_file, "' not found."))
-        
-    #check if file or directory and set layer name accordingly
-    if(grepl("\\.shp$", in_file)){
-      
-      in_dir <- dirname(in_file)
-      
-      if(!file.exists(in_dir)) stop(paste0("'in_file' directory '", in_dir, "' not found."))
-      
-      #get layer name from file name
-      in_layer <- basename(tools::file_path_sans_ext(basename(in_file)))
-      
-    } else { 
-     
-      in_dir <- in_file
-      
-      #use layer name as file name
-      in_layer <- rgdal::ogrListLayers(in_dir)[1]      
-       
+    if (inherits(in_file, "character")) {
+        if (!file.exists(in_file)) 
+            stop(paste0("Input file or folder '", in_file, "' not found."))
+        if (grepl("\\.shp$", in_file)) {
+            in_dir <- dirname(in_file)
+            if (!file.exists(in_dir)) 
+                stop(paste0("'in_file' directory '", in_dir, 
+                  "' not found."))
+            in_layer <- basename(tools::file_path_sans_ext(basename(in_file)))
+        }
+        else {
+            in_dir <- in_file
+            in_layer <- rgdal::ogrListLayers(in_dir)[1]
+        }
+        in_shp <- rgdal::readOGR(in_dir, layer = in_layer, verbose = FALSE)
+        if (!inherits(in_shp, "SpatialPolygonsDataFrame")) 
+            stop(paste0("Input can only contain ", "polygon data."))
     }
-    
-    #read shape file
-    in_shp <- rgdal::readOGR(in_dir, layer = in_layer, verbose = FALSE) 
-  
-    #check if SpatialPolygonsDataFrame
-    if (!inherits(in_shp, "SpatialPolygonsDataFrame")) stop(paste0("Input can only contain ",
-            "polygon data."))
-    
-  } else if (inherits(in_file, "SpatialPolygonsDataFrame")) {
-    
-    in_shp <- in_file 
-    
-    #use incoming object name as layer
-    in_layer <- deparse(substitute(in_file))
-    
-  } else {
-    
-    stop(paste0("'in_file' must be either an object of class 'SpatialPolygonsDataFrame' or\n", 
-                " path to an ESRI Shapefile."))
-  
-  }
-  
-  
-  #check projection and change if needed
-  default_proj <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-  if(sp::proj4string(in_shp) != default_proj) {
-    warning(paste0("Projection of input was not longlat WGS84, so conversion was attempted."),
+    else if (inherits(in_file, "SpatialPolygonsDataFrame")) {
+        in_shp <- in_file
+        in_layer <- deparse(substitute(in_file))
+    }
+    else {
+        stop(paste0("'in_file' must be either an object of class 'SpatialPolygonsDataFrame' or\n", 
+            " path to an ESRI Shapefile."))
+    }
+    default_proj <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+    if (sp::proj4string(in_shp) != default_proj) {
+        warning(paste0("Projection of input was not longlat WGS84, so conversion was attempted."), 
             call. = FALSE)
-    in_shp <- sp::spTransform(in_shp, sp::CRS(default_proj))
-  }
-  
-  #write to temp dir and call gdal_rasterize
-  temp_dir <- path.expand(file.path(tempdir(), in_layer))
-  rgdal::writeOGR(in_shp, dsn = temp_dir, 
-                  layer = in_layer,
-                  driver = "ESRI Shapefile", 
-                  overwrite_layer = TRUE)
-
-  if(is.null(output_dir)) output_dir <- temp_dir
-  
-  burned <- gdalUtils::gdal_rasterize(temp_dir,
-                                      dst_filename = path.expand(file.path(output_dir, output)),
-                                      burn = 1,
-                                      tr = res,
-                                      output_Raster = TRUE)
-
-  burned <- raster::raster(burned, layer = 1)
-
-  tran <- function(x){if(x[1] * x[2] == 0){return(0)} else {return(1)}}
-  tr1 <- gdistance::transition(burned, transitionFunction = tran, directions = 16)
-  tr1 <- gdistance::geoCorrection(tr1, type="c")
-  out <- list(transition = tr1, rast = burned)
-  return(out)
+        in_shp <- sp::spTransform(in_shp, sp::CRS(default_proj))
+    }
+    temp_dir <- path.expand(file.path(tempdir(), in_layer))
+    rgdal::writeOGR(in_shp, dsn = temp_dir, layer = in_layer, 
+        driver = "ESRI Shapefile", overwrite_layer = TRUE)
+    if (is.null(output_dir)) 
+        output_dir <- temp_dir
+    burned <- gdalUtils::gdal_rasterize(temp_dir, dst_filename = path.expand(file.path(output_dir, 
+        output)), burn = water, tr = res, output_Raster = TRUE)
+    burned <- raster::raster(burned, layer = 1)
+    burned[burned == 0] <- land
+    
+    tran <- function(x) {
+        if (x[1] == land | x[2] == land) {
+            return(land)
+        }
+        else {
+            return(water)
+        }
+    }
+    tr1 <- gdistance::transition(burned, transitionFunction = tran, 
+        directions = 16)
+    tr1 <- gdistance::geoCorrection(tr1, type = "c")
+    out <- list(transition = tr1, rast = burned)
+    return(out)
 }
+

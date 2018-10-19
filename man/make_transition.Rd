@@ -5,7 +5,7 @@
 \title{Create transition layer from polygon shapefile}
 \usage{
 make_transition(in_file, output = "out.tif", output_dir = NULL,
-  res = c(0.1, 0.1))
+  res = c(0.1, 0.1), water = 1, land = 1e-10)
 }
 \arguments{
 \item{in_file}{A SpatialPolygonsDataFrame object or a character string with file path to 
@@ -20,6 +20,10 @@ is closed (see \link[=tempfile]{tempdir}).}
 \item{res}{two element vector that specifies the x and y dimension
 of output raster cells.  Units of res are same as input
 shapefile.}
+
+\item{water}{value coded as water in transition layer}
+
+\item{land}{value coded as land in transition layer}
 }
 \value{
 A list with two elements:
@@ -57,6 +61,13 @@ output transition layer is corrected for projection
   cells are connected by 16 directions and transition function
   returns 0 (land) for movements between land and water and 1 for
   all over-water movements.
+
+default values for "land" and "water" arguments allow
+    interpolation of fish movements over land when receiver is
+    coded as on "land" in transition layer.  This often occurs for
+    receivers in rivers when pixel size of transition layer is too
+    large to distinguish between water and land.  Changing land
+    argument to 0 with eliminate this behavior.
 }
 \examples{
 \dontrun{
