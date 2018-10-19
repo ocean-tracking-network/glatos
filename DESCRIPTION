@@ -5,7 +5,7 @@ Description: Functions useful to members of the Great Lakes Acoustic Telemetry O
 Version: 0.2.7.9000
 Date: 2018-08-03
 Depends: R (>= 3.2.0)
-Imports: 
+Imports:
 		cellranger,
 		data.table,		
 		fasttime,
@@ -20,7 +20,9 @@ Imports:
 		rgeos,
 		sp,
 		gdalUtils
-Suggests: testthat
+Suggests: testthat,
+    knitr,
+    rmarkdown
 URL: https://gitlab.oceantrack.org/GreatLakes/glatos
 BugReports: https://gitlab.oceantrack.org/GreatLakes/glatos/issues
 Authors@R: c(
@@ -35,3 +37,4 @@ License: GPL-2
 LazyLoad: yes
 LazyData: true
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr
