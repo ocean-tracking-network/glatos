@@ -217,14 +217,12 @@ position_heat_map <- function (positions,
   }
   
   
-  
-  # Create new directory for results based on user-defined 'folder' ----------
-  dir.create(folder, showWarnings = FALSE) 
-  file_path <- normalizePath(folder)
-  folder <- basename(folder)
-  # Set working directory
-  start_wd = getwd()
-  setwd(paste0(getwd(),"/", folder))
+  if(output %in% c("png","kmz")){
+      # Create new directory for results based on user-defined 'folder' ------
+      dir.create(folder, showWarnings = FALSE) 
+      file_path <- normalizePath(folder)
+      folder <- basename(folder)
+  }
   
   
   
@@ -340,7 +338,7 @@ position_heat_map <- function (positions,
 
   # Output -------------------------------------------------------------------
 	if(output %in% c("png","kmz")){
-  		  png(file = file.path(paste0(fish_pos_int,"_",
+  		  png(file = file.path(paste0(folder, "/", fish_pos_int,"_",
   		                              abs_or_rel,".png")),
   		      bg = 'transparent',
   		      height = 2000,
@@ -409,7 +407,8 @@ position_heat_map <- function (positions,
   	                        '<GroundOverlay>',
                               paste0('<name>',fish_pos_int,'_',abs_or_rel,'</name>'),
                               '<Icon>',
-                                paste0('<href>',file.path(paste0(fish_pos_int,"_",abs_or_rel,".png")),
+                                paste0('<href>',file.path(paste0(fish_pos_int,"_",
+                                                                 abs_or_rel,".png")),
                                       '</href>'),
                                 '<viewBoundScale>0.75</viewBoundScale>',
                               '</Icon>',
@@ -428,24 +427,29 @@ position_heat_map <- function (positions,
   	# Write the kml object to kml text file and places it in the folder 
     # containing the three png files.
   	write.table(kml,
-  	            file = file.path(paste0(fish_pos_int,"_",
-  	                                         abs_or_rel,".kml")),
+  	            file = file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                                    abs_or_rel,".kml")),
   	            col.names = FALSE,
   	            row.names = FALSE, quote = FALSE)
   	# Zip the kml and opng into a KMZ file
-  	zip(zipfile = file.path(paste0(fish_pos_int,"_", abs_or_rel, ".kmz")),
-  	    files = c(file.path(paste0(fish_pos_int,"_", abs_or_rel,".kml")),
-  	              file.path(paste0(fish_pos_int,"_", abs_or_rel,".png"))))
+  	utils::zip(zipfile = file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                                      abs_or_rel, ".kmz")),
+  	           files = c(file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                                      abs_or_rel,".kml")),
+  	                     file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                                      abs_or_rel,".png"))),
+  	           flags = "-j")
   	
   	# Delete the kml and png files.
-  	file.remove(file.path(paste0(fish_pos_int,"_", abs_or_rel,".kml")))
-  	file.remove(file.path(paste0(fish_pos_int,"_", abs_or_rel,".png")))
+  	file.remove(file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                             abs_or_rel,".kml")))
+  	file.remove(file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                             abs_or_rel,".png")))
   }
 	if(output %in% c("png", "kmz")){
-	    message(paste0("Output file are located in:", getwd()))
+	    message(paste0("Output file are located in:", getwd(),"/", folder, "/"))
 	}
-	# Return working directory to original
-	setwd(start_wd)
+
 	
 	return(list(values=results,
 	            utm_zone = paste(ifelse(projection=="LL",
