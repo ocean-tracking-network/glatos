@@ -158,8 +158,8 @@ detection_events <- function(det,
 	# Add unique event number (among all fish, not within each fish)
 	detections[ , event := cumsum(arrive)]  
 	
-	# Summarize the event data using the ddply function in the plyr package.
-	Results = detections[, .(individual = animal_id[1],
+	# Summarize the event data using data.table.
+	Results = detections[, .(animal_id = animal_id[1],
 	                         location = location_col[1],
 	                         mean_latitude = mean(deploy_lat, na.rm = T),
 	                         mean_longitude = mean(deploy_long, na.rm = T),
