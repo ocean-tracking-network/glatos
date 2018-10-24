@@ -49,12 +49,6 @@
 #'   grouping column must have the same name in both \code{det} and 
 #'   \code{receiver_history}.
 #'   
-#' @param ylab A character string indicating the y-axis label that will appear 
-#'   on the figure (default will match \code{location_col}).
-#'   
-#' @param pch A numeric value corresponding to the symbol to be used for
-#'   plotting. See \url{https://www.statmethods.net/advgraphs/parameters.html}.
-#'   
 #' @param out_file An optional character string with the name (including 
 #'   extension) of output image file to be created. File extension
 #'   will determine type of file written. For example, \code{"abacus_plot.png"}
@@ -120,8 +114,6 @@ abacus_plot <- function(det,
                         locations = NULL,
                         show_receiver_status = FALSE,
                         receiver_history = NULL,
-                        ylab = NA,
-                        pch = NA,
                         out_file = NULL,
                         outFile = NULL,
                         ...){
@@ -195,6 +187,9 @@ abacus_plot <- function(det,
       names(receiver_history)[which(names(receiver_history)==location_col)] = "location"
   }
   
+  # Make a list of optional arguments passed through ... for use in parsing out 
+  # arguments for plotting.
+  arguments <- list(...)
   
   # If locations not supplied, create one data frame with unique values
   # (ordered alphebetically from top to bottom) of location_col values with
@@ -211,10 +206,6 @@ abacus_plot <- function(det,
       stringsAsFactors = FALSE)
   }
   
-  #update Ylab value if NA
-  if(is.na(ylab)){ 
-    Ylab <- location_col
-  }
   
   # Merge det and locations_table data frames
   # Keep only locations that appear in the locations_table data frame
@@ -282,9 +273,7 @@ abacus_plot <- function(det,
   }
 
   with(det, 
-       points(detection_timestamp_utc, y_order, 
-              pch = ifelse(is.na(pch), 16, pch),
-              ...))
+       points(detection_timestamp_utc, y_order, ...))
   
   # Add custom axes
   axis(2, at = locations_table$y_order, 
@@ -294,8 +283,10 @@ abacus_plot <- function(det,
   axis(1, at = xmaj, labels = format(xmaj, "%Y-%m-%d"), las = 1)
   
   # Add axes titles
-  mtext("Date", side = 1, line = 2.2, cex = 1.2)
-  mtext(Ylab, side = 2, line = 3.5 + YlabOffset, cex = 1.2)
+  mtext(ifelse("xlab" %in% names(arguments), arguments$xlab, "Date"), 
+        side = 1, line = 2.2, cex = 1.2)
+  mtext(ifelse("ylab" %in% names(arguments), arguments$ylab, location_col),
+        side = 2, line = 3.5 + YlabOffset, cex = 1.2)
   
   if(!is.na(file_type))	{
     dev.off()
