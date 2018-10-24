@@ -3,7 +3,7 @@
 #' Plot detection locations of acoustic transmitters over time.
 #' 
 #' @param det A \code{glatos_detections} object (e.g., produced by
-#'   \link{read_glatos_detections}).
+#'   \link{read_glatos_detections}) containing detections to be plotted.
 #'   
 #'   \emph{OR} A data frame containing detection data with at least two columns, 
 #'   one of which must be named 'detection_timestamp_utc', described below,  
@@ -20,12 +20,34 @@
 #'   \code{det} that will be used as the location grouping variable (e.g.
 #'   "glatos_array"), in quotes.
 #'   
-#' @param locations An optional vector containing a list of locations
+#' @param locations An optional vector containing the locations
 #'   \code{location_col} to show in the plot. Plot order corresponds to order
 #'   in the vector (from bottom up). Should correspond to values in
 #'   \code{location_col}, but can contain values that are not in the det
 #'   data frame (i.e., can use this option to plot locations fish were
 #'   not detected).
+#'   
+#' @param show_receiver_status A logical value indicating whether or not to
+#'   display receiver status behind detection data (i.e., indicate when 
+#'   receivers were in the water). If \code{show_receiver_status} == TRUE, then
+#'   a receiver_history data frame (\code{receiver_history}) must be supplied.
+#'   Default is FALSE.
+#' 
+#' @param receiver_history An optional \code{glatos_receivers} object
+#'   (e.g., produced by \link{read_glatos_receivers}) containing receiver
+#'   history data for plotting receiver status behind the detection data when 
+#'   \code{show_receiver_status} == TRUE.
+#'   
+#'   \emph{OR} An optional data frame containing receiver history
+#'   data for plotting receiver status behind the detection data when 
+#'   \code{show_receiver_status} == TRUE. 
+#'   
+#'   The data frame must contain at least three columns: 
+#'   1) 'deploy_date_time, 2) 'recover_date_time', and 3) a grouping
+#'   column whose name is specified by \code{location_col} (see below). Columns 
+#'   'deploy_date_time' and 'recover_date_time' must be of class POSIXct. The 
+#'   grouping column must have the same name in both \code{det} and 
+#'   \code{receiver_history}.
 #'   
 #' @param ylab A character string indicating the y-axis label that will appear 
 #'   on the figure (default will match \code{location_col}).
@@ -42,7 +64,7 @@
 #'   
 #' @param outFile Deprecated. Use \code{out_file} instead.
 #'   
-#' @param ... Other plotting arguments that pass to "plot" function (e.g., col,
+#' @param ... Other plotting arguments that pass to "points" function (e.g., col,
 #'   lwd, type).
 #'   
 #' @details NAs are not allowed in any of the two required columns.
@@ -63,7 +85,7 @@
 #' @details Plotting options (i.e., line width and color) can be changed using
 #'   optional graphical parameters 
 #'   \url{http://www.statmethods.net/advgraphs/parameters.html} that are passed
-#'   to "segments" (see ?segments).
+#'   to "points" (see ?points).
 #'   
 #' @return An image to the default plot device or a file containing the 
 #' image if \code{out_file} is specified.
@@ -93,8 +115,16 @@
 #'   
 #' @export
 
-abacus_plot <- function(det, location_col = 'glatos_array', 
-  locations = NULL, ylab = NA, pch = NA, out_file = NULL, outFile = NULL, ...) {
+abacus_plot <- function(det,
+                        location_col = 'glatos_array',
+                        locations = NULL,
+                        show_receiver_status = FALSE,
+                        receiver_history = NULL,
+                        ylab = NA,
+                        pch = NA,
+                        out_file = NULL,
+                        outFile = NULL,
+                        ...){
   
   #check if outFile was given
   if(!is.null(outFile)){
@@ -117,7 +147,8 @@ abacus_plot <- function(det, location_col = 'glatos_array',
   
   # Check that timestamp is of class 'POSIXct'
   if(!('POSIXct' %in% class(det$detection_timestamp_utc))){
-    stop(paste0("Column 'detection_timestamp_utc' in the det must be of class 'POSIXct'."),
+    stop(paste0("Column 'detection_timestamp_utc' in the det data frame must 
+                be of class 'POSIXct'."),
       call. = FALSE)
   } 
   
@@ -127,6 +158,43 @@ abacus_plot <- function(det, location_col = 'glatos_array',
     if(!dir.exists(outDir)) stop("Output directory '", outDir, 
       "' does not exist.", call. = FALSE)
   }
+  
+  # Perform checks related to show_receiver_status
+  if(show_receiver_status){
+      # Check that receiver_history data frame is passed to function
+      if(is.null(receiver_history)){
+        stop("Argument 'receiver_history' (i.e., data frame containing deploy 
+             and recovery times for receievr locations) must be specified when 
+             show_receiver_status == TRUE.")
+      }
+    
+      # Check that the specified columns appear in the receiver history data frame
+      missingCols2 <- setdiff(c("deploy_date_time", "recover_date_time", location_col), 
+                              names(receiver_history))
+      if (length(missingCols2) > 0){
+        stop(paste0("receiver_history is missing the following ","column(s):\n", 
+                    paste0("       '", missingCols2, "'", collapse="\n")), 
+             call. = FALSE)
+      }
+      
+      # Check that deploy_date_time is of class 'POSIXct'
+      if(!('POSIXct' %in% class(receiver_history$deploy_date_time))){
+        stop(paste0("Column 'deploy_date_time' in the receiver_history data 
+                    frame must be of class 'POSIXct'."),
+             call. = FALSE)
+      }
+      
+      # Check that recover_date_time is of class 'POSIXct'
+      if(!('POSIXct' %in% class(receiver_history$deploy_date_time))){
+        stop(paste0("Column 'recover_date_time' in the receiver_history data 
+                    frame must be of class 'POSIXct'."),
+             call. = FALSE)
+      }
+      
+      # Rename receiver_history column specified in location_col to "location"
+      names(receiver_history)[which(names(receiver_history)==location_col)] = "location"
+  }
+  
   
   # If locations not supplied, create one data frame with unique values
   # (ordered alphebetically from top to bottom) of location_col values with
@@ -152,8 +220,16 @@ abacus_plot <- function(det, location_col = 'glatos_array',
   # Keep only locations that appear in the locations_table data frame
   det <- merge(det, locations_table, by = "location", all.y = TRUE)
   
-  #sort by timestamp
+  # Sort by timestamp
   det <- det[order(det$detection_timestamp_utc), ] 
+  
+  # Prepare receiver_history data frame for plotting
+  if(show_receiver_status){
+    # Merge receiver_history and locations_table data frames
+    # Keep only locations that appear in the locations_table data frame
+    receiver_history <- merge(receiver_history, locations_table, by = "location", all.y = TRUE)
+  }
+  
   
   # Variable which scales the height of the y-axis depending on the number of 
   # labels to appear. 
@@ -188,12 +264,27 @@ abacus_plot <- function(det, location_col = 'glatos_array',
   par(mar = c(1, 1, 1.5, 2), oma = c(3, 4 + YlabOffset, 0, 0))
   
   # Plot detection data
+  with(det,
+       plot(NULL, 
+            xlim = range(detection_timestamp_utc, na.rm = TRUE), 
+            ylim = c(1,nrow(locations_table)), 
+            yaxt = "n", xaxt = "n", ylab = "", 
+            xlab = ""))
+  
+  if(show_receiver_status){
+    with(receiver_history, 
+         segments(deploy_date_time,
+                  y_order, 
+                  recover_date_time, 
+                  y_order, 
+                  lwd = 3,
+                  col = "gray"))
+  }
+
   with(det, 
-    plot(detection_timestamp_utc, y_order, 
-      xlim = range(detection_timestamp_utc, na.rm = TRUE), 
-      ylim = c(1,nrow(locations_table)), 
-      pch = ifelse(is.na(pch), 16, pch), yaxt = "n", xaxt = "n", ylab = "", 
-      xlab = "", ...))
+       points(detection_timestamp_utc, y_order, 
+              pch = ifelse(is.na(pch), 16, pch),
+              ...))
   
   # Add custom axes
   axis(2, at = locations_table$y_order, 
