@@ -8,9 +8,8 @@ Depends: R (>= 3.2.0)
 Imports:
 		cellranger,
 		data.table,
-		fasttime,
+		lubridate,
 		gdistance,
-		geosphere,
 		openxlsx (>= 4.0.0),
 		plotrix,
 		plyr,

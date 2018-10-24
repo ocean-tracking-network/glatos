@@ -45,7 +45,7 @@ total_diff_days <- function(detections) {
 #'
 #' @param Detections -data frame pulled from the compressed detections CSV
 #'
-#' @importFrom dplyr mutate 
+#' @importFrom dplyr mutate
 aggregate_total_with_overlap <- function(detections) {
   detections <- mutate(detections, timedelta = as.double(difftime(as.Date(last_detection),as.Date(first_detection), units="secs")))
   detections <- mutate(detections, timedelta = dplyr::recode(detections$timedelta, `0` = 1))
@@ -60,7 +60,7 @@ aggregate_total_with_overlap <- function(detections) {
 #' second is assumed.
 #'
 #' @param Detections - data frame pulled from the compressed detections CSV
-#' 
+#'
 #' @importFrom lubridate interval int_overlaps
 #' @importFrom dplyr mutate
 aggregate_total_no_overlap <- function(detections) {
@@ -70,7 +70,7 @@ aggregate_total_no_overlap <- function(detections) {
   detections <- mutate(detections, interval = interval(first_detection,last_detection))
   detections <- mutate(detections, timedelta = as.double(difftime(as.Date(last_detection),as.Date(first_detection), units="secs")))
   detections <- mutate(detections, timedelta = dplyr::recode(detections$timedelta, `0` = 1))
-  
+
   next_block <- 2
   start_block <- 1
   end_block <- 1
@@ -80,10 +80,10 @@ aggregate_total_no_overlap <- function(detections) {
       if(dplyr::nth(detections$interval, next_block) >= dplyr::nth(detections$interval, end_block)) {
         end_block <- next_block
       }
-      
+
       if(end_block == detcount) {
         tdiff <- as.double(difftime(dplyr::nth(detections$last_detection,end_block), dplyr::nth(detections$first_detection, start_block), units="secs"))
-        
+
         if(tdiff == 0.0) {
           tdiff <- 1
         }
@@ -94,10 +94,10 @@ aggregate_total_no_overlap <- function(detections) {
     } else {
       #if it doesn't overlap
       tdiff <- 0.0
-      
+
       # Generate the time difference between the start of the start block and the end of the end block
       tdiff <- as.double(difftime(dplyr::nth(detections$last_detection,end_block), dplyr::nth(detections$first_detection, start_block), units="secs"))
-      
+
       start_block <- next_block
       end_block <- next_block
       total <- total + as.double(tdiff)
@@ -107,7 +107,7 @@ aggregate_total_no_overlap <- function(detections) {
   total <- total/86400.0
   return(total)
 }
-  
+
 
 #' Determines which calculation method to use for the residency index.
 #'
@@ -229,11 +229,11 @@ get_days <- function(dets, calculation_method='kessel') {
 #' @importFrom dplyr count distinct select
 #' @export
 residence_index <- function(detections, calculation_method='kessel') {
-  
+
   total_days = get_days(detections, calculation_method)
-  
+
   ri <- data.frame('days_detected'=numeric(),'residency_index'=numeric(), 'location'=character())
-  
+
   locations <- distinct(select(detections, location))
   for (index in 1:as.integer(dplyr::count(locations))) {
     stn <- as.character(slice(locations, index)$location)
@@ -243,7 +243,7 @@ residence_index <- function(detections, calculation_method='kessel') {
     row <- data.frame('days_detected'=total_stn_days,'residency_index'=res_index, 'location'=stn)
     ri <- rbind(ri, row)
   }
-  
+
   locations <- unique(detections[,c('location','mean_latitude','mean_longitude')])
   rownames(locations) <- 1:nrow(locations)
   locations$location <- as.character(locations$location)
@@ -265,14 +265,14 @@ residence_index <- function(detections, calculation_method='kessel') {
 #'
 #' @return A plotly plot_geo object
 #'
-#' @import magrittr
+#' @importFrom magrittr "%>%"
 #' @import plotly
 #' @export
 ri_plot <- function(df, title="Residence Index") {
   lat_range <- c(df$mean_latitude[which.min(df$mean_latitude)], df$mean_latitude[which.max(df$mean_latitude)])
   lon_range <- c(df$mean_longitude[which.min(df$mean_longitude)], df$mean_longitude[which.max(df$mean_longitude)])
   m <- list(colorbar = list(title = "Residence Index"))
-  
+
   g <- list(
     showland = TRUE,
     landcolor = plotly::toRGB("gray"),
@@ -300,7 +300,7 @@ ri_plot <- function(df, title="Residence Index") {
       dtick = 1
     )
   )
-  
+
   p <- plot_geo(df, lat = ~mean_latitude, lon = ~mean_longitude, color = ~residency_index) %>%
     add_markers(size = ~((df$residency_index * 5) + 1),
                 text = ~paste(df$location, ":",df$residency_index), hoverinfo = "text"

@@ -27,7 +27,9 @@
 #'                          package = "glatos")
 #' det <- read_otn_deploymentss(deployment_file)
 #'
+#' @importFrom lubridate parse_date_time
 #' @importFrom tidyr extract
+#' @importFrom dplyr mutate
 #' @export
 read_otn_deployments <- function(deployment_file) {
   col_classes <- otn_deployments_schema$type
@@ -43,10 +45,12 @@ read_otn_deployments <- function(deployment_file) {
   #coerce timestamps to POSIXct; note that with fastPOSIXct raw
   #  timestamp must be in UTC; and tz argument sets the tzone attr only
   dtc <- dtc %>% tidyr::extract(recovery_date,into="recovery_date", regex="(\\d+-\\d+-\\d+)")
+  dtc <- dtc %>% tidyr::extract(last_download,into="last_download", regex="(\\d+-\\d+-\\d+)")
   
+  options(lubridate.fasttime = TRUE)
   for (j in timestamp_cols) {
     data.table::set(dtc, j = otn_deployments_schema$name[j],
-                                            value = fasttime::fastPOSIXct(dtc[[otn_deployments_schema$name[j]]], tz = "UTC"))
+                    value = lubridate::parse_date_time(dtc[[otn_deployments_schema$name[j]]], orders="ymd", tz = "UTC"))
   }
   #coerce dates to date
   for (j in date_cols) {
