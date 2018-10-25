@@ -169,13 +169,14 @@
 #' 
 #' @export 
 
+
 interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
                              lnl_thresh = 0.9){
 
   # check to see that trans is a transition Layer or transition stack.
   if(!is.null(trans) & 
      inherits(trans, c("TransitionLayer", "TransitionStack")) == FALSE){
-    stop(paste0("Supplied object for 'trans' argument is not class ", 
+    stop(paste0("Supplied object for trans argument is not class ", 
          "TransitionLayer or TransitionStack."),
          call. = FALSE)
   }
