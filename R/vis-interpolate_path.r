@@ -12,8 +12,8 @@
 #' @param start_time specify the first time bin for interpolated data.
 #'     If not supplied, default is first timestamp in the input data
 #'     set.  Must be a character string that can be coerced to
-#'     'POSIXt' or 'POSIXct' or an object of class 'POSIXt' or
-#'     'POSIXct'
+#'     'POSIXct' or an object of class 'POSIXct'.  If character string
+#'     is supplied, timezone is automatically set to UTC.
 #' 
 #' @param int_time_stamp The time step size (in seconds) of interpolated 
 #'   positions. Default is 86400 (one day).
@@ -212,8 +212,32 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
         stop(paste0("Supplied object for 'start_time'",
                     "cannot be coerced to 'POSIXct' or 'POSIXt' class"),
              call. = FALSE)
+    }
+
+    extract_start_time <- function(start_time, dtc = det){
+    if( is.na(start_time) && length(start_time) !=0 ){
+        stop("start_time is NA")}
+    if( is.null(start_time) == TRUE  ){
+        start_time <- min(dtc$detection_timestamp_utc)
+        return(start_time)
+    }
+    
+    tryCatch({
+       if (inherits(start_time, c("POSIXct", "POSIXt")) == TRUE )
+            {
+            return(start_time)
+        } else {
+            start_time <- as.POSIXct(start_time, tz = "UTC")
+            
+            return(start_time)
         }
-        
+    },
+        error = function(error_message){
+            stop("Supplied object for 'start_time' is not 'POSIXct' or 'POSIXt' class and cannot be coerced", call. = FALSE)}
+    )
+    
+}
+    
   # make copy of detections for function
   dtc <- data.table::as.data.table(det)
 
@@ -238,17 +262,14 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
   dtc <- dtc[num_rows != 1]
 
   # error if only fish with one observation.
-  if (nrow(dtc) == 0) stop("must have two observations to interpolate")
+    if (nrow(dtc) == 0) stop("must have two observations to interpolate")
 
-  if (is.null(start_time)){
-  t_seq <- seq(min(dtc$detection_timestamp_utc),
-               max(dtc$detection_timestamp_utc), int_time_stamp)
-  } else {
-      t_seq <- seq(min(start_time), max(dtc$detection_timestamp_utc),
-                   int_time_stamp)
-      }
-  
-  # bin data by time interval and add bin to dtc
+    # extract and determine start time
+    start_time <- extract_start_time(start_time, dtc = dtc)
+    t_seq <- seq(start_time, max(dtc$detection_timestamp_utc),
+                 int_time_stamp)
+
+    # bin data by time interval and add bin to dtc
   dtc[, bin := t_seq[findInterval(detection_timestamp_utc, t_seq)] ]
 
     # make all combinations of animals and detection bins
