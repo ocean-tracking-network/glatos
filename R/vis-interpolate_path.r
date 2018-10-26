@@ -14,6 +14,10 @@
 #'     set.  Must be a character string that can be coerced to
 #'     'POSIXct' or an object of class 'POSIXct'.  If character string
 #'     is supplied, timezone is automatically set to UTC.
+#'
+#' @param data.table logical. Return results as a data.table
+#'   (data.table = TRUE).  Default (data.table = FALSE) returns
+#'   results as data frame
 #' 
 #' @param int_time_stamp The time step size (in seconds) of interpolated 
 #'   positions. Default is 86400 (one day).
@@ -174,77 +178,44 @@
 #' } 
 #' 
 #' @export 
-
-
-#det <- det_file <- system.file("extdata", "walleye_detections.csv", package="glatos")
-#det <- read_glatos_detections(det_file)
-
-
-# need to add check for receivers on land at beginning.  This can be done using
-# raster to make sure all points supplied are within extend of raster tran layer.
-# do not need to do this if tran is not supplied (i.e., linear interpolation only).
-# Once receivers on land are identified, possible to use extract with the buffer
-# argument to fix.  raster::distance calculates distance between point and closest NA
-# pixel.  OR possibly the "nearestLand" function.
-# also a good idea to explore this:
-#https://stackoverflow.com/questions/47739676/appropriate-method-for-transition-function-in-gdistance
-# simple fix is to allow users to spec out own conductance values in the make_transitions
-# function.  Allow conductance of water to be non-zero, very small and conductance of water
-# to be very large.  This should allow fish to travel over small land distances without
-# getting stuck.  See modified make_transitions function used in "pulse_on_science"
-# animation.  
-
-
-
+                         
 interpolate_path <- function(det, trans = NULL, start_time = NULL,
-                             int_time_stamp = 86400, lnl_thresh = 0.9){
-
-  # check to see that trans is a transition Layer or transition stack.
+                             int_time_stamp = 86400, lnl_thresh = 0.9,
+                             data.table = FALSE){
+  
+  # check to see that trans is a transition layer or transition stack
   if(!is.null(trans) & 
-     inherits(trans, c("TransitionLayer", "TransitionStack")) == FALSE){
+       inherits(trans, c("TransitionLayer", "TransitionStack")) == FALSE){
     stop(paste0("Supplied object for 'trans' argument is not class ", 
-         "TransitionLayer or TransitionStack."),
+                "TransitionLayer or TransitionStack."),
          call. = FALSE)
   }
 
-    if(!is.null(start_time) & inherits(as.POSIXct(start_time, tz = "UTC"),
-                                       c("POSIXct", "POSIXt")) == FALSE){
-        stop(paste0("Supplied object for 'start_time'",
-                    "cannot be coerced to 'POSIXct' or 'POSIXt' class"),
-             call. = FALSE)
-    }
+  # check start_time
+  if(is.null(start_time)){
+    start_time <- min(det$detection_timestamp_utc)
+  }       
+  if(is.na(start_time) & length(start_time) > 0){
+    stop("start_time cannot be coerced to 'POSIXct' or 'POSIXt' class")
+  }
 
-    extract_start_time <- function(start_time, dtc = det){
-    if( is.na(start_time) && length(start_time) !=0 ){
-        stop("start_time is NA")}
-    if( is.null(start_time) == TRUE  ){
-        start_time <- min(dtc$detection_timestamp_utc)
-        return(start_time)
-    }
-    
-    tryCatch({
-       if (inherits(start_time, c("POSIXct", "POSIXt")) == TRUE )
-            {
-            return(start_time)
-        } else {
-            start_time <- as.POSIXct(start_time, tz = "UTC")
-            
-            return(start_time)
-        }
-    },
-        error = function(error_message){
-            stop("Supplied object for 'start_time' is not 'POSIXct' or 'POSIXt' class and cannot be coerced", call. = FALSE)}
-    )
-    
-}
-    
+  if(is.character(start_time)){
+    start_time <- as.POSIXct(start_time, tz = "UTC")
+  }
+
+  # make sure start_time < largest timestamp in dataset
+  if(start_time > max(det$detection_timestamp_utc)){
+    stop("start_time is larger than last detection.  No data to interpolate!", call. = FALSE)}
+  
   # make copy of detections for function
   dtc <- data.table::as.data.table(det)
-
-  # subset only columns for function:
-  dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", 
-                 "deploy_long")]
-
+    
+  # subset only columns for function and rows >= start_time:
+  dtc <- dtc[detection_timestamp_utc >= start_time, c("animal_id",
+                                                      "detection_timestamp_utc",
+                                                      "deploy_lat", 
+                                                      "deploy_long")]
+ 
   dtc[, record_type := "detection"]
   
   # count number of rows- single observations are not interpolated
@@ -257,42 +228,41 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
   det <- data.table::copy(dtc)
   data.table::setnames(det, c("animal_id", "bin_stamp", "i_lat", "i_lon", 
                               "record_type", "num_rows"))
-        
+  
   # remove any fish with only one detection
   dtc <- dtc[num_rows != 1]
 
   # error if only fish with one observation.
     if (nrow(dtc) == 0) stop("must have two observations to interpolate")
 
-    # extract and determine start time
-    start_time <- extract_start_time(start_time, dtc = dtc)
-    t_seq <- seq(start_time, max(dtc$detection_timestamp_utc),
-                 int_time_stamp)
+  # extract and determine start time
+  t_seq <- seq(start_time, max(dtc$detection_timestamp_utc),
+               int_time_stamp)
 
-    # bin data by time interval and add bin to dtc
+  # bin data by time interval and add bin to dtc
   dtc[, bin := t_seq[findInterval(detection_timestamp_utc, t_seq)] ]
 
-    # make all combinations of animals and detection bins
-    dtc <- dtc[data.table::CJ(bin = t_seq, animal_id = unique(animal_id)),
-               on = c("bin", "animal_id")]
+  # make all combinations of animals and detection bins
+  dtc <- dtc[data.table::CJ(bin = t_seq, animal_id = unique(animal_id)),
+             on = c("bin", "animal_id")]
 
-    data.table::setkey(dtc, animal_id, bin, detection_timestamp_utc)
+  data.table::setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
   # if only need to do linear interpolation:
-  if (is.null(trans) | lnl_thresh == 0){
+  if(is.null(trans) | lnl_thresh == 0){
     dtc[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc), 
-          bin_stamp := bin]
-    dtc[, i_lat := approx(detection_timestamp_utc, deploy_lat, 
-          xout = bin_stamp)$y,
-        by = animal_id]
-    dtc[, i_lon := approx(detection_timestamp_utc, 
-          deploy_long, xout = bin_stamp)$y,
-          by = animal_id]
+                                                bin_stamp := bin]
+
+    dtc[, i_lat := approx(detection_timestamp_utc, deploy_lat,
+                          xout = bin_stamp)$y, by = animal_id]
+    dtc[, i_lon := approx(detection_timestamp_utc, deploy_long,
+                          xout = bin_stamp)$y, by = animal_id]
+
     dtc[is.na(deploy_long), record_type := "interpolated"]
     dtc <- dtc[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")]
     det <- det[num_rows == 1, c("animal_id", "bin_stamp", "i_lat", "i_lon",
                                 "record_type")]
-    out <- data.table::rbind(dtc, det)
+    out <- data.table::rbindlist(list(dtc, det), use.names = TRUE)
     data.table::setkey(out, animal_id, bin_stamp)
     out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
     out <- na.omit(out, cols = "i_lat")
@@ -300,7 +270,8 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
                                 "longitude", "record_type"))
     out <- unique(out)
     out <- data.table::setorder(out, animal_id, bin_timestamp, -record_type)
-    return(as.data.frame(out))
+    if(data.table == FALSE){out <- as.data.frame(out)}
+    return(out)
   }
 
   # routine for combined nln and ln interpolation
@@ -343,7 +314,7 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
 
   # calculate least cost (non-linear) distance between points
   message("Calculating least-cost (non-linear) distances... (step 1 of 3)")
-  grpn = uniqueN(ln$i.start)
+  grpn = uniqueN(dtc$i.start)
   pb <- txtProgressBar(min = 0, max = grpn, style = 3) 
   
    dtc[, lcd := {setTxtProgressBar(pb, value = .GRP);
@@ -504,13 +475,13 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
   }
 
   # combine into a single data.table
-  out <- rbind(ln[record_type == "interpolated",
+  out <- data.table::rbindlist(list(ln[record_type == "interpolated",
                   c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")],
                nln[record_type == "interpolated",
                    c("animal_id", "bin_stamp", "i_lat", "i_lon", 
                      "record_type")],
                det[, c("animal_id", "bin_stamp", "i_lat", "i_lon", 
-                       "record_type")])
+                       "record_type")]), use.names = TRUE)
 
   out[, !c("animal_id")]
   data.table::setkey(out, animal_id, bin_stamp)
@@ -520,6 +491,7 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
   out <- na.omit(out, cols = "latitude")
   out <- unique(out)
   data.table::setorder(out, animal_id, bin_timestamp, -record_type)
-  return(as.data.frame(out))
-}
 
+  if(data.table == FALSE){out <- as.data.frame(out)}
+  return(out)
+}

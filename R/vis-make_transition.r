@@ -15,20 +15,26 @@
 ##'   of output raster cells.  Units of res are same as input
 ##'   shapefile.
 ##'
-##' @param water value coded as water in transition layer
+##' @param water value coded as water in transition layer. Represents
+##'   the "cost" associated with moving between raster cells coded as
+##'   water.
 ##'
-##' @param land value coded as land in transition layer
+##' @param land value coded as land in transition layer. Represents
+##'   the "cost" associated with impossible (for fish) over land
+##'   movements.
 ##' 
 ##' @details \code{make_transition} uses
 ##'   \link[gdalUtils]{gdal_rasterize} to convert a polygon shapefile
 ##'   into a raster layer and geo-corrected transition layer
-##'   \link{interpolate_path}.  Raster cell values on land = 0 and
-##'   water = 1. Function also writes a geotiff file (*.tif) of the
-##'   input shapefile to the ouput directory. Both raster layer and
-##'   geotif output have the same extents and geographic projection as
-##'   input shapefile.  Function requires that gdal is working on
-##'   computer.  To determine if gdal is installed on your computer,
-##'   see \link[gdalUtils]{gdal_rasterize}.
+##'   \link{interpolate_path}.  Raster cell values on land equal value
+##'   specified in "land" argument (default = 1000) and equals "water"
+##'   argument (default = 1e-10) for water. Function also writes a geotiff
+##'   file (*.tif) of the input shapefile to the ouput directory. Both
+##'   raster layer and geotif output have the same extents and
+##'   geographic projection as input shapefile.  Function requires
+##'   that gdal is working on computer.  To determine if gdal is
+##'   installed on your computer, see
+##'   \link[gdalUtils]{gdal_rasterize}.
 ##'   
 ##' @details Returned objects will be projected in longlat WGS84
 ##'   (i.e., CRS("+init=epsg:4326"). If the input object is not in
@@ -43,11 +49,12 @@
 ##'   all over-water movements.
 ##'
 ##' @details default values for "land" and "water" arguments allow
-##'     interpolation of fish movements over land when receiver is
-##'     coded as on "land" in transition layer.  This often occurs for
-##'     receivers in rivers when pixel size of transition layer is too
-##'     large to distinguish between water and land.  Changing land
-##'     argument to 0 with eliminate this behavior.
+##'   interpolation of fish movements over land when receiver is coded
+##'   as on "land" in transition layer.  This often occurs for
+##'   receivers in rivers when pixel size of transition layer is too
+##'   large to distinguish between water and land.  Changing land
+##'   argument to 0 and water to 1 will prevent any interpolation
+##'   overland and result in an error if a receiver is on land.
 ##' 
 ##' @return A list with two elements:
 ##' \describe{
@@ -113,8 +120,12 @@
 ##' @export
 
 make_transition <- function (in_file, output = "out.tif", output_dir = NULL,
-                             res = c(0.1, 0.1), water = 1, land = 1e-10)
-{
+                             res = c(0.1, 0.1), water = 1e-10, land = 1000){
+
+  # convert from "cost" to "conductance"
+  water <- 1/water
+  land <- 1/land 
+  
     gdalUtils::gdal_setInstallation()
     valid_install <- !is.null(getOption("gdalUtils_gdalPath"))
     if (!valid_install) {

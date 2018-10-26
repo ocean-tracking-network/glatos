@@ -5,7 +5,7 @@
 \title{Interpolate new positions within a spatiotemporal path data}
 \usage{
 interpolate_path(det, trans = NULL, start_time = NULL,
-  int_time_stamp = 86400, lnl_thresh = 0.9)
+  int_time_stamp = 86400, lnl_thresh = 0.9, data.table = FALSE)
 }
 \arguments{
 \item{det}{An object of class \code{glatos_detections} or data frame
@@ -21,14 +21,18 @@ created from a polygon shapefile using \link{make_transition}.}
 \item{start_time}{specify the first time bin for interpolated data.
 If not supplied, default is first timestamp in the input data
 set.  Must be a character string that can be coerced to
-'POSIXt' or 'POSIXct' or an object of class 'POSIXt' or
-'POSIXct'}
+'POSIXct' or an object of class 'POSIXct'.  If character string
+is supplied, timezone is automatically set to UTC.}
 
 \item{int_time_stamp}{The time step size (in seconds) of interpolated 
 positions. Default is 86400 (one day).}
 
 \item{lnl_thresh}{A numeric threshold for determining if linear or
 non-linear interpolation shortest path will be used.}
+
+\item{data.table}{logical. Return results as a data.table
+(data.table = TRUE).  Default (data.table = FALSE) returns
+results as data frame}
 }
 \value{
 A dataframe with animal_id, bin_timestamp,

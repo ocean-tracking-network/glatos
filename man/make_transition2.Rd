@@ -5,7 +5,7 @@
 \title{Create transition layer from a spatial polygon}
 \usage{
 make_transition2(poly, res = c(0.1, 0.1), extent_out = NULL,
-  x_lim = NULL, y_lim = NULL, water = 1, land = 1e-10)
+  x_lim = NULL, y_lim = NULL, water = 1e-10, land = 1000)
 }
 \arguments{
 \item{poly}{A spatial polygon object of class
@@ -25,9 +25,13 @@ are NULL (default).}
 
 \item{y_lim}{An optional two-element vector with extents of x axis.}
 
-\item{water}{value coded as water in transition layer}
+\item{water}{value coded as water in transition layer. Represents
+the "cost" associated with moving between raster cells coded as
+water.}
 
-\item{land}{value coded as land in transition layer}
+\item{land}{land value coded as land in transition layer. Represents
+the "cost" associated with impossible (for fish) over land
+movements.}
 }
 \value{
 A list with two elements:
@@ -42,10 +46,11 @@ Create transition layer for \link{interpolate_path} from
 \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
 }
 \details{
-\code{make_transition} uses \link[raster]{rasterize} to convert a
-  \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
-  geo-corrected transition layer \link[gdistance]{transition}.  Raster cell
-  values on land = 0 and water = 1.
+\code{make_transition} uses \link[raster]{rasterize} to
+  convert a \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into
+  a raster layer, and geo-corrected transition layer
+  \link[gdistance]{transition}.  Raster cell values on land = 0 and
+  water = 1.
 
 output transition layer is corrected for projection
   distortions using \link[gdistance]{geoCorrection}.  Adjacent
@@ -54,11 +59,12 @@ output transition layer is corrected for projection
   all over-water movements.
 
 default values for "land" and "water" arguments allow
-    interpolation of fish movements over land when receiver is
-    coded as on "land" in transition layer.  This often occurs for
-    receivers in rivers when pixel size of transition layer is too
-    large to distinguish between water and land.  Changing land
-    argument to 0 with eliminate this behavior.
+  interpolation of fish movements over land when receiver is coded
+  as on "land" in transition layer.  This often occurs for
+  receivers in rivers when pixel size of transition layer is too
+  large to distinguish between water and land.  Changing land
+  argument to 0 and water to 1 will prevent any interpolation
+  overland and result in an error if a receiver is on land.
 }
 \examples{
 
