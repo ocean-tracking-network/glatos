@@ -119,12 +119,11 @@
 ##' 
 ##' @export
 
+# consider adding argument for supplying data points for receiver points.  Then can add buffered points to make sure transition layer includes any points on land.  
+
 make_transition <- function (in_file, output = "out.tif", output_dir = NULL,
                              res = c(0.1, 0.1), water = 1e-10, land = 1000){
 
-  # convert from "cost" to "conductance"
-#  water <- 1/water
-#  land <- 1/land 
   
     gdalUtils::gdal_setInstallation()
     valid_install <- !is.null(getOption("gdalUtils_gdalPath"))

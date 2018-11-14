@@ -275,6 +275,31 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
   }
 
   # routine for combined nln and ln interpolation
+  trans = tran$transition
+  dtc.i = dtc
+
+  dtc.i$deploy_lat
+  dtc.i$deploy_long
+
+  unique(dtc.i[,c("deploy_lat", "deploy_long")])
+foo <- SpatialPoints(unique(dtc.i[,c("deploy_lat", "deploy_long")]), proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+
+bar <- rasterToPoints(raster(trans), fun = function(x){x > 0})
+bar <- bar[,1:2]
+  
+out <- geosphere::dist2Line(foo, bar)
+  
+  trans
+  deploy_lat
+  deploy_long
+
+
+
+
+
+
+
+
   # identify start and end rows for observations before and after NA
   ends <- dtc[!is.na(deploy_lat), .(start = .I[-nrow(.SD)], end = .I[-1]),
               by = animal_id][end - start > 1]
