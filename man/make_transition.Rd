@@ -5,7 +5,7 @@
 \title{Create transition layer from polygon shapefile}
 \usage{
 make_transition(in_file, output = "out.tif", output_dir = NULL,
-  res = c(0.1, 0.1), water = 1e-10, land = 1000)
+  res = c(0.1, 0.1), receiver_points = NULL)
 }
 \arguments{
 \item{in_file}{A SpatialPolygonsDataFrame object or a character string with file path to 
@@ -21,13 +21,8 @@ is closed (see \link[=tempfile]{tempdir}).}
 of output raster cells.  Units of res are same as input
 shapefile.}
 
-\item{water}{value coded as water in transition layer. Represents
-the "cost" associated with moving between raster cells coded as
-water.}
-
-\item{land}{value coded as land in transition layer. Represents
-the "cost" associated with impossible (for fish) over land
-movements.}
+\item{receiver_points}{A SpatialPointsDataFrame object that
+contains coordinates of receivers in detection dataset.}
 }
 \value{
 A list with two elements:
@@ -68,13 +63,10 @@ output transition layer is corrected for projection
   returns 0 (land) for movements between land and water and 1 for
   all over-water movements.
 
-default values for "land" and "water" arguments allow
-  interpolation of fish movements over land when receiver is coded
-  as on "land" in transition layer.  This often occurs for
-  receivers in rivers when pixel size of transition layer is too
-  large to distinguish between water and land.  Changing land
-  argument to 0 and water to 1 will prevent any interpolation
-  overland and result in an error if a receiver is on land.
+If receiver_points is provided, any receiver not in water
+  is buffered by the distance from the receiver to the nearest
+  water.  This allows all receivers to be coded as in water if the
+  receiver is on land.
 }
 \examples{
 \dontrun{
