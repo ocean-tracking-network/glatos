@@ -297,16 +297,16 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
   new_ends <- dtc[!is.na(deploy_lat), .(start = .I[-nrow(.SD)], end = .I[-1]),
                   by = animal_id][end - start > 1]
 
-  # create row index needed for overlap join
-  dtc[, c("start", "end") := list(1:.N, 1:.N)]
-  data.table::setkey(new_ends, start, end)
-  data.table::setkey(dtc, start, end)
+  # create row index
+  dtc[, start_dtc := 1:.N]
 
-  # extract rows that need interpolation
-  dtc <- data.table::foverlaps(new_ends[, -1], dtc, by.x = c("start", "end"),
-                   by.y = c("start", "end"))
-
-  data.table::setkey(dtc, animal_id, bin, detection_timestamp_utc)
+  # extract rows that need interpolated
+  dtc <- dtc[new_ends, .(animal_id = x.animal_id,
+                         detection_timestamp_utc = x.detection_timestamp_utc,
+                         deploy_lat = x.deploy_lat, deploy_long = x.deploy_long,
+                         record_type = x.record_type, num_rows = x.num_rows,
+                         bin = x.bin, i.start = start),
+              on = .(start_dtc >= start, start_dtc <= end)]
 
   # calculate great circle distance between coords
   dtc[, gcd := geosphere::distHaversine(as.matrix(
@@ -315,7 +315,7 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
 
   # calculate least cost (non-linear) distance between points
   message("Calculating least-cost (non-linear) distances... (step 1 of 3)")
-  grpn = uniqueN(dtc$i.start)
+  grpn = data.table::uniqueN(dtc$i.start)
   pb <- txtProgressBar(min = 0, max = grpn, style = 3) 
   
    dtc[, lcd := {setTxtProgressBar(pb, value = .GRP);
@@ -324,7 +324,6 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
     toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")]))},
     by = i.start]
   
-
   # calculate ratio of gcd:lcd
   dtc[, crit := gcd / lcd]
 
@@ -359,13 +358,13 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
 
   ln <- dtc[crit >= lnl_thresh | is.nan(crit) ]
   if (nrow(ln) == 0){
-    ln <- data.table(animal_id = character(), i_lat = numeric(),
+    ln <- data.table::data.table(animal_id = character(), i_lat = numeric(),
                      i_lon = numeric(),
                      bin_stamp = as.POSIXct(character()),
                      record_type = character())
     } else {
 
-    message("\nStarting linear interpolation... (step 2 of 3)")
+    message("Starting linear interpolation... (step 2 of 3)")
     # linear interpolation
       grpn = uniqueN(ln$i.start)
       pb <- txtProgressBar(min = 0, max = grpn, style = 3)
@@ -443,10 +442,25 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
               i_time := detection_timestamp_utc]
     nln_small[nln_small[, .I[.N], by = i.start]$V1, i_time := t_timestamp]
 
+arch <- nln_small
+
+# nln_small <- nln_small[i.start == 163]
+
+      nln_small[, latitude_lead := data.table::shift(nln_latitude, type = "lag", fill = NA), by = i.start]
+      nln_small[, longitude_lead := data.table::shift(nln_longitude, type = "lag", fill = NA), by = i.start]
+
+      nln_small[, cumdist :=  geosphere::distGeo(.SD[, c("nln_longitude", "nln_latitude")],
+                                                 .SD[,c("longitude_lead", "latitude_lead")]), by = i.start]
+
+      nln_small[is.na(cumdist), cumdist := 0]
+      nln_small[, cumdist := cumsum(cumdist), by = i.start]
+
+      nln_small[, latitude_lead := NULL][, longitude_lead := NULL]
+      
     # calculate cumdist
-    nln_small[, cumdist := cumsum(c(0, sqrt(diff(nln_longitude) ^ 2 +
-                                            diff(nln_latitude) ^ 2))),
-              by = i.start]
+    ## nln_small[, cumdist := cumsum(c(0, sqrt(diff(nln_longitude) ^ 2 +
+    ##                                         diff(nln_latitude) ^ 2))),
+    ##           by = i.start]
 
     # interpolate missing timestamps for interpolated coordinates
     nln_small[, i_time := as.POSIXct(approx(cumdist, i_time, xout = cumdist)$y,
@@ -496,3 +510,4 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
   if(data.table == FALSE){out <- as.data.frame(out)}
   return(out)
 }
+ 
