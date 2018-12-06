@@ -19,7 +19,9 @@ Imports:
 		rgdal,
 		rgeos,
 		sp,
-		gdalUtils
+		gdalUtils,
+		sf,
+		fasterize
 Suggests: testthat
 URL: https://gitlab.oceantrack.org/GreatLakes/glatos
 BugReports: https://gitlab.oceantrack.org/GreatLakes/glatos/issues
@@ -34,5 +36,5 @@ Authors@R: c(
 License: GPL-2
 LazyLoad: yes
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Encoding: UTF-8

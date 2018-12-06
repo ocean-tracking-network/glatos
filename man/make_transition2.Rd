@@ -4,34 +4,23 @@
 \alias{make_transition2}
 \title{Create transition layer from a spatial polygon}
 \usage{
-make_transition2(poly, res = c(0.1, 0.1), extent_out = NULL,
-  x_lim = NULL, y_lim = NULL, water = 1e-10, land = 1000)
+make_transition2(poly, res = c(0.1, 0.1), x_lim = NULL, y_lim = NULL)
 }
 \arguments{
 \item{poly}{A spatial polygon object of class
-\link[=SpatialPolygons]{SpatialPolygonsDataFrame}.}
+\link[=SpatialPolygons]{SpatialPolygonsDataFrame} or a
+\link[sf:sf]{sf::sf()} object with a geometry column of polygon and/or
+multipolygon objects.}
 
 \item{res}{two element vector that specifies the x and y dimension
 of output raster cells.  Units of res are same as input
 polygon.}
 
-\item{extent_out}{An optional \code{Extent} object
-(see \link[raster]{extent}) that determines the extent of the
-output objects. Output extent will default to extent of input object
-\code{poly} if \code{extent_out}, and \code{x_lim}/\code{y_lim}
-are NULL (default).}
+\item{x_lim}{An optional two-element vector with extents of x axis.
+Default returns object with extent of input object.}
 
-\item{x_lim}{An optional two-element vector with extents of x axis.}
-
-\item{y_lim}{An optional two-element vector with extents of x axis.}
-
-\item{water}{value coded as water in transition layer. Represents
-the "cost" associated with moving between raster cells coded as
-water.}
-
-\item{land}{land value coded as land in transition layer. Represents
-the "cost" associated with impossible (for fish) over land
-movements.}
+\item{y_lim}{An optional two-element vector with extents of x axis.
+Default returns object with extent of input objects}
 }
 \value{
 A list with two elements:
@@ -46,8 +35,10 @@ Create transition layer for \link{interpolate_path} from
 \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
 }
 \details{
-\code{make_transition} uses \link[raster]{rasterize} to
-  convert a \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into
+\code{make_transition2} uses \link[fasterize]{fasterize} to
+  convert a \link[=SpatialPolygons]{SpatialPolygonsDataFrame} or a
+  \link[sf:sf]{sf::sf()} object with a geometry column of polygon and/or
+  multipolygon into
   a raster layer, and geo-corrected transition layer
   \link[gdistance]{transition}.  Raster cell values on land = 0 and
   water = 1.
@@ -57,18 +48,9 @@ output transition layer is corrected for projection
   cells are connected by 16 directions and transition function
   returns 0 (land) for movements between land and water and 1 for
   all over-water movements.
-
-default values for "land" and "water" arguments allow
-  interpolation of fish movements over land when receiver is coded
-  as on "land" in transition layer.  This often occurs for
-  receivers in rivers when pixel size of transition layer is too
-  large to distinguish between water and land.  Changing land
-  argument to 0 and water to 1 will prevent any interpolation
-  overland and result in an error if a receiver is on land.
 }
 \examples{
 
-library(sp) #for loading greatLakesPoly
 library(raster) # for plotting rasters
 
 # get polygon of the Great Lakes
