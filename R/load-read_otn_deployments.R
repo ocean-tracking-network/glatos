@@ -44,6 +44,7 @@ read_otn_deployments <- function(deployment_file) {
   
   #coerce timestamps to POSIXct; note that with fastPOSIXct raw
   #  timestamp must be in UTC; and tz argument sets the tzone attr only
+  dtc <- dtc %>% tidyr::extract(deploy_date,into="deploy_date", regex="(\\d+-\\d+-\\d+)")
   dtc <- dtc %>% tidyr::extract(recovery_date,into="recovery_date", regex="(\\d+-\\d+-\\d+)")
   dtc <- dtc %>% tidyr::extract(last_download,into="last_download", regex="(\\d+-\\d+-\\d+)")
   
