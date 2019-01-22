@@ -1,0 +1,254 @@
+---
+title: "Data field definitions for the standard *GLATOS* detection export"
+author: "Christopher Holbrook, Todd Hayden, and Nancy Nate"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    collapsed: true
+    toc_depth: 3
+    number_sections: false
+vignette: >
+  %\VignetteIndexEntry{Data dictionary for the standard *GLATOS* detection export}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+# Introduction
+
+This vignette describes data fields included in the standard GLATOS
+data export. The standard GLATOS data export is a zipped folder that
+contains multiple files.  In this vignette, we discuss structure of
+two of the comma-separated-value files (.csv) contained in the standard
+export.  These files can be identified by file name.  The file that
+contains "detectionsWithLocs" (e.g.,
+"HECWL\_detectionsWithLocs\_20180627\_172857.csv") contains detections
+from acoustic receivers in the GLATOS network for all tags in a
+project.  This file contains columns that identify when and where a
+fish was released and detected, some biological attributes of tagged
+fish, and tag model and specs.  The .csv file with "receiverLocations"
+in the file name contains deployment and recovery operating schedules
+for all receivers in the GLATOS network.  By combining the information in
+these two files, researchers are able determine when and where a
+tagged fish was detected in the GLATOS network and also locations
+where receivers were deployed that did not detect their tagged
+fish. Fields (columns) in both files are described below.
+
+# Detection file
+
+ - animal\_id
+ : *A field that uniquely identifies tagged animal. This field is used to 
+ associate each record with an individual animal.*
+
+ - detection\_timestamp\_utc 
+ : *An alpha-numeric field in the standard POSIXct format (YYYY-MM-DD
+  HH:MM:SS, i.e., "2012-04-29 01:48:37") that represents the date and
+  time when a tag was detected in UTC timezone.*
+
+- receiver\_sn
+ : *A character field that uniquely identifies each receiver. This is needed to 
+ associate each detection with a specific receiver (a physical instrument).*
+ 
+ - deploy\_lat
+ : *A numeric field with latitude (decimal degrees, NAD83) of geographic 
+ location where receiver was deployed. Must be negative for locations in 
+ the southern hemishere and positive for locations in the northern
+ hemisphere (e.g., 43.39165).*
+ 
+ - deploy\_long
+ : *A numeric field with longitude (decimal degrees, NAD83) of geographic 
+ location where receiver was deployed. Must be negative for locations in 
+ the western hemishere and positive for locations in the eastern hemisphere 
+ (e.g., -83.99264).*
+ 
+ - transmitter\_codespace
+ : *A character field with transmitter code space (e.g., "A69-1061"
+ for Vemco PPM coding). In combination with transmiter_id, this is
+ needed to associate each record with a specific transmitter (a
+ physical instrument).*
+ 
+ - transmitter\_id
+ : *A character field with transmitter ID code (e.g., 1363 for Vemco
+ PPM coding). In combination with transmitter_codespace, this is
+ needed to associate each record with a specific transmitter (a
+ physical instrument).*
+ 
+ - sensor\_value
+ : *A numeric sensor measurement (e.g., an integer for 'raw' Vemco
+   sensor tags).*
+ 
+ - sensor\_unit 
+ : *A character field with sensor_value units (e.g., ADC for 'raw'
+ Vemco sensor tag detections).*
+ 
+ - deploy\_lat
+ : *A numeric field with latitude (decimal degrees, NAD83) of
+ geographic location where receiver was deployed when tag was
+ detected. Must be negative for locations in the southern hemishere
+ and positive for locations in the northern hemisphere (e.g., 43.39165).*
+ 
+ - deploy\_long
+ : *A numeric field with longitude (decimal degrees, NAD83) of
+ geographic location where receiver was deployed when tag was
+ detected. Must be negative for locations in the western hemishere and
+ positive for locations in the eastern hemisphere (e.g., -83.99264).*
+ 
+- receiver\_sn
+: *A character field that specifies unique receiver identification code.*
+
+- tag\_type, tag\_model, tag\_serial\_number
+: *Character fields that identify the type of tag used, tag model, and
+  serial number of tag.*
+
+- common\_name\_e, capture\_location, sex, release\_group, release\_location
+: *Character fields that identify characteristics of tagged fish.
+  These include the type of fish (common name in english), description
+  of where fish were captured (capture\_location), sex,
+  group of released fish (release\_group), and description where the
+  fish was released (release\_location).*
+  
+- length, weight
+: *Numeric fields of length and weight of tagged fish.*
+
+- release\_latitude
+: *A numeric field with latitude (decimal degrees, NAD83) of
+ geographic location where tag was deployed. Must be negative for
+ locations in the southern hemishere and positive for locations in the
+ northern hemisphere (e.g., 43.39165).*
+  
+- release\_longitude
+: *A numeric field with longitude (decimal degrees, NAD83) of
+ geographic location where tag was deployed. Must be negative for
+ locations in the western hemishere and positive for locations in the
+ eastern hemisphere (e.g., 43.39165).*
+
+- utc\_release\_date\_time
+: *An alpha-numeric field in the standard POSIXct format (YYYY-MM-DD
+  HH:MM:SS, i.e., "2012-04-29 01:48:37") that represents the date and
+  time when a tag was released in UTC timezone.*
+
+- glatos\_project\_transmitter, glatos\_project\_receiver
+: *GLATOS project associated with transmitter and receiver (user
+  defined fields).*
+
+- glatos\_tag\_recovered, glatos\_caught\_date
+: *The values of the glatos\_tag\_recovered field is either "yes", or
+  "no".  A "yes" value indicates tag was recovered after deployment
+  (e.g., tagged fish caught by angler) and "no" means the tag is still at
+  large.  If tag is recovered, the date (in YYYY-MM-DD format) is in
+  the "glatos_caught_date" field.*
+
+- min\_lag
+: *minimum time interval (seconds) between current detection and
+  another detection from the same tag on the same receiver.  Field is
+  used to identify possible false detections.*
+
+ Additionally, several categorical fields (character data type) that
+ identify groups of receivers are included in standard GLATOS export.
+ These columns are specified by the user in the data submission
+ packet and may vary by project type.
+ 
+- glatos\_array
+: *Character field identifies subgroup of receivers, usually in close spatial proximity.* 
+
+- station\_no
+: *Character field that identifies receiver within glatos\_array.* 
+
+- station
+: *Character field that combines glatos_array and station_no to
+  identify receiver within project.*
+
+- glatos\_project\_receiver
+: *Character field that combines GLATOS\_project and receiver_id
+  information to uniquely identify receiver in GLATOS network.
+
+# Receiver location data
+
+- consecutive\_deploy\_no
+: *Integer field of the number of times a receiver was deployed at a location.*
+
+- intend\_lat, intend\_long
+: *Numeric fields with intended geographic deployment locations for
+  receivers.  Latitude (decimal degrees, NAD83, intend\_lat) must be
+  negative for locations in southern hemisphere and positive for
+  locations in northern hemisphere.  Longitude (decimal degrees,
+  NAD83, intend\_long) must be positive for values in the eastern
+  hemisphere and negative for locations in the western hemisphere.*
+
+- deploy\_lat, deploy\_long
+: *Numeric fields of actual geographic deployment locations for
+  receivers.  Latitude (decimal degrees, NAD83, deploy\_lat) must be
+  negative for locations in southern hemisphere and positive for
+  locations in northern hemisphere.  Longitude (decimal degrees,
+  NAD83, deploy\_long) must be positive for values in the eastern
+  hemisphere and positive for locations in the western hemisphere.*
+
+- recover\_lat, recover\_long
+: *Numeric fields of geographic locations where receivers
+  were recovered.  Latitude (decimal degrees, NAD83, recover\_lat) must be
+  negative for locations in southern hemisphere and positive for
+  locations in northern hemisphere.  Longitude (decimal degrees,
+  NAD83, recover\_long) must be positive for values in the eastern
+  hemisphere and positive for locations in the western hemisphere.*
+
+- deploy\_date\_time, recover\_date\_time
+: *Alpha-numeric fields in standard POSIX format (YYYY-MM-DD HH:MM:SS,
+  i.e., "2012-04-29 01:43:43") that represents the date and time in
+  UTC timezone when a receiver was deployed (deploy\_date\_time field)
+  and recovered (recover\_date\_time).*
+ 	 
+- bottom\_depth, riser\_length, instrument\_depth
+: *Numeric fields that represent the water depth (m), total length of
+  mooring equipment off of bottom (m), and depth of receiver in water
+  column (m).  Fields are user specified.*
+
+- ins\_model\_no
+: *Character field with user-defined model name of instrument
+  deployed.*
+
+- glatos\_ins\_frequency
+: *Integer field with instrument operating frequency.*
+
+- ins\_serial\_no
+: *Character field of instrument model number.*
+
+- deployed\_by, comments
+: *Character fields that contain name of person who deployed receiver
+  and deployment comments.*
+  
+- glatos\_seasonal
+: *Character field containing either "yes" or "no".  Identifies
+  seasonal ("yes") and annual receiver deployments ("no").*
+  
+- glatos\_project
+: *Character field containing unique 5-letter project identification
+  code.  This code is created by user when the project is initiated
+  and submitted to GLATOS.*
+  
+- glatos\_vps
+: *Character field containing either "yes" or "no".  If a receiver is
+  part of a Vemco Positioning Study (VPS) then value equals "yes",
+  otherwise field value is "no".* 
+
+ Several categorical fields (character data type) that
+ identify groups of receivers are included in receiver location file
+ included in the standard GLTOS data export.
+ These columns are specified by the user in the data submission
+ packet and may vary by project type.
+ 
+- glatos\_array
+: *Character field identifies subgroup of receivers, usually in close spatial proximity.* 
+
+- station\_no
+: *Character field that identifies receiver within glatos\_array.* 
+
+- station
+: *Character field that combines glatos_array and station_no to
+  identify receiver within project.*
