@@ -230,12 +230,12 @@ more information about obtaining and installing VUE on your computer.
 
 ```{r, echo=TRUE}
 #get path to example VRL in this package
-#vrl_file <- system.file("extdata", "VR2W_109924_20110718_1.vrl",
- #                       package = "glatos")
+vrl_file <- system.file("extdata", "VR2W_109924_20110718_1.vrl",
+                        package = "glatos")
 
 #convert the vrl file to csv
 #note that vrl2csv writes the csv to disk and returns the path to the csv
-#csv_file <- vrl2csv(vrl_file) #file name input
+csv_file <- vrl2csv(vrl_file) #file name input
 ```
 
 Now that we have the path to a VUE export file, we will read the data using 
@@ -254,12 +254,10 @@ added to the first column name. Setting the *fileEncoding* may also slow
 down the import.
 
 ```{r}
-#t0 <- system.time(
-#        dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE,  -->
-#                        fileEncoding = "UTF-8-BOM") -->
-#       ) -->
-#<!-- t0 -->
-#<!-- ``` -->
+t0 <- system.time(
+        dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE,  
+                        fileEncoding = "UTF-8-BOM"))
+
 #The operation took `r t0[["elapsed"]]` seconds. Let's look at the structure.
 #str(dtc)
 ```
@@ -774,7 +772,7 @@ vrl_file <- system.file("extdata", "VR2W_109924_20110718_1.vrl",
 
 #convert the vrl file to csv
 #note that vrl2csv writes the csv to disk and returns the path to the csv
-#csv_file <- vrl2csv(vrl_file) #file name input
+csv_file <- vrl2csv(vrl_file) #file name input
 ```
 
 
@@ -794,17 +792,18 @@ added to the first column name. Setting the *fileEncoding* may also slow
 down the import.
 
 ```{r}
-## t0 <- system.time(
-##         dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE, 
-##                         fileEncoding = "UTF-8-BOM")
-##       )
-## t0
-## ```
-## The operation took `r t0[["elapsed"]]` seconds. Let's look at the structure.
-## ```{r}
-## str(dtc)
+ t0 <- system.time(
+         dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE, 
+                         fileEncoding = "UTF-8-BOM")
+       )
+ t0
+```
 
-<!-- ``` -->
+The operation took `r t0[["elapsed"]]` seconds. Let's look at the structure.
+```{r}
+ str(dtc)
+
+```
 
 Now we we will reformat to be consistent with a *glatos_detections* object. We 
 will do this for each of the prescribed columns described above.
@@ -1019,16 +1018,16 @@ vignette (see `vignette("datatable-intro", package = "data.table")`).
 library(data.table)
 
 #read data with fread
-## t2 <- system.time(
-##         dtc <- fread(csv_file)
-##       )
-## t2
-## <!-- ``` -->
-## The operation took `r t2[["elapsed"]]` seconds; that's about
-## `r round(t0[["elapsed"]] / t2[["elapsed"]])` times faster than *read.csv()*. 
-## Obviously anything that takes less than a second doesn't need to be optimized, 
-## but the performance difference will be much greater (proportionally) when 
-## there are millions of records to be read.
+t2 <- system.time(
+         dtc <- fread(csv_file)
+       )
+ t2
+```
+The operation took `r t2[["elapsed"]]` seconds; that's about
+`r round(t0[["elapsed"]] / t2[["elapsed"]])` times faster than *read.csv()*. 
+Obviously anything that takes less than a second doesn't need to be optimized, 
+but the performance difference will be much greater (proportionally) when 
+there are millions of records to be read.
 
 #Note that the class is now *data.table* and *data.frame*.
 
