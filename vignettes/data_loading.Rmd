@@ -33,71 +33,100 @@ options(width = 85)
 
 # Overview
 
+This vignette describes methods for loading data into the R package 
+*glatos*. Sections are organized by data type (*detections*, 
+*receiver locations*, etc), and each section contains examples for:
+
+1. data in standardized formats from the Great Lakes Acoustic Telemetry 
+Observation System (GLATOS), the Ocean Tracking Network (OTN), and VEMCO using 
+built-in data loading functions; and
+
+2. data in non-standard formats that require loading using non-*glatos* 
+functions and modification to meet *glatos* requirements.
+
+
 ## Loading data from GLATOS, OTN, and VEMCO
 
-The R package *glatos* (version 0.2.6 and earlier) contains five functions 
-designed to load data files in standardized formats from the Great Lakes 
-Acoustic Telemetry Observation System (GLATOS), the Ocean Tracking Network 
-(OTN), and VEMCO. Each data loading function:  
+The R package *glatos* (version 0.2.6) contains five functions (see [Built-in
+functions](#built-in-functions)) designed to load data files in standardized 
+formats from the GLATOS, the OTN, and VEMCO. Each data loading function:  
 
-1. loads data into an R session consistently and efficiently using the best 
+1. loads data into an R session consistently and efficiently using the best
 available methods and  
 
-2. returns an object that meets the requirements of relevant package functions. 
+2. returns an object that meets the requirements of *glatos* package functions.  
 
-Functions in the *glatos* package have been designed to accept data in
-the format returned by the *glatos* load functions, so using the
-*glatos* load functions will generally ensure that the resulting data
-conform to the requirements of other functions in the package.
+Thus, using *glatos* load functions ensures that resulting data conform to the
+requirements of other functions in the package (e.g., *summarize_detections*,
+*detection_bubble_plot*) and relieves users from the work of reformatting their
+data to meet requirements of each specific function.
 
 
 ### Built-in functions
 
-The *GLATOS* package includes five data loading functions:
+The *glatos* package includes five data loading functions:
     
 - _**read_glatos_detections**_  
  : reads detection data from a comma-separated-values 
          text file obtained from the GLATOS Data Portal and returns an object of class 
-          *glatos_detections*. 
+          *glatos_detections* that is also a *data.frame*. 
   
 - _**read_otn_detections**_
  : reads detection data from a comma-separated-values 
       text file obtained from the Ocean Tracking Network and returns an object of 
-      class *glatos_detections*.
+      class *glatos_detections* that is also a *data.frame*.
   
 - _**read_glatos_receivers**_
  : reads receiver data from a comma-separated-values 
       text file obtained from the GLATOS Data Portal and returns an object of 
-      class *glatos_receivers*.
+      class *glatos_receivers* that is also a *data.frame*.
   
 - _**read_glatos_workbook**_
  : reads data from a GLATOS project-specific 
-      MS Excel workbook (\*.xlsm file) and returns a list of class *glatos_workbook*
-      with two-elements; one of class *glatos_receivers* and one of 
-      class *glatos_animals*.
+      MS Excel workbook (\*.xlsm file) and returns a list of class 
+      *glatos_workbook* with two-elements; one of class *glatos_receivers* and 
+      one of class *glatos_animals* (both are also *data.frame*s).
   
 - _**read_vemco_tag_specs**_
  : reads tag specification data from an MS Excel 
-      workbook (*.xls file) provided by VEMCO and returns a list with two elements 
-      containing tag specifications and the tag operating schedule.
+      workbook (\*.xls file) provided by VEMCO and returns a list with two 
+      elements; one containing tag specifications and one containing tag 
+      operating schedules. (both are also *data.frame*s).
   
 ### Data objects and classes
 
-Most of the functions listed above produce a *glatos*-specific object
-with a *glatos* class.  Class labels should merely be thought of as
-labels showing that the objects were produced by a *glatos* function
-and will therefore be compatible with *glatos* functions.
-
+Most of the functions listed above return an object with a *glatos*-specific S3
+class name (e.g., *glatos_detections*) in addition to a more general class
+(e.g., *data.frame*). Currently, no methods exist for *glatos* classes and such
+classes are not explicitly required by any function, so *glatos* classes can
+merely be thought of as labels showing that the objects were produced by a
+*glatos* function and will therefore be compatible with other *glatos*
+functions. Beware, as with any S3 class, that it is possible to modify a
+*glatos* object to the point that is will no longer be compatible with *glatos*
+functions. The [Data Requirements vignette](data_requirements.html) provides 
+an overview of data requirements of *glatos* functions.
 
 ## Loading data from other sources
 
-In this vignette, we present examples of loading GLATOS detections and
-GLATOS receiver data in R and show how to manually coerce a
-detection file exported from Vemco Vue software into a object of class
-*glatos*. Functions discussed in this vignette can be used to load 
-data files from other sources by manually creating required data structure
-and specifying non-default arguments in function calls.  
-the [Data Requirements vignette](data_dictionary.html) provides information about data type for required fields.
+To use *glatos* functions with data that are not in one of the standard formats 
+described above, those data will need to be:  
+
+1. loaded into R using some other function (e.g., *read_csv*) and 
+
+2. modified to ensure that all requirements of the desired function are met. 
+
+Strictly speaking, there are no requirements of the package as a whole, but 
+input data are checked within each individual function to determine if 
+requirements are met. Nonetheless, the 
+[Data Requirements vignette](data_requirements.html) provides a set of data 
+requirements, including column names, types, and formatting, that will ensure 
+compatibility with all *glatos* functions. 
+
+For each data type (e.g., *detection*, *receiver location*, etc), this 
+vignette shows how data from a comma-separated-values text file can be 
+loaded into R using non-*glatos* functions and then modified to meet the 
+*glatos* requirements.
+
 
 ## Tips to improve speed and efficiency
 
