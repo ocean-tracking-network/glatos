@@ -41,6 +41,8 @@ tagged fish was detected in the GLATOS network and also locations
 where receivers were deployed that did not detect their tagged
 fish. Fields (columns) in both files are described below.
 
+Strictly speaking, there are no specific data requirements for the *glatos* package as a whole, but each data loading function does require specific fields and data types in order to ensure that data are loaded efficiently and consistently. Required columns for each function are described in each function-specific help file (e.g., `?read_glatos_detections`) and 
+
 # Detection file
 
  - animal\_id
