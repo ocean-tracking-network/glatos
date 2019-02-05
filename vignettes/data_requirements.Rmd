@@ -1,29 +1,75 @@
 ---
-title: "Data field definitions for the standard *GLATOS* detection export"
-author: "Christopher Holbrook, Todd Hayden, and Nancy Nate"
-date: "`r Sys.Date()`"
+title: "Data requirements of the R package glatos"
+date: "Updated: `r Sys.Date()`"
 output: 
-  rmarkdown::html_document:
+  rmarkdown::pdf_document:
     toc: true
-    toc_float: true
-    collapsed: true
     toc_depth: 3
-    number_sections: false
+    number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Data dictionary for the standard *GLATOS* detection export}
+  %\VignetteIndexEntry{Data requirements of the R package glatos}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
-# Introduction
 
-This vignette describes data fields included in the standard GLATOS
+#set 'str' options to desired output format
+str_opts <- getOption("str") #get list of options
+str_opts$strict.width = "wrap"
+str_opts$vec.len = 1
+options(str = str_opts)
+
+#set 'width'
+options(width = 85)
+
+```
+
+\pagebreak
+
+# Overview
+
+This vignette describes 
+
+1. minimum data requirements for the R package *glatos* and 
+
+2. data field definitions (data dictionary) of standard data files 
+obtained from the Great Lakes Acoustic Telemetry Observation System (GLATOS) 
+[Data Portal](https://glatos.glos.us/portal).
+
+
+# glatos R package
+
+## Data requirements
+
+Strictly speaking, there are no requirements of the package as a whole, but
+input data are checked within each individual function to determine if
+requirements are met. Nonetheless, this vignette describes a set of data
+requirements, including column names, types, and formats, that will ensure
+compatibility with all *glatos* functions. 
+
+
+## Data objects and classes
+
+Most *glatos* data loading functions return an object with a *glatos*-specific
+S3 class name (e.g., *glatos_detections*) in addition to a more general class
+(e.g., *data.frame*). Currently, no methods exist for *glatos* classes and such
+classes are not explicitly required by any function, so *glatos* classes can
+merely be thought of as labels showing that the objects were produced by a
+*glatos* function and will therefore be compatible with other *glatos*
+functions. Beware, as with any S3 class, that it is possible to modify a
+*glatos* object to the point that is will no longer be compatible with *glatos*
+functions. This vignette provides an overview of data requirements of *glatos*
+functions.
+
+
+# GLATOS Network - standard data files
+
 data export. The standard GLATOS data export is a zipped folder that
 contains multiple files.  In this vignette, we discuss structure of
 two of the comma-separated-value files (.csv) contained in the standard
@@ -41,9 +87,7 @@ tagged fish was detected in the GLATOS network and also locations
 where receivers were deployed that did not detect their tagged
 fish. Fields (columns) in both files are described below.
 
-Strictly speaking, there are no specific data requirements for the *glatos* package as a whole, but each data loading function does require specific fields and data types in order to ensure that data are loaded efficiently and consistently. Required columns for each function are described in each function-specific help file (e.g., `?read_glatos_detections`) and 
-
-# Detection file
+## Detection file
 
  - animal\_id
  : *A field that uniquely identifies tagged animal. This field is used to 
@@ -171,7 +215,7 @@ Strictly speaking, there are no specific data requirements for the *glatos* pack
 : *Character field that combines GLATOS\_project and receiver_id
   information to uniquely identify receiver in GLATOS network.
 
-# Receiver location data
+## Receiver location data
 
 - consecutive\_deploy\_no
 : *Integer field of the number of times a receiver was deployed at a location.*
