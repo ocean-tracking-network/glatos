@@ -165,8 +165,8 @@ to *data.table* class using *setDT*:
 > setDT(dx) #convert to data.table
 > ```
 
-3. Go all-in; don't run some base R examples and some boxed example or it 
-will cause trouble. For example if base R example changes column names in 
+3. Go all-in. Running some base R examples, some boxed examples, or both  
+will cause trouble. For example if a base R example changes column names in 
 an object, then the old column names won't exist if you later run the 
 boxed example that changes those same column names using *data.table* 
 functions.  
@@ -179,96 +179,101 @@ functions.
 ## Requirements
 
 *glatos* functions that accept detection data as input will typically require a 
-*data.frame*.  Please refer to "Data field definitions of standard
-GLATOS detection export" vignette and function help (e.g.,
-`?read_glatos_detections`) to identify data type and definition of
-mandatory fields (link).
+*data.frame* with the following seven columns:
 
-mandatory fields:
-- detection\_timestamp\_utc (link)
-- receiver\_sn (link)
-- deploy\_lat (link)
-- deploy\_long (link)
-- transmitter\_codespace (link)
-- transmitter\_id (link)
-- sensor\_value (link)
-- sensor\_unit (link)
-- animal\_id (link)
+- detection\_timestamp\_utc 
+- receiver\_sn 
+- deploy\_lat 
+- deploy\_long 
+- transmitter\_codespace 
+- transmitter\_id 
+- sensor\_value 
+- sensor\_unit 
+- animal\_id  
 
- Additionally, some functions will require at least one categorical column to 
+ Some functions will also require at least one categorical column to 
  identify location (or group of locations). These can be specified by the user, 
  but examples of such columns in a GLATOS standard detection file are:
  
-- glatos\_array (link)
-- station (link)
-- glatos\_project\_receiver (link)
+- glatos\_array 
+- station 
+- glatos\_project\_receiver 
 
-Any *data.frame* that contains the above columns should be compatible with 
-all *glatos* functions that accept detection data as input. Use of the 
-data loading functions *read\_glatos\_detections* and *read\_otn\_detections* 
-will ensure that these columns are present, but can only be used on data 
-in GLATOS and OTN formats. Data in other formats will need to be loaded 
-using other functions (e.g., *read.csv()*, *data.table::fread()*, etc.) 
-and compatibility with *glatos* functions will need to be carefully checked.
+For definitions of any of the above fields, see the [Data Requirements
+vignette](data_requirements.html)) and function-specific help files (e.g.,
+`?summarize_detections`).
+
+Any *data.frame* that contains the above columns (in the correct formats) should
+be compatible with all *glatos* functions that accept detection data as input.
+Use of the data loading functions *read_glatos_detections* and
+*read_otn_detections* will ensure that these columns are present and formatted
+correctly, but can only be used on data in GLATOS and OTN formats. Data in other
+formats will need to be loaded using other functions (e.g., *read.csv*,
+*fread*, etc.) and carefully checked for compatibility with *glatos* functions
+(see [Other formats - CSV file exported from a VUE database](#other-formats---csv-file-exported-from-a-vue-database)).
 
 ## Examples 
 
 ### Loading GLATOS data
 
-The *read_glatos_detections()* function reads in detection data from
-standard detection exports (\*.csv files) obtained from the GLATOS
-standard data export and checks that the data meet requirements of
-*glatos* functions. Data are read using *fread* in the *data.table*
-package, timestamps are formatted as class *POSIXct* and dates are
+The *read_glatos_detections* function reads detection data from a standard
+detection export file (\*.csv file) obtained from the GLATOS [Data
+Portal](https://glatos.glos.us/portal) and checks that the data meet
+*glatos* package requirements. Data are read using *fread* in the
+*data.table* package, timestamps are formatted as class *POSIXct* and dates are
 formatted as class *Date*.
 
-First, we will use *system.file()* to get the path to the walleye_detections.csv 
+First, we will use *system.file* to get the path to the *walleye_detections.csv* 
 file included in the *glatos* package.
 
 ```{r echo=TRUE}
 # Set path to walleye_detections.csv example dataset
-wal_det_file <- system.file('extdata', 'walleye_detections.csv', package = 'glatos')
+wal_det_file <- system.file("extdata", "walleye_detections.csv", 
+                            package = "glatos")
 ```
 
 
-Next, we will load data from *walleye_detection.csv* using 
-*read_glatos_detections()* and view the structure of the resulting 
-data frame.
+Next, we will load data from *walleye_detections.csv* using 
+*read_glatos_detections*.  
 
-```{r echo=TRUE}
-# Attach glatos package to global environment.
+```{r message = FALSE}
+# Attach glatos package
 library(glatos)
 
-# Read in the walleye_detections.csv file using `read_glatos_detections()`
+# Read in the walleye_detections.csv file using `read_glatos_detections`
 walleye_detections <- read_glatos_detections(wal_det_file)
+```
 
+Let's view the structure of the resulting data frame (we've modified the `str` 
+default arguments to show only first record in each column).  
+
+```{r echo=TRUE}
 # View the structure and data from first row
 str(walleye_detections)
 ```
 
-The result is an object with 30 columns (including the columns
-described above) and two classes: *glatos_detections* and
-*data.frame*. Please refer to "Data field definitions of standard
-GLATOS detection export" vignette for field definitions (link).  The
-*glatos_detections* class label indicates that the data set was
-created using a glatos load function and therefore should work with
-any *glatos* function that accepts detection data as input.
+The result is an object with 30 columns and two classes: *glatos_detections* and
+*data.frame*. The *glatos_detections* class label indicates that the data set
+was created using a *glatos* load function and therefore should meet
+requirements of any *glatos* function that accepts detection data as input. See
+the [Data Requirements vignette](data_requirements.html)) for field definitions.
+
 
 
 ### Loading OTN data 
 
-The *read_otn_detections()* function reads in detection data (\*.csv files) 
+The *read_otn_detections* function reads in detection data (\*.csv files) 
 obtained from the Ocean Tracking Network and reformats the data to meet
 requirements of *glatos* functions. Data are read using 
 *fread* in the *data.table* package, timestamps are 
 formatted as class *POSIXct* and dates are formatted as class *Date*.
 
 ```{r echo=TRUE}
-# Read in the blue_shark_detections.csv file using `read_glatos_detections()`
+# Set path to blue_shark_detections.csv example dataset
 shrk_det_file <- system.file("extdata", "blue_shark_detections.csv",
-                         package = "glatos")
+                             package = "glatos")
 
-# Read in the blue_shark_detections.csv file using `read_otn_detections()`
+# Read in the blue_shark_detections.csv file using `read_otn_detections`
 blue_shark_detections <- read_otn_detections(shrk_det_file)
 
 
@@ -276,57 +281,49 @@ blue_shark_detections <- read_otn_detections(shrk_det_file)
 str(blue_shark_detections)
 ```
 
-The result shares the same classes as the walleye dataset
-(*glatos_detections* and *data.frame*), but has 34 columns, most of
-which are not shared between OTN and GLATOS networks. Thus,
-*read_otn_detections* has only altered those OTN-specific columns
-needed to meet requirements of *glatos* functions.  Field definitions
-and data types can be found in "Data field definitions of standard
-GLATOS detection export" vignette (link).
+The resulting object has 34 columns, many of which are not present in the 
+GLATOS standard format. However, some columns have been modified to meet
+*glatos* requirements, and thus, the *glatos_detections* class name
+has been added.
+
 
 ### Other formats - CSV file exported from a VUE database
 
 Detection data in any format than GLATOS or OTN will need to be  
-modified to meet the requirements of *glatos* functions. We will show an 
+modified to meet the requirements of *glatos* functions. Here, we show an 
 example using detection data that have been exported from a VEMCO VUE database. 
 There is currently no *glatos* function to load detection data directly into 
-an R session from VUE software, so data in that format will need to be loaded 
-using other functions and then carefully checked that it meets requirements 
-described above. 
+an R session from VUE software, so data in that format will need to be:  
 
-In the example below, we will use the base R functions *read.csv()* and 
-*as.POSIXct()* to load detection data from a csv file and reformat the data to 
-be consistent with the schema described above. Tip boxes will also show 
-faster alternatives for these methods using functions in the *data.table* and 
-*lubridate* packages.
+1. loaded into R using some other function (e.g., *read_csv*) and 
+
+2. modified to ensure that all requirements of the desired function are met. 
+
+In the example below, we will use the base R functions *read.csv* and
+*as.POSIXct* to load detection data from a csv file and reformat the data to
+be consistent with the schema described above. Tip boxes will also show
+alternatives (simpler and/or faster) for these methods using functions in the
+*data.table* and *lubridate* packages.
 
 First, get the path to a file (\*.csv) that
 contains detection data exported from VEMCO VUE software. Such a file
-is not included in the *glatos* package but we can create one using the 
-*glatos* function *vrl2csv()* which exports detection
-data from a VEMCO \*.vrl file using VUE's built-in command line
-conversion program. The *vrl2csv()* function requires a working copy
-of Vemco VUE on your computer. VUE can be downloaded from  https://vemco.com/products/vue-software. 
+is included in the *glatos* package.   
 
 ```{r, echo=TRUE}
-#get path to example VRL included with glatos package
-vrl_file <- system.file("extdata", "VR2W_109924_20110718_1.vrl",
+#get path to example CSV file included with glatos package
+csv_file <- system.file("extdata", "VR2W_109924_20110718_1.csv",
                         package = "glatos")
-
-#convert the vrl file to csv
-#note that vrl2csv writes the csv to disk and returns the path to the csv
-csv_file <- vrl2csv(vrl_file) #file name input
 ```
 
 Now that we have the path to a VUE export file, we will read the data using 
-*read.csv()*. In this case we are also setting some *read.csv()* arguments 
+*read.csv*. In this case we are also setting some *read.csv* arguments 
 to non-default values. First, we set `as.is = TRUE` so that character values
 are treated as characters and not converted to factors. Second, we 
 set `check.names = FALSE` to prevent conversion of syntactically-invalid 
 column names to syntactically valid names. This simply keeps the names 
 exactly as they appear in the source text file rather than, for example, 
-replacing spaces with ".". This does mean that we need to wrap those column 
-names in back-ticks when called (e.g., ``my_det$`Sensor Value` ``). Third, 
+replacing spaces with a dot (`.`). This does mean that we need to wrap those column 
+names in back-ticks when called (e.g., ``dtc$`Sensor Value` ``). Third, 
 we set `fileEncoding = "UTF-8-BOM"` to match the encoding of the text file. 
 If this argument is omitted then you might see the special characters `﻿`
 added to the first column name. Setting the *fileEncoding* may also slow 
@@ -343,7 +340,7 @@ dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE,
 
 > ``` {r eval = FALSE}  
 > #read data from csv file using data.table::fread
-> dtcc <- fread(csv_file)  
+> dtc <- fread(csv_file)  
 > ```  
 > 
 > _fread_ is fast. That's one reason it is used used by _read_glatos_detections_ and other _glatos_ functions.  
@@ -351,13 +348,13 @@ dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE,
 
 
 Now we will reformat to be consistent with a *glatos_detections* object. We 
-will do this for each of the mandatory columns described above.
+will do this for each of the required columns described above.
 
 #### _**detection_timestamp_utc**_
 
-Change the column name from *Date and Time (UTC)* to *detection\_timestamp\_utc* 
-and format as *POSIXct*. We could reference columns by number in the code 
-below (e.g., `names(dtc)[1] <- "detection_timestamp_utc"`) but use of 
+Change the column name from *Date and Time (UTC)* to *detection_timestamp_utc*.
+There are many ways to do this (e.g., reference columns by number;
+`names(dtc)[1] <- "detection_timestamp_utc"`) but in the code below use of
 `match()` to get the column number is robust to changes in column order.
 
 ```{r}
@@ -373,46 +370,50 @@ names(dtc)[match("Date and Time (UTC)", names(dtc))] <- "detection_timestamp_utc
 > #use data.table::setnames to change column names via old and new names
 > setnames(dtc, "Date and Time (UTC)", "detection_timestamp_utc") 
 > ```  
+> *setnames(x, old, new)*... could it be more intuitive?
 > 
-> Notice that there is no assignment operator (_<-_) in this code. This is  
-> because _setnames_, like other _data.table_ functions, updates the target 
-> object (in this case _dtc_) directly (aka: "by reference").  
+> Notice that there are no assignment operators (_<-_ or _=_) in this code. This 
+> is because _setnames_, like other _data.table_ functions, updates the target 
+> object (in this case _dtc_) directly (aka: _by reference_).  
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
 
-We will format the timestamp column using base R 
-function *as.POSIXct()*. All *POSIXct* objects are 
-stored internally as a number representing the number of elapsed seconds since 
-"1970-01-01 00:00:00" in UTC. When we convert a character string to *POSIXct*, 
-we need to tell R *how* to convert it--namely the time zone of the input data. 
-By default, *as.POSIXct* will assume your local system time zone (e.g., the one 
-returned by `Sys.timezone()`. To prevent timezone errors, *always* 
-specify time zone (using the *tz* argument) whenever you coerce any 
-timestamp to *POSIXct*. In this case, the timestamps were exported from VUE in 
-UTC, so we use the following:
+Finally, we format the timestamp column using base R function *as.POSIXct*.
+All *POSIXct* objects are stored internally as a number representing the number
+of elapsed seconds since "1970-01-01 00:00:00" in UTC. When we convert a
+character string to *POSIXct*, we need to tell R *how* to convert it--namely the
+time zone of the input data. By default, *as.POSIXct* will assume your local
+system time zone (e.g., the one returned by `Sys.timezone()`. To prevent
+timezone errors, *always* specify time zone (using the *tz* argument) whenever
+you coerce any timestamp to *POSIXct*. In this case, the timestamps were
+exported from VUE in UTC, so we use the following:
 
 ```{r}
 
 dtc$detection_timestamp_utc <- as.POSIXct(dtc$detection_timestamp_utc,
-                                                  tz = "UTC")
+                                          tz = "UTC")
 
+#take a peek
 str(dtc$detection_timestamp_utc)
+
+#first few records
+head(dtc$detection_timestamp_utc, 3)
 ```
 
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
 > __data.table tip:__ Use _:=_ to add or modify a column.  
 
 > _:=_ is an assignment operator for _data.table_ objects that assigns objects 
-> by reference. We use because it is more compact than base R methods. 
+> by reference. We use it because it is more compact than base R methods. 
 >
 > ``` {r eval = FALSE} 
-> #use ':=" to update format of timestamps
+> #use ':=' to format timestamps
 > dtc[ , detection_timestamp_utc := as.POSIXct(detection_timestamp_utc,
 >                                              tz = "UTC")]
 > ```  
 > 
-> Notice again that assignment operators _<-_ or _=_ in this code because 
-> _dtc_ is updated by reference.  
+> Note that, like in the previous boxed tip, there are no assignment operators 
+> _<-_ or _=_ because _dtc_ is updated by reference.  
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
 
@@ -427,7 +428,10 @@ str(dtc$detection_timestamp_utc)
 >                                   tz = "UTC",
 >                                   lt = FALSE)]
 > ```  
-> 
+> _fast_strptime_ requires a bit more code because we have to specify 
+> `format` and set `lt = FALSE` so that _POSIXct_ is returned instead of 
+> the default (_POSIXlt_) for this function.
+>
 > Notice that we formatted the timestamps using _fast_strptime_ but also 
 > used _data.table_'s _set_ operator (_:=_) to assign it to the target column.  
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
@@ -436,7 +440,17 @@ str(dtc$detection_timestamp_utc)
 #### _**receiver_sn**_
 
 There is no single column in the VUE export data with receiver serial number, 
-so we need to extract it from the *Receiver* column.
+so we need to extract it from the *Receiver* column. 
+
+```{r}
+dtc$Receiver[1]
+```
+
+To do this, we will write 
+a function (*get_rsn*) to extract the second element of the 
+hyphen-delimited string in the *Receiver* column using the base R function 
+*strsplit*. We then use the *sapply* function to "apply" our custom function 
+to each element (record) of the *Receiver* column.
 
 ```{r}
 #make new function to extract second element from a hyphen-delimited string
@@ -454,26 +468,26 @@ dtc$receiver_sn <- sapply(dtc$Receiver, get_rsn)
 > ``` {r eval = FALSE} 
 > #make new column "receiver_sn"; parse from "Receiver"
 > dtc[ , receiver_sn := get_rsn(Receiver), by = "Receiver"]
-> ```  
+> ``` 
+> 
+> This is more efficient because it operates on groups instead of each 
+> individual record.
 > 
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
 
 #### _**deploy_lat**_ and _**deploy_long**_
 
-The *Latitude* and *Longitude* values are all zero in this data set, because the  
-VUE database from which these data were exported did not have any latitude or 
-longitude data. We need to get them from another source. These example data only 
-contain one receiver, but to demonstrate how this can be done, we will make a new 
-data frame with these data and merge it. 
+The *Latitude* and *Longitude* values are all zero in this data set because the
+VUE database from which these data were exported did not contain any latitude or
+longitude data. To add those data to these detections, we will make a new data
+frame containing *latitude* and *longitude* data along with other receiver data
+and merge the new receiver data with the detection data.
 
 The code below shows a simple left join on *receiver_sn*, which assigns 
 the same receiver location data to all detection records on that receiver 
-without time consideration. Two limitations of this simple join are that it:
+without time consideration. 
 
-* is inadequate if any receiver is deployed at more than one location.
-* includes detections that occurred before receiver deployment and after 
-receiver recovery.
 
 ```{r}
 #make an example receiver data frame
@@ -487,23 +501,32 @@ rcv <- data.frame(
         ins_serial_no = "109924",
         stringsAsFactors = FALSE) 
 
-#merge 
-dtc <- merge(dtc, rcv, by.x = "receiver_sn", by.y = "ins_serial_no")
+#left join on receiver serial number to add receiver data to detections
+dtc <- merge(dtc, rcv, by.x = "receiver_sn", by.y = "ins_serial_no", 
+             all.x = TRUE)
 
-# take a look
-head(dtc)
+# take a look at first few rows
+head(dtc, 3)
 ```
 
 Note that new columns have been added to *dtc*, including *deploy_lat*, 
 *deploy_long*, and two columns (*glatos_array* and *glatos_station*) that could 
 serve as optional location grouping variables. Columns *deploy_date_time* and 
-*recover_date_time* (*POSIXct* objects) are not mandatory columns, 
+*recover_date_time* (*POSIXct* objects) are not required columns, 
 but are useful for removing detections that occurred before receiver deployment 
 or after recovery. 
 
+Two limitations of this simple join shown above are that it:
 
-We will subset detections to omit any that occurred before deployment or after 
-recovery.
+* is inadequate if any receiver is deployed at more than one location.
+* includes detections that occurred before receiver deployment and after 
+receiver recovery.
+
+To ensure that detections are correctly associated with a location, we will
+subset detections to omit any that occurred before deployment or after recovery.
+For convenience, we use the base R function *with* so that we do not have 
+to repeatedly call *dtc$...* but note that this can be somewhat risky 
+(see `?with`).
 
 ```{r}
 #count rows before subset
@@ -529,18 +552,25 @@ dtc <- with(dtc, dtc[detection_timestamp_utc >= deploy_date_time &
 > the square brackets.  
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-
-We removed five rows.  
-
 ```{r}
 #count rows after subset
 nrow(dtc)
 ```
+We removed five rows. Those detections either occurred before receiver
+deployment or after receiver recovery, so the location of those detections are
+unknown.
+
+
 
 #### _**transmitter_codespace**_ and _**transmitter_id**_
 
-There is no single column in the VUE export data with transmitter code space 
-or transmitter ID code, so we need to extract them from the *Transmitter* column.
+There is no single column in the VUE export data with transmitter code space or
+transmitter ID code, so we need to extract them from the *Transmitter* column.
+Like we did with *receiver_sn*, we'll make new functions to extract the 
+id and codespace from each record, then use *sapply* to "apply" each of 
+those functions to each record in *Transmitter*. Note that the codes space 
+requires an extra step, after we split the string on "-" we then paste the 
+first and second back together to create the code space string.
 
 ```{r}
 #make a new function to extract id from Transmitter
@@ -588,13 +618,12 @@ Change the column names from *'Sensor Value'* and *'Sensor Unit'* to
 ```{r}
 #change column name
 names(dtc)[match(c("Sensor Value", "Sensor Unit"), names(dtc))] <- 
-             c("sensor_value", "sensor_unit")
+                 c("sensor_value", "sensor_unit")
 ```
 
 
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
-> __data.table tip__  
-> Use _setnames_ to change column names.
+> __data.table tip:__  Use _setnames_ to change multiple column names.
 
 > ``` {r eval = FALSE} 
 > setnames(dtc, c("Sensor Value", "Sensor Unit"),
@@ -610,19 +639,15 @@ str(dtc)
 
 #### _**animal_id**_
 
-The *animal_id* column will need to come from another source, like the 
-animal tagging data. We will make a new data frame with these data and 
-merge it. 
+The *animal_id* column was not included in the VUE database and will need to
+come from another source. If no tags were re-used, then a simple solution might
+be to create a new column and assign it the values of *Transmitter* column. In
+this example, however, we will make a new data frame containing *animal* data
+and merge it with detection data.
 
 The code below shows a simple left join on *transmitter_codespace* and
 *transmitter_id*, which assigns the same receiver location data to all
-detection records of each transmitter without time consideration. Two
-limitations of this simple join are that it:
-
-* is inadequate if any transmitter was deployed more than once.
-* includes detections that occurred before transmitter deployment (animal 
-  release) and after 
-transmitter recovery (animal recapture).
+detection records of each transmitter without time consideration. 
 
 ```{r}
 #make an example animal (fish) data frame
@@ -642,20 +667,30 @@ fsh <- data.frame(
 
 #simple left join on codespace and id
 dtc <- merge(dtc, fsh, by.x = c("transmitter_codespace", "transmitter_id"), 
-                       by.y = c("tag_code_space", "tag_id_code"))
+                       by.y = c("tag_code_space", "tag_id_code"),
+                       all.x = TRUE)
           
 ```
 
-Note that one tag was re-used, but we did not account for this in the above 
-merge (a simple left join). So we now need to subset to omit records that 
-occurred before release or after recapture. 
+Two limitations of this simple join are that it:
+
+* is inadequate if any transmitter was deployed more than once.
+* includes detections that occurred before transmitter deployment (animal 
+  release) and after transmitter recovery (animal recapture).
+
+Note that one tag (`tag_id_code = 442`) was re-used, but we did not account for
+this in the above merge (a simple left join). So we now need to subset to omit
+detections that occurred before release or after recapture.
 
 ```{r}
+#count rows before subset
+nrow(dtc)
+
 #subset detections to include only those between release and recapture 
 # or after release if never recaptured
 dtc <- with(dtc, dtc[detection_timestamp_utc >= release_date_time & 
                      (detection_timestamp_utc <= recapture_date_time |
-                       is.na(recapture_date_time)), ])
+                        is.na(recapture_date_time)) , ])
 ```
 
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
@@ -668,6 +703,11 @@ dtc <- with(dtc, dtc[detection_timestamp_utc >= release_date_time &
 > ```
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
+```{r}
+#count rows after subset
+nrow(dtc)
+```
+
 
 We should now have a detection dataset that will meet the requirements of 
 *glatos* functions.
@@ -679,55 +719,83 @@ We should now have a detection dataset that will meet the requirements of
 
 *glatos* functions that accept receiver location data as input will
 typically require a *data.frame* with one or more of the following
-columns.  Please refer to "Data field definitions of standard GLATOS
-detection export" vignette and function help (e.g.,
-`?read_glatos_detections`) to identify data type and definition of
-mandatory fields (link).
+columns:  
 
-mandatory fields:
-- deploy\_lat (link)
-- deploy\_long (link)
-- deploy\_date\_time (link)
-- recover\_date\_time (link)
+- deploy\_lat 
+- deploy\_long 
+- deploy\_date\_time 
+- recover\_date\_time 
 
- Additionally, some functions will require at least one categorical column to 
- identify location (or group of locations). These can be specified by the user, 
- but examples of such columns in a GLATOS standard detection file are:
+Some functions will also require at least one categorical column to 
+identify location (or group of locations). These can be specified by the user, 
+but examples of such columns in a GLATOS standard receiver locations file are:
  
-- glatos\_array (link)
-- station (link)
-- glatos\_project\_receiver (link)
+- glatos\_array 
+- station 
+- glatos\_project\_receiver 
+
+For definitions of any of the above fields, see the [Data Requirements
+vignette](data_requirements.html)) and function-specific help files (e.g.,
+`?abacus_plot`).
+
+Any *data.frame* that contains the above columns (in the correct formats) should
+be compatible with all *glatos* functions that accept receiver data as input.
+Use of the data loading function *read_glatos_receivers* 
+ will ensure that these columns are present and formatted
+correctly, but can only be used on data in GLATOS format. Data in other
+formats will need to be loaded using other functions (e.g., *read.csv*,
+*fread*, etc.) and carefully checked for compatibility with *glatos* functions
+(see [Other formats - CSV file exported from a VUE database](#other-formats---csv-file-exported-from-a-vue-database)).
+
 
 ## Examples 
 
 ### Loading GLATOS data
 
-The *read_glatos_receivers()* function reads in receiver location data 
-obtained from the GLATOS standard data export and checks that the data meet requirements 
-of *glatos* functions. Data are read using *fread* in the *data.table* package, 
-timestamps are formatted as class *POSIXct*.
+The *read_glatos_receivers* function reads in receiver location data obtained
+from the GLATOS [Data Portal](https://glatos.glos.us/portal) and checks that the
+data meet requirements of *glatos* functions. Data are read using *fread* in the
+*data.table* package, timestamps are formatted as class *POSIXct*.
 
 We will get the path to the *sample_receivers.csv* (example included in the 
-*glatos* package) using use *system.file()*, then read the data using 
-*read_glatos_receivers()*, and view the structure of the result.
+*glatos* package) using *system.file*, then read the data using 
+*read_glatos_receivers*, and view the structure of the result.
 
 ```{r echo=TRUE}
 #get path to example receiver_locations file
-rec_file <- system.file("extdata", 
-                        "sample_receivers.csv", package = "glatos")
+rec_file <- system.file("extdata", "sample_receivers.csv", 
+                        package = "glatos")
 
-#read sample_receivers.csv using 'read_glatos_receivers()'
+#read sample_receivers.csv using 'read_glatos_receivers'
 rcv <- read_glatos_receivers(rec_file)
 
 #view structure
 str(rcv)
 ```
 
-The result is an object with `r ncol(rcv)` columns (including the prescribed 
+The result is an object with `r ncol(rcv)` columns (including the required 
 columns described above) and two classes: *glatos_receivers* and *data.frame*. 
 The *glatos_receivers* class label indicates that the data set was created using 
 a *glatos* load function and therefore should work with any *glatos* function that 
 accepts receiver data as input.
+
+
+### Other formats 
+
+Receiver location data in any format than GLATOS standard will need to be: 
+
+1. loaded into R using some other function (e.g., *read_csv*, *fread*, etc) and  
+
+2. modified to ensure that all requirements of the desired function are met.  
+
+This vignette does not include an example of receiver location data loaded from
+CSV because the methods would be very similar to those described above.
+Generally, we recommend that you might walk through each required column
+described in the [Data Requirements vignette](data_requirements.html)), check
+that each column meets *glatos* requirements, and modify accordingly using
+methods described above for detection data from a CSV file exported from VUE
+(see [Other formats - CSV file exported from a VUE
+database](#other-formats---csv-file-exported-from-a-vue-database))
 
 
 
