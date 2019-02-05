@@ -590,24 +590,234 @@ for(i in 1:length(groups)){
                                     dp.i$transmitter_id[1]),
        ylab = "detection probability",
        xlab = "tag-receiver distance (m)", pch = 16, col = "red", cex = 2, type = "o")
-  axis(2, at = seq(0,1,0.2), las = 1)
-  axis(1, at = seq(0,1000,200))
-  axis(1, at = seq(100,900,200), labels = NA)
+  axis(2, at = seq(0, 1, 0.2), las = 1)
+  axis(1, at = seq(0, 1000, 200))
+  axis(1, at = seq(100, 900, 200), labels = NA)
   box()
 }
 
 ```
 
-As you can see in this example, detection probability range drops dramatically
-after about 400 m (Figure 4).  At this point, statistical models may be used to
-extract a generalized detection range curve or detection range curves
-may be used in simulation modelling to estimate the probability of detecting a fish moving
-through a line of receivers.  The `GLATOS` package includes functions
-to facilitate these simulation analyses and examples are included in "An
-introduction to R for analyzing acoustic telemetry data" workhop
-manual.  Workshop manual may be downloaded from
-https://glatos.glos.us/
-^[Workshop manual is located in the data portal in the "tools" tag]
+As you can see in this example, detection probability range drops
+dramatically after about 400 m (Figure 4).  Detection range curves may
+be generalized with statistical approaches such as logistic regression
+models or generalized additive models.  Up to this point, our examples
+have focused on estimating the probability of detecting a tag
+transmission and summarizing and visualizing tag detection
+data. However, an important consideration when analyzing telemetry
+data or developing a new telemetry project is to estimate the
+probability that a fish is detected when within range of a receiver.
+Some of the most critical decisions that we make about telemetry system design
+or interpretation of data, are not observed. Simulations can be useful
+for exploring the relative performance of telemetry system characteristics
+(e.g., receiver spacing, transmitter power, transmitter delay) or the
+potential consequences of unanticipated outcomes (e.g., lost
+receivers).
 
+# Predicting receiver line performance
+
+ In our next example, we will incorporate observed detection data
+(i.e., detection range curve) into a simulation to predict the
+probability that an acoustic-tagged fish will be detected on a
+receiver line, given constant fish velocity (ground speed), receiver
+spacing, number of receivers, and detection range curve.  Although
+range detection studies are important for estimating the probability
+of detecting a tag transmission, they do not estimate the probability
+of detecting a fish that is moving through a line of multiple
+receivers that may detect a tag transmission.
+
+Here, we will use the `receiver_line_det_sim()` function in the
+`glatos` package to determine the smallest spacing between receivers
+in a receiver line that will ensure that all fish are detected by that
+line. The function `receiver_line_det_sim()` swims a virtual tagged
+fish perpendicularly through a virtual receiver line to estimate the
+probability of detecting the fish on that receiver line, given
+constant fish movement rate, receiver spacing and number of receivers
+for a specified detection range curve. Detection of each transmission
+on all receivers is simulated by draws from a Bernoulli distribution
+using the distance between the tag and each receiver in the line based
+on the user-provided range detection curve. A fish is only considered
+detected on the line if detected more than once on a given receiver in
+the simulation, as single detections would not pass a false detection
+filter. The `receiver_line_det_sim()` requires a function that
+specifies a detection range curve for the `rngFun` argument.  We will
+use empirical data to define a detection range curve from the previous
+example but any other function that describes the shape of the
+detection range curve (i.e., logistic) can be used as long as
+the function supplies a numeric vector of detection probabilities for
+an input vector of distances. Other examples of detection range curves
+are available in the help document for `receiver_line_det_sim()`.  The
+remaining arguments for `receiver_line_det_sim()` are: `vel`, constant
+fish velocity; `delayRng`, a numeric vector with min and max delay for
+the tag; `burstDur`, duration of each coded burst; `recSpc`, a numeric
+vector with distances in meters between receivers; `maxDist`, max
+distance between fish and receiver; `outerLim`, maximum distance
+simulated fish are allowed to pass to the left and right of the
+receiver line; `nsim`, number of fish to simulate; `showPlot`, a
+switch specifying whether a plot of fish paths is to be returned.
+
+Let's assume that we have detection range data (for `rngFun`) from a
+range test we conducted at the new receiver line location, fish swim
+speed (`vel`) from the literature, tag delay we want to use based on
+consideration of collision rates and tag life (for `delayRng`), and
+the burst duration of the tag from the manufacturer (for
+`burstDur`). We can use these parameters to estimate the probability
+that a fish will be detected on the receiver line, given those
+parameters, using the `receiver_line_det_sim()` function.
+
+Now, let's setup and run a simulation. First, we need to extract
+detection range curve for one time interval created in the previous
+code chunk to define `rngFun`.
+
+```{r echo=TRUE}
+# Define detection range function (to pass as rngFun) that returns detection
+# probability for given distance assume logistic form of detection range
+# curve where dm=distance in meters b=intercept and slope.
+
+# extract detection range data for tag id "62215, 2018-10-26"
+# this tag id and date was chosen randomly for an example
+edr <- dp[id == groups[10]]
+
+# remove dist==0 because these are detections logged by on-board transmitter, not actual detection
+edr <- edr[dist_m != 0]
+
+# Use base::approx function to return the detection probability based on distance and linear interpolation within edr.  This essentially "connects the dots"
+edrf <- function(dm, my.edr=edr){
+  p <- approx(x=my.edr$dist_m, y=my.edr$dp, xout=dm, rule=2)$y
+  return(p)
+}
+
+# create sequence at 50m intervals
+dist_seq <- seq(0,650,by = 25)
+
+# interpolate detection probability using the edrf function
+interpolated <- edrf(dist_seq)
+
+```
+
+Before we run the simulation, let's preview the range curve created by `edrf`.
+In the previous chunk, we passed a vector of distances from 0 to 650
+separated by 25 meters. 
+
+Lets take a look at the original detection range curve and
+interpolated range curve. 
+
+
+```{r, echo=FALSE}
+cap5 = "Detection range curve (red circles) and same detection range curve with interpolated points (black circles and line). Detection probability is on the y-axis and distance between tag and receiver is on the x-axis."
+```
+
+```{r, fig.cap=cap5,fig.show="asis"}
+
+# plot original detection range curve
+plot(edr$dist_m, edr$dp, pch = 16, col = "red", ylim = c(0,1), las = 1, cex = 1.5, ylab = "tag transmission detection probability", xlab = "tag-receiver distance (m)")
+
+# add interpolated detection probabilities
+lines(dist_seq, interpolated, type = "o", col = "black", pch = 16, cex = 1)
+legend("topright", legend  = c("original", "interpolated"), col = c("red", "black"), lty = c(NA,1), pch = 16 )
+
+```
+
+Now that the range detection curve is set up, we can set up the simulation. `pdrf` is supplied to `receiver_line_det_sim()` as the `rngFun` argument. Now let's assume that we have five receivers for our new line, intended to span 5 km between an island and mainland shoreline.
+
+Let's run the simulation with our five receivers spaced at 350 m (`recSpc`) and the first and last receivers 100 m from shore (`outerLim`) so that fish are allowed to pass left and right of virtual line up to 500 m. First, we will run the function with `showPlot=T` and just ten virtual fish so we can see what it's doing. Then we will run it with 10000 fish (with `showPlot=F`) to get a more robust result.
+
+```{r echo=TRUE, dpi=200}
+# Five receivers and allow fish to pass to left and right of line.
+sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(250,4),
+	outerLim=c(100, 100), nsim=10, showPlot=T)
+
+# The `receiver_line_det_sim()` estimates line detection probability for the
+# specified combination of receiver line layout and fish transmitter
+# specifications. The value returned is the portion of simulated fish that
+# were detected at least twice passing the receiver line (i.e., they would
+# pass a false detection filter).
+```
+
+It looks like about `r round((sim*100))`% of virtual fish were detected. Now, let's repeat it with 10000 fish, but without the plot.
+
+```{r echo=TRUE, dpi=200}
+# Again but with 10000 fish and no plot.
+sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(250,4),
+	outerLim=c(100, 100), nsim=10000)
+
+```
+
+Results suggest that `r round((sim*100))`% of all fish should be
+detected under the conditions simulated. However, we might want to use
+fewer receivers if we could still detect all fish. So let's use the
+simulation to identify the smallest receiver spacing that would still
+detect about the same number of fish. We'll simply loop through a
+vector of receiver spacing, get the detection probability estimate for
+each, and then use that to guide our decision.
+
+```{r echo=TRUE, dpi=200}
+# Preallocate a vector to store estimates.
+sim_out <- rep(NA, 6)
+
+# One receiver with 250 m on each side.
+sim_out[1] <- receiver_line_det_sim(rngFun=edrf, recSpc=0,
+ outerLim=c(250, 250), nsim=10000)
+
+# Two receivers with 125 m between and 125 m on each end.
+sim_out[2] <- receiver_line_det_sim(rngFun=edrf, recSpc=125,
+ outerLim=c(125, 125), nsim=10000)
+
+# Three receivers with 300 m between and 500 m on each end.
+sim_out[3] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(300,2),
+ outerLim=c(500, 500), nsim=10000)
+
+# Four receivers with 1000 m in between and 625 m on each end.
+sim_out[4] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(1000,3),
+ outerLim=c(200, 200), nsim=10000)
+
+# Five receivers with 1000 m in between and 300 m on each end.
+sim_out[5] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,4),
+ outerLim=c(300, 300), nsim=10000)
+
+# Six receivers with 400 m in between and 417 m on each end.
+sim_out[6] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(833,5),
+ outerLim=c(400, 400), nsim=10000)
+
+```
+
+Plot the results.
+
+```{r echo=TRUE, dpi=200}
+# Plot number of receivers vs proportion of virtual fish detected.
+plot(1:6, sim_out, type='o',ylim=c(0,1),
+ xlab='Number of receivers',
+ ylab='Proportion of virtual fish detected',
+ pch=20)
+```
+
+These results suggest that we could still detect 98% of the fish with only four receivers instead of five, so we might choose to deploy only four receivers spaced 1250 m. But before we make our final decision, let's consider what might happen if we went with the four-receiver spacing but lost a receiver during our study, so that our line ended up having a hole in it. Again, we will simulate just ten fish with a plot to see what this looks like and then we'll run the simulation with 10000 virtual fish.
+
+```{r echo=TRUE, dpi=200}
+# Three receivers now with a gap of 2500 m between two and 625 m on ends.
+# 10 fish with plot.
+dph <- receiver_line_det_sim(rngFun=pdrf, recSpc=c(1250,2500),
+ outerLim=c(625, 625), nsim=10, showPlot=T)
+
+# Repeat with 10000 fish, no plot.
+dph <- receiver_line_det_sim(rngFun=pdrf, recSpc=c(1250,2500),
+ outerLim=c(625, 625), nsim=10000)
+dph
+```
+
+Estimated detection probability dropped to about 78% of fish after losing a receiver, so our final decision might depend on how likely we are to lose a receiver during the study.
+
+Similar to the way we've used `receiver_line_det_sim()` here, we could simulate detection probabilities over a range of fish swim speed, tag delay, or even detection range curves to understand how results might be sensitive to our assumptions or decisions regarding those parameters.
+
+In addition to the one-dimensional receiver line simulation presented above, the `glatos` package contains a set of functions that can be used to simulate fish movement and detection on receivers in a virtual two-dimensional arena. For example, the image below shows simulated detection data from a virtual fish in Lake Erie with a grid of 116 receivers (15 km spacing).
+
+```{r echo=FALSE}
+library(png)
+knitr::include_graphics('TablesAndFigures/erie_grid_example.png')
+```
+
+We won't cover this function in detail here, but will briefly explain the components. First, `crw_in_polygon()` can be used to simulate fish movement paths as a random walk inside a polygon. Second, `transmit_along_path()` can be used to simulate tag signal transmissions along each path based on constant movement velocity, transmitter delay range, and duration of signal. Third, `detect_transmissions()` can be used to simulate detection of transmitter signals in a receiver network based on detection range curve, location of transmitter, and locations of receivers. Collectively, these functions can be used to explore, compare, and contrast theoretical performance of a wide range of transmitter and receiver network designs.
+
+Simulation can be a powerful tool for decision making and the `glatos` package contains several simulation-based functions (e.g., `calc_collision_prob()`). However, it's important to keep in mind that simulations are a simplification of reality and that results are only as good as the assumptions and variables going in (i.e., 'garbage in, garbage out'). Fortunately, many processes that influence telemetry systems are fairly well understood. Our approach to these types of simulations is generally to be cautious: make conservative assumptions to yield conservative inferences. In this way, we can hope for the best but rest easy knowing we have 'planned for the worst'.
 
 
