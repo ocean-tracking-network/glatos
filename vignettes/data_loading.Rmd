@@ -820,7 +820,7 @@ str(rcv2)
 
 ```
 
-The result is a list object with `r ncol(rcv2)` columns and two classes:
+The result contains `r ncol(rcv2)` columns and two classes:
 *glatos_receivers* and *data.frame*. Despite some differences between the
 structure of this project-specific data object and the network-level data object
 loaded in the previous example, both have been minimally modified to meet the
@@ -846,5 +846,143 @@ exported from a VUE
 database](#other-formats---csv-file-exported-from-a-vue-database))
 
 
+# Animal tagging and biological data
+
+## Requirements
+
+There are currently no *glatos* functions that require animal tagging and
+biological data other than those columns present in the required *detection*
+data. Therefore, there are no formal requirements of such data in the package.
+Nonetheless, the *read_glatos_workbook* function can be used to facilitate
+loading animal tagging and biological data from a standard GLATOS project
+workbook (\*.xlsm file) into an R session. 
+
+Use of the data loading function *read_glatos_workbook* will ensure that animal
+data are loaded efficiently and consistently among users, but can only be used
+on data in GLATOS format. Data in other formats will need to be loaded using
+other functions (e.g., *read.csv*, *fread*, etc.). Although there are currently
+no *glatos* requirements of animal data, any future requirements might be
+expected to be consistent with the *glatos_animals* class.
+
+## Examples 
+
+### Loading GLATOS data (single project workbook)
+
+The *read_glatos_workbook* function reads animal tagging and biological data
+from a standard GLATOS project workbook (\*.xlsm file; *tagging* sheet). Data
+are read using *readWorkbook* in the *openxlsx* package, timestamps are
+formatted as class *POSIXct*.
+
+We will again use data from the same *walleye_workbook.xlsm* example file used in the previous section (see data loading steps above), but will extract the *animals* element
+and view its structure.
+
+```{r}
+#extract animals element from workbook list
+fsh <- wb[["animals"]]
+
+#view structure
+str(fsh)
+
+```
+
+The result contains `r ncol(fsh)` columns and two classes:
+*glatos_animals* and *data.frame*. 
+
+
+### Other formats 
+
+Receiver location data in any format than one of the GLATOS standards will need
+to be:
+
+1. loaded into R using some other function (e.g., *read_csv*, *fread*, etc) and  
+
+2. modified to ensure that all requirements of the desired function are met.  
+
+This vignette does not include an example of animal tagging and biological data loaded from
+CSV because the methods would be very similar to those described above. Moreover, there are currently no *glatos* functions that require animal tagging and biological data other than those present in *glatos_detections* data. Although the *glatos* package currently does not contain any specific requirements of animal tagging and biological data, future requirements might be expected to resemble key columns of *glatos_animals* objects.
+
+
+
+# Transmitter specification data
+
+## Requirements
+
+There are currently no *glatos* functions that require transmitter specification
+data. Therefore, there are no formal requirements of such data in the package.
+Nonetheless, the *read_vemco_tag_specs* function can be used to facilitate
+loading transmitter specification data from a standard VEMCO tag spec (\*.xls)
+file provided to tag purchasers from VEMCO.
+
+Use of the data loading function *read_vemco_tag_specs* will ensure that
+transmitter specificaiton data are loaded efficiently and consistently among
+users, but can only be used on data in VEMCO standard format. Data in other
+formats will need to be loaded using other functions (e.g., *read.csv*, *fread*,
+etc.). Although there are currently no *glatos* requirements of transmitter
+specification data, any future requirements might be expected to be consistent
+with the output of *read_vemco_tag_specs*.
+
+## Examples 
+
+### Loading data from a VEMCO tag specs file
+
+The *read_vemco_tag_specs* function reads transmitter specification data
+from a standard VEMCO tag specs (\*.xls file). Data
+are read using *read_excel* in the *readxl* package.
+
+We will get the path to the *lamprey_tag_specs.xls* (example included in the 
+*glatos* package) using *system.file*, then read the data using 
+*read_vemco_tag_specs*, and view the structure of the result.
+
+```{r echo=TRUE}
+#get path to example lamprey_tag_specs.xls file
+spec_file <- system.file("extdata", "lamprey_tag_specs.xls", 
+                        package = "glatos")
+
+#read lamprey_tag_specs.xls using 'read_vemco_tag_specs'
+my_tags <- read_vemco_tag_specs(spec_file, file_format = "vemco_xls")
+
+#view structure
+class(my_tags)
+names(my_tags)
+```
+
+The result is a *list* object with two elements containing data about the
+transmitter specifications (*specs*) and the operating schedule (*schedule*).
+Next, we will view the structure of each element, starting with *specs*.
+
+
+```{r}
+#view structure of specs element
+str(my_tags$specs)
+
+```
+
+The result contains `r ncol(my_tags$specs)` columns of transmitter 
+characteristics that do not change over time.
+
+
+```{r}
+#view structure of schedule element
+str(my_tags$schedule)
+
+```
+
+The result contains `r ncol(my_tags$schedule)` columns of transmitter 
+characteristics that change over time. These may be used to estimate the 
+operating characteristics (e.g., *power*, *min_delay*, *max_delay*, etc.) on 
+a specific date following activation or release.
+
+
+### Other formats 
+
+Transmitter specification and schedule data in any format than one of the GLATOS standards will need
+to be:
+
+1. loaded into R using some other function (e.g., *read_csv*, *fread*, etc) and  
+
+2. modified to ensure that all requirements of the desired function are met.  
+
+This vignette does not include an example of transmitter specification and schedule data loaded from
+CSV because the methods would be very similar to those described above. Moreover, there are currently no *glatos* functions that require transmitter specification and schedule data other than those present in *glatos_detections* data. Although the *glatos* package currently does not contain any specific requirements of these data, future requirements might be expected to resemble key columns of the output of *read_vemco_tag_specs*.
 
 
