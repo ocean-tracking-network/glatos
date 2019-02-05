@@ -675,8 +675,8 @@ code chunk to define `rngFun`.
 # curve where dm=distance in meters b=intercept and slope.
 
 # extract detection range data for tag id "62215, 2018-10-26"
-# this tag id and date was chosen randomly for an example
-edr <- dp[id == groups[10]]
+# this tag id and date was chosen randomly for this example
+edr <- dp[id == groups[401]]
 
 # remove dist==0 because these are detections logged by on-board transmitter, not actual detection
 edr <- edr[dist_m != 0]
@@ -718,13 +718,15 @@ legend("topright", legend  = c("original", "interpolated"), col = c("red", "blac
 
 ```
 
-Now that the range detection curve is set up, we can set up the simulation. `pdrf` is supplied to `receiver_line_det_sim()` as the `rngFun` argument. Now let's assume that we have five receivers for our new line, intended to span 5 km between an island and mainland shoreline.
+Now that the range detection curve is set up, we can set up the
+simulation. `pdrf` is supplied to `receiver_line_det_sim()` as the
+`rngFun` argument. For our first simulation, let's assume that we have five receivers for our new line, intended to span 1 km between an island and mainland shoreline.
 
-Let's run the simulation with our five receivers spaced at 350 m (`recSpc`) and the first and last receivers 100 m from shore (`outerLim`) so that fish are allowed to pass left and right of virtual line up to 500 m. First, we will run the function with `showPlot=T` and just ten virtual fish so we can see what it's doing. Then we will run it with 10000 fish (with `showPlot=F`) to get a more robust result.
+Let's run the simulation with our five receivers spaced at 200 m (`recSpc`) and the first and last receivers 100 m from shore (`outerLim`) so that fish are allowed to pass left and right of virtual line up to 100 m. First, we will run the function with `showPlot=T` and just ten virtual fish so we can see what it's doing. Then we will run it with 10000 fish (with `showPlot=F`) to get a more robust result.
 
 ```{r echo=TRUE, dpi=200}
 # Five receivers and allow fish to pass to left and right of line.
-sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(250,4),
+sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
 	outerLim=c(100, 100), nsim=10, showPlot=T)
 
 # The `receiver_line_det_sim()` estimates line detection probability for the
@@ -738,86 +740,123 @@ It looks like about `r round((sim*100))`% of virtual fish were detected. Now, le
 
 ```{r echo=TRUE, dpi=200}
 # Again but with 10000 fish and no plot.
-sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(250,4),
+sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
 	outerLim=c(100, 100), nsim=10000)
 
 ```
 
 Results suggest that `r round((sim*100))`% of all fish should be
-detected under the conditions simulated. However, we might want to use
-fewer receivers if we could still detect all fish. So let's use the
-simulation to identify the smallest receiver spacing that would still
+detected under the conditions simulated. However, we might want to
+determine how the proportion of fish detected changes if we use more or
+less receivers. In order to conserve resources (i.e., receivers), we
+want to identify the smallest receiver spacing that would still
 detect about the same number of fish. We'll simply loop through a
 vector of receiver spacing, get the detection probability estimate for
 each, and then use that to guide our decision.
 
 ```{r echo=TRUE, dpi=200}
 # Preallocate a vector to store estimates.
-sim_out <- rep(NA, 6)
+sim_out <- rep(NA, 10)
 
-# One receiver with 250 m on each side.
-sim_out[1] <- receiver_line_det_sim(rngFun=edrf, recSpc=0,
- outerLim=c(250, 250), nsim=10000)
-
-# Two receivers with 125 m between and 125 m on each end.
-sim_out[2] <- receiver_line_det_sim(rngFun=edrf, recSpc=125,
- outerLim=c(125, 125), nsim=10000)
-
-# Three receivers with 300 m between and 500 m on each end.
-sim_out[3] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(300,2),
+# One receivers with 500 m in between.
+sim_out[1] <- receiver_line_det_sim(rngFun=edrf, recSpc=500,
  outerLim=c(500, 500), nsim=10000)
 
-# Four receivers with 1000 m in between and 625 m on each end.
-sim_out[4] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(1000,3),
- outerLim=c(200, 200), nsim=10000)
+# Two receivers with 500 m in between and 250 m on each end.
+sim_out[2] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(500,2),
+ outerLim=c(250, 250), nsim=10000)
 
-# Five receivers with 1000 m in between and 300 m on each end.
-sim_out[5] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,4),
- outerLim=c(300, 300), nsim=10000)
+# Three receivers with 333 m in between and 167 m on each end.
+sim_out[3] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(333,3),
+ outerLim=c(167,167 ), nsim=10000)
 
-# Six receivers with 400 m in between and 417 m on each end.
-sim_out[6] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(833,5),
- outerLim=c(400, 400), nsim=10000)
+# Four receivers with 250 m in between and 125 m on each end.
+sim_out[4] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(250,4),
+ outerLim=c(125, 125), nsim=10000)
+
+# Five receivers with 200 m in between and 100 m on each end.
+sim_out[5] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
+ outerLim=c(100, 100), nsim=10000)
+
+# Six receivers at 167 m with 83.5 m on each side.
+sim_out[6] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(167,6),
+                                    outerLim=c(83.5, 83.5), nsim=10000)
+
+# Seven receivers at 143 m with 71.5 m on each side.
+sim_out[7] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(143,7),
+                                    outerLim=c(71.5, 71.5), nsim=10000)
+
+# Eight receivers with 125 m between and 62.5 m on each end.
+sim_out[8] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(125,8),
+ outerLim=c(62.5, 62.5), nsim=10000)
+
+# Nine receivers with 111 m between and 55.5 m on each end.
+sim_out[9] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(111,9), outerLim=c(55.5, 55.5), nsim=10000)
+
+# Ten receivers with 100 m between and 50 m on each end.
+sim_out[10] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(100,10), outerLim=c(50, 50), nsim=10000)
 
 ```
 
 Plot the results.
 
-```{r echo=TRUE, dpi=200}
+```{r echo=TRUE}
 # Plot number of receivers vs proportion of virtual fish detected.
-plot(1:6, sim_out, type='o',ylim=c(0,1),
+plot(1:10, sim_out, type='o', ylim=c(0,1),
  xlab='Number of receivers',
  ylab='Proportion of virtual fish detected',
- pch=20)
+ pch=20, las = 1)
+```
+These results suggest that the proportion of fish detected reaches a
+plateau at around 5 receivers.  Deploying a line with more than
+five receivers does not drastically increase the proportion of fish
+that are detected with the input parameters simulated.  If we deployed
+5 receivers, the percent of fish detected is `r#round(sim_out[5]*100,
+1)`%, but before we make our final decision, let's consider what might
+happen if we lost a receiver during our study, so that our line ended
+up having a hole in it. Again, we will simulate just ten fish with a
+plot to see what this looks like and then we'll run the simulation with 10000 virtual fish.
+
+```{r echo=TRUE}
+# Four receivers with 200, 400, 200, 2000 m in between and 100 m on each end.
+dph <- receiver_line_det_sim(rngFun=edrf, recSpc=c(200,400,200,200),
+                             outerLim=c(100, 100), nsim=10000)
+
 ```
 
-These results suggest that we could still detect 98% of the fish with only four receivers instead of five, so we might choose to deploy only four receivers spaced 1250 m. But before we make our final decision, let's consider what might happen if we went with the four-receiver spacing but lost a receiver during our study, so that our line ended up having a hole in it. Again, we will simulate just ten fish with a plot to see what this looks like and then we'll run the simulation with 10000 virtual fish.
-
-```{r echo=TRUE, dpi=200}
-# Three receivers now with a gap of 2500 m between two and 625 m on ends.
-# 10 fish with plot.
-dph <- receiver_line_det_sim(rngFun=pdrf, recSpc=c(1250,2500),
- outerLim=c(625, 625), nsim=10, showPlot=T)
-
-# Repeat with 10000 fish, no plot.
-dph <- receiver_line_det_sim(rngFun=pdrf, recSpc=c(1250,2500),
- outerLim=c(625, 625), nsim=10000)
-dph
-```
-
-Estimated detection probability dropped to about 78% of fish after losing a receiver, so our final decision might depend on how likely we are to lose a receiver during the study.
+Estimated detection probability dropped to about `r#round(dph*100,1)`% of fish after losing a receiver, so our final decision might depend on how likely we are to lose a receiver during the study.
 
 Similar to the way we've used `receiver_line_det_sim()` here, we could simulate detection probabilities over a range of fish swim speed, tag delay, or even detection range curves to understand how results might be sensitive to our assumptions or decisions regarding those parameters.
 
 In addition to the one-dimensional receiver line simulation presented above, the `glatos` package contains a set of functions that can be used to simulate fish movement and detection on receivers in a virtual two-dimensional arena. For example, the image below shows simulated detection data from a virtual fish in Lake Erie with a grid of 116 receivers (15 km spacing).
 
-```{r echo=FALSE}
-library(png)
-knitr::include_graphics('TablesAndFigures/erie_grid_example.png')
-```
+
 
 We won't cover this function in detail here, but will briefly explain the components. First, `crw_in_polygon()` can be used to simulate fish movement paths as a random walk inside a polygon. Second, `transmit_along_path()` can be used to simulate tag signal transmissions along each path based on constant movement velocity, transmitter delay range, and duration of signal. Third, `detect_transmissions()` can be used to simulate detection of transmitter signals in a receiver network based on detection range curve, location of transmitter, and locations of receivers. Collectively, these functions can be used to explore, compare, and contrast theoretical performance of a wide range of transmitter and receiver network designs.
 
 Simulation can be a powerful tool for decision making and the `glatos` package contains several simulation-based functions (e.g., `calc_collision_prob()`). However, it's important to keep in mind that simulations are a simplification of reality and that results are only as good as the assumptions and variables going in (i.e., 'garbage in, garbage out'). Fortunately, many processes that influence telemetry systems are fairly well understood. Our approach to these types of simulations is generally to be cautious: make conservative assumptions to yield conservative inferences. In this way, we can hope for the best but rest easy knowing we have 'planned for the worst'.
+
+
+
+```{r, echo = TRUE}
+data(greatLakesPoly)
+
+library(sf)
+bar <- st_as_sfc(greatLakesPoly)
+
+one <- st_union(bar, by_feature = FALSE)
+
+test <- st_crop(one, c(xmin=-84.883971, xmax=-79.696182, ymin=42.932699, ymax=46.474450))
+plot(test)
+
+
+str(st_coordinates(test))
+
+?crw_in_polygon
+
+
+
+
+```
 
 
