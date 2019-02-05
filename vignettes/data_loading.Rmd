@@ -47,7 +47,7 @@ functions and modification to meet *glatos* requirements.
 
 ## Loading data from GLATOS, OTN, and VEMCO
 
-The R package *glatos* (version 0.2.6) contains five functions (see [Built-in
+The *glatos* package contains five functions (see [Built-in
 functions](#built-in-functions)) designed to load data files in standardized 
 formats from the GLATOS, the OTN, and VEMCO. Each data loading function:  
 
@@ -119,7 +119,7 @@ Strictly speaking, there are no requirements of the package as a whole, but
 input data are checked within each individual function to determine if 
 requirements are met. Nonetheless, the 
 [Data Requirements vignette](data_requirements.html) provides a set of data 
-requirements, including column names, types, and formatting, that will ensure 
+requirements, including column names, types, and formats, that will ensure 
 compatibility with all *glatos* functions. 
 
 For each data type (e.g., *detection*, *receiver location*, etc), this 
@@ -134,24 +134,44 @@ The main examples in the this vignette use only base R functions. However,
 there are many contributed packages that can provide functions that can improve 
 workflow speed and efficiency. After most examples using base R 
 functions, boxed examples are also given to expose users to alternative 
-examples using functions from contributed packages. Specifically, boxed tips 
+examples using functions from contributed packages. Most boxed tips 
 show use of functions from the *data.table* package. If you are not familiar with *data.table*, then read through the introductory 
 vignette (see `vignette("datatable-intro", package = "data.table")`). For more on *data.table*, see the vignettes (`browseVignettes("data.table")`). In addition 
 to *data.table*, one boxed tip draws from the *lubridate* package because it 
-is, to our knowledge, the fastest way to coerce timestamps strings to POSIXct. 
-Otherwise, we provide no examples using *tidyverse* (*dplyr*, *ggplot2*, 
-*readr*) functions, simply because some of us have not yet drunk the kool-aid. 
-A future version of this vignette may include examples using those packages.
+is, to our knowledge, the fastest way to coerce timestamps strings to the 
+date-time class *POSIXct*. 
+No other examples show use of *tidyverse* packages (*dplyr*, *ggplot2*, 
+*readr*), simply because some of us have not yet drunk the kool-aid. 
+A future version of this vignette may include more examples using the 
+*tidyverse* or other packages.
 
-Something here about box example code... 1) if you run it, make sure attach 
-the packages, (2) setDT() at first call, (3) go all-in, don't alternate.
+A few notes about boxed-example code:  
 
-Note that the class is now *data.table* and *data.frame*.
+1. Make sure the relevant packages are installed and attached:  
 
-```{r results = "hide", warning = FALSE, message = FALSE}
-library(data.table)
-library(lubridate)
-```
+> ```{r results = "hide", warning = FALSE, message = FALSE}
+> #install.packages("data.table")
+> library(data.table)
+> 
+> #install.packages("lubridate")
+> library(lubridate)
+> ```
+
+2. For *data.table* functions, make sure you've converted the target object 
+to *data.table* class using *setDT*:
+
+> ```{r results = "hide", warning = FALSE, message = FALSE}
+> dx <- data.frame(a = 1 , b = 2)
+> setDT(dx) #convert to data.table
+> ```
+
+3. Go all-in; don't run some base R examples and some boxed example or it 
+will cause trouble. For example if base R example changes column names in 
+an object, then the old column names won't exist if you later run the 
+boxed example that changes those same column names using *data.table* 
+functions.  
+
+
 
 
 # Detection data 
