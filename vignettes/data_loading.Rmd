@@ -750,7 +750,7 @@ formats will need to be loaded using other functions (e.g., *read.csv*,
 
 ## Examples 
 
-### Loading GLATOS data
+### Loading GLATOS data (entire network)
 
 The *read_glatos_receivers* function reads in receiver location data obtained
 from the GLATOS [Data Portal](https://glatos.glos.us/portal) and checks that the
@@ -780,21 +780,69 @@ a *glatos* load function and therefore should work with any *glatos* function th
 accepts receiver data as input.
 
 
+### Loading GLATOS data (single project workbook)
+
+The *read_glatos_workbook* function reads in receiver location data from a 
+standard GLATOS project workbook (\*.xlsm file) and checks that the
+data meet requirements of *glatos* functions. Data are read using *readWorkbook* in the
+*openxlsx* package, timestamps are formatted as class *POSIXct*.
+
+We will get the path to the *walleye_workbook.xlsm* (example included in the 
+*glatos* package) using *system.file*, then read the data using 
+*read_glatos_workbook*, and view the structure of the result.
+
+```{r echo=TRUE}
+#get path to example walleye_workbook.xlsm file
+wb_file <- system.file("extdata", "walleye_workbook.xlsm", 
+                        package = "glatos")
+
+#read walleye_workbook.xlsm using 'read_glatos_workbook'
+wb <- read_glatos_workbook(wb_file)
+
+#view structure
+class(wb)
+names(wb)
+```
+
+The result is a *list* (also a *glatos_workbook*) object with three elements
+containing data about the project and the data file (*metadata*), the fish that
+were tagged and released (*animals*), and the receivers (*receivers*). The
+*receivers* element is actually the result of merging two sheets in the source
+file: *deployments* and *recoveries*. Next, we will extract the receiver element
+from the workbook object and view its structure.
+
+```{r}
+#extract receivers element from workbook list
+rcv2 <- wb[["receivers"]]
+
+#view structure
+str(rcv2)
+
+```
+
+The result is a list object with `r ncol(rcv2)` columns and two classes:
+*glatos_receivers* and *data.frame*. Despite some differences between the
+structure of this project-specific data object and the network-level data object
+loaded in the previous example, both have been minimally modified to meet the
+requirements of any *glatos* function that accepts receiver data as input.
+
+
 ### Other formats 
 
-Receiver location data in any format than GLATOS standard will need to be: 
+Receiver location data in any format than one of the GLATOS standards will need
+to be:
 
 1. loaded into R using some other function (e.g., *read_csv*, *fread*, etc) and  
 
 2. modified to ensure that all requirements of the desired function are met.  
 
 This vignette does not include an example of receiver location data loaded from
-CSV because the methods would be very similar to those described above.
-Generally, we recommend that you might walk through each required column
-described in the [Data Requirements vignette](data_requirements.html)), check
-that each column meets *glatos* requirements, and modify accordingly using
-methods described above for detection data from a CSV file exported from VUE
-(see [Other formats - CSV file exported from a VUE
+CSV because the methods would be very similar to those described above. For
+example, you might step through each required column described in the [Data
+Requirements vignette](data_requirements.html)), check that each column meets
+*glatos* requirements, and modify accordingly using methods described above for
+detection data from a CSV file exported from VUE (see [Other formats - CSV file
+exported from a VUE
 database](#other-formats---csv-file-exported-from-a-vue-database))
 
 
