@@ -73,7 +73,7 @@ Two tags with different transmission levels were deployed at each end of
 receiver line."
 ```
 
-```{r fig1, fig.margin=TRUE, fig.width=8, fig.height=8, cache=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.cap=cap1}
+```{r fig1, fig.margin=TRUE, fig.width=8, fig.height=8, echo=FALSE, warning=FALSE, message=FALSE, fig.cap=cap1}
 
 library(sf)
 library(glatos)
@@ -136,10 +136,9 @@ The powerful R package data.table is used extensively in this
 vignette.  Package vignettes included with the data.table package are
 well done and are an excellent resource for getting started with
 data.table.  If you are not familiar with data.table, we highly
-recommend reviewing the _Introduction to data.table,_ __Reference
-semantics,_ and _Efficient reshaping using data.table_
-vignettes. ^[Additional information about data.table for R, including
-package vignettes: https://github.com/Rdatatable/data.table/wiki]
+recommend reviewing the _Introduction to data.table_, _Reference
+semantics_, and _Efficient reshaping using data.table_
+vignettes. ^[Additional information about data.table for R, including vignettes: https://github.com/Rdatatable/data.table/wiki]
  
 # Import data and clean up
 
@@ -168,15 +167,16 @@ setDT(dtc)
 
 The resulting `dtc` object contains 30 columns and is identical to the
 standard export for all glatos detection data.  Please see the data
-loading vignette (link) and data.dictionary vignette (link) for
-complete information about data structure and contents of columns.
+loading vignette (link) and data.dictionary vignette (link) included
+in `glatos` for complete information about data structure and contents
+of columns.
 
 Many of the columns in the dtc object are not needed for this
 analysis.  In the next code chunk, we will extract only the necessary
-columns from the dtc object and calculate the geographic distance
+columns from the `dtc` object and calculate the geographic distance
 between each receiver using the `geosphere::distm` function. The
 internal tag on 4 receivers was used in this study so distances among
-receivers also represents distances between each tag and receiver.
+receivers is the same as distances between each tag and receiver.
 
 ```{R, echo = TRUE}
 
@@ -212,10 +212,10 @@ dist_matrix[,c("transmitter_id", "receiver_sn") := list(as.character(transmitter
 # "receiver_sn" as keys. Keep all records of dtc.
 dtc <- dist_matrix[dtc, on = c("transmitter_id", "receiver_sn")]
 ```
-In the last line, we used `data.table` to merge the `dist_matrix` object with `dtc`
-using key columns common to both objects.^[We use the powerful
-data.table merge functionality extensively in this vignette.
-Additional examples of data.table merges or "joins" are included in the
+In the last line, we used a `data.table` join to merge the
+`dist_matrix` object with `dtc` on key columns common to both
+objects.^[The `data.table` package provides a simple framework for complex
+merge functionality that  we use extensively in this vignette. Additional examples of data.table merges or "joins" are included in the
 data.table package help, accessed by typing `?data.table` in R. 
 Base function aggregate and ddply in the plyr packages provide similar
 functionality]. At this point, the `dtc` object contains an additional
@@ -270,8 +270,8 @@ for(i in 1:length(groups)){
 
 ```
 
-Notice the sharp decline in detections recorded at tag-receiver distances
-greater than about 400 m. (Figure 2)
+Notice the sharp decline in the number of detections recorded at
+tag-receiver distances greater than about 400 m. (Figure 2)
 
 # Calculate detection probability
 
@@ -306,7 +306,7 @@ trans_log <- dtc[short_trans_id == short_rec_id]
 ```
 
 The `trans_log` object contains timestamps for all integrated tag
-transmissions.  By simply counting detections in the `trans-log`
+transmissions.  By simply counting detections in the `trans_log`
 object, we can determine the maximum number of times a tag could have
 been detected during the study.  To calculate detection probability
 for a receiver, we need to divide the total number of times a tag
@@ -314,33 +314,34 @@ could have been detected by the total number of times the tag was
 detected.  However, before we do this, we need to synchronize
 receivers and tags to account for any clock drift. Detection data
 exports from GLATOS are corrected for potential receiver clock drift
-owing to environmental conditions and mechanical characteristics of
-digital clocks.  This correction is based on an assumption that
-receiver clocks will drift linearly while deployed and uses the
-difference between receiver time and computer time when the receiver
-is initiated and downloaded to correct for receiver clock drift on
-detection timestamps. The time correction for clock drift on receivers
-is implemented in Vemco VUE software and although the simple linear
-correction eliminates most clock drift, slight differences between tag
-transmission time and receiver detection time may be present in the
-detection data owing to non-linear clock drift and travel time of the
-acoustic signal between tag and receiver.  However, because the VR2Tx
-receiver logs the actual time when each tag transmitted a signal, we
-are able to account for tag transmission travel time and standardize
-all detection timestamps to the tag transmission timestamp.  We can do
-this by joining the `trans_log` object extracted in the previous code
-chunk with the `dtc` object using a `data.table` non-equi join.
-We essentially create a time window for each detection timestamps that
-include the logged transmission timestamp and then match each
-detection with transmission timestamp that falls within the
-window. This is completed in the next code chunk and the tag
-transmission timestamp identified for each detection is added to the
-`dtc` object as a new column `log_timestamp`.  The last line of code
-in the next chunk simply calculates the difference between the
-transmission timestamp and detection timestamp for a sanity check to
-make sure difference between these two timestamps is small.
+owing to environmental conditions (i.e., temperature) and mechanical
+characteristics of digital clocks.  This correction is based on an
+assumption that receiver clocks will drift linearly while deployed and
+uses the difference between receiver time and computer time when the
+receiver is initiated and downloaded to correct for receiver clock
+drift on detection timestamps. The time correction for clock drift on
+receivers is implemented in Vemco VUE software and although the simple
+linear correction eliminates most clock drift, slight differences
+between tag transmission time and receiver detection time may be
+present in the detection data owing to non-linear clock drift and
+travel time of the acoustic signal between tag and receiver.  However,
+because the VR2Tx receiver logs the actual time when each tag
+transmitted a signal, we are able to account for tag transmission
+travel time and standardize all detection timestamps to the tag
+transmission timestamp.  We can do this by joining the `trans_log`
+object extracted in the previous code chunk with the `dtc` object
+using a `data.table` non-equi join.  We essentially create a time
+window for each detection timestamps that include the logged
+transmission timestamp and then match each detection with transmission
+timestamp that falls within the window. This is completed in the next
+code chunk and the tag transmission timestamp identified for each
+detection is added to the `dtc` object as a new column
+`log_timestamp`.  The last line of code in the next chunk simply
+calculates the difference between the transmission timestamp and
+detection timestamp for a sanity check to make sure difference between
+these two timestamps is small.
 
-```{r, echo = TRUE, cache = TRUE}
+```{r, echo = TRUE}
 
 # All detection timestamp within 10 seconds (+- 5 seconds) of tag transmission
 # were identified as same transmission
@@ -422,7 +423,8 @@ transmissions in each time bin for each tag.
 ```{r, echo = TRUE}
 
 # Notice "short_trans_id == short_rec_id". This line counts the number of
-# acoustic transmissions for each tag.
+# actual acoustic transmissions for each tag.
+# see the "Introduction to data.table" vignette for more info about grouping with data.table
 exp <- dtc[short_trans_id == short_rec_id, .(exp = .N),
             by = .(tbin, transmitter_id)]
 
@@ -448,7 +450,7 @@ receiver was not detected.  This is easily accomplished using a
 # Find all combinations of tag, time bin, and receiver vectors
 # Use the data.table "CJ" cross-join function to do this.
 # The base function "expand.grid" provides similar functionality
-# to the data.table "CJ" function
+# to the "CJ" function
 cross_join <- CJ( transmitter_id = trans_vec, receiver_sn= rec_vec, tbin = tseq)
 
 # count all observed detections for each time bin  
@@ -495,13 +497,13 @@ each receiver over time and tag-receiver distance.  We can then use a
 loess smoothing function to summarize and extract patterns in
 detection probability over time. This type of plot is really easy
 using the `ggplot2` package.  The code in the next chunk will produce a
-stacked plot for each tag.^[The stacked plot for only the first tag is
+stacked plot for each tag.^[The stacked plot for only tag 62215 is
 included in this vignette.]
 
 ```{r, echo = FALSE}
 cap3 <- "Probability of detecting tag 62215 during successive daily time
 intervals on 8 receivers located 9-603 meters from tag (right y-axis labels).
-Black lines in each panel is detection probability and red line is loess smoother."   
+Black lines in each panel is detection probability and red line is a loess smoother."   
 ```
 
 ```{r warning=FALSE,echo=TRUE,message=FALSE,fig.cap=cap3,fig.fullwidth=FALSE,fig.width=6,fig.height=6,fig.keep=1,fig.show="asis"}
@@ -707,7 +709,7 @@ interpolated range curve.
 cap5 = "Detection range curve (red circles) and same detection range curve with interpolated points (black circles and line). Detection probability is on the y-axis and distance between tag and receiver is on the x-axis."
 ```
 
-```{r, fig.cap=cap5,fig.show="asis"}
+```{r, fig.cap=cap5,fig.show="asis", fig.width = 8, fig.height = 8 }
 
 # plot original detection range curve
 plot(edr$dist_m, edr$dp, pch = 16, col = "red", ylim = c(0,1), las = 1, cex = 1.5, ylab = "tag transmission detection probability", xlab = "tag-receiver distance (m)")
@@ -724,7 +726,11 @@ simulation. `pdrf` is supplied to `receiver_line_det_sim()` as the
 
 Let's run the simulation with our five receivers spaced at 200 m (`recSpc`) and the first and last receivers 100 m from shore (`outerLim`) so that fish are allowed to pass left and right of virtual line up to 100 m. First, we will run the function with `showPlot=T` and just ten virtual fish so we can see what it's doing. Then we will run it with 10000 fish (with `showPlot=F`) to get a more robust result.
 
-```{r echo=TRUE, dpi=200}
+```{r,echo=FALSE}
+fig_cap6 <- "Paths of 10 virtual fish through receiver line"
+```
+
+```{r echo=TRUE,fig.height=8,fig.width=8,fig.margin=TRUE,fig.cap=fig_cap6}
 # Five receivers and allow fish to pass to left and right of line.
 sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
 	outerLim=c(100, 100), nsim=10, showPlot=T)
@@ -738,7 +744,7 @@ sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
 
 It looks like about `r round((sim*100))`% of virtual fish were detected. Now, let's repeat it with 10000 fish, but without the plot.
 
-```{r echo=TRUE, dpi=200}
+```{r echo=TRUE, fig.height=8, fig.width=8}
 # Again but with 10000 fish and no plot.
 sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
 	outerLim=c(100, 100), nsim=10000)
@@ -754,7 +760,7 @@ detect about the same number of fish. We'll simply loop through a
 vector of receiver spacing, get the detection probability estimate for
 each, and then use that to guide our decision.
 
-```{r echo=TRUE, dpi=200}
+```{r echo=TRUE}
 # Preallocate a vector to store estimates.
 sim_out <- rep(NA, 10)
 
@@ -798,9 +804,13 @@ sim_out[10] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(100,10), outerLim=c
 
 ```
 
-Plot the results.
+Next, we Plot the results.
 
-```{r echo=TRUE}
+```{r, echo=FALSE}
+fig_cap7 <- "Simulated proportion of virtual fish detected for receiver line with varying number of acoustic receivers (1-10)"
+```
+  
+```{r echo=TRUE,fig.height=8,fig.width=8, fig.cap=fig_cap7}
 # Plot number of receivers vs proportion of virtual fish detected.
 plot(1:10, sim_out, type='o', ylim=c(0,1),
  xlab='Number of receivers',
@@ -824,39 +834,52 @@ dph <- receiver_line_det_sim(rngFun=edrf, recSpc=c(200,400,200,200),
 
 ```
 
-Estimated detection probability dropped to about `r#round(dph*100,1)`% of fish after losing a receiver, so our final decision might depend on how likely we are to lose a receiver during the study.
+Estimated detection probability dropped to about `r#round(dph*100,1)`%
+of fish after losing a receiver, so our final decision might depend on
+how likely we are to lose a receiver during the study.  Similar to the
+way we've used `receiver_line_det_sim()` here, we could simulate
+detection probabilities over a range of fish swim speed, tag delay, or
+even detection range curves to understand how results might be
+sensitive to our assumptions or decisions regarding those parameters.
 
-Similar to the way we've used `receiver_line_det_sim()` here, we could simulate detection probabilities over a range of fish swim speed, tag delay, or even detection range curves to understand how results might be sensitive to our assumptions or decisions regarding those parameters.
+# Simulation of 2-D movements with grids
 
-In addition to the one-dimensional receiver line simulation presented above, the `glatos` package contains a set of functions that can be used to simulate fish movement and detection on receivers in a virtual two-dimensional arena. For example, the image below shows simulated detection data from a virtual fish in Lake Erie with a grid of 116 receivers (15 km spacing).
-
-
-
-We won't cover this function in detail here, but will briefly explain the components. First, `crw_in_polygon()` can be used to simulate fish movement paths as a random walk inside a polygon. Second, `transmit_along_path()` can be used to simulate tag signal transmissions along each path based on constant movement velocity, transmitter delay range, and duration of signal. Third, `detect_transmissions()` can be used to simulate detection of transmitter signals in a receiver network based on detection range curve, location of transmitter, and locations of receivers. Collectively, these functions can be used to explore, compare, and contrast theoretical performance of a wide range of transmitter and receiver network designs.
-
-Simulation can be a powerful tool for decision making and the `glatos` package contains several simulation-based functions (e.g., `calc_collision_prob()`). However, it's important to keep in mind that simulations are a simplification of reality and that results are only as good as the assumptions and variables going in (i.e., 'garbage in, garbage out'). Fortunately, many processes that influence telemetry systems are fairly well understood. Our approach to these types of simulations is generally to be cautious: make conservative assumptions to yield conservative inferences. In this way, we can hope for the best but rest easy knowing we have 'planned for the worst'.
-
-
-
-```{r, echo = TRUE}
-data(greatLakesPoly)
-
-library(sf)
-bar <- st_as_sfc(greatLakesPoly)
-
-one <- st_union(bar, by_feature = FALSE)
-
-test <- st_crop(one, c(xmin=-84.883971, xmax=-79.696182, ymin=42.932699, ymax=46.474450))
-plot(test)
+(code and example needs worked out but need revised crw\_in\_polygon
+function that will ingest a true polygon object natively first)  
 
 
-str(st_coordinates(test))
+In addition to the one-dimensional receiver line simulation presented
+above, the `glatos` package contains a set of functions that can be
+used to simulate fish movement and detection on receivers in a virtual
+two-dimensional arena. 
 
-?crw_in_polygon
+We won't cover this function in detail here, but will briefly explain
+the components. First, `crw_in_polygon()` can be used to simulate fish
+movement paths as a random walk inside a polygon. Second,
+`transmit_along_path()` can be used to simulate tag signal
+transmissions along each path based on constant movement velocity,
+transmitter delay range, and duration of signal. Third,
+`detect_transmissions()` can be used to simulate detection of
+transmitter signals in a receiver network based on detection range
+curve, location of transmitter, and locations of
+receivers. Collectively, these functions can be used to explore,
+compare, and contrast theoretical performance of a wide range of
+transmitter and receiver network designs.
+
+Simulation can be a powerful tool for decision making and the `glatos`
+package contains several simulation-based functions (e.g.,
+`calc_collision_prob()`). However, it's important to keep in mind that
+simulations are a simplification of reality and that results are only
+as good as the assumptions and variables going in (i.e., 'garbage in,
+garbage out'). Fortunately, many processes that influence telemetry
+systems are fairly well understood. Our approach to these types of
+simulations is generally to be cautious: make conservative assumptions
+to yield conservative inferences. In this way, we can hope for the
+best but rest easy knowing we have 'planned for the worst'.
 
 
 
 
-```
+
 
 
