@@ -64,7 +64,7 @@ return a list with tag specifications and tag operating schedule." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">glatos</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.7.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
       </span>
     </div>
 
@@ -90,7 +90,7 @@ return a list with tag specifications and tag operating schedule." />
       <a href="../articles/data_loading.html">Data loading methods for the R package glatos</a>
     </li>
     <li>
-      <a href="../articles/data_requirements.html">Data field definitions for the standard *GLATOS* detection export</a>
+      <a href="../articles/data_requirements.html">Data requirements of the R package glatos</a>
     </li>
   </ul>
 </li>
@@ -200,11 +200,7 @@ purchasers by Vemco.</p>
     <pre class="examples"><div class='input'><span class='co'>#get path to example Vemco tag spec file</span>
 <span class='no'>spec_file</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>,
   <span class='st'>"lamprey_tag_specs.xls"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"glatos"</span>)
-<span class='no'>my_tags</span> <span class='kw'>&lt;-</span> <span class='fu'>read_vemco_tag_specs</span>(<span class='no'>spec_file</span>, <span class='kw'>file_format</span> <span class='kw'>=</span> <span class='st'>"vemco_xls"</span>)</div><div class='output co'>#&gt; <span class='message'>readxl works best with a newer version of the tibble package.</span>
-#&gt; <span class='message'>You currently have tibble v1.4.2.</span>
-#&gt; <span class='message'>Falling back to column name repair from tibble &lt;= v1.4.2.</span>
-#&gt; <span class='message'>Message displays once per session.</span></div><div class='input'>
-</div></pre>
+<span class='no'>my_tags</span> <span class='kw'>&lt;-</span> <span class='fu'>read_vemco_tag_specs</span>(<span class='no'>spec_file</span>, <span class='kw'>file_format</span> <span class='kw'>=</span> <span class='st'>"vemco_xls"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

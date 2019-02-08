@@ -5,11 +5,11 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Data field definitions for the standard <em>GLATOS</em> detection export • glatos</title>
+<title>Data requirements of the R package glatos • glatos</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Data field definitions for the standard &lt;em&gt;GLATOS&lt;/em&gt; detection export">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Data requirements of the R package glatos">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">glatos</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.7.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
       </span>
     </div>
 
@@ -56,7 +56,7 @@
       <a href="../articles/data_loading.html">Data loading methods for the R package glatos</a>
     </li>
     <li>
-      <a href="../articles/data_requirements.html">Data field definitions for the standard *GLATOS* detection export</a>
+      <a href="../articles/data_requirements.html">Data requirements of the R package glatos</a>
     </li>
   </ul>
 </li>
@@ -76,10 +76,9 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Data field definitions for the standard <em>GLATOS</em> detection export</h1>
-                        <h4 class="author">Christopher Holbrook, Todd Hayden, and Nancy Nate</h4>
+      <h1>Data requirements of the R package glatos</h1>
             
-            <h4 class="date">2019-02-04</h4>
+            <h4 class="date">Updated: 2019-02-08</h4>
       
       
       <div class="hidden name"><code>data_requirements.Rmd</code></div>
@@ -88,15 +87,158 @@
 
     
     
-<div id="introduction" class="section level1">
+
+<div id="overview" class="section level1">
 <h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This vignette describes data fields included in the standard GLATOS data export. The standard GLATOS data export is a zipped folder that contains multiple files. In this vignette, we discuss structure of two of the comma-separated-value files (.csv) contained in the standard export. These files can be identified by file name. The file that contains “detectionsWithLocs” (e.g., “HECWL_detectionsWithLocs_20180627_172857.csv”) contains detections from acoustic receivers in the GLATOS network for all tags in a project. This file contains columns that identify when and where a fish was released and detected, some biological attributes of tagged fish, and tag model and specs. The .csv file with “receiverLocations” in the file name contains deployment and recovery operating schedules for all receivers in the GLATOS network. By combining the information in these two files, researchers are able determine when and where a tagged fish was detected in the GLATOS network and also locations where receivers were deployed that did not detect their tagged fish. Fields (columns) in both files are described below.</p>
-<p>Strictly speaking, there are no specific data requirements for the <em>glatos</em> package as a whole, but each data loading function does require specific fields and data types in order to ensure that data are loaded efficiently and consistently. Required columns for each function are described in each function-specific help file (e.g., <code><a href="../reference/read_glatos_detections.html">?read_glatos_detections</a></code>) and</p>
+<a href="#overview" class="anchor"></a>Overview</h1>
+<p>This vignette describes minimum data requirements of the R package <em>glatos</em> to inform loading of data that is not in standard file formats of the Great Lakes Acoustic Telemetry Observation System (GLATOS) or the Ocean Tracking Network (OTN). Strictly speaking, there are no requirements of the <em>glatos</em> package as a whole, but input data are checked within each individual function to determine if requirements are met. The set of data requirements described in this vignette, if followed, will ensure compatibility with all <em>glatos</em> functions.</p>
+<p>For data in standard GLATOS and OTN formats, use of built-in data loading functions (see the <a href="data_loading.html">Data Loading vignette</a> for details) will ensure that resulting data objects meet the requirements of <em>glatos</em> functions. For reference, the <a href="#appendix-glatos-network-standard-data-files">appendix</a> provides data field definitions (data dictionary) of standard data files obtained from the GLATOS <a href="https://glatos.glos.us/portal">Data Portal</a>.</p>
+<div id="data-requirements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#data-requirements" class="anchor"></a>Data requirements</h2>
+<div id="detection-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#detection-data" class="anchor"></a>Detection data</h3>
+<p><em>glatos</em> functions that accept detection data as input will typically require a <em>data.frame</em> with one or more of the following columns, named and defined exactly as described below:</p>
+<ul>
+<li><dl>
+<dt>detection_timestamp_utc</dt>
+<dd>
+<em>A</em> POSIXct <em>object with detection timestamps</em> <em>(e.g.,</em> “2012-04-29 01:48:37”<em>).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>receiver_sn</dt>
+<dd>
+<em>A character vector with unique receiver identifier. This is needed to associate each record with a specific receiver (a physical instrument).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>deploy_lat</dt>
+<dd>
+<em>A numeric vector with latitude (decimal degrees, NAD83) of geographic location where receiver was deployed. Must be negative for locations in the southern hemishere and positive for locations in the northern hemisphere</em> <em>(e.g., </em>43.39165<em>).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>deploy_long</dt>
+<dd>
+<em>A numeric vector with longitude (decimal degrees, NAD83) of geographic location where receiver was deployed. Must be negative for locations in the western hemishere and positive for locations in the eastern hemisphere (e.g., </em>-83.99264<em>).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>transmitter_codespace</dt>
+<dd>
+<em>A character string with transmitter code space </em> <em>(e.g., </em>“A69-1061” <em>for Vemco PPM coding). In combination with</em> transmiter_id <em>, this is needed to associate each record with a specific transmitter (a physical instrument).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>transmitter_id</dt>
+<dd>
+<em>A character string with transmitter ID code (e.g., </em>“1363” <em>for Vemco PPM coding). In combination with </em> transmitter_codespace<em>, this is needed to associate each record with a specific transmitter (a physical instrument).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>sensor_value</dt>
+<dd>
+<em>A numeric sensor measurement (e.g., an integer for ‘raw’ Vemco sensor tags).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>sensor_unit</dt>
+<dd>
+<em>A character string with sensor_value units (e.g., </em>“ADC”* for ‘raw’ Vemco <em> </em>sensor tag detections).*
+</dd>
+</dl></li>
+<li><dl>
+<dt>animal_id</dt>
+<dd>
+<em>A character string with individual animal identifier. This is used to associate each record with an individual animal.</em>
+</dd>
+</dl></li>
+</ul>
+<p>Additionally, some functions will require at least one categorical column to identify location (or group of locations). These can be specified by the user, but examples of such columns in a GLATOS standard detection file are:</p>
+<ul>
+<li>
+<strong>Examples of columns that identify receiver locations (or groups)</strong>
+<ul>
+<li><em>glatos_array</em></li>
+<li><em>station</em></li>
+<li><em>glatos_project_receiver</em></li>
+</ul>
+</li>
+</ul>
+<p>Any <em>data.frame</em> that contains the above columns should be compatible with all <em>glatos</em> functions that accept detection data as input. Use of the data loading functions <em>read_glatos_detections</em> and <em>read_otn_detections</em> will ensure that these columns are present, but can only be used on data in GLATOS and OTN formats. Data in other formats will need to be loaded using other functions (e.g., <em>read.csv</em>, <em>fread</em>, etc.) and compatibility with <em>glatos</em> functions will need to be carefully checked. For data loading examples, see the <a href="data_loading.html">Data Loading vignette</a>.</p>
 </div>
-<div id="detection-file" class="section level1">
+<div id="receiver-location-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#receiver-location-data" class="anchor"></a>Receiver location data</h3>
+<p><em>glatos</em> functions that accept receiver location data as input will typically require a <em>data.frame</em> with one or more of the following columns, named and defined exactly as described below:</p>
+<ul>
+<li><dl>
+<dt>deploy_lat</dt>
+<dd>
+<em>A numeric vector with latitude (decimal degrees, NAD83) of geographic location where receiver was deployed. Must be negative for locations in the southern hemishere and positive for locations in the northern hemisphere</em> <em>(e.g., </em>43.39165<em>).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>deploy_long</dt>
+<dd>
+<em>A numeric vector with longitude (decimal degrees, NAD83) of geographic location where receiver was deployed. Must be negative for locations in the western hemishere and positive for locations in the eastern hemisphere (e.g., </em>-83.99264<em>).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>deploy_date_time</dt>
+<dd>
+<em>A</em> POSIXct <em>object with timestamp when receiver was deployed </em> <em>(e.g.,</em> “2012-04-29 01:48:37”<em>).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>recover_date_time</dt>
+<dd>
+<em>A</em> POSIXct <em>object with timestamp when receiver was recovered </em> <em>(e.g.,</em> “2012-04-29 01:48:37”<em>).</em>
+</dd>
+</dl></li>
+</ul>
+<p>Additionally, some functions will require at least one categorical column to identify location (or group of locations). These can be specified by the user, but examples of such columns in a GLATOS standard receiver locations file are:</p>
+<ul>
+<li>
+<strong>Examples of columns that identify receiver locations (or groups)</strong>
+<ul>
+<li><em>glatos_array</em></li>
+<li><em>station</em></li>
+<li><em>glatos_project_receiver</em></li>
+</ul>
+</li>
+</ul>
+<p>Use of the data loading function <em>read_glatos_receivers</em> will ensure that these columns are present, but can only be used on data in GLATOS format. Data in other formats will need to be loaded using other functions (e.g., <em>read.csv</em>, <em>fread</em>, etc.) and compatibility with <em>glatos</em> functions will need to be carefully checked. For data loading examples, see the <a href="data_loading.html">Data Loading vignette</a>.</p>
+</div>
+<div id="animal-tagging-and-biological-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#animal-tagging-and-biological-data" class="anchor"></a>Animal tagging and biological data</h3>
+<p>There are currently no <em>glatos</em> functions that require animal tagging and biological data other than those columns present in the required <em>detection</em> data. Therefore, there are no formal requirements of such data in the package. Nonetheless, the <em>read_glatos_workbook</em> function can be used to facilitate loading animal tagging and biological data from a standard GLATOS project workbook (*.xlsm file) into an R session.</p>
+<p>Use of the data loading function <em>read_glatos_workbook</em> will ensure that animal data are loaded efficiently and consistently among users, but can only be used on data in GLATOS format. Data in other formats will need to be loaded using other functions (e.g., <em>read.csv</em>, <em>fread</em>, etc.). Although there are currently no <em>glatos</em> requirements of animal data, any future requirements might be expected to be consistent with the <em>glatos_animals</em> class.</p>
+</div>
+<div id="transmitter-specification-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#transmitter-specification-data" class="anchor"></a>Transmitter specification data</h3>
+<p>There are currently no <em>glatos</em> functions that require transmitter specification data. Therefore, there are no formal requirements of such data in the package. Nonetheless, the <em>read_vemco_tag_specs</em> function can be used to facilitate loading transmitter specification data from a standard VEMCO tag spec (*.xls) file provided to tag purchasers from VEMCO.</p>
+<p>Use of the data loading function <em>read_vemco_tag_specs</em> will ensure that transmitter specification data are loaded efficiently and consistently among users, but can only be used on data in VEMCO standard format. Data in other formats will need to be loaded using other functions (e.g., <em>read.csv</em>, <em>fread</em>, etc.). Although there are currently no <em>glatos</em> requirements of transmitter specification data, any future requirements might be expected to be consistent with the output of <em>read_vemco_tag_specs</em>.</p>
+</div>
+</div>
+<div id="data-objects-and-classes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#data-objects-and-classes" class="anchor"></a>Data objects and classes</h2>
+<p>Most <em>glatos</em> data loading functions return an object with a <em>glatos</em>-specific S3 class name (e.g., <em>glatos_detections</em>) in addition to a more general class (e.g., <em>data.frame</em>). Currently, no methods exist for <em>glatos</em> classes and such classes are not explicitly required by any function, so <em>glatos</em> classes can merely be thought of as labels showing that the objects were produced by a <em>glatos</em> function and will therefore be compatible with other <em>glatos</em> functions. Beware, as with any S3 class, that it is possible to modify a <em>glatos</em> object to the point that is will no longer be compatible with <em>glatos</em> functions.</p>
+</div>
+</div>
+<div id="appendix-glatos-network-standard-data-files" class="section level1">
 <h1 class="hasAnchor">
-<a href="#detection-file" class="anchor"></a>Detection file</h1>
+<a href="#appendix-glatos-network-standard-data-files" class="anchor"></a>Appendix: GLATOS network standard data files</h1>
+<p>Detection data from the GLATOS network are queried for each individual project and made available through the project-specific GLATOS Data Portal. Each detection export is a zipped folder that contains multiple files. This appendix describes the structure of two of the comma-separated-value files (.csv) contained in the standard export: <em>detections</em> and <em>receiver locations</em>. These files can be identified by file name. The file that contains “detectionsWithLocs” (e.g., “HECWL_detectionsWithLocs_20180627_172857.csv”) contains detections from acoustic receivers in the GLATOS network for all tags in a project. This file contains columns that identify when and where a fish was released and detected, some biological attributes of tagged fish, and tag model and specs. The .csv file with “receiverLocations” in the file name contains deployment and recovery operating schedules for all receivers in the GLATOS network. By combining the information in these two files, researchers are able determine when and where a tagged fish was detected in the GLATOS network and also locations where receivers were deployed that did not detect their tagged fish. Fields (columns) in both files are described below.</p>
+<div id="detection-file" class="section level2">
+<h2 class="hasAnchor">
+<a href="#detection-file" class="anchor"></a>Detection file</h2>
+<p>A comma-separated-values text file with the following columns:</p>
 <ul>
 <li><dl>
 <dt>animal_id</dt>
@@ -111,21 +253,15 @@
 </dd>
 </dl></li>
 <li><dl>
-<dt>receiver_sn</dt>
+<dt>glatos_array</dt>
 <dd>
-<em>A character field that uniquely identifies each receiver. This is needed to associate each detection with a specific receiver (a physical instrument).</em>
+<em>Character field identifies subgroup of receivers, usually in close spatial proximity.</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>deploy_lat</dt>
+<dt>station_no</dt>
 <dd>
-<em>A numeric field with latitude (decimal degrees, NAD83) of geographic location where receiver was deployed. Must be negative for locations in the southern hemishere and positive for locations in the northern hemisphere (e.g., 43.39165).</em>
-</dd>
-</dl></li>
-<li><dl>
-<dt>deploy_long</dt>
-<dd>
-<em>A numeric field with longitude (decimal degrees, NAD83) of geographic location where receiver was deployed. Must be negative for locations in the western hemishere and positive for locations in the eastern hemisphere (e.g., -83.99264).</em>
+<em>Character field that identifies receiver within glatos_array.</em>
 </dd>
 </dl></li>
 <li><dl>
@@ -155,37 +291,79 @@
 <li><dl>
 <dt>deploy_lat</dt>
 <dd>
-<em>A numeric field with latitude (decimal degrees, NAD83) of geographic location where receiver was deployed when tag was detected. Must be negative for locations in the southern hemishere and positive for locations in the northern hemisphere (e.g., 43.39165).</em>
+<em>A numeric field with latitude (decimal degrees, NAD83) of geographic location where receiver was deployed. Must be negative for locations in the southern hemishere and positive for locations in the northern hemisphere (e.g., 43.39165).</em>
 </dd>
 </dl></li>
 <li><dl>
 <dt>deploy_long</dt>
 <dd>
-<em>A numeric field with longitude (decimal degrees, NAD83) of geographic location where receiver was deployed when tag was detected. Must be negative for locations in the western hemishere and positive for locations in the eastern hemisphere (e.g., -83.99264).</em>
+<em>A numeric field with longitude (decimal degrees, NAD83) of geographic location where receiver was deployed. Must be negative for locations in the western hemishere and positive for locations in the eastern hemisphere (e.g., -83.99264).</em>
 </dd>
 </dl></li>
 <li><dl>
 <dt>receiver_sn</dt>
 <dd>
-<em>A character field that specifies unique receiver identification code.</em>
+<em>A character field that uniquely identifies each receiver. This is needed to associate each detection with a specific receiver (a physical instrument).</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>tag_type, tag_model, tag_serial_number</dt>
+<dt>tag_type</dt>
 <dd>
-<em>Character fields that identify the type of tag used, tag model, and serial number of tag.</em>
+<em>Character field that identifies type of tag used.</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>common_name_e, capture_location, sex, release_group, release_location</dt>
+<dt>tag_model</dt>
 <dd>
-<em>Character fields that identify characteristics of tagged fish. These include the type of fish (common name in english), description of where fish were captured (capture_location), sex, group of released fish (release_group), and description where the fish was released (release_location).</em>
+<em>Character field that identifies tag model used.</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>length, weight</dt>
+<dt>tag_serial_number</dt>
 <dd>
-<em>Numeric fields of length and weight of tagged fish.</em>
+<em>Character field that identifies tag serial number.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>common_name_e</dt>
+<dd>
+<em>Character field with fish species common name in english.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>capture_location</dt>
+<dd>
+<em>Character field with description of where fish were captured (capture_location).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>length</dt>
+<dd>
+<em>Numeric field of length of tagged fish.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>weight</dt>
+<dd>
+<em>Numeric field of weight of tagged fish.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>sex</dt>
+<dd>
+<em>Character field that identifies sex of fish released.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>release_group</dt>
+<dd>
+<em>Character field that identifies group of released fish (release_group)</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>release_location</dt>
+<dd>
+<em>Character field that describes where fish was released.</em>
 </dd>
 </dl></li>
 <li><dl>
@@ -207,15 +385,33 @@
 </dd>
 </dl></li>
 <li><dl>
-<dt>glatos_project_transmitter, glatos_project_receiver</dt>
+<dt>glatos_project_transmitter</dt>
 <dd>
-<em>GLATOS project associated with transmitter and receiver (user defined fields).</em>
+<em>GLATOS five-character code of project associated with transmitter.</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>glatos_tag_recovered, glatos_caught_date</dt>
+<dt>glatos_project_receiver</dt>
 <dd>
-<em>The values of the glatos_tag_recovered field is either “yes”, or “no”. A “yes” value indicates tag was recovered after deployment (e.g., tagged fish caught by angler) and “no” means the tag is still at large. If tag is recovered, the date (in YYYY-MM-DD format) is in the “glatos_caught_date” field.</em>
+<em>GLATOS five-character code of project associated with receiver.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>glatos_tag_recovered</dt>
+<dd>
+<em>The values of the glatos_tag_recovered field is either “yes”, or “no”. A “yes” value indicates tag was recovered after deployment (e.g., tagged fish caught by angler) and “no” means the tag is still at large.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>glatos_caught_date</dt>
+<dd>
+<em>If tag is recovered, the date (in YYYY-MM-DD format) is in the “glatos_caught_date” field.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>station</dt>
+<dd>
+<em>Character field that combines glatos_array and station_no to identify receiver within project.</em>
 </dd>
 </dl></li>
 <li><dl>
@@ -225,8 +421,18 @@
 </dd>
 </dl></li>
 </ul>
-<p>Additionally, several categorical fields (character data type) that identify groups of receivers are included in standard GLATOS export. These columns are specified by the user in the data submission packet and may vary by project type.</p>
+</div>
+<div id="receiver-location-file" class="section level2">
+<h2 class="hasAnchor">
+<a href="#receiver-location-file" class="anchor"></a>Receiver location file</h2>
+<p>A comma-separated-values text file with the following columns:</p>
 <ul>
+<li><dl>
+<dt>station</dt>
+<dd>
+<em>Character field that combines glatos_array and station_no to identify receiver within project.</em>
+</dd>
+</dl></li>
 <li><dl>
 <dt>glatos_array</dt>
 <dd>
@@ -240,56 +446,75 @@
 </dd>
 </dl></li>
 <li><dl>
-<dt>station</dt>
-<dd>
-<em>Character field that combines glatos_array and station_no to identify receiver within project.</em>
-</dd>
-</dl></li>
-<li><dl>
-<dt>glatos_project_receiver</dt>
-<dd>*Character field that combines GLATOS_project and receiver_id information to uniquely identify receiver in GLATOS network.
-</dd>
-</dl></li>
-</ul>
-</div>
-<div id="receiver-location-data" class="section level1">
-<h1 class="hasAnchor">
-<a href="#receiver-location-data" class="anchor"></a>Receiver location data</h1>
-<ul>
-<li><dl>
 <dt>consecutive_deploy_no</dt>
 <dd>
 <em>Integer field of the number of times a receiver was deployed at a location.</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>intend_lat, intend_long</dt>
+<dt>intend_lat</dt>
 <dd>
-<em>Numeric fields with intended geographic deployment locations for receivers. Latitude (decimal degrees, NAD83, intend_lat) must be negative for locations in southern hemisphere and positive for locations in northern hemisphere. Longitude (decimal degrees, NAD83, intend_long) must be positive for values in the eastern hemisphere and negative for locations in the western hemisphere.</em>
+<em>Numeric field with intended geographic deployment latitude (decimal degrees, NAD83). Must be negative for locations in southern hemisphere and positive for locations in northern hemisphere.</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>deploy_lat, deploy_long</dt>
+<dt>intend_long</dt>
 <dd>
-<em>Numeric fields of actual geographic deployment locations for receivers. Latitude (decimal degrees, NAD83, deploy_lat) must be negative for locations in southern hemisphere and positive for locations in northern hemisphere. Longitude (decimal degrees, NAD83, deploy_long) must be positive for values in the eastern hemisphere and positive for locations in the western hemisphere.</em>
+<em>Numeric field with intended geographic deployment longitude (decimal degrees, NAD83). Must be positive for values in the eastern hemisphere and negative for locations in the western hemisphere.</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>recover_lat, recover_long</dt>
+<dt>deploy_lat</dt>
 <dd>
-<em>Numeric fields of geographic locations where receivers were recovered. Latitude (decimal degrees, NAD83, recover_lat) must be negative for locations in southern hemisphere and positive for locations in northern hemisphere. Longitude (decimal degrees, NAD83, recover_long) must be positive for values in the eastern hemisphere and positive for locations in the western hemisphere.</em>
+<em>Numeric field of actual geographic deployment latitude (decimal degrees, NAD83). Must be negative for locations in southern hemisphere and positive for locations in northern hemisphere.</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>deploy_date_time, recover_date_time</dt>
+<dt>deploy_long</dt>
 <dd>
-<em>Alpha-numeric fields in standard POSIX format (YYYY-MM-DD HH:MM:SS, i.e., “2012-04-29 01:43:43”) that represents the date and time in UTC timezone when a receiver was deployed (deploy_date_time field) and recovered (recover_date_time).</em>
+<em>Numeric fields of actual geographic deployment longitude (decimal degrees, NAD83) must be positive for values in the eastern hemisphere and positive for locations in the western hemisphere.</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>bottom_depth, riser_length, instrument_depth</dt>
+<dt>recover_lat</dt>
 <dd>
-<em>Numeric fields that represent the water depth (m), total length of mooring equipment off of bottom (m), and depth of receiver in water column (m). Fields are user specified.</em>
+<em>Numeric fields of geographic latitude where receivers were recovered (decimal degrees, NAD83). Must be negative for locations in southern hemisphere and positive for locations in northern hemisphere.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>recover_long</dt>
+<dd>
+<em>Numeric fields of geographic longitude where receivers were recovered (decimal degrees, NAD83). Must be negative for locations in western hemisphere and positive for locations in eastern hemisphere.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>deploy_date_time</dt>
+<dd>
+<em>Alpha-numeric fields in standard POSIX format (YYYY-MM-DD HH:MM:SS, i.e., “2012-04-29 01:43:43”) that represents the date and time in UTC timezone when a receiver was deployed.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>recover_date_time</dt>
+<dd>
+<em>Alpha-numeric fields in standard POSIX format (YYYY-MM-DD HH:MM:SS, i.e., “2012-04-29 01:43:43”) that represents the date and time in UTC timezone when a receiver was recovered (recover_date_time).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>bottom_depth</dt>
+<dd>
+<em>Numeric field that represents the water depth (m; between bottom and surface) at location where receiver was deployed.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>riser_length</dt>
+<dd>
+<em>Numeric field that represents the height of mooring equipment off of bottom (m).</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>instrument_depth</dt>
+<dd>
+<em>Numeric field that represents the distance (m) between the equipment and the water surface.</em>
 </dd>
 </dl></li>
 <li><dl>
@@ -311,9 +536,15 @@
 </dd>
 </dl></li>
 <li><dl>
-<dt>deployed_by, comments</dt>
+<dt>deployed_by</dt>
 <dd>
-<em>Character fields that contain name of person who deployed receiver and deployment comments.</em>
+<em>Character field that contain name of person who deployed receiver.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>comments</dt>
+<dd>
+<em>Character fields that contain comments recorded during deployment.</em>
 </dd>
 </dl></li>
 <li><dl>
@@ -335,27 +566,39 @@
 </dd>
 </dl></li>
 </ul>
-<p>Several categorical fields (character data type) that identify groups of receivers are included in receiver location file included in the standard GLTOS data export. These columns are specified by the user in the data submission packet and may vary by project type.</p>
+</div>
+<div id="project-workbook-file" class="section level2">
+<h2 class="hasAnchor">
+<a href="#project-workbook-file" class="anchor"></a>Project workbook file</h2>
+<p>A macro-enabled Microsoft Excel workbook (*.xlsm) file containing the following worksheets:</p>
 <ul>
 <li><dl>
-<dt>glatos_array</dt>
+<dt>Locations</dt>
 <dd>
-<em>Character field identifies subgroup of receivers, usually in close spatial proximity.</em>
+<em>Contains descriptive data associated with receiver locations.</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>station_no</dt>
+<dt>Deployment</dt>
 <dd>
-<em>Character field that identifies receiver within glatos_array.</em>
+<em>Contains data associated with deployment of telemetry receivers.</em>
 </dd>
 </dl></li>
 <li><dl>
-<dt>station</dt>
+<dt>Recovery</dt>
 <dd>
-<em>Character field that combines glatos_array and station_no to identify receiver within project.</em>
+<em>Contains data associated with recovery of telemetry receivers.</em>
+</dd>
+</dl></li>
+<li><dl>
+<dt>Tagging</dt>
+<dd>
+<em>Contains data associated with tagging of animals, including data associated with the animal and transmitter.</em>
 </dd>
 </dl></li>
 </ul>
+<p>For more details about the structure of this file, see the <a href="https://glatos.glos.us/static/GLATOSWeb_Submission_Package.zip">Data Submission Package</a> in the <a href="https://glatos.glos.us/portal">GLATOS Data Portal</a>.</p>
+</div>
 </div>
   </div>
 
@@ -364,9 +607,19 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#introduction">Introduction</a></li>
-      <li><a href="#detection-file">Detection file</a></li>
-      <li><a href="#receiver-location-data">Receiver location data</a></li>
+<li>
+<a href="#overview">Overview</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#data-requirements">Data requirements</a></li>
+      <li><a href="#data-objects-and-classes">Data objects and classes</a></li>
+      </ul>
+</li>
+      <li>
+<a href="#appendix-glatos-network-standard-data-files">Appendix: GLATOS network standard data files</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#detection-file">Detection file</a></li>
+      <li><a href="#receiver-location-file">Receiver location file</a></li>
+      <li><a href="#project-workbook-file">Project workbook file</a></li>
+      </ul>
+</li>
       </ul>
 </div>
       </div>

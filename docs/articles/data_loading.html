@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">glatos</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.7.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
       </span>
     </div>
 
@@ -56,7 +56,7 @@
       <a href="../articles/data_loading.html">Data loading methods for the R package glatos</a>
     </li>
     <li>
-      <a href="../articles/data_requirements.html">Data field definitions for the standard *GLATOS* detection export</a>
+      <a href="../articles/data_requirements.html">Data requirements of the R package glatos</a>
     </li>
   </ul>
 </li>
@@ -78,7 +78,7 @@
     <div class="page-header toc-ignore">
       <h1>Data loading methods for the R package glatos</h1>
             
-            <h4 class="date">Updated: 2019-02-04</h4>
+            <h4 class="date">Updated: 2019-02-08</h4>
       
       
       <div class="hidden name"><code>data_loading.Rmd</code></div>
@@ -177,7 +177,8 @@
 <a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">setDT</span>(dx) <span class="co">#convert to data.table</span></a></code></pre></div>
 </blockquote>
 <ol start="3" style="list-style-type: decimal">
-<li>Go all-in; don’t run some base R examples and some boxed example or it will cause trouble. For example if base R example changes column names in an object, then the old column names won’t exist if you later run the boxed example that changes those same column names using <em>data.table</em> functions.</li>
+<li>Go all-in. Running some base R examples, some boxed examples, or both<br>
+will cause trouble. For example if a base R example changes column names in an object, then the old column names won’t exist if you later run the boxed example that changes those same column names using <em>data.table</em> functions.</li>
 </ol>
 </div>
 </div>
@@ -187,15 +188,26 @@
 <div id="requirements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#requirements" class="anchor"></a>Requirements</h2>
-<p><em>glatos</em> functions that accept detection data as input will typically require a <em>data.frame</em>. Please refer to “Data field definitions of standard GLATOS detection export” vignette and function help (e.g., <code><a href="../reference/read_glatos_detections.html">?read_glatos_detections</a></code>) to identify data type and definition of mandatory fields (link).</p>
-<p>mandatory fields: - detection_timestamp_utc (link) - receiver_sn (link) - deploy_lat (link) - deploy_long (link) - transmitter_codespace (link) - transmitter_id (link) - sensor_value (link) - sensor_unit (link) - animal_id (link)</p>
-<p>Additionally, some functions will require at least one categorical column to identify location (or group of locations). These can be specified by the user, but examples of such columns in a GLATOS standard detection file are:</p>
+<p><em>glatos</em> functions that accept detection data as input will typically require a <em>data.frame</em> with the following seven columns:</p>
 <ul>
-<li>glatos_array (link)</li>
-<li>station (link)</li>
-<li>glatos_project_receiver (link)</li>
+<li>detection_timestamp_utc</li>
+<li>receiver_sn</li>
+<li>deploy_lat</li>
+<li>deploy_long</li>
+<li>transmitter_codespace</li>
+<li>transmitter_id</li>
+<li>sensor_value</li>
+<li>sensor_unit</li>
+<li>animal_id</li>
 </ul>
-<p>Any <em>data.frame</em> that contains the above columns should be compatible with all <em>glatos</em> functions that accept detection data as input. Use of the data loading functions <em>read_glatos_detections</em> and <em>read_otn_detections</em> will ensure that these columns are present, but can only be used on data in GLATOS and OTN formats. Data in other formats will need to be loaded using other functions (e.g., <em>read.csv()</em>, <em>data.table::fread()</em>, etc.) and compatibility with <em>glatos</em> functions will need to be carefully checked.</p>
+<p>Some functions will also require at least one categorical column to identify location (or group of locations). These can be specified by the user, but examples of such columns in a GLATOS standard detection file are:</p>
+<ul>
+<li>glatos_array</li>
+<li>station</li>
+<li>glatos_project_receiver</li>
+</ul>
+<p>For definitions of any of the above fields, see the <a href="data_requirements.html">Data Requirements vignette</a>) and function-specific help files (e.g., <code><a href="../reference/summarize_detections.html">?summarize_detections</a></code>).</p>
+<p>Any <em>data.frame</em> that contains the above columns (in the correct formats) should be compatible with all <em>glatos</em> functions that accept detection data as input. Use of the data loading functions <em>read_glatos_detections</em> and <em>read_otn_detections</em> will ensure that these columns are present and formatted correctly, but can only be used on data in GLATOS and OTN formats. Data in other formats will need to be loaded using other functions (e.g., <em>read.csv</em>, <em>fread</em>, etc.) and carefully checked for compatibility with <em>glatos</em> functions (see <a href="#other-formats---csv-file-exported-from-a-vue-database">Other formats - CSV file exported from a VUE database</a>).</p>
 </div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
@@ -203,177 +215,183 @@
 <div id="loading-glatos-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#loading-glatos-data" class="anchor"></a>Loading GLATOS data</h3>
-<p>The <em>read_glatos_detections()</em> function reads in detection data from standard detection exports (*.csv files) obtained from the GLATOS standard data export and checks that the data meet requirements of <em>glatos</em> functions. Data are read using <em>fread</em> in the <em>data.table</em> package, timestamps are formatted as class <em>POSIXct</em> and dates are formatted as class <em>Date</em>.</p>
-<p>First, we will use <em>system.file()</em> to get the path to the walleye_detections.csv file included in the <em>glatos</em> package.</p>
+<p>The <em>read_glatos_detections</em> function reads detection data from a standard detection export file (*.csv file) obtained from the GLATOS <a href="https://glatos.glos.us/portal">Data Portal</a> and checks that the data meet <em>glatos</em> package requirements. Data are read using <em>fread</em> in the <em>data.table</em> package, timestamps are formatted as class <em>POSIXct</em> and dates are formatted as class <em>Date</em>.</p>
+<p>First, we will use <em>system.file</em> to get the path to the <em>walleye_detections.csv</em> file included in the <em>glatos</em> package.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Set path to walleye_detections.csv example dataset</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">wal_det_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">'extdata'</span>, <span class="st">'walleye_detections.csv'</span>, <span class="dt">package =</span> <span class="st">'glatos'</span>)</a></code></pre></div>
-<p>Next, we will load data from <em>walleye_detection.csv</em> using <em>read_glatos_detections()</em> and view the structure of the resulting data frame.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># Attach glatos package to global environment.</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">wal_det_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"walleye_detections.csv"</span>, </a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">                            <span class="dt">package =</span> <span class="st">"glatos"</span>)</a></code></pre></div>
+<p>Next, we will load data from <em>walleye_detections.csv</em> using <em>read_glatos_detections</em>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># Attach glatos package</span></a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(glatos)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; version 0.2.7.9000 ('three-meat-pizza')</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co"># Read in the walleye_detections.csv file using `read_glatos_detections()`</span></a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">walleye_detections &lt;-<span class="st"> </span><span class="kw"><a href="../reference/read_glatos_detections.html">read_glatos_detections</a></span>(wal_det_file)</a>
-<a class="sourceLine" id="cb4-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co"># View the structure and data from first row</span></a>
-<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(walleye_detections)</a>
-<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt; Classes 'glatos_detections' and 'data.frame':    7180 obs. of  30 variables:</span></a>
-<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt; $ animal_id : chr "153" ...</span></a>
-<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt; $ detection_timestamp_utc : POSIXct, format: "2012-04-29 01:48:37" ...</span></a>
-<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt; $ glatos_array : chr "TTB" ...</span></a>
-<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#&gt; $ station_no : chr "2" ...</span></a>
-<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="co">#&gt; $ transmitter_codespace : chr "A69-9001" ...</span></a>
-<a class="sourceLine" id="cb4-16" data-line-number="16"><span class="co">#&gt; $ transmitter_id : chr "32054" ...</span></a>
-<a class="sourceLine" id="cb4-17" data-line-number="17"><span class="co">#&gt; $ sensor_value : num NA NA ...</span></a>
-<a class="sourceLine" id="cb4-18" data-line-number="18"><span class="co">#&gt; $ sensor_unit : chr NA ...</span></a>
-<a class="sourceLine" id="cb4-19" data-line-number="19"><span class="co">#&gt; $ deploy_lat : num 43.4 ...</span></a>
-<a class="sourceLine" id="cb4-20" data-line-number="20"><span class="co">#&gt; $ deploy_long : num -84 ...</span></a>
-<a class="sourceLine" id="cb4-21" data-line-number="21"><span class="co">#&gt; $ receiver_sn : chr "113213" ...</span></a>
-<a class="sourceLine" id="cb4-22" data-line-number="22"><span class="co">#&gt; $ tag_type : chr NA ...</span></a>
-<a class="sourceLine" id="cb4-23" data-line-number="23"><span class="co">#&gt; $ tag_model : chr NA ...</span></a>
-<a class="sourceLine" id="cb4-24" data-line-number="24"><span class="co">#&gt; $ tag_serial_number : chr NA ...</span></a>
-<a class="sourceLine" id="cb4-25" data-line-number="25"><span class="co">#&gt; $ common_name_e : chr "walleye" ...</span></a>
-<a class="sourceLine" id="cb4-26" data-line-number="26"><span class="co">#&gt; $ capture_location : chr "Tittabawassee River" ...</span></a>
-<a class="sourceLine" id="cb4-27" data-line-number="27"><span class="co">#&gt; $ length : num 0.565 0.565 ...</span></a>
-<a class="sourceLine" id="cb4-28" data-line-number="28"><span class="co">#&gt; $ weight : num NA NA ...</span></a>
-<a class="sourceLine" id="cb4-29" data-line-number="29"><span class="co">#&gt; $ sex : chr "F" ...</span></a>
-<a class="sourceLine" id="cb4-30" data-line-number="30"><span class="co">#&gt; $ release_group : chr NA ...</span></a>
-<a class="sourceLine" id="cb4-31" data-line-number="31"><span class="co">#&gt; $ release_location : chr "Tittabawassee" ...</span></a>
-<a class="sourceLine" id="cb4-32" data-line-number="32"><span class="co">#&gt; $ release_latitude : num NA NA ...</span></a>
-<a class="sourceLine" id="cb4-33" data-line-number="33"><span class="co">#&gt; $ release_longitude : num NA NA ...</span></a>
-<a class="sourceLine" id="cb4-34" data-line-number="34"><span class="co">#&gt; $ utc_release_date_time : POSIXct, format: "2012-03-20 20:00:00" ...</span></a>
-<a class="sourceLine" id="cb4-35" data-line-number="35"><span class="co">#&gt; $ glatos_project_transmitter: chr "HECWL" ...</span></a>
-<a class="sourceLine" id="cb4-36" data-line-number="36"><span class="co">#&gt; $ glatos_project_receiver : chr "HECWL" ...</span></a>
-<a class="sourceLine" id="cb4-37" data-line-number="37"><span class="co">#&gt; $ glatos_tag_recovered : chr "NO" ...</span></a>
-<a class="sourceLine" id="cb4-38" data-line-number="38"><span class="co">#&gt; $ glatos_caught_date : Date, format: NA ...</span></a>
-<a class="sourceLine" id="cb4-39" data-line-number="39"><span class="co">#&gt; $ station : chr "TTB-002" ...</span></a>
-<a class="sourceLine" id="cb4-40" data-line-number="40"><span class="co">#&gt; $ min_lag : num 258 137 ...</span></a></code></pre></div>
-<p>The result is an object with 30 columns (including the columns described above) and two classes: <em>glatos_detections</em> and <em>data.frame</em>. Please refer to “Data field definitions of standard GLATOS detection export” vignette for field definitions (link). The <em>glatos_detections</em> class label indicates that the data set was created using a glatos load function and therefore should work with any <em>glatos</em> function that accepts detection data as input.</p>
+<a class="sourceLine" id="cb4-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co"># Read in the walleye_detections.csv file using `read_glatos_detections`</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">walleye_detections &lt;-<span class="st"> </span><span class="kw"><a href="../reference/read_glatos_detections.html">read_glatos_detections</a></span>(wal_det_file)</a></code></pre></div>
+<p>Let’s view the structure of the resulting data frame (we’ve modified the <code>str</code> default arguments to show only first record in each column).</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># View the structure and data from first row</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(walleye_detections)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; Classes 'glatos_detections' and 'data.frame':    7180 obs. of  30 variables:</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; $ animal_id : chr "153" ...</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; $ detection_timestamp_utc : POSIXct, format: "2012-04-29 01:48:37" ...</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt; $ glatos_array : chr "TTB" ...</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt; $ station_no : chr "2" ...</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; $ transmitter_codespace : chr "A69-9001" ...</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; $ transmitter_id : chr "32054" ...</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; $ sensor_value : num NA NA ...</span></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; $ sensor_unit : chr NA ...</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; $ deploy_lat : num 43.4 ...</span></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="co">#&gt; $ deploy_long : num -84 ...</span></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="co">#&gt; $ receiver_sn : chr "113213" ...</span></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="co">#&gt; $ tag_type : chr NA ...</span></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="co">#&gt; $ tag_model : chr NA ...</span></a>
+<a class="sourceLine" id="cb5-17" data-line-number="17"><span class="co">#&gt; $ tag_serial_number : chr NA ...</span></a>
+<a class="sourceLine" id="cb5-18" data-line-number="18"><span class="co">#&gt; $ common_name_e : chr "walleye" ...</span></a>
+<a class="sourceLine" id="cb5-19" data-line-number="19"><span class="co">#&gt; $ capture_location : chr "Tittabawassee River" ...</span></a>
+<a class="sourceLine" id="cb5-20" data-line-number="20"><span class="co">#&gt; $ length : num 0.565 0.565 ...</span></a>
+<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="co">#&gt; $ weight : num NA NA ...</span></a>
+<a class="sourceLine" id="cb5-22" data-line-number="22"><span class="co">#&gt; $ sex : chr "F" ...</span></a>
+<a class="sourceLine" id="cb5-23" data-line-number="23"><span class="co">#&gt; $ release_group : chr NA ...</span></a>
+<a class="sourceLine" id="cb5-24" data-line-number="24"><span class="co">#&gt; $ release_location : chr "Tittabawassee" ...</span></a>
+<a class="sourceLine" id="cb5-25" data-line-number="25"><span class="co">#&gt; $ release_latitude : num NA NA ...</span></a>
+<a class="sourceLine" id="cb5-26" data-line-number="26"><span class="co">#&gt; $ release_longitude : num NA NA ...</span></a>
+<a class="sourceLine" id="cb5-27" data-line-number="27"><span class="co">#&gt; $ utc_release_date_time : POSIXct, format: "2012-03-20 20:00:00" ...</span></a>
+<a class="sourceLine" id="cb5-28" data-line-number="28"><span class="co">#&gt; $ glatos_project_transmitter: chr "HECWL" ...</span></a>
+<a class="sourceLine" id="cb5-29" data-line-number="29"><span class="co">#&gt; $ glatos_project_receiver : chr "HECWL" ...</span></a>
+<a class="sourceLine" id="cb5-30" data-line-number="30"><span class="co">#&gt; $ glatos_tag_recovered : chr "NO" ...</span></a>
+<a class="sourceLine" id="cb5-31" data-line-number="31"><span class="co">#&gt; $ glatos_caught_date : Date, format: NA ...</span></a>
+<a class="sourceLine" id="cb5-32" data-line-number="32"><span class="co">#&gt; $ station : chr "TTB-002" ...</span></a>
+<a class="sourceLine" id="cb5-33" data-line-number="33"><span class="co">#&gt; $ min_lag : num 258 137 ...</span></a></code></pre></div>
+<p>The result is an object with 30 columns and two classes: <em>glatos_detections</em> and <em>data.frame</em>. The <em>glatos_detections</em> class label indicates that the data set was created using a <em>glatos</em> load function and therefore should meet requirements of any <em>glatos</em> function that accepts detection data as input. See the <a href="data_requirements.html">Data Requirements vignette</a>) for field definitions.</p>
 </div>
 <div id="loading-otn-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#loading-otn-data" class="anchor"></a>Loading OTN data</h3>
-<p>The <em>read_otn_detections()</em> function reads in detection data (*.csv files) obtained from the Ocean Tracking Network and reformats the data to meet requirements of <em>glatos</em> functions. Data are read using <em>fread</em> in the <em>data.table</em> package, timestamps are formatted as class <em>POSIXct</em> and dates are formatted as class <em>Date</em>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># Read in the blue_shark_detections.csv file using `read_glatos_detections()`</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">shrk_det_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"blue_shark_detections.csv"</span>,</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">                         <span class="dt">package =</span> <span class="st">"glatos"</span>)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co"># Read in the blue_shark_detections.csv file using `read_otn_detections()`</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">blue_shark_detections &lt;-<span class="st"> </span><span class="kw"><a href="../reference/read_otn_detections.html">read_otn_detections</a></span>(shrk_det_file)</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co"># View the structure of blue_shark_detections</span></a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(blue_shark_detections)</a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; Classes 'glatos_detections' and 'data.frame':    3000 obs. of  34 variables:</span></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; $ collectioncode : chr "NSBS" ...</span></a>
-<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="co">#&gt; $ animal_id : chr "NSBS-Hooker" ...</span></a>
-<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="co">#&gt; $ scientificname : chr "Prionace glauca" ...</span></a>
-<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="co">#&gt; $ commonname : chr "blue shark" ...</span></a>
-<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="co">#&gt; $ datelastmodified : Date, format: "2014-12-18" ...</span></a>
-<a class="sourceLine" id="cb5-17" data-line-number="17"><span class="co">#&gt; $ detectedby : chr "HFX" ...</span></a>
-<a class="sourceLine" id="cb5-18" data-line-number="18"><span class="co">#&gt; $ receiver_sn : chr "HFX" ...</span></a>
-<a class="sourceLine" id="cb5-19" data-line-number="19"><span class="co">#&gt; $ glatos_array : chr "HFX047" ...</span></a>
-<a class="sourceLine" id="cb5-20" data-line-number="20"><span class="co">#&gt; $ receiver : chr "146" ...</span></a>
-<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="co">#&gt; $ bottom_depth : num 151 151 ...</span></a>
-<a class="sourceLine" id="cb5-22" data-line-number="22"><span class="co">#&gt; $ receiver_depth : num 146 146 ...</span></a>
-<a class="sourceLine" id="cb5-23" data-line-number="23"><span class="co">#&gt; $ transmitter_id : chr "A69-9001-24395" ...</span></a>
-<a class="sourceLine" id="cb5-24" data-line-number="24"><span class="co">#&gt; $ transmitter_codespace : chr "A69-9001" ...</span></a>
-<a class="sourceLine" id="cb5-25" data-line-number="25"><span class="co">#&gt; $ sensorname : chr NA ...</span></a>
-<a class="sourceLine" id="cb5-26" data-line-number="26"><span class="co">#&gt; $ sensorraw : num NA NA ...</span></a>
-<a class="sourceLine" id="cb5-27" data-line-number="27"><span class="co">#&gt; $ sensortype : chr "pinger" ...</span></a>
-<a class="sourceLine" id="cb5-28" data-line-number="28"><span class="co">#&gt; $ sensorvalue : num NA NA ...</span></a>
-<a class="sourceLine" id="cb5-29" data-line-number="29"><span class="co">#&gt; $ sensorunit : chr NA ...</span></a>
-<a class="sourceLine" id="cb5-30" data-line-number="30"><span class="co">#&gt; $ detection_timestamp_utc: POSIXct, format: "2014-08-29 06:11:09" ...</span></a>
-<a class="sourceLine" id="cb5-31" data-line-number="31"><span class="co">#&gt; $ timezone : chr "UTC" ...</span></a>
-<a class="sourceLine" id="cb5-32" data-line-number="32"><span class="co">#&gt; $ deploy_long : num -63.2 ...</span></a>
-<a class="sourceLine" id="cb5-33" data-line-number="33"><span class="co">#&gt; $ deploy_lat : num 44.2 ...</span></a>
-<a class="sourceLine" id="cb5-34" data-line-number="34"><span class="co">#&gt; $ st_setsrid_4326 : chr "0101000020E61000008A1F63EE5A9E4FC04F1E166A4D1B4640" ...</span></a>
-<a class="sourceLine" id="cb5-35" data-line-number="35"><span class="co">#&gt; $ yearcollected : int 2014 2014 ...</span></a>
-<a class="sourceLine" id="cb5-36" data-line-number="36"><span class="co">#&gt; $ monthcollected : int 8 8 ...</span></a>
-<a class="sourceLine" id="cb5-37" data-line-number="37"><span class="co">#&gt; $ daycollected : int 29 29 ...</span></a>
-<a class="sourceLine" id="cb5-38" data-line-number="38"><span class="co">#&gt; $ julianday : int 241 241 ...</span></a>
-<a class="sourceLine" id="cb5-39" data-line-number="39"><span class="co">#&gt; $ timeofday : num 6.19 ...</span></a>
-<a class="sourceLine" id="cb5-40" data-line-number="40"><span class="co">#&gt; $ datereleasedtagger : Date, format: NA ...</span></a>
-<a class="sourceLine" id="cb5-41" data-line-number="41"><span class="co">#&gt; $ datereleasedpublic : Date, format: NA ...</span></a>
-<a class="sourceLine" id="cb5-42" data-line-number="42"><span class="co">#&gt; $ local_area : chr "HALIFAX" ...</span></a>
-<a class="sourceLine" id="cb5-43" data-line-number="43"><span class="co">#&gt; $ notes : chr NA ...</span></a>
-<a class="sourceLine" id="cb5-44" data-line-number="44"><span class="co">#&gt; $ citation : chr "Hebert, D., Barthelotte, J., O'Dor, R., Stokesbury, M., Branton,</span></a>
-<a class="sourceLine" id="cb5-45" data-line-number="45"><span class="co">#&gt;    R. 2009. Ocean Tracking Network Halifax Canada"| __truncated__ ...</span></a>
-<a class="sourceLine" id="cb5-46" data-line-number="46"><span class="co">#&gt; $ unqdetecid : chr "HFX-A69-9001-24395-180148" ...</span></a></code></pre></div>
-<p>The result shares the same classes as the walleye dataset (<em>glatos_detections</em> and <em>data.frame</em>), but has 34 columns, most of which are not shared between OTN and GLATOS networks. Thus, <em>read_otn_detections</em> has only altered those OTN-specific columns needed to meet requirements of <em>glatos</em> functions. Field definitions and data types can be found in “Data field definitions of standard GLATOS detection export” vignette (link).</p>
+<p>The <em>read_otn_detections</em> function reads in detection data (*.csv files) obtained from the Ocean Tracking Network and reformats the data to meet requirements of <em>glatos</em> functions. Data are read using <em>fread</em> in the <em>data.table</em> package, timestamps are formatted as class <em>POSIXct</em> and dates are formatted as class <em>Date</em>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Set path to blue_shark_detections.csv example dataset</span></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">shrk_det_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"blue_shark_detections.csv"</span>,</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">                             <span class="dt">package =</span> <span class="st">"glatos"</span>)</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co"># Read in the blue_shark_detections.csv file using `read_otn_detections`</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">blue_shark_detections &lt;-<span class="st"> </span><span class="kw"><a href="../reference/read_otn_detections.html">read_otn_detections</a></span>(shrk_det_file)</a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="co"># View the structure of blue_shark_detections</span></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(blue_shark_detections)</a>
+<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co">#&gt; Classes 'glatos_detections' and 'data.frame':    3000 obs. of  34 variables:</span></a>
+<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co">#&gt; $ collectioncode : chr "NSBS" ...</span></a>
+<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="co">#&gt; $ animal_id : chr "NSBS-Hooker" ...</span></a>
+<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co">#&gt; $ scientificname : chr "Prionace glauca" ...</span></a>
+<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="co">#&gt; $ commonname : chr "blue shark" ...</span></a>
+<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="co">#&gt; $ datelastmodified : Date, format: "2014-12-18" ...</span></a>
+<a class="sourceLine" id="cb6-17" data-line-number="17"><span class="co">#&gt; $ detectedby : chr "HFX" ...</span></a>
+<a class="sourceLine" id="cb6-18" data-line-number="18"><span class="co">#&gt; $ receiver_sn : chr "HFX" ...</span></a>
+<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="co">#&gt; $ glatos_array : chr "HFX047" ...</span></a>
+<a class="sourceLine" id="cb6-20" data-line-number="20"><span class="co">#&gt; $ receiver : chr "146" ...</span></a>
+<a class="sourceLine" id="cb6-21" data-line-number="21"><span class="co">#&gt; $ bottom_depth : num 151 151 ...</span></a>
+<a class="sourceLine" id="cb6-22" data-line-number="22"><span class="co">#&gt; $ receiver_depth : num 146 146 ...</span></a>
+<a class="sourceLine" id="cb6-23" data-line-number="23"><span class="co">#&gt; $ transmitter_id : chr "A69-9001-24395" ...</span></a>
+<a class="sourceLine" id="cb6-24" data-line-number="24"><span class="co">#&gt; $ transmitter_codespace : chr "A69-9001" ...</span></a>
+<a class="sourceLine" id="cb6-25" data-line-number="25"><span class="co">#&gt; $ sensorname : chr NA ...</span></a>
+<a class="sourceLine" id="cb6-26" data-line-number="26"><span class="co">#&gt; $ sensorraw : num NA NA ...</span></a>
+<a class="sourceLine" id="cb6-27" data-line-number="27"><span class="co">#&gt; $ sensortype : chr "pinger" ...</span></a>
+<a class="sourceLine" id="cb6-28" data-line-number="28"><span class="co">#&gt; $ sensorvalue : num NA NA ...</span></a>
+<a class="sourceLine" id="cb6-29" data-line-number="29"><span class="co">#&gt; $ sensorunit : chr NA ...</span></a>
+<a class="sourceLine" id="cb6-30" data-line-number="30"><span class="co">#&gt; $ detection_timestamp_utc: POSIXct, format: "2014-08-29 06:11:09" ...</span></a>
+<a class="sourceLine" id="cb6-31" data-line-number="31"><span class="co">#&gt; $ timezone : chr "UTC" ...</span></a>
+<a class="sourceLine" id="cb6-32" data-line-number="32"><span class="co">#&gt; $ deploy_long : num -63.2 ...</span></a>
+<a class="sourceLine" id="cb6-33" data-line-number="33"><span class="co">#&gt; $ deploy_lat : num 44.2 ...</span></a>
+<a class="sourceLine" id="cb6-34" data-line-number="34"><span class="co">#&gt; $ st_setsrid_4326 : chr "0101000020E61000008A1F63EE5A9E4FC04F1E166A4D1B4640" ...</span></a>
+<a class="sourceLine" id="cb6-35" data-line-number="35"><span class="co">#&gt; $ yearcollected : int 2014 2014 ...</span></a>
+<a class="sourceLine" id="cb6-36" data-line-number="36"><span class="co">#&gt; $ monthcollected : int 8 8 ...</span></a>
+<a class="sourceLine" id="cb6-37" data-line-number="37"><span class="co">#&gt; $ daycollected : int 29 29 ...</span></a>
+<a class="sourceLine" id="cb6-38" data-line-number="38"><span class="co">#&gt; $ julianday : int 241 241 ...</span></a>
+<a class="sourceLine" id="cb6-39" data-line-number="39"><span class="co">#&gt; $ timeofday : num 6.19 ...</span></a>
+<a class="sourceLine" id="cb6-40" data-line-number="40"><span class="co">#&gt; $ datereleasedtagger : Date, format: NA ...</span></a>
+<a class="sourceLine" id="cb6-41" data-line-number="41"><span class="co">#&gt; $ datereleasedpublic : Date, format: NA ...</span></a>
+<a class="sourceLine" id="cb6-42" data-line-number="42"><span class="co">#&gt; $ local_area : chr "HALIFAX" ...</span></a>
+<a class="sourceLine" id="cb6-43" data-line-number="43"><span class="co">#&gt; $ notes : chr NA ...</span></a>
+<a class="sourceLine" id="cb6-44" data-line-number="44"><span class="co">#&gt; $ citation : chr "Hebert, D., Barthelotte, J., O'Dor, R., Stokesbury, M., Branton,</span></a>
+<a class="sourceLine" id="cb6-45" data-line-number="45"><span class="co">#&gt;    R. 2009. Ocean Tracking Network Halifax Canada"| __truncated__ ...</span></a>
+<a class="sourceLine" id="cb6-46" data-line-number="46"><span class="co">#&gt; $ unqdetecid : chr "HFX-A69-9001-24395-180148" ...</span></a></code></pre></div>
+<p>The resulting object has 34 columns, many of which are not present in the GLATOS standard format. However, some columns have been modified to meet <em>glatos</em> requirements, and thus, the <em>glatos_detections</em> class name has been added.</p>
 </div>
 <div id="other-formats---csv-file-exported-from-a-vue-database" class="section level3">
 <h3 class="hasAnchor">
 <a href="#other-formats---csv-file-exported-from-a-vue-database" class="anchor"></a>Other formats - CSV file exported from a VUE database</h3>
 <p>Detection data in any format than GLATOS or OTN will need to be<br>
-modified to meet the requirements of <em>glatos</em> functions. We will show an example using detection data that have been exported from a VEMCO VUE database. There is currently no <em>glatos</em> function to load detection data directly into an R session from VUE software, so data in that format will need to be loaded using other functions and then carefully checked that it meets requirements described above.</p>
-<p>In the example below, we will use the base R functions <em>read.csv()</em> and <em>as.POSIXct()</em> to load detection data from a csv file and reformat the data to be consistent with the schema described above. Tip boxes will also show faster alternatives for these methods using functions in the <em>data.table</em> and <em>lubridate</em> packages.</p>
-<p>First, get the path to a file (*.csv) that contains detection data exported from VEMCO VUE software. Such a file is not included in the <em>glatos</em> package but we can create one using the <em>glatos</em> function <em>vrl2csv()</em> which exports detection data from a VEMCO *.vrl file using VUE’s built-in command line conversion program. The <em>vrl2csv()</em> function requires a working copy of Vemco VUE on your computer. VUE can be downloaded from <a href="https://vemco.com/products/vue-software" class="uri">https://vemco.com/products/vue-software</a>.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co">#get path to example VRL included with glatos package</span></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">vrl_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"VR2W_109924_20110718_1.vrl"</span>,</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">                        <span class="dt">package =</span> <span class="st">"glatos"</span>)</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#convert the vrl file to csv</span></a>
-<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#note that vrl2csv writes the csv to disk and returns the path to the csv</span></a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">csv_file &lt;-<span class="st"> </span><span class="kw"><a href="../reference/vrl2csv.html">vrl2csv</a></span>(vrl_file) <span class="co">#file name input</span></a></code></pre></div>
-<p>Now that we have the path to a VUE export file, we will read the data using <em>read.csv()</em>. In this case we are also setting some <em>read.csv()</em> arguments to non-default values. First, we set <code>as.is = TRUE</code> so that character values are treated as characters and not converted to factors. Second, we set <code>check.names = FALSE</code> to prevent conversion of syntactically-invalid column names to syntactically valid names. This simply keeps the names exactly as they appear in the source text file rather than, for example, replacing spaces with “.”. This does mean that we need to wrap those column names in back-ticks when called (e.g., <code>my_det$`Sensor Value`</code>). Third, we set <code>fileEncoding = "UTF-8-BOM"</code> to match the encoding of the text file. If this argument is omitted then you might see the special characters <code>﻿</code> added to the first column name. Setting the <em>fileEncoding</em> may also slow down the import.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/read.table">read.csv</a></span>(csv_file, <span class="dt">as.is =</span> <span class="ot">TRUE</span>, <span class="dt">check.names =</span> <span class="ot">FALSE</span>,  </a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">                <span class="dt">fileEncoding =</span> <span class="st">"UTF-8-BOM"</span>)</a></code></pre></div>
+modified to meet the requirements of <em>glatos</em> functions. Here, we show an example using detection data that have been exported from a VEMCO VUE database. There is currently no <em>glatos</em> function to load detection data directly into an R session from VUE software, so data in that format will need to be:</p>
+<ol style="list-style-type: decimal">
+<li><p>loaded into R using some other function (e.g., <em>read_csv</em>) and</p></li>
+<li><p>modified to ensure that all requirements of the desired function are met.</p></li>
+</ol>
+<p>In the example below, we will use the base R functions <em>read.csv</em> and <em>as.POSIXct</em> to load detection data from a csv file and reformat the data to be consistent with the schema described above. Tip boxes will also show alternatives (simpler and/or faster) for these methods using functions in the <em>data.table</em> and <em>lubridate</em> packages.</p>
+<p>First, get the path to a file (*.csv) that contains detection data exported from VEMCO VUE software. Such a file is included in the <em>glatos</em> package.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">#get path to example CSV file included with glatos package</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">csv_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"VR2W_109924_20110718_1.csv"</span>,</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">                        <span class="dt">package =</span> <span class="st">"glatos"</span>)</a></code></pre></div>
+<p>Now that we have the path to a VUE export file, we will read the data using <em>read.csv</em>. In this case we are also setting some <em>read.csv</em> arguments to non-default values. First, we set <code>as.is = TRUE</code> so that character values are treated as characters and not converted to factors. Second, we set <code>check.names = FALSE</code> to prevent conversion of syntactically-invalid column names to syntactically valid names. This simply keeps the names exactly as they appear in the source text file rather than, for example, replacing spaces with a dot (<code>.</code>). This does mean that we need to wrap those column names in back-ticks when called (e.g., <code>dtc$`Sensor Value`</code>). Third, we set <code>fileEncoding = "UTF-8-BOM"</code> to match the encoding of the text file. If this argument is omitted then you might see the special characters <code>﻿</code> added to the first column name. Setting the <em>fileEncoding</em> may also slow down the import.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/read.table">read.csv</a></span>(csv_file, <span class="dt">as.is =</span> <span class="ot">TRUE</span>, <span class="dt">check.names =</span> <span class="ot">FALSE</span>,  </a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">                <span class="dt">fileEncoding =</span> <span class="st">"UTF-8-BOM"</span>)</a></code></pre></div>
 <blockquote>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br><strong>data.table tip:</strong> Use <em>fread</em> instead of <em>read.csv</em>.</p>
 </blockquote>
 <blockquote>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co">#read data from csv file using data.table::fread</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">dtcc &lt;-<span class="st"> </span><span class="kw">fread</span>(csv_file)  </a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">#read data from csv file using data.table::fread</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">dtc &lt;-<span class="st"> </span><span class="kw">fread</span>(csv_file)  </a></code></pre></div>
 <p><em>fread</em> is fast. That’s one reason it is used used by <em>read_glatos_detections</em> and other <em>glatos</em> functions.<br>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 </blockquote>
-<p>Now we will reformat to be consistent with a <em>glatos_detections</em> object. We will do this for each of the mandatory columns described above.</p>
+<p>Now we will reformat to be consistent with a <em>glatos_detections</em> object. We will do this for each of the required columns described above.</p>
 <div id="detection_timestamp_utc" class="section level4">
 <h4 class="hasAnchor">
 <a href="#detection_timestamp_utc" class="anchor"></a><em><strong>detection_timestamp_utc</strong></em>
 </h4>
-<p>Change the column name from <em>Date and Time (UTC)</em> to <em>detection_timestamp_utc</em> and format as <em>POSIXct</em>. We could reference columns by number in the code below (e.g., <code>names(dtc)[1] &lt;- "detection_timestamp_utc"</code>) but use of <code><a href="https://www.rdocumentation.org/packages/base/topics/match">match()</a></code> to get the column number is robust to changes in column order.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">#change column name</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(dtc)[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match">match</a></span>(<span class="st">"Date and Time (UTC)"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(dtc))] &lt;-<span class="st"> "detection_timestamp_utc"</span></a></code></pre></div>
+<p>Change the column name from <em>Date and Time (UTC)</em> to <em>detection_timestamp_utc</em>. There are many ways to do this (e.g., reference columns by number; <code>names(dtc)[1] &lt;- "detection_timestamp_utc"</code>) but in the code below use of <code><a href="https://www.rdocumentation.org/packages/base/topics/match">match()</a></code> to get the column number is robust to changes in column order.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co">#change column name</span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(dtc)[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match">match</a></span>(<span class="st">"Date and Time (UTC)"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(dtc))] &lt;-<span class="st"> "detection_timestamp_utc"</span></a></code></pre></div>
 <blockquote>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br><strong>data.table tip:</strong> Use <em>setnames</em> to change column names.</p>
 </blockquote>
 <blockquote>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co">#use data.table::setnames to change column names via old and new names</span></a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">setnames</span>(dtc, <span class="st">"Date and Time (UTC)"</span>, <span class="st">"detection_timestamp_utc"</span>) </a></code></pre></div>
-<p>Notice that there is no assignment operator (<em>&lt;-</em>) in this code. This is<br>
-because <em>setnames</em>, like other <em>data.table</em> functions, updates the target object (in this case <em>dtc</em>) directly (aka: “by reference”).<br>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co">#use data.table::setnames to change column names via old and new names</span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw">setnames</span>(dtc, <span class="st">"Date and Time (UTC)"</span>, <span class="st">"detection_timestamp_utc"</span>) </a></code></pre></div>
+<p><em>setnames(x, old, new)</em>… could it be more intuitive?</p>
+<p>Notice that there are no assignment operators (<em>&lt;-</em> or <em>=</em>) in this code. This is because <em>setnames</em>, like other <em>data.table</em> functions, updates the target object (in this case <em>dtc</em>) directly (aka: <em>by reference</em>).<br>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 </blockquote>
-<p>We will format the timestamp column using base R function <em>as.POSIXct()</em>. All <em>POSIXct</em> objects are stored internally as a number representing the number of elapsed seconds since “1970-01-01 00:00:00” in UTC. When we convert a character string to <em>POSIXct</em>, we need to tell R <em>how</em> to convert it–namely the time zone of the input data. By default, <em>as.POSIXct</em> will assume your local system time zone (e.g., the one returned by <code><a href="https://www.rdocumentation.org/packages/base/topics/timezones">Sys.timezone()</a></code>. To prevent timezone errors, <em>always</em> specify time zone (using the <em>tz</em> argument) whenever you coerce any timestamp to <em>POSIXct</em>. In this case, the timestamps were exported from VUE in UTC, so we use the following:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb11-2" data-line-number="2">dtc<span class="op">$</span>detection_timestamp_utc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(dtc<span class="op">$</span>detection_timestamp_utc,</a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">                                                  <span class="dt">tz =</span> <span class="st">"UTC"</span>)</a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(dtc<span class="op">$</span>detection_timestamp_utc)</a>
-<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#&gt;  POSIXct[1:69708], format: "2011-04-11 20:17:49" ...</span></a></code></pre></div>
+<p>Finally, we format the timestamp column using base R function <em>as.POSIXct</em>. All <em>POSIXct</em> objects are stored internally as a number representing the number of elapsed seconds since “1970-01-01 00:00:00” in UTC. When we convert a character string to <em>POSIXct</em>, we need to tell R <em>how</em> to convert it–namely the time zone of the input data. By default, <em>as.POSIXct</em> will assume your local system time zone (e.g., the one returned by <code><a href="https://www.rdocumentation.org/packages/base/topics/timezones">Sys.timezone()</a></code>. To prevent timezone errors, <em>always</em> specify time zone (using the <em>tz</em> argument) whenever you coerce any timestamp to <em>POSIXct</em>. In this case, the timestamps were exported from VUE in UTC, so we use the following:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">dtc<span class="op">$</span>detection_timestamp_utc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(dtc<span class="op">$</span>detection_timestamp_utc,</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">                                          <span class="dt">tz =</span> <span class="st">"UTC"</span>)</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">#take a peek</span></a>
+<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(dtc<span class="op">$</span>detection_timestamp_utc)</a>
+<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="co">#&gt;  POSIXct[1:69708], format: "2011-04-11 20:17:49" ...</span></a>
+<a class="sourceLine" id="cb12-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb12-9" data-line-number="9"><span class="co">#first few records</span></a>
+<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dtc<span class="op">$</span>detection_timestamp_utc, <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="co">#&gt; [1] "2011-04-11 20:17:49 UTC" "2011-05-08 05:38:32 UTC" "2011-05-08 05:41:09 UTC"</span></a></code></pre></div>
 <blockquote>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br><strong>data.table tip:</strong> Use <em>:=</em> to add or modify a column.</p>
 </blockquote>
 <blockquote>
-<p><em>:=</em> is an assignment operator for <em>data.table</em> objects that assigns objects by reference. We use because it is more compact than base R methods.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co">#use ':=" to update format of timestamps</span></a>
-<a class="sourceLine" id="cb12-2" data-line-number="2">dtc[ , detection_timestamp_utc <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(detection_timestamp_utc,</a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">                                             <span class="dt">tz =</span> <span class="st">"UTC"</span>)]</a></code></pre></div>
-<p>Notice again that assignment operators <em>&lt;-</em> or <em>=</em> in this code because <em>dtc</em> is updated by reference.<br>
+<p><em>:=</em> is an assignment operator for <em>data.table</em> objects that assigns objects by reference. We use it because it is more compact than base R methods.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co">#use ':=' to format timestamps</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">dtc[ , detection_timestamp_utc <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(detection_timestamp_utc,</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">                                             <span class="dt">tz =</span> <span class="st">"UTC"</span>)]</a></code></pre></div>
+<p>Note that, like in the previous boxed tip, there are no assignment operators <em>&lt;-</em> or <em>=</em> because <em>dtc</em> is updated by reference.<br>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 </blockquote>
 <blockquote>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br><strong>lubridate tip:</strong> Use <em>fast_strptime</em> to set timestamps.</p>
 </blockquote>
 <blockquote>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co">#lubridate::fast_strptime is the fastest way we know to ceorce strings to POSIX</span></a>
-<a class="sourceLine" id="cb13-2" data-line-number="2">dtc[ , detection_timestamp_utc <span class="op">:</span><span class="er">=</span><span class="st">  </span></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="st">         </span>lubridate<span class="op">::</span><span class="kw"><a href="http://lubridate.tidyverse.org/reference/parse_date_time.html">fast_strptime</a></span>(detection_timestamp_utc,</a>
-<a class="sourceLine" id="cb13-4" data-line-number="4">                                  <span class="dt">format =</span> <span class="st">"%Y-%m-%d %H:%M:%OS"</span>,</a>
-<a class="sourceLine" id="cb13-5" data-line-number="5">                                  <span class="dt">tz =</span> <span class="st">"UTC"</span>,</a>
-<a class="sourceLine" id="cb13-6" data-line-number="6">                                  <span class="dt">lt =</span> <span class="ot">FALSE</span>)]</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co">#lubridate::fast_strptime is the fastest way we know to ceorce strings to POSIX</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">dtc[ , detection_timestamp_utc <span class="op">:</span><span class="er">=</span><span class="st">  </span></a>
+<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="st">         </span>lubridate<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/lubridate/topics/parse_date_time">fast_strptime</a></span>(detection_timestamp_utc,</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">                                  <span class="dt">format =</span> <span class="st">"%Y-%m-%d %H:%M:%OS"</span>,</a>
+<a class="sourceLine" id="cb14-5" data-line-number="5">                                  <span class="dt">tz =</span> <span class="st">"UTC"</span>,</a>
+<a class="sourceLine" id="cb14-6" data-line-number="6">                                  <span class="dt">lt =</span> <span class="ot">FALSE</span>)]</a></code></pre></div>
+<p><em>fast_strptime</em> requires a bit more code because we have to specify <code>format</code> and set <code>lt = FALSE</code> so that <em>POSIXct</em> is returned instead of the default (<em>POSIXlt</em>) for this function.</p>
 <p>Notice that we formatted the timestamps using <em>fast_strptime</em> but also used <em>data.table</em>’s <em>set</em> operator (<em>:=</em>) to assign it to the target column.<br>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 </blockquote>
@@ -383,17 +401,21 @@ because <em>setnames</em>, like other <em>data.table</em> functions, updates the
 <a href="#receiver_sn" class="anchor"></a><em><strong>receiver_sn</strong></em>
 </h4>
 <p>There is no single column in the VUE export data with receiver serial number, so we need to extract it from the <em>Receiver</em> column.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co">#make new function to extract second element from a hyphen-delimited string</span></a>
-<a class="sourceLine" id="cb14-2" data-line-number="2">get_rsn &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/strsplit">strsplit</a></span>(x, <span class="st">"-"</span>)[[<span class="dv">1</span>]][<span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb14-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="co">#apply get_rsn() to each record in Receiver column</span></a>
-<a class="sourceLine" id="cb14-5" data-line-number="5">dtc<span class="op">$</span>receiver_sn &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dtc<span class="op">$</span>Receiver, get_rsn)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">dtc<span class="op">$</span>Receiver[<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="co">#&gt; [1] "VR2W-109924"</span></a></code></pre></div>
+<p>To do this, we will write a function (<em>get_rsn</em>) to extract the second element of the hyphen-delimited string in the <em>Receiver</em> column using the base R function <em>strsplit</em>. We then use the <em>sapply</em> function to “apply” our custom function to each element (record) of the <em>Receiver</em> column.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co">#make new function to extract second element from a hyphen-delimited string</span></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">get_rsn &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/strsplit">strsplit</a></span>(x, <span class="st">"-"</span>)[[<span class="dv">1</span>]][<span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co">#apply get_rsn() to each record in Receiver column</span></a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">dtc<span class="op">$</span>receiver_sn &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dtc<span class="op">$</span>Receiver, get_rsn)</a></code></pre></div>
 <blockquote>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br><strong>data.table tip:</strong> Use <em>by</em> argument in <em>data.table</em> to update a column by groups.</p>
 </blockquote>
 <blockquote>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">#make new column "receiver_sn"; parse from "Receiver"</span></a>
-<a class="sourceLine" id="cb15-2" data-line-number="2">dtc[ , receiver_sn <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">get_rsn</span>(Receiver), by =<span class="st"> "Receiver"</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co">#make new column "receiver_sn"; parse from "Receiver"</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">dtc[ , receiver_sn <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">get_rsn</span>(Receiver), by =<span class="st"> "Receiver"</span>]</a></code></pre></div>
+<p>This is more efficient because it operates on groups instead of each individual record.</p>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 </blockquote>
 </div>
@@ -401,113 +423,102 @@ because <em>setnames</em>, like other <em>data.table</em> functions, updates the
 <h4 class="hasAnchor">
 <a href="#deploy_lat-and-deploy_long" class="anchor"></a><em><strong>deploy_lat</strong></em> and <em><strong>deploy_long</strong></em>
 </h4>
-<p>The <em>Latitude</em> and <em>Longitude</em> values are all zero in this data set, because the<br>
-VUE database from which these data were exported did not have any latitude or longitude data. We need to get them from another source. These example data only contain one receiver, but to demonstrate how this can be done, we will make a new data frame with these data and merge it.</p>
-<p>The code below shows a simple left join on <em>receiver_sn</em>, which assigns the same receiver location data to all detection records on that receiver without time consideration. Two limitations of this simple join are that it:</p>
+<p>The <em>Latitude</em> and <em>Longitude</em> values are all zero in this data set because the VUE database from which these data were exported did not contain any latitude or longitude data. To add those data to these detections, we will make a new data frame containing <em>latitude</em> and <em>longitude</em> data along with other receiver data and merge the new receiver data with the detection data.</p>
+<p>The code below shows a simple left join on <em>receiver_sn</em>, which assigns the same receiver location data to all detection records on that receiver without time consideration.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co">#make an example receiver data frame</span></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">rcv &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">        <span class="dt">glatos_array =</span> <span class="st">"DWM"</span>,</a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">        <span class="dt">station =</span> <span class="st">"DWM-001"</span>, </a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">        <span class="dt">deploy_lat =</span> <span class="fl">45.65738</span>, </a>
+<a class="sourceLine" id="cb18-6" data-line-number="6">        <span class="dt">deploy_long =</span> <span class="fl">-84.46418</span>, </a>
+<a class="sourceLine" id="cb18-7" data-line-number="7">        <span class="dt">deploy_date_time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2011-04-11 20:30:00"</span>, <span class="dt">tz =</span> <span class="st">"UTC"</span>),</a>
+<a class="sourceLine" id="cb18-8" data-line-number="8">        <span class="dt">recover_date_time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2011-07-08 17:11:00"</span>, <span class="dt">tz =</span> <span class="st">"UTC"</span>),</a>
+<a class="sourceLine" id="cb18-9" data-line-number="9">        <span class="dt">ins_serial_no =</span> <span class="st">"109924"</span>,</a>
+<a class="sourceLine" id="cb18-10" data-line-number="10">        <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>) </a>
+<a class="sourceLine" id="cb18-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb18-12" data-line-number="12"><span class="co">#left join on receiver serial number to add receiver data to detections</span></a>
+<a class="sourceLine" id="cb18-13" data-line-number="13">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/merge">merge</a></span>(dtc, rcv, <span class="dt">by.x =</span> <span class="st">"receiver_sn"</span>, <span class="dt">by.y =</span> <span class="st">"ins_serial_no"</span>, </a>
+<a class="sourceLine" id="cb18-14" data-line-number="14">             <span class="dt">all.x =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb18-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb18-16" data-line-number="16"><span class="co"># take a look at first few rows</span></a>
+<a class="sourceLine" id="cb18-17" data-line-number="17"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dtc, <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb18-18" data-line-number="18"><span class="co">#&gt;   receiver_sn detection_timestamp_utc    Receiver    Transmitter Transmitter Name</span></a>
+<a class="sourceLine" id="cb18-19" data-line-number="19"><span class="co">#&gt; 1      109924     2011-04-11 20:17:49 VR2W-109924 A69-1303-63366               NA</span></a>
+<a class="sourceLine" id="cb18-20" data-line-number="20"><span class="co">#&gt; 2      109924     2011-05-08 05:38:32 VR2W-109924  A69-9002-4043               NA</span></a>
+<a class="sourceLine" id="cb18-21" data-line-number="21"><span class="co">#&gt; 3      109924     2011-05-08 05:41:09 VR2W-109924  A69-9002-4043               NA</span></a>
+<a class="sourceLine" id="cb18-22" data-line-number="22"><span class="co">#&gt;   Transmitter Serial Sensor Value Sensor Unit Station Name Latitude Longitude</span></a>
+<a class="sourceLine" id="cb18-23" data-line-number="23"><span class="co">#&gt; 1                 NA           NA                       NA        0         0</span></a>
+<a class="sourceLine" id="cb18-24" data-line-number="24"><span class="co">#&gt; 2                 NA            5         ADC           NA        0         0</span></a>
+<a class="sourceLine" id="cb18-25" data-line-number="25"><span class="co">#&gt; 3                 NA            7         ADC           NA        0         0</span></a>
+<a class="sourceLine" id="cb18-26" data-line-number="26"><span class="co">#&gt;   glatos_array station deploy_lat deploy_long    deploy_date_time</span></a>
+<a class="sourceLine" id="cb18-27" data-line-number="27"><span class="co">#&gt; 1          DWM DWM-001   45.65738   -84.46418 2011-04-11 20:30:00</span></a>
+<a class="sourceLine" id="cb18-28" data-line-number="28"><span class="co">#&gt; 2          DWM DWM-001   45.65738   -84.46418 2011-04-11 20:30:00</span></a>
+<a class="sourceLine" id="cb18-29" data-line-number="29"><span class="co">#&gt; 3          DWM DWM-001   45.65738   -84.46418 2011-04-11 20:30:00</span></a>
+<a class="sourceLine" id="cb18-30" data-line-number="30"><span class="co">#&gt;     recover_date_time</span></a>
+<a class="sourceLine" id="cb18-31" data-line-number="31"><span class="co">#&gt; 1 2011-07-08 17:11:00</span></a>
+<a class="sourceLine" id="cb18-32" data-line-number="32"><span class="co">#&gt; 2 2011-07-08 17:11:00</span></a>
+<a class="sourceLine" id="cb18-33" data-line-number="33"><span class="co">#&gt; 3 2011-07-08 17:11:00</span></a></code></pre></div>
+<p>Note that new columns have been added to <em>dtc</em>, including <em>deploy_lat</em>, <em>deploy_long</em>, and two columns (<em>glatos_array</em> and <em>glatos_station</em>) that could serve as optional location grouping variables. Columns <em>deploy_date_time</em> and <em>recover_date_time</em> (<em>POSIXct</em> objects) are not required columns, but are useful for removing detections that occurred before receiver deployment or after recovery.</p>
+<p>Two limitations of this simple join shown above are that it:</p>
 <ul>
 <li>is inadequate if any receiver is deployed at more than one location.</li>
 <li>includes detections that occurred before receiver deployment and after receiver recovery.</li>
 </ul>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co">#make an example receiver data frame</span></a>
-<a class="sourceLine" id="cb16-2" data-line-number="2">rcv &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(</a>
-<a class="sourceLine" id="cb16-3" data-line-number="3">        <span class="dt">glatos_array =</span> <span class="st">"DWM"</span>,</a>
-<a class="sourceLine" id="cb16-4" data-line-number="4">        <span class="dt">station =</span> <span class="st">"DWM-001"</span>, </a>
-<a class="sourceLine" id="cb16-5" data-line-number="5">        <span class="dt">deploy_lat =</span> <span class="fl">45.65738</span>, </a>
-<a class="sourceLine" id="cb16-6" data-line-number="6">        <span class="dt">deploy_long =</span> <span class="fl">-84.46418</span>, </a>
-<a class="sourceLine" id="cb16-7" data-line-number="7">        <span class="dt">deploy_date_time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2011-04-11 20:30:00"</span>, <span class="dt">tz =</span> <span class="st">"UTC"</span>),</a>
-<a class="sourceLine" id="cb16-8" data-line-number="8">        <span class="dt">recover_date_time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2011-07-08 17:11:00"</span>, <span class="dt">tz =</span> <span class="st">"UTC"</span>),</a>
-<a class="sourceLine" id="cb16-9" data-line-number="9">        <span class="dt">ins_serial_no =</span> <span class="st">"109924"</span>,</a>
-<a class="sourceLine" id="cb16-10" data-line-number="10">        <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>) </a>
-<a class="sourceLine" id="cb16-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb16-12" data-line-number="12"><span class="co">#merge </span></a>
-<a class="sourceLine" id="cb16-13" data-line-number="13">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/merge">merge</a></span>(dtc, rcv, <span class="dt">by.x =</span> <span class="st">"receiver_sn"</span>, <span class="dt">by.y =</span> <span class="st">"ins_serial_no"</span>)</a>
-<a class="sourceLine" id="cb16-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb16-15" data-line-number="15"><span class="co"># take a look</span></a>
-<a class="sourceLine" id="cb16-16" data-line-number="16"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(dtc)</a>
-<a class="sourceLine" id="cb16-17" data-line-number="17"><span class="co">#&gt;   receiver_sn detection_timestamp_utc    Receiver    Transmitter Transmitter Name</span></a>
-<a class="sourceLine" id="cb16-18" data-line-number="18"><span class="co">#&gt; 1      109924     2011-04-11 20:17:49 VR2W-109924 A69-1303-63366               NA</span></a>
-<a class="sourceLine" id="cb16-19" data-line-number="19"><span class="co">#&gt; 2      109924     2011-05-08 05:38:32 VR2W-109924  A69-9002-4043               NA</span></a>
-<a class="sourceLine" id="cb16-20" data-line-number="20"><span class="co">#&gt; 3      109924     2011-05-08 05:41:09 VR2W-109924  A69-9002-4043               NA</span></a>
-<a class="sourceLine" id="cb16-21" data-line-number="21"><span class="co">#&gt; 4      109924     2011-05-08 05:43:14 VR2W-109924  A69-9002-4043               NA</span></a>
-<a class="sourceLine" id="cb16-22" data-line-number="22"><span class="co">#&gt; 5      109924     2011-05-08 05:44:15 VR2W-109924  A69-9002-4043               NA</span></a>
-<a class="sourceLine" id="cb16-23" data-line-number="23"><span class="co">#&gt; 6      109924     2011-05-08 05:45:59 VR2W-109924  A69-9002-4043               NA</span></a>
-<a class="sourceLine" id="cb16-24" data-line-number="24"><span class="co">#&gt;   Transmitter Serial Sensor Value Sensor Unit Station Name Latitude Longitude</span></a>
-<a class="sourceLine" id="cb16-25" data-line-number="25"><span class="co">#&gt; 1                 NA           NA                       NA        0         0</span></a>
-<a class="sourceLine" id="cb16-26" data-line-number="26"><span class="co">#&gt; 2                 NA            5         ADC           NA        0         0</span></a>
-<a class="sourceLine" id="cb16-27" data-line-number="27"><span class="co">#&gt; 3                 NA            7         ADC           NA        0         0</span></a>
-<a class="sourceLine" id="cb16-28" data-line-number="28"><span class="co">#&gt; 4                 NA            4         ADC           NA        0         0</span></a>
-<a class="sourceLine" id="cb16-29" data-line-number="29"><span class="co">#&gt; 5                 NA            5         ADC           NA        0         0</span></a>
-<a class="sourceLine" id="cb16-30" data-line-number="30"><span class="co">#&gt; 6                 NA           16         ADC           NA        0         0</span></a>
-<a class="sourceLine" id="cb16-31" data-line-number="31"><span class="co">#&gt;   glatos_array station deploy_lat deploy_long    deploy_date_time</span></a>
-<a class="sourceLine" id="cb16-32" data-line-number="32"><span class="co">#&gt; 1          DWM DWM-001   45.65738   -84.46418 2011-04-11 20:30:00</span></a>
-<a class="sourceLine" id="cb16-33" data-line-number="33"><span class="co">#&gt; 2          DWM DWM-001   45.65738   -84.46418 2011-04-11 20:30:00</span></a>
-<a class="sourceLine" id="cb16-34" data-line-number="34"><span class="co">#&gt; 3          DWM DWM-001   45.65738   -84.46418 2011-04-11 20:30:00</span></a>
-<a class="sourceLine" id="cb16-35" data-line-number="35"><span class="co">#&gt; 4          DWM DWM-001   45.65738   -84.46418 2011-04-11 20:30:00</span></a>
-<a class="sourceLine" id="cb16-36" data-line-number="36"><span class="co">#&gt; 5          DWM DWM-001   45.65738   -84.46418 2011-04-11 20:30:00</span></a>
-<a class="sourceLine" id="cb16-37" data-line-number="37"><span class="co">#&gt; 6          DWM DWM-001   45.65738   -84.46418 2011-04-11 20:30:00</span></a>
-<a class="sourceLine" id="cb16-38" data-line-number="38"><span class="co">#&gt;     recover_date_time</span></a>
-<a class="sourceLine" id="cb16-39" data-line-number="39"><span class="co">#&gt; 1 2011-07-08 17:11:00</span></a>
-<a class="sourceLine" id="cb16-40" data-line-number="40"><span class="co">#&gt; 2 2011-07-08 17:11:00</span></a>
-<a class="sourceLine" id="cb16-41" data-line-number="41"><span class="co">#&gt; 3 2011-07-08 17:11:00</span></a>
-<a class="sourceLine" id="cb16-42" data-line-number="42"><span class="co">#&gt; 4 2011-07-08 17:11:00</span></a>
-<a class="sourceLine" id="cb16-43" data-line-number="43"><span class="co">#&gt; 5 2011-07-08 17:11:00</span></a>
-<a class="sourceLine" id="cb16-44" data-line-number="44"><span class="co">#&gt; 6 2011-07-08 17:11:00</span></a></code></pre></div>
-<p>Note that new columns have been added to <em>dtc</em>, including <em>deploy_lat</em>, <em>deploy_long</em>, and two columns (<em>glatos_array</em> and <em>glatos_station</em>) that could serve as optional location grouping variables. Columns <em>deploy_date_time</em> and <em>recover_date_time</em> (<em>POSIXct</em> objects) are not mandatory columns, but are useful for removing detections that occurred before receiver deployment or after recovery.</p>
-<p>We will subset detections to omit any that occurred before deployment or after recovery.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co">#count rows before subset</span></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(dtc)</a>
-<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="co">#&gt; [1] 69708</span></a>
-<a class="sourceLine" id="cb17-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co">#subset deployments between receiver deployment and recovery (omit others)</span></a>
-<a class="sourceLine" id="cb17-6" data-line-number="6">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(dtc, dtc[detection_timestamp_utc <span class="op">&gt;=</span><span class="st"> </span>deploy_date_time <span class="op">&amp;</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb17-7" data-line-number="7"><span class="st">                     </span>detection_timestamp_utc <span class="op">&lt;=</span><span class="st"> </span>recover_date_time, ])</a></code></pre></div>
+<p>To ensure that detections are correctly associated with a location, we will subset detections to omit any that occurred before deployment or after recovery. For convenience, we use the base R function <em>with</em> so that we do not have to repeatedly call <em>dtc$…</em> but note that this can be somewhat risky (see <code><a href="https://www.rdocumentation.org/packages/base/topics/with">?with</a></code>).</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co">#count rows before subset</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(dtc)</a>
+<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="co">#&gt; [1] 69708</span></a>
+<a class="sourceLine" id="cb19-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb19-5" data-line-number="5"><span class="co">#subset deployments between receiver deployment and recovery (omit others)</span></a>
+<a class="sourceLine" id="cb19-6" data-line-number="6">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(dtc, dtc[detection_timestamp_utc <span class="op">&gt;=</span><span class="st"> </span>deploy_date_time <span class="op">&amp;</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb19-7" data-line-number="7"><span class="st">                     </span>detection_timestamp_utc <span class="op">&lt;=</span><span class="st"> </span>recover_date_time, ])</a></code></pre></div>
 <blockquote>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br><strong>data.table tip:</strong> Use <em>between</em> to subset records by intervals.</p>
 </blockquote>
 <blockquote>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co">#subset deployments between receiver deployment and recovery (omit others) </span></a>
-<a class="sourceLine" id="cb18-2" data-line-number="2">dtc &lt;-<span class="st"> </span>dtc[<span class="kw">between</span>(detection_timestamp_utc,                                 </a>
-<a class="sourceLine" id="cb18-3" data-line-number="3">                   deploy_date_time, recover_date_time), ]  </a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co">#subset deployments between receiver deployment and recovery (omit others) </span></a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">dtc &lt;-<span class="st"> </span>dtc[<span class="kw">between</span>(detection_timestamp_utc,                                 </a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">                   deploy_date_time, recover_date_time), ]  </a></code></pre></div>
 </blockquote>
 <blockquote>
 <p>Note that the <em>&lt;-</em> assignment operator is used here because we are subsetting the <em>data.table</em> object <code>dtc</code> and there is no assignment operator inside the square brackets.<br>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 </blockquote>
-<p>We removed five rows.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co">#count rows after subset</span></a>
-<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(dtc)</a>
-<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="co">#&gt; [1] 69703</span></a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co">#count rows after subset</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(dtc)</a>
+<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="co">#&gt; [1] 69703</span></a></code></pre></div>
+<p>We removed five rows. Those detections either occurred before receiver deployment or after receiver recovery, so the location of those detections are unknown.</p>
 </div>
 <div id="transmitter_codespace-and-transmitter_id" class="section level4">
 <h4 class="hasAnchor">
 <a href="#transmitter_codespace-and-transmitter_id" class="anchor"></a><em><strong>transmitter_codespace</strong></em> and <em><strong>transmitter_id</strong></em>
 </h4>
-<p>There is no single column in the VUE export data with transmitter code space or transmitter ID code, so we need to extract them from the <em>Transmitter</em> column.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co">#make a new function to extract id from Transmitter</span></a>
-<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="co">#i.e., get third element of hyphen-delimited string</span></a>
-<a class="sourceLine" id="cb20-3" data-line-number="3">parse_tid &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/strsplit">strsplit</a></span>(x, <span class="st">"-"</span>)[[<span class="dv">1</span>]][<span class="dv">3</span>]</a>
-<a class="sourceLine" id="cb20-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="co">#make a new function to extract codespace from Transmitter</span></a>
-<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co">#i.e., get first two elements of hyphen-delimited string</span></a>
-<a class="sourceLine" id="cb20-7" data-line-number="7">parse_tcs &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb20-8" data-line-number="8">    <span class="co">#split on "-" and keep first two extracted elements</span></a>
-<a class="sourceLine" id="cb20-9" data-line-number="9">    tx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/strsplit">strsplit</a></span>(x, <span class="st">"-"</span>)[[<span class="dv">1</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb20-10" data-line-number="10">    <span class="co">#re-combine and separate by "-"</span></a>
-<a class="sourceLine" id="cb20-11" data-line-number="11">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(tx[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">collapse =</span> <span class="st">"-"</span>))</a>
-<a class="sourceLine" id="cb20-12" data-line-number="12">  }</a>
-<a class="sourceLine" id="cb20-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb20-14" data-line-number="14"><span class="co">#apply parse_tcs() to Transmitter and assign to transmitter_codespace</span></a>
-<a class="sourceLine" id="cb20-15" data-line-number="15">dtc<span class="op">$</span>transmitter_codespace &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dtc<span class="op">$</span>Transmitter, parse_tcs)</a>
-<a class="sourceLine" id="cb20-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb20-17" data-line-number="17"><span class="co">#apply parse_tid() to Transmitter and assign to transmitter_id</span></a>
-<a class="sourceLine" id="cb20-18" data-line-number="18">dtc<span class="op">$</span>transmitter_id &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dtc<span class="op">$</span>Transmitter, parse_tid)</a></code></pre></div>
+<p>There is no single column in the VUE export data with transmitter code space or transmitter ID code, so we need to extract them from the <em>Transmitter</em> column. Like we did with <em>receiver_sn</em>, we’ll make new functions to extract the id and codespace from each record, then use <em>sapply</em> to “apply” each of those functions to each record in <em>Transmitter</em>. Note that the codes space requires an extra step, after we split the string on “-” we then paste the first and second back together to create the code space string.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="co">#make a new function to extract id from Transmitter</span></a>
+<a class="sourceLine" id="cb22-2" data-line-number="2"><span class="co">#i.e., get third element of hyphen-delimited string</span></a>
+<a class="sourceLine" id="cb22-3" data-line-number="3">parse_tid &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/strsplit">strsplit</a></span>(x, <span class="st">"-"</span>)[[<span class="dv">1</span>]][<span class="dv">3</span>]</a>
+<a class="sourceLine" id="cb22-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb22-5" data-line-number="5"><span class="co">#make a new function to extract codespace from Transmitter</span></a>
+<a class="sourceLine" id="cb22-6" data-line-number="6"><span class="co">#i.e., get first two elements of hyphen-delimited string</span></a>
+<a class="sourceLine" id="cb22-7" data-line-number="7">parse_tcs &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb22-8" data-line-number="8">    <span class="co">#split on "-" and keep first two extracted elements</span></a>
+<a class="sourceLine" id="cb22-9" data-line-number="9">    tx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/strsplit">strsplit</a></span>(x, <span class="st">"-"</span>)[[<span class="dv">1</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb22-10" data-line-number="10">    <span class="co">#re-combine and separate by "-"</span></a>
+<a class="sourceLine" id="cb22-11" data-line-number="11">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(tx[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">collapse =</span> <span class="st">"-"</span>))</a>
+<a class="sourceLine" id="cb22-12" data-line-number="12">  }</a>
+<a class="sourceLine" id="cb22-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb22-14" data-line-number="14"><span class="co">#apply parse_tcs() to Transmitter and assign to transmitter_codespace</span></a>
+<a class="sourceLine" id="cb22-15" data-line-number="15">dtc<span class="op">$</span>transmitter_codespace &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dtc<span class="op">$</span>Transmitter, parse_tcs)</a>
+<a class="sourceLine" id="cb22-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb22-17" data-line-number="17"><span class="co">#apply parse_tid() to Transmitter and assign to transmitter_id</span></a>
+<a class="sourceLine" id="cb22-18" data-line-number="18">dtc<span class="op">$</span>transmitter_id &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(dtc<span class="op">$</span>Transmitter, parse_tid)</a></code></pre></div>
 <blockquote>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br><strong>data.table tip:</strong> Use the <em>functional form</em> of <em>:=</em> to add/modify more than one column.</p>
 </blockquote>
 <blockquote>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">dtc[ , <span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(<span class="dt">transmitter_codespace =</span> <span class="kw">parse_tcs</span>(Transmitter),                    </a>
-<a class="sourceLine" id="cb21-2" data-line-number="2">            <span class="dt">transmitter_id =</span> <span class="kw">parse_tid</span>(Transmitter), </a>
-<a class="sourceLine" id="cb21-3" data-line-number="3">       <span class="dt">by =</span> <span class="st">"Transmitter"</span>]  </a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">dtc[ , <span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(<span class="dt">transmitter_codespace =</span> <span class="kw">parse_tcs</span>(Transmitter),                    </a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">            <span class="dt">transmitter_id =</span> <span class="kw">parse_tid</span>(Transmitter), </a>
+<a class="sourceLine" id="cb23-3" data-line-number="3">       <span class="dt">by =</span> <span class="st">"Transmitter"</span>]  </a></code></pre></div>
 </blockquote>
 <blockquote>
 <p>See <code><a href="https://www.rdocumentation.org/packages/data.table/topics/assign">?data.table::set</a></code> for description and examples of functional form of <code>:=</code>.<br>
@@ -519,84 +530,92 @@ VUE database from which these data were exported did not have any latitude or lo
 <a href="#sensor_value-and-sensor_unit" class="anchor"></a><em><strong>sensor_value</strong></em> and <em><strong>sensor_unit</strong></em>
 </h4>
 <p>Change the column names from <em>‘Sensor Value’</em> and <em>‘Sensor Unit’</em> to <em>sensor_value</em> and <em>sensor_unit</em>.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="co">#change column name</span></a>
-<a class="sourceLine" id="cb22-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(dtc)[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match">match</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Sensor Value"</span>, <span class="st">"Sensor Unit"</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(dtc))] &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="st">             </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"sensor_value"</span>, <span class="st">"sensor_unit"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co">#change column name</span></a>
+<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(dtc)[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match">match</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Sensor Value"</span>, <span class="st">"Sensor Unit"</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(dtc))] &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb24-3" data-line-number="3"><span class="st">                 </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"sensor_value"</span>, <span class="st">"sensor_unit"</span>)</a></code></pre></div>
 <blockquote>
-<p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br><strong>data.table tip</strong><br>
-Use <em>setnames</em> to change column names.</p>
+<p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br><strong>data.table tip:</strong> Use <em>setnames</em> to change multiple column names.</p>
 </blockquote>
 <blockquote>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">setnames</span>(dtc, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Sensor Value"</span>, <span class="st">"Sensor Unit"</span>),</a>
-<a class="sourceLine" id="cb23-2" data-line-number="2">              <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"sensor_value"</span>, <span class="st">"sensor_unit"</span>))  </a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">setnames</span>(dtc, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Sensor Value"</span>, <span class="st">"Sensor Unit"</span>),</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">              <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"sensor_value"</span>, <span class="st">"sensor_unit"</span>))  </a></code></pre></div>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 </blockquote>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(dtc)</a>
-<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="co">#&gt; 'data.frame':    69703 obs. of  19 variables:</span></a>
-<a class="sourceLine" id="cb24-3" data-line-number="3"><span class="co">#&gt; $ receiver_sn : chr "109924" ...</span></a>
-<a class="sourceLine" id="cb24-4" data-line-number="4"><span class="co">#&gt; $ detection_timestamp_utc: POSIXct, format: "2011-05-08 05:38:32" ...</span></a>
-<a class="sourceLine" id="cb24-5" data-line-number="5"><span class="co">#&gt; $ Receiver : chr "VR2W-109924" ...</span></a>
-<a class="sourceLine" id="cb24-6" data-line-number="6"><span class="co">#&gt; $ Transmitter : chr "A69-9002-4043" ...</span></a>
-<a class="sourceLine" id="cb24-7" data-line-number="7"><span class="co">#&gt; $ Transmitter Name : logi NA ...</span></a>
-<a class="sourceLine" id="cb24-8" data-line-number="8"><span class="co">#&gt; $ Transmitter Serial : logi NA ...</span></a>
-<a class="sourceLine" id="cb24-9" data-line-number="9"><span class="co">#&gt; $ sensor_value : int 5 7 ...</span></a>
-<a class="sourceLine" id="cb24-10" data-line-number="10"><span class="co">#&gt; $ sensor_unit : chr "ADC" ...</span></a>
-<a class="sourceLine" id="cb24-11" data-line-number="11"><span class="co">#&gt; $ Station Name : logi NA ...</span></a>
-<a class="sourceLine" id="cb24-12" data-line-number="12"><span class="co">#&gt; $ Latitude : int 0 0 ...</span></a>
-<a class="sourceLine" id="cb24-13" data-line-number="13"><span class="co">#&gt; $ Longitude : int 0 0 ...</span></a>
-<a class="sourceLine" id="cb24-14" data-line-number="14"><span class="co">#&gt; $ glatos_array : chr "DWM" ...</span></a>
-<a class="sourceLine" id="cb24-15" data-line-number="15"><span class="co">#&gt; $ station : chr "DWM-001" ...</span></a>
-<a class="sourceLine" id="cb24-16" data-line-number="16"><span class="co">#&gt; $ deploy_lat : num 45.7 ...</span></a>
-<a class="sourceLine" id="cb24-17" data-line-number="17"><span class="co">#&gt; $ deploy_long : num -84.5 ...</span></a>
-<a class="sourceLine" id="cb24-18" data-line-number="18"><span class="co">#&gt; $ deploy_date_time : POSIXct, format: "2011-04-11 20:30:00" ...</span></a>
-<a class="sourceLine" id="cb24-19" data-line-number="19"><span class="co">#&gt; $ recover_date_time : POSIXct, format: "2011-07-08 17:11:00" ...</span></a>
-<a class="sourceLine" id="cb24-20" data-line-number="20"><span class="co">#&gt; $ transmitter_codespace : chr "A69-9002" ...</span></a>
-<a class="sourceLine" id="cb24-21" data-line-number="21"><span class="co">#&gt; $ transmitter_id : chr "4043" ...</span></a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(dtc)</a>
+<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="co">#&gt; 'data.frame':    69703 obs. of  19 variables:</span></a>
+<a class="sourceLine" id="cb26-3" data-line-number="3"><span class="co">#&gt; $ receiver_sn : chr "109924" ...</span></a>
+<a class="sourceLine" id="cb26-4" data-line-number="4"><span class="co">#&gt; $ detection_timestamp_utc: POSIXct, format: "2011-05-08 05:38:32" ...</span></a>
+<a class="sourceLine" id="cb26-5" data-line-number="5"><span class="co">#&gt; $ Receiver : chr "VR2W-109924" ...</span></a>
+<a class="sourceLine" id="cb26-6" data-line-number="6"><span class="co">#&gt; $ Transmitter : chr "A69-9002-4043" ...</span></a>
+<a class="sourceLine" id="cb26-7" data-line-number="7"><span class="co">#&gt; $ Transmitter Name : logi NA ...</span></a>
+<a class="sourceLine" id="cb26-8" data-line-number="8"><span class="co">#&gt; $ Transmitter Serial : logi NA ...</span></a>
+<a class="sourceLine" id="cb26-9" data-line-number="9"><span class="co">#&gt; $ sensor_value : int 5 7 ...</span></a>
+<a class="sourceLine" id="cb26-10" data-line-number="10"><span class="co">#&gt; $ sensor_unit : chr "ADC" ...</span></a>
+<a class="sourceLine" id="cb26-11" data-line-number="11"><span class="co">#&gt; $ Station Name : logi NA ...</span></a>
+<a class="sourceLine" id="cb26-12" data-line-number="12"><span class="co">#&gt; $ Latitude : int 0 0 ...</span></a>
+<a class="sourceLine" id="cb26-13" data-line-number="13"><span class="co">#&gt; $ Longitude : int 0 0 ...</span></a>
+<a class="sourceLine" id="cb26-14" data-line-number="14"><span class="co">#&gt; $ glatos_array : chr "DWM" ...</span></a>
+<a class="sourceLine" id="cb26-15" data-line-number="15"><span class="co">#&gt; $ station : chr "DWM-001" ...</span></a>
+<a class="sourceLine" id="cb26-16" data-line-number="16"><span class="co">#&gt; $ deploy_lat : num 45.7 ...</span></a>
+<a class="sourceLine" id="cb26-17" data-line-number="17"><span class="co">#&gt; $ deploy_long : num -84.5 ...</span></a>
+<a class="sourceLine" id="cb26-18" data-line-number="18"><span class="co">#&gt; $ deploy_date_time : POSIXct, format: "2011-04-11 20:30:00" ...</span></a>
+<a class="sourceLine" id="cb26-19" data-line-number="19"><span class="co">#&gt; $ recover_date_time : POSIXct, format: "2011-07-08 17:11:00" ...</span></a>
+<a class="sourceLine" id="cb26-20" data-line-number="20"><span class="co">#&gt; $ transmitter_codespace : chr "A69-9002" ...</span></a>
+<a class="sourceLine" id="cb26-21" data-line-number="21"><span class="co">#&gt; $ transmitter_id : chr "4043" ...</span></a></code></pre></div>
 </div>
 <div id="animal_id" class="section level4">
 <h4 class="hasAnchor">
 <a href="#animal_id" class="anchor"></a><em><strong>animal_id</strong></em>
 </h4>
-<p>The <em>animal_id</em> column will need to come from another source, like the animal tagging data. We will make a new data frame with these data and merge it.</p>
-<p>The code below shows a simple left join on <em>transmitter_codespace</em> and <em>transmitter_id</em>, which assigns the same receiver location data to all detection records of each transmitter without time consideration. Two limitations of this simple join are that it:</p>
+<p>The <em>animal_id</em> column was not included in the VUE database and will need to come from another source. If no tags were re-used, then a simple solution might be to create a new column and assign it the values of <em>Transmitter</em> column. In this example, however, we will make a new data frame containing <em>animal</em> data and merge it with detection data.</p>
+<p>The code below shows a simple left join on <em>transmitter_codespace</em> and <em>transmitter_id</em>, which assigns the same receiver location data to all detection records of each transmitter without time consideration.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co">#make an example animal (fish) data frame</span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">fsh &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(</a>
+<a class="sourceLine" id="cb27-3" data-line-number="3">        <span class="dt">animal_id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"1"</span>, <span class="st">"4"</span>, <span class="st">"7"</span>, <span class="st">"128"</span>), </a>
+<a class="sourceLine" id="cb27-4" data-line-number="4">        <span class="dt">tag_code_space =</span> <span class="st">"A69-1601"</span>,</a>
+<a class="sourceLine" id="cb27-5" data-line-number="5">        <span class="dt">tag_id_code =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"439"</span>, <span class="st">"442"</span>, <span class="st">"445"</span>, <span class="st">"442"</span>), </a>
+<a class="sourceLine" id="cb27-6" data-line-number="6">        <span class="dt">common_name =</span> <span class="st">"Sea Lamprey"</span>, </a>
+<a class="sourceLine" id="cb27-7" data-line-number="7">        <span class="dt">release_date_time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"2011-05-05 12:00"</span>, </a>
+<a class="sourceLine" id="cb27-8" data-line-number="8">                                         <span class="st">"2011-05-05 12:00"</span>, </a>
+<a class="sourceLine" id="cb27-9" data-line-number="9">                                         <span class="st">"2011-05-06 12:00"</span>, </a>
+<a class="sourceLine" id="cb27-10" data-line-number="10">                                         <span class="st">"2011-06-08 12:00"</span>), </a>
+<a class="sourceLine" id="cb27-11" data-line-number="11">                                       <span class="dt">tz =</span> <span class="st">"UTC"</span>),</a>
+<a class="sourceLine" id="cb27-12" data-line-number="12">        <span class="dt">recapture_date_time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">NA</span>, <span class="st">"2011-05-26 15:00"</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),</a>
+<a class="sourceLine" id="cb27-13" data-line-number="13">                                         <span class="dt">tz =</span> <span class="st">"UTC"</span>), </a>
+<a class="sourceLine" id="cb27-14" data-line-number="14">        <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb27-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb27-16" data-line-number="16"><span class="co">#simple left join on codespace and id</span></a>
+<a class="sourceLine" id="cb27-17" data-line-number="17">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/merge">merge</a></span>(dtc, fsh, <span class="dt">by.x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"transmitter_codespace"</span>, <span class="st">"transmitter_id"</span>), </a>
+<a class="sourceLine" id="cb27-18" data-line-number="18">                       <span class="dt">by.y =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"tag_code_space"</span>, <span class="st">"tag_id_code"</span>),</a>
+<a class="sourceLine" id="cb27-19" data-line-number="19">                       <span class="dt">all.x =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb27-20" data-line-number="20">          </a></code></pre></div>
+<p>Two limitations of this simple join are that it:</p>
 <ul>
 <li>is inadequate if any transmitter was deployed more than once.</li>
 <li>includes detections that occurred before transmitter deployment (animal release) and after transmitter recovery (animal recapture).</li>
 </ul>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co">#make an example animal (fish) data frame</span></a>
-<a class="sourceLine" id="cb25-2" data-line-number="2">fsh &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(</a>
-<a class="sourceLine" id="cb25-3" data-line-number="3">        <span class="dt">animal_id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"1"</span>, <span class="st">"4"</span>, <span class="st">"7"</span>, <span class="st">"128"</span>), </a>
-<a class="sourceLine" id="cb25-4" data-line-number="4">        <span class="dt">tag_code_space =</span> <span class="st">"A69-1601"</span>,</a>
-<a class="sourceLine" id="cb25-5" data-line-number="5">        <span class="dt">tag_id_code =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"439"</span>, <span class="st">"442"</span>, <span class="st">"445"</span>, <span class="st">"442"</span>), </a>
-<a class="sourceLine" id="cb25-6" data-line-number="6">        <span class="dt">common_name =</span> <span class="st">"Sea Lamprey"</span>, </a>
-<a class="sourceLine" id="cb25-7" data-line-number="7">        <span class="dt">release_date_time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"2011-05-05 12:00"</span>, </a>
-<a class="sourceLine" id="cb25-8" data-line-number="8">                                         <span class="st">"2011-05-05 12:00"</span>, </a>
-<a class="sourceLine" id="cb25-9" data-line-number="9">                                         <span class="st">"2011-05-06 12:00"</span>, </a>
-<a class="sourceLine" id="cb25-10" data-line-number="10">                                         <span class="st">"2011-06-08 12:00"</span>), </a>
-<a class="sourceLine" id="cb25-11" data-line-number="11">                                       <span class="dt">tz =</span> <span class="st">"UTC"</span>),</a>
-<a class="sourceLine" id="cb25-12" data-line-number="12">        <span class="dt">recapture_date_time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">NA</span>, <span class="st">"2011-05-26 15:00"</span>, <span class="ot">NA</span>, <span class="ot">NA</span>),</a>
-<a class="sourceLine" id="cb25-13" data-line-number="13">                                         <span class="dt">tz =</span> <span class="st">"UTC"</span>), </a>
-<a class="sourceLine" id="cb25-14" data-line-number="14">        <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb25-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb25-16" data-line-number="16"><span class="co">#simple left join on codespace and id</span></a>
-<a class="sourceLine" id="cb25-17" data-line-number="17">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/merge">merge</a></span>(dtc, fsh, <span class="dt">by.x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"transmitter_codespace"</span>, <span class="st">"transmitter_id"</span>), </a>
-<a class="sourceLine" id="cb25-18" data-line-number="18">                       <span class="dt">by.y =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"tag_code_space"</span>, <span class="st">"tag_id_code"</span>))</a>
-<a class="sourceLine" id="cb25-19" data-line-number="19">          </a></code></pre></div>
-<p>Note that one tag was re-used, but we did not account for this in the above merge (a simple left join). So we now need to subset to omit records that occurred before release or after recapture.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="co">#subset detections to include only those between release and recapture </span></a>
-<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="co"># or after release if never recaptured</span></a>
-<a class="sourceLine" id="cb26-3" data-line-number="3">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(dtc, dtc[detection_timestamp_utc <span class="op">&gt;=</span><span class="st"> </span>release_date_time <span class="op">&amp;</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb26-4" data-line-number="4"><span class="st">                     </span>(detection_timestamp_utc <span class="op">&lt;=</span><span class="st"> </span>recapture_date_time <span class="op">|</span></a>
-<a class="sourceLine" id="cb26-5" data-line-number="5"><span class="st">                       </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(recapture_date_time)), ])</a></code></pre></div>
+<p>Note that one tag (<code>tag_id_code = 442</code>) was re-used, but we did not account for this in the above merge (a simple left join). So we now need to subset to omit detections that occurred before release or after recapture.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="co">#count rows before subset</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(dtc)</a>
+<a class="sourceLine" id="cb28-3" data-line-number="3"><span class="co">#&gt; [1] 69711</span></a>
+<a class="sourceLine" id="cb28-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb28-5" data-line-number="5"><span class="co">#subset detections to include only those between release and recapture </span></a>
+<a class="sourceLine" id="cb28-6" data-line-number="6"><span class="co"># or after release if never recaptured</span></a>
+<a class="sourceLine" id="cb28-7" data-line-number="7">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(dtc, dtc[detection_timestamp_utc <span class="op">&gt;=</span><span class="st"> </span>release_date_time <span class="op">&amp;</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb28-8" data-line-number="8"><span class="st">                     </span>(detection_timestamp_utc <span class="op">&lt;=</span><span class="st"> </span>recapture_date_time <span class="op">|</span></a>
+<a class="sourceLine" id="cb28-9" data-line-number="9"><span class="st">                        </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(recapture_date_time)) , ])</a></code></pre></div>
 <blockquote>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br><strong>data.table tip</strong><br>
 Use <em>between</em> to query records or evaluate statements by intervals.</p>
 </blockquote>
 <blockquote>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">dtc &lt;-<span class="st"> </span>dtc[<span class="kw">between</span>(detection_timestamp_utc, release_date_time,</a>
-<a class="sourceLine" id="cb27-2" data-line-number="2">                   recapture_date_time) <span class="op">|</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(recapture_date_time), ] </a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">dtc &lt;-<span class="st"> </span>dtc[<span class="kw">between</span>(detection_timestamp_utc, release_date_time,</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2">                   recapture_date_time) <span class="op">|</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(recapture_date_time), ] </a></code></pre></div>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 </blockquote>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="co">#count rows after subset</span></a>
+<a class="sourceLine" id="cb30-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(dtc)</a>
+<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="co">#&gt; [1] 69703</span></a></code></pre></div>
 <p>We should now have a detection dataset that will meet the requirements of <em>glatos</em> functions.</p>
 </div>
 </div>
@@ -608,57 +627,313 @@ Use <em>between</em> to query records or evaluate statements by intervals.</p>
 <div id="requirements-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#requirements-1" class="anchor"></a>Requirements</h2>
-<p><em>glatos</em> functions that accept receiver location data as input will typically require a <em>data.frame</em> with one or more of the following columns. Please refer to “Data field definitions of standard GLATOS detection export” vignette and function help (e.g., <code><a href="../reference/read_glatos_detections.html">?read_glatos_detections</a></code>) to identify data type and definition of mandatory fields (link).</p>
-<p>mandatory fields: - deploy_lat (link) - deploy_long (link) - deploy_date_time (link) - recover_date_time (link)</p>
-<p>Additionally, some functions will require at least one categorical column to identify location (or group of locations). These can be specified by the user, but examples of such columns in a GLATOS standard detection file are:</p>
+<p><em>glatos</em> functions that accept receiver location data as input will typically require a <em>data.frame</em> with one or more of the following columns:</p>
 <ul>
-<li>glatos_array (link)</li>
-<li>station (link)</li>
-<li>glatos_project_receiver (link)</li>
+<li>deploy_lat</li>
+<li>deploy_long</li>
+<li>deploy_date_time</li>
+<li>recover_date_time</li>
 </ul>
+<p>Some functions will also require at least one categorical column to identify location (or group of locations). These can be specified by the user, but examples of such columns in a GLATOS standard receiver locations file are:</p>
+<ul>
+<li>glatos_array</li>
+<li>station</li>
+<li>glatos_project_receiver</li>
+</ul>
+<p>For definitions of any of the above fields, see the <a href="data_requirements.html">Data Requirements vignette</a>) and function-specific help files (e.g., <code><a href="../reference/abacus_plot.html">?abacus_plot</a></code>).</p>
+<p>Any <em>data.frame</em> that contains the above columns (in the correct formats) should be compatible with all <em>glatos</em> functions that accept receiver data as input. Use of the data loading function <em>read_glatos_receivers</em> will ensure that these columns are present and formatted correctly, but can only be used on data in GLATOS format. Data in other formats will need to be loaded using other functions (e.g., <em>read.csv</em>, <em>fread</em>, etc.) and carefully checked for compatibility with <em>glatos</em> functions (see <a href="#other-formats---csv-file-exported-from-a-vue-database">Other formats - CSV file exported from a VUE database</a>).</p>
 </div>
 <div id="examples-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#examples-1" class="anchor"></a>Examples</h2>
-<div id="loading-glatos-data-1" class="section level3">
+<div id="loading-glatos-data-entire-network" class="section level3">
 <h3 class="hasAnchor">
-<a href="#loading-glatos-data-1" class="anchor"></a>Loading GLATOS data</h3>
-<p>The <em>read_glatos_receivers()</em> function reads in receiver location data obtained from the GLATOS standard data export and checks that the data meet requirements of <em>glatos</em> functions. Data are read using <em>fread</em> in the <em>data.table</em> package, timestamps are formatted as class <em>POSIXct</em>.</p>
-<p>We will get the path to the <em>sample_receivers.csv</em> (example included in the <em>glatos</em> package) using use <em>system.file()</em>, then read the data using <em>read_glatos_receivers()</em>, and view the structure of the result.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="co">#get path to example receiver_locations file</span></a>
-<a class="sourceLine" id="cb28-2" data-line-number="2">rec_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, </a>
-<a class="sourceLine" id="cb28-3" data-line-number="3">                        <span class="st">"sample_receivers.csv"</span>, <span class="dt">package =</span> <span class="st">"glatos"</span>)</a>
-<a class="sourceLine" id="cb28-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb28-5" data-line-number="5"><span class="co">#read sample_receivers.csv using 'read_glatos_receivers()'</span></a>
-<a class="sourceLine" id="cb28-6" data-line-number="6">rcv &lt;-<span class="st"> </span><span class="kw"><a href="../reference/read_glatos_receivers.html">read_glatos_receivers</a></span>(rec_file)</a>
-<a class="sourceLine" id="cb28-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb28-8" data-line-number="8"><span class="co">#view structure</span></a>
-<a class="sourceLine" id="cb28-9" data-line-number="9"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(rcv)</a>
-<a class="sourceLine" id="cb28-10" data-line-number="10"><span class="co">#&gt; Classes 'glatos_receivers' and 'data.frame': 898 obs. of  23 variables:</span></a>
-<a class="sourceLine" id="cb28-11" data-line-number="11"><span class="co">#&gt; $ station : chr "WHT-009" ...</span></a>
-<a class="sourceLine" id="cb28-12" data-line-number="12"><span class="co">#&gt; $ glatos_array : chr "WHT" ...</span></a>
-<a class="sourceLine" id="cb28-13" data-line-number="13"><span class="co">#&gt; $ station_no : chr "9" ...</span></a>
-<a class="sourceLine" id="cb28-14" data-line-number="14"><span class="co">#&gt; $ consecutive_deploy_no: int 1 2 ...</span></a>
-<a class="sourceLine" id="cb28-15" data-line-number="15"><span class="co">#&gt; $ intend_lat : num NA NA ...</span></a>
-<a class="sourceLine" id="cb28-16" data-line-number="16"><span class="co">#&gt; $ intend_long : num NA NA ...</span></a>
-<a class="sourceLine" id="cb28-17" data-line-number="17"><span class="co">#&gt; $ deploy_lat : num 43.7 ...</span></a>
-<a class="sourceLine" id="cb28-18" data-line-number="18"><span class="co">#&gt; $ deploy_long : num -82.5 ...</span></a>
-<a class="sourceLine" id="cb28-19" data-line-number="19"><span class="co">#&gt; $ recover_lat : num NA NA ...</span></a>
-<a class="sourceLine" id="cb28-20" data-line-number="20"><span class="co">#&gt; $ recover_long : num NA NA ...</span></a>
-<a class="sourceLine" id="cb28-21" data-line-number="21"><span class="co">#&gt; $ deploy_date_time : POSIXct, format: "2010-09-22 18:05:00" ...</span></a>
-<a class="sourceLine" id="cb28-22" data-line-number="22"><span class="co">#&gt; $ recover_date_time : POSIXct, format: "2012-08-15 16:52:00" ...</span></a>
-<a class="sourceLine" id="cb28-23" data-line-number="23"><span class="co">#&gt; $ bottom_depth : num NA NA ...</span></a>
-<a class="sourceLine" id="cb28-24" data-line-number="24"><span class="co">#&gt; $ riser_length : num NA NA ...</span></a>
-<a class="sourceLine" id="cb28-25" data-line-number="25"><span class="co">#&gt; $ instrument_depth : num NA NA ...</span></a>
-<a class="sourceLine" id="cb28-26" data-line-number="26"><span class="co">#&gt; $ ins_model_no : chr "VR2W" ...</span></a>
-<a class="sourceLine" id="cb28-27" data-line-number="27"><span class="co">#&gt; $ glatos_ins_frequency : int 69 69 ...</span></a>
-<a class="sourceLine" id="cb28-28" data-line-number="28"><span class="co">#&gt; $ ins_serial_no : chr "109450" ...</span></a>
-<a class="sourceLine" id="cb28-29" data-line-number="29"><span class="co">#&gt; $ deployed_by : chr "" ...</span></a>
-<a class="sourceLine" id="cb28-30" data-line-number="30"><span class="co">#&gt; $ comments : chr "" ...</span></a>
-<a class="sourceLine" id="cb28-31" data-line-number="31"><span class="co">#&gt; $ glatos_seasonal : chr "NO" ...</span></a>
-<a class="sourceLine" id="cb28-32" data-line-number="32"><span class="co">#&gt; $ glatos_project : chr "HECWL" ...</span></a>
-<a class="sourceLine" id="cb28-33" data-line-number="33"><span class="co">#&gt; $ glatos_vps : chr "NO" ...</span></a></code></pre></div>
-<p>The result is an object with 23 columns (including the prescribed columns described above) and two classes: <em>glatos_receivers</em> and <em>data.frame</em>. The <em>glatos_receivers</em> class label indicates that the data set was created using a <em>glatos</em> load function and therefore should work with any <em>glatos</em> function that accepts receiver data as input.</p>
+<a href="#loading-glatos-data-entire-network" class="anchor"></a>Loading GLATOS data (entire network)</h3>
+<p>The <em>read_glatos_receivers</em> function reads in receiver location data obtained from the GLATOS <a href="https://glatos.glos.us/portal">Data Portal</a> and checks that the data meet requirements of <em>glatos</em> functions. Data are read using <em>fread</em> in the <em>data.table</em> package, timestamps are formatted as class <em>POSIXct</em>.</p>
+<p>We will get the path to the <em>sample_receivers.csv</em> (example included in the <em>glatos</em> package) using <em>system.file</em>, then read the data using <em>read_glatos_receivers</em>, and view the structure of the result.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co">#get path to example receiver_locations file</span></a>
+<a class="sourceLine" id="cb31-2" data-line-number="2">rec_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"sample_receivers.csv"</span>, </a>
+<a class="sourceLine" id="cb31-3" data-line-number="3">                        <span class="dt">package =</span> <span class="st">"glatos"</span>)</a>
+<a class="sourceLine" id="cb31-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb31-5" data-line-number="5"><span class="co">#read sample_receivers.csv using 'read_glatos_receivers'</span></a>
+<a class="sourceLine" id="cb31-6" data-line-number="6">rcv &lt;-<span class="st"> </span><span class="kw"><a href="../reference/read_glatos_receivers.html">read_glatos_receivers</a></span>(rec_file)</a>
+<a class="sourceLine" id="cb31-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb31-8" data-line-number="8"><span class="co">#view structure</span></a>
+<a class="sourceLine" id="cb31-9" data-line-number="9"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(rcv)</a>
+<a class="sourceLine" id="cb31-10" data-line-number="10"><span class="co">#&gt; Classes 'glatos_receivers' and 'data.frame': 898 obs. of  23 variables:</span></a>
+<a class="sourceLine" id="cb31-11" data-line-number="11"><span class="co">#&gt; $ station : chr "WHT-009" ...</span></a>
+<a class="sourceLine" id="cb31-12" data-line-number="12"><span class="co">#&gt; $ glatos_array : chr "WHT" ...</span></a>
+<a class="sourceLine" id="cb31-13" data-line-number="13"><span class="co">#&gt; $ station_no : chr "9" ...</span></a>
+<a class="sourceLine" id="cb31-14" data-line-number="14"><span class="co">#&gt; $ consecutive_deploy_no: int 1 2 ...</span></a>
+<a class="sourceLine" id="cb31-15" data-line-number="15"><span class="co">#&gt; $ intend_lat : num NA NA ...</span></a>
+<a class="sourceLine" id="cb31-16" data-line-number="16"><span class="co">#&gt; $ intend_long : num NA NA ...</span></a>
+<a class="sourceLine" id="cb31-17" data-line-number="17"><span class="co">#&gt; $ deploy_lat : num 43.7 ...</span></a>
+<a class="sourceLine" id="cb31-18" data-line-number="18"><span class="co">#&gt; $ deploy_long : num -82.5 ...</span></a>
+<a class="sourceLine" id="cb31-19" data-line-number="19"><span class="co">#&gt; $ recover_lat : num NA NA ...</span></a>
+<a class="sourceLine" id="cb31-20" data-line-number="20"><span class="co">#&gt; $ recover_long : num NA NA ...</span></a>
+<a class="sourceLine" id="cb31-21" data-line-number="21"><span class="co">#&gt; $ deploy_date_time : POSIXct, format: "2010-09-22 18:05:00" ...</span></a>
+<a class="sourceLine" id="cb31-22" data-line-number="22"><span class="co">#&gt; $ recover_date_time : POSIXct, format: "2012-08-15 16:52:00" ...</span></a>
+<a class="sourceLine" id="cb31-23" data-line-number="23"><span class="co">#&gt; $ bottom_depth : num NA NA ...</span></a>
+<a class="sourceLine" id="cb31-24" data-line-number="24"><span class="co">#&gt; $ riser_length : num NA NA ...</span></a>
+<a class="sourceLine" id="cb31-25" data-line-number="25"><span class="co">#&gt; $ instrument_depth : num NA NA ...</span></a>
+<a class="sourceLine" id="cb31-26" data-line-number="26"><span class="co">#&gt; $ ins_model_no : chr "VR2W" ...</span></a>
+<a class="sourceLine" id="cb31-27" data-line-number="27"><span class="co">#&gt; $ glatos_ins_frequency : int 69 69 ...</span></a>
+<a class="sourceLine" id="cb31-28" data-line-number="28"><span class="co">#&gt; $ ins_serial_no : chr "109450" ...</span></a>
+<a class="sourceLine" id="cb31-29" data-line-number="29"><span class="co">#&gt; $ deployed_by : chr "" ...</span></a>
+<a class="sourceLine" id="cb31-30" data-line-number="30"><span class="co">#&gt; $ comments : chr "" ...</span></a>
+<a class="sourceLine" id="cb31-31" data-line-number="31"><span class="co">#&gt; $ glatos_seasonal : chr "NO" ...</span></a>
+<a class="sourceLine" id="cb31-32" data-line-number="32"><span class="co">#&gt; $ glatos_project : chr "HECWL" ...</span></a>
+<a class="sourceLine" id="cb31-33" data-line-number="33"><span class="co">#&gt; $ glatos_vps : chr "NO" ...</span></a></code></pre></div>
+<p>The result is an object with 23 columns (including the required columns described above) and two classes: <em>glatos_receivers</em> and <em>data.frame</em>. The <em>glatos_receivers</em> class label indicates that the data set was created using a <em>glatos</em> load function and therefore should work with any <em>glatos</em> function that accepts receiver data as input.</p>
+</div>
+<div id="loading-glatos-data-single-project-workbook" class="section level3">
+<h3 class="hasAnchor">
+<a href="#loading-glatos-data-single-project-workbook" class="anchor"></a>Loading GLATOS data (single project workbook)</h3>
+<p>The <em>read_glatos_workbook</em> function reads in receiver location data from a standard GLATOS project workbook (*.xlsm file) and checks that the data meet requirements of <em>glatos</em> functions. Data are read using <em>readWorkbook</em> in the <em>openxlsx</em> package, timestamps are formatted as class <em>POSIXct</em>.</p>
+<p>We will get the path to the <em>walleye_workbook.xlsm</em> (example included in the <em>glatos</em> package) using <em>system.file</em>, then read the data using <em>read_glatos_workbook</em>, and view the structure of the result.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co">#get path to example walleye_workbook.xlsm file</span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">wb_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"walleye_workbook.xlsm"</span>, </a>
+<a class="sourceLine" id="cb32-3" data-line-number="3">                        <span class="dt">package =</span> <span class="st">"glatos"</span>)</a>
+<a class="sourceLine" id="cb32-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb32-5" data-line-number="5"><span class="co">#read walleye_workbook.xlsm using 'read_glatos_workbook'</span></a>
+<a class="sourceLine" id="cb32-6" data-line-number="6">wb &lt;-<span class="st"> </span><span class="kw"><a href="../reference/read_glatos_workbook.html">read_glatos_workbook</a></span>(wb_file)</a>
+<a class="sourceLine" id="cb32-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb32-8" data-line-number="8"><span class="co">#view structure</span></a>
+<a class="sourceLine" id="cb32-9" data-line-number="9"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">class</a></span>(wb)</a>
+<a class="sourceLine" id="cb32-10" data-line-number="10"><span class="co">#&gt; [1] "glatos_workbook" "list"</span></a>
+<a class="sourceLine" id="cb32-11" data-line-number="11"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(wb)</a>
+<a class="sourceLine" id="cb32-12" data-line-number="12"><span class="co">#&gt; [1] "metadata"  "animals"   "receivers"</span></a></code></pre></div>
+<p>The result is a <em>list</em> (also a <em>glatos_workbook</em>) object with three elements containing data about the project and the data file (<em>metadata</em>), the fish that were tagged and released (<em>animals</em>), and the receivers (<em>receivers</em>). The <em>receivers</em> element is actually the result of merging two sheets in the source file: <em>deployments</em> and <em>recoveries</em>. Next, we will extract the receiver element from the workbook object and view its structure.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co">#extract receivers element from workbook list</span></a>
+<a class="sourceLine" id="cb33-2" data-line-number="2">rcv2 &lt;-<span class="st"> </span>wb[[<span class="st">"receivers"</span>]]</a>
+<a class="sourceLine" id="cb33-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="co">#view structure</span></a>
+<a class="sourceLine" id="cb33-5" data-line-number="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(rcv2)</a>
+<a class="sourceLine" id="cb33-6" data-line-number="6"><span class="co">#&gt; Classes 'glatos_receivers' and 'data.frame': 1039 obs. of  41 variables:</span></a>
+<a class="sourceLine" id="cb33-7" data-line-number="7"><span class="co">#&gt; $ glatos_array : chr "BBI" ...</span></a>
+<a class="sourceLine" id="cb33-8" data-line-number="8"><span class="co">#&gt; $ glatos_project : chr "HECWL" ...</span></a>
+<a class="sourceLine" id="cb33-9" data-line-number="9"><span class="co">#&gt; $ station_no : chr "5" ...</span></a>
+<a class="sourceLine" id="cb33-10" data-line-number="10"><span class="co">#&gt; $ consecutive_deploy_no : num 1 1 ...</span></a>
+<a class="sourceLine" id="cb33-11" data-line-number="11"><span class="co">#&gt; $ ins_serial_no : chr "109493" ...</span></a>
+<a class="sourceLine" id="cb33-12" data-line-number="12"><span class="co">#&gt; $ otn_array : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-13" data-line-number="13"><span class="co">#&gt; $ mooring_drop_dead_date : Date, format: NA ...</span></a>
+<a class="sourceLine" id="cb33-14" data-line-number="14"><span class="co">#&gt; $ intend_lat : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-15" data-line-number="15"><span class="co">#&gt; $ intend_long : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-16" data-line-number="16"><span class="co">#&gt; $ otn_mission_id : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-17" data-line-number="17"><span class="co">#&gt; $ deploy_date_time : POSIXct, format: "2010-09-14 15:58:00" ...</span></a>
+<a class="sourceLine" id="cb33-18" data-line-number="18"><span class="co">#&gt; $ deploy_lat : num 45.7 ...</span></a>
+<a class="sourceLine" id="cb33-19" data-line-number="19"><span class="co">#&gt; $ deploy_long : num -84.4 ...</span></a>
+<a class="sourceLine" id="cb33-20" data-line-number="20"><span class="co">#&gt; $ bottom_depth : num NA NA ...</span></a>
+<a class="sourceLine" id="cb33-21" data-line-number="21"><span class="co">#&gt; $ riser_length : num NA NA ...</span></a>
+<a class="sourceLine" id="cb33-22" data-line-number="22"><span class="co">#&gt; $ instrument_depth : num NA NA ...</span></a>
+<a class="sourceLine" id="cb33-23" data-line-number="23"><span class="co">#&gt; $ checwlk_complete_time : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-24" data-line-number="24"><span class="co">#&gt; $ status_in : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-25" data-line-number="25"><span class="co">#&gt; $ ins_model_no : chr "VR2W" ...</span></a>
+<a class="sourceLine" id="cb33-26" data-line-number="26"><span class="co">#&gt; $ glatos_ins_frequency : chr "69" ...</span></a>
+<a class="sourceLine" id="cb33-27" data-line-number="27"><span class="co">#&gt; $ rcv_modem_address : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-28" data-line-number="28"><span class="co">#&gt; $ sync_date_time : POSIXct, format: NA ...</span></a>
+<a class="sourceLine" id="cb33-29" data-line-number="29"><span class="co">#&gt; $ memory_erased_at_deploy : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-30" data-line-number="30"><span class="co">#&gt; $ rcv_battery_install_date : Date, format: NA ...</span></a>
+<a class="sourceLine" id="cb33-31" data-line-number="31"><span class="co">#&gt; $ rcv_expected_battery_life: chr NA ...</span></a>
+<a class="sourceLine" id="cb33-32" data-line-number="32"><span class="co">#&gt; $ rcv_voltage_at_deploy : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-33" data-line-number="33"><span class="co">#&gt; $ rcv_tilt_after_deploy : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-34" data-line-number="34"><span class="co">#&gt; $ deployed_by : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-35" data-line-number="35"><span class="co">#&gt; $ comments : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-36" data-line-number="36"><span class="co">#&gt; $ glatos_seasonal : chr "NO" ...</span></a>
+<a class="sourceLine" id="cb33-37" data-line-number="37"><span class="co">#&gt; $ glatos_vps : chr "NO" ...</span></a>
+<a class="sourceLine" id="cb33-38" data-line-number="38"><span class="co">#&gt; $ ar_confirm : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-39" data-line-number="39"><span class="co">#&gt; $ data_downloaded : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-40" data-line-number="40"><span class="co">#&gt; $ ins_model_number : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-41" data-line-number="41"><span class="co">#&gt; $ recovered : chr NA ...</span></a>
+<a class="sourceLine" id="cb33-42" data-line-number="42"><span class="co">#&gt; $ recover_date_time : POSIXct, format: "2011-09-16 18:50:00" ...</span></a>
+<a class="sourceLine" id="cb33-43" data-line-number="43"><span class="co">#&gt; $ recover_lat : num NA NA ...</span></a>
+<a class="sourceLine" id="cb33-44" data-line-number="44"><span class="co">#&gt; $ recover_long : num NA NA ...</span></a>
+<a class="sourceLine" id="cb33-45" data-line-number="45"><span class="co">#&gt; $ location_description : chr "Bois Blanc Island (East line)" ...</span></a>
+<a class="sourceLine" id="cb33-46" data-line-number="46"><span class="co">#&gt; $ water_body : chr "Lake Huron" ...</span></a>
+<a class="sourceLine" id="cb33-47" data-line-number="47"><span class="co">#&gt; $ glatos_region : chr "Lake Huron" ...</span></a></code></pre></div>
+<p>The result contains 41 columns and two classes: <em>glatos_receivers</em> and <em>data.frame</em>. Despite some differences between the structure of this project-specific data object and the network-level data object loaded in the previous example, both have been minimally modified to meet the requirements of any <em>glatos</em> function that accepts receiver data as input.</p>
+</div>
+<div id="other-formats" class="section level3">
+<h3 class="hasAnchor">
+<a href="#other-formats" class="anchor"></a>Other formats</h3>
+<p>Receiver location data in any format than one of the GLATOS standards will need to be:</p>
+<ol style="list-style-type: decimal">
+<li><p>loaded into R using some other function (e.g., <em>read_csv</em>, <em>fread</em>, etc) and</p></li>
+<li><p>modified to ensure that all requirements of the desired function are met.</p></li>
+</ol>
+<p>This vignette does not include an example of receiver location data loaded from CSV because the methods would be very similar to those described above. For example, you might step through each required column described in the <a href="data_requirements.html">Data Requirements vignette</a>), check that each column meets <em>glatos</em> requirements, and modify accordingly using methods described above for detection data from a CSV file exported from VUE (see <a href="#other-formats---csv-file-exported-from-a-vue-database">Other formats - CSV file exported from a VUE database</a>)</p>
+</div>
+</div>
+</div>
+<div id="animal-tagging-and-biological-data" class="section level1">
+<h1 class="hasAnchor">
+<a href="#animal-tagging-and-biological-data" class="anchor"></a>Animal tagging and biological data</h1>
+<div id="requirements-2" class="section level2">
+<h2 class="hasAnchor">
+<a href="#requirements-2" class="anchor"></a>Requirements</h2>
+<p>There are currently no <em>glatos</em> functions that require animal tagging and biological data other than those columns present in the required <em>detection</em> data. Therefore, there are no formal requirements of such data in the package. Nonetheless, the <em>read_glatos_workbook</em> function can be used to facilitate loading animal tagging and biological data from a standard GLATOS project workbook (*.xlsm file) into an R session.</p>
+<p>Use of the data loading function <em>read_glatos_workbook</em> will ensure that animal data are loaded efficiently and consistently among users, but can only be used on data in GLATOS format. Data in other formats will need to be loaded using other functions (e.g., <em>read.csv</em>, <em>fread</em>, etc.). Although there are currently no <em>glatos</em> requirements of animal data, any future requirements might be expected to be consistent with the <em>glatos_animals</em> class.</p>
+</div>
+<div id="examples-2" class="section level2">
+<h2 class="hasAnchor">
+<a href="#examples-2" class="anchor"></a>Examples</h2>
+<div id="loading-glatos-data-single-project-workbook-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#loading-glatos-data-single-project-workbook-1" class="anchor"></a>Loading GLATOS data (single project workbook)</h3>
+<p>The <em>read_glatos_workbook</em> function reads animal tagging and biological data from a standard GLATOS project workbook (*.xlsm file; <em>tagging</em> sheet). Data are read using <em>readWorkbook</em> in the <em>openxlsx</em> package, timestamps are formatted as class <em>POSIXct</em>.</p>
+<p>We will again use data from the same <em>walleye_workbook.xlsm</em> example file used in the previous section (see data loading steps above), but will extract the <em>animals</em> element and view its structure.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="co">#extract animals element from workbook list</span></a>
+<a class="sourceLine" id="cb34-2" data-line-number="2">fsh &lt;-<span class="st"> </span>wb[[<span class="st">"animals"</span>]]</a>
+<a class="sourceLine" id="cb34-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb34-4" data-line-number="4"><span class="co">#view structure</span></a>
+<a class="sourceLine" id="cb34-5" data-line-number="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(fsh)</a>
+<a class="sourceLine" id="cb34-6" data-line-number="6"><span class="co">#&gt; Classes 'glatos_animals' and 'data.frame':   543 obs. of  55 variables:</span></a>
+<a class="sourceLine" id="cb34-7" data-line-number="7"><span class="co">#&gt; $ animal_id : chr "120" ...</span></a>
+<a class="sourceLine" id="cb34-8" data-line-number="8"><span class="co">#&gt; $ tag_type : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-9" data-line-number="9"><span class="co">#&gt; $ tag_manufacturer : chr "VEMCO" ...</span></a>
+<a class="sourceLine" id="cb34-10" data-line-number="10"><span class="co">#&gt; $ tag_model : chr "V16-4x" ...</span></a>
+<a class="sourceLine" id="cb34-11" data-line-number="11"><span class="co">#&gt; $ tag_serial_number : chr "1106553" ...</span></a>
+<a class="sourceLine" id="cb34-12" data-line-number="12"><span class="co">#&gt; $ tag_id_code : chr "32024" ...</span></a>
+<a class="sourceLine" id="cb34-13" data-line-number="13"><span class="co">#&gt; $ tag_code_space : chr "A69-9001" ...</span></a>
+<a class="sourceLine" id="cb34-14" data-line-number="14"><span class="co">#&gt; $ tag_implant_type : chr "internal" ...</span></a>
+<a class="sourceLine" id="cb34-15" data-line-number="15"><span class="co">#&gt; $ tag_activation_date : Date, format: NA ...</span></a>
+<a class="sourceLine" id="cb34-16" data-line-number="16"><span class="co">#&gt; $ est_tag_life : chr "1338" ...</span></a>
+<a class="sourceLine" id="cb34-17" data-line-number="17"><span class="co">#&gt; $ tagger : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-18" data-line-number="18"><span class="co">#&gt; $ tag_owner_pi : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-19" data-line-number="19"><span class="co">#&gt; $ tag_owner_organization : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-20" data-line-number="20"><span class="co">#&gt; $ common_name_e : chr "walleye" ...</span></a>
+<a class="sourceLine" id="cb34-21" data-line-number="21"><span class="co">#&gt; $ scientific_name : chr "Sander vitreus" ...</span></a>
+<a class="sourceLine" id="cb34-22" data-line-number="22"><span class="co">#&gt; $ capture_location : chr "Maumee River" ...</span></a>
+<a class="sourceLine" id="cb34-23" data-line-number="23"><span class="co">#&gt; $ capture_latitude : num 41.6 ...</span></a>
+<a class="sourceLine" id="cb34-24" data-line-number="24"><span class="co">#&gt; $ capture_longitude : num -83.6 ...</span></a>
+<a class="sourceLine" id="cb34-25" data-line-number="25"><span class="co">#&gt; $ wild_or_hatchery : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-26" data-line-number="26"><span class="co">#&gt; $ stock : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-27" data-line-number="27"><span class="co">#&gt; $ length : num 0.627 0.706 ...</span></a>
+<a class="sourceLine" id="cb34-28" data-line-number="28"><span class="co">#&gt; $ weight : num NA NA ...</span></a>
+<a class="sourceLine" id="cb34-29" data-line-number="29"><span class="co">#&gt; $ length_type : chr "total" ...</span></a>
+<a class="sourceLine" id="cb34-30" data-line-number="30"><span class="co">#&gt; $ age : chr "7" ...</span></a>
+<a class="sourceLine" id="cb34-31" data-line-number="31"><span class="co">#&gt; $ sex : chr "F" ...</span></a>
+<a class="sourceLine" id="cb34-32" data-line-number="32"><span class="co">#&gt; $ dna_sample_taken : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-33" data-line-number="33"><span class="co">#&gt; $ treatment_type : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-34" data-line-number="34"><span class="co">#&gt; $ release_group : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-35" data-line-number="35"><span class="co">#&gt; $ release_location : chr "Maumee" ...</span></a>
+<a class="sourceLine" id="cb34-36" data-line-number="36"><span class="co">#&gt; $ release_latitude : num 41.6 ...</span></a>
+<a class="sourceLine" id="cb34-37" data-line-number="37"><span class="co">#&gt; $ release_longitude : num -83.6 ...</span></a>
+<a class="sourceLine" id="cb34-38" data-line-number="38"><span class="co">#&gt; $ utc_release_date_time : POSIXct, format: "2011-03-28 04:00:00" ...</span></a>
+<a class="sourceLine" id="cb34-39" data-line-number="39"><span class="co">#&gt; $ capture_depth : num NA NA ...</span></a>
+<a class="sourceLine" id="cb34-40" data-line-number="40"><span class="co">#&gt; $ temperature_change : num NA NA ...</span></a>
+<a class="sourceLine" id="cb34-41" data-line-number="41"><span class="co">#&gt; $ holding_temperature : num NA NA ...</span></a>
+<a class="sourceLine" id="cb34-42" data-line-number="42"><span class="co">#&gt; $ surgery_location : chr "Maumee" ...</span></a>
+<a class="sourceLine" id="cb34-43" data-line-number="43"><span class="co">#&gt; $ date_of_surgery : Date, format: NA ...</span></a>
+<a class="sourceLine" id="cb34-44" data-line-number="44"><span class="co">#&gt; $ surgery_latitude : num 43.6 ...</span></a>
+<a class="sourceLine" id="cb34-45" data-line-number="45"><span class="co">#&gt; $ surgery_longitude : num -84.2 ...</span></a>
+<a class="sourceLine" id="cb34-46" data-line-number="46"><span class="co">#&gt; $ sedative : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-47" data-line-number="47"><span class="co">#&gt; $ sedative_concentration : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-48" data-line-number="48"><span class="co">#&gt; $ anaesthetic : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-49" data-line-number="49"><span class="co">#&gt; $ buffer : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-50" data-line-number="50"><span class="co">#&gt; $ anaesthetic_concentration : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-51" data-line-number="51"><span class="co">#&gt; $ buffer_concentration_in_anaesthetic : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-52" data-line-number="52"><span class="co">#&gt; $ anesthetic_concentration_in_recirculation: chr NA ...</span></a>
+<a class="sourceLine" id="cb34-53" data-line-number="53"><span class="co">#&gt; $ buffer_concentration_in_recirculation : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-54" data-line-number="54"><span class="co">#&gt; $ dissolved_oxygen : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-55" data-line-number="55"><span class="co">#&gt; $ comments : chr NA ...</span></a>
+<a class="sourceLine" id="cb34-56" data-line-number="56"><span class="co">#&gt; $ glatos_project : chr "HECWL" ...</span></a>
+<a class="sourceLine" id="cb34-57" data-line-number="57"><span class="co">#&gt; $ glatos_external_tag_id1 : chr "5017" ...</span></a>
+<a class="sourceLine" id="cb34-58" data-line-number="58"><span class="co">#&gt; $ glatos_external_tag_id2 : chr "5016" ...</span></a>
+<a class="sourceLine" id="cb34-59" data-line-number="59"><span class="co">#&gt; $ glatos_tag_recovered : chr "NO" ...</span></a>
+<a class="sourceLine" id="cb34-60" data-line-number="60"><span class="co">#&gt; $ glatos_caught_date : Date, format: NA ...</span></a>
+<a class="sourceLine" id="cb34-61" data-line-number="61"><span class="co">#&gt; $ glatos_reward : chr NA ...</span></a></code></pre></div>
+<p>The result contains 55 columns and two classes: <em>glatos_animals</em> and <em>data.frame</em>.</p>
+</div>
+<div id="other-formats-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#other-formats-1" class="anchor"></a>Other formats</h3>
+<p>Receiver location data in any format than one of the GLATOS standards will need to be:</p>
+<ol style="list-style-type: decimal">
+<li><p>loaded into R using some other function (e.g., <em>read_csv</em>, <em>fread</em>, etc) and</p></li>
+<li><p>modified to ensure that all requirements of the desired function are met.</p></li>
+</ol>
+<p>This vignette does not include an example of animal tagging and biological data loaded from CSV because the methods would be very similar to those described above. Moreover, there are currently no <em>glatos</em> functions that require animal tagging and biological data other than those present in <em>glatos_detections</em> data. Although the <em>glatos</em> package currently does not contain any specific requirements of animal tagging and biological data, future requirements might be expected to resemble key columns of <em>glatos_animals</em> objects.</p>
+</div>
+</div>
+</div>
+<div id="transmitter-specification-data" class="section level1">
+<h1 class="hasAnchor">
+<a href="#transmitter-specification-data" class="anchor"></a>Transmitter specification data</h1>
+<div id="requirements-3" class="section level2">
+<h2 class="hasAnchor">
+<a href="#requirements-3" class="anchor"></a>Requirements</h2>
+<p>There are currently no <em>glatos</em> functions that require transmitter specification data. Therefore, there are no formal requirements of such data in the package. Nonetheless, the <em>read_vemco_tag_specs</em> function can be used to facilitate loading transmitter specification data from a standard VEMCO tag spec (*.xls) file provided to tag purchasers from VEMCO.</p>
+<p>Use of the data loading function <em>read_vemco_tag_specs</em> will ensure that transmitter specificaiton data are loaded efficiently and consistently among users, but can only be used on data in VEMCO standard format. Data in other formats will need to be loaded using other functions (e.g., <em>read.csv</em>, <em>fread</em>, etc.). Although there are currently no <em>glatos</em> requirements of transmitter specification data, any future requirements might be expected to be consistent with the output of <em>read_vemco_tag_specs</em>.</p>
+</div>
+<div id="examples-3" class="section level2">
+<h2 class="hasAnchor">
+<a href="#examples-3" class="anchor"></a>Examples</h2>
+<div id="loading-data-from-a-vemco-tag-specs-file" class="section level3">
+<h3 class="hasAnchor">
+<a href="#loading-data-from-a-vemco-tag-specs-file" class="anchor"></a>Loading data from a VEMCO tag specs file</h3>
+<p>The <em>read_vemco_tag_specs</em> function reads transmitter specification data from a standard VEMCO tag specs (*.xls file). Data are read using <em>read_excel</em> in the <em>readxl</em> package.</p>
+<p>We will get the path to the <em>lamprey_tag_specs.xls</em> (example included in the <em>glatos</em> package) using <em>system.file</em>, then read the data using <em>read_vemco_tag_specs</em>, and view the structure of the result.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co">#get path to example lamprey_tag_specs.xls file</span></a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">spec_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"lamprey_tag_specs.xls"</span>, </a>
+<a class="sourceLine" id="cb35-3" data-line-number="3">                        <span class="dt">package =</span> <span class="st">"glatos"</span>)</a>
+<a class="sourceLine" id="cb35-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb35-5" data-line-number="5"><span class="co">#read lamprey_tag_specs.xls using 'read_vemco_tag_specs'</span></a>
+<a class="sourceLine" id="cb35-6" data-line-number="6">my_tags &lt;-<span class="st"> </span><span class="kw"><a href="../reference/read_vemco_tag_specs.html">read_vemco_tag_specs</a></span>(spec_file, <span class="dt">file_format =</span> <span class="st">"vemco_xls"</span>)</a>
+<a class="sourceLine" id="cb35-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb35-8" data-line-number="8"><span class="co">#view structure</span></a>
+<a class="sourceLine" id="cb35-9" data-line-number="9"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">class</a></span>(my_tags)</a>
+<a class="sourceLine" id="cb35-10" data-line-number="10"><span class="co">#&gt; [1] "list"</span></a>
+<a class="sourceLine" id="cb35-11" data-line-number="11"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(my_tags)</a>
+<a class="sourceLine" id="cb35-12" data-line-number="12"><span class="co">#&gt; [1] "specs"    "schedule"</span></a></code></pre></div>
+<p>The result is a <em>list</em> object with two elements containing data about the transmitter specifications (<em>specs</em>) and the operating schedule (<em>schedule</em>). Next, we will view the structure of each element, starting with <em>specs</em>.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="co">#view structure of specs element</span></a>
+<a class="sourceLine" id="cb36-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(my_tags<span class="op">$</span>specs)</a>
+<a class="sourceLine" id="cb36-3" data-line-number="3"><span class="co">#&gt; 'data.frame':    4 obs. of  18 variables:</span></a>
+<a class="sourceLine" id="cb36-4" data-line-number="4"><span class="co">#&gt; $ sales_order : chr "11189" ...</span></a>
+<a class="sourceLine" id="cb36-5" data-line-number="5"><span class="co">#&gt; $ serial_number : chr "1109712" ...</span></a>
+<a class="sourceLine" id="cb36-6" data-line-number="6"><span class="co">#&gt; $ manufacturer : chr "Vemco" ...</span></a>
+<a class="sourceLine" id="cb36-7" data-line-number="7"><span class="co">#&gt; $ model : chr "V9-2x-069k-1" ...</span></a>
+<a class="sourceLine" id="cb36-8" data-line-number="8"><span class="co">#&gt; $ id_count : num 1 1 ...</span></a>
+<a class="sourceLine" id="cb36-9" data-line-number="9"><span class="co">#&gt; $ code_space : chr "A69-1601" ...</span></a>
+<a class="sourceLine" id="cb36-10" data-line-number="10"><span class="co">#&gt; $ id_code : chr "1362" ...</span></a>
+<a class="sourceLine" id="cb36-11" data-line-number="11"><span class="co">#&gt; $ n_steps : int 1 1 ...</span></a>
+<a class="sourceLine" id="cb36-12" data-line-number="12"><span class="co">#&gt; $ sensor_type : chr NA ...</span></a>
+<a class="sourceLine" id="cb36-13" data-line-number="13"><span class="co">#&gt; $ sensor_range : chr NA ...</span></a>
+<a class="sourceLine" id="cb36-14" data-line-number="14"><span class="co">#&gt; $ sensor_units : chr NA ...</span></a>
+<a class="sourceLine" id="cb36-15" data-line-number="15"><span class="co">#&gt; $ sensor_slope : num NA NA ...</span></a>
+<a class="sourceLine" id="cb36-16" data-line-number="16"><span class="co">#&gt; $ sensor_intercept : num NA NA ...</span></a>
+<a class="sourceLine" id="cb36-17" data-line-number="17"><span class="co">#&gt; $ accel_algorithm : chr NA ...</span></a>
+<a class="sourceLine" id="cb36-18" data-line-number="18"><span class="co">#&gt; $ accel_sample_rate : num NA NA ...</span></a>
+<a class="sourceLine" id="cb36-19" data-line-number="19"><span class="co">#&gt; $ sensor_transmit_ratio: num NA NA ...</span></a>
+<a class="sourceLine" id="cb36-20" data-line-number="20"><span class="co">#&gt; $ est_battery_life_days: num NA NA ...</span></a>
+<a class="sourceLine" id="cb36-21" data-line-number="21"><span class="co">#&gt; $ battery_life_stat : chr "95%" ...</span></a></code></pre></div>
+<p>The result contains 18 columns of transmitter characteristics that do not change over time.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co">#view structure of schedule element</span></a>
+<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/str">str</a></span>(my_tags<span class="op">$</span>schedule)</a>
+<a class="sourceLine" id="cb37-3" data-line-number="3"><span class="co">#&gt; 'data.frame':    16 obs. of  11 variables:</span></a>
+<a class="sourceLine" id="cb37-4" data-line-number="4"><span class="co">#&gt; $ serial_number : chr "1109712" ...</span></a>
+<a class="sourceLine" id="cb37-5" data-line-number="5"><span class="co">#&gt; $ code_space : chr "A69-1601" ...</span></a>
+<a class="sourceLine" id="cb37-6" data-line-number="6"><span class="co">#&gt; $ id_code : chr "1362" ...</span></a>
+<a class="sourceLine" id="cb37-7" data-line-number="7"><span class="co">#&gt; $ step : int 1 2 ...</span></a>
+<a class="sourceLine" id="cb37-8" data-line-number="8"><span class="co">#&gt; $ next_step : chr "2" ...</span></a>
+<a class="sourceLine" id="cb37-9" data-line-number="9"><span class="co">#&gt; $ status : chr "ON" ...</span></a>
+<a class="sourceLine" id="cb37-10" data-line-number="10"><span class="co">#&gt; $ duration_days : num 101 365 ...</span></a>
+<a class="sourceLine" id="cb37-11" data-line-number="11"><span class="co">#&gt; $ power : chr "H" ...</span></a>
+<a class="sourceLine" id="cb37-12" data-line-number="12"><span class="co">#&gt; $ min_delay_secs : num 40 NA ...</span></a>
+<a class="sourceLine" id="cb37-13" data-line-number="13"><span class="co">#&gt; $ max_delay_secs : num 80 NA ...</span></a>
+<a class="sourceLine" id="cb37-14" data-line-number="14"><span class="co">#&gt; $ accel_on_time_secs: num NA NA ...</span></a></code></pre></div>
+<p>The result contains 11 columns of transmitter characteristics that change over time. These may be used to estimate the operating characteristics (e.g., <em>power</em>, <em>min_delay</em>, <em>max_delay</em>, etc.) on a specific date following activation or release.</p>
+</div>
+<div id="other-formats-2" class="section level3">
+<h3 class="hasAnchor">
+<a href="#other-formats-2" class="anchor"></a>Other formats</h3>
+<p>Transmitter specification and schedule data in any format than one of the GLATOS standards will need to be:</p>
+<ol style="list-style-type: decimal">
+<li><p>loaded into R using some other function (e.g., <em>read_csv</em>, <em>fread</em>, etc) and</p></li>
+<li><p>modified to ensure that all requirements of the desired function are met.</p></li>
+</ol>
+<p>This vignette does not include an example of transmitter specification and schedule data loaded from CSV because the methods would be very similar to those described above. Moreover, there are currently no <em>glatos</em> functions that require transmitter specification and schedule data other than those present in <em>glatos_detections</em> data. Although the <em>glatos</em> package currently does not contain any specific requirements of these data, future requirements might be expected to resemble key columns of the output of <em>read_vemco_tag_specs</em>.</p>
 </div>
 </div>
 </div>
@@ -686,6 +961,18 @@ Use <em>between</em> to query records or evaluate statements by intervals.</p>
 <a href="#receiver-location-data">Receiver location data</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#requirements-1">Requirements</a></li>
       <li><a href="#examples-1">Examples</a></li>
+      </ul>
+</li>
+      <li>
+<a href="#animal-tagging-and-biological-data">Animal tagging and biological data</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#requirements-2">Requirements</a></li>
+      <li><a href="#examples-2">Examples</a></li>
+      </ul>
+</li>
+      <li>
+<a href="#transmitter-specification-data">Transmitter specification data</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#requirements-3">Requirements</a></li>
+      <li><a href="#examples-3">Examples</a></li>
       </ul>
 </li>
       </ul>
