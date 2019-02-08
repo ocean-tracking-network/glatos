@@ -55,11 +55,25 @@
 #'   will write a png file to the working directory. If \code{NULL} (default)
 #'   then the plot will be printed to the default plot device.
 #'   Supported extensions: png, jpeg, bmp, and tiff.
+#'
+#' @param x_res Resolution of x-axis major tick marks. If numeric (e.g., 5
+#'   (default value), then range of x-axis will be divided into that number of
+#'   equally-spaced bins; and will be passed to \code{length.out} argument of
+#'   \code{seq.Date}. If character, then value will be passed to \code{by}
+#'   argument of \link[base]{seq.Date}. In that case, a character string,
+#'   containing one of "day", "week", "month", "quarter" or "year". This can
+#'   optionally be preceded by a (positive or negative) integer and a space, or
+#'   followed by "s". E.g., "10 days", "weeks", "4 weeks", etc. See
+#'   \link[base]{seq.Date}.
+#'   
+#' @param x_format Format of the x-axis tick mark labels (major ticks only; 
+#'   minor ticks are not supported). Default is "%Y-%m-%d". Any valid 
+#'   \link[base]{strptime} specification should work.
 #'   
 #' @param outFile Deprecated. Use \code{out_file} instead.
 #'   
-#' @param ... Other plotting arguments that pass to "points" function (e.g., col,
-#'   lwd, type).
+#' @param ... Other plotting arguments that pass to "points" function (e.g.,
+#'   col, lwd, type).
 #'   
 #' @details NAs are not allowed in any of the two required columns.
 #'   
@@ -104,9 +118,20 @@
 #'    "DRM", "FDT"), main = "TagID: 32054", col = "red")
 #'
 #' #plot with custom y-axis label and lines connecting symbols
-#' abacus_plot(det, main = "TagID: 32054", type = "l",
-#' 	 col = "red")
-#'   
+#' abacus_plot(det, main = "TagID: 32054", type = "o", pch = 20,  col = "red")
+#' 
+#' #plot with custom x-axis resolution - 10 bins
+#' abacus_plot(det, main = "TagID: 32054", x_res = 10)
+#' 
+#' #plot with custom x-axis resolution - monthly bins
+#' abacus_plot(det, main = "TagID: 32054", x_res = "month")
+#' 
+#' #plot with custom x-axis resolution - 8-week bins
+#' abacus_plot(det, main = "TagID: 32054", x_res = "8 weeks")
+#' 
+#' #plot with custom x-axis format - 8-week bins
+#' abacus_plot(det, main = "TagID: 32054", x_res = "months", x_format = "%b-%y")
+#'
 #' @export
 
 abacus_plot <- function(det,
@@ -115,6 +140,8 @@ abacus_plot <- function(det,
                         show_receiver_status = FALSE,
                         receiver_history = NULL,
                         out_file = NULL,
+                        x_res = 5, 
+                        x_format = "%Y-%m-%d",
                         outFile = NULL,
                         ...){
   
@@ -278,9 +305,27 @@ abacus_plot <- function(det,
   # Add custom axes
   axis(2, at = locations_table$y_order, 
     labels = locations_table$location, las = 1)
-  xmaj <- seq(from = min(det$detection_timestamp_utc, na.rm = TRUE), 
-    to = max(det$detection_timestamp_utc, na.rm = TRUE), length.out = 5)
-  axis(1, at = xmaj, labels = format(xmaj, "%Y-%m-%d"), las = 1)
+#  xmaj <- seq(from = min(det$detection_timestamp_utc, na.rm = TRUE), 
+#    to = max(det$detection_timestamp_utc, na.rm = TRUE), length.out = 5)
+  
+  #list to hold arguments for seq
+  seq_args <- list(from = min(det$detection_timestamp_utc, na.rm = TRUE), 
+                   to = max(det$detection_timestamp_utc, na.rm = TRUE))
+  
+  #set by and length.out for seq.Date based on input arg x_res
+  if(is.numeric(x_res)) {
+    seq_args$length.out = x_res
+  } else if (is.character(x_res)){
+    seq_args$by = x_res
+  } else { warning("Input argument `x_res` must be either an integer or \n
+                    a valid string that can be passed to seq.Date(..., by = ).\n
+                    Defeault value 5 has been used.")
+    seq_args$length.out = 5 #force default with warning
+  }
+
+  xmaj <- do.call(seq, seq_args)
+  
+  axis(1, at = xmaj, labels = format(xmaj, x_format), las = 1)
   
   # Add axes titles
   mtext(ifelse("xlab" %in% names(arguments), arguments$xlab, "Date"), 
