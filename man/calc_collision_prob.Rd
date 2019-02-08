@@ -4,8 +4,8 @@
 \alias{calc_collision_prob}
 \title{Estimate probability of collision for telemetry transmitters}
 \usage{
-calc_collision_prob(delayRng = c(60, 180), burstDur = 5,
-  maxTags = 50, nTrans = 10000)
+calc_collision_prob(delayRng = c(60, 180), burstDur = 5, maxTags = 50,
+  nTrans = 10000)
 }
 \arguments{
 \item{delayRng}{A 2-element numeric vector with minimum and maximum delay 
