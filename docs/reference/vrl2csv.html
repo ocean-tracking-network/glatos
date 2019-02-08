@@ -93,6 +93,12 @@
     <li>
       <a href="../articles/data_requirements.html">Data requirements of the R package glatos</a>
     </li>
+    <li>
+      <a href="../articles/receiver_efficiency.html">Receiver Efficiency Index</a>
+    </li>
+    <li>
+      <a href="../articles/residence_index.html">Residence Index</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -186,12 +192,16 @@ warning message even if conversion was successful.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>#get path to example VRL in this package</span>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'>#get path to example VRL in this package</span>
 <span class='no'>myVRL</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"VR2W_109924_20110718_1.vrl"</span>,
  <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"glatos"</span>)
-<span class='fu'>vrl2csv</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/basename'>dirname</a></span>(<span class='no'>myVRL</span>)) <span class='co'>#directory input</span></div><div class='output co'>#&gt; [1] "C:/holbrook/myR/workingPackages/glatos/docs/reference/VR2W_109924_20110718_1.csv"</div><div class='input'><span class='fu'>vrl2csv</span>(<span class='no'>myVRL</span>) <span class='co'>#file name input</span></div><div class='output co'>#&gt; [1] "C:/holbrook/myR/workingPackages/glatos/docs/reference/VR2W_109924_20110718_1.csv"</div><div class='input'>
+<span class='fu'>vrl2csv</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/basename'>dirname</a></span>(<span class='no'>myVRL</span>)) <span class='co'>#directory input</span>
+<span class='fu'>vrl2csv</span>(<span class='no'>myVRL</span>) <span class='co'>#file name input</span>
+
 <span class='co'>#setting 'overwrite=FALSE' will make new file with '_n'added to name</span>
-<span class='fu'>vrl2csv</span>(<span class='no'>myVRL</span>, <span class='kw'>overwrite</span><span class='kw'>=</span><span class='no'>F</span>)</div><div class='output co'>#&gt; [1] "C:/holbrook/myR/workingPackages/glatos/docs/reference/VR2W_109924_20110718_1.csv"</div><div class='input'>
+<span class='fu'>vrl2csv</span>(<span class='no'>myVRL</span>, <span class='kw'>overwrite</span><span class='kw'>=</span><span class='no'>F</span>)
+<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

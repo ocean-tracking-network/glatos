@@ -92,6 +92,12 @@ software." />
     <li>
       <a href="../articles/data_requirements.html">Data requirements of the R package glatos</a>
     </li>
+    <li>
+      <a href="../articles/receiver_efficiency.html">Receiver Efficiency Index</a>
+    </li>
+    <li>
+      <a href="../articles/residence_index.html">Residence Index</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -300,27 +306,34 @@ On Mac, path must point to 'ffmpeg' within the 'bin' subfolder
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+</div><span class='co'># NOT RUN {</span>
 <span class='co'># load frames</span>
 <span class='no'>frames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"frames"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"glatos"</span>)
 
 <span class='co'># make .mp4 video</span>
 <span class='co'># make sure ffmpeg is on system path (see \code{make_frames} and details)</span>
-<span class='fu'>make_video</span>(<span class='kw'>dir</span> <span class='kw'>=</span> <span class='no'>frames</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>"%02d.png"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation.mp4"</span>  )</div><div class='output co'>#&gt; [1] "ffmpeg -framerate 30 -start_number 1 -i \"C:/holbrook/myR/workingPackages/glatos/inst/extdata/frames/%02d.png\" -c:v libx264 -preset medium -r 30 -vf \"format=yuv420p\" \"C:/holbrook/myR/workingPackages/glatos/docs/reference/animation.mp4\" -n"</div><div class='input'>
+<span class='fu'>make_video</span>(<span class='kw'>dir</span> <span class='kw'>=</span> <span class='no'>frames</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>"%02d.png"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation.mp4"</span>  )
+
 <span class='co'># make .wmv video</span>
-<span class='fu'>make_video</span>(<span class='kw'>dir</span><span class='kw'>=</span><span class='no'>frames</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>"%02d.png"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation.wmv"</span> )</div><div class='output co'>#&gt; [1] "ffmpeg -framerate 30 -start_number 1 -i \"C:/holbrook/myR/workingPackages/glatos/inst/extdata/frames/%02d.png\" -c:v libx264 -preset medium -r 30 -vf \"format=yuv420p\" \"C:/holbrook/myR/workingPackages/glatos/docs/reference/animation.wmv\" -n"</div><div class='input'>
+<span class='fu'>make_video</span>(<span class='kw'>dir</span><span class='kw'>=</span><span class='no'>frames</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>"%02d.png"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation.wmv"</span> )
+
 <span class='co'># start animation on frame 10, end on frame 20</span>
 <span class='fu'>make_video</span>(<span class='kw'>dir</span><span class='kw'>=</span><span class='no'>frames</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>"%02d.png"</span>, <span class='kw'>start_frame</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-           <span class='kw'>end_frame</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation_2.mp4"</span>)</div><div class='output co'>#&gt; [1] "ffmpeg -framerate 30 -start_number 10 -i \"C:/holbrook/myR/workingPackages/glatos/inst/extdata/frames/%02d.png\" -c:v libx264 -preset medium -r 30 -vf \"format=yuv420p\" -vframes 10 \"C:/holbrook/myR/workingPackages/glatos/docs/reference/animation_2.mp4\" -n"</div><div class='input'>
+           <span class='kw'>end_frame</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation_2.mp4"</span>)
+
 <span class='co'># resize output video to 720x480</span>
 <span class='fu'>make_video</span>(<span class='kw'>dir</span><span class='kw'>=</span><span class='no'>frames</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>"%02d.png"</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='st'>"720x480"</span>,
-           <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation_3.mp4"</span> )</div><div class='output co'>#&gt; [1] "ffmpeg -framerate 30 -start_number 1 -i \"C:/holbrook/myR/workingPackages/glatos/inst/extdata/frames/%02d.png\" -c:v libx264 -preset medium -r 30 -vf \"format=yuv420p,scale=720x480,setsar=1:1\" \"C:/holbrook/myR/workingPackages/glatos/docs/reference/animation_3.mp4\" -n"</div><div class='input'>
+           <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation_3.mp4"</span> )
+
 <span class='co'># change ffmpeg preset</span>
 <span class='fu'>make_video</span>(<span class='kw'>dir</span><span class='kw'>=</span><span class='no'>frames</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>"%02d.png"</span>, <span class='kw'>preset</span> <span class='kw'>=</span> <span class='st'>"ultrafast"</span>,
-           <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation_4.mp4"</span>)</div><div class='output co'>#&gt; [1] "ffmpeg -framerate 30 -start_number 1 -i \"C:/holbrook/myR/workingPackages/glatos/inst/extdata/frames/%02d.png\" -c:v libx264 -preset ultrafast -r 30 -vf \"format=yuv420p\" \"C:/holbrook/myR/workingPackages/glatos/docs/reference/animation_4.mp4\" -n"</div><div class='input'>
+           <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation_4.mp4"</span>)
+
 <span class='co'># change input framerate</span>
 <span class='fu'>make_video</span>(<span class='kw'>dir</span><span class='kw'>=</span><span class='no'>frames</span>, <span class='kw'>fps_in</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>"%02d.png"</span>,
-           <span class='kw'>preset</span> <span class='kw'>=</span> <span class='st'>"ultrafast"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation_5.mp4"</span>)</div><div class='output co'>#&gt; [1] "ffmpeg -framerate 1 -start_number 1 -i \"C:/holbrook/myR/workingPackages/glatos/inst/extdata/frames/%02d.png\" -c:v libx264 -preset ultrafast -r 30 -vf \"format=yuv420p\" \"C:/holbrook/myR/workingPackages/glatos/docs/reference/animation_5.mp4\" -n"</div><div class='input'>
-</div><span class='co'># NOT RUN {</span>
+           <span class='kw'>preset</span> <span class='kw'>=</span> <span class='st'>"ultrafast"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation_5.mp4"</span>)
+
+
 <span class='co'># add path to ffmpeg (windows)</span>
 <span class='fu'>make_video</span>(<span class='kw'>dir</span> <span class='kw'>=</span> <span class='no'>frames</span>, <span class='kw'>pattern</span> <span class='kw'>=</span> <span class='st'>"%02d.png"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"animation.mp4"</span>,
            <span class='kw'>ffmpeg</span> <span class='kw'>=</span> <span class='st'>"c://path//to//windows//ffmpeg.exe"</span>)

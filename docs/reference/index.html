@@ -88,6 +88,12 @@
     <li>
       <a href="../articles/data_requirements.html">Data requirements of the R package glatos</a>
     </li>
+    <li>
+      <a href="../articles/receiver_efficiency.html">Receiver Efficiency Index</a>
+    </li>
+    <li>
+      <a href="../articles/residence_index.html">Residence Index</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -142,6 +148,23 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="aggregate_total_no_overlap.html">aggregate_total_no_overlap()</a></code> </p>
+        </td>
+        <td><p>The function below aggregates timedelta of first_detection and last_detection, excluding overlap between
+detections. Any overlap between two detections is converted to a new detection using the earlier
+first_detection and the latest last_detection. If the first_detection and last_detection are the same, a timedelta of one
+second is assumed.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="aggregate_total_with_overlap.html">aggregate_total_with_overlap()</a></code> </p>
+        </td>
+        <td><p>The function below aggregates timedelta of first_detection and last_detection of each detection into
+a final timedelta then returns a float of the number of days. If the first_detection and last_detection
+are the same, a timedelta of one second is assumed.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="calc_collision_prob.html">calc_collision_prob()</a></code> </p>
         </td>
         <td><p>Estimate probability of collision for telemetry transmitters</p></td>
@@ -187,6 +210,12 @@
           <p><code><a href="false_detections.html">false_detections()</a></code> </p>
         </td>
         <td><p>False detection filter</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_days.html">get_days()</a></code> </p>
+        </td>
+        <td><p>Determines which calculation method to use for the residency index.</p></td>
       </tr><tr>
         
         <td>
@@ -324,6 +353,12 @@ water of the Great Lakes Basin.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="read_otn_deployments.html">read_otn_deployments()</a></code> </p>
+        </td>
+        <td><p>Read data from a OTN detection file</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="read_otn_detections.html">read_otn_detections()</a></code> </p>
         </td>
         <td><p>Read data from a OTN detection file</p></td>
@@ -348,6 +383,24 @@ water of the Great Lakes Basin.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="REI.html">REI()</a></code> </p>
+        </td>
+        <td><p>Calculates a returns a list of each station and the REI (defined here)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="residence_index.html">residence_index()</a></code> </p>
+        </td>
+        <td><p>Generate the residence index from a set of detections</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ri_plot.html">ri_plot()</a></code> </p>
+        </td>
+        <td><p>Uses plotly to place the caluclated residence index on a map.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="rotate_points.html">rotate_points()</a></code> </p>
         </td>
         <td><p>Rotate points in a 2-d plane</p></td>
@@ -363,6 +416,19 @@ water of the Great Lakes Basin.</p></td>
           <p><code><a href="summarize_detections.html">summarize_detections()</a></code> </p>
         </td>
         <td><p>Summarize detections by animal, location, or both</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="total_days_count.html">total_days_count()</a></code> </p>
+        </td>
+        <td><p>The function below takes a Pandas DataFrame and determines the number of days any
+detections were seen on the array.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="total_diff_days.html">total_diff_days()</a></code> </p>
+        </td>
+        <td><p>The function below determines the total days difference.</p></td>
       </tr><tr>
         
         <td>

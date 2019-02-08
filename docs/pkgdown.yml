@@ -4,4 +4,6 @@ pkgdown_sha: ~
 articles:
   data_loading: data_loading.html
   data_requirements: data_requirements.html
+  receiver_efficiency: receiver_efficiency.html
+  residence_index: residence_index.html
 

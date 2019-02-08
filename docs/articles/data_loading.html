@@ -58,6 +58,12 @@
     <li>
       <a href="../articles/data_requirements.html">Data requirements of the R package glatos</a>
     </li>
+    <li>
+      <a href="../articles/receiver_efficiency.html">Receiver Efficiency Index</a>
+    </li>
+    <li>
+      <a href="../articles/residence_index.html">Residence Index</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -280,21 +286,21 @@ will cause trouble. For example if a base R example changes column names in an o
 <a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co">#&gt; $ collectioncode : chr "NSBS" ...</span></a>
 <a class="sourceLine" id="cb6-13" data-line-number="13"><span class="co">#&gt; $ animal_id : chr "NSBS-Hooker" ...</span></a>
 <a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co">#&gt; $ scientificname : chr "Prionace glauca" ...</span></a>
-<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="co">#&gt; $ commonname : chr "blue shark" ...</span></a>
-<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="co">#&gt; $ datelastmodified : Date, format: "2014-12-18" ...</span></a>
+<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="co">#&gt; $ common_name_e : chr "blue shark" ...</span></a>
+<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="co">#&gt; $ datelastmodified : chr "2014-12-18" ...</span></a>
 <a class="sourceLine" id="cb6-17" data-line-number="17"><span class="co">#&gt; $ detectedby : chr "HFX" ...</span></a>
-<a class="sourceLine" id="cb6-18" data-line-number="18"><span class="co">#&gt; $ receiver_sn : chr "HFX" ...</span></a>
-<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="co">#&gt; $ glatos_array : chr "HFX047" ...</span></a>
-<a class="sourceLine" id="cb6-20" data-line-number="20"><span class="co">#&gt; $ receiver : chr "146" ...</span></a>
+<a class="sourceLine" id="cb6-18" data-line-number="18"><span class="co">#&gt; $ glatos_array : chr "HFX" ...</span></a>
+<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="co">#&gt; $ station : chr "HFX047" ...</span></a>
+<a class="sourceLine" id="cb6-20" data-line-number="20"><span class="co">#&gt; $ receiver_sn : chr "146" ...</span></a>
 <a class="sourceLine" id="cb6-21" data-line-number="21"><span class="co">#&gt; $ bottom_depth : num 151 151 ...</span></a>
 <a class="sourceLine" id="cb6-22" data-line-number="22"><span class="co">#&gt; $ receiver_depth : num 146 146 ...</span></a>
 <a class="sourceLine" id="cb6-23" data-line-number="23"><span class="co">#&gt; $ transmitter_id : chr "A69-9001-24395" ...</span></a>
 <a class="sourceLine" id="cb6-24" data-line-number="24"><span class="co">#&gt; $ transmitter_codespace : chr "A69-9001" ...</span></a>
-<a class="sourceLine" id="cb6-25" data-line-number="25"><span class="co">#&gt; $ sensorname : chr NA ...</span></a>
-<a class="sourceLine" id="cb6-26" data-line-number="26"><span class="co">#&gt; $ sensorraw : num NA NA ...</span></a>
+<a class="sourceLine" id="cb6-25" data-line-number="25"><span class="co">#&gt; $ sensorname : logi NA ...</span></a>
+<a class="sourceLine" id="cb6-26" data-line-number="26"><span class="co">#&gt; $ sensorraw : logi NA ...</span></a>
 <a class="sourceLine" id="cb6-27" data-line-number="27"><span class="co">#&gt; $ sensortype : chr "pinger" ...</span></a>
-<a class="sourceLine" id="cb6-28" data-line-number="28"><span class="co">#&gt; $ sensorvalue : num NA NA ...</span></a>
-<a class="sourceLine" id="cb6-29" data-line-number="29"><span class="co">#&gt; $ sensorunit : chr NA ...</span></a>
+<a class="sourceLine" id="cb6-28" data-line-number="28"><span class="co">#&gt; $ sensorvalue : logi NA ...</span></a>
+<a class="sourceLine" id="cb6-29" data-line-number="29"><span class="co">#&gt; $ sensorunit : logi NA ...</span></a>
 <a class="sourceLine" id="cb6-30" data-line-number="30"><span class="co">#&gt; $ detection_timestamp_utc: POSIXct, format: "2014-08-29 06:11:09" ...</span></a>
 <a class="sourceLine" id="cb6-31" data-line-number="31"><span class="co">#&gt; $ timezone : chr "UTC" ...</span></a>
 <a class="sourceLine" id="cb6-32" data-line-number="32"><span class="co">#&gt; $ deploy_long : num -63.2 ...</span></a>
@@ -305,10 +311,10 @@ will cause trouble. For example if a base R example changes column names in an o
 <a class="sourceLine" id="cb6-37" data-line-number="37"><span class="co">#&gt; $ daycollected : int 29 29 ...</span></a>
 <a class="sourceLine" id="cb6-38" data-line-number="38"><span class="co">#&gt; $ julianday : int 241 241 ...</span></a>
 <a class="sourceLine" id="cb6-39" data-line-number="39"><span class="co">#&gt; $ timeofday : num 6.19 ...</span></a>
-<a class="sourceLine" id="cb6-40" data-line-number="40"><span class="co">#&gt; $ datereleasedtagger : Date, format: NA ...</span></a>
-<a class="sourceLine" id="cb6-41" data-line-number="41"><span class="co">#&gt; $ datereleasedpublic : Date, format: NA ...</span></a>
+<a class="sourceLine" id="cb6-40" data-line-number="40"><span class="co">#&gt; $ datereleasedtagger : logi NA ...</span></a>
+<a class="sourceLine" id="cb6-41" data-line-number="41"><span class="co">#&gt; $ datereleasedpublic : logi NA ...</span></a>
 <a class="sourceLine" id="cb6-42" data-line-number="42"><span class="co">#&gt; $ local_area : chr "HALIFAX" ...</span></a>
-<a class="sourceLine" id="cb6-43" data-line-number="43"><span class="co">#&gt; $ notes : chr NA ...</span></a>
+<a class="sourceLine" id="cb6-43" data-line-number="43"><span class="co">#&gt; $ notes : logi NA ...</span></a>
 <a class="sourceLine" id="cb6-44" data-line-number="44"><span class="co">#&gt; $ citation : chr "Hebert, D., Barthelotte, J., O'Dor, R., Stokesbury, M., Branton,</span></a>
 <a class="sourceLine" id="cb6-45" data-line-number="45"><span class="co">#&gt;    R. 2009. Ocean Tracking Network Halifax Canada"| __truncated__ ...</span></a>
 <a class="sourceLine" id="cb6-46" data-line-number="46"><span class="co">#&gt; $ unqdetecid : chr "HFX-A69-9001-24395-180148" ...</span></a></code></pre></div>
@@ -329,7 +335,7 @@ modified to meet the requirements of <em>glatos</em> functions. Here, we show an
 <a class="sourceLine" id="cb7-2" data-line-number="2">csv_file &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"VR2W_109924_20110718_1.csv"</span>,</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">                        <span class="dt">package =</span> <span class="st">"glatos"</span>)</a></code></pre></div>
 <p>Now that we have the path to a VUE export file, we will read the data using <em>read.csv</em>. In this case we are also setting some <em>read.csv</em> arguments to non-default values. First, we set <code>as.is = TRUE</code> so that character values are treated as characters and not converted to factors. Second, we set <code>check.names = FALSE</code> to prevent conversion of syntactically-invalid column names to syntactically valid names. This simply keeps the names exactly as they appear in the source text file rather than, for example, replacing spaces with a dot (<code>.</code>). This does mean that we need to wrap those column names in back-ticks when called (e.g., <code>dtc$`Sensor Value`</code>). Third, we set <code>fileEncoding = "UTF-8-BOM"</code> to match the encoding of the text file. If this argument is omitted then you might see the special characters <code>﻿</code> added to the first column name. Setting the <em>fileEncoding</em> may also slow down the import.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/read.table">read.csv</a></span>(csv_file, <span class="dt">as.is =</span> <span class="ot">TRUE</span>, <span class="dt">check.names =</span> <span class="ot">FALSE</span>,  </a>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">dtc &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/read.table">read.csv</a></span>(csv_file, <span class="dt">as.is =</span> <span class="ot">TRUE</span>, <span class="dt">check.names =</span> <span class="ot">FALSE</span>, </a>
 <a class="sourceLine" id="cb8-2" data-line-number="2">                <span class="dt">fileEncoding =</span> <span class="st">"UTF-8-BOM"</span>)</a></code></pre></div>
 <blockquote>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br><strong>data.table tip:</strong> Use <em>fread</em> instead of <em>read.csv</em>.</p>
@@ -447,9 +453,9 @@ modified to meet the requirements of <em>glatos</em> functions. Here, we show an
 <a class="sourceLine" id="cb18-20" data-line-number="20"><span class="co">#&gt; 2      109924     2011-05-08 05:38:32 VR2W-109924  A69-9002-4043               NA</span></a>
 <a class="sourceLine" id="cb18-21" data-line-number="21"><span class="co">#&gt; 3      109924     2011-05-08 05:41:09 VR2W-109924  A69-9002-4043               NA</span></a>
 <a class="sourceLine" id="cb18-22" data-line-number="22"><span class="co">#&gt;   Transmitter Serial Sensor Value Sensor Unit Station Name Latitude Longitude</span></a>
-<a class="sourceLine" id="cb18-23" data-line-number="23"><span class="co">#&gt; 1                 NA           NA                       NA        0         0</span></a>
-<a class="sourceLine" id="cb18-24" data-line-number="24"><span class="co">#&gt; 2                 NA            5         ADC           NA        0         0</span></a>
-<a class="sourceLine" id="cb18-25" data-line-number="25"><span class="co">#&gt; 3                 NA            7         ADC           NA        0         0</span></a>
+<a class="sourceLine" id="cb18-23" data-line-number="23"><span class="co">#&gt; 1                 NA           NA                       NA       NA        NA</span></a>
+<a class="sourceLine" id="cb18-24" data-line-number="24"><span class="co">#&gt; 2                 NA            5         ADC           NA       NA        NA</span></a>
+<a class="sourceLine" id="cb18-25" data-line-number="25"><span class="co">#&gt; 3                 NA            7         ADC           NA       NA        NA</span></a>
 <a class="sourceLine" id="cb18-26" data-line-number="26"><span class="co">#&gt;   glatos_array station deploy_lat deploy_long    deploy_date_time</span></a>
 <a class="sourceLine" id="cb18-27" data-line-number="27"><span class="co">#&gt; 1          DWM DWM-001   45.65738   -84.46418 2011-04-11 20:30:00</span></a>
 <a class="sourceLine" id="cb18-28" data-line-number="28"><span class="co">#&gt; 2          DWM DWM-001   45.65738   -84.46418 2011-04-11 20:30:00</span></a>
@@ -552,8 +558,8 @@ modified to meet the requirements of <em>glatos</em> functions. Here, we show an
 <a class="sourceLine" id="cb26-9" data-line-number="9"><span class="co">#&gt; $ sensor_value : int 5 7 ...</span></a>
 <a class="sourceLine" id="cb26-10" data-line-number="10"><span class="co">#&gt; $ sensor_unit : chr "ADC" ...</span></a>
 <a class="sourceLine" id="cb26-11" data-line-number="11"><span class="co">#&gt; $ Station Name : logi NA ...</span></a>
-<a class="sourceLine" id="cb26-12" data-line-number="12"><span class="co">#&gt; $ Latitude : int 0 0 ...</span></a>
-<a class="sourceLine" id="cb26-13" data-line-number="13"><span class="co">#&gt; $ Longitude : int 0 0 ...</span></a>
+<a class="sourceLine" id="cb26-12" data-line-number="12"><span class="co">#&gt; $ Latitude : logi NA ...</span></a>
+<a class="sourceLine" id="cb26-13" data-line-number="13"><span class="co">#&gt; $ Longitude : logi NA ...</span></a>
 <a class="sourceLine" id="cb26-14" data-line-number="14"><span class="co">#&gt; $ glatos_array : chr "DWM" ...</span></a>
 <a class="sourceLine" id="cb26-15" data-line-number="15"><span class="co">#&gt; $ station : chr "DWM-001" ...</span></a>
 <a class="sourceLine" id="cb26-16" data-line-number="16"><span class="co">#&gt; $ deploy_lat : num 45.7 ...</span></a>

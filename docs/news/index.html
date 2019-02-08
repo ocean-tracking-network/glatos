@@ -88,6 +88,12 @@
     <li>
       <a href="../articles/data_requirements.html">Data requirements of the R package glatos</a>
     </li>
+    <li>
+      <a href="../articles/receiver_efficiency.html">Receiver Efficiency Index</a>
+    </li>
+    <li>
+      <a href="../articles/residence_index.html">Residence Index</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -140,6 +146,14 @@
 <ul>
 <li>added optional arguments <em>x_res</em> and <em>x_format</em> to specify x-axis tick mark spacing and format (issue #30)</li>
 <li>removed input arguments that could also be passed via ellipses (issue #35)</li>
+</ul>
+</li>
+<li>position_heat_map
+<ul>
+<li>corrected accuracy issues by converting lat-lon to UTM (issue #8)</li>
+<li>added optional argument <em>abs_or_rel</em> to specify it output is absolute numbers of fish are relative; simplified output so that only a single output type occurs in a given call</li>
+<li>Changed output to kmz instead of kml</li>
+<li>new folder is only created when output is png or kmz</li>
 </ul>
 </li>
 </ul>
