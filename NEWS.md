@@ -13,6 +13,14 @@
       tick mark spacing and format (issue #30)
     - removed input arguments that could also be passed via ellipses (issue #35)
 
+- position_heat_map
+    - corrected accuracy issues by converting lat-lon to UTM (issue #8)
+    - added optional argument *abs_or_rel* to specify it output is absolute 
+      numbers of fish are relative; simplified output so that only a single 
+      output type occurs in a given call
+    - Changed output to kmz instead of kml
+    - new folder is only created when output is png or kmz
+
 ----
 
 
