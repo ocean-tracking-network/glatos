@@ -7,6 +7,11 @@
     - added data-loading, data-requirements
     - added pkgdown files
 
+### Minor changes
+- abacus_plot
+    - added optional arguments *x_res* and *x_format* to specify x-axis 
+      tick mark spacing and format (issue #30)
+    - removed input arguments that could also be passed via ellipses (issue #35)
 
 ----
 
