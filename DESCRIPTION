@@ -12,7 +12,7 @@ Imports:
 		gdistance,
 		geosphere,
 		openxlsx (>= 4.0.0),
-		pbsMapping,
+		PBSmapping,
 		plotrix,
 		plyr,		
 		raster,
