@@ -3,8 +3,14 @@
 #### 2019-02-08
    
 ### New features
+
+- functions
+		- receiver_efficiency
+		- residence_index
+		- read_otn_deployments
+
 - vignettes and documentation
-    - added data-loading, data-requirements
+    - added data-loading, data-requirements, receiver_efficency, residence_index
     - added pkgdown files
 
 ### Minor changes
