@@ -4,39 +4,46 @@
 #'  acoustic telemetry positions. Most useful when used on data with high spatial
 #'  resultion, such as VPS positional telemetry data.
 #'
-#' @param positions A dataframe containing detection data with at least 4 
-#'  columns named c('DETECTEDID', 'DATETIME', 'LAT', 'LON'). The DETECTEDID column  
-#'  contains a an individual identifier. The 'DATETIME' column contains the 
-#'  datetime stamps for the positions (MUST be of class 'POSIXct'). The 
-#'  columns 'LAT' and 'LON' are the position latitudes and longitudes, 
-#'  respectively. 
+#' @param positions A dataframe containing detection data with at least the 
+#'  following 4 columns:
+#'   \describe{
+#'   \item{\code{DETECTEDID}}{Individual animal identifier; character.}
+#'	 \item{\code{DATETIME}}{Date-time stamps for the positions (MUST be of 
+#'	   class 'POSIXct')}
+#'	 \item{\code{LAT}}{Position latitude.}
+#'	 \item{\code{LON}}{Position longitude.}
+#'	 }
 #'  
-#' @param projection A character string indicating the projection of the positions
-#'  in the 'positions' dataframe. Used in the call to PBSmapping::convUL,
-#'  which converts coordinates between latitude/longitude in decimal degrees
-#'  ("LL"; e.g., 45.98753) and UTM. Valid arguments are "LL" (latitude/longitude) and "UTM". If
-#'  projection=="UTM, then 'utm_zone' and hemisphere' arguments must also be
-#'  supplied.
+#' @param projection A character string indicating the projection of the
+#'   positions in the 'positions' dataframe. Used in the call to
+#'   \link[PBSmapping]{convUL}, which converts coordinates between
+#'   latitude/longitude in decimal degrees ("LL"; e.g., 45.98753) and UTM. Valid
+#'   arguments are "LL" (latitude/longitude) and "UTM". If projection=="UTM",
+#'   then \code{utm_zone} and '\code{hemisphere} arguments must also be
+#'   supplied.
 #' 
-#' @param fish_pos_int A character string indicating whether output will display 
-#'  number of fish or number of positions occuring in each cell of the grid.
-#'  Valid arguments are c("fish", "positions", "intervals"). Default is "fish".
-#'  If fish_pos_interval == "intervals", then argument "interval" must be supplied.
-#'  
-#' @param abs_or_rel A character string indicating whether output will display 
-#'  values as absolute value (i.e, the actual number of fish, positions, or 
-#'  intervals) or as relative number (relative to total number of fish detected).
-#'  Valid arguments are c("absolute", "relative"). Default is "absolute".
+#' @param fish_pos_int A character string indicating whether output will display
+#'   number of fish or number of positions occuring in each cell of the grid.
+#'   Valid arguments are c("fish", "positions", "intervals"). Default is "fish".
+#'   If fish_pos_interval == "intervals", then argument "interval" must be
+#'   supplied.
+#'   
+#' @param abs_or_rel A character string indicating whether output will display
+#'   values as absolute value (i.e, the actual number of fish, positions, or
+#'   intervals) or as relative number (relative to total number of fish
+#'   detected). Valid arguments are c("absolute", "relative"). Default is
+#'   "absolute".
 #'     
 #' @param  resolution A numeric value indicating the spatial resolution 
 #'  (in meters) of the grid system used to make the heat maps. Default is 10 m.
 #'
-#' @param interval A numeric value indicating the duration (in seconds) of 
-#'  time bin (in seconds) for use in calculating number of intervals fish were
-#'  resident in a grid cell (i.e., a surrogate for amount of time spent in each
-#'  cell of the grid). If interval==NULL (default), than raw number of
-#'  positions is calculated. This value is only used when fish_pos_int == "intervals'.
-#'  
+#' @param interval A numeric value indicating the duration (in seconds) of time
+#'   bin (in seconds) for use in calculating number of intervals fish were
+#'   resident in a grid cell (i.e., a surrogate for amount of time spent in each
+#'   cell of the grid). If interval==NULL (default), than raw number of
+#'   positions is calculated. This value is only used when fish_pos_int ==
+#'   "intervals'.
+#'   
 #' @param x_limits An optional 2-element numeric containing limits of x axis. If
 #'  x_limits == NULL (default), then it is determined from the extents of the
 #'  data.
@@ -72,35 +79,35 @@
 #' temporal variability in positioning probability are likely to significantly 
 #' bias the distribution of positions in the array.
 #' 
-#' @details Calculated values (i.e., fish, positions, intervals) can be returned as 
-#' absolute or relative, which is specified using the abs_or_rel argument; 
-#' "absolute" is the actual value, "relative" is the absolute value divided 
-#' by the total number of fish appearing in the 'positions' dataframe. Units for
-#' plots: fish = number of unique fish (absolute) or % of total fish in 'positions' 
-#' dataframe (relative); positions = number of positions (absolute) or mean number
-#' of positions per fish in 'positions' dataframe (relative); intervasls = number of 
-#' unique fish x interval combinations (absolute) or mean number of unique 
-#' fish x interval combinations per fish in 'positions' dataframe (relative). 
-#' 
-#' @return 
-#' A list object containing 1) a matrix of the calulated values (i.e., fish, positions,
-#' intervals), with row and column names indicating location of each grid in UTM, 2) a
-#' character string specifying the UTM zone of the data in the matrix, 3) the
-#' bounding box of the data in UTM, 4) and the bounding box of the data in
-#' latitude (Y) and longitude (X), 5) a character string displaying the function call
-#' (i.e., a record of the arguments passed to the function).
+#' @details Calculated values (i.e., fish, positions, intervals) can be returned
+#'   as absolute or relative, which is specified using the abs_or_rel argument;
+#'   "absolute" is the actual value, "relative" is the absolute value divided by
+#'   the total number of fish appearing in the 'positions' dataframe. Units for
+#'   plots: fish = number of unique fish (absolute) or % of total fish in
+#'   'positions' dataframe (relative); positions = number of positions
+#'   (absolute) or mean number of positions per fish in 'positions' dataframe
+#'   (relative); intervasls = number of unique fish x interval combinations
+#'   (absolute) or mean number of unique fish x interval combinations per fish
+#'   in 'positions' dataframe (relative).
 #'
-#' @return  
-#' In addition, the user specifies an image output for displaying the heat map.
-#' Options are a "plot" (displayed in R), "png" (png file saved to specified folder), 
-#' and "kmz" for viewing the png image as an overlay in Google Earth (kmz file saved to
-#' specified folder).
+#' @return A list object containing 1) a matrix of the calulated values (i.e.,
+#' fish, positions, intervals), with row and column names indicating location of
+#' each grid in UTM, 2) a character string specifying the UTM zone of the data
+#' in the matrix, 3) the bounding box of the data in UTM, 4) and the bounding
+#' box of the data in latitude (Y) and longitude (X), 5) a character string
+#' displaying the function call (i.e., a record of the arguments passed to the
+#' function).
+#'
+#' @return In addition, the user specifies an image output for displaying the
+#' heat map. Options are a "plot" (displayed in R), "png" (png file saved to
+#' specified folder), and "kmz" for viewing the png image as an overlay in
+#' Google Earth (kmz file saved to specified folder).
 #' 
 #' @author Thomas R. Binder
 #' 
 #' @examples
 #' data(lamprey_tracks)
-#' position_heat_map(lamprey_tracks)
+#' phm <- position_heat_map(lamprey_tracks)
 #' 
 #' @export
 
