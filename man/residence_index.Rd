@@ -2,12 +2,7 @@
 % Please edit documentation in R/summ-residence_index.r
 \name{residence_index}
 \alias{residence_index}
-\title{This residence index tool will take a compressed or uncompressed detection
-file and caculate the residency index for each station/receiver in the
-detections. The information passed to the function is what is used to
-calculate the residence index, make sure you are only passing the data you
-want taken into consideration for the residence index (i.e. species,
-stations, tags, etc.).}
+\title{Generate the residence index from a set of detections}
 \usage{
 residence_index(detections, calculation_method = "kessel")
 }
@@ -16,24 +11,25 @@ residence_index(detections, calculation_method = "kessel")
 the \pkg{glatos} package}
 
 \item{calculation_method}{A character string with the calculation method
-using one of the following:
-\itemize{
-  \item kessel
-  \item timedelta
-  \item aggregate_with_overlap
-  \item aggregate_no_overlap
-}}
+using one of the following: \code{kessel}, \code{timedelta}, \code{aggregate_with_overlap}, or \code{aggregate_no_overlap}}
 }
 \value{
 A data.frame of days_detected, residency_index, location,
 mean_latitude, mean_longitude
 }
 \description{
-Kessel et al. Paper - https://www.researchgate.net/publication/279269147
+This residence index tool will take a compressed or uncompressed detection
+file and caculate the residency index for each station/receiver in the
+detections. The information passed to the function is what is used to
+calculate the residence index, make sure you are only passing the data you
+want taken into consideration for the residence index (i.e. species,
+stations, tags, etc.).
 }
 \details{
-\strong{Kessel Residence Index Calculation}
-The Kessel method converts both the startdate and enddate columns into a
+Kessel et al. Paper - https://www.researchgate.net/publication/279269147
+
+
+The \strong{Kessel} method converts both the startdate and enddate columns into a 
 date with no hours, minutes, or seconds. Next it creates a list of the
 unique days where a detection was seen. The size of the list is returned
 as the total number of days as an integer. This calculation is used to
@@ -43,63 +39,76 @@ Possible rounding error may occur as a detection on 2016-01-01 23:59:59
 and a detection on 2016-01-02 00:00:01 would be counted as two days
 when it is really 2-3 seconds.
 
-\deqn{
-RI = S/T
-RI = Residence Index
-S = Distinct number of days detected at the station
-T = Distinct number of days detected anywhere on the array
-}
+\deqn{ RI = S/T}
+\deqn{ RI = Residence Index}
+\deqn{S = Distinct number of days detected at the station}
+\deqn{T = Distinct number of days detected anywhere on the array}
 
-\strong{Timedelta Residence Index Calculation}
-The Timedelta calculation method determines the first detection and the
+
+
+
+The \strong{Timedelta} calculation method determines the first detection and the
 last detection of all detections. The time difference is then taken as
 the values to be used in calculating the residence index. The timedelta
 for each station is divided by the timedelta of the array to determine
 the residence index.
 
 \deqn{
-RI = Delta S/Delta T
-RI = Residence Index
-Delta S = Last detection time at a station - First detection time at the station
-Delta T = Last detection time on an array - First detection time on the array
-}
+RI = Delta S/Delta T}
 
-\strong{Aggregate With Overlap Residence Index Calculation}
-The Aggregate With Overlap calculation method takes the length of time of each
+\deqn{RI = Residence Index}
+
+\deqn{Delta S = Last detection time at a station - First detection time at the station}
+
+\deqn{Delta T = Last detection time on an array - First detection time on the array}
+
+
+
+
+The \strong{Aggregate With Overlap} calculation method takes the length of time of each
 detection and sums them together. A total is returned. The sum for each station
 is then divided by the sum of the array to determine the residence index.
 
 \deqn{
-RI = AwOS/AwOT
-RI = Residence Index
-AwOS = Sum of length of time of each detection at the station
-AwOT = Sum of length of time of each detection on the array
-}
+RI = AwOS/AwOT}
 
-\strong{Aggregate No Overlap Residence Index Calculation}
-The Aggregate No Overlap calculation method takes the length of time of each
+\deqn{RI = Residence Index}
+
+\deqn{AwOS = Sum of length of time of each detection at the station}
+
+\deqn{AwOT = Sum of length of time of each detection on the array}
+
+
+
+
+The \strong{Aggregate No Overlap} calculation method takes the length of time of each
 detection and sums them together. However, any overlap in time between one or
 more detections is excluded from the sum. For example, if the first detection
-is from __2016-01-01 01:02:43__ to __2016-01-01 01:10:12__ and the second
-detection is from __2016-01-01 01:09:01__ to __2016-01-01 01:12:43__, then the
+is from \code{2016-01-01 01:02:43} to \code{2016-01-01 01:10:12} and the second
+detection is from \code{2016-01-01 01:09:01 }to \code{2016-01-01 01:12:43}, then the
 sum of those two detections would be 10 minutes. A total is returned once all
 detections of been added without overlap. The sum for each station is then
 divided by the sum of the array to determine the residence index.
 
 \deqn{
-RI = AnOS/AnOT
-RI = Residence Index
-AnOS = Sum of length of time of each detection at the station, excluding any overlap
-AnOT = Sum of length of time of each detection on the array, excluding any overlap
-}
+RI = AnOS/AnOT}
+
+\deqn{RI = Residence Index}
+
+\deqn{AnOS = Sum of length of time of each detection at the station, excluding any overlap}
+
+\deqn{AnOT = Sum of length of time of each detection on the array, excluding any overlap}
 }
 \examples{
-data <- glatos::read_glatos_detections('./inst/extdata/walleye_detections.csv')
-cdata <- glatos::detection_events(data)
-rik_data <- glatos::residence_index(cdata, calculation_method = 'kessel')
-rit_data <- glatos::residence_index(cdata, calculation_method = 'timedelta')
-riawo_data <- glatos::residence_index(cdata, calculation_method = 'aggregate_with_overlap')
-riano_data <- glatos::residence_index(cdata, calculation_method = 'aggregate_no_overlap')
+#get path to example detection file
+det_file <- system.file("extdata", "walleye_detections.csv",
+                         package = "glatos")
+det <- read_glatos_detections(det_file)
+detection_events <- glatos::detection_events(det)
+rik_data <- glatos::residence_index(detection_events, calculation_method = 'kessel')
+rit_data <- glatos::residence_index(detection_events, calculation_method = 'timedelta')
+riawo_data <- glatos::residence_index(detection_events, calculation_method = 'aggregate_with_overlap')
+riano_data <- glatos::residence_index(detection_events, calculation_method = 'aggregate_no_overlap')
 
 }
 \author{

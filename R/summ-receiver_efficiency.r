@@ -11,7 +11,7 @@
 #' tag identifier. The next is a dataframe of deployments for each station. The station name should match the stations in the detections.
 #' The deployments need to include a deployment date and recovery date.
 #'
-#'  \deqn{
+#' \deqn{
 #' REI = (Tr/Ta) x (Sr/Sa) x (DDr/DDa) x (Da/Dr)
 #' }
 #' \itemize{
@@ -30,7 +30,7 @@
 #'
 #' @param deployments a glatos receivers class data table
 #'
-#' @return
+#' @return a list of receivers with lat and long and the receiver efficiency index
 #'
 #' @author Alex Nunes  \email{anunes@dal.ca}
 #'

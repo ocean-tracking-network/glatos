@@ -12,7 +12,7 @@ REI(detections, deployments)
 \item{deployments}{a glatos receivers class data table}
 }
 \value{
-
+a list of receivers with lat and long and the receiver efficiency index
 }
 \description{
 The receiver efficiency index is number between 0 and 1 indicating the amount of relative activity at each receiver compared to the
@@ -26,7 +26,7 @@ REI() takes two arguments. The first is a dataframe of detections the detection 
 tag identifier. The next is a dataframe of deployments for each station. The station name should match the stations in the detections.
 The deployments need to include a deployment date and recovery date.
 
- \deqn{
+\deqn{
 REI = (Tr/Ta) x (Sr/Sa) x (DDr/DDa) x (Da/Dr)
 }
 \itemize{
