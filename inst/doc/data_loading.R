@@ -59,7 +59,7 @@ csv_file <- system.file("extdata", "VR2W_109924_20110718_1.csv",
                         package = "glatos")
 
 ## ----------------------------------------------------------------------------------
-dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE,  
+dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE, 
                 fileEncoding = "UTF-8-BOM")
 
 

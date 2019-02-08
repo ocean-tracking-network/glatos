@@ -330,7 +330,7 @@ added to the first column name. Setting the *fileEncoding* may also slow
 down the import.
 
 ```{r}
-dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE,  
+dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE, 
                 fileEncoding = "UTF-8-BOM")
 
 ```
