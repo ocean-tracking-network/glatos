@@ -124,7 +124,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>abacus_plot</span>(<span class='no'>det</span>, <span class='kw'>location_col</span> <span class='kw'>=</span> <span class='st'>"glatos_array"</span>, <span class='kw'>locations</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>out_file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>outFile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>show_receiver_status</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>receiver_history</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>out_file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>x_res</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>x_format</span> <span class='kw'>=</span> <span class='st'>"%Y-%m-%d"</span>, <span class='kw'>outFile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -132,7 +133,7 @@
     <tr>
       <th>det</th>
       <td><p>A <code>glatos_detections</code> object (e.g., produced by
-<a href='read_glatos_detections.html'>read_glatos_detections</a>).</p>
+<a href='read_glatos_detections.html'>read_glatos_detections</a>) containing detections to be plotted.</p>
 <p><em>OR</em> A data frame containing detection data with at least two columns, 
 one of which must be named 'detection_timestamp_utc', described below,  
 and another column containing a location grouping variable,
@@ -150,7 +151,7 @@ class POSIXct.</p></dd>
     </tr>
     <tr>
       <th>locations</th>
-      <td><p>An optional vector containing a list of locations
+      <td><p>An optional vector containing the locations
 <code>location_col</code> to show in the plot. Plot order corresponds to order
 in the vector (from bottom up). Should correspond to values in
 <code>location_col</code>, but can contain values that are not in the det
@@ -158,14 +159,28 @@ data frame (i.e., can use this option to plot locations fish were
 not detected).</p></td>
     </tr>
     <tr>
-      <th>ylab</th>
-      <td><p>A character string indicating the y-axis label that will appear 
-on the figure (default will match <code>location_col</code>).</p></td>
+      <th>show_receiver_status</th>
+      <td><p>A logical value indicating whether or not to
+display receiver status behind detection data (i.e., indicate when 
+receivers were in the water). If <code>show_receiver_status</code> == TRUE, then
+a receiver_history data frame (<code>receiver_history</code>) must be supplied.
+Default is FALSE.</p></td>
     </tr>
     <tr>
-      <th>pch</th>
-      <td><p>A numeric value corresponding to the symbol to be used for
-plotting. See <a href='https://www.statmethods.net/advgraphs/parameters.html'>https://www.statmethods.net/advgraphs/parameters.html</a>.</p></td>
+      <th>receiver_history</th>
+      <td><p>An optional <code>glatos_receivers</code> object
+(e.g., produced by <a href='read_glatos_receivers.html'>read_glatos_receivers</a>) containing receiver
+history data for plotting receiver status behind the detection data when 
+<code>show_receiver_status</code> == TRUE.</p>
+<p><em>OR</em> An optional data frame containing receiver history
+data for plotting receiver status behind the detection data when 
+<code>show_receiver_status</code> == TRUE.</p>
+<p>The data frame must contain at least three columns: 
+1) 'deploy_date_time, 2) 'recover_date_time', and 3) a grouping
+column whose name is specified by <code>location_col</code> (see below). Columns 
+'deploy_date_time' and 'recover_date_time' must be of class POSIXct. The 
+grouping column must have the same name in both <code>det</code> and 
+<code>receiver_history</code>.</p></td>
     </tr>
     <tr>
       <th>out_file</th>
@@ -177,13 +192,31 @@ then the plot will be printed to the default plot device.
 Supported extensions: png, jpeg, bmp, and tiff.</p></td>
     </tr>
     <tr>
+      <th>x_res</th>
+      <td><p>Resolution of x-axis major tick marks. If numeric (e.g., 5
+(default value), then range of x-axis will be divided into that number of
+equally-spaced bins; and will be passed to <code>length.out</code> argument of
+<code>seq.Date</code>. If character, then value will be passed to <code>by</code>
+argument of <a href='https://www.rdocumentation.org/packages/base/topics/seq.Date'>seq.Date</a>. In that case, a character string,
+containing one of "day", "week", "month", "quarter" or "year". This can
+optionally be preceded by a (positive or negative) integer and a space, or
+followed by "s". E.g., "10 days", "weeks", "4 weeks", etc. See
+<a href='https://www.rdocumentation.org/packages/base/topics/seq.Date'>seq.Date</a>.</p></td>
+    </tr>
+    <tr>
+      <th>x_format</th>
+      <td><p>Format of the x-axis tick mark labels (major ticks only; 
+minor ticks are not supported). Default is "<!-- %Y-%m-%d". Any valid  -->
+<a href='https://www.rdocumentation.org/packages/base/topics/strptime'>strptime</a> specification should work.</p></td>
+    </tr>
+    <tr>
       <th>outFile</th>
       <td><p>Deprecated. Use <code>out_file</code> instead.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Other plotting arguments that pass to "plot" function (e.g., col,
-lwd, type).</p></td>
+      <td><p>Other plotting arguments that pass to "points" function (e.g.,
+col, lwd, type).</p></td>
     </tr>
     </table>
     
@@ -209,7 +242,7 @@ image if <code>out_file</code> is specified.</p>
 <p>Plotting options (i.e., line width and color) can be changed using
   optional graphical parameters 
   <a href='http://www.statmethods.net/advgraphs/parameters.html'>http://www.statmethods.net/advgraphs/parameters.html</a> that are passed
-  to "segments" (see ?segments).</p>
+  to "points" (see ?points).</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -228,8 +261,15 @@ image if <code>out_file</code> is specified.</p>
 <span class='fu'>abacus_plot</span>(<span class='no'>det</span>, <span class='kw'>locations</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"DRF"</span>, <span class='st'>"DRL"</span>, <span class='st'>"FMP"</span>, <span class='st'>"MAU"</span>, <span class='st'>"PRS"</span>, <span class='st'>"RAR"</span>,
    <span class='st'>"DRM"</span>, <span class='st'>"FDT"</span>), <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"TagID: 32054"</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>)</div><div class='img'><img src='abacus_plot-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>#plot with custom y-axis label and lines connecting symbols</span>
-<span class='fu'>abacus_plot</span>(<span class='no'>det</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"TagID: 32054"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"l"</span>,
-         <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>)</div><div class='img'><img src='abacus_plot-3.png' alt='' width='700' height='433' /></div><div class='input'>  
+<span class='fu'>abacus_plot</span>(<span class='no'>det</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"TagID: 32054"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"o"</span>, <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fl'>20</span>,  <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>)</div><div class='img'><img src='abacus_plot-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'>#plot with custom x-axis resolution - 10 bins</span>
+<span class='fu'>abacus_plot</span>(<span class='no'>det</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"TagID: 32054"</span>, <span class='kw'>x_res</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='img'><img src='abacus_plot-4.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'>#plot with custom x-axis resolution - monthly bins</span>
+<span class='fu'>abacus_plot</span>(<span class='no'>det</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"TagID: 32054"</span>, <span class='kw'>x_res</span> <span class='kw'>=</span> <span class='st'>"month"</span>)</div><div class='img'><img src='abacus_plot-5.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'>#plot with custom x-axis resolution - 8-week bins</span>
+<span class='fu'>abacus_plot</span>(<span class='no'>det</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"TagID: 32054"</span>, <span class='kw'>x_res</span> <span class='kw'>=</span> <span class='st'>"8 weeks"</span>)</div><div class='img'><img src='abacus_plot-6.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'>#plot with custom x-axis format - 8-week bins</span>
+<span class='fu'>abacus_plot</span>(<span class='no'>det</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"TagID: 32054"</span>, <span class='kw'>x_res</span> <span class='kw'>=</span> <span class='st'>"months"</span>, <span class='kw'>x_format</span> <span class='kw'>=</span> <span class='st'>"%b-%y"</span>)</div><div class='img'><img src='abacus_plot-7.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
