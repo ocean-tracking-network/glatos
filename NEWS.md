@@ -1,3 +1,17 @@
+# glatos 0.3.0
+
+#### 2019-02-08
+   
+### New features
+- vignettes and documentation
+    - added data-loading, data-requirements
+    - added pkgdown files
+
+
+----
+
+
+
 # glatos 0.2.7
 
 #### 2018-08-29
