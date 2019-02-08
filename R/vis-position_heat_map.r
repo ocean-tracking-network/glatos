@@ -1,323 +1,461 @@
 #' Position Heat Maps
 #'
 #' Create heat maps to display the spatial distribution of 
-#'  acoustic telemetry positions. 
+#'  acoustic telemetry positions. Most useful when used on data with high spatial
+#'  resultion, such as VPS positional telemetry data.
 #'
 #' @param positions A dataframe containing detection data with at least 4 
-#'  columns named c('ID', 'timestamp', 'lat', 'lon'). The ID column contains 
-#'  a an individual identifier. The 'timestamp' column contains the 
+#'  columns named c('DETECTEDID', 'DATETIME', 'LAT', 'LON'). The DETECTEDID column  
+#'  contains a an individual identifier. The 'DATETIME' column contains the 
 #'  datetime stamps for the positions (MUST be of class 'POSIXct'). The 
-#'  columns 'lat' and 'lon' are the position latitudes and longitudes, 
-#'  respectively.
+#'  columns 'LAT' and 'LON' are the position latitudes and longitudes, 
+#'  respectively. 
 #'  
+#' @param projection A character string indicating the projection of the positions
+#'  in the 'positions' dataframe. Used in the call to PBSmapping::convUL,
+#'  which converts coordinates between latitude/longitude in decimal degrees
+#'  ("LL"; e.g., 45.98753) and UTM. Valid arguments are "LL" (latitude/longitude) and "UTM". If
+#'  projection=="UTM, then 'utm_zone' and hemisphere' arguments must also be
+#'  supplied.
+#' 
+#' @param fish_pos_int A character string indicating whether output will display 
+#'  number of fish or number of positions occuring in each cell of the grid.
+#'  Valid arguments are c("fish", "positions", "intervals"). Default is "fish".
+#'  If fish_pos_interval == "intervals", then argument "interval" must be supplied.
+#'  
+#' @param abs_or_rel A character string indicating whether output will display 
+#'  values as absolute value (i.e, the actual number of fish, positions, or 
+#'  intervals) or as relative number (relative to total number of fish detected).
+#'  Valid arguments are c("absolute", "relative"). Default is "absolute".
+#'     
 #' @param  resolution A numeric value indicating the spatial resolution 
 #'  (in meters) of the grid system used to make the heat maps. Default is 10 m.
 #'
-#' @param interval A numeric value indicating the duration of each time bin 
-#'  (in seconds) for use in calculating NumIntervals (i.e., a surrogate for 
-#'  amount of time spent in each cell of the grid). Default is 3600 seconds 
-#'  (1 hour).
+#' @param interval A numeric value indicating the duration (in seconds) of 
+#'  time bin (in seconds) for use in calculating number of intervals fish were
+#'  resident in a grid cell (i.e., a surrogate for amount of time spent in each
+#'  cell of the grid). If interval==NULL (default), than raw number of
+#'  positions is calculated. This value is only used when fish_pos_int == "intervals'.
 #'  
-#' @param legendPos A character string indicating whether the legend should 
-#'  be displayed on the right side or bottom of the png image. Valid arguments 
-#'  are c("right", "bottom"). Default is "right".
-#'
-#' @param AbsOrRelFish A character string indicating whether number of 
-#'  unique fish will display as absolute value (i.e, the actual number of fish 
-#'  positioned in each grid) or as relative number (i.e., % of total fish 
-#'  positioned). Valid arguments are c("absolute", "relative"). Default is 
-#'  "absolute".
+#' @param x_limits An optional 2-element numeric containing limits of x axis. If
+#'  x_limits == NULL (default), then it is determined from the extents of the
+#'  data.
 #'  
-#' @param AbsOrRelPos A character string indicating whether number of 
-#'  positions will display as absolute value (i.e, the actual number of 
-#'  positions in each grid) or as relative number (i.e., mean number of 
-#'  positions per fish detected). Valid arguments are c("absolute", 
-#'  "relative"). Default is "absolute".
-#'  
-#' @param AbsOrRelInt A character string indicating whether NumIntervals 
-#'  will display as absolute value (i.e, the actual number of detection 
-#'  intervals in each grid) or as relative number (i.e., mean number of 
-#'  intervals per fish detected ). Valid arguments are c("absolute", 
-#'  "relative"). Default is "absolute".
-#'  
-#' @param folder A character string indicating the output folder. 
-#'  If path is not specified then \code{folder} will be created in the 
-#'  working directory. The base name (\code{basename(folder)}) will also be 
-#'  used as the name of the kml file for viewing the heat maps in 
-#'  Google Earth. Default is "PositionsHeatMaps".
-#'  
-#' @param x_limits An optional 2-element numeric with limits of x axis.
-#'  
-#' @param y_limits An optional 2-element numeric with limits of y axis.
-#'  
-#' @details NumIntervals is the number of unique fish x interval 
-#' combinations that occurred each grid cell. For example, in 4 hours there 
-#' are a total of 4 1-h intervals. If fish 'A' was positioned in a single grid 
-#' cell during 3 of the 4 intervals, than NumIntervals for that fish and grid 
-#' combination is 3. Intervals are determined by applying the findInterval 
-#' function (base R) to a sequence of timestamps (class: POSIXct) created 
-#' using seq(from = min(positions[, timestamp]), to = 
-#' min(positions[, timestamp]), by = interval), where interval is the 
-#' user-assigned interval duration in seconds. NumIntervals is a more 
-#' robust surrogate than NumPositions for relative time spent in each grid 
-#' in cases where spatial or temporal variability in positioning probability 
-#' are likely to significantly bias the distribution of positions in the array.
+#' @param y_limits An optional 2-element numeric containing limits of y axis. If 
+#'  y_limits == NULL (default), then it is determined from the extents of the
+#'  data.
+#'   
+#' @param legend_gradient A character string indicating the orientation of the
+#'  color legend; "y" = vertical, "x" = horizontal, "n" indicates that no 
+#'  legend should be drawn. Default is "y".
 #' 
-#' @details NumFish, NumPositions, and NumIntervals can all be displayed as 
-#' absolute or relative, which are specified using the AbsOrRelXXX arguments. 
-#' "absolute" is the actual value. "relative" is the absolute value divided 
-#' by the total number of fish positioned. Units for plots: NumFish = number 
-#' of unique fish (absolute) or % of total fish positioned (relative); 
-#' NumPositions = number of positions (absolute) or mean number of positions 
-#' per fish (relative); NumIntervals = number of unique fish x interval 
-#' combinations (absolute) or mean number of unique fish x interval 
-#' combinations per fish (relative). 
+#' @param legend_pos A numeric vector indicating the location of the color 
+#'  legend as a portion of the total plot area (i.e., between 0 and 1). Only
+#'  used if 'legend_gradient" in not "n". Default is c(0.99, 0.2, 1.0, 0.8),
+#'  which puts the legend along the right hand side of the plot.
+#'  
+#' @param folder A character string indicating the output folder. If path is 
+#'  not specified then \code{folder} will be created in the working directory.
+#'  Default is "position_heat_map".
+#'  
+#' @details When and 'interval' argument is supplied, the number of unique fish 
+#' x interval combinations that occurred each grid cell is calculated instead of
+#' raw number of positions. For example, in 4 hours there are a total of 4 1-h 
+#' intervals. If fish 'A' was positioned in a single grid cell during 3 of the 
+#' 4 intervals, than the number of intervals for that fish and grid combination 
+#' is 3. Intervals are determined by applying the 'findInterval' function 
+#' (base R) to a sequence of timestamps (class: POSIXct) created using 
+#' seq(from = min(positions[, DATETIME]), to = min(positions[, DATETIME]), 
+#' by = interval), where interval is the user-assigned interval duration in 
+#' seconds. Number of intervals is a more robust surrogate than number of 
+#' positions for relative time spent in each grid in cases where spatial or 
+#' temporal variability in positioning probability are likely to significantly 
+#' bias the distribution of positions in the array.
+#' 
+#' @details Calculated values (i.e., fish, positions, intervals) can be returned as 
+#' absolute or relative, which is specified using the abs_or_rel argument; 
+#' "absolute" is the actual value, "relative" is the absolute value divided 
+#' by the total number of fish appearing in the 'positions' dataframe. Units for
+#' plots: fish = number of unique fish (absolute) or % of total fish in 'positions' 
+#' dataframe (relative); positions = number of positions (absolute) or mean number
+#' of positions per fish in 'positions' dataframe (relative); intervasls = number of 
+#' unique fish x interval combinations (absolute) or mean number of unique 
+#' fish x interval combinations per fish in 'positions' dataframe (relative). 
 #' 
 #' @return 
-#' 3 png files (one for each of number of positions, number of fish, 
-#'  and number of intervals).
-#' 1 kml file for viewing the heat maps in Google Earth.
-#' 3 CSV files containing summary data used to create the plots.
+#' A list object containing 1) a matrix of the calulated values (i.e., fish, positions,
+#' intervals), with row and column names indicating location of each grid in UTM, 2) a
+#' character string specifying the UTM zone of the data in the matrix, 3) the
+#' bounding box of the data in UTM, 4) and the bounding box of the data in
+#' latitude (Y) and longitude (X), 5) a character string displaying the function call
+#' (i.e., a record of the arguments passed to the function).
+#'
+#' @return  
+#' In addition, the user specifies an image output for displaying the heat map.
+#' Options are a "plot" (displayed in R), "png" (png file saved to specified folder), 
+#' and "kmz" for viewing the png image as an overlay in Google Earth (kmz file saved to
+#' specified folder).
 #' 
 #' @author Thomas R. Binder
 #' 
 #' @examples
 #' data(lamprey_tracks)
-#' #rename columns to match input arguments
-#' names(lamprey_tracks)[c(1,2,6,7)] <- c("ID","timestamp","lat","lon")
 #' position_heat_map(lamprey_tracks)
 #' 
 #' @export
 
-position_heat_map <- function (positions, resolution=10, interval=3600, 
-  legendPos="right", AbsOrRelFish="absolute", AbsOrRelPos="absolute", 
-  AbsOrRelInt="absolute", folder="position_heat_maps", x_limits=NULL,
-  y_limits=NULL) {
+position_heat_map <- function (positions,
+                               projection = "LL",
+                               fish_pos_int="fish",
+                               abs_or_rel="absolute",
+                               resolution=10,
+                               interval=NULL,
+                               x_limits=NULL,
+                               y_limits=NULL,
+                               utm_zone=NULL,
+                               hemisphere="N",
+                               legend_gradient="y",
+                               legend_pos=c(0.99, 0.2, 1.0, 0.8),
+                               output="plot",
+                               folder="position_heat_map") {
 	
-	# Check that the required columns appear in the detections dataframe
-    if (sum(c("location", "ID", "timestamp", "lat", "lon") %in% 
+  # Perform checks on supplied data and arguiments ---------------------------
+	
+  # Check that the required columns appear in the detections dataframe
+    if (sum(c("DETECTEDID", "DATETIME", "LAT", "LON") %in% 
       names(positions)) != 4){
-        stop(paste0("The columns 'ID', 'timestamp', 'lat', and ",
-          "'lon' must appear in the positions dataframe."))
+        stop("The columns 'DETECTEDID', 'DATETIME', 'LAT', and ",
+          "'LON' must appear in the positions dataframe.")
     }
     
-    # Check that timestamp is of class 'POSIXct'
-    if(!('POSIXct' %in% class(positions$timestamp))){
-        stop(paste0("Column 'timestamp' in the positions dataframe ",
-          "must be of class 'POSIXct'."))
-    } 
-
-	# Create new directory for results based on user-defined 'folder' 
-  dir.create(folder, showWarnings = FALSE) 
-  filePath <- normalizePath(folder)
-  folder <- basename(folder)
-
-	# Total number of unique transmitters positioned
-	totalFish <- length(unique(positions$ID))
-	
-	# Create a sequence from user-defined 'interval' and first and last position 
-	# times in the positions dataframe.
-  intervalSeq <- seq(from = as.POSIXct(as.Date(min(positions$timestamp))), 
-                     to = as.POSIXct(as.Date(max(positions$timestamp) + 86400)), 
-                     by = interval)
-    
-  # Identify time interval in which each position occurred.
-  positions$Interval <- findInterval(positions$timestamp, intervalSeq)
-
-	
-	# Determine bin size for latitude and longitude based on user-specified 
-  # resolution (in meters) chosen by the user		
-	if(is.null(x_limits)) x_limits <- range(positions$lon)
-	if(is.null(y_limits)) y_limits <- range(positions$lat)
+  # Check that DATETIME is of class 'POSIXct'
+  if(!('POSIXct' %in% class(positions$DATETIME))){
+    stop(paste0("Column 'DATETIME' in the positions dataframe ",
+        "must be of class 'POSIXct'."))
+  }
   
-  binSizeLongitude <- (x_limits[2] - x_limits[1]) / 
-	  geosphere::distMeeus(
-	    c(x_limits[2], y_limits[2]), 
-	    c(x_limits[1], y_limits[2])) * resolution
-	binSizeLatitude <- (y_limits[2] - y_limits[1]) /
-	  geosphere::distMeeus(
-	    c(x_limits[2], y_limits[2]), 
-	    c(x_limits[2], y_limits[1])) * resolution
+  # Check that projection is %in% c("LL", "UTM")
+  if(!projection %in% c("LL", "UTM")){
+    stop(paste0("Argument 'projection' must be one of 'LL' or 'UTM'."))
+  }  
+  
+  # Check that utm_zone is supplied if projection argument is UTM
+  if(projection=="UTM" & is.null(utm_zone)){
+    stop(paste0("Argument 'utm_zone' must be supplied when projection='UTM'."))
+  }
+
+  # Check that output is %in% c("plot", "png", "kmz")
+  if(!output %in% c("plot", "png", "kmz")){
+    stop(paste0("Argument 'output' must be one of 'plot', 'png', or 'kmz'."))
+  }
+  
+  # Check that hemisphere is %in% c("N", "S")
+  if(!hemisphere %in% c("N", "S")){
+    stop(paste0("Argument 'hemisphere' must be one of 'N' or 'S'."))
+  }
+  
+  # Check that abs_or_rel is %in% c("N", "S")
+  if(!abs_or_rel %in% c("absolute", "relative")){
+    stop(paste0("Argument 'abs_or_rel' must be one of 'absolute' or 'relative'."))
+  }
+  
+  # Check that hemisphere is %in% c("N", "S")
+  if(!fish_pos_int %in% c("fish", "positions", "intervals")){
+    stop(paste0("Argument 'fish_pos_int' must be one of 'fish', 'positions', or 'intervals'."))
+  }
+  
+  # Check that interval argument is supplied if fish_pos_int == "intervals".
+  if(fish_pos_int == "intervals" & is.null(interval)){
+    stop(paste0("Argument 'interval' must be supplied when fish_pos_int == 'intervals'."))
+  }
+  
+  
+  # Load dependencies --------------------------------------------------------
+  library(PBSmapping)
+  library(utils)
+  
+  # Determine x and y limits -------------------------------------------------
+  # Set x and y extents based on data range or user-defined limits	
+  if(is.null(x_limits)) x_limits <- range(positions$LON)
+  if(is.null(y_limits)) y_limits <- range(positions$LAT)
+  
+  # If projection is 'LL', convert x and y limits to UTM
+  if(projection=="LL"){
+    range_xylim <- data.frame(Y=c(y_limits[1], y_limits[1], y_limits[2],
+                                  y_limits[2]), X=c(x_limits[1], x_limits[2],
+                                                    x_limits[1], x_limits[2]))
+    attr(range_xylim, which = "projection") <- "LL"
+    range_xylim <- PBSmapping::convUL(range_xylim, km=FALSE, southern=NULL)
+    x_limits <- range(range_xylim$X)
+    y_limits <- range(range_xylim$Y)
+  }
 
   
-	# Define grid locations
-	seqLongitude <- seq(x_limits[1], x_limits[2], 
-	  by = binSizeLongitude)
-	seqLatitude <- seq(y_limits[1], y_limits[2], 
-	  by = binSizeLatitude)
+  
+  # Prepare the positions dataframe ------------------------------------------
+  # Remove columns in original dataframe called "X" and "Y" - do this because
+  # convUL function requires the LON and LAT data to be stored in columns
+  # named X and Y
+  positions <- positions[,-which(names(positions) %in% c("X","Y"))]
+  
+  # Rename LON and LAT columns to X and Y for convUL function
+  names(positions)[match(c("LON", "LAT"), names(positions))] = c('X', 'Y')
+  
+  # Create a projection attribute for the positions dataframe. If projection is
+  # UTM, also create a zone attribute for the positions dataframe.
+  attr(positions, which="projection") <- projection
+  if(attr(positions, which="projection")=="UTM"){
+    attr(positions, which="zone") <- "utm_zone"  
+  }
+  
+  # If projection=="LL", convert positions to UTM coordinates using 'convUL'
+  # from PBSmapping package
+  if(attr(positions, which="projection")=="LL"){
+    positions <- PBSmapping::convUL(positions, km=FALSE, southern=NULL)
+    # Change X and Y column names back to original LON and LAT
+    names(positions)[match(c('X', 'Y'), names(positions))] = c("LON", "LAT")
+  }
+  
+  
+  if(output %in% c("png","kmz")){
+      # Create new directory for results based on user-defined 'folder' ------
+      dir.create(folder, showWarnings = FALSE) 
+      file_path <- normalizePath(folder)
+      folder <- basename(folder)
+  }
+  
+  
+  
+  # Determine the total number of fish in the data set -----------------------
+  # Total number of unique transmitters positioned - used for determining
+  # relative values
+	totalFish <- length(unique(positions$DETECTEDID))
 	
+	
+  # Define grid locations ----------------------------------------------------
+	seq_longitude <- seq(floor(x_limits[1]), x_limits[2], 
+	                    by = resolution)
+	seq_latitude <- seq(floor(y_limits[1]), y_limits[2], 
+	                   by = resolution)
+	
+	
+	
+	# Define bounding box for output -------------------------------------------
+	b_box_UTM <- data.frame(corner=c('SW' , 'SE', 'NE', 'NW'),
+	                        X=c(seq_longitude[1],
+	                            seq_longitude[length(seq_longitude)]+resolution,
+	                            seq_longitude[length(seq_longitude)]+resolution,
+	                            seq_longitude[1]),
+	                        Y=c(seq_latitude[1],
+	                            seq_latitude[1],
+	                            seq_latitude[length(seq_latitude)]+resolution,
+	                            seq_latitude[length(seq_latitude)]+resolution))
+	
+	# Convert b_box to LL for kmz output
+	attr(b_box_UTM, which="projection")<-"UTM"
+	attr(b_box_UTM, which="zone")<-ifelse(projection=="LL", attr(positions, which="zone"), utm_zone)
+	b_box_LL <- PBSmapping::convUL(b_box_UTM, km=FALSE, southern=ifelse(hemisphere=="N", FALSE, TRUE))
+	
+	
+  # Calculate the values to be displayed -------------------------------------
 	# Determines in which grid number each position resides.
-	positions$BinLon <- findInterval(positions$lon, seqLongitude)
-	positions$BinLat <- findInterval(positions$lat, seqLatitude)
+	positions$BinLon <- findInterval(positions$LON, seq_longitude)
+	positions$BinLat <- findInterval(positions$LAT, seq_latitude)
 	
-	# Calculate NumPositions -------------------------------------------------
-	
-	# Create a matrix of the number of positions in each grid. 
-	# - used to plot NumPositions when AbsOrRelPos == "absolute"
-	NumPositions <- as.matrix(unclass(table(
-	    factor(positions$BinLat, levels = length(seqLatitude):1), 
-	    factor(positions$BinLon, levels = 1:length(seqLongitude)))))	
-
-	# Sets cells with no positions to NA so they will be transparent in png file
-	NumPositions[NumPositions == 0] <- NA
-	
-	# Convert NumPositions to NumPositions/fish. 
-	# - used to plot NumPositions when AbsOrRelPos == "relative"
-	if (AbsOrRelPos == "relative") NumPositions <- NumPositions/totalFish
-	
-  # Calculate NumFish ------------------------------------------------------
+	if(fish_pos_int=="positions"){
+  	  # Calculate num positions ------------------------------------------
+  	
+    	# Create a matrix of the number of positions in each grid. 
+    	# - used to plot NumPositions when abs_or_rel=="absolute"
+    	results <- as.matrix(unclass(table(
+    	    factor(positions$BinLat, levels = length(seq_latitude):1), 
+    	    factor(positions$BinLon, levels = 1:length(seq_longitude)))))	
     
-	# Create a new dataframe containing only no-duplicated combinations of 
-	# ID, BinLat, and BinLon 
-	# - required for determining the number of unique fish positioned in each grid
-  positions2 <- positions[!(duplicated(
-    positions[, c("ID", "BinLat", "BinLon")])),]
-  
-	# Create a matrix of the number of unique transmitters positioned in each grid
-	# - used to plot NumFish when AbsOrRelFish == "absolute"
-  NumFish <- as.matrix(unclass(table(
-    factor(positions2$BinLat, levels=length(seqLatitude):1), 
-    factor(positions2$BinLon, levels=1:length(seqLongitude)))))
-  
-  # Set cells with no positions to NA so they will be transparent in png file
-  NumFish[NumFish == 0] <- NA    
-  
-  # Convert NumFish matrix to %NumFish, relative to the total number of 
-  # unique transmitters positioned in the system
-  # - used to plot NumFish when AbsOrRelFish == "relative"
-	if (AbsOrRelFish == "relative") {NumFish = NumFish/totalFish*100}
+    	# Sets cells with no positions to NA so they will be transparent in
+    	# png file
+    	results[results == 0] <- NA
+    	
+    	# Convert NumPositions to NumPositions/fish. 
+    	# - used to plot NumPositions when abs_or_relPos == "relative"
+    	if (abs_or_rel=="relative") results <- results/totalFish
+  }
 	
-	# Calculate NumIntervals -----------------------------------------------
+	if(fish_pos_int=="intervals"){
+    	# Calculate num intervals ------------------------------------------
+      # Create a sequence from user-defined 'interval' and first and last
+      # position times in the positions dataframe.
+      interval_seq <- seq(from = as.POSIXct(as.Date(min(positions$DATETIME))), 
+                         to = as.POSIXct(as.Date(max(positions$DATETIME) + 86400)), 
+                         by = interval)
+      
+      # Identify time interval in which each position occurred.
+      positions$Interval <- findInterval(positions$DATETIME, interval_seq)
   
-	# Create a new dataframe containing only no-duplicated combinations of 
-  # ID, BinLat, BinLon, and Interval 
-  # - required to determine the number of unique fish positioned in each grid
-	positions3 <- positions[!(duplicated(
-	  positions[, c("ID", "BinLat", "BinLon", "Interval")])),]
-	
-  # Create a matrix containing the number of unique fish x interval 
-  # combinations in each grid
-  # - Used to plot NumIntervals when AbsOrRelInt == "absolute"
-	NumIntervals <- as.matrix(unclass(table(
-	  factor(positions3$BinLat, levels = length(seqLatitude):1), 
-	  factor(positions3$BinLon, levels = 1:length(seqLongitude)))))
-	NumIntervals[NumIntervals == 0] <- NA
-
-	# Convert NumIntervals matrix to NumIntervals per fish 
-	# (i.e., divide by the total number of fish detected) 
-	# - used to plot NumIntervals when AbsOrRelInt == "relative"
-	if (AbsOrRelInt == "relative") NumIntervals = NumIntervals / totalFish
-
-	# Loop through the three matrices (NumPositions, NumFish, NumIntervals)
-	# convert each matrix to raster and write it to png file 
-	# - files are written to the working directory and placed in a folder 
-	# - corresponding to the folder name chosen by the user.
-	for (j in c(1:3)) {
-		# Required for determining file names
-		SummaryMatrixName <- c("NumPositions", "NumFish", "NumIntervals")[j]
-		AbsOrRel <- get(c("AbsOrRelPos", "AbsOrRelFish", "AbsOrRelInt")[j])
+    	# Create a new dataframe containing only no-duplicated combinations of 
+    	# DETECTEDID, BinLat, BinLon, and Interval 
+    	# - required to determine the number of unique fish positioned in each grid
+    	positions2 <- positions[!(duplicated(
+    	  positions[, c("DETECTEDID", "BinLat", "BinLon", "Interval")])),]
+    	
+    	# Create a matrix containing the number of unique fish x interval 
+    	# combinations in each grid
+    	# - Used to plot NumIntervals when abs_or_rel == "absolute"
+    	results <- as.matrix(unclass(table(
+    	  factor(positions2$BinLat, levels = length(seq_latitude):1), 
+    	  factor(positions2$BinLon, levels = 1:length(seq_longitude)))))
+    	results[results == 0] <- NA
+    	
+    	# Convert Results matrix to NumIntervals per fish 
+    	# (i.e., divide by the total number of fish detected) 
+    	# - used to plot NumIntervals when abs_or_rel == "relative"
+    	if (abs_or_rel == "relative") results = results / totalFish
+  }
+  
+	if(fish_pos_int == "fish"){
+    	# Calculate num fish ---------------------------------------------------
         
-    # Read in the summary matrix for plotting
-    nm <- get(SummaryMatrixName)
-		png(file = file.path(paste0(filePath, "/", SummaryMatrixName, "_", 
-		  AbsOrRel, ".png")), bg = 'transparent', height = 2400, width = 2400)
-		par(mar = c(0,0,0,0))
-			rast <- raster::raster(nm) #coerce to raster
-			raster::image(rast, col = c(rev(rainbow(100, end = 0.7))), axes = FALSE)
+    	# Create a new dataframe containing only no-duplicated combinations of 
+    	# DETECTEDID, BinLat, and BinLon 
+    	# - required for determining the number of unique fish positioned in
+      # each grid
+      positions2 <- positions[!(duplicated(
+        positions[, c("DETECTEDID", "BinLat", "BinLon")])),]
+      
+    	# Create a matrix of the number of unique transmitters positioned in each grid
+    	# - used to plot NumFish when abs_or_relFish == "absolute"
+      results <- as.matrix(unclass(table(
+        factor(positions2$BinLat, levels=length(seq_latitude):1), 
+        factor(positions2$BinLon, levels=1:length(seq_longitude)))))
+      
+      # Set cells with no positions to NA so they will be transparent in png file
+      results[results == 0] <- NA    
+      
+      # Convert NumFish matrix to %NumFish, relative to the total number of 
+      # unique transmitters positioned in the system
+      # - used to plot NumFish when abs_or_relFish == "relative"
+    	if (abs_or_rel == "relative"){results = results/totalFish*100}
+  }
 
-			if (legendPos == "bottom"){
-				plotrix::color.legend(0.4, 0.01, 0.8, 0.02, 
-				             round(seq(min(nm, na.rm = TRUE), 
-				                       max(nm, na.rm = TRUE), 
-				                       by = (max(nm, na.rm = TRUE) - 
-				                             min(nm, na.rm = TRUE))/4), 0),
-				             rev(rainbow(100, end = 0.7)), 
-				             gradient = "x", font = 2, family = "sans", cex = 3)
-			} else {
-				plotrix::color.legend(0.99, 0.4, 1.0, 0.8, 
-				             round(seq(min(nm, na.rm = TRUE), 
-				                       max(nm, na.rm = TRUE), 
-				                       by = (max(nm, na.rm = TRUE) - 
-				                             min(nm, na.rm = TRUE))/4), 0), 
-				             rev(rainbow(100, end = 0.7)), 
-				             gradient = "y", font = 2, family = "sans", cex = 3)
-			}	
-		dev.off()
+  # Output -------------------------------------------------------------------
+	if(output %in% c("png","kmz")){
+  		  png(file = file.path(paste0(folder, "/", fish_pos_int,"_",
+  		                              abs_or_rel,".png")),
+  		      bg = 'transparent',
+  		      height = 2000,
+  		      width = 2000*(ncol(results)/nrow(results)),
+  		      pointsize = 38)
+	  }
+	par(mar = c(0,0,0,0))
+	rast <- raster::raster(results) #coerce to raster
+	
+	raster::image(rast, col = c(rev(rainbow(100, end = 0.7))), axes = FALSE)
+
+	if(legend_gradient != "n"){
+  	plotrix::color.legend(legend_pos[1], legend_pos[2], legend_pos[3], legend_pos[4], 
+  	             round(seq(min(results, na.rm = TRUE), 
+  	                       max(results, na.rm = TRUE), 
+  	                       by = (max(results, na.rm = TRUE) - 
+  	                             min(results, na.rm = TRUE))/4), 0), 
+  	             rev(rainbow(100, end = 0.7)), 
+  	             gradient = legend_gradient, font = 2, family = "sans", cex = 1)
 	}
+
+	if(output%in% c("png","kmz")){
+	  dev.off(dev.cur())
+	}
+
 	
 		
 	# Change row and column names for summary data to corresponding 
 	# longitudes and latitudes for the corresponding grids. 
-	rownames(NumFish) <- round(rev(seqLatitude), 6)
-	colnames(NumFish) <- round(seqLongitude, 6)
-	rownames(NumPositions) <- round(rev(seqLatitude), 6)
-	colnames(NumPositions) <- round(seqLongitude, 6)
-  rownames(NumIntervals) <- round(rev(seqLatitude), 6)
-  colnames(NumIntervals) <- round(seqLongitude, 6)
-    
-  # Write csv files containing the summary data used to make the plots.
-  write.csv(NumFish, paste0(filePath, "/NumFish_", AbsOrRelFish, ".csv"))
-  write.csv(NumPositions, paste0(filePath, "/NumPositions_", 
-            AbsOrRelPos,".csv"))
-  write.csv(NumIntervals, paste0(filePath, "/NumIntervals_", 
-            AbsOrRelInt,".csv"))
-    
-	# Write a text file containing the information required to output a kml file. 
-  # This is where the N, S, E, and W bounds of the image are defined for 
-  # rendering the image in Google Earth.
+	rownames(results) <- rev(seq_latitude)
+	colnames(results) <- seq_longitude
 	
+	# Create a kmz file -------------------------------------------------------
+  if(output=="kmz"){
+    # Create a text string containing the information required to output a
+    # kmz file. This is where the N, S, E, and W bounds of the image are
+    # defined for rendering the image in Google Earth.  
     kml <- paste0('<?xml version="1.0" encoding="UTF-8"?>',
-                  '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">',
-    '<Folder>',
-        '<name>',folder,'</name>',
-            '<open>',1,'</open>',
-            '<GroundOverlay>',
-                paste0('<name>NumPositions_',AbsOrRelPos,'</name>'),
-                '<Icon>',
-                   paste0('<href>',file.path(paste0(filePath, 
-                   "/NumPositions_", AbsOrRelPos,".png")),'</href>'),
-                   '<viewBoundScale>0.75</viewBoundScale>',
-                '</Icon>',
-                '<LatLonBox>',
-                   paste0('<north>',y_limits[2],'</north>'), 
-                   paste0('<south>',y_limits[1],'</south>'),
-                   paste0('<east>',x_limits[2],'</east>'),
-                   paste0('<west>',x_limits[1],'</west>'),
-                '</LatLonBox>',
-            '</GroundOverlay>',
-            '<GroundOverlay>',
-                paste0('<name>NumFish_',AbsOrRelFish,'</name>'),
-                '<Icon>',
-                   paste0('<href>',file.path(paste0(filePath, 
-                     "/NumFish_", AbsOrRelFish, ".png")),'</href>'),
-                   '<viewBoundScale>0.75</viewBoundScale>','</Icon>',
-                '<LatLonBox>',
-                   paste0('<north>',y_limits[2],'</north>'), 
-                   paste0('<south>',y_limits[1],'</south>'),
-                   paste0('<east>',x_limits[2],'</east>'),
-                   paste0('<west>',x_limits[1],'</west>'),
-                '</LatLonBox>',
-            '</GroundOverlay>',
-            '<GroundOverlay>',
-                paste0('<name>NumIntervals_',AbsOrRelInt,'</name>'),
-                '<Icon>',
-                  paste0('<href>',file.path(paste0(filePath, "/NumIntervals_", 
-                    AbsOrRelInt,".png")),'</href>'),
-                  '<viewBoundScale>0.75</viewBoundScale>','</Icon>',
-                '<LatLonBox>',
-                  paste0('<north>',y_limits[2],'</north>'),	
-                  paste0('<south>',y_limits[1],'</south>'),
-                  paste0('<east>',x_limits[2],'</east>'),
-                  paste0('<west>',x_limits[1],'</west>'),
-                '</LatLonBox>',
-            '</GroundOverlay>',
-        '</Folder>',
-    '</kml>')
+                    '<kml xmlns="http://www.opengis.net/kml/2.2" 
+  	                    xmlns:gx="http://www.google.com/kml/ext/2.2" 
+  	                    xmlns:kml="http://www.opengis.net/kml/2.2" 
+  	                    xmlns:atom="http://www.w3.org/2005/Atom">',
+    	                '<Folder>',
+                        '<name>',paste0(fish_pos_int,"_", abs_or_rel),'</name>',
+                          '<open>',1,'</open>',
+        	                '<LookAt>',
+          	                  '<longitude>',
+  	                            mean(b_box_LL[,"X"]),
+  	                          '</longitude>',
+          	                  '<latitude>',
+  	                            mean(b_box_LL[,"Y"]),
+  	                          '</latitude>',
+          	                  '<altitude>',
+  	                            0,
+  	                          '</altitude>',
+  	                          '<range>',
+  	                            max(diff(b_box_UTM$X), diff(b_box_UTM$Y)),
+  	                          '</range>',
+  	                          '<tilt>',
+  	                            0,
+  	                          '</tilt>',
+  	                          '<heading>',
+  	                            0,
+  	                          '</heading>',
+        	                  '</LookAt>',
+  	                        '<GroundOverlay>',
+                              paste0('<name>',fish_pos_int,'_',abs_or_rel,'</name>'),
+                              '<Icon>',
+                                paste0('<href>',file.path(paste0(fish_pos_int,"_",
+                                                                 abs_or_rel,".png")),
+                                      '</href>'),
+                                '<viewBoundScale>0.75</viewBoundScale>',
+                              '</Icon>',
+                              '<gx:LatLonQuad>',
+                                '<coordinates>',
+                                  paste0(b_box_LL[1,"X"],",",b_box_LL[1,"Y"],",",0,","), 
+                                  paste0(b_box_LL[2,"X"],",",b_box_LL[2,"Y"],",",0,","),
+                                  paste0(b_box_LL[3,"X"],",",b_box_LL[3,"Y"],",",0,","),
+                                  paste0(b_box_LL[4,"X"],",",b_box_LL[4,"Y"],",",0,","),
+                                '</coordinates>',
+                              '</gx:LatLonQuad>',
+                          '</GroundOverlay>',
+                      '</Folder>',
+                    '</kml>')
+  
+  	# Write the kml object to kml text file and places it in the folder 
+    # containing the three png files.
+  	write.table(kml,
+  	            file = file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                                    abs_or_rel,".kml")),
+  	            col.names = FALSE,
+  	            row.names = FALSE, quote = FALSE)
+  	# Zip the kml and opng into a KMZ file
+  	utils::zip(zipfile = file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                                      abs_or_rel, ".kmz")),
+  	           files = c(file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                                      abs_or_rel,".kml")),
+  	                     file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                                      abs_or_rel,".png"))),
+  	           flags = "-j")
+  	
+  	# Delete the kml and png files.
+  	file.remove(file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                             abs_or_rel,".kml")))
+  	file.remove(file.path(paste0(folder, "/", fish_pos_int,"_",
+  	                             abs_or_rel,".png")))
+  }
+	if(output %in% c("png", "kmz")){
+	    message(paste0("Output file are located in:", getwd(),"/", folder, "/"))
+	}
 
-	# Write the kml object to kml text file and places it in the folder 
-  # containing the three png files.
-	write.table(kml, file = file.path(paste0(filePath, "/", folder, ".kml")), 
-	  col.names = FALSE, row.names = FALSE, quote = FALSE)
 	
-	message(paste0("Output file are located in:\n", filePath))
+	return(list(values=results,
+	            utm_zone = paste(ifelse(projection=="LL",
+	                                  attr(positions, which="zone"),utm_zone),
+	                                  hemisphere),
+	            bbox_UTM = b_box_UTM,
+	            bbox_LL = b_box_LL,
+	            function_call = sys.call()))
 }	
