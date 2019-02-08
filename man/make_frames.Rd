@@ -147,6 +147,8 @@ will be useful while exploring optional plot arguments.
 }
 \examples{
 
+\dontrun{
+
 # load detection data
 det_file <- system.file("extdata", "walleye_detections.csv",
                          package = "glatos")
@@ -190,7 +192,6 @@ make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=5)
 myDir <- paste0(getwd(), "/frames5")
 make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE, frame_delete = TRUE)
 
-\dontrun{
 # if ffmpeg is not on system path
 
 # windows
