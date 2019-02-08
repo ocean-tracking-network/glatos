@@ -6,3 +6,4 @@ glatos.pdf
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^README-.*\.png$
+^vignettes$
