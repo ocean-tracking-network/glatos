@@ -4,97 +4,115 @@
 \alias{position_heat_map}
 \title{Position Heat Maps}
 \usage{
-position_heat_map(positions, resolution = 10, interval = 3600,
-  legendPos = "right", AbsOrRelFish = "absolute",
-  AbsOrRelPos = "absolute", AbsOrRelInt = "absolute",
-  folder = "position_heat_maps", x_limits = NULL, y_limits = NULL)
+position_heat_map(positions, projection = "LL", fish_pos_int = "fish",
+  abs_or_rel = "absolute", resolution = 10, interval = NULL,
+  x_limits = NULL, y_limits = NULL, utm_zone = NULL, hemisphere = "N",
+  legend_gradient = "y", legend_pos = c(0.99, 0.2, 1, 0.8),
+  output = "plot", folder = "position_heat_map")
 }
 \arguments{
-\item{positions}{A dataframe containing detection data with at least 4 
-columns named c('ID', 'timestamp', 'lat', 'lon'). The ID column contains 
-a an individual identifier. The 'timestamp' column contains the 
-datetime stamps for the positions (MUST be of class 'POSIXct'). The 
-columns 'lat' and 'lon' are the position latitudes and longitudes, 
-respectively.}
+\item{positions}{A dataframe containing detection data with at least the 
+following 4 columns:
+ \describe{
+ \item{\code{DETECTEDID}}{Individual animal identifier; character.}
+\item{\code{DATETIME}}{Date-time stamps for the positions (MUST be of 
+  class 'POSIXct')}
+\item{\code{LAT}}{Position latitude.}
+\item{\code{LON}}{Position longitude.}
+}}
+
+\item{projection}{A character string indicating the projection of the positions
+in the 'positions' dataframe. Used in the call to \link[PBSmapping]{convUL},
+which converts coordinates between latitude/longitude in decimal degrees
+("LL"; e.g., 45.98753) and UTM. Valid arguments are "LL" (latitude/longitude) and "UTM". If
+projection=="UTM, then 'utm_zone' and hemisphere' arguments must also be
+supplied.}
+
+\item{fish_pos_int}{A character string indicating whether output will display 
+number of fish or number of positions occuring in each cell of the grid.
+Valid arguments are c("fish", "positions", "intervals"). Default is "fish".
+If fish_pos_interval == "intervals", then argument "interval" must be supplied.}
+
+\item{abs_or_rel}{A character string indicating whether output will display 
+values as absolute value (i.e, the actual number of fish, positions, or 
+intervals) or as relative number (relative to total number of fish detected).
+Valid arguments are c("absolute", "relative"). Default is "absolute".}
 
 \item{resolution}{A numeric value indicating the spatial resolution 
 (in meters) of the grid system used to make the heat maps. Default is 10 m.}
 
-\item{interval}{A numeric value indicating the duration of each time bin 
-(in seconds) for use in calculating NumIntervals (i.e., a surrogate for 
-amount of time spent in each cell of the grid). Default is 3600 seconds 
-(1 hour).}
+\item{interval}{A numeric value indicating the duration (in seconds) of 
+time bin (in seconds) for use in calculating number of intervals fish were
+resident in a grid cell (i.e., a surrogate for amount of time spent in each
+cell of the grid). If interval==NULL (default), than raw number of
+positions is calculated. This value is only used when fish_pos_int == "intervals'.}
 
-\item{legendPos}{A character string indicating whether the legend should 
-be displayed on the right side or bottom of the png image. Valid arguments 
-are c("right", "bottom"). Default is "right".}
+\item{x_limits}{An optional 2-element numeric containing limits of x axis. If
+x_limits == NULL (default), then it is determined from the extents of the
+data.}
 
-\item{AbsOrRelFish}{A character string indicating whether number of 
-unique fish will display as absolute value (i.e, the actual number of fish 
-positioned in each grid) or as relative number (i.e., % of total fish 
-positioned). Valid arguments are c("absolute", "relative"). Default is 
-"absolute".}
+\item{y_limits}{An optional 2-element numeric containing limits of y axis. If 
+y_limits == NULL (default), then it is determined from the extents of the
+data.}
 
-\item{AbsOrRelPos}{A character string indicating whether number of 
-positions will display as absolute value (i.e, the actual number of 
-positions in each grid) or as relative number (i.e., mean number of 
-positions per fish detected). Valid arguments are c("absolute", 
-"relative"). Default is "absolute".}
+\item{legend_gradient}{A character string indicating the orientation of the
+color legend; "y" = vertical, "x" = horizontal, "n" indicates that no 
+legend should be drawn. Default is "y".}
 
-\item{AbsOrRelInt}{A character string indicating whether NumIntervals 
-will display as absolute value (i.e, the actual number of detection 
-intervals in each grid) or as relative number (i.e., mean number of 
-intervals per fish detected ). Valid arguments are c("absolute", 
-"relative"). Default is "absolute".}
+\item{legend_pos}{A numeric vector indicating the location of the color 
+legend as a portion of the total plot area (i.e., between 0 and 1). Only
+used if 'legend_gradient" in not "n". Default is c(0.99, 0.2, 1.0, 0.8),
+which puts the legend along the right hand side of the plot.}
 
-\item{folder}{A character string indicating the output folder. 
-If path is not specified then \code{folder} will be created in the 
-working directory. The base name (\code{basename(folder)}) will also be 
-used as the name of the kml file for viewing the heat maps in 
-Google Earth. Default is "PositionsHeatMaps".}
-
-\item{x_limits}{An optional 2-element numeric with limits of x axis.}
-
-\item{y_limits}{An optional 2-element numeric with limits of y axis.}
+\item{folder}{A character string indicating the output folder. If path is 
+not specified then \code{folder} will be created in the working directory.
+Default is "position_heat_map".}
 }
 \value{
-3 png files (one for each of number of positions, number of fish, 
- and number of intervals).
-1 kml file for viewing the heat maps in Google Earth.
-3 CSV files containing summary data used to create the plots.
+A list object containing 1) a matrix of the calulated values (i.e., fish, positions,
+intervals), with row and column names indicating location of each grid in UTM, 2) a
+character string specifying the UTM zone of the data in the matrix, 3) the
+bounding box of the data in UTM, 4) and the bounding box of the data in
+latitude (Y) and longitude (X), 5) a character string displaying the function call
+(i.e., a record of the arguments passed to the function).
+
+In addition, the user specifies an image output for displaying the heat map.
+Options are a "plot" (displayed in R), "png" (png file saved to specified folder), 
+and "kmz" for viewing the png image as an overlay in Google Earth (kmz file saved to
+specified folder).
 }
 \description{
 Create heat maps to display the spatial distribution of 
- acoustic telemetry positions.
+ acoustic telemetry positions. Most useful when used on data with high spatial
+ resultion, such as VPS positional telemetry data.
 }
 \details{
-NumIntervals is the number of unique fish x interval 
-combinations that occurred each grid cell. For example, in 4 hours there 
-are a total of 4 1-h intervals. If fish 'A' was positioned in a single grid 
-cell during 3 of the 4 intervals, than NumIntervals for that fish and grid 
-combination is 3. Intervals are determined by applying the findInterval 
-function (base R) to a sequence of timestamps (class: POSIXct) created 
-using seq(from = min(positions[, timestamp]), to = 
-min(positions[, timestamp]), by = interval), where interval is the 
-user-assigned interval duration in seconds. NumIntervals is a more 
-robust surrogate than NumPositions for relative time spent in each grid 
-in cases where spatial or temporal variability in positioning probability 
-are likely to significantly bias the distribution of positions in the array.
+When and 'interval' argument is supplied, the number of unique fish 
+x interval combinations that occurred each grid cell is calculated instead of
+raw number of positions. For example, in 4 hours there are a total of 4 1-h 
+intervals. If fish 'A' was positioned in a single grid cell during 3 of the 
+4 intervals, than the number of intervals for that fish and grid combination 
+is 3. Intervals are determined by applying the 'findInterval' function 
+(base R) to a sequence of timestamps (class: POSIXct) created using 
+seq(from = min(positions[, DATETIME]), to = min(positions[, DATETIME]), 
+by = interval), where interval is the user-assigned interval duration in 
+seconds. Number of intervals is a more robust surrogate than number of 
+positions for relative time spent in each grid in cases where spatial or 
+temporal variability in positioning probability are likely to significantly 
+bias the distribution of positions in the array.
 
-NumFish, NumPositions, and NumIntervals can all be displayed as 
-absolute or relative, which are specified using the AbsOrRelXXX arguments. 
-"absolute" is the actual value. "relative" is the absolute value divided 
-by the total number of fish positioned. Units for plots: NumFish = number 
-of unique fish (absolute) or % of total fish positioned (relative); 
-NumPositions = number of positions (absolute) or mean number of positions 
-per fish (relative); NumIntervals = number of unique fish x interval 
-combinations (absolute) or mean number of unique fish x interval 
-combinations per fish (relative).
+Calculated values (i.e., fish, positions, intervals) can be returned as 
+absolute or relative, which is specified using the abs_or_rel argument; 
+"absolute" is the actual value, "relative" is the absolute value divided 
+by the total number of fish appearing in the 'positions' dataframe. Units for
+plots: fish = number of unique fish (absolute) or % of total fish in 'positions' 
+dataframe (relative); positions = number of positions (absolute) or mean number
+of positions per fish in 'positions' dataframe (relative); intervasls = number of 
+unique fish x interval combinations (absolute) or mean number of unique 
+fish x interval combinations per fish in 'positions' dataframe (relative).
 }
 \examples{
 data(lamprey_tracks)
-#rename columns to match input arguments
-names(lamprey_tracks)[c(1,2,6,7)] <- c("ID","timestamp","lat","lon")
 position_heat_map(lamprey_tracks)
 
 }
