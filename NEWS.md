@@ -26,6 +26,10 @@
       output type occurs in a given call
     - Changed output to kmz instead of kml
     - new folder is only created when output is png or kmz
+		
+- dropped fasttime as a depenedency and uses lubridates fasttime implementation instead
+
+- Update sysdata detection schema for OTN
 
 ----
 
