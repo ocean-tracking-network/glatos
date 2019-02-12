@@ -265,7 +265,7 @@ and upper right coordinates of the rectangle of colors
 <span class='no'>det</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='read_glatos_detections.html'>read_glatos_detections</a></span>(<span class='no'>det_file</span>)
 
 <span class='co'>#call with defaults</span>
-<span class='fu'>detection_bubble_plot</span>(<span class='no'>det</span>)</div><div class='output co'>#&gt; <span class='message'>dev.new(): using pdf(file="Rplots123.pdf")</span></div><div class='output co'>#&gt;    glatos_array num_fish num_dets           first_det            last_det
+<span class='fu'>detection_bubble_plot</span>(<span class='no'>det</span>)</div><div class='output co'>#&gt;    glatos_array num_fish num_dets           first_det            last_det
 #&gt; 1           DRF        1       62 2012-05-26 15:12:15 2012-05-26 19:00:20
 #&gt; 2           DRL        1      186 2012-05-25 10:10:54 2012-05-25 22:48:07
 #&gt; 3           DRU        1      169 2012-05-27 07:33:37 2012-05-27 22:56:50
@@ -304,7 +304,7 @@ and upper right coordinates of the rectangle of colors
 #&gt; 18 43.38809 -83.98855     153
 #&gt; 5  41.60799 -83.57188   22 23</div><div class='input'>
 <span class='co'>#change symbol size and color</span>
-<span class='fu'>detection_bubble_plot</span>(<span class='no'>det</span>, <span class='kw'>symbol_radius</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>col_grad</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"grey90"</span>, <span class='st'>"grey10"</span>))</div><div class='output co'>#&gt; <span class='message'>dev.new(): using pdf(file="Rplots124.pdf")</span></div><div class='output co'>#&gt;    glatos_array num_fish num_dets           first_det            last_det
+<span class='fu'>detection_bubble_plot</span>(<span class='no'>det</span>, <span class='kw'>symbol_radius</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>col_grad</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"grey90"</span>, <span class='st'>"grey10"</span>))</div><div class='output co'>#&gt; <span class='message'>dev.new(): using pdf(file="Rplots1.pdf")</span></div><div class='output co'>#&gt;    glatos_array num_fish num_dets           first_det            last_det
 #&gt; 1           DRF        1       62 2012-05-26 15:12:15 2012-05-26 19:00:20
 #&gt; 2           DRL        1      186 2012-05-25 10:10:54 2012-05-25 22:48:07
 #&gt; 3           DRU        1      169 2012-05-27 07:33:37 2012-05-27 22:56:50
@@ -349,7 +349,7 @@ and upper right coordinates of the rectangle of colors
   <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"glatos"</span>)
 <span class='no'>rec</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='read_glatos_receivers.html'>read_glatos_receivers</a></span>(<span class='no'>rec_file</span>)
 
-<span class='fu'>detection_bubble_plot</span>(<span class='no'>det</span>, <span class='kw'>receiver_locs</span> <span class='kw'>=</span> <span class='no'>rec</span>)</div><div class='output co'>#&gt; <span class='message'>dev.new(): using pdf(file="Rplots125.pdf")</span></div><div class='output co'>#&gt;    glatos_array num_fish num_dets           first_det            last_det
+<span class='fu'>detection_bubble_plot</span>(<span class='no'>det</span>, <span class='kw'>receiver_locs</span> <span class='kw'>=</span> <span class='no'>rec</span>)</div><div class='output co'>#&gt; <span class='message'>dev.new(): using pdf(file="Rplots2.pdf")</span></div><div class='output co'>#&gt;    glatos_array num_fish num_dets           first_det            last_det
 #&gt; 1           AGR        0        0                &lt;NA&gt;                &lt;NA&gt;
 #&gt; 2           BBI        0        0                &lt;NA&gt;                &lt;NA&gt;
 #&gt; 3           BBW        0        0                &lt;NA&gt;                &lt;NA&gt;
@@ -546,7 +546,7 @@ and upper right coordinates of the rectangle of colors
                 <span class='no'>rec</span>$<span class='no'>recover_date_time</span> <span class='kw'>&gt;</span> <span class='no'>first</span> <span class='kw'>&amp;</span>
                 !<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/NA'>is.na</a></span>(<span class='no'>rec</span>$<span class='no'>recover_date_time</span>),]
 
-<span class='fu'>detection_bubble_plot</span>(<span class='no'>det</span>, <span class='kw'>receiver_locs</span> <span class='kw'>=</span> <span class='no'>plot_rec</span>)</div><div class='output co'>#&gt; <span class='message'>dev.new(): using pdf(file="Rplots126.pdf")</span></div><div class='output co'>#&gt;    glatos_array num_fish num_dets           first_det            last_det
+<span class='fu'>detection_bubble_plot</span>(<span class='no'>det</span>, <span class='kw'>receiver_locs</span> <span class='kw'>=</span> <span class='no'>plot_rec</span>)</div><div class='output co'>#&gt; <span class='message'>dev.new(): using pdf(file="Rplots3.pdf")</span></div><div class='output co'>#&gt;    glatos_array num_fish num_dets           first_det            last_det
 #&gt; 1           AGR        0        0                &lt;NA&gt;                &lt;NA&gt;
 #&gt; 2           BBI        0        0                &lt;NA&gt;                &lt;NA&gt;
 #&gt; 3           BBW        0        0                &lt;NA&gt;                &lt;NA&gt;

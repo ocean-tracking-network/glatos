@@ -124,15 +124,16 @@
 <a href="#glatos-0-3-0" class="anchor"></a>glatos 0.3.0</h1>
 <div id="section" class="section level4">
 <h4 class="hasAnchor">
-<a href="#section" class="anchor"></a>2019-02-08</h4>
+<a href="#section" class="anchor"></a>2019-02-12</h4>
 </div>
 <div id="new-features" class="section level3">
 <h3 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h3>
 <ul>
+<li><p>functions - receiver_efficiency - residence_index - read_otn_deployments</p></li>
 <li>vignettes and documentation
 <ul>
-<li>added data-loading, data-requirements</li>
+<li>added data-loading, data-requirements, receiver_efficency, residence_index</li>
 <li>added pkgdown files</li>
 </ul>
 </li>
@@ -142,6 +143,14 @@
 <h3 class="hasAnchor">
 <a href="#minor-changes" class="anchor"></a>Minor changes</h3>
 <ul>
+<li>crw_in_polygon
+<ul>
+<li>changed sampling algorithm to mimimize stuck-at-boundary errors</li>
+<li>added option to input SpatialPolygons object</li>
+<li>added explicit coordinate reference system (EPSG 3175 - Great Lakes projected CRS) so that default units are in meters and simulations are done in that CRS. Other CRS can be specified for other areas (via EPSG argument).</li>
+<li>added option to return spatial object or simple data frame.</li>
+</ul>
+</li>
 <li>abacus_plot
 <ul>
 <li>added optional arguments <em>x_res</em> and <em>x_format</em> to specify x-axis tick mark spacing and format (issue #30)</li>
@@ -156,6 +165,8 @@
 <li>new folder is only created when output is png or kmz</li>
 </ul>
 </li>
+<li><p>dropped fasttime as a depenedency and uses lubridates fasttime implementation instead</p></li>
+<li><p>Update sysdata detection schema for OTN</p></li>
 </ul>
 <hr>
 </div>
