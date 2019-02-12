@@ -39,7 +39,7 @@ data.frame.}
 \value{
 A \link[sp]{SpatialPoints} object in the same CRS as the input 
 \code{polyg} object. 
-\cr \emphasis OR \cr 
+\cr \emph{OR} \cr 
 A two-column data frame containing:
 \item{x}{x coordinates}
 \item{y}{y coordinates}
