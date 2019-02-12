@@ -14,23 +14,17 @@
 ##' @param res two element vector that specifies the x and y dimension
 ##'   of output raster cells.  Units of res are same as input
 ##'   shapefile.
-##'
-##' @param receiver_points A SpatialPointsDataFrame object that
-##'   contains coordinates of receivers in detection dataset.
-##'
 ##' 
 ##' @details \code{make_transition} uses
 ##'   \link[gdalUtils]{gdal_rasterize} to convert a polygon shapefile
 ##'   into a raster layer and geo-corrected transition layer
-##'   \link{interpolate_path}.  Raster cell values on land equal value
-##'   specified in "land" argument (default = 1000) and equals "water"
-##'   argument (default = 1e-10) for water. Function also writes a geotiff
-##'   file (*.tif) of the input shapefile to the ouput directory. Both
-##'   raster layer and geotif output have the same extents and
-##'   geographic projection as input shapefile.  Function requires
-##'   that gdal is working on computer.  To determine if gdal is
-##'   installed on your computer, see
-##'   \link[gdalUtils]{gdal_rasterize}.
+##'   \link{interpolate_path}.  Raster cell values on land = 0 and
+##'   water = 1. Function also writes a geotiff file (*.tif) of the
+##'   input shapefile to the ouput directory. Both raster layer and
+##'   geotif output have the same extents and geographic projection as
+##'   input shapefile.  Function requires that gdal is working on
+##'   computer.  To determine if gdal is installed on your computer,
+##'   see \link[gdalUtils]{gdal_rasterize}.
 ##'   
 ##' @details Returned objects will be projected in longlat WGS84
 ##'   (i.e., CRS("+init=epsg:4326"). If the input object is not in
@@ -43,11 +37,6 @@
 ##'   cells are connected by 16 directions and transition function
 ##'   returns 0 (land) for movements between land and water and 1 for
 ##'   all over-water movements.
-##'
-##' @details If receiver_points is provided, any receiver not in water
-##'   is buffered by the distance from the receiver to the nearest
-##'   water.  This allows all receivers to be coded as in water if the
-##'   receiver is on land.
 ##' 
 ##' @return A list with two elements:
 ##' \describe{
@@ -112,91 +101,92 @@
 ##' 
 ##' @export
 
-make_transition <- function(in_file, output = "out.tif", output_dir = NULL,
-                             res = c(0.1, 0.1), receiver_points = NULL) {
-   
+
+make_transition <- function(in_file, output = "out.tif",
+                            output_dir = NULL, res = c(0.1, 0.1)){
+
+  # check to see if gdal is installed on machine- stop if not.
   gdalUtils::gdal_setInstallation()
   valid_install <- !is.null(getOption("gdalUtils_gdalPath"))
-  if (!valid_install) {
-    stop("No GDAL installation found. Please install 'gdal' before continuing:\n\t-
-see: www.gdal.org\n\t- https://trac.osgeo.org/osgeo4w/ (windows)\n")
-  }
+  if(!valid_install){
+    stop("No GDAL installation found. Please install 'gdal' before continuing:\n\t- see: www.gdal.org\n\t- https://trac.osgeo.org/osgeo4w/ (windows)\n")
+    }
 
-  if (inherits(in_file, "character")) {
-    if (!file.exists(in_file)) 
-      stop(paste0("Input file or folder '", in_file, "' not found."))
-    if (!grepl("\\.shp$", in_file))
-      stop(paste0("'in_file' must be a path to an ESRI shapefile (*.shp)"))
-    if (!file.exists(in_file)) 
-      stop(paste0("'in_file' directory '", in_dir, 
-                  "' not found."))
+  #Check if in_file is file, directory, or SpatialPolygonsDataFrame
+  if(inherits(in_file, "character")) { 
+
+    #check if in_file exists
+    if(!file.exists(in_file)) stop(paste0("Input file or folder '", in_file, "' not found."))
+        
+    #check if file or directory and set layer name accordingly
+    if(grepl("\\.shp$", in_file)){
+      
+      in_dir <- dirname(in_file)
+      
+      if(!file.exists(in_dir)) stop(paste0("'in_file' directory '", in_dir, "' not found."))
+      
+      #get layer name from file name
+      in_layer <- basename(tools::file_path_sans_ext(basename(in_file)))
+      
+    } else { 
+     
+      in_dir <- in_file
+      
+      #use layer name as file name
+      in_layer <- rgdal::ogrListLayers(in_dir)[1]      
+       
+    }
     
-    in_file <- rgdal::readOGR(in_file, verbose = FALSE)
+    #read shape file
+    in_shp <- rgdal::readOGR(in_dir, layer = in_layer, verbose = FALSE) 
+  
+    #check if SpatialPolygonsDataFrame
+    if (!inherits(in_shp, "SpatialPolygonsDataFrame")) stop(paste0("Input can only contain ",
+            "polygon data."))
+    
+  } else if (inherits(in_file, "SpatialPolygonsDataFrame")) {
+    
+    in_shp <- in_file 
+    
+    #use incoming object name as layer
+    in_layer <- deparse(substitute(in_file))
+    
+  } else {
+    
+    stop(paste0("'in_file' must be either an object of class 'SpatialPolygonsDataFrame' or\n", 
+                " path to an ESRI Shapefile."))
+  
   }
-  if (!inherits(in_file, c("SpatialPolygonsDataFrame", "SpatialPolygons"))) 
-    stop(paste0("'in_file' must be an object of class\n", "'SpatialPolygonsDataFrame or 'SpatialPolygons'"))
-
+  
+  
+  #check projection and change if needed
   default_proj <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-
-  default_projection_transform <- function(default_proj, sp_obj){
-    if(sp::proj4string(sp_obj) != default_proj){
-      warning(paste0("Projection of input was not longlat WGS84, so conversion was attempted."), 
-              call. = FALSE)
-      out <- sp::spTransform(sp_obj, sp::CRS(default_proj))
-      return(out)} else {
-        return(sp_obj)}  
-  }
-
-  in_file <- default_projection_transform(default_proj = default_proj,
-                                          sp_obj = in_file)
-  
-  if (inherits(receiver_points, c("SpatialPoints", "SpatialPointsDataFrame"))){
-
-    receiver_points <- default_projection_transform(default_proj = default_proj,
-                                                    sp_obj = receiver_points)
-    
-    # determine what records are not in polygon
-    on_land <- receiver_points[is.na(over(receiver_points,
-                                          as(in_file, "SpatialPolygons")))]
-
-    # calculate radius from receiver to polygon for buffer
-    dist_on_land <- geosphere::dist2Line(on_land, in_file,
-                                         distfun = geosphere::distGeo)
-    
-    # create sp object
-    on_land_corrected  <- SpatialPointsDataFrame(
-      dist_on_land[, c("lon", "lat")],
-      as.data.frame(dist_on_land[, c("distance", "ID")]),
-      proj4string = CRS(default_proj))
-
-    # do buffers
-    on_land_corrected <- dismo::circles(on_land_corrected,
-                                        on_land_corrected$distance)
-    on_land_corrected <- spTransform(on_land_corrected@polygons, default_proj)
-
-    # combine buffered points and original outline
-    in_file <- bind(on_land_corrected, in_file)
-
+  if(sp::proj4string(in_shp) != default_proj) {
+    warning(paste0("Projection of input was not longlat WGS84, so conversion was attempted."),
+            call. = FALSE)
+    in_shp <- sp::spTransform(in_shp, sp::CRS(default_proj))
   }
   
-  temp_dir <- path.expand(file.path(tempdir()))
-  rgdal::writeOGR(in_file, dsn = temp_dir, layer = "map_to_burn.shp",
-                  driver = "ESRI Shapefile", overwrite_layer = TRUE)
-  if (is.null(output_dir)) 
-    output_dir <- temp_dir
+  #write to temp dir and call gdal_rasterize
+  temp_dir <- path.expand(file.path(tempdir(), in_layer))
+  rgdal::writeOGR(in_shp, dsn = temp_dir, 
+                  layer = in_layer,
+                  driver = "ESRI Shapefile", 
+                  overwrite_layer = TRUE)
 
+  if(is.null(output_dir)) output_dir <- temp_dir
+  
   burned <- gdalUtils::gdal_rasterize(temp_dir,
-                                      dst_filename =
-                                        path.expand(file.path(output_dir, output)),
-                                      burn = 1, tr = res, output_Raster = TRUE,
-                                      at = TRUE)
-  burned <- raster::raster(burned, layer = 1)
-  tran <- function(x){if(x[1] * x[2] == 0){return(0)} else {return(1)}}
+                                      dst_filename = path.expand(file.path(output_dir, output)),
+                                      burn = 1,
+                                      tr = res,
+                                      output_Raster = TRUE)
 
-  tr1 <- gdistance::transition(burned, transitionFunction = tran, 
-                               directions = 16)
-  tr1 <- gdistance::geoCorrection(tr1, type = "c")
+  burned <- raster::raster(burned, layer = 1)
+
+  tran <- function(x){if(x[1] * x[2] == 0){return(0)} else {return(1)}}
+  tr1 <- gdistance::transition(burned, transitionFunction = tran, directions = 16)
+  tr1 <- gdistance::geoCorrection(tr1, type="c")
   out <- list(transition = tr1, rast = burned)
   return(out)
-
 }

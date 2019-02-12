@@ -4,23 +4,26 @@
 \alias{make_transition2}
 \title{Create transition layer from a spatial polygon}
 \usage{
-make_transition2(poly, res = c(0.1, 0.1), x_lim = NULL, y_lim = NULL)
+make_transition2(poly, res = c(0.1, 0.1), extent_out = NULL,
+  x_lim = NULL, y_lim = NULL)
 }
 \arguments{
 \item{poly}{A spatial polygon object of class
-\link[=SpatialPolygons]{SpatialPolygonsDataFrame} or a
-\link[sf:sf]{sf::sf()} object with a geometry column of polygon and/or
-multipolygon objects.}
+\link[=SpatialPolygons]{SpatialPolygonsDataFrame}.}
 
 \item{res}{two element vector that specifies the x and y dimension
 of output raster cells.  Units of res are same as input
 polygon.}
 
-\item{x_lim}{An optional two-element vector with extents of x axis.
-Default returns object with extent of input object.}
+\item{extent_out}{An optional \code{Extent} object
+(see \link[raster]{extent}) that determines the extent of the
+output objects. Output extent will default to extent of input object
+\code{poly} if \code{extent_out}, and \code{x_lim}/\code{y_lim}
+are NULL (default).}
 
-\item{y_lim}{An optional two-element vector with extents of x axis.
-Default returns object with extent of input objects}
+\item{x_lim}{An optional two-element vector with extents of x axis.}
+
+\item{y_lim}{An optional two-element vector with extents of x axis.}
 }
 \value{
 A list with two elements:
@@ -35,13 +38,10 @@ Create transition layer for \link{interpolate_path} from
 \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
 }
 \details{
-\code{make_transition2} uses \link[fasterize]{fasterize} to
-  convert a \link[=SpatialPolygons]{SpatialPolygonsDataFrame} or a
-  \link[sf:sf]{sf::sf()} object with a geometry column of polygon and/or
-  multipolygon into
-  a raster layer, and geo-corrected transition layer
-  \link[gdistance]{transition}.  Raster cell values on land = 0 and
-  water = 1.
+\code{make_transition} uses \link[raster]{rasterize} to convert a
+  \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
+  geo-corrected transition layer \link[gdistance]{transition}.  Raster cell
+  values on land = 0 and water = 1.
 
 output transition layer is corrected for projection
   distortions using \link[gdistance]{geoCorrection}.  Adjacent
@@ -51,6 +51,7 @@ output transition layer is corrected for projection
 }
 \examples{
 
+library(sp) #for loading greatLakesPoly
 library(raster) # for plotting rasters
 
 # get polygon of the Great Lakes

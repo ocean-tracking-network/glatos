@@ -21,7 +21,8 @@ Imports:
 		sp,
 		gdalUtils,
 		sf,
-		fasterize
+		fasterize,
+		units
 Suggests: testthat
 URL: https://gitlab.oceantrack.org/GreatLakes/glatos
 BugReports: https://gitlab.oceantrack.org/GreatLakes/glatos/issues

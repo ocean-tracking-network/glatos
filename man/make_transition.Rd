@@ -5,7 +5,7 @@
 \title{Create transition layer from polygon shapefile}
 \usage{
 make_transition(in_file, output = "out.tif", output_dir = NULL,
-  res = c(0.1, 0.1), receiver_points = NULL)
+  res = c(0.1, 0.1))
 }
 \arguments{
 \item{in_file}{A SpatialPolygonsDataFrame object or a character string with file path to 
@@ -20,9 +20,6 @@ is closed (see \link[=tempfile]{tempdir}).}
 \item{res}{two element vector that specifies the x and y dimension
 of output raster cells.  Units of res are same as input
 shapefile.}
-
-\item{receiver_points}{A SpatialPointsDataFrame object that
-contains coordinates of receivers in detection dataset.}
 }
 \value{
 A list with two elements:
@@ -41,15 +38,13 @@ Create transition layer for \link{interpolate_path} from polygon shapefile.
 \code{make_transition} uses
   \link[gdalUtils]{gdal_rasterize} to convert a polygon shapefile
   into a raster layer and geo-corrected transition layer
-  \link{interpolate_path}.  Raster cell values on land equal value
-  specified in "land" argument (default = 1000) and equals "water"
-  argument (default = 1e-10) for water. Function also writes a geotiff
-  file (*.tif) of the input shapefile to the ouput directory. Both
-  raster layer and geotif output have the same extents and
-  geographic projection as input shapefile.  Function requires
-  that gdal is working on computer.  To determine if gdal is
-  installed on your computer, see
-  \link[gdalUtils]{gdal_rasterize}.
+  \link{interpolate_path}.  Raster cell values on land = 0 and
+  water = 1. Function also writes a geotiff file (*.tif) of the
+  input shapefile to the ouput directory. Both raster layer and
+  geotif output have the same extents and geographic projection as
+  input shapefile.  Function requires that gdal is working on
+  computer.  To determine if gdal is installed on your computer,
+  see \link[gdalUtils]{gdal_rasterize}.
 
 Returned objects will be projected in longlat WGS84
   (i.e., CRS("+init=epsg:4326"). If the input object is not in
@@ -62,11 +57,6 @@ output transition layer is corrected for projection
   cells are connected by 16 directions and transition function
   returns 0 (land) for movements between land and water and 1 for
   all over-water movements.
-
-If receiver_points is provided, any receiver not in water
-  is buffered by the distance from the receiver to the nearest
-  water.  This allows all receivers to be coded as in water if the
-  receiver is on land.
 }
 \examples{
 \dontrun{
