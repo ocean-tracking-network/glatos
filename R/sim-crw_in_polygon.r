@@ -92,7 +92,7 @@
 #' @export
  crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100, 
    initPos = c(NA,NA), initHeading = NA, nsteps = 30, 
-   EPSG = 3175, sp_out = TRUE){          
+   EPSG = 3175, sp_out = FALSE){          
    
    #convert to Polygon if not already
    if(!inherits(polyg, c("SpatialPolygonsDataFrame", "SpatialPolygons", 
