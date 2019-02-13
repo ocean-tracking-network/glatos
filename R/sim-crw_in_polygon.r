@@ -104,7 +104,7 @@
      "Polygons"))) polyg <- sp::Polygons(list(polyg), ID = 1)
 
    #CRS
-   projargs <- paste0("+init=EPSG:", EPSG)
+   projargs <- paste0("+init=epsg:", EPSG)
    
    #convert to SpatialPolygons if not already
    if(!inherits(polyg, c("SpatialPolygonsDataFrame", "SpatialPolygons"))){ 
