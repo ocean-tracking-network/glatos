@@ -50,11 +50,11 @@ map <- ri %>%
   layout(title = "Kessel RI",geo = geo)
 
 ## ---- eval=is_html_output(), warning=FALSE, message=FALSE----------------
-map
+#  map
 
 ## ---- eval=!is_html_output() ,echo=FALSE, message=FALSE,warning=FALSE, out.width = "400px"----
-#  orca(map, file = 'kessel.png')
-#  knitr::include_graphics('kessel.png')
+orca(map, file = 'kessel.png')
+knitr::include_graphics('kessel.png')
 
 ## ----warning=FALSE-------------------------------------------------------
 ri <- glatos::residence_index(detection_events,calculation_method = 'timedelta')
@@ -88,11 +88,11 @@ map <- ri %>%
 
 
 ## ---- eval=is_html_output(), warning=FALSE, message=FALSE----------------
-map
+#  map
 
 ## ---- eval=!is_html_output() ,echo=FALSE, message=FALSE,warning=FALSE, out.width = "400px"----
-#  orca(map, file = 'timedelta.png')
-#  knitr::include_graphics('timedelta.png')
+orca(map, file = 'timedelta.png')
+knitr::include_graphics('timedelta.png')
 
 ## ----warning=FALSE-------------------------------------------------------
 ri <- glatos::residence_index(detection_events,calculation_method = 'aggregate_with_overlap')
@@ -128,11 +128,11 @@ map <- ri %>%
 
 
 ## ---- eval=is_html_output(), warning=FALSE, message=FALSE----------------
-map
+#  map
 
 ## ---- eval=!is_html_output() ,echo=FALSE, message=FALSE,warning=FALSE, out.width = "400px"----
-#  orca(map, file = 'awo.png')
-#  knitr::include_graphics('awo.png')
+orca(map, file = 'awo.png')
+knitr::include_graphics('awo.png')
 
 ## ----warning=FALSE-------------------------------------------------------
 ri <- glatos::residence_index(detection_events,calculation_method = 'aggregate_no_overlap')
@@ -166,9 +166,9 @@ map <- ri %>%
 
 
 ## ---- eval=is_html_output(), warning=FALSE, message=FALSE----------------
-map
+#  map
 
 ## ---- eval=!is_html_output() ,echo=FALSE, message=FALSE,warning=FALSE, out.width = "400px"----
-#  orca(map, file = 'ano.png')
-#  knitr::include_graphics('ano.png')
+orca(map, file = 'ano.png')
+knitr::include_graphics('ano.png')
 

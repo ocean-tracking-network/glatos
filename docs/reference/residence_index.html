@@ -146,8 +146,8 @@ stations, tags, etc.).</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>detections</th>
-      <td><p>A data.frame from the <code>detection_events</code> function from
-the <span class="pkg">glatos</span> package</p></td>
+      <td><p>A data.frame from the <code><a href='detection_events.html'>detection_events</a></code>
+function.</p></td>
     </tr>
     <tr>
       <th>calculation_method</th>
@@ -163,8 +163,8 @@ mean_latitude, mean_longitude</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Kessel et al. Paper - https://www.researchgate.net/publication/279269147</p>
-    <p>The <strong>Kessel</strong> method converts both the startdate and enddate columns into a 
+    <p>The <strong>Kessel</strong> method converts both the <code>first_detection</code> and 
+<code>last_detection</code> columns into a 
 date with no hours, minutes, or seconds. Next it creates a list of the
 unique days where a detection was seen. The size of the list is returned
 as the total number of days as an integer. This calculation is used to
@@ -177,7 +177,7 @@ when it is really 2-3 seconds.</p>
 $$ RI = Residence Index$$
 $$S = Distinct number of days detected at the station$$
 $$T = Distinct number of days detected anywhere on the array$$</p>
-    <p>The <strong>Timedelta</strong> calculation method determines the first detection and the
+<p>The <strong>Timedelta</strong> calculation method determines the first detection and the
 last detection of all detections. The time difference is then taken as
 the values to be used in calculating the residence index. The timedelta
 for each station is divided by the timedelta of the array to determine
@@ -187,7 +187,7 @@ RI = Delta S/Delta T$$</p>
 <p>$$RI = Residence Index$$</p>
 <p>$$Delta S = Last detection time at a station - First detection time at the station$$</p>
 <p>$$Delta T = Last detection time on an array - First detection time on the array$$</p>
-    <p>The <strong>Aggregate With Overlap</strong> calculation method takes the length of time of each
+<p>The <strong>Aggregate With Overlap</strong> calculation method takes the length of time of each
 detection and sums them together. A total is returned. The sum for each station
 is then divided by the sum of the array to determine the residence index.</p>
 <p>$$
@@ -195,7 +195,7 @@ RI = AwOS/AwOT$$</p>
 <p>$$RI = Residence Index$$</p>
 <p>$$AwOS = Sum of length of time of each detection at the station$$</p>
 <p>$$AwOT = Sum of length of time of each detection on the array$$</p>
-    <p>The <strong>Aggregate No Overlap</strong> calculation method takes the length of time of each
+<p>The <strong>Aggregate No Overlap</strong> calculation method takes the length of time of each
 detection and sums them together. However, any overlap in time between one or
 more detections is excluded from the sum. For example, if the first detection
 is from <code>2016-01-01 01:02:43</code> to <code>2016-01-01 01:10:12</code> and the second
@@ -208,6 +208,15 @@ RI = AnOS/AnOT$$</p>
 <p>$$RI = Residence Index$$</p>
 <p>$$AnOS = Sum of length of time of each detection at the station, excluding any overlap$$</p>
 <p>$$AnOT = Sum of length of time of each detection on the array, excluding any overlap$$</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Kessel, S.T., Hussey, N.E., Crawford, R.E., Yurkowski, D.J., O'Neill, C.V.
+and Fisk, A.T., 2016. Distinct patterns of Arctic cod (<em>Boreogadus
+saida</em>) presence and absence in a shallow high Arctic embayment, revealed
+across open-water and ice-covered periods through acoustic telemetry. Polar
+Biology, 39(6), pp.1057-1068.
+<a href='https://www.researchgate.net/publication/279269147'>https://www.researchgate.net/publication/279269147</a></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -228,6 +237,8 @@ RI = AnOS/AnOT$$</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#references">References</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
