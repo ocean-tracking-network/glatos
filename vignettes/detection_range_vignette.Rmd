@@ -616,9 +616,19 @@ for exploring the relative performance of telemetry system characteristics
 potential consequences of unanticipated outcomes (e.g., lost
 receivers).
 
-# Predicting receiver line performance
+# Predicting receiver line performance with simulation
 
- In our next example, we will incorporate observed detection data
+Simulation can be a powerful tool for decision making and the `glatos`
+package contains several simulation-based functions.  When considering
+simulation, it is important to keep in mind that simulations are a
+simplification of reality and that results are only as good as the
+assumptions and variables going in (i.e., 'garbage in, garbage
+out'). Fortunately, many processes that influence telemetry systems
+are fairly well understood. Our approach to these types of simulations
+is generally to be cautious: make conservative assumptions to yield
+conservative inferences.
+
+In our next example, we will incorporate observed detection data
 (i.e., detection range curve) into a simulation to predict the
 probability that an acoustic-tagged fish will be detected on a
 receiver line, given constant fish velocity (ground speed), receiver
@@ -844,38 +854,141 @@ sensitive to our assumptions or decisions regarding those parameters.
 
 # Simulation of 2-D movements with grids
 
-(code and example needs worked out but need revised crw\_in\_polygon
-function that will ingest a true polygon object natively first)  
-
-
 In addition to the one-dimensional receiver line simulation presented
 above, the `glatos` package contains a set of functions that can be
 used to simulate fish movement and detection on receivers in a virtual
 two-dimensional arena. 
 
-We won't cover this function in detail here, but will briefly explain
-the components. First, `crw_in_polygon()` can be used to simulate fish
-movement paths as a random walk inside a polygon. Second,
-`transmit_along_path()` can be used to simulate tag signal
+In the final example of this vignette, we will use `crw_in_polygon` to
+simulate fish movement paths as a random walk inside a polygon. The
+`transmit_along_path()` function is used to simulate tag signal
 transmissions along each path based on constant movement velocity,
-transmitter delay range, and duration of signal. Third,
-`detect_transmissions()` can be used to simulate detection of
+transmitter delay range, and duration of signal. Last,
+`detect_transmissions()` is used to simulate detection of
 transmitter signals in a receiver network based on detection range
 curve, location of transmitter, and locations of
 receivers. Collectively, these functions can be used to explore,
 compare, and contrast theoretical performance of a wide range of
 transmitter and receiver network designs.
 
-Simulation can be a powerful tool for decision making and the `glatos`
-package contains several simulation-based functions (e.g.,
-`calc_collision_prob()`). However, it's important to keep in mind that
-simulations are a simplification of reality and that results are only
-as good as the assumptions and variables going in (i.e., 'garbage in,
-garbage out'). Fortunately, many processes that influence telemetry
-systems are fairly well understood. Our approach to these types of
-simulations is generally to be cautious: make conservative assumptions
-to yield conservative inferences. In this way, we can hope for the
-best but rest easy knowing we have 'planned for the worst'.
+We will use these functions to explore how different grid spacing
+impacts detection of a virtual fish in Lake Huron.
+
+In the first code chunk, we load an outline of the Great Lakes
+included in `glatos`.  The outline is a SpatialPolygonsDataFrame but
+we are going to convert it to a simple feature object using functions
+in the `sf` package. ^[Simple features is a new R package that
+provides consistent and standardized functions for working
+with spatial data.  Please see https://r-spatial.github.io/sf/ for
+more information.]  We then transform greatLakesPoly from
+a cartesian projection (WGS84- lat/lon) to a projected map using a map
+coordinate system for the American Great lakes region. This step
+simplifies the data manipulation process.  Finally, in this code
+chunk, we extract Lake Huron from greatLakesPoly.
+
+```{R, echo = TRUE}
+
+# read in polygon
+data(greatLakesPoly)
+
+# convert to simple features object
+poly <- st_as_sf(greatLakesPoly)
+
+# set attribute-geometry relationship
+st_agr(poly) <- "constant"
+
+# transform to projected map
+# more info about map projection can be found at
+# https://epsg.io/3175
+poly <- st_transform(poly, crs = 3175)
+
+# crop out Lake Huron
+# see map coordinate conversion tool at https://epsg.io
+# tool is useful for woking out bounding box in epsg 3175 coordinate
+# system (NAD83/Great Lakes and St. Lawrence River)
+LH <- st_crop(poly, xmin = 879714.45,
+              xmax = 1263717.46, ymin = 692997.10,
+              ymax = 1120461.83)
+
+# set agr for sf
+st_agr(LH) <- "constant"
+
+
+```
+
+The simulation functions from `glatos` requires unprojected (WGS 84)
+latitude and longitude coordinate system and SpatialPolygon objects
+in `sp` format .  We create a new object and convert the Lake Huron
+polygon shapefile back to WGS 84 and `sp` in the next step.
+
+
+```{R, echo = TRUE}
+
+# convert back to WGS84-lat/lon
+LH_latlon <- st_transform(LH, crs = 4326)
+
+# convert from sf to sp object
+LH_latlon <- as(LH_latlon, "Spatial")
+
+```
+
+Next we set up a receiver grid in Lake Huron for use in the
+simulation and create a 30 km grid for Lake
+Huron using the projected LH polygon from above.  The next step is to
+transform the grid back to WGS 84 lat/lon coordinate system and
+create a data.frame with longitude and latitude for the `recLoc`
+argument in `detect_transmissions`.
+
+```{R, echo = TRUE}
+
+# make grid in LH polygon
+grid_30km <- st_intersection(LH, st_make_grid(LH, cellsize = 30000, what = "centers")) # cellsize is in meters...
+
+# convert back to WGS84-lat/lon
+grid_30km <- st_transform(grid_30km, crs = 4326)
+
+# extract coordinates for detect_transmissions 
+grid_30km_coords <- as.data.frame(st_coordinates(grid_30km))
+
+```
+
+In addition to a object of receiver locations, we also need to
+simulate fish movements in Lake Huron.  In the next chunk, we use the
+`crw_in_polygon` function to simulate a virtual fish movement starting
+from Saginaw Bay.  This is a good time to remember that our virtual
+fish likely does not behave similarly to real fish!  We use a step
+length of 10 km over 30 steps.  Theta controls the turn angles that
+fish exhibit and tweaking can produce a fish that changes directions a
+lot or tend to follow a general direction.
+
+
+```{R, echo = TRUE}
+
+# do random walk in LH polygon starting in Saginaw Bay
+path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30, initPos = c(955609.31, 792130.14))
+
+```
+
+Time to bring together fish track and grid  in a visualization....
+
+
+```{R, echo = TRUE}
+
+# plot path, grid and points
+sp::plot(LH_latlon, col = "lightgrey", border = "grey")
+points(path, type = "o", pch = 20, col = "red")
+plot(st_geometry(grid_30km), pch = 20, col = "black", add = TRUE)
+
+
+```
+
+
+
+
+
+
+
+
 
 
 
