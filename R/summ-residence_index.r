@@ -263,8 +263,10 @@ get_days <- function(dets, calculation_method='kessel') {
     days <- glatos:::aggregate_total_no_overlap(dets)
   } else if(calculation_method == 'timedelta') {
     days <- glatos:::total_diff_days(dets)
-  } else {
+  } else if(calculation_method == 'kessel'){
     days <- glatos:::total_days_count(dets)
+  } else {
+      stop("Unsupported 'calculated_method'.")
   }
   return(days)
 }
