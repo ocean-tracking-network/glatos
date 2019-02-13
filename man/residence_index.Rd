@@ -11,42 +11,42 @@ residence_index(detections, calculation_method = "kessel")
 function.}
 
 \item{calculation_method}{A character string with the calculation method
-using one of the following: \code{kessel}, \code{timedelta}, \code{aggregate_with_overlap}, or \code{aggregate_no_overlap}}
+using one of the following: \code{kessel}, \code{timedelta},
+\code{aggregate_with_overlap}, or \code{aggregate_no_overlap}}
 }
 \value{
 A data.frame of days_detected, residency_index, location,
 mean_latitude, mean_longitude
 }
 \description{
-This residence index tool will take a compressed or uncompressed detection
-file and caculate the residency index for each station/receiver in the
-detections. The information passed to the function is what is used to
-calculate the residence index, make sure you are only passing the data you
-want taken into consideration for the residence index (i.e. species,
-stations, tags, etc.).
+This residence index tool will take condensed detection event data (from
+\code{\link{detection_events}} and caculate the residence index for each
+location present. The information passed to the function is
+what is used to calculate the residence index, make sure you are only passing
+the data you want taken into consideration for the residence index (i.e.
+species, stations, tags, etc.).
 }
 \details{
-The \strong{Kessel} method converts both the \code{first_detection} and 
-\code{last_detection} columns into a 
-date with no hours, minutes, or seconds. Next it creates a list of the
-unique days where a detection was seen. The size of the list is returned
-as the total number of days as an integer. This calculation is used to
-determine the total number of distinct days (T) and the total number of
-distinct days per station (S).
-Possible rounding error may occur as a detection on 2016-01-01 23:59:59
-and a detection on 2016-01-02 00:00:01 would be counted as two days
-when it is really 2-3 seconds.
+The \strong{Kessel} method converts both the \code{first_detection}
+and \code{last_detection} columns into a date with no hours, minutes, or
+seconds. Next it creates a list of the unique days where a detection was
+seen. The size of the list is returned as the total number of days as an
+integer. This calculation is used to determine the total number of distinct
+days (T) and the total number of distinct days per station (S). Possible
+rounding error may occur as a detection on 2016-01-01 23:59:59 and a
+detection on 2016-01-02 00:00:01 would be counted as two days when it is
+really 2-3 seconds.
 
 \deqn{ RI = S/T}
 \deqn{ RI = Residence Index}
 \deqn{S = Distinct number of days detected at the station}
 \deqn{T = Distinct number of days detected anywhere on the array}
 
-The \strong{Timedelta} calculation method determines the first detection and the
-last detection of all detections. The time difference is then taken as
-the values to be used in calculating the residence index. The timedelta
-for each station is divided by the timedelta of the array to determine
-the residence index.
+The \strong{Timedelta} calculation method determines the first
+detection and the last detection of all detections. The time difference is
+then taken as the values to be used in calculating the residence index. The
+timedelta for each station is divided by the timedelta of the array to
+determine the residence index.
 
 \deqn{
 RI = Delta S/Delta T}
