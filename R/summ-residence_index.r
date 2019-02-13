@@ -113,23 +113,20 @@ residence_index <- function(detections, calculation_method='kessel') {
   
   total_days = get_days(detections, calculation_method)
   
-  ri <- data.frame('days_detected'=numeric(),'residency_index'=numeric(), 'location'=character())
+  locations <- distinct(select(detections, location))  
+
+  ri <- detections %>% dplyr::group_by(location) %>% 
+    dplyr::do(data.frame(
+      days_detected = total_days_count(.),
+      residency_index = as.double(total_days_count(.)) / total_days,
+      mean_latitude = mean(.$mean_latitude, na.rm = TRUE),
+      mean_longitude = mean(.$mean_longitude, na.rm = TRUE)))
   
-  locations <- distinct(select(detections, location))
-  for (index in 1:as.integer(dplyr::count(locations))) {
-    stn <- as.character(slice(locations, index)$location)
-    stn_data <- filter(detections, location == stn)
-    total_stn_days <- glatos:::get_days(stn_data, calculation_method)
-    res_index = as.double(total_stn_days)/total_days
-    row <- data.frame('days_detected'=total_stn_days,'residency_index'=res_index, 'location'=stn)
-    ri <- rbind(ri, row)
-  }
-  
-  locations <- unique(detections[,c('location','mean_latitude','mean_longitude')])
-  rownames(locations) <- 1:nrow(locations)
-  locations$location <- as.character(locations$location)
-  ri$location <- as.character(ri$location)
-  ri <- dplyr::left_join(ri, locations, by = "location")
+  ri <- ri[match(locations$location, ri$location), ]
+    
+  ri <- data.frame(ri)[, c("days_detected", "residency_index", "location",
+                           "mean_latitude", "mean_longitude")]
+
   return(ri)
 }
 
