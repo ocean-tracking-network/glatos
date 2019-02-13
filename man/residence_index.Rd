@@ -7,8 +7,8 @@
 residence_index(detections, calculation_method = "kessel")
 }
 \arguments{
-\item{detections}{A data.frame from the \code{detection_events} function from
-the \pkg{glatos} package}
+\item{detections}{A data.frame from the \code{\link{detection_events}}
+function.}
 
 \item{calculation_method}{A character string with the calculation method
 using one of the following: \code{kessel}, \code{timedelta}, \code{aggregate_with_overlap}, or \code{aggregate_no_overlap}}
@@ -26,10 +26,8 @@ want taken into consideration for the residence index (i.e. species,
 stations, tags, etc.).
 }
 \details{
-Kessel et al. Paper - https://www.researchgate.net/publication/279269147
-
-
-The \strong{Kessel} method converts both the startdate and enddate columns into a 
+The \strong{Kessel} method converts both the \code{first_detection} and 
+\code{last_detection} columns into a 
 date with no hours, minutes, or seconds. Next it creates a list of the
 unique days where a detection was seen. The size of the list is returned
 as the total number of days as an integer. This calculation is used to
@@ -43,9 +41,6 @@ when it is really 2-3 seconds.
 \deqn{ RI = Residence Index}
 \deqn{S = Distinct number of days detected at the station}
 \deqn{T = Distinct number of days detected anywhere on the array}
-
-
-
 
 The \strong{Timedelta} calculation method determines the first detection and the
 last detection of all detections. The time difference is then taken as
@@ -62,9 +57,6 @@ RI = Delta S/Delta T}
 
 \deqn{Delta T = Last detection time on an array - First detection time on the array}
 
-
-
-
 The \strong{Aggregate With Overlap} calculation method takes the length of time of each
 detection and sums them together. A total is returned. The sum for each station
 is then divided by the sum of the array to determine the residence index.
@@ -77,9 +69,6 @@ RI = AwOS/AwOT}
 \deqn{AwOS = Sum of length of time of each detection at the station}
 
 \deqn{AwOT = Sum of length of time of each detection on the array}
-
-
-
 
 The \strong{Aggregate No Overlap} calculation method takes the length of time of each
 detection and sums them together. However, any overlap in time between one or
@@ -110,6 +99,14 @@ rit_data <- glatos::residence_index(detection_events, calculation_method = 'time
 riawo_data <- glatos::residence_index(detection_events, calculation_method = 'aggregate_with_overlap')
 riano_data <- glatos::residence_index(detection_events, calculation_method = 'aggregate_no_overlap')
 
+}
+\references{
+Kessel, S.T., Hussey, N.E., Crawford, R.E., Yurkowski, D.J., O'Neill, C.V.
+and Fisk, A.T., 2016. Distinct patterns of Arctic cod (\emph{Boreogadus
+saida}) presence and absence in a shallow high Arctic embayment, revealed
+across open-water and ice-covered periods through acoustic telemetry. Polar
+Biology, 39(6), pp.1057-1068.
+\url{https://www.researchgate.net/publication/279269147}
 }
 \author{
 A. Nunes, \email{anunes@dal.ca}

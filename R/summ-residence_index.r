@@ -7,17 +7,24 @@
 #' want taken into consideration for the residence index (i.e. species,
 #' stations, tags, etc.).
 #'
-#' Kessel et al. Paper - https://www.researchgate.net/publication/279269147
+#' @references 
+#' Kessel, S.T., Hussey, N.E., Crawford, R.E., Yurkowski, D.J., O'Neill, C.V.
+#' and Fisk, A.T., 2016. Distinct patterns of Arctic cod (\emph{Boreogadus
+#' saida}) presence and absence in a shallow high Arctic embayment, revealed
+#' across open-water and ice-covered periods through acoustic telemetry. Polar
+#' Biology, 39(6), pp.1057-1068.
+#' \url{https://www.researchgate.net/publication/279269147}
 #'
-#' @param detections A data.frame from the \code{detection_events} function from
-#' the \pkg{glatos} package
-#'
+#' @param detections A data.frame from the \code{\link{detection_events}}
+#'   function.
+#'   
 #' @param calculation_method A character string with the calculation method
 #' using one of the following: \code{kessel}, \code{timedelta}, \code{aggregate_with_overlap}, or \code{aggregate_no_overlap}
 #'
 #'
 #' @details 
-#' The \strong{Kessel} method converts both the startdate and enddate columns into a 
+#' The \strong{Kessel} method converts both the \code{first_detection} and 
+#' \code{last_detection} columns into a 
 #' date with no hours, minutes, or seconds. Next it creates a list of the
 #' unique days where a detection was seen. The size of the list is returned
 #' as the total number of days as an integer. This calculation is used to
@@ -155,10 +162,12 @@ total_days_count <- function(detections) {
 
 #' The function below determines the total days difference.
 #'
-#' The difference is determined by the minimal first_detection of every detection and the maximum last_detection of every detection.
-#' Both are converted into a datetime then subtracted to get a timedelta. The timedelta
-#' is converted to seconds and divided by the number of seconds in a day (86400). The function
-#' returns a floating point number of days (i.e. 503.76834).
+#' The difference is determined by the minimal first_detection of every
+#' detection and the maximum last_detection of every detection. Both are
+#' converted into a datetime then subtracted to get a timedelta. The timedelta
+#' is converted to seconds and divided by the number of seconds in a day
+#' (86400). The function returns a floating point number of days (i.e.
+#' 503.76834).
 #'
 #' @param Detections - data frame pulled from the compressed detections CSV
 #'
