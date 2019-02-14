@@ -859,20 +859,22 @@ above, the `glatos` package contains a set of functions that can be
 used to simulate fish movement and detection on receivers in a virtual
 two-dimensional arena. 
 
-In the final example of this vignette, we will use `crw_in_polygon` to
-simulate fish movement paths as a random walk inside a polygon. The
-`transmit_along_path()` function is used to simulate tag signal
-transmissions along each path based on constant movement velocity,
-transmitter delay range, and duration of signal. Last,
-`detect_transmissions()` is used to simulate detection of
-transmitter signals in a receiver network based on detection range
-curve, location of transmitter, and locations of
-receivers. Collectively, these functions can be used to explore,
+In the final example of this vignette, we will use `crw_in_polygon`,
+`transmit_along_path`, and `detect_transmissions` functions to explore
+system performance of two different grid spacings on detection of virtual fish
+in Lake Huron.  Although we will simulate system performance of
+receiver grids, these functions can be used to explore,
 compare, and contrast theoretical performance of a wide range of
-transmitter and receiver network designs.
-
-We will use these functions to explore how different grid spacing
-impacts detection of a virtual fish in Lake Huron.
+transmitter and receiver network designs.  The `crw_in_polygon` function is used to
+simulate a random walk as a series of equal length steps with turning
+angles drawn from a normal distribution inside of a polygon.  After
+random walk movement paths for virtual fish are created, the `transmit_along_path()` function is
+used to simulate tag signal transmissions along each path based on
+constant movement velocity, transmitter delay range, and duration of
+signal. Last, `detect_transmissions()` is used to simulate detection
+of transmitter signals in a receiver network based on detection range
+curve, location of transmitter (calculated by `transmit_along_path`), and locations of
+receivers. 
 
 In the first code chunk, we load an outline of the Great Lakes
 included in `glatos`.  The outline is a SpatialPolygonsDataFrame but
