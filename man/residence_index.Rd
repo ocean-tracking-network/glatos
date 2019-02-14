@@ -4,7 +4,8 @@
 \alias{residence_index}
 \title{Generate the residence index from a set of detections}
 \usage{
-residence_index(detections, calculation_method = "kessel")
+residence_index(detections, calculation_method = "kessel", locations = NULL,
+  grp_by = "animal_id")
 }
 \arguments{
 \item{detections}{A data.frame from the \code{\link{detection_events}}

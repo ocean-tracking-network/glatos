@@ -109,38 +109,69 @@
 #'
 #' @importFrom dplyr count distinct select
 #' @export
-residence_index <- function(detections, calculation_method='kessel') {
+residence_index <- function(detections, calculation_method='kessel', 
+  locations = NULL, grp_by = "animal_id") {
   
-  total_days = get_days(detections, calculation_method)
+  total_days <- get_days(detections, calculation_method)
   
-  locations <- distinct(select(detections, location))  
+  #get locations from detections if not given
+  if(is.null(locations)) locations <- distinct(select(detections, location))  
 
-  ri <- detections %>% dplyr::group_by(location) %>% 
-    dplyr::do(data.frame(
-      days_detected = total_days_count(.),
-      residency_index = as.double(total_days_count(.)) / total_days,
-      mean_latitude = mean(.$mean_latitude, na.rm = TRUE),
-      mean_longitude = mean(.$mean_longitude, na.rm = TRUE)))
-  
-  ri <- ri[match(locations$location, ri$location), ]
+  #get mean lat and lon for each unique location
+  locs <- dplyr::select(detections, location, mean_latitude, mean_longitude)
+  locs <- dplyr::distinct(locs)
+  locs <- dplyr::group_by(locs, location)
+  locs <- dplyr::summarise(locs, 
+            mean_latitude = mean(mean_latitude, na.rm = TRUE),
+            mean_longitude = mean(mean_longitude, na.rm = TRUE))
     
-  ri <- data.frame(ri)[, c("days_detected", "residency_index", "location",
-                           "mean_latitude", "mean_longitude")]
+  #insert 0 for missing group levels (e.g., non-detection at a location)
+  
+  #all possible combinations of locations and grp_by columns
+  grp_levels <- merge(data.frame(location = unique(locs$location), 
+                        stringsAsFactors = FALSE), 
+                      dplyr::distinct(dplyr::select(detections, grp_by)))
+  
+  #summarize RI for each group
+  group_cols <- c("location", grp_by)
+  
+  detections <- dplyr::group_by(detections, .dots = group_cols)
+  
+  ri <- dplyr::do(detections,
+    data.frame(days_detected = total_days_count(.)))   
+  
+  #add missing combinations
+  ri <- dplyr::left_join(grp_levels, ri, by = group_cols)
+  
+  #replace NA with zero
+  ri <- dplyr::mutate(ri, 
+          days_detected = ifelse(is.na(days_detected), 0, days_detected))
+  
+  ri <- dplyr::mutate(ri, 
+          residency_index = as.double(days_detected) / total_days)
+  
+  #add lat and lon
+  ri <- merge(ri, locs, by = "location")
+  
+  out_cols <- c(grp_by, c("days_detected", "residency_index", "location",
+    "mean_latitude", "mean_longitude"))
+  ri <- data.frame(ri)[, out_cols]
 
   return(ri)
 }
 
 
-#' The function below takes a Pandas DataFrame and determines the number of days any
-#' detections were seen on the array.
+#' The function below takes a Pandas DataFrame and determines the number of days
+#' any detections were seen on the array.
 #'
-#' The function converts both the first_detection and last_detection columns into a date with no hours, minutes,
-#' or seconds. Next it creates a list of the unique days where a detection was seen. The size of the
-#' list is returned as the total number of days as an integer.
+#' The function converts both the first_detection and last_detection columns
+#' into a date with no hours, minutes, or seconds. Next it creates a list of the
+#' unique days where a detection was seen. The size of the list is returned as
+#' the total number of days as an integer.
 #'
-#' *** NOTE ****
-#' Possible rounding error may occur as a detection on 2016-01-01 23:59:59 and a detection on
-#' 2016-01-02 00:00:01 would be counted as days when it is really 2-3 seconds.
+#' *** NOTE **** Possible rounding error may occur as a detection on 2016-01-01
+#' 23:59:59 and a detection on 2016-01-02 00:00:01 would be counted as days when
+#' it is really 2-3 seconds.
 #'
 #'
 #' @param Detections - data frame pulled from the compressed detections CSV
