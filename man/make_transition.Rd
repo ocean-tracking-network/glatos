@@ -5,7 +5,7 @@
 \title{Create transition layer from polygon shapefile}
 \usage{
 make_transition(in_file, output = "out.tif", output_dir = NULL,
-  res = c(0.1, 0.1))
+  res = c(0.1, 0.1), all_touched)
 }
 \arguments{
 \item{in_file}{A SpatialPolygonsDataFrame object or a character string with file path to 
@@ -20,6 +20,11 @@ is closed (see \link[=tempfile]{tempdir}).}
 \item{res}{two element vector that specifies the x and y dimension
 of output raster cells.  Units of res are same as input
 shapefile.}
+
+\item{all_touched}{logical. If TRUE (default) then any pixel
+touched by polygon `in_file` will be coded as water in the
+output. Alternatively, pixel must be at least 50% covered by
+polygon to be coded as water.}
 }
 \value{
 A list with two elements:
