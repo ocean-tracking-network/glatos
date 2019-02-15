@@ -14,6 +14,11 @@
 ##' @param res two element vector that specifies the x and y dimension
 ##'   of output raster cells.  Units of res are same as input
 ##'   shapefile.
+##'
+##' @param all_touched logical. If TRUE (default) then any pixel
+##'   touched by polygon `in_file` will be coded as water in the
+##'   output. Alternatively, pixel must be at least 50% covered by
+##'   polygon to be coded as water.
 ##' 
 ##' @details \code{make_transition} uses
 ##'   \link[gdalUtils]{gdal_rasterize} to convert a polygon shapefile
@@ -103,7 +108,7 @@
 
 
 make_transition <- function(in_file, output = "out.tif",
-                            output_dir = NULL, res = c(0.1, 0.1)){
+                            output_dir = NULL, res = c(0.1, 0.1), all_touched){
 
   # check to see if gdal is installed on machine- stop if not.
   gdalUtils::gdal_setInstallation()
@@ -180,7 +185,8 @@ make_transition <- function(in_file, output = "out.tif",
                                       dst_filename = path.expand(file.path(output_dir, output)),
                                       burn = 1,
                                       tr = res,
-                                      output_Raster = TRUE)
+                                      output_Raster = TRUE,
+                                      at = all_touched)
 
   burned <- raster::raster(burned, layer = 1)
 

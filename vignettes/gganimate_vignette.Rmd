@@ -49,7 +49,7 @@ we end the vignette with a demonstration of code to create an
 animation of fish movements using `ggplot2` and `gganimate`.
 
 In the first chunk we load necessary packages, obtain example data
-from `glatos`, clean up the data, and extract and create a figure of
+from `glatos`, clean up the data, create a figure of
 lakes Huron and Erie (Figure 1). The `data.table` R package is used
 for data manipulations in this vignette. ^[Data.table information:
 https://github.com/Rdatatable/data.table/wiki]
@@ -62,6 +62,7 @@ fig.cap1 <- "Lakes Huron and Erie extracted from Great Lakes polygon included in
 
 library(glatos)
 library(sp)
+library(sf)
 library(raster)
 library(gganimate)
 library(ggplot2)
@@ -71,7 +72,7 @@ library(data.table)
 data(greatLakesPoly)
 
 # crop polygon to extract Lake Huron and Lake Erie
-lakes <-  crop(greatLakesPoly, extent(-84.9, -78.7, 41.3, 46.6))
+lakes <-  crop(greatLakesPoly, extent(-84.8, -79.6, 41.3, 46.6))
 plot(lakes, col = "grey")
 
 # get example walleye detection data
@@ -79,41 +80,29 @@ det_file <- system.file("extdata", "walleye_detections.csv",
                         package = "glatos")
 det <- read_glatos_detections(det_file)
 
-# get example receiver file 
-rec_file <- system.file("extdata", "sample_receivers.csv", package="glatos")
+# brind in receiver file and convert to sf spatial object
+rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
 recs <- read_glatos_receivers(rec_file)
-
-```
-In the next code chunk, we extract the geographical coordinates for
-the GLATOS acoustic receiver array and convert them to a spatial
-object using the  `sp` packages.
-
-```{r}
-
-# convert to data.table
 setDT(recs)
-rec_coords <- recs[,c("deploy_lat", "deploy_long")]
-
-# convert to spatial object
-coordinates(rec_coords) <- ~deploy_long+deploy_lat
-proj <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-proj4string(rec_coords) <- CRS(proj)
+recs <- recs[deploy_long < -80,]
+recs_sf <- st_as_sf(recs, coords = c("deploy_long", "deploy_lat"), crs = 4326) 
 
 ```
 
-In the next line of code, we create a transition layer from
-`lakes` object created previously.  The transition layer is needed to
-calculate non-linear interpolated movement paths that avoid impossible
-overland movements of fish. The `rec_coords` object provided to
-`receiver_points` argument in `make_transition` allows small errors in
-receiver locations that result in receivers falling outside of the
-polygon object to be included in the transition layer. See `glatos`
-package help for more information.
+In the next line of code, we create a transition layer from `lakes`.
+The transition layer is needed to calculate non-linear interpolated
+movement paths that avoid impossible overland movements of fish. We
+set the `all_touched` argument = TRUE to allow any pixel that touches
+the polygon outline of the Great Lakes to be coded as water in the
+resulting transition layer.  If `all_touched` = FALSE, then more than
+half of the pixel must be in the polygon in order to be coded as
+water.
+
 
 ```{r, cache=TRUE} 
 
 # make transition layer.
-tran <- make_transition(lakes, res = c(0.01, 0.01), receiver_points = rec_coords)
+tran <- make_transition(lakes, res = c(0.01, 0.01), all_touched = TRUE)
 
 ```
 
@@ -127,13 +116,16 @@ cap2 <- "Plot of transition layer, receivers (orange circles), fish detection lo
 
 # create quick plot of fish and receivers to make sure they are "on the map"
 unique_fish <- unique(det, by = c("deploy_lat", "deploy_long")) 
-
+lakes <- st_as_sf(lakes)
 plot(tran$rast)
-lines(lakes)
-points(rec_coords, pch=20, col= "orange")
+plot(st_geometry(lakes), add = TRUE)
+plot(st_geometry(recs_sf), pch=20, col= "orange", add = TRUE)
 points(unique_fish$deploy_long, unique_fish$deploy_lat, pch = 20, col = "red")
 
 ```
+
+Next we interpolate detection data and do some cleanup.
+
 
 ```{r, eval = FALSE, echo = TRUE}
 
@@ -142,13 +134,14 @@ pos2 <- interpolate_path(det, trans = tran$transition, lnl_thresh=0.99)
 
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, message = FALSE}
 
 dump <- capture.output( {pos2 <-interpolate_path(det, trans = tran$transition, lnl_thresh=0.99)})
 
 ```
 
 ```{r, echo=TRUE}
+
 # convert pos2 to data.table
 setDT(pos2)
 
@@ -181,20 +174,19 @@ cap3 <- "Static figure of fish detections (red), interpolated positions (blue), 
 
 ```{r,fig.width=8,fig.height=8,fig.cap=cap3,message=FALSE}
 
-  ggplot(data=lakes, aes(x=long, y=lat, group=group))+
-  geom_polygon(color = "black", fill = "paleturquoise")+
-  geom_point(data=recs, aes(x=deploy_long, y=deploy_lat), size = 2,
-             color= "orange", inherit.aes=FALSE)+
-  geom_point(data=pos2, aes(x=longitude, y=latitude, group=animal_id, color=record_type, size=record_type), inherit.aes=FALSE)+
-  coord_map("polyconic")+
+ggplot(data = lakes)+
+  geom_sf(color = "black", fill = "lightgrey")+
+  geom_point(data = recs, aes(x = deploy_long, y = deploy_lat), size = 2, color = "orange", inherit.aes = FALSE) +
+geom_point(data=pos2, aes(x=longitude, y=latitude, group=animal_id, color=record_type, size=record_type), inherit.aes=FALSE)+
   xlab("Longitude")+
     ylab("Latitude")+
-    scale_color_manual(values=c("red", "blue"))+
-    scale_size_manual(values=c(2,1))
+  scale_color_manual(values=c("red", "blue"))+
+  scale_size_manual(values=c(2,1))
 
 ```
 
-Now we will animate the same plot using `gganimate`
+Now we will animate the plot using `gganimate`
+
 
 ```{r, echo = FALSE}
 cap4 <- "Animated figure of fish movements in lakes Huron and Erie.  Only first image of animation is included in this vignette"
@@ -202,21 +194,34 @@ cap4 <- "Animated figure of fish movements in lakes Huron and Erie.  Only first 
 
 ```{r,fig.width=8,fig.height=8,fig.cap=cap4,fig.keep="last",message=FALSE}
 
-ggplot(data=lakes, aes(x=long, y=lat, group=group))+
-  geom_polygon(color = "black", fill = "paleturquoise")+
-  geom_point(data=recs, aes(x=deploy_long, y=deploy_lat), size = 2,
-             color= "orange", inherit.aes=FALSE)+
-  geom_point(data=pos2, aes(x=longitude, y=latitude, group=animal_id, color=record_type, size=record_type), inherit.aes=FALSE)+
-    coord_map("polyconic")+
-    xlab("Longitude")+
-    ylab("Latitude")+
-    scale_color_manual(values=c("red", "blue"))+
-    scale_size_manual(values=c(2,1))+
-    transition_time(bin_timestamp)+
-    ggtitle('{frame_time}')
+out <- ggplot(data = lakes)+
+  geom_sf(color = "black", fill = "lightgrey")+
+  geom_point(data = recs, aes(x = deploy_long, y = deploy_lat),
+             size = 2, color = "orange", inherit.aes = FALSE) +
+  geom_point(data=pos2, aes(x=longitude, y=latitude,
+                            group=animal_id, color=record_type,
+                            size=record_type), inherit.aes=FALSE)+
+  xlab("Longitude")+
+  ylab("Latitude")+
+  scale_color_manual(values=c("red", "blue"))+
+  scale_size_manual(values=c(2,1))+
+  transition_time(bin_timestamp)+
+  ggtitle('{frame_time}')
 
+animate(out, nframes = 100, fps = 10)
 
 ```
+
+Notice the only change in the code above is the addition of a
+`transition_time` and `ggtitle` component.  The resulting animation may be
+customized by specifying arguments to the `animate` function.  Please
+see `?animate` for more information.  Also, specifying `anim_save` may
+be used to write animations to disk. 
+
+
+
+
+
 
 This vignette provides a basic, high-level summary of creating an
 animated video with `ggplot2` and `gganimate`.  These packages
@@ -228,4 +233,69 @@ movements.
 
 
 
+```{r}
 
+make_transition <- function (in_file, output = "out.tif", output_dir = NULL, res = c(0.1, 
+    0.1), all_touched = TRUE) 
+{
+    gdalUtils::gdal_setInstallation()
+    valid_install <- !is.null(getOption("gdalUtils_gdalPath"))
+    if (!valid_install) {
+        stop("No GDAL installation found. Please install 'gdal' before continuing:\n\t- see: www.gdal.org\n\t- https://trac.osgeo.org/osgeo4w/ (windows)\n")
+    }
+    if (inherits(in_file, "character")) {
+        if (!file.exists(in_file)) 
+            stop(paste0("Input file or folder '", in_file, "' not found."))
+        if (grepl("\\.shp$", in_file)) {
+            in_dir <- dirname(in_file)
+            if (!file.exists(in_dir)) 
+                stop(paste0("'in_file' directory '", in_dir, 
+                  "' not found."))
+            in_layer <- basename(tools::file_path_sans_ext(basename(in_file)))
+        }
+        else {
+            in_dir <- in_file
+            in_layer <- rgdal::ogrListLayers(in_dir)[1]
+        }
+        in_shp <- rgdal::readOGR(in_dir, layer = in_layer, verbose = FALSE)
+        if (!inherits(in_shp, "SpatialPolygonsDataFrame")) 
+            stop(paste0("Input can only contain ", "polygon data."))
+    }
+    else if (inherits(in_file, "SpatialPolygonsDataFrame")) {
+        in_shp <- in_file
+        in_layer <- deparse(substitute(in_file))
+    }
+    else {
+        stop(paste0("'in_file' must be either an object of class 'SpatialPolygonsDataFrame' or\n", 
+            " path to an ESRI Shapefile."))
+    }
+    default_proj <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+    if (sp::proj4string(in_shp) != default_proj) {
+        warning(paste0("Projection of input was not longlat WGS84, so conversion was attempted."), 
+            call. = FALSE)
+        in_shp <- sp::spTransform(in_shp, sp::CRS(default_proj))
+    }
+    temp_dir <- path.expand(file.path(tempdir(), in_layer))
+    rgdal::writeOGR(in_shp, dsn = temp_dir, layer = in_layer, 
+        driver = "ESRI Shapefile", overwrite_layer = TRUE)
+    if (is.null(output_dir)) 
+        output_dir <- temp_dir
+    burned <- gdalUtils::gdal_rasterize(temp_dir, dst_filename = path.expand(file.path(output_dir, 
+        output)), burn = 1, tr = res, output_Raster = TRUE, at = all_touched)
+    burned <- raster::raster(burned, layer = 1)
+    tran <- function(x) {
+        if (x[1] * x[2] == 0) {
+            return(0)
+        }
+        else {
+            return(1)
+        }
+    }
+    tr1 <- gdistance::transition(burned, transitionFunction = tran, 
+        directions = 16)
+    tr1 <- gdistance::geoCorrection(tr1, type = "c")
+    out <- list(transition = tr1, rast = burned)
+    return(out)
+}
+
+```
