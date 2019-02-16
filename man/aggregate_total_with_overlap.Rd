@@ -2,9 +2,10 @@
 % Please edit documentation in R/summ-residence_index.r
 \name{aggregate_total_with_overlap}
 \alias{aggregate_total_with_overlap}
-\title{The function below aggregates timedelta of first_detection and last_detection of each detection into
-a final timedelta then returns a float of the number of days. If the first_detection and last_detection
-are the same, a timedelta of one second is assumed.}
+\title{The function below aggregates timedelta of first_detection and last_detection
+of each detection into a final timedelta then returns a float of the number
+of days. If the first_detection and last_detection are the same, a timedelta
+of one second is assumed.}
 \usage{
 aggregate_total_with_overlap(detections)
 }
@@ -12,7 +13,8 @@ aggregate_total_with_overlap(detections)
 \item{Detections}{-data frame pulled from the compressed detections CSV}
 }
 \description{
-The function below aggregates timedelta of first_detection and last_detection of each detection into
-a final timedelta then returns a float of the number of days. If the first_detection and last_detection
-are the same, a timedelta of one second is assumed.
+The function below aggregates timedelta of first_detection and last_detection
+of each detection into a final timedelta then returns a float of the number
+of days. If the first_detection and last_detection are the same, a timedelta
+of one second is assumed.
 }

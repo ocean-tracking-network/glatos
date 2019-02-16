@@ -2,10 +2,11 @@
 % Please edit documentation in R/summ-residence_index.r
 \name{aggregate_total_no_overlap}
 \alias{aggregate_total_no_overlap}
-\title{The function below aggregates timedelta of first_detection and last_detection, excluding overlap between
-detections. Any overlap between two detections is converted to a new detection using the earlier
-first_detection and the latest last_detection. If the first_detection and last_detection are the same, a timedelta of one
-second is assumed.}
+\title{The function below aggregates timedelta of first_detection and
+last_detection, excluding overlap between detections. Any overlap between two
+detections is converted to a new detection using the earlier first_detection
+and the latest last_detection. If the first_detection and last_detection are
+the same, a timedelta of one second is assumed.}
 \usage{
 aggregate_total_no_overlap(detections)
 }
@@ -13,8 +14,9 @@ aggregate_total_no_overlap(detections)
 \item{Detections}{- data frame pulled from the compressed detections CSV}
 }
 \description{
-The function below aggregates timedelta of first_detection and last_detection, excluding overlap between
-detections. Any overlap between two detections is converted to a new detection using the earlier
-first_detection and the latest last_detection. If the first_detection and last_detection are the same, a timedelta of one
-second is assumed.
+The function below aggregates timedelta of first_detection and
+last_detection, excluding overlap between detections. Any overlap between two
+detections is converted to a new detection using the earlier first_detection
+and the latest last_detection. If the first_detection and last_detection are
+the same, a timedelta of one second is assumed.
 }

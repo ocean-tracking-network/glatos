@@ -19,9 +19,41 @@
 #'   function.
 #'   
 #' @param calculation_method A character string with the calculation method
-#'   using one of the following: \code{kessel}, \code{timedelta},
-#'   \code{aggregate_with_overlap}, or \code{aggregate_no_overlap}
+#'   using one of the following: \code{kessel}, \code{time_interval}, 
+#'   \code{timedelta}, \code{aggregate_with_overlap}, or 
+#'   \code{aggregate_no_overlap}.
 #'   
+#' @param locations An optional data frame that identifies all unique 
+#' locations where RI will be calculated. Three columns required:
+#' \describe{
+#'   \item{location}{Character string with unique location identifier.}
+#'   \item{mean_longitude}{Location longitude (for mapping).}
+#'   \item{mean_latitude}{Location latitude (for mapping).}
+#' }
+#' 
+#' If \code{locations = NULL} (default value) then RI will only be 
+#' calculated at locations present in \code{detections$location}.
+#'   
+#' @param group_col Optional character string (can be multiple) that identifies 
+#' additional grouping variables for RI calculations. The default value 
+#' (\code{group_col = "animal_id"}) will calculate and return RI for each 
+#'  animal at each location (i.e., for each unique combination of 
+#'  \code{location} and \code{animal_id}. If \code{group_col = NULL} then 
+#'  RI will be calculated by location only (will not account for animal or 
+#'  any other variable).
+#'   
+#' @param time_interval_size Character string with size of the time interval 
+#' used when \code{calculation_method = "time_interval"}. This is passed to 
+#' \link[base]{seq.Date}'s \code{by} argument, so must meet the requirements of 
+#' that argument for that function (e.g., "1 day", "4 hours", etc.). Default is 
+#' \code{"1 day"}.
+#' 
+#' @param groupwise_total Logical that determines how the denominator is 
+#' calculated in RI. If FALSE (default) then the denominator represents the 
+#' total number of time intervals or time (depending on calculation method) 
+#' among all records. Otherwise (if FALSE), the denominator 
+#' represents the total number of time intervals or time within each 
+#' group level (e.g., for each animal if \code{group_col = "animal_id"}.
 #'
 #' @details The \strong{Kessel} method converts both the \code{first_detection}
 #' and \code{last_detection} columns into a date with no hours, minutes, or
@@ -37,9 +69,26 @@
 #' \deqn{ RI = Residence Index}
 #' \deqn{S = Distinct number of days detected at the station}
 #' \deqn{T = Distinct number of days detected anywhere on the array}
+#'
+#' @details The \strong{time_interval} calculation method determines the
+#'   number of time intervals (size determined by \code{time_interval_size}
+#'   argument) in which detections occurred at each \code{location} and as a 
+#'   fraction of the number of time intervals in which detections occurred 
+#'   among all sites. For each location, residency index (RI) is calculated:
+#'
+#' \deqn{ RI = L/T}
+#' \deqn{ RI = Residence Index}
+#' \deqn{L = Distinct number of time intervals in which detection observed at 
+#'           this location}
+#' \deqn{T = Distinct number of time intervals in which detection observed at 
+#'           any location}
+#'           
+#'   For consistency with other \code{calculation_method}s, 
+#'   the L and T are not reported, but are converted cumulative time covered in 
+#'   days and reported in columns \code{days_detected} and \code{total_days}.
 #' 
 #'
-#' @details The \strong{Timedelta} calculation method determines the first
+#' @details The \strong{timedelta} calculation method determines the first
 #' detection and the last detection of all detections. The time difference is
 #' then taken as the values to be used in calculating the residence index. The
 #' timedelta for each station is divided by the timedelta of the array to
@@ -110,8 +159,8 @@
 #' @importFrom dplyr count distinct select
 #' @export
 residence_index <- function(detections, calculation_method='kessel', 
-  locations = NULL, group_col = "animal_id", time_interval = "1 day", 
-  groupwise_divisor = FALSE) {
+  locations = NULL, group_col = "animal_id", time_interval_size = "1 day", 
+  groupwise_total = FALSE) {
   
   if(is.na(group_col)) group_col <- NULL #set to NULL if NA
 
@@ -163,7 +212,7 @@ residence_index <- function(detections, calculation_method='kessel',
   
   ri <- dplyr::do(detections, 
                     data.frame(days_detected = get_days(., calculation_method, 
-                                                        time_interval)))   
+                                                        time_interval_size)))   
   
   #add missing combinations (non-detection)
   ri <- dplyr::left_join(group_levels, ri, by = group_cols)
@@ -173,16 +222,17 @@ residence_index <- function(detections, calculation_method='kessel',
   
   #divisor
   #set grouping for divisor, calculate total days
-  if(groupwise_divisor == FALSE | is.null(group_col)) {
+  if(groupwise_total == FALSE | is.null(group_col)) {
     detections <- dplyr::ungroup(detections)
-    ri$total_days <- get_days(detections, calculation_method, time_interval)
+    ri$total_days <- get_days(detections, calculation_method, 
+                              time_interval_size)
   } else{
     detections <- dplyr::group_by(detections, .dots = group_col)
     ri <- dplyr::left_join(ri,
                            dplyr::do(detections, 
                              data.frame(total_days = 
                                           get_days(., calculation_method, 
-                                                   time_interval))),
+                                                   time_interval_size))),
                            by = group_col)
     detections <- dplyr::ungroup(detections)
   }
@@ -202,6 +252,43 @@ residence_index <- function(detections, calculation_method='kessel',
 }
 
 
+#' The function below takes a detection events data frame and determines the 
+#' number of time bins in which detections were observed and returns the 
+#' cumulative time covered by all bins, in days. Interval (bin) size is 
+#' determined by the 'time_interval_size' argument. 
+#'
+#' For each event (row in detection events data frame), the function 
+#' sequences from first_detection to last_detection by time_interval_size, then 
+#' counts the number of unique intervals.
+#'
+#'
+#' @param detections - data frame from detection_events (condensed = TRUE)
+#' 
+#' @param time_interval_size time increment string as in seq.Date 'by' argument
+#'
+interval_count <- function(detections, time_interval_size) {
+  
+  #get unique bins in each detection event
+  detections <- dplyr::rowwise(detections)
+  ints <- dplyr::do(detections, data.frame(
+    int = seq(lubridate::floor_date(.$first_detection, time_interval_size), 
+              lubridate::floor_date(.$last_detection, time_interval_size),
+          by = time_interval_size)))
+  
+  intcount <- dplyr::n_distinct(ints)
+  
+  #fraction of day covered by one interval 
+  day_fraction <- diff(as.numeric(seq(as.POSIXct("2000-01-01 00:00"), 
+                                      by = time_interval_size, 
+                                      length.out = 2))) / 86400.0
+  
+  #cumulative days (not necessarily contiguous)
+  day_count <- intcount * day_fraction
+  
+  return(day_count)
+}
+
+
 #' The function below takes a Pandas DataFrame and determines the number of days
 #' any detections were seen on the array.
 #'
@@ -218,14 +305,14 @@ residence_index <- function(detections, calculation_method='kessel',
 #' @param Detections - data frame pulled from the compressed detections CSV
 #'
 #' @importFrom dplyr distinct mutate select bind_rows
-total_int_count <- function(detections, time_interval) {
-  startint <- distinct(select(mutate(detections, int = lubridate::floor_date(first_detection, time_interval)), int))
-  endint <-  distinct(select(mutate(detections, int = lubridate::floor_date(last_detection, time_interval)), int))
-  ints <- bind_rows(startint,endint)
-  intcount <- as.double(dplyr::count(dplyr::distinct(select(ints,int ))))
-  
-  return(intcount)
+total_days_count <- function(detections) {
+  startdays <- distinct(select(mutate(detections, days = as.Date(first_detection)), days))
+  enddays <- distinct(select(mutate(detections, days = as.Date(last_detection)), days))
+  days <- bind_rows(startdays,enddays)
+  daycount <- as.double(dplyr::count(dplyr::distinct(select(days,days ))))
+  return(daycount)
 }
+
 
 
 #' The function below determines the total days difference.
@@ -247,10 +334,11 @@ total_diff_days <- function(detections) {
 }
 
 
-#' The function below aggregates timedelta of first_detection and last_detection of each detection into
-#' a final timedelta then returns a float of the number of days. If the first_detection and last_detection
-#' are the same, a timedelta of one second is assumed.
-#'
+#' The function below aggregates timedelta of first_detection and last_detection
+#' of each detection into a final timedelta then returns a float of the number
+#' of days. If the first_detection and last_detection are the same, a timedelta
+#' of one second is assumed.
+#' 
 #' @param Detections -data frame pulled from the compressed detections CSV
 #'
 #' @importFrom dplyr mutate
@@ -262,10 +350,11 @@ aggregate_total_with_overlap <- function(detections) {
 }
 
 
-#' The function below aggregates timedelta of first_detection and last_detection, excluding overlap between
-#' detections. Any overlap between two detections is converted to a new detection using the earlier
-#' first_detection and the latest last_detection. If the first_detection and last_detection are the same, a timedelta of one
-#' second is assumed.
+#' The function below aggregates timedelta of first_detection and
+#' last_detection, excluding overlap between detections. Any overlap between two
+#' detections is converted to a new detection using the earlier first_detection
+#' and the latest last_detection. If the first_detection and last_detection are
+#' the same, a timedelta of one second is assumed.
 #'
 #' @param Detections - data frame pulled from the compressed detections CSV
 #'
@@ -323,7 +412,8 @@ aggregate_total_no_overlap <- function(detections) {
 #'
 #' @param dets - data frame pulled from the detection events
 #' @param calculation_method - determines which method above will be used to count total time and location time
-get_days <- function(dets, calculation_method='kessel', time_interval = "1 day") {
+get_days <- function(dets, calculation_method='kessel', 
+                     time_interval_size = "1 day") {
   days <- 0
   if (calculation_method == 'aggregate_with_overlap') {
     days <- glatos:::aggregate_total_with_overlap(dets)
@@ -332,7 +422,9 @@ get_days <- function(dets, calculation_method='kessel', time_interval = "1 day")
   } else if(calculation_method == 'timedelta') {
     days <- glatos:::total_diff_days(dets)
   } else if(calculation_method == 'kessel'){
-    days <- glatos:::total_int_count(dets, time_interval)
+    days <- glatos:::total_days_count(dets)
+  } else if(calculation_method == 'time_interval'){
+    days <- glatos:::interval_count(dets, time_interval_size)
   } else {
       stop("Unsupported 'calculated_method'.")
   }
@@ -397,3 +489,4 @@ ri_plot <- function(df, title="Residence Index") {
   show(p)
   return(p)
 }
+

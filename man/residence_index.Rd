@@ -5,16 +5,49 @@
 \title{Generate the residence index from a set of detections}
 \usage{
 residence_index(detections, calculation_method = "kessel", locations = NULL,
-  group_col = "animal_id", time_interval = "1 day",
-  groupwise_divisor = FALSE)
+  group_col = "animal_id", time_interval_size = "1 day",
+  groupwise_total = FALSE)
 }
 \arguments{
 \item{detections}{A data.frame from the \code{\link{detection_events}}
 function.}
 
 \item{calculation_method}{A character string with the calculation method
-using one of the following: \code{kessel}, \code{timedelta},
-\code{aggregate_with_overlap}, or \code{aggregate_no_overlap}}
+using one of the following: \code{kessel}, \code{time_interval}, 
+\code{timedelta}, \code{aggregate_with_overlap}, or 
+\code{aggregate_no_overlap}.}
+
+\item{locations}{An optional data frame that identifies all unique 
+locations where RI will be calculated. Three columns required:
+\describe{
+  \item{location}{Character string with unique location identifier.}
+  \item{mean_longitude}{Location longitude (for mapping).}
+  \item{mean_latitude}{Location latitude (for mapping).}
+}
+
+If \code{locations = NULL} (default value) then RI will only be 
+calculated at locations present in \code{detections$location}.}
+
+\item{group_col}{Optional character string (can be multiple) that identifies 
+additional grouping variables for RI calculations. The default value 
+(\code{group_col = "animal_id"}) will calculate and return RI for each 
+ animal at each location (i.e., for each unique combination of 
+ \code{location} and \code{animal_id}. If \code{group_col = NULL} then 
+ RI will be calculated by location only (will not account for animal or 
+ any other variable).}
+
+\item{time_interval_size}{Character string with size of the time interval 
+used when \code{calculation_method = "time_interval"}. This is passed to 
+\link[base]{seq.Date}'s \code{by} argument, so must meet the requirements of 
+that argument for that function (e.g., "1 day", "4 hours", etc.). Default is 
+\code{"1 day"}.}
+
+\item{groupwise_total}{Logical that determines how the denominator is 
+calculated in RI. If FALSE (default) then the denominator represents the 
+total number of time intervals or time (depending on calculation method) 
+among all records. Otherwise (if FALSE), the denominator 
+represents the total number of time intervals or time within each 
+group level (e.g., for each animal if \code{group_col = "animal_id"}.}
 }
 \value{
 A data.frame of days_detected, residency_index, location,
@@ -44,7 +77,24 @@ really 2-3 seconds.
 \deqn{S = Distinct number of days detected at the station}
 \deqn{T = Distinct number of days detected anywhere on the array}
 
-The \strong{Timedelta} calculation method determines the first
+The \strong{time_interval} calculation method determines the
+  number of time intervals (size determined by \code{time_interval_size}
+  argument) in which detections occurred at each \code{location} and as a 
+  fraction of the number of time intervals in which detections occurred 
+  among all sites. For each location, residency index (RI) is calculated:
+
+\deqn{ RI = L/T}
+\deqn{ RI = Residence Index}
+\deqn{L = Distinct number of time intervals in which detection observed at 
+          this location}
+\deqn{T = Distinct number of time intervals in which detection observed at 
+          any location}
+          
+  For consistency with other \code{calculation_method}s, 
+  the L and T are not reported, but are converted cumulative time covered in 
+  days and reported in columns \code{days_detected} and \code{total_days}.
+
+The \strong{timedelta} calculation method determines the first
 detection and the last detection of all detections. The time difference is
 then taken as the values to be used in calculating the residence index. The
 timedelta for each station is divided by the timedelta of the array to
