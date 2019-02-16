@@ -2,7 +2,7 @@
 #'
 #' This residence index tool will take condensed detection event data (from
 #' \code{\link{detection_events}} and caculate the residence index for each
-#' location present. The information passed to the function is
+#' location. The information passed to the function is
 #' what is used to calculate the residence index, make sure you are only passing
 #' the data you want taken into consideration for the residence index (i.e.
 #' species, stations, tags, etc.).
@@ -55,20 +55,20 @@
 #' represents the total number of time intervals or time within each 
 #' group level (e.g., for each animal if \code{group_col = "animal_id"}.
 #'
-#' @details The \strong{Kessel} method converts both the \code{first_detection}
+#' @details The \strong{kessel} method converts both the \code{first_detection}
 #' and \code{last_detection} columns into a date with no hours, minutes, or
 #' seconds. Next it creates a list of the unique days where a detection was
 #' seen. The size of the list is returned as the total number of days as an
 #' integer. This calculation is used to determine the total number of distinct
-#' days (T) and the total number of distinct days per station (S). Possible
+#' days (T) and the total number of distinct days per location (S). Possible
 #' rounding error may occur as a detection on 2016-01-01 23:59:59 and a
 #' detection on 2016-01-02 00:00:01 would be counted as two days when it is
 #' really 2-3 seconds.
 #'
 #' \deqn{ RI = S/T}
 #' \deqn{ RI = Residence Index}
-#' \deqn{S = Distinct number of days detected at the station}
-#' \deqn{T = Distinct number of days detected anywhere on the array}
+#' \deqn{S = Distinct number of days detected at the location}
+#' \deqn{T = Distinct number of days detected at any location}
 #'
 #' @details The \strong{time_interval} calculation method determines the
 #'   number of time intervals (size determined by \code{time_interval_size}
@@ -99,44 +99,44 @@
 #' 
 #' \deqn{RI = Residence Index}
 #' 
-#' \deqn{Delta S = Last detection time at a station - First detection time at the station}
+#' \deqn{Delta S = Last detection time at the location - First detection time at the location}
 #' 
-#' \deqn{Delta T = Last detection time on an array - First detection time on the array}
+#' \deqn{Delta T = Last detection time at any location - First detection time at any location}
 #' 
 #'
 #' @details
-#' The \strong{Aggregate With Overlap} calculation method takes the length of time of each
-#' detection and sums them together. A total is returned. The sum for each station
-#' is then divided by the sum of the array to determine the residence index.
+#' The \strong{aggregate_with_overlap} calculation method takes the length of time of each
+#' detection and sums them together. A total is returned. The sum for each location
+#' is then divided by the sum among all locations to determine the residence index.
 #'
 #' \deqn{
 #' RI = AwOS/AwOT}
 #' 
 #' \deqn{RI = Residence Index}
 #' 
-#' \deqn{AwOS = Sum of length of time of each detection at the station}
+#' \deqn{AwOS = Sum of length of time of each detection at the location}
 #' 
-#' \deqn{AwOT = Sum of length of time of each detection on the array}
+#' \deqn{AwOT = Sum of length of time of each detection among all locations}
 #' 
 #'
 #' @details 
-#' The \strong{Aggregate No Overlap} calculation method takes the length of time of each
+#' The \strong{aggregate_no_overlap} calculation method takes the length of time of each
 #' detection and sums them together. However, any overlap in time between one or
 #' more detections is excluded from the sum. For example, if the first detection
 #' is from \code{2016-01-01 01:02:43} to \code{2016-01-01 01:10:12} and the second
 #' detection is from \code{2016-01-01 01:09:01 }to \code{2016-01-01 01:12:43}, then the
 #' sum of those two detections would be 10 minutes. A total is returned once all
-#' detections of been added without overlap. The sum for each station is then
-#' divided by the sum of the array to determine the residence index.
+#' detections of been added without overlap. The sum for each location is then
+#' divided by the sum among all locations to determine the residence index.
 #'
 #' \deqn{
 #' RI = AnOS/AnOT}
 #' 
 #' \deqn{RI = Residence Index}
 #' 
-#' \deqn{AnOS = Sum of length of time of each detection at the station, excluding any overlap}
+#' \deqn{AnOS = Sum of length of time of each detection at the location, excluding any overlap}
 #' 
-#' \deqn{AnOT = Sum of length of time of each detection on the array, excluding any overlap}
+#' \deqn{AnOT = Sum of length of time of each detection among all locations, excluding any overlap}
 #' 
 #' 
 #' @examples
