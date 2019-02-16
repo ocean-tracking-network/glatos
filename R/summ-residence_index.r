@@ -110,16 +110,33 @@
 #' @importFrom dplyr count distinct select
 #' @export
 residence_index <- function(detections, calculation_method='kessel', 
-  locations = NULL, grp_by = "animal_id") {
+  locations = NULL, group_col = "animal_id", time_interval = "1 day", 
+  groupwise_divisor = FALSE) {
   
-  total_days <- get_days(detections, calculation_method)
-  
-  #get locations from detections if not given
-  if(is.null(locations)) locations <- distinct(select(detections, location))  
+  if(is.na(group_col)) group_col <- NULL #set to NULL if NA
 
-  #get mean lat and lon for each unique location
-  locs <- dplyr::select(detections, location, mean_latitude, mean_longitude)
-  locs <- dplyr::distinct(locs)
+  #get locations from detections if not given
+  if(is.null(locations)){
+    locs <- dplyr::select(detections, location, mean_latitude, mean_longitude)
+  }
+  if(!is.null(locations) & inherits(locations, "data.frame")){
+    
+    # Check that the required columns appear in the detections data frame
+    req_cols <- c("location", "mean_latitude", "mean_longitude")
+    missingCols <- setdiff(req_cols, names(locations))
+    if (length(missingCols) > 0){
+      stop(paste0("det is missing the following ",
+        "column(s):\n", paste0("       '", missingCols, "'", collapse="\n")), 
+        call. = FALSE)
+    }
+    
+    locs <- dplyr::select(locations, location, mean_latitude, mean_longitude)
+    
+  }
+  
+  locs <- dplyr::distinct(locs)    
+
+  #summarize lat and lon for each unique location
   locs <- dplyr::group_by(locs, location)
   locs <- dplyr::summarise(locs, 
             mean_latitude = mean(mean_latitude, na.rm = TRUE),
@@ -128,33 +145,57 @@ residence_index <- function(detections, calculation_method='kessel',
   #insert 0 for missing group levels (e.g., non-detection at a location)
   
   #all possible combinations of locations and grp_by columns
-  grp_levels <- merge(data.frame(location = unique(locs$location), 
+  if(!is.null(group_col)){
+  group_levels <- merge(data.frame(location = unique(locs$location), 
                         stringsAsFactors = FALSE), 
-                      dplyr::distinct(dplyr::select(detections, grp_by)))
+                      dplyr::distinct(dplyr::select(detections, group_col)))
+  } else {
+    group_levels <- data.frame(location = unique(locs$location), 
+                      stringsAsFactors = FALSE)
+  }
   
   #summarize RI for each group
-  group_cols <- c("location", grp_by)
+  
+  #numerator
+  group_cols <- c("location", group_col)
   
   detections <- dplyr::group_by(detections, .dots = group_cols)
   
-  ri <- dplyr::do(detections,
-    data.frame(days_detected = total_days_count(.)))   
+  ri <- dplyr::do(detections, 
+                    data.frame(days_detected = get_days(., calculation_method, 
+                                                        time_interval)))   
   
-  #add missing combinations
-  ri <- dplyr::left_join(grp_levels, ri, by = group_cols)
+  #add missing combinations (non-detection)
+  ri <- dplyr::left_join(group_levels, ri, by = group_cols)
   
-  #replace NA with zero
   ri <- dplyr::mutate(ri, 
           days_detected = ifelse(is.na(days_detected), 0, days_detected))
   
+  #divisor
+  #set grouping for divisor, calculate total days
+  if(groupwise_divisor == FALSE | is.null(group_col)) {
+    detections <- dplyr::ungroup(detections)
+    ri$total_days <- get_days(detections, calculation_method, time_interval)
+  } else{
+    detections <- dplyr::group_by(detections, .dots = group_col)
+    ri <- dplyr::left_join(ri,
+                           dplyr::do(detections, 
+                             data.frame(total_days = 
+                                          get_days(., calculation_method, 
+                                                   time_interval))),
+                           by = group_col)
+    detections <- dplyr::ungroup(detections)
+  }
+    
+  #calculate RI
   ri <- dplyr::mutate(ri, 
-          residency_index = as.double(days_detected) / total_days)
-  
+      residency_index = as.double(days_detected) / total_days)
+
   #add lat and lon
-  ri <- merge(ri, locs, by = "location")
+  ri <- dplyr::left_join(ri, locs, by = "location")
   
-  out_cols <- c(grp_by, c("days_detected", "residency_index", "location",
-    "mean_latitude", "mean_longitude"))
+  out_cols <- c(group_col, c("days_detected", "total_days", "residency_index", 
+    "location", "mean_latitude", "mean_longitude"))
   ri <- data.frame(ri)[, out_cols]
 
   return(ri)
@@ -177,12 +218,13 @@ residence_index <- function(detections, calculation_method='kessel',
 #' @param Detections - data frame pulled from the compressed detections CSV
 #'
 #' @importFrom dplyr distinct mutate select bind_rows
-total_days_count <- function(detections) {
-  startdays <- distinct(select(mutate(detections, days = as.Date(first_detection)), days))
-  enddays <- distinct(select(mutate(detections, days = as.Date(last_detection)), days))
-  days <- bind_rows(startdays,enddays)
-  daycount <- as.double(dplyr::count(dplyr::distinct(select(days,days ))))
-  return(daycount)
+total_int_count <- function(detections, time_interval) {
+  startint <- distinct(select(mutate(detections, int = lubridate::floor_date(first_detection, time_interval)), int))
+  endint <-  distinct(select(mutate(detections, int = lubridate::floor_date(last_detection, time_interval)), int))
+  ints <- bind_rows(startint,endint)
+  intcount <- as.double(dplyr::count(dplyr::distinct(select(ints,int ))))
+  
+  return(intcount)
 }
 
 
@@ -281,7 +323,7 @@ aggregate_total_no_overlap <- function(detections) {
 #'
 #' @param dets - data frame pulled from the detection events
 #' @param calculation_method - determines which method above will be used to count total time and location time
-get_days <- function(dets, calculation_method='kessel') {
+get_days <- function(dets, calculation_method='kessel', time_interval = "1 day") {
   days <- 0
   if (calculation_method == 'aggregate_with_overlap') {
     days <- glatos:::aggregate_total_with_overlap(dets)
@@ -290,7 +332,7 @@ get_days <- function(dets, calculation_method='kessel') {
   } else if(calculation_method == 'timedelta') {
     days <- glatos:::total_diff_days(dets)
   } else if(calculation_method == 'kessel'){
-    days <- glatos:::total_days_count(dets)
+    days <- glatos:::total_int_count(dets, time_interval)
   } else {
       stop("Unsupported 'calculated_method'.")
   }

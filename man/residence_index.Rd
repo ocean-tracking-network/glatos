@@ -5,7 +5,8 @@
 \title{Generate the residence index from a set of detections}
 \usage{
 residence_index(detections, calculation_method = "kessel", locations = NULL,
-  grp_by = "animal_id")
+  group_col = "animal_id", time_interval = "1 day",
+  groupwise_divisor = FALSE)
 }
 \arguments{
 \item{detections}{A data.frame from the \code{\link{detection_events}}
