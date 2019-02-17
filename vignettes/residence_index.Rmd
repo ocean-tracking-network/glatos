@@ -12,12 +12,75 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This residence index tool will take a detection event dataframe
-and caculate the residency index for each station/receiver in the
-detections. The information passed to the function is what is used to
-calculate the residence index, make sure you are only passing the data you
-want taken into consideration for the residence index (i.e. species,
-stations, tags, etc.).
+# Introduction
+
+The `residence_index` function in the R package *glatos* calculates the relative
+amount of time that a tagged animal (or animals) occupied each of a set of
+discrete locations monitored by receivers. Among locations in a detection
+dataset, the derivation of the residency index (RI) value for each location *k*
+seems simple at first glance: 
+ $$RI_{k} = \frac{t_{k}}{t_{K}}\text{,}$$
+where $t_{k}$ is the amount of time spent at location *k* and 
+$t_{K} = \sum_{k=1}^{K}{t_k}$ is the total amount of time spent among any of all 
+*K* locations. In practice, there are numerous ways to calculate $t_{k}$ and
+thus, seemingly endless flavors of RI exist (much like other ecological
+indices). `residence_index` provides five different calculation methods for RI.
+Each method has either been previously described in scientific literature (e.g.,
+the "Kessel" method[^1]) or represents what we theorize as appropriate methods
+for certain situations (array designs, questions, etc.). However, these methods
+have only recently been developed and are still being evaluated. With any of the
+above methods, use of RI to address specific questions or test hypotheses about
+animal space use will further require assumptions and data manipulation. For
+example, when a dataset contains detections of multiple tagged animals, it may
+be prudent to use the mean RI ($\bar{RI}_k$) among individuals, which requires
+calculating RI for each individual separately. Similarly, one might seek to
+compare $\bar{RI}_k$ among groups of animals (e.g., by age, sex) or time
+periods. Examples in this vignette are intended to briefly introduce methods
+that may be useful for such manipulations and also for summarizing and exploring
+RI with graphs and maps.
+
+[^1]: Kessel, S.T., Hussey, N.E., Crawford, R.E., Yurkowski, D.J., O'Neill, C.V.
+and Fisk, A.T., 2016. Distinct patterns of Arctic cod (Boreogadus saida)
+presence and absence in a shallow high Arctic embayment, revealed across
+open-water and ice-covered periods through acoustic telemetry. Polar Biology,
+39(6), pp.1057-1068. https://www.researchgate.net/publication/279269147
+
+
+## *residence_index* overview
+
+The *residence_index* function will take a condensed detection event dataframe 
+(in the form returned by the *glatos* function *detection_events* with 
+argument `condensed = TRUE`) and return a data frame with $RI_k$, $t_k$ 
+(in days), and $t_K$ for each location in columns named *residency_index*, 
+*detected_days*, and *total_days*, respectively. 
+
+The `calculation_method` argument is used to specify the method used to
+calculate RI and its components. The `time_interval_size` argument can further
+be used to specify a key parameter for one of the methods (*time_interval*) but
+no other methods require additional arguments.
+
+By default, RI calculations and results (which also include mean latitude and 
+longitude for each unique location) are limited to the set of locations 
+present in the input data frame. Thus, results will never include locations 
+where no animals were detected. To include sites with no detections, a set of 
+locations can be specified in a data frame via the `locations` argument. 
+
+RI is always calculated separately for each unique value of in the *location*
+column of the input detection data or optional `locations` data frame,
+but one or more additional grouping columns can be specified using the
+`group_col` argument. By default, `group_col = "animal_id"`, so RI will be
+calculated for each animal at each location. If `group_col = NULL`, then the
+*animal_id* column (an all other columns except *location*) will be ignored.
+
+Finally, by default, the denominator $t_K$ will ignore grouping variables
+specified in `group_col`, essentially meaning that, for example when `group_col
+= "animal_id"`, $RI_k$ for each animal will represent the time that a particular
+animal spent at location *k* as a proportion of time that *all animals* spent at
+*all sites*. This behavior is controlled by the argument `groupwise_total`
+(FALSE by default). Conversely, if `groupwise_total = TRUE`, then $RI_k$ for
+each animal will represent the time that a particular animal spent at location
+*k* as a proportion of time that only that particular animal spent at *all
+sites*.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = T,comment ="", fig.pos = 'H')
@@ -26,8 +89,23 @@ is_html_output = function() {
 }
 ```
 
+\pagebreak 
+
+# Calculation methods - simple examples
+
+This section includes simple examples of each of the five calculation methods
+using example walleye data and mostly-default input arguments. Results are
+displayed as simple bubble plots (maps) in base R in this section, simply
+because it is generic and effective--not because it is our preferred or
+recommended method. More capable and user-friendly plotting methods will 
+be briefly introduced in another section, but for the most part we expect 
+users to use a wide variety of plotting methods depending on their particular 
+preferences and goals.
+
 ## Importing Libraries
-We will import `glatos` and `plotly` to run then visualize the RI.
+We will import `glatos` for use now and `plotly` to run then visualize the RI 
+in a later section.
+
 ```{r,warning=FALSE,message=FALSE}
 library(glatos)
 library(plotly)
@@ -37,43 +115,228 @@ Sys.setenv('MAPBOX_TOKEN' = 'Your Token Here')
 ```
 
 ## Importing and Compressing Data
-We will import the sample data below using `glatos::read_glatos_detections()`. We 
-will then compress the detections into detection events with `glatos::detection_events()`, 
-using `station` as our location column.
+We will import the sample walleye detection data using 
+`glatos::read_glatos_detections()`.
+
+Note that `system.file` is only used here because we need to get the path to the
+example data file that's bundled with the *glatos* package. To run a different 
+file from another location, skip this function and just set `det_file` to
+the path of your own file (e.g., `det_file <-
+"C:/your_files/your_detections.csv").
+
 ```{r, message=FALSE}
 det_file <- system.file("extdata", "walleye_detections.csv",
                         package = "glatos")
 
 detections <- read_glatos_detections(det_file)
-detection_events <- glatos::detection_events(detections, location_col = 'station')
+```
+
+Next, we compress the detections into detection events using 
+`glatos::detection_events()` and include the time-based event separator 
+(argument `time_sep`) of 3600 seconds (one hour). This means that events will 
+not contain a time gap (at the same location) exceeding one hour. Note that the 
+other arguments are not shown below because we are using default values, which
+means the detection events will be grouped on the *glatos_array* column
+(`location_col` argument). Finally, the events are in "condensed" 
+(i.e., "compressed") form, meaning there is one row for each event, including 
+*first_detection* and *last_detections* timestamps.
+
+
+```{r}
+det_events <- glatos::detection_events(detections, time_sep = "3600")
+```
+Note the structure below. *residence_events* requires a file with this structure.
+```{r}
+head(det_events)
+
 ```
 
 ## Kessel Method
 
-The Kessel method converts both the startdate and enddate columns into a
-date with no hours, minutes, or seconds. Next it creates a list of the
-unique days where a detection was seen. The size of the list is returned
-as the total number of days as an integer. This calculation is used to
-determine the total number of distinct days (T) and the total number of
-distinct days per station (S).
-Possible rounding error may occur as a detection on `2016-01-01 23:59:59`
-and a detection on `2016-01-02 00:00:01` would be counted as two days
-when it is really 2-3 seconds.
+The "Kessel" method (`calculation_method = "kessel"`) is based on the method
+described by Kessel et al. (2016)[^1]. It converts both the *first_detection*
+and *last_detection* columns into a date with no hours, minutes, or seconds.
+Next it creates a list of the unique days where a detection was seen. The size
+of the list is returned as the total number of days as an integer. This
+calculation is used to determine the total number of distinct days (T) and the
+total number of distinct days per location (S). Possible rounding error may
+occur as a detection on `2016-01-01 23:59:59` and a detection on `2016-01-02
+00:00:01` would be counted as two days when it is really 2-3 seconds.
 
 >$RI = \frac{S}{T}$
 >
 >$RI = Residence Index$
 >
->$S$ = Distinct number of days detected at the station
+>$S$ = Distinct number of days detected at the location
 >
->$T$ = Distinct number of days detected anywhere on the array
+>$T$ = Distinct number of days detected at any location
 
 
 ```{r}
-ri <- glatos::residence_index(detection_events,calculation_method = 'kessel')
+ri <- glatos::residence_index(det_events,calculation_method = 'kessel')
 ```
 
-### Plotting with Plotly
+Note the resulting structure.
+```{r}
+head(ri)
+```
+
+A boxplot is a quick and simple way to explore variation in RI among locations
+when `group_col = "animal_id"`. 
+
+Here we make a vertical boxplot showing distributions of RI among fish at 
+each location. Keep in mind that this is a treacherous example because there is 
+only three fish in this data set (boxplots of 3 fish aren't very useful). 
+Nonetheless, boxplots are a simple and effective way to explore variation 
+within and among locations.
+
+```{r}
+boxplot(residency_index~location, data = ri, horizontal = TRUE, las = 1, 
+  xlab= 'Residence Index (method = "kessel")')
+```
+
+
+Next we will plot RI values on a map. We'll start with a plot for 
+each fish on the sample Great Lakes polygon object that is bundled with the 
+*glatos* package.
+
+Here's the plot for one fish...
+
+```{r}
+#get example great lakes polygon
+data(greatLakesPoly)
+
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(ri$mean_longitude),
+           ylim = range(ri$mean_latitude),  
+           col = "white", bg = "grey80")
+
+points(mean_latitude ~ mean_longitude, data = ri[ri$animal_id == "153",], 
+  pch = 21, cex = 30*residency_index, bg = "pink")
+
+
+```
+
+
+Two fish...
+
+```{r}
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(ri$mean_longitude),
+           ylim = range(ri$mean_latitude),  
+           col = "white", bg = "grey80")
+
+points(mean_latitude ~ mean_longitude, data = ri[ri$animal_id == "22",], 
+  pch = 21, cex = 30*residency_index, bg = "pink")
+
+```
+
+
+Red fish...
+
+```{r}
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(ri$mean_longitude),
+           ylim = range(ri$mean_latitude),  
+           col = "white", bg = "grey80")
+
+points(mean_latitude ~ mean_longitude, data = ri[ri$animal_id == "23",], 
+  pch = 21, cex = 30*residency_index, bg = "pink")
+
+```
+
+Obviously there are differences among individuals. 
+
+Next, we will calculate the mean RI among the three and plot it.
+
+We will use functions from the *dplyr* package and pipes (`%>%`) from *magrittr*
+package because that's what the kids are into these days.
+```{r}
+library(dplyr)
+
+#calculate mean and sd of RI among fish
+rik_summary <- ri %>% 
+               group_by(location, mean_latitude, mean_longitude) %>% 
+               summarise(
+                    ri_mean = mean(residency_index),
+                    ri_sd = sd(residency_index))
+
+head(rik_summary)
+
+```
+
+Now we plot the means on a map.
+
+```{r}
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(ri$mean_longitude),
+           ylim = range(ri$mean_latitude),  
+           col = "white", bg = "grey80")
+
+points(mean_latitude ~ mean_longitude, data = rik_summary, 
+  pch = 21, cex = 30*ri_mean, bg = "pink")
+
+```
+
+If we had more than three fish in our sample data set, we might infer something 
+about the walleye space use from this information.
+
+### Optional location data
+
+Let's bring in receiver location data from the rest of the GLATOS network.
+Note that read in the receiver file using `glatos::read_glatos_receivers()` 
+and then change column names to match the names that `residence_index` needs.
+
+```{r}
+#get sample receiver data from pkg
+loc_file <- system.file("extdata", "sample_receivers.csv", 
+                        package = "glatos")
+locs <- read_glatos_receivers(loc_file)
+locs <- unique(locs[ , c("glatos_array", "deploy_lat", "deploy_long")])
+names(locs) <- c("location", "mean_latitude", "mean_longitude")
+
+rik2 <- residence_index(det_events, locations = locs,
+                         calculation_method = 'kessel')
+
+```
+
+Now we calculate means and graph again. Note that we again scaled the size 
+of the symbol relative to *ri_mean*. However, in this case the map would 
+not show the new points because the size would be 0. So to make sure all points
+show, we add one to `cex` argument (symbol size). We've also changed colors 
+to more clearly distinguish locations where fish were detected (red) and 
+not (pink).
+
+```{r}
+#calculate mean and sd of RI among fish
+rik2_summary <- rik2 %>% 
+               group_by(location, mean_latitude, mean_longitude) %>% 
+               summarise(
+                    ri_mean = mean(residency_index),
+                    ri_sd = sd(residency_index))
+
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(rik2$mean_longitude),
+           ylim = range(rik2$mean_latitude),  
+           col = "white", bg = "grey80")
+
+points(mean_latitude ~ mean_longitude, data = rik2_summary, 
+  pch = 21, cex = 1 + 30*ri_mean, bg = "red", lwd = 2)
+
+#make the zeros (non-detection) obviously different
+points(mean_latitude ~ mean_longitude, 
+         data = rik2_summary[rik2_summary$ri_mean == 0,], 
+         pch = 21, cex = 1 + 30*ri_mean, bg = "pink", lwd = 2)
+```
+
+
+
+# Plotting with Plotly
 
 Below is the code for plotting the RI using `plotly`. `plotly` allows us to 
 interact with the map rather than haveing a static image. More about `plotly`
@@ -138,7 +401,7 @@ of the array to determine the residence index.
 >$\Delta T$ = Last detection time on an array - First detection time on the array
 
 ```{r,warning=FALSE}
-ri <- glatos::residence_index(detection_events,calculation_method = 'timedelta')
+ri <- glatos::residence_index(det_events,calculation_method = 'timedelta')
 
 geo <- list(
     scope = 'north america',
@@ -197,7 +460,7 @@ array to determine the residence index.
 >$AwOT$ = Sum of length of time of each detection on the array
 
 ```{r,warning=FALSE}
-ri <- glatos::residence_index(detection_events,calculation_method = 'aggregate_with_overlap')
+ri <- glatos::residence_index(det_events,calculation_method = 'aggregate_with_overlap')
 
 geo <- list(
     scope = 'north america',
@@ -261,7 +524,7 @@ divided by the sum of the array to determine the residence index.
 >$AnOT$ = Sum of length of time of each detection on the array, excluding any overlap
 
 ```{r,warning=FALSE}
-ri <- glatos::residence_index(detection_events,calculation_method = 'aggregate_no_overlap')
+ri <- glatos::residence_index(det_events,calculation_method = 'aggregate_no_overlap')
 
 geo <- list(
   scope = 'north america',
