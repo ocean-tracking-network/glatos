@@ -146,6 +146,7 @@
 #' det <- read_glatos_detections(det_file)
 #' detection_events <- glatos::detection_events(det)
 #' rik_data <- glatos::residence_index(detection_events, calculation_method = 'kessel')
+#' rit_data <- glatos::residence_index(detection_events, calculation_method = 'time_interval')
 #' rit_data <- glatos::residence_index(detection_events, calculation_method = 'timedelta')
 #' riawo_data <- glatos::residence_index(detection_events, calculation_method = 'aggregate_with_overlap')
 #' riano_data <- glatos::residence_index(detection_events, calculation_method = 'aggregate_no_overlap')
@@ -162,8 +163,11 @@ residence_index <- function(detections, calculation_method='kessel',
   locations = NULL, group_col = "animal_id", time_interval_size = "1 day", 
   groupwise_total = FALSE) {
   
-  if(is.na(group_col)) group_col <- NULL #set to NULL if NA
-
+  #set to NULL if NA
+  if(!is.null(group_col)) if(is.na(group_col)) group_col <- NULL 
+  if(!is.null(locations)) if(is.na(locations)) locations <- NULL 
+  
+  
   #get locations from detections if not given
   if(is.null(locations)){
     locs <- dplyr::select(detections, location, mean_latitude, mean_longitude)

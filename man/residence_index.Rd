@@ -147,6 +147,7 @@ det_file <- system.file("extdata", "walleye_detections.csv",
 det <- read_glatos_detections(det_file)
 detection_events <- glatos::detection_events(det)
 rik_data <- glatos::residence_index(detection_events, calculation_method = 'kessel')
+rit_data <- glatos::residence_index(detection_events, calculation_method = 'time_interval')
 rit_data <- glatos::residence_index(detection_events, calculation_method = 'timedelta')
 riawo_data <- glatos::residence_index(detection_events, calculation_method = 'aggregate_with_overlap')
 riano_data <- glatos::residence_index(detection_events, calculation_method = 'aggregate_no_overlap')
