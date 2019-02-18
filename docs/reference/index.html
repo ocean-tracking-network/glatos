@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">glatos</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9001</span>
       </span>
     </div>
 
@@ -150,18 +150,20 @@
         <td>
           <p><code><a href="aggregate_total_no_overlap.html">aggregate_total_no_overlap()</a></code> </p>
         </td>
-        <td><p>The function below aggregates timedelta of first_detection and last_detection, excluding overlap between
-detections. Any overlap between two detections is converted to a new detection using the earlier
-first_detection and the latest last_detection. If the first_detection and last_detection are the same, a timedelta of one
-second is assumed.</p></td>
+        <td><p>The function below aggregates timedelta of first_detection and
+last_detection, excluding overlap between detections. Any overlap between two
+detections is converted to a new detection using the earlier first_detection
+and the latest last_detection. If the first_detection and last_detection are
+the same, a timedelta of one second is assumed.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="aggregate_total_with_overlap.html">aggregate_total_with_overlap()</a></code> </p>
         </td>
-        <td><p>The function below aggregates timedelta of first_detection and last_detection of each detection into
-a final timedelta then returns a float of the number of days. If the first_detection and last_detection
-are the same, a timedelta of one second is assumed.</p></td>
+        <td><p>The function below aggregates timedelta of first_detection and last_detection
+of each detection into a final timedelta then returns a float of the number
+of days. If the first_detection and last_detection are the same, a timedelta
+of one second is assumed.</p></td>
       </tr><tr>
         
         <td>
@@ -260,6 +262,15 @@ water of the Great Lakes Basin.</p></td>
           <p><code><a href="interpolate_path.html">interpolate_path()</a></code> </p>
         </td>
         <td><p>Interpolate new positions within a spatiotemporal path data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="interval_count.html">interval_count()</a></code> </p>
+        </td>
+        <td><p>The function below takes a detection events data frame and determines the 
+number of time bins in which detections were observed and returns the 
+cumulative time covered by all bins, in days. Interval (bin) size is 
+determined by the 'time_interval_size' argument.</p></td>
       </tr><tr>
         
         <td>
@@ -421,8 +432,8 @@ water of the Great Lakes Basin.</p></td>
         <td>
           <p><code><a href="total_days_count.html">total_days_count()</a></code> </p>
         </td>
-        <td><p>The function below takes a Pandas DataFrame and determines the number of days any
-detections were seen on the array.</p></td>
+        <td><p>The function below takes a Pandas DataFrame and determines the number of days
+any detections were seen on the array.</p></td>
       </tr><tr>
         
         <td>

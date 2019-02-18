@@ -32,12 +32,12 @@
 
 <meta property="og:title" content="Generate the residence index from a set of detections — residence_index" />
 
-<meta property="og:description" content="This residence index tool will take a compressed or uncompressed detection
-file and caculate the residency index for each station/receiver in the
-detections. The information passed to the function is what is used to
-calculate the residence index, make sure you are only passing the data you
-want taken into consideration for the residence index (i.e. species,
-stations, tags, etc.)." />
+<meta property="og:description" content="This residence index tool will take condensed detection event data (from
+detection_events and caculate the residence index for each
+location. The information passed to the function is
+what is used to calculate the residence index, make sure you are only passing
+the data you want taken into consideration for the residence index (i.e.
+species, stations, tags, etc.)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -68,7 +68,7 @@ stations, tags, etc.)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">glatos</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0.9001</span>
       </span>
     </div>
 
@@ -130,16 +130,18 @@ stations, tags, etc.)." />
 
     <div class="ref-description">
     
-    <p>This residence index tool will take a compressed or uncompressed detection
-file and caculate the residency index for each station/receiver in the
-detections. The information passed to the function is what is used to
-calculate the residence index, make sure you are only passing the data you
-want taken into consideration for the residence index (i.e. species,
-stations, tags, etc.).</p>
+    <p>This residence index tool will take condensed detection event data (from
+<code><a href='detection_events.html'>detection_events</a></code> and caculate the residence index for each
+location. The information passed to the function is
+what is used to calculate the residence index, make sure you are only passing
+the data you want taken into consideration for the residence index (i.e.
+species, stations, tags, etc.).</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>residence_index</span>(<span class='no'>detections</span>, <span class='kw'>calculation_method</span> <span class='kw'>=</span> <span class='st'>"kessel"</span>)</pre>
+    <pre class="usage"><span class='fu'>residence_index</span>(<span class='no'>detections</span>, <span class='kw'>calculation_method</span> <span class='kw'>=</span> <span class='st'>"kessel"</span>, <span class='kw'>locations</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>group_col</span> <span class='kw'>=</span> <span class='st'>"animal_id"</span>, <span class='kw'>time_interval_size</span> <span class='kw'>=</span> <span class='st'>"1 day"</span>,
+  <span class='kw'>groupwise_total</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,7 +154,48 @@ function.</p></td>
     <tr>
       <th>calculation_method</th>
       <td><p>A character string with the calculation method
-using one of the following: <code>kessel</code>, <code>timedelta</code>, <code>aggregate_with_overlap</code>, or <code>aggregate_no_overlap</code></p></td>
+using one of the following: <code>kessel</code>, <code>time_interval</code>, 
+<code>timedelta</code>, <code>aggregate_with_overlap</code>, or 
+<code>aggregate_no_overlap</code>.</p></td>
+    </tr>
+    <tr>
+      <th>locations</th>
+      <td><p>An optional data frame that identifies all unique 
+locations where RI will be calculated. Three columns required:</p><dl class='dl-horizontal'>
+  <dt>location</dt><dd><p>Character string with unique location identifier.</p></dd>
+  <dt>mean_longitude</dt><dd><p>Location longitude (for mapping).</p></dd>
+  <dt>mean_latitude</dt><dd><p>Location latitude (for mapping).</p></dd>
+</dl>
+
+<p>If <code>locations = NULL</code> (default value) then RI will only be 
+calculated at locations present in <code>detections$location</code>.</p></td>
+    </tr>
+    <tr>
+      <th>group_col</th>
+      <td><p>Optional character string (can be multiple) that identifies 
+additional grouping variables for RI calculations. The default value 
+(<code>group_col = "animal_id"</code>) will calculate and return RI for each 
+ animal at each location (i.e., for each unique combination of 
+ <code>location</code> and <code>animal_id</code>. If <code>group_col = NULL</code> then 
+ RI will be calculated by location only (will not account for animal or 
+ any other variable).</p></td>
+    </tr>
+    <tr>
+      <th>time_interval_size</th>
+      <td><p>Character string with size of the time interval 
+used when <code>calculation_method = "time_interval"</code>. This is passed to 
+<a href='https://www.rdocumentation.org/packages/base/topics/seq.Date'>seq.Date</a>'s <code>by</code> argument, so must meet the requirements of 
+that argument for that function (e.g., "1 day", "4 hours", etc.). Default is 
+<code>"1 day"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>groupwise_total</th>
+      <td><p>Logical that determines how the denominator is 
+calculated in RI. If FALSE (default) then the denominator represents the 
+total number of time intervals or time (depending on calculation method) 
+among all records. Otherwise (if FALSE), the denominator 
+represents the total number of time intervals or time within each 
+group level (e.g., for each animal if <code>group_col = "animal_id"</code>.</p></td>
     </tr>
     </table>
     
@@ -163,51 +206,64 @@ mean_latitude, mean_longitude</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The <strong>Kessel</strong> method converts both the <code>first_detection</code> and 
-<code>last_detection</code> columns into a 
-date with no hours, minutes, or seconds. Next it creates a list of the
-unique days where a detection was seen. The size of the list is returned
-as the total number of days as an integer. This calculation is used to
-determine the total number of distinct days (T) and the total number of
-distinct days per station (S).
-Possible rounding error may occur as a detection on 2016-01-01 23:59:59
-and a detection on 2016-01-02 00:00:01 would be counted as two days
-when it is really 2-3 seconds.</p>
+    <p>The <strong>kessel</strong> method converts both the <code>first_detection</code>
+and <code>last_detection</code> columns into a date with no hours, minutes, or
+seconds. Next it creates a list of the unique days where a detection was
+seen. The size of the list is returned as the total number of days as an
+integer. This calculation is used to determine the total number of distinct
+days (T) and the total number of distinct days per location (S). Possible
+rounding error may occur as a detection on 2016-01-01 23:59:59 and a
+detection on 2016-01-02 00:00:01 would be counted as two days when it is
+really 2-3 seconds.</p>
 <p>$$ RI = S/T$$
 $$ RI = Residence Index$$
-$$S = Distinct number of days detected at the station$$
-$$T = Distinct number of days detected anywhere on the array$$</p>
-<p>The <strong>Timedelta</strong> calculation method determines the first detection and the
-last detection of all detections. The time difference is then taken as
-the values to be used in calculating the residence index. The timedelta
-for each station is divided by the timedelta of the array to determine
-the residence index.</p>
+$$S = Distinct number of days detected at the location$$
+$$T = Distinct number of days detected at any location$$</p>
+<p>The <strong>time_interval</strong> calculation method determines the
+  number of time intervals (size determined by <code>time_interval_size</code>
+  argument) in which detections occurred at each <code>location</code> and as a 
+  fraction of the number of time intervals in which detections occurred 
+  among all sites. For each location, residency index (RI) is calculated:</p>
+<p>$$ RI = L/T$$
+$$ RI = Residence Index$$
+$$L = Distinct number of time intervals in which detection observed at 
+          this location$$
+$$T = Distinct number of time intervals in which detection observed at 
+          any location$$</p>          
+<p>For consistency with other <code>calculation_method</code>s, 
+  the L and T are not reported, but are converted cumulative time covered in 
+  days and reported in columns <code>days_detected</code> and <code>total_days</code>.</p>
+<p>The <strong>timedelta</strong> calculation method determines the first
+detection and the last detection of all detections. The time difference is
+then taken as the values to be used in calculating the residence index. The
+timedelta for each station is divided by the timedelta of the array to
+determine the residence index.</p>
 <p>$$
 RI = Delta S/Delta T$$</p>
 <p>$$RI = Residence Index$$</p>
-<p>$$Delta S = Last detection time at a station - First detection time at the station$$</p>
-<p>$$Delta T = Last detection time on an array - First detection time on the array$$</p>
-<p>The <strong>Aggregate With Overlap</strong> calculation method takes the length of time of each
-detection and sums them together. A total is returned. The sum for each station
-is then divided by the sum of the array to determine the residence index.</p>
+<p>$$Delta S = Last detection time at the location - First detection time at the location$$</p>
+<p>$$Delta T = Last detection time at any location - First detection time at any location$$</p>
+<p>The <strong>aggregate_with_overlap</strong> calculation method takes the length of time of each
+detection and sums them together. A total is returned. The sum for each location
+is then divided by the sum among all locations to determine the residence index.</p>
 <p>$$
 RI = AwOS/AwOT$$</p>
 <p>$$RI = Residence Index$$</p>
-<p>$$AwOS = Sum of length of time of each detection at the station$$</p>
-<p>$$AwOT = Sum of length of time of each detection on the array$$</p>
-<p>The <strong>Aggregate No Overlap</strong> calculation method takes the length of time of each
+<p>$$AwOS = Sum of length of time of each detection at the location$$</p>
+<p>$$AwOT = Sum of length of time of each detection among all locations$$</p>
+<p>The <strong>aggregate_no_overlap</strong> calculation method takes the length of time of each
 detection and sums them together. However, any overlap in time between one or
 more detections is excluded from the sum. For example, if the first detection
 is from <code>2016-01-01 01:02:43</code> to <code>2016-01-01 01:10:12</code> and the second
 detection is from <code>2016-01-01 01:09:01 </code>to <code>2016-01-01 01:12:43</code>, then the
 sum of those two detections would be 10 minutes. A total is returned once all
-detections of been added without overlap. The sum for each station is then
-divided by the sum of the array to determine the residence index.</p>
+detections of been added without overlap. The sum for each location is then
+divided by the sum among all locations to determine the residence index.</p>
 <p>$$
 RI = AnOS/AnOT$$</p>
 <p>$$RI = Residence Index$$</p>
-<p>$$AnOS = Sum of length of time of each detection at the station, excluding any overlap$$</p>
-<p>$$AnOT = Sum of length of time of each detection on the array, excluding any overlap$$</p>
+<p>$$AnOS = Sum of length of time of each detection at the location, excluding any overlap$$</p>
+<p>$$AnOT = Sum of length of time of each detection among all locations, excluding any overlap$$</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -225,6 +281,7 @@ Biology, 39(6), pp.1057-1068.
                          <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"glatos"</span>)
 <span class='no'>det</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='read_glatos_detections.html'>read_glatos_detections</a></span>(<span class='no'>det_file</span>)
 <span class='no'>detection_events</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>glatos</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/glatos/topics/detection_events'>detection_events</a></span>(<span class='no'>det</span>)</div><div class='output co'>#&gt; <span class='message'>The event filter distilled 7180 detections down to 165 distinct detection events.</span></div><div class='input'><span class='no'>rik_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>glatos</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/glatos/topics/residence_index'>residence_index</a></span>(<span class='no'>detection_events</span>, <span class='kw'>calculation_method</span> <span class='kw'>=</span> <span class='st'>'kessel'</span>)
+<span class='no'>rit_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>glatos</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/glatos/topics/residence_index'>residence_index</a></span>(<span class='no'>detection_events</span>, <span class='kw'>calculation_method</span> <span class='kw'>=</span> <span class='st'>'time_interval'</span>)
 <span class='no'>rit_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>glatos</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/glatos/topics/residence_index'>residence_index</a></span>(<span class='no'>detection_events</span>, <span class='kw'>calculation_method</span> <span class='kw'>=</span> <span class='st'>'timedelta'</span>)
 <span class='no'>riawo_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>glatos</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/glatos/topics/residence_index'>residence_index</a></span>(<span class='no'>detection_events</span>, <span class='kw'>calculation_method</span> <span class='kw'>=</span> <span class='st'>'aggregate_with_overlap'</span>)
 <span class='no'>riano_data</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>glatos</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/glatos/topics/residence_index'>residence_index</a></span>(<span class='no'>detection_events</span>, <span class='kw'>calculation_method</span> <span class='kw'>=</span> <span class='st'>'aggregate_no_overlap'</span>)</div></pre>
