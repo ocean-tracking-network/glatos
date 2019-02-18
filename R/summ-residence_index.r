@@ -165,7 +165,7 @@ residence_index <- function(detections, calculation_method='kessel',
   
   #set to NULL if NA
   if(!is.null(group_col)) if(is.na(group_col)) group_col <- NULL 
-  if(!is.null(locations)) if(is.na(locations)) locations <- NULL 
+  if(!is.null(locations)) if(all(is.na(locations))) locations <- NULL 
   
   
   #get locations from detections if not given
