@@ -332,7 +332,7 @@ total_days_count <- function(detections) {
 #'
 total_diff_days <- function(detections) {
   first <- detections$first_detection[which.min(detections$first_detection)]
-  last <- detections$first_detection[which.max(detections$first_detection)]
+  last <- detections$last_detection[which.max(detections$last_detection)]
   total <- as.double(difftime(last, first, units="secs"))/86400.0
   return(total)
 }
