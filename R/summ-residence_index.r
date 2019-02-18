@@ -369,13 +369,13 @@ aggregate_total_no_overlap <- function(detections) {
   detections <- arrange(detections, first_detection)
   detcount <- as.integer(dplyr::count(detections))
   detections <- mutate(detections, interval = interval(first_detection,last_detection))
-  detections <- mutate(detections, timedelta = as.double(difftime(as.Date(last_detection),as.Date(first_detection), units="secs")))
+  detections <- mutate(detections, timedelta = as.double(difftime(last_detection,first_detection, units="secs")))
   detections <- mutate(detections, timedelta = dplyr::recode(detections$timedelta, `0` = 1))
 
   next_block <- 2
   start_block <- 1
   end_block <- 1
-  while(next_block <= detcount) {
+  while(next_block <= (detcount + 1)) {
     # if it overlaps
     if(next_block < detcount && int_overlaps(dplyr::nth(detections$interval, end_block), dplyr::nth(detections$interval, next_block))) {
       if(dplyr::nth(detections$interval, next_block) >= dplyr::nth(detections$interval, end_block)) {
