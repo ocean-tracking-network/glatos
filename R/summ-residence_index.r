@@ -347,7 +347,7 @@ total_diff_days <- function(detections) {
 #'
 #' @importFrom dplyr mutate
 aggregate_total_with_overlap <- function(detections) {
-  detections <- mutate(detections, timedelta = as.double(difftime(as.Date(last_detection),as.Date(first_detection), units="secs")))
+  detections <- mutate(detections, timedelta = as.double(difftime(last_detection,first_detection, units="secs")))
   detections <- mutate(detections, timedelta = dplyr::recode(detections$timedelta, `0` = 1))
   total <- as.double(sum(detections$timedelta))/86400.0
   return(total)
