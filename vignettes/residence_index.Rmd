@@ -12,6 +12,8 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+\pagebreak
+
 # Introduction
 
 The `residence_index` function in the R package *glatos* calculates the relative
@@ -19,9 +21,9 @@ amount of time that a tagged animal (or animals) occupied each of a set of
 discrete locations monitored by receivers. Among locations in a detection
 dataset, the derivation of the residency index (RI) value for each location *k*
 seems simple at first glance: 
- $$RI_{k} = \frac{t_{k}}{t_{K}}\text{,}$$
+ $$RI_{k} = \frac{t_{k}}{T}\text{,}$$
 where $t_{k}$ is the amount of time spent at location *k* and 
-$t_{K} = \sum_{k=1}^{K}{t_k}$ is the total amount of time spent among any of all 
+$T = \sum_{k=1}^{K}{t_k}$ is the total amount of time spent among any of all 
 *K* locations. In practice, there are numerous ways to calculate $t_{k}$ and
 thus, seemingly endless flavors of RI exist (much like other ecological
 indices). `residence_index` provides five different calculation methods for RI.
@@ -49,21 +51,50 @@ open-water and ice-covered periods through acoustic telemetry. Polar Biology,
 ## *residence_index* overview
 
 The *residence_index* function will take a condensed detection event dataframe 
-(in the form returned by the *glatos* function *detection_events* with 
-argument `condensed = TRUE`) and return a data frame with $RI_k$, $t_k$ 
-(in days), and $t_K$ for each location in columns named *residency_index*, 
-*detected_days*, and *total_days*, respectively. 
+(in the form returned by the *glatos* function *detection_events* with argument
+`condensed = TRUE`) and return a data frame with $RI_k$, $t_k$ (in days), and
+$t_K$ (in days) for each location in columns named *residency_index*,
+*detected_days*, and *total_days*, respectively. Latitude and longitude of each
+unique *location* are also summarized and returned in columns named
+*mean_latitude* and *mean_longitude*.
+
+### Calculation methods
 
 The `calculation_method` argument is used to specify the method used to
-calculate RI and its components. The `time_interval_size` argument can further
-be used to specify a key parameter for one of the methods (*time_interval*) but
-no other methods require additional arguments.
+calculate RI and its components. Currently, five methods are avaiable, which 
+differ principally by the way they calculate the amount of time detected:
+
+ - **kessel**
+ : counts discrete calendar days
+ 
+ - **time_interval**
+ : counts discrete time intervals of user-specified size (e.g., 1 day, 2 weeks, 
+ etc.); interval size is set by argument `time_interval_size`
+ 
+ - **timediff**
+ : calculates total duration between first detection of first event
+ and last detection of last event within each location (or group)
+
+ - **aggregate_no_overlap** 
+ : calculates total duration among all detection events but does not 
+ "double count" any overlapping events
+ 
+ - **aggregate_with_overlap**
+ : calculates total duration among all detection events but counts 
+ all events separately
+
+
+
+
+### Defining locations
 
 By default, RI calculations and results (which also include mean latitude and 
 longitude for each unique location) are limited to the set of locations 
-present in the input data frame. Thus, results will never include locations 
+present in the input data frame and will not include locations 
 where no animals were detected. To include sites with no detections, a set of 
 locations can be specified in a data frame via the `locations` argument. 
+
+### Other grouping variables
 
 RI is always calculated separately for each unique value of in the *location*
 column of the input detection data or optional `locations` data frame,
@@ -72,15 +103,19 @@ but one or more additional grouping columns can be specified using the
 calculated for each animal at each location. If `group_col = NULL`, then the
 *animal_id* column (an all other columns except *location*) will be ignored.
 
-Finally, by default, the denominator $t_K$ will ignore grouping variables
-specified in `group_col`, essentially meaning that, for example when `group_col
-= "animal_id"`, $RI_k$ for each animal will represent the time that a particular
-animal spent at location *k* as a proportion of time that *all animals* spent at
-*all sites*. This behavior is controlled by the argument `groupwise_total`
-(FALSE by default). Conversely, if `groupwise_total = TRUE`, then $RI_k$ for
-each animal will represent the time that a particular animal spent at location
-*k* as a proportion of time that only that particular animal spent at *all
-sites*.
+### Accounting for groups in total time (*T*)
+
+By default (when argument `groupwise_total = FALSE`), the denominator of the RI
+calculation (representing total time detected) will ignore grouping variables
+specified in `group_col` such that for group *i* at location *k*
+$$RI_{k,i} = \frac{t_{k,i}}{\sum_{k=1}^Kt_k}\text{.}$$ 
+For example when `group_col = "animal_id"`, $RI_{k,i}$ for each animal
+represents the time that a particular animal *i* spent at location *k* as a
+proportion of time that *all animals* spent at all locations. Conversely, if
+`groupwise_total = TRUE`, then total time will represent the proportion of time 
+that *only the *i*th animal* spent at all locations, such that
+$$RI_{k,i} = \frac{t_{k,i}}{\sum_{k=1}^Kt_{k,i}}\text{.}$$ 
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = T,comment ="", fig.pos = 'H')
@@ -95,23 +130,18 @@ is_html_output = function() {
 
 This section includes simple examples of each of the five calculation methods
 using example walleye data and mostly-default input arguments. Results are
-displayed as simple bubble plots (maps) in base R in this section, simply
-because it is generic and effective--not because it is our preferred or
-recommended method. More capable and user-friendly plotting methods will 
-be briefly introduced in another section, but for the most part we expect 
-users to use a wide variety of plotting methods depending on their particular 
-preferences and goals.
+displayed as simple bubble plots (maps) in this section, because it is generic
+and effective--not because it is our preferred or recommended method. More
+capable and user-friendly plotting methods, including the purpose-built
+*ri_plot* function, will be briefly introduced in another section, but for the
+most part we expect users to use a wide variety of plotting methods depending on
+their particular goals and preferences.
 
 ## Importing Libraries
-We will import `glatos` for use now and `plotly` to run then visualize the RI 
-in a later section.
+Import `glatos`.
 
 ```{r,warning=FALSE,message=FALSE}
 library(glatos)
-library(plotly)
-```
-```{r,warning=FALSE,message=FALSE, echo=FALSE}
-Sys.setenv('MAPBOX_TOKEN' = 'Your Token Here')
 ```
 
 ## Importing and Compressing Data
@@ -122,7 +152,7 @@ Note that `system.file` is only used here because we need to get the path to the
 example data file that's bundled with the *glatos* package. To run a different 
 file from another location, skip this function and just set `det_file` to
 the path of your own file (e.g., `det_file <-
-"C:/your_files/your_detections.csv").
+"C:/your_files/your_detections.csv"`).
 
 ```{r, message=FALSE}
 det_file <- system.file("extdata", "walleye_detections.csv",
@@ -139,17 +169,18 @@ other arguments are not shown below because we are using default values, which
 means the detection events will be grouped on the *glatos_array* column
 (`location_col` argument). Finally, the events are in "condensed" 
 (i.e., "compressed") form, meaning there is one row for each event, including 
-*first_detection* and *last_detections* timestamps.
+*first_detection* and *last_detection* timestamps.
 
 
 ```{r}
 det_events <- glatos::detection_events(detections, time_sep = "3600")
 ```
-Note the structure below. *residence_events* requires a file with this structure.
+Note the structure below. *residence_index* requires a file with this structure.
 ```{r}
 head(det_events)
 
 ```
+
 
 ## Kessel Method
 
@@ -173,7 +204,7 @@ occur as a detection on `2016-01-01 23:59:59` and a detection on `2016-01-02
 
 
 ```{r}
-ri <- glatos::residence_index(det_events,calculation_method = 'kessel')
+ri <- glatos::residence_index(det_events, calculation_method = 'kessel')
 ```
 
 Note the resulting structure.
@@ -192,7 +223,7 @@ within and among locations.
 
 ```{r}
 boxplot(residency_index~location, data = ri, horizontal = TRUE, las = 1, 
-  xlab= 'Residence Index (method = "kessel")')
+        xlab= 'Residence Index (method = "kessel")')
 ```
 
 
@@ -200,9 +231,9 @@ Next we will plot RI values on a map. We'll start with a plot for
 each fish on the sample Great Lakes polygon object that is bundled with the 
 *glatos* package.
 
-Here's the plot for one fish...
+Here's the plot for one fish... 
 
-```{r}
+```{r, fig.width=5, fig.height=5}
 #get example great lakes polygon
 data(greatLakesPoly)
 
@@ -212,16 +243,26 @@ sp::plot(greatLakesPoly, asp = 1,
            ylim = range(ri$mean_latitude),  
            col = "white", bg = "grey80")
 
-points(mean_latitude ~ mean_longitude, data = ri[ri$animal_id == "153",], 
-  pch = 21, cex = 30*residency_index, bg = "pink")
+#sort by decreasing residency_index so that large bubbles don't hide smaller
+ri <- ri[order(ri$residency_index, decreasing = TRUE),]
 
+#make column for symbol color
+ri$color <- "red"
+ri$color[ri$residency_index == 0] <- "pink" #sites with no detects
+
+points(mean_latitude ~ mean_longitude, data = ri[ri$animal_id == "153",], 
+  pch = 21, cex = 1 + 30*residency_index, bg = color)
 
 ```
 
+Notice that this fish was detected at all sites in L. Huron and none in L. Erie
+and detections at the two more northern sites accounted for more time than 
+other sites.
 
-Two fish...
+The second fish shows a much different pattern (below), with detections only 
+in the Maumee River and near reefs in the Western Basin.
 
-```{r}
+```{r, fig.width=5, fig.height=5}
 #plot; note indexing sp for plot.sp
 sp::plot(greatLakesPoly, asp = 1, 
            xlim = range(ri$mean_longitude),
@@ -229,14 +270,14 @@ sp::plot(greatLakesPoly, asp = 1,
            col = "white", bg = "grey80")
 
 points(mean_latitude ~ mean_longitude, data = ri[ri$animal_id == "22",], 
-  pch = 21, cex = 30*residency_index, bg = "pink")
-
+  pch = 21, cex = 1 + 30*residency_index, bg = color)
 ```
 
 
-Red fish...
+The third fish shares one site in common (Maumee R.) with the second fish, 
+but was otherwise only detected in the Detroit and St. Clair rivers.
 
-```{r}
+```{r, fig.width=5, fig.height=5}
 #plot; note indexing sp for plot.sp
 sp::plot(greatLakesPoly, asp = 1, 
            xlim = range(ri$mean_longitude),
@@ -244,16 +285,16 @@ sp::plot(greatLakesPoly, asp = 1,
            col = "white", bg = "grey80")
 
 points(mean_latitude ~ mean_longitude, data = ri[ri$animal_id == "23",], 
-  pch = 21, cex = 30*residency_index, bg = "pink")
+  pch = 21, cex = 1 + 30*residency_index, bg = color)
 
 ```
 
-Obviously there are differences among individuals. 
-
-Next, we will calculate the mean RI among the three and plot it.
+Next, we will calculate and plot the mean RI among the three fish (yes, the 
+sample size is too small; this is just a demo).
 
 We will use functions from the *dplyr* package and pipes (`%>%`) from *magrittr*
 package because that's what the kids are into these days.
+
 ```{r}
 library(dplyr)
 
@@ -270,15 +311,22 @@ head(rik_summary)
 
 Now we plot the means on a map.
 
-```{r}
+```{r, fig.width=5, fig.height=5}
 #plot; note indexing sp for plot.sp
 sp::plot(greatLakesPoly, asp = 1, 
            xlim = range(ri$mean_longitude),
            ylim = range(ri$mean_latitude),  
            col = "white", bg = "grey80")
 
+#sort by decreasing residency_index so that large bubbles don't hide smaller
+rik_summary <- rik_summary[order(rik_summary$ri_mean, decreasing = TRUE),]
+
+#make column for symbol color
+rik_summary$color <- "red"
+rik_summary$color[rik_summary$ri_mean == 0] <- "pink" #sites with no detects
+
 points(mean_latitude ~ mean_longitude, data = rik_summary, 
-  pch = 21, cex = 30*ri_mean, bg = "pink")
+  pch = 21, cex = 1 + 30*ri_mean, bg = color)
 
 ```
 
@@ -287,9 +335,10 @@ about the walleye space use from this information.
 
 ### Optional location data
 
+Notice in the last plot that all there were no locations without detections. 
 Let's bring in receiver location data from the rest of the GLATOS network.
-Note that read in the receiver file using `glatos::read_glatos_receivers()` 
-and then change column names to match the names that `residence_index` needs.
+We will read in the sample receiver file using `glatos::read_glatos_receivers()` 
+and then change column names to match those required by `residence_index()`.
 
 ```{r}
 #get sample receiver data from pkg
@@ -304,14 +353,9 @@ rik2 <- residence_index(det_events, locations = locs,
 
 ```
 
-Now we calculate means and graph again. Note that we again scaled the size 
-of the symbol relative to *ri_mean*. However, in this case the map would 
-not show the new points because the size would be 0. So to make sure all points
-show, we add one to `cex` argument (symbol size). We've also changed colors 
-to more clearly distinguish locations where fish were detected (red) and 
-not (pink).
+Now we calculate mean RI and graph again. 
 
-```{r}
+```{r, fig.width=5, fig.height=5}
 #calculate mean and sd of RI among fish
 rik2_summary <- rik2 %>% 
                group_by(location, mean_latitude, mean_longitude) %>% 
@@ -319,28 +363,395 @@ rik2_summary <- rik2 %>%
                     ri_mean = mean(residency_index),
                     ri_sd = sd(residency_index))
 
+#sort by decreasing residency_index so that large bubbles don't hide smaller
+rik2_summary <- rik2_summary[order(rik2_summary$ri_mean, decreasing = TRUE),]
+
 #plot; note indexing sp for plot.sp
 sp::plot(greatLakesPoly, asp = 1, 
            xlim = range(rik2$mean_longitude),
            ylim = range(rik2$mean_latitude),  
            col = "white", bg = "grey80")
 
-points(mean_latitude ~ mean_longitude, data = rik2_summary, 
-  pch = 21, cex = 1 + 30*ri_mean, bg = "red", lwd = 2)
+#make column for symbol color
+rik2_summary$color <- "red"
+rik2_summary$color[rik2_summary$ri_mean == 0] <- "pink" #sites with no detects
 
-#make the zeros (non-detection) obviously different
-points(mean_latitude ~ mean_longitude, 
-         data = rik2_summary[rik2_summary$ri_mean == 0,], 
-         pch = 21, cex = 1 + 30*ri_mean, bg = "pink", lwd = 2)
+points(mean_latitude ~ mean_longitude, data = rik2_summary, 
+  pch = 21, cex = 1 + 30*ri_mean, bg = color)
+
+```
+
+### Groupwise total time
+
+Next, let's recalculate RI using `groupwise_total = TRUE` so that RI 
+represents the proportion of each fish's own time spent at each location.
+
+```{r}
+rik3 <- residence_index(det_events, locations = locs,
+                        calculation_method = 'kessel',
+                        groupwise_total = TRUE  )
+
+```
+
+Now we calculate mean RI and graph again. 
+
+```{r, fig.width=5, fig.height=5}
+#calculate mean and sd of RI among fish
+rik3_summary <- rik3 %>% 
+               group_by(location, mean_latitude, mean_longitude) %>% 
+               summarise(
+                    ri_mean = mean(residency_index),
+                    ri_sd = sd(residency_index))
+
+#sort by decreasing residency_index so that large bubbles don't hide smaller
+rik3_summary <- rik3_summary[order(rik3_summary$ri_mean, decreasing = TRUE),]
+
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(rik3$mean_longitude),
+           ylim = range(rik3$mean_latitude),  
+           col = "white", bg = "grey80")
+
+#make column for symbol color
+rik3_summary$color <- "red"
+rik3_summary$color[rik3_summary$ri_mean == 0] <- "pink" #sites with no detects
+
+points(mean_latitude ~ mean_longitude, data = rik3_summary, 
+  pch = 21, cex = 1 + 30*ri_mean, bg = color)
+
+```
+
+Results here are different than the previous example, with noticably larger
+mean RI values in Lake Erie and the Maumee River when total time represents 
+individual fish instead of all fish.
+
+
+\pagebreak 
+
+## Time Interval Method
+
+The "time interval" method (`calculation_method = "time_interval"`) is similar
+to the "kessel" method, but allows the user to specify size of the time
+interval. Specifically, this method determines the number of time intervals in
+which detections occurred at each location and as a fraction of the number of
+time intervals in which detections occurred among all sites. For each location,
+residency index (RI) is calculated:
+
+>$RI = \frac{L}{T}$
+>
+>$RI = Residence Index$
+>
+>$L$ = Distinct number of time intervals in which detection observed at this location
+>
+>$T$ = Distinct number of time intervals in which detection observed at any location
+
+For consistency with other calculation_methods, the L and T are not reported, but are converted cumulative time covered in days and reported in columns days_detected and total_days.
+
+
+```{r}
+riti <- glatos::residence_index(det_events, locations = locs, 
+                                calculation_method = "time_interval")
+```
+
+Note the resulting structure.
+```{r}
+head(riti)
 ```
 
 
+Now we calculate mean RI and graph again. 
+
+```{r, fig.width=5, fig.height=5}
+#calculate mean and sd of RI among fish
+riti_summary <- riti %>% 
+               group_by(location, mean_latitude, mean_longitude) %>% 
+               summarise(
+                    ri_mean = mean(residency_index),
+                    ri_sd = sd(residency_index))
+
+#sort by decreasing residency_index so that large bubbles don't hide smaller
+riti_summary <- riti_summary[order(riti_summary$ri_mean, decreasing = TRUE),]
+
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(riti$mean_longitude),
+           ylim = range(riti$mean_latitude),  
+           col = "white", bg = "grey80")
+
+#make column for symbol color
+riti_summary$color <- "red"
+riti_summary$color[riti_summary$ri_mean == 0] <- "pink" #sites with no detects
+
+points(mean_latitude ~ mean_longitude, data = riti_summary, 
+  pch = 21, cex = 1 + 30*ri_mean, bg = color)
+
+```
+
+This is very similar to the "kessel" results, as expected.
+
+### Changing time interval size
+
+Next, let's recalculate RI using finer (15 min) and coarser (monthly) time 
+intervals.
+
+#### 15-minute intervals
+
+```{r, fig.width=5, fig.height=5}
+riti <- glatos::residence_index(det_events, locations = locs, 
+                                calculation_method = "time_interval",
+                                time_interval_size = "15 mins")
+
+#calculate mean and sd of RI among fish
+riti_summary <- riti %>% 
+               group_by(location, mean_latitude, mean_longitude) %>% 
+               summarise(
+                    ri_mean = mean(residency_index),
+                    ri_sd = sd(residency_index))
+
+#sort by decreasing residency_index so that large bubbles don't hide smaller
+riti_summary <- riti_summary[order(riti_summary$ri_mean, decreasing = TRUE),]
+
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(riti$mean_longitude),
+           ylim = range(riti$mean_latitude),  
+           col = "white", bg = "grey80")
+
+#make column for symbol color
+riti_summary$color <- "red"
+riti_summary$color[riti_summary$ri_mean == 0] <- "pink" #sites with no detects
+
+points(mean_latitude ~ mean_longitude, data = riti_summary, 
+  pch = 21, cex = 1 + 30*ri_mean, bg = color)
+
+```
+
+#### monthly intervals
+
+```{r, fig.width=5, fig.height=5}
+riti <- glatos::residence_index(det_events, locations = locs, 
+                                calculation_method = "time_interval",
+                                time_interval_size = "1 month")
+
+#calculate mean and sd of RI among fish
+riti_summary <- riti %>% 
+               group_by(location, mean_latitude, mean_longitude) %>% 
+               summarise(
+                    ri_mean = mean(residency_index),
+                    ri_sd = sd(residency_index))
+
+#sort by decreasing residency_index so that large bubbles don't hide smaller
+riti_summary <- riti_summary[order(riti_summary$ri_mean, decreasing = TRUE),]
+
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(riti$mean_longitude),
+           ylim = range(riti$mean_latitude),  
+           col = "white", bg = "grey80")
+
+#make column for symbol color
+riti_summary$color <- "red"
+riti_summary$color[riti_summary$ri_mean == 0] <- "pink" #sites with no detects
+
+points(mean_latitude ~ mean_longitude, data = riti_summary, 
+  pch = 21, cex = 1 + 30*ri_mean, bg = color)
+
+```
+
+
+
+\pagebreak
+
+
+## Timedelta Method
+
+The "Timedelta" method (method (`calculation_method = "timedelta"`) calculates
+the time difference between the first *first_detection* among all detection
+events and the last *last_detection* among all detection events. The timedelta
+for each location is divided by the timedelta among all locations to determine
+the residence index.
+
+>$RI = \frac{\Delta S}{\Delta T}$
+>
+>$RI$ = Residence Index
+>
+>$\Delta S$ = Last detection time at the location - First detection time at the location
+>
+>$\Delta T$ = Last detection time at any location - First detection time at any location  
+  
+  
+```{r, fig.width=5, fig.height=5}
+ritd <- glatos::residence_index(det_events, locations = locs, 
+                                calculation_method = "timedelta")
+
+#calculate mean and sd of RI among fish
+ritd_summary <- ritd %>% 
+               group_by(location, mean_latitude, mean_longitude) %>% 
+               summarise(
+                    ri_mean = mean(residency_index),
+                    ri_sd = sd(residency_index))
+
+#sort by decreasing residency_index so that large bubbles don't hide smaller
+ritd_summary <- ritd_summary[order(ritd_summary$ri_mean, decreasing = TRUE),]
+
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(ritd$mean_longitude),
+           ylim = range(ritd$mean_latitude),  
+           col = "white", bg = "grey80")
+
+#make column for symbol color
+ritd_summary$color <- "red"
+ritd_summary$color[ritd_summary$ri_mean == 0] <- "pink" #sites with no detects
+
+points(mean_latitude ~ mean_longitude, data = ritd_summary, 
+  pch = 21, cex = 1 + 30*ri_mean, bg = color)
+```
+
+The relatively large points in Saginaw Bay reflect that the total time spanned 
+(not necessarily occupied or detected) at those sites was proportionally larger 
+than others. In other words, fish tended to revisit those sites over long 
+time periods. Keep in mind however, that this could be influenced by other 
+variables, such as the amount of time a fish was at large and alive.
+
+\pagebreak
+
+## Aggregate With Overlap Method
+
+The "Aggregate With Overlap" method (`calculation_method =
+"aggregate_with_overlap"`) takes the length of time of each detection event and
+sums them together. A total is returned. The sum for each location is then
+divided by the sum among all locations to determine the residence index. 
+
+Overlapping events at a given location will only exist in detection event 
+data if multiple animals are represented and therefore is only applicable 
+when `group_col = NA`.
+
+>$RI = \frac{AwOS}{AwOT}$
+>
+>$RI$ = Residence Index
+>
+>$AwOS$ = Sum of length of time of each detection at the location
+>
+>$AwOT$ = Sum of length of time of each detection among all locations  
+  
+Note that we set `group_col = NA` for this method.
+  
+```{r, fig.width=5, fig.height=5}
+riawo <- glatos::residence_index(det_events, locations = locs, 
+                                calculation_method = "aggregate_with_overlap",
+                                group_col = NA)
+
+#calculate mean and sd of RI among fish
+riawo_summary <- riawo %>% 
+               group_by(location, mean_latitude, mean_longitude) %>% 
+               summarise(
+                    ri_mean = mean(residency_index),
+                    ri_sd = sd(residency_index))
+
+#sort by decreasing residency_index so that large bubbles don't hide smaller
+riawo_summary <- riawo_summary[order(riawo_summary$ri_mean, decreasing = TRUE),]
+
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(riawo$mean_longitude),
+           ylim = range(riawo$mean_latitude),  
+           col = "white", bg = "grey80")
+
+#make column for symbol color
+riawo_summary$color <- "red"
+riawo_summary$color[riawo_summary$ri_mean == 0] <- "pink" #sites with no detects
+
+points(mean_latitude ~ mean_longitude, data = riawo_summary, 
+  pch = 21, cex = 1 + 30*ri_mean, bg = color)
+```  
+
+
+\pagebreak
+
+## Aggregate No Overlap Method
+
+The "Aggregate No Overlap" method (`calculation_method =
+"aggregate_no_overlap"`) takes the length of time of each detection event and sums
+them together. However, any overlap in time between one or more detection events is
+excluded from the sum. For example, if the first detection event spans from `2016-01-01
+01:02:43` to `2016-01-01 01:10:12` and the second detection event spans from `2016-01-01
+01:09:01` to `2016-01-01 01:12:43`, then the sum of those two events would
+be 10 minutes. A total is returned once all events have been added without
+overlap. The sum for each station is then divided by the sum of the array to
+determine the residence index.
+
+Overlapping events at a given location will only exist in detection event 
+data if multiple animals are represented and therefore is only applicable 
+when `group_col = NA`.
+
+
+>$RI = \frac{AnOS}{AnOT}$
+>
+>$RI$ = Residence Index
+>
+>$AnOS$ = Sum of length of time of each location, excluding any overlap
+>
+>$AnOT$ = Sum of length of time among all locations, excluding any overlap
+
+Note that we set `group_col = NA` for this method.
+  
+```{r, fig.width=5, fig.height=5}
+riano <- glatos::residence_index(det_events, locations = locs, 
+                                calculation_method = "aggregate_with_overlap",
+                                group_col = NA)
+
+#calculate mean and sd of RI among fish
+riano_summary <- riano %>% 
+               group_by(location, mean_latitude, mean_longitude) %>% 
+               summarise(
+                    ri_mean = mean(residency_index),
+                    ri_sd = sd(residency_index))
+
+#sort by decreasing residency_index so that large bubbles don't hide smaller
+riano_summary <- riano_summary[order(riano_summary$ri_mean, decreasing = TRUE),]
+
+#plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly, asp = 1, 
+           xlim = range(riano$mean_longitude),
+           ylim = range(riano$mean_latitude),  
+           col = "white", bg = "grey80")
+
+#make column for symbol color
+riano_summary$color <- "red"
+riano_summary$color[riano_summary$ri_mean == 0] <- "pink" #sites with no detects
+
+points(mean_latitude ~ mean_longitude, data = riano_summary, 
+  pch = 21, cex = 1 + 30*ri_mean, bg = color)
+``` 
+
+In this particular data set, there are no overlapping detection events 
+(among fish). Otherwise, these points would appear smaller than the previous 
+example.
+
+
+\pagebreak
 
 # Plotting with Plotly
 
 Below is the code for plotting the RI using `plotly`. `plotly` allows us to 
 interact with the map rather than haveing a static image. More about `plotly`
-can be found [here](https://plot.ly/r/).
+can be found [here](https://plot.ly/r/). To export figures as image files from 
+`plotly` you will also need the external command line program `orca`. To 
+install `orca`, see https://github.com/plotly/orca#installation.  
+
+Attach the `plotly` library.  
+
+```{r,warning=FALSE,message=FALSE}
+library(plotly)
+```
+
+```{r,warning=FALSE,message=FALSE, echo=FALSE}
+Sys.setenv('MAPBOX_TOKEN' = 'Your Token Here')
+```
+
+
+Set up the map.
 
 ```{r,warning=FALSE, message=FALSE,  fig.keep="FALSE"}
 geo <- list(
@@ -376,193 +787,10 @@ To show the map you can just type out the variable name.
 map
 ```
 
+Exporting the map as an image file requires the external program `orca`, which
+is called by `plotly::orca()`.
 
 ```{r, eval=!is_html_output() ,echo=FALSE, message=FALSE,warning=FALSE, out.width = "400px"}
 orca(map, file = 'kessel.png')
 knitr::include_graphics('kessel.png')
 ```
-
-\pagebreak
-
-
-## Timedelta Method
-
-The Timedelta calculation method determines the first startdate of all detections and the last
-enddate of all detections. The time difference is then taken as the values to be used in 
-calculating the residence index. The timedelta for each station is divided by the timedelta 
-of the array to determine the residence index.
-
->$RI = \frac{\Delta S}{\Delta T}$
->
->$RI$ = Residence Index
->
->$\Delta S$ = Last detection time at a station - First detection time at the station
->
->$\Delta T$ = Last detection time on an array - First detection time on the array
-
-```{r,warning=FALSE}
-ri <- glatos::residence_index(det_events,calculation_method = 'timedelta')
-
-geo <- list(
-    scope = 'north america',
-  showland = TRUE,
-  landcolor = toRGB("white"),
-  showocean = TRUE,
-  oceancolor = toRGB("gray"),
-  showcountries = TRUE,
-  showlakes = TRUE,
-  lakecolor = plotly::toRGB("gray"),
-  
-  resolution = 50,
-  center = list(lat = median(ri$mean_latitude),
-                lon = median(ri$mean_longitude)),
-  lonaxis = list(range=c(min(ri$mean_longitude)-1, max(ri$mean_longitude)+1)),
-  lataxis = list(range=c(min(ri$mean_latitude)-1, max(ri$mean_latitude)+1))
-)
-
-
-map <- ri %>% 
-  plot_geo(lat = ~mean_latitude, lon = ~mean_longitude, color = ~residency_index )%>%
-  add_markers(
-            text = ~paste(location, ': ', residency_index),
-            hoverinfo = "text",
-    size = ~c(residency_index * 5)
-  )%>%
-  layout(title = "Timedelta RI",geo = geo)
-
-```
-
-To show the map you can just type out the variable name.
-```{r, eval=is_html_output(), warning=FALSE, message=FALSE}
-map
-```
-
-
-```{r, eval=!is_html_output() ,echo=FALSE, message=FALSE,warning=FALSE, out.width = "400px"}
-orca(map, file = 'timedelta.png')
-knitr::include_graphics('timedelta.png')
-```
-
-\pagebreak
-
-## Aggregate With Overlap Method
-
-The Aggregate With Overlap calculation method takes the length of time of each detection and sums
-them together. A total is returned. The sum for each station is then divided by the sum of the
-array to determine the residence index.
-
->$RI = \frac{AwOS}{AwOT}$
->
->$RI$ = Residence Index
->
->$AwOS$ = Sum of length of time of each detection at the station
->
->$AwOT$ = Sum of length of time of each detection on the array
-
-```{r,warning=FALSE}
-ri <- glatos::residence_index(det_events,calculation_method = 'aggregate_with_overlap')
-
-geo <- list(
-    scope = 'north america',
-  showland = TRUE,
-  landcolor = toRGB("white"),
-  showocean = TRUE,
-  oceancolor = toRGB("gray"),
-  showcountries = TRUE,
-  showlakes = TRUE,
-  lakecolor = plotly::toRGB("gray"),
-  
-  resolution = 50,
-  center = list(lat = median(ri$mean_latitude),
-                lon = median(ri$mean_longitude)),
-  lonaxis = list(range=c(min(ri$mean_longitude)-1, max(ri$mean_longitude)+1)),
-  lataxis = list(range=c(min(ri$mean_latitude)-1, max(ri$mean_latitude)+1))
-)
-
-
-map <- ri %>% 
-  plot_geo(lat = ~mean_latitude, lon = ~mean_longitude, color = ~residency_index )%>%
-  add_markers(
-            text = ~paste(location, ': ', residency_index),
-            hoverinfo = "text",
-    size = ~c(residency_index * 5)
-  )%>%
-  layout(title = "Aggregate With Overlap RI",geo = geo)
-
-
-
-```
-
-To show the map you can just type out the variable name.
-```{r, eval=is_html_output(), warning=FALSE, message=FALSE}
-map
-```
-
-
-```{r, eval=!is_html_output() ,echo=FALSE, message=FALSE,warning=FALSE, out.width = "400px"}
-orca(map, file = 'awo.png')
-knitr::include_graphics('awo.png')
-```
-
-\pagebreak
-
-## Aggregate No Overlap Method
-
-The Aggregate No Overlap calculation method takes the length of time of each detection and sums
-them together. However, any overlap in time between one or more detections is excluded from the sum.
-For example, if the first detection is from `2016-01-01 01:02:43` to `2016-01-01 01:10:12` and the second
-detection is from `2016-01-01 01:09:01` to `2016-01-01 01:12:43`, then the sume of those two detections 
-would be 10 minutes.A total is returned once all detections of been added without overlap. The sum for each station is then 
-divided by the sum of the array to determine the residence index. 
-
->$RI = \frac{AnOS}{AnOT}$
->
->$RI$ = Residence Index
->
->$AnOS$ = Sum of length of time of each detection at the station, excluding any overlap
->
->$AnOT$ = Sum of length of time of each detection on the array, excluding any overlap
-
-```{r,warning=FALSE}
-ri <- glatos::residence_index(det_events,calculation_method = 'aggregate_no_overlap')
-
-geo <- list(
-  scope = 'north america',
-  showland = TRUE,
-  landcolor = toRGB("white"),
-  showocean = TRUE,
-  oceancolor = toRGB("gray"),
-  showcountries = TRUE,
-  showlakes = TRUE,
-  lakecolor = plotly::toRGB("gray"),
-  
-  resolution = 50,
-  center = list(lat = median(ri$mean_latitude),
-                lon = median(ri$mean_longitude)),
-  lonaxis = list(range=c(min(ri$mean_longitude)-1, max(ri$mean_longitude)+1)),
-  lataxis = list(range=c(min(ri$mean_latitude)-1, max(ri$mean_latitude)+1))
-)
-
-
-map <- ri %>% 
-  plot_geo(lat = ~mean_latitude, lon = ~mean_longitude, color = ~residency_index )%>%
-  add_markers(
-            text = ~paste(location, ': ', residency_index),
-            hoverinfo = "text",
-    size = ~c(residency_index * 5)
-  )%>%
-  layout(title = "Aggregate No Overlap RI",geo = geo)
-
-```
-
-To show the map you can just type out the variable name.
-```{r, eval=is_html_output(), warning=FALSE, message=FALSE}
-map
-```
-
-
-```{r, eval=!is_html_output() ,echo=FALSE, message=FALSE,warning=FALSE, out.width = "400px"}
-orca(map, file = 'ano.png')
-knitr::include_graphics('ano.png')
-```
-
