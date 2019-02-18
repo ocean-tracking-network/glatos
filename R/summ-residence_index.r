@@ -375,7 +375,8 @@ aggregate_total_no_overlap <- function(detections) {
   next_block <- 2
   start_block <- 1
   end_block <- 1
-  while(next_block <= (detcount + 1)) {
+  while(next_block <= detcount) {
+    
     # if it overlaps
     if(next_block < detcount && int_overlaps(dplyr::nth(detections$interval, end_block), dplyr::nth(detections$interval, next_block))) {
       if(dplyr::nth(detections$interval, next_block) >= dplyr::nth(detections$interval, end_block)) {
