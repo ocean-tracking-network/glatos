@@ -65,7 +65,10 @@ dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE,
 
 ## ----eval = FALSE------------------------------------------------------------------
 #  #read data from csv file using data.table::fread
-#  dtc <- fread(csv_file)
+#  dtc <- fread(csv_file, fill = TRUE)
+#  
+#  Note also that we use `fill = TRUE` because by default VEMCO VUE
+#  exports do not include a comma for every column in the CSV file.
 
 ## ----------------------------------------------------------------------------------
 #change column name

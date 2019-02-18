@@ -84,7 +84,7 @@
     <div class="page-header toc-ignore">
       <h1>Data loading methods for the R package glatos</h1>
             
-            <h4 class="date">Updated: 2019-02-17</h4>
+            <h4 class="date">Updated: 2019-02-18</h4>
       
       
       <div class="hidden name"><code>data_loading.Rmd</code></div>
@@ -342,7 +342,10 @@ modified to meet the requirements of <em>glatos</em> functions. Here, we show an
 </blockquote>
 <blockquote>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">#read data from csv file using data.table::fread</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">dtc &lt;-<span class="st"> </span><span class="kw">fread</span>(csv_file)  </a></code></pre></div>
+<a class="sourceLine" id="cb9-2" data-line-number="2">dtc &lt;-<span class="st"> </span><span class="kw">fread</span>(csv_file, <span class="dt">fill =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">Note also that we use <span class="st">`</span><span class="dt">fill = TRUE</span><span class="st">`</span> because by default VEMCO VUE </a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">exports do not include a comma <span class="cf">for</span> every column <span class="cf">in</span> the CSV file.</a></code></pre></div>
 <p><em>fread</em> is fast. That’s one reason it is used used by <em>read_glatos_detections</em> and other <em>glatos</em> functions.<br>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 </blockquote>
@@ -393,7 +396,7 @@ modified to meet the requirements of <em>glatos</em> functions. Here, we show an
 <blockquote>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co">#lubridate::fast_strptime is the fastest way we know to ceorce strings to POSIX</span></a>
 <a class="sourceLine" id="cb14-2" data-line-number="2">dtc[ , detection_timestamp_utc <span class="op">:</span><span class="er">=</span><span class="st">  </span></a>
-<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="st">         </span>lubridate<span class="op">::</span><span class="kw"><a href="http://lubridate.tidyverse.org/reference/parse_date_time.html">fast_strptime</a></span>(detection_timestamp_utc,</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="st">         </span>lubridate<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/lubridate/topics/parse_date_time">fast_strptime</a></span>(detection_timestamp_utc,</a>
 <a class="sourceLine" id="cb14-4" data-line-number="4">                                  <span class="dt">format =</span> <span class="st">"%Y-%m-%d %H:%M:%OS"</span>,</a>
 <a class="sourceLine" id="cb14-5" data-line-number="5">                                  <span class="dt">tz =</span> <span class="st">"UTC"</span>,</a>
 <a class="sourceLine" id="cb14-6" data-line-number="6">                                  <span class="dt">lt =</span> <span class="ot">FALSE</span>)]</a></code></pre></div>

@@ -6,6 +6,8 @@ is_html_output = function() {
 
 ## ----warning=FALSE,message=FALSE-----------------------------------------
 library(glatos)
+library(dplyr)
+library(sp)
 
 ## ---- message=FALSE------------------------------------------------------
 det_file <- system.file("extdata", "walleye_detections.csv",
@@ -73,7 +75,6 @@ points(mean_latitude ~ mean_longitude, data = ri[ri$animal_id == "23",],
 
 
 ## ------------------------------------------------------------------------
-library(dplyr)
 
 #calculate mean and sd of RI among fish
 rik_summary <- ri %>% 
