@@ -14,6 +14,7 @@ Imports:
 		openxlsx (>= 4.0.0),
 		PBSmapping,
 		plotrix,
+		plotly,
 		plyr,
 		raster,
 		readxl,
