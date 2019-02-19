@@ -96,9 +96,14 @@ detection_events <- function(det,
                              time_sep = Inf,
                              condense = TRUE){
  
-   # Make detections data frame a data.table object for processing speed
+  # Make detections data frame a data.table object for processing speed
   detections <- data.table::as.data.table(det)
   
+  # Check time_sep is numeric
+  if(is.character(time_sep)) {
+    time_sep <- as.numeric(time_sep)
+    if(all(is.na(time_sep))) stop("`time_sep` argument should be numeric.")
+  }
   
   # Check value of condense
   if(!is.logical(condense)) stop(

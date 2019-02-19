@@ -17,6 +17,8 @@
 
 - detection_events
 		- faster (e.g., 11 sec vs 31 sec for 7.2M records on wimpy laptop)
+		- coerce 'time_sep' argument to numeric if quoted and error if it cannot 
+		  be coerced to numeric
 
 - crw_in_polygon
     - changed sampling algorithm to mimimize stuck-at-boundary errors
