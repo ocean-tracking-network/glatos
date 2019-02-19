@@ -58,7 +58,7 @@ is_html_output = function() {
 }
 ```
 
-## Importing Libraries
+# Importing Libraries
 We will import `dplyr`,`glatos` and `plotly` to run then visualize the REI.
 ```{r,warning=FALSE,message=FALSE}
 library(dplyr)
@@ -67,7 +67,7 @@ library(plotly)
 ```
 
 
-## Importing Data
+# Importing Data
 We will import the sample data below using `glatos::read_glatos_detections()` and `glatos::read_glatos_receivers()`
 ```{r}
 detection_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
@@ -88,7 +88,7 @@ receivers <- receivers %>%
                                       Sys.time()))
 ```
 
-## Running REI
+# Running REI
 `REI()` takes two arguments. The first is a dataframe of detections
 the detection timstamp, the station identifier, the species, and the tag
 identifier. The next is a dataframe of deployments for each station. The
@@ -100,11 +100,17 @@ section.
 rei <- glatos::REI(detections,receivers)
 ```
 
-## Plotting with Plotly
+The resulting dataframe looks like this:
+```{r}
+head(rei)
+```
+# Plotting with Plotly
 
 Below is the code for plotting the RI using `plotly`. `plotly` allows us to 
 interact with the map rather than haveing a static image. More about `plotly`
-can be found [here](https://plot.ly/r/).
+can be found here: https://plot.ly/r/ . To export figures as image files from 
+`plotly` you will also need the external command line program `orca`. To 
+install `orca`, see https://github.com/plotly/orca#installation.  
 
 ```{r,warning=FALSE,message=FALSE}
 geo <- list(
