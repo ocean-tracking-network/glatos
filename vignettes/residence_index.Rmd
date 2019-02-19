@@ -12,6 +12,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = T,comment ="", fig.pos = 'H')
+is_html_output = function() {
+  knitr::opts_knit$get("rmarkdown.pandoc.to") =="html"
+}
+```
+
 \pagebreak
 
 # Introduction
@@ -116,13 +123,6 @@ proportion of time that *all animals* spent at all locations. Conversely, if
 that *only the *i*th animal* spent at all locations, such that
 $$RI_{k,i} = \frac{t_{k,i}}{\sum_{k=1}^Kt_{k,i}}\text{.}$$ 
 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(collapse = T,comment ="", fig.pos = 'H')
-is_html_output = function() {
-  knitr::opts_knit$get("rmarkdown.pandoc.to") =="html"
-}
-```
 
 \pagebreak 
  
