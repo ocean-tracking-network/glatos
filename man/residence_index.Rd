@@ -4,9 +4,9 @@
 \alias{residence_index}
 \title{Generate the residence index from a set of detections}
 \usage{
-residence_index(detections, calculation_method = "kessel", locations = NULL,
-  group_col = "animal_id", time_interval_size = "1 day",
-  groupwise_total = FALSE)
+residence_index(detections, calculation_method = "kessel",
+  locations = NULL, group_col = "animal_id",
+  time_interval_size = "1 day", groupwise_total = FALSE)
 }
 \arguments{
 \item{detections}{A data.frame from the \code{\link{detection_events}}

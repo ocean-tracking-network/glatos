@@ -4,7 +4,8 @@
 \alias{get_days}
 \title{Determines which calculation method to use for the residency index.}
 \usage{
-get_days(dets, calculation_method = "kessel", time_interval_size = "1 day")
+get_days(dets, calculation_method = "kessel",
+  time_interval_size = "1 day")
 }
 \arguments{
 \item{dets}{- data frame pulled from the detection events}

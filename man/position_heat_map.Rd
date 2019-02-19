@@ -6,9 +6,9 @@
 \usage{
 position_heat_map(positions, projection = "LL", fish_pos_int = "fish",
   abs_or_rel = "absolute", resolution = 10, interval = NULL,
-  x_limits = NULL, y_limits = NULL, utm_zone = NULL, hemisphere = "N",
-  legend_gradient = "y", legend_pos = c(0.99, 0.2, 1, 0.8),
-  output = "plot", folder = "position_heat_map")
+  x_limits = NULL, y_limits = NULL, utm_zone = NULL,
+  hemisphere = "N", legend_gradient = "y", legend_pos = c(0.99, 0.2,
+  1, 0.8), output = "plot", folder = "position_heat_map")
 }
 \arguments{
 \item{positions}{A dataframe containing detection data with at least the 

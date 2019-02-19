@@ -4,7 +4,8 @@
 \alias{false_detections}
 \title{False detection filter}
 \usage{
-false_detections(det, tf, min_lag_col = "min_lag", show_plot = FALSE, ...)
+false_detections(det, tf, min_lag_col = "min_lag", show_plot = FALSE,
+  ...)
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by
