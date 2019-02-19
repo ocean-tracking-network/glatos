@@ -362,57 +362,8 @@ aggregate_total_with_overlap <- function(detections) {
 #'
 #' @param Detections - data frame pulled from the compressed detections CSV
 #'
-#' @importFrom lubridate interval int_overlaps
-#' @importFrom dplyr mutate
+#' @importFrom data.table foverlaps
 aggregate_total_no_overlap <- function(detections) {
-  total <- 0.0
-  detections <- arrange(detections, first_detection)
-  detcount <- as.integer(dplyr::count(detections))
-  detections <- mutate(detections, interval = interval(first_detection,last_detection))
-  detections <- mutate(detections, timedelta = as.double(difftime(last_detection,first_detection, units="secs")))
-  detections <- mutate(detections, timedelta = dplyr::recode(detections$timedelta, `0` = 1))
-
-  next_block <- 2
-  start_block <- 1
-  end_block <- 1
-  while(next_block <= detcount) {
-    
-    # if it overlaps
-    if(next_block < detcount && int_overlaps(dplyr::nth(detections$interval, end_block), dplyr::nth(detections$interval, next_block))) {
-      if(dplyr::nth(detections$interval, next_block) >= dplyr::nth(detections$interval, end_block)) {
-        end_block <- next_block
-      }
-
-      if(end_block == detcount) {
-        tdiff <- as.double(difftime(dplyr::nth(detections$last_detection,end_block), dplyr::nth(detections$first_detection, start_block), units="secs"))
-
-        if(tdiff == 0.0) {
-          tdiff <- 1
-        }
-        start_block <- next_block
-        end_block <- next_block + 1
-        total <- total + as.double(tdiff)
-      }
-    } else {
-      #if it doesn't overlap
-      tdiff <- 0.0
-
-      # Generate the time difference between the start of the start block and the end of the end block
-      tdiff <- as.double(difftime(dplyr::nth(detections$last_detection,end_block), dplyr::nth(detections$first_detection, start_block), units="secs"))
-
-      start_block <- next_block
-      end_block <- next_block
-      total <- total + as.double(tdiff)
-    }
-    next_block <- next_block + 1
-  }
-  total <- total/86400.0
-  return(total)
-}
-
-#implement aggregate no overlap using foverlaps
-#recursively combine overlapping intervals until no overlaps remain
-aggregate_total_no_overlap2 <- function(detections) {
   
   #extract intervals, rename
   ints <- data.table::as.data.table(detections)[ , .(t1 = first_detection, 
@@ -465,7 +416,7 @@ get_days <- function(dets, calculation_method='kessel',
   if (calculation_method == 'aggregate_with_overlap') {
     days <- glatos:::aggregate_total_with_overlap(dets)
   } else if(calculation_method == 'aggregate_no_overlap') {
-    days <- glatos:::aggregate_total_no_overlap2(dets)
+    days <- glatos:::aggregate_total_no_overlap(dets)
   } else if(calculation_method == 'timedelta') {
     days <- glatos:::total_diff_days(dets)
   } else if(calculation_method == 'kessel'){
