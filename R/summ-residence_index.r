@@ -410,6 +410,48 @@ aggregate_total_no_overlap <- function(detections) {
   return(total)
 }
 
+#implement aggregate no overlap using foverlaps
+#recursively combine overlapping intervals until no overlaps remain
+aggregate_total_no_overlap2 <- function(detections) {
+  
+  #extract intervals, rename
+  ints <- data.table::as.data.table(detections)[ , .(t1 = first_detection, 
+    t2 = last_detection)]
+  
+  #function to combine overlapping intervals
+  aggregate_intervals <- function(x){
+    data.table::setkey(x, t1, t2)
+    
+    #get indices of overlapping intervals, including self
+    ov_ints <- data.table::foverlaps(x, x, which = TRUE) 
+    
+    #for each row in x, get min first det  & max lat det against overlaps
+    ov_ints <- ov_ints[ , .(t1 = min(x$t1[c(xid, yid)]), 
+      t2 = max(x$t2[c(xid, yid)])), 
+      by = "xid"]
+    
+    ov_ints <- unique(ov_ints[, c("t1", "t2")])
+    
+    return(ov_ints)
+  }
+  
+  
+  #recursively apply until no overlaps
+  repeat{
+    ri <- nrow(ints)
+    ints <- aggregate_intervals(ints)
+    if(nrow(ints) == ri) break
+  }
+  
+  
+  ints[ , tdiff := (as.numeric(t2) - as.numeric(t1))]
+  
+  total_time <- sum(ints$tdiff) / 86400.0
+  
+  return(total_time)
+  
+}
+
 
 #' Determines which calculation method to use for the residency index.
 #'
@@ -423,7 +465,7 @@ get_days <- function(dets, calculation_method='kessel',
   if (calculation_method == 'aggregate_with_overlap') {
     days <- glatos:::aggregate_total_with_overlap(dets)
   } else if(calculation_method == 'aggregate_no_overlap') {
-    days <- glatos:::aggregate_total_no_overlap(dets)
+    days <- glatos:::aggregate_total_no_overlap2(dets)
   } else if(calculation_method == 'timedelta') {
     days <- glatos:::total_diff_days(dets)
   } else if(calculation_method == 'kessel'){
