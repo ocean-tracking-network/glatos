@@ -16,6 +16,8 @@
 ### Minor changes
 
 - detection_events
+		- output data.table or tibble object if input is either of those and 
+		  data.frame otherwise
 		- faster (e.g., 11 sec vs 31 sec for 7.2M records on wimpy laptop)
 		- coerce 'time_sep' argument to numeric if quoted and error if it cannot 
 		  be coerced to numeric

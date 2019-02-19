@@ -46,8 +46,12 @@
 #'   for those three receiver stations (weighted based on the number of 
 #'   detections that occurred on each station).
 #'
-#' @return If \code{condense = TRUE}, a data frame containing discrete 
-#'   detection event data with the following columns:
+#' @return A data.table or tibble object (if input is either type; output 
+#' class to match input) or data.frame otherwise. Structure depends on 
+#' value of \code{condense} argument: \cr
+#' 
+#' If \code{condense = TRUE}, a data.frame, data.table, or tibble with the 
+#' following columns:
 #'  \item{event}{Unique event identifier.}
 #'  \item{individual}{Unique 'animal_id'.}
 #'  \item{location}{Unique 'location'.}
@@ -62,8 +66,8 @@
 #'  \item{res_time_sec}{The elapsed time in seconds between the first and last 
 #'		detection in a given event.}
 #'		
-#'	If \code{condense = FALSE}, a data frame matching the input data frame 
-#'	\code{det} with the following columns added:
+#'	If \code{condense = FALSE}, a data.frame, data.table, or tibble matching the
+#'	input data frame \code{det} with the following columns added:
 #'  \item{time_diff}{Lagged time difference in seconds between successive 
 #'    detections of each animal_id.}
 #'  \item{arrive}{Flag (0 or 1) representing the first detection in each 
@@ -175,6 +179,17 @@ detection_events <- function(det,
 	                           diff(range(as.numeric(detection_timestamp_utc)))),
 	                     by = event]
 	
+	#function to match output to input
+	out_class <- function(xout, xin){
+  	#return data.table if input class data.table
+  	if(inherits(xin, "data.table")) return(xout)
+  	
+  	#return tibble if input class tibble
+  	if(inherits(xin, "tbl")) return(tibble::as_tibble(xout))
+	  
+	  return(as.data.frame(xout))
+	}
+	
 	# Return conditional on 'condense'
   if(condense){
 	
@@ -182,7 +197,7 @@ detection_events <- function(det,
   	message(paste0("The event filter distilled ", nrow(detections), 
   		" detections down to ", nrow(Results), " distinct detection events."))
   
-  	return(as.data.frame(Results))
+  	return(out_class(Results, det))
   } else {
    
     # Returns input dataframe with new columns
@@ -192,9 +207,8 @@ detection_events <- function(det,
     
     # Rename location variable column back to original
     data.table::setnames(detections, "location_col", location_col)
-
-    return(as.data.frame(detections))     
     
+    return(out_class(detections, det)) 
   }
 }
 

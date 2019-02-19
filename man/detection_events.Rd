@@ -42,8 +42,12 @@ or the input data frame with new event data columns added
 \code{condense = TRUE}.}
 }
 \value{
-If \code{condense = TRUE}, a data frame containing discrete 
-  detection event data with the following columns:
+A data.table or tibble object (if input is either type; output 
+class to match input) or data.frame otherwise. Structure depends on 
+value of \code{condense} argument: \cr
+
+If \code{condense = TRUE}, a data.frame, data.table, or tibble with the 
+following columns:
  \item{event}{Unique event identifier.}
  \item{individual}{Unique 'animal_id'.}
  \item{location}{Unique 'location'.}
@@ -58,8 +62,8 @@ If \code{condense = TRUE}, a data frame containing discrete
  \item{res_time_sec}{The elapsed time in seconds between the first and last 
 	detection in a given event.}
 	
-If \code{condense = FALSE}, a data frame matching the input data frame 
-\code{det} with the following columns added:
+If \code{condense = FALSE}, a data.frame, data.table, or tibble matching the
+input data frame \code{det} with the following columns added:
  \item{time_diff}{Lagged time difference in seconds between successive 
    detections of each animal_id.}
  \item{arrive}{Flag (0 or 1) representing the first detection in each 

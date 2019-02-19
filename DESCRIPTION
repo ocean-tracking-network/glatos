@@ -8,6 +8,7 @@ Depends: R (>= 3.2.0)
 Imports:
 		cellranger,
 		data.table,
+		dplyr,
 		lubridate,
 		gdistance,
 		openxlsx (>= 4.0.0),
@@ -19,6 +20,7 @@ Imports:
 		rgdal,
 		rgeos,
 		sp,
+		tibble,
 		gdalUtils
 Suggests: testthat,
     knitr,
