@@ -15,6 +15,9 @@
 
 ### Minor changes
 
+- detection_events
+		- faster (e.g., 11 sec vs 31 sec for 7.2M records on wimpy laptop)
+
 - crw_in_polygon
     - changed sampling algorithm to mimimize stuck-at-boundary errors
     - added option to input SpatialPolygons object

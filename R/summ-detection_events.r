@@ -167,7 +167,7 @@ detection_events <- function(det,
 	                         last_detection = detection_timestamp_utc[.N],
 	                         num_detections = .N,
 	                         res_time_sec = 
-	                           diff(as.numeric(range(detection_timestamp_utc)))),
+	                           diff(range(as.numeric(detection_timestamp_utc)))),
 	                     by = event]
 	
 	# Return conditional on 'condense'
