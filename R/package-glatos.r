@@ -113,3 +113,6 @@ globalVariables(".") #to avoid R CMD check note
   packageStartupMessage(paste0("version ",utils::packageVersion("glatos"), 
     " ('version-zero-three')"))
 }
+
+
+
