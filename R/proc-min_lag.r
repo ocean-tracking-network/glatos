@@ -33,7 +33,7 @@
 #'     function replicates the 'min_lag' column included in the
 #'     standard glatos export.
 #'
-#' @return A column \code{min_lag} (defined above) is added to input data frame.
+#' @return A column \code{min_lag} (defined above) is added to input object. 
 #'
 #' @seealso \code{\link{false_detections}}
 #' 
@@ -84,6 +84,12 @@ min_lag <- function(det){
   #drop unwanted columns
   drop_cols <- "ord"
   dtc <- dtc[ , !drop_cols, with = FALSE]
+  
+  #return data.table if input class data.table
+  if(inherits(det, "data.table")) return(dtc)
+  
+  #return tibble if input class tibble
+  if(inherits(det, "tbl")) return(tibble::as_tibble(dtc))
   
   return(as.data.frame(dtc))
 }
