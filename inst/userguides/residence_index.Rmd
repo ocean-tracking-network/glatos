@@ -60,9 +60,9 @@ open-water and ice-covered periods through acoustic telemetry. Polar Biology,
 The *residence_index* function will take a condensed detection event dataframe
 (in the form returned by the *glatos* function *detection_events* with argument
 `condensed = TRUE`) and return a data frame with $RI_k$, $t_k$ (in days), and
-$t_K$ (in days) for each location in columns named *residency_index*,
-*detected_days*, and *total_days*, respectively. Latitude and longitude of each
-unique *location* are also summarized and returned in columns named
+$T$ (in days) for each location or location/individual combination in columns 
+named *residency_index*, *detected_days*, and *total_days*, respectively. Latitude 
+and longitude of each unique *location* are also summarized and returned in columns named
 *mean_latitude* and *mean_longitude*.
 
 ## Calculation methods
@@ -78,7 +78,7 @@ differ principally by the way they calculate the amount of time detected:
  : counts discrete time intervals of user-specified size (e.g., 1 day, 2 weeks,
  etc.); interval size is set by argument `time_interval_size`
 
- - **timediff**
+ - **timedelta**
  : calculates total duration between first detection of first event
  and last detection of last event within each location (or group)
 
@@ -112,16 +112,17 @@ calculated for each animal at each location. If `group_col = NULL`, then the
 
 ## Accounting for groups in total time
 
-By default (when argument `groupwise_total = FALSE`), the denominator of the RI
+By default (when argument `groupwise_total = TRUE`), then total time will represent the proportion of time
+that *only the *i*th animal* spent at all locations, such that
+$$RI_{k,i} = \frac{t_{k,i}}{\sum_{k=1}^Kt_{k,i}}\text{.}$$
+
+Conversely, if  `groupwise_total = FALSE`, the denominator of the RI
 calculation (representing total time detected) will ignore grouping variables
 specified in `group_col` such that for group *i* at location *k*
 $$RI_{k,i} = \frac{t_{k,i}}{\sum_{k=1}^Kt_k}\text{.}$$
 For example when `group_col = "animal_id"`, $RI_{k,i}$ for each animal
 represents the time that a particular animal *i* spent at location *k* as a
-proportion of time that *all animals* spent at all locations. Conversely, if
-`groupwise_total = TRUE`, then total time will represent the proportion of time
-that *only the *i*th animal* spent at all locations, such that
-$$RI_{k,i} = \frac{t_{k,i}}{\sum_{k=1}^Kt_{k,i}}\text{.}$$
+proportion of time that *all animals* spent at all locations. 
 
 
 \pagebreak
@@ -169,7 +170,7 @@ detections <- read_glatos_detections(det_file)
 Next, we compress the detections into detection events using
 `glatos::detection_events()` and include the time-based event separator
 (argument `time_sep`) of 3600 seconds (one hour). This means that events will
-not contain a time gap (at the same location) exceeding one hour. Note that the
+not contain a detection time gap (at the same location) exceeding one hour. Note that the
 other arguments are not shown below because we are using default values, which
 means the detection events will be grouped on the *glatos_array* column
 (`location_col` argument). Finally, the events are in "condensed"
@@ -199,11 +200,11 @@ total number of distinct days per location (S). Possible rounding error may
 occur as a detection on `2016-01-01 23:59:59` and a detection on `2016-01-02
 00:00:01` would be counted as two days when it is really 2-3 seconds.
 
->$RI = \frac{S}{T}$
+>$RI = \frac{t_{k}}{T}$
 >
 >$RI = Residence Index$
 >
->$S$ = Distinct number of days detected at the location
+>$t_{k}$ = Distinct number of days detected at the location
 >
 >$T$ = Distinct number of days detected at any location
 
@@ -449,11 +450,11 @@ which detections occurred at each location and as a fraction of the number of
 time intervals in which detections occurred among all sites. For each location,
 residency index (RI) is calculated:
 
->$RI = \frac{L}{T}$
+>$RI = \frac{t_{k}}{T}$
 >
 >$RI = Residence Index$
 >
->$L$ = Distinct number of time intervals in which detection observed at this location
+>$t_{k}$ = Distinct number of time intervals in which detection observed at this location
 >
 >$T$ = Distinct number of time intervals in which detection observed at any location
 
@@ -583,11 +584,11 @@ events and the last *last_detection* among all detection events. The timedelta
 for each location is divided by the timedelta among all locations to determine
 the residence index.
 
->$RI = \frac{\Delta S}{\Delta T}$
+>$RI = \frac{\Delta t_{k}}{\Delta T}$
 >
 >$RI$ = Residence Index
 >
->$\Delta S$ = Last detection time at the location - First detection time at the location
+>$\Delta t_{k}$ = Last detection time at the location - First detection time at the location
 >
 >$\Delta T$ = Last detection time at any location - First detection time at any location
 
@@ -632,20 +633,22 @@ variables, such as the amount of time a fish was at large and alive.
 
 The "Aggregate With Overlap" method (`calculation_method =
 "aggregate_with_overlap"`) takes the length of time of each detection event and
-sums them together. A total is returned. The sum for each location is then
+sums them together. The sum for each location is then
 divided by the sum among all locations to determine the residence index.
 
-Overlapping events at a given location will only exist in detection event
+An overlap is two or more detections events which occur together for any period of time at a single locaion. For example, if the first detection event at a station spans from `2016-01-01
+01:02:43` to `2016-01-01 01:10:12` and the second detection event at the same station spans from `2016-01-01
+01:09:01` to `2016-01-01 01:12:43`, then these are overlapping. Overlapping events at a given location will only exist in detection event
 data if multiple animals are represented and therefore is only applicable
 when `group_col = NULL`.
 
->$RI = \frac{AwOS}{AwOT}$
+>$RI = \frac{t_{k}}{T}$
 >
 >$RI$ = Residence Index
 >
->$AwOS$ = Sum of length of time of each detection at the location
+>$t_{k}$ = Sum of length of time of each detection at the location
 >
->$AwOT$ = Sum of length of time of each detection among all locations
+>$T$ = Sum of length of time of each detection among all locations
 
 Note that we set `group_col = NA` for this method.
 
@@ -698,13 +701,13 @@ data if multiple animals are represented and therefore is only applicable
 when `group_col = NA`.
 
 
->$RI = \frac{AnOS}{AnOT}$
+>$RI = \frac{t_{k}}{T}$
 >
 >$RI$ = Residence Index
 >
->$AnOS$ = Sum of length of time of each location, excluding any overlap
+>$t_{k}$ = Sum of length of time of each location, excluding any overlap
 >
->$AnOT$ = Sum of length of time among all locations, excluding any overlap
+>$t_{k}$ = Sum of length of time among all locations, excluding any overlap
 
 Note that we set `group_col = NA` for this method.
 
@@ -741,68 +744,3 @@ In this particular data set, there are no overlapping detection events
 (among fish). Otherwise, these points would appear smaller than the previous
 example.
 
-
-\pagebreak
-
-# Plotting with Plotly
-
-Below is the code for plotting the RI using `plotly`. `plotly` allows us to
-interact with the map rather than haveing a static image. More about `plotly`
-can be found here: https://plot.ly/r/. To export figures as image files from
-`plotly` you will also need the external command line program `orca`. To
-install `orca`, see https://github.com/plotly/orca#installation.
-
-Attach the `plotly` library.
-
-```{r,warning=FALSE,message=FALSE}
-library(plotly)
-```
-
-```{r,warning=FALSE,message=FALSE, echo=FALSE}
-Sys.setenv('MAPBOX_TOKEN' = 'Your Token Here')
-```
-
-
-Set up the map.
-
-```{r,warning=FALSE, message=FALSE,  fig.keep="FALSE"}
-geo <- list(
-    scope = 'north america',
-  showland = TRUE,
-  landcolor = toRGB("white"),
-  showocean = TRUE,
-  oceancolor = toRGB("gray"),
-  showcountries = TRUE,
-  showlakes = TRUE,
-  lakecolor = plotly::toRGB("gray"),
-
-  resolution = 50,
-  center = list(lat = median(ri$mean_latitude),
-                lon = median(ri$mean_longitude)),
-  lonaxis = list(range=c(min(ri$mean_longitude)-1, max(ri$mean_longitude)+1)),
-  lataxis = list(range=c(min(ri$mean_latitude)-1, max(ri$mean_latitude)+1))
-)
-
-
-map <- ri %>%
-  plot_geo(lat = ~mean_latitude, lon = ~mean_longitude, color = ~residency_index )%>%
-  add_markers(
-            text = ~paste(location, ': ', residency_index),
-            hoverinfo = "text",
-    size = ~c(residency_index * 5)
-  )%>%
-  layout(title = "Kessel RI",geo = geo)
-```
-
-To show the map you can just type out the variable name.
-```{r, eval=is_html_output(), warning=FALSE, message=FALSE}
-map
-```
-
-Exporting the map as an image file requires the external program `orca`, which
-is called by `plotly::orca()`.
-
-```{r, eval=!is_html_output() ,echo=FALSE, message=FALSE,warning=FALSE, out.width = "400px"}
-orca(map, file = 'kessel.png')
-knitr::include_graphics('kessel.png')
-```
