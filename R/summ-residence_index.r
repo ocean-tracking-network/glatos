@@ -167,6 +167,11 @@ residence_index <- function(detections, calculation_method='kessel',
   if(!is.null(group_col)) if(is.na(group_col)) group_col <- NULL 
   if(!is.null(locations)) if(all(is.na(locations))) locations <- NULL 
   
+  if(!is.null(group_col)){
+    if((group_col == 'animal_id') & (calculation_method == 'aggregate_with_overlap')) {
+      message("NOTE: Becuase an individual animal cannot overlap with itself, this will produce the same output as aggregate_no_overlap when animal_id is passed to group_col")
+    }
+  }
   
   #get locations from detections if not given
   if(is.null(locations)){
@@ -293,32 +298,6 @@ interval_count <- function(detections, time_interval_size) {
 }
 
 
-#' The function below takes a Pandas DataFrame and determines the number of days
-#' any detections were seen on the array.
-#'
-#' The function converts both the first_detection and last_detection columns
-#' into a date with no hours, minutes, or seconds. Next it creates a list of the
-#' unique days where a detection was seen. The size of the list is returned as
-#' the total number of days as an integer.
-#'
-#' *** NOTE **** Possible rounding error may occur as a detection on 2016-01-01
-#' 23:59:59 and a detection on 2016-01-02 00:00:01 would be counted as days when
-#' it is really 2-3 seconds.
-#'
-#'
-#' @param Detections - data frame pulled from the compressed detections CSV
-#'
-#' @importFrom dplyr distinct mutate select bind_rows
-total_days_count <- function(detections) {
-  startdays <- distinct(select(mutate(detections, days = as.Date(first_detection)), days))
-  enddays <- distinct(select(mutate(detections, days = as.Date(last_detection)), days))
-  days <- bind_rows(startdays,enddays)
-  daycount <- as.double(dplyr::count(dplyr::distinct(select(days,days ))))
-  return(daycount)
-}
-
-
-
 #' The function below determines the total days difference.
 #'
 #' The difference is determined by the minimal first_detection of every
@@ -420,7 +399,7 @@ get_days <- function(dets, calculation_method='kessel',
   } else if(calculation_method == 'timedelta') {
     days <- glatos:::total_diff_days(dets)
   } else if(calculation_method == 'kessel'){
-    days <- glatos:::total_days_count(dets)
+    days <- glatos:::interval_count(dets, time_interval_size = "1 day")
   } else if(calculation_method == 'time_interval'){
     days <- glatos:::interval_count(dets, time_interval_size)
   } else {
