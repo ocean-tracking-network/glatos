@@ -110,27 +110,27 @@
 #' det2 <- det[det$animal_id == 153, ]
 #' 	
 #' #plot without control table and main tile and change color to red
-#' abacus_plot(det, locations=NULL, 
+#' abacus_plot(det2, locations=NULL, 
 #'   main = "TagID: 32054", col = "red")
 #' 	
 #' #example with locations specified
-#' abacus_plot(det, locations=c("DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
+#' abacus_plot(det2, locations=c("DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
 #'    "DRM", "FDT"), main = "TagID: 32054", col = "red")
 #'
 #' #plot with custom y-axis label and lines connecting symbols
-#' abacus_plot(det, main = "TagID: 32054", type = "o", pch = 20,  col = "red")
+#' abacus_plot(det2, main = "TagID: 32054", type = "o", pch = 20,  col = "red")
 #' 
 #' #plot with custom x-axis resolution - 10 bins
-#' abacus_plot(det, main = "TagID: 32054", x_res = 10)
+#' abacus_plot(det2, main = "TagID: 32054", x_res = 10)
 #' 
 #' #plot with custom x-axis resolution - monthly bins
-#' abacus_plot(det, main = "TagID: 32054", x_res = "month")
+#' abacus_plot(det2, main = "TagID: 32054", x_res = "month")
 #' 
 #' #plot with custom x-axis resolution - 8-week bins
-#' abacus_plot(det, main = "TagID: 32054", x_res = "8 weeks")
+#' abacus_plot(det2, main = "TagID: 32054", x_res = "8 weeks")
 #' 
 #' #plot with custom x-axis format - 8-week bins
-#' abacus_plot(det, main = "TagID: 32054", x_res = "months", x_format = "%b-%y")
+#' abacus_plot(det2, main = "TagID: 32054", x_res = "months", x_format = "%b-%y")
 #'
 #' @export
 
