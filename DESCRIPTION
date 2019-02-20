@@ -11,6 +11,7 @@ Imports:
 		dplyr,
 		lubridate,
 		gdistance,
+		knitr,
 		openxlsx (>= 4.0.0),
 		PBSmapping,
 		plotrix,
