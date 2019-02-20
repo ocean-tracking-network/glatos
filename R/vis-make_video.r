@@ -185,8 +185,15 @@ make_video  <- function(dir = getwd(),
                         overwrite = FALSE,
                         ffmpeg = NA){
   
-  # try calling ffmpeg
 
+  #use path to ffmpeg.exe in user lib if exists
+  if(is.na(ffmpeg)) {
+    pkg <- find.package("glatos", lib.loc = .libPaths())
+    ffmpeg_file <- file.path(pkg, "bin/ffmpeg.exe")
+    ffmpeg <- ifelse(file.exists(ffmpeg_file), ffmpeg_file, NA)
+  }
+
+  # try calling ffmpeg  
   # ffmpeg command must execute ffmpeg
   # (i.e., "c://path//to//windows//ffmpeg.exe" or "path/to/ffmpeg" in Mac/linux)
     cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)	

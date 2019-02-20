@@ -205,6 +205,13 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         ani_name = "animation.mp4", frame_delete = FALSE,
                         overwrite = FALSE, ffmpeg = NA, preview = FALSE, bg_map = NULL, ...){
   
+  #use path to ffmpeg.exe in user lib if exists
+  if(is.na(ffmpeg)) {
+    pkg <- find.package("glatos", lib.loc = .libPaths())
+    ffmpeg_file <- file.path(pkg, "bin/ffmpeg.exe")
+    ffmpeg <- ifelse(file.exists(ffmpeg_file), ffmpeg_file, NA)
+  }
+  
   # Try calling ffmpeg if animate = TRUE.
   # If animate = FALSE, video file is not produced- no need to check for package.
   if(animate == TRUE){
