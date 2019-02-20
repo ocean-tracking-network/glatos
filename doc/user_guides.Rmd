@@ -1,0 +1,16 @@
+---
+title: "glatos user guides"
+date: "Updated: `r Sys.Date()`"
+output: 
+  rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{user guides}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+### Data requirements - [pdf](./data_requirements.pdf) \- [html](./data_requirements.html)
+### Data loading - [pdf](./data_loading.pdf) \- [html](./data_loading.html)
+### Residence index - [pdf](./residence_index.pdf) \- [html](./residence_index.html)
+### Receiver efficiency - [pdf](./receiver_efficiency.pdf) \- [html](./receiver_efficiency.html)

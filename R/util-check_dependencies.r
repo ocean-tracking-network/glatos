@@ -52,9 +52,11 @@
 ##' @author Todd Hayden
 ##'
 ##' @examples
-##'
+##'\dontrun{
 ##' # run check
 ##' check_dependencies() 
+##' }
+##'
 ##' @export
 
 

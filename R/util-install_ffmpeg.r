@@ -11,7 +11,7 @@
 ##'
 ##' 
 ##' @return message is returned to console signalling successful installation
-##' @author Todd Hayden, Chris Holbrook
+##' @author Todd Hayden
 ##'
 ##' @examples
 ##'
@@ -21,29 +21,11 @@
 ##' install_ffmpeg()
 ##'
 ##' # determine version of FFmpeg installed and if install was successful
-##' fle <- system.file("ffmpeg/bin/ffmpeg.exe", package = "glatos")
+##' fle <- system.file("bin", "ffmpeg.exe", package = "glatos")
 ##' system2(fle, "-version")
 ##' 
 ##'}
 ##' @export
-
-# install ffmpeg to GLATOS package
-get_os <- function(){
-  sysinf <- Sys.info()
-  if (!is.null(sysinf)){
-    os <- sysinf['sysname']
-    if (os == 'Darwin')
-      os <- "osx"
-  } else { ## mystery machine
-    os <- .Platform$OS.type
-    if (grepl("^darwin", R.version$os))
-      os <- "osx"
-    if (grepl("linux-gnu", R.version$os))
-      os <- "linux"
-  }
-  tolower(os)
-}
-
 
 install_ffmpeg <- function(){
   # determine what OS
@@ -64,9 +46,31 @@ install_ffmpeg <- function(){
   tmp <- tempdir()
   destfile <- file.path(tmp, "ffmpeg.zip")
   download.file(url, destfile = destfile, mode = "wb")
-  pkg <- find.package("glatos")
+  pkg <- find.package("glatos", lib.loc = .libPaths())
   utils::unzip(destfile, exdir = pkg)
-  fls <- list.files(pkg)
-  file.rename(file.path(pkg, fls[grep("ffmpeg-*", fls) ]), file.path(pkg, "ffmpeg"))
+  fls <- list.files(pkg, full.names = TRUE, recursive = TRUE, pattern = "ffmpeg.exe$")
+  if(!dir.exists(file.path(pkg, "bin"))) dir.create(file.path(pkg, "bin"))
+  file.rename(fls, file.path(pkg, "bin/ffmpeg.exe"))
   message("done")
 }
+
+
+
+# install ffmpeg to GLATOS package
+get_os <- function(){
+  sysinf <- Sys.info()
+  if (!is.null(sysinf)){
+    os <- sysinf['sysname']
+    if (os == 'Darwin')
+      os <- "osx"
+  } else { ## mystery machine
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os))
+      os <- "osx"
+    if (grepl("linux-gnu", R.version$os))
+      os <- "linux"
+  }
+  tolower(os)
+}
+
+

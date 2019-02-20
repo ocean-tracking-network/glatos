@@ -59,9 +59,11 @@ Installation of ffmpeg on Mac is similar to
   the ffmpeg folder to /usr/local/bin/ffmpeg on your machine.
 }
 \examples{
-
+\dontrun{
 # run check
 check_dependencies() 
+}
+
 }
 \author{
 Todd Hayden
