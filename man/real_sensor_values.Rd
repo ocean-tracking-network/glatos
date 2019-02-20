@@ -58,8 +58,8 @@ data with the following columns:
  }}
 }
 \value{
-The input data frame with the following columns added (see column
-  descriptions above):
+The input data frame, data.table, or tibble with the following
+  columns added (see column descriptions above):
   
   \itemize{
     \item sensor_range

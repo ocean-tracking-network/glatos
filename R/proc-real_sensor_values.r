@@ -67,8 +67,8 @@
 #'   \code{tag_specs} and is the correct record for the corresponding tags in
 #'   \code{det}.
 #'   
-#' @return The input data frame with the following columns added (see column
-#'   descriptions above):
+#' @return The input data frame, data.table, or tibble with the following
+#'   columns added (see column descriptions above):
 #'   
 #'   \itemize{
 #'     \item sensor_range
@@ -137,6 +137,13 @@ real_sensor_values <- function(det, tag_specs){
   
   #calculate real values
   dtc[ , sensor_value_real := sensor_intercept + (sensor_value * sensor_slope)]
+  
+  
+  #return data.table if input class data.table
+  if(inherits(det, "data.table")) return(dtc)
+  
+  #return tibble if input class tibble
+  if(inherits(det, "tbl")) return(tibble::as_tibble(dtc))
   
   return(as.data.frame(dtc))
 }
