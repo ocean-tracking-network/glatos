@@ -2,16 +2,17 @@ Package: glatos
 Type: Package
 Title: A package for the Great Lakes Acoustic Telemetry Observation System
 Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System www.glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
-Version: 0.3.0.9003
-Date: 2018-08-03
+Version: 0.3.0.9004
+Date: 2019-02-19
 Depends: R (>= 3.2.0)
 Imports:
 		cellranger,
 		data.table,
 		dplyr,
-		lubridate,
+		gdalUtils,
 		gdistance,
-		knitr,
+		lubridate,
+		magrittr,
 		openxlsx (>= 4.0.0),
 		PBSmapping,
 		plotrix,
@@ -23,8 +24,9 @@ Imports:
 		rgeos,
 		sp,
 		tibble,
-		gdalUtils
-Suggests: testthat,
+		tidyr
+Suggests: 
+		testthat,
     knitr,
     rmarkdown
 URL: https://gitlab.oceantrack.org/GreatLakes/glatos
