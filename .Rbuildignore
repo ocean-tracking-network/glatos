@@ -1,5 +1,5 @@
-Meta
-DOCS
+^Meta$
+^doc$
 ReadMe.md
 CONTRIBUTING.md
 glatos.pdf
