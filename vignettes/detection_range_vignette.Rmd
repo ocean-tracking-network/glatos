@@ -104,7 +104,8 @@ GISTools::map.scale(xc = 684579.8, yc = 5144600, len = 200, units = "meters",
 north.arrow(xb = 684120, yb = 5144600, len = 10, lab = "N", col = "black",
             cex.lab = 1.5)
 legend(x = "topleft", legend = c("Tag/receiver", "Receiver"), col = "black",
-       pch = 21, cex = 1.5, pt.bg = c("red", "black"), bty = "n")              
+       pch = 21, cex = 1.5, pt.bg = c("red", "black"), bty = "n")
+
 ```
 
 The example range test discussed in this vignette consisted of four
@@ -211,6 +212,7 @@ dist_matrix[,c("transmitter_id", "receiver_sn") := list(as.character(transmitter
 # Join "dist_matrix" object with "dtc" object using "transmitter_id" and
 # "receiver_sn" as keys. Keep all records of dtc.
 dtc <- dist_matrix[dtc, on = c("transmitter_id", "receiver_sn")]
+
 ```
 In the last line, we used a `data.table` join to merge the
 `dist_matrix` object with `dtc` on key columns common to both
@@ -861,20 +863,21 @@ two-dimensional arena.
 
 In the final example of this vignette, we will use `crw_in_polygon`,
 `transmit_along_path`, and `detect_transmissions` functions to explore
-system performance of two different grid spacings on detection of virtual fish
-in Lake Huron.  Although we will simulate system performance of
-receiver grids, these functions can be used to explore,
-compare, and contrast theoretical performance of a wide range of
-transmitter and receiver network designs.  The `crw_in_polygon` function is used to
-simulate a random walk as a series of equal length steps with turning
-angles drawn from a normal distribution inside of a polygon.  After
-random walk movement paths for virtual fish are created, the `transmit_along_path()` function is
+system performance of two different grid spacings on detection of
+virtual fish in Lake Huron.  Although we will simulate system
+performance of different receiver grid configurations, these functions
+can be used to explore, compare, and contrast theoretical performance
+of a wide range of transmitter and receiver network designs.  The
+`crw_in_polygon` function is used to simulate a random walk as a
+series of equal length steps with turning angles drawn from a normal
+distribution inside of a polygon.  After random walk movement paths
+for virtual fish are created, the `transmit_along_path()` function is
 used to simulate tag signal transmissions along each path based on
 constant movement velocity, transmitter delay range, and duration of
 signal. Last, `detect_transmissions()` is used to simulate detection
 of transmitter signals in a receiver network based on detection range
-curve, location of transmitter (calculated by `transmit_along_path`), and locations of
-receivers. 
+curve, location of transmitter (calculated by `transmit_along_path`),
+and locations of receivers.
 
 In the first code chunk, we load an outline of the Great Lakes
 included in `glatos`.  The outline is a SpatialPolygonsDataFrame but
@@ -934,17 +937,16 @@ LH_latlon <- as(LH_latlon, "Spatial")
 
 ```
 
-Next we set up a receiver grid in Lake Huron for use in the
-simulation and create a 30 km grid for Lake
-Huron using the projected LH polygon from above.  The next step is to
-transform the grid back to WGS 84 lat/lon coordinate system and
-create a data.frame with longitude and latitude for the `recLoc`
-argument in `detect_transmissions`.
+Next we set up a receiver grid in Lake Huron for use in the simulation
+and create a grid of virtual receivers that are spaced 30 km apart.
+After making the grid, we convert back to a cartesian coordinate
+system (i.e., WGS 84, latitude and longitude).
 
 ```{R, echo = TRUE}
 
 # make grid in LH polygon
-grid_30km <- st_intersection(LH, st_make_grid(LH, cellsize = 30000, what = "centers")) # cellsize is in meters...
+# cellsize is in meters...
+grid_30km <- st_intersection(LH, st_make_grid(LH, cellsize = 30000, what = "centers"))
 
 # convert back to WGS84-lat/lon
 grid_30km <- st_transform(grid_30km, crs = 4326)
@@ -957,12 +959,14 @@ grid_30km_coords <- as.data.frame(st_coordinates(grid_30km))
 In addition to a object of receiver locations, we also need to
 simulate fish movements in Lake Huron.  In the next chunk, we use the
 `crw_in_polygon` function to simulate a virtual fish movement starting
-from Saginaw Bay.  This is a good time to remember that our virtual
-fish likely does not behave similarly to real fish!  We use a step
-length of 10 km over 30 steps.  Theta controls the turn angles that
-fish exhibit and tweaking can produce a fish that changes directions a
-lot or tend to follow a general direction.
+from Saginaw Bay.  Theta controls the turn angles that fish exhibit
+and tweaking can produce a fish that changes directions a lot or tend
+to move in a straight line. We also provide an optional start point so
+our virtual fish starts in Saginaw Bay and a location is calculated
+every 10 km.  We calculate positions for our virtual fish for 30 steps.
 
+This is a good time to remember that our virtual fish likely does not
+behave like real fish!
 
 ```{R, echo = TRUE}
 
