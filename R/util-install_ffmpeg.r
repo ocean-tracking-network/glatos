@@ -33,7 +33,6 @@ install_ffmpeg <- function(){
   
   # download windows build of ffmpeg
   if(os == "windows"){
-    
     url <- "http://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip"
   }
   
@@ -53,6 +52,8 @@ install_ffmpeg <- function(){
   if(!dir.exists(file.path(pkg, "bin"))) dir.create(file.path(pkg, "bin"))
   fl_dest <- file.path(pkg, "bin", basename(fls))
   file.rename(fls, fl_dest)
+  if(os == "mac") system2("chmod", c("+x", fl_dest))
+
 }
 
 
