@@ -7,8 +7,9 @@
 make_frames(proc_obj, recs = NULL, out_dir = getwd(),
   background_ylim = c(41.3, 49), background_xlim = c(-92.45, -75.87),
   show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
-  ani_name = "animation.mp4", frame_delete = FALSE, overwrite = FALSE,
-  ffmpeg = NA, preview = FALSE, bg_map = NULL, ...)
+  ani_name = "animation.mp4", frame_delete = FALSE,
+  overwrite = FALSE, ffmpeg = NA, preview = FALSE, bg_map = NULL,
+  ...)
 }
 \arguments{
 \item{proc_obj}{A data frame created by
@@ -147,6 +148,8 @@ will be useful while exploring optional plot arguments.
 }
 \examples{
 
+\dontrun{
+
 # load detection data
 det_file <- system.file("extdata", "walleye_detections.csv",
                          package = "glatos")
@@ -190,7 +193,6 @@ make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=5)
 myDir <- paste0(getwd(), "/frames5")
 make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE, frame_delete = TRUE)
 
-\dontrun{
 # if ffmpeg is not on system path
 
 # windows

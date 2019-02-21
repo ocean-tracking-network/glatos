@@ -49,6 +49,8 @@ Speed up or slow down playback of video using FFmpeg software.
 }
 \examples{
 
+\dontrun{
+
 # load example frames 
 frames <- system.file("extdata", "frames", package = "glatos")
 
@@ -64,7 +66,7 @@ adjust_playback_time(scale_factor = 10, input = path, output = "slow.wmv")
 
 # speed up video 
 adjust_playback_time(scale_factor=0.5, input = path, output = "faster.mp4")
-
+}
 }
 \author{
 Todd Hayden, Tom Binder, Chris Holbrook

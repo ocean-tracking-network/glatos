@@ -23,7 +23,7 @@ POSIXct.}
 }}
 }
 \value{
-A column \code{min_lag} (defined above) is added to input data frame.
+A column \code{min_lag} (defined above) is added to input object.
 }
 \description{
 Calculate minimum time interval (min_lag) between successive detections and 

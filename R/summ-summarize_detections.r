@@ -83,8 +83,8 @@
 #'   the output summary. 
 #'   
 #' @return 
-#'  If \code{summ_type = "animal"} (default): A data frame containing six
-#'   columns:
+#'  If \code{summ_type = "animal"} (default): A data frame, data.table, or 
+#'  tibble containing six columns:
 #'   \itemize{
 #'     \item{\code{animal_id}: described above.}
 #'     \item{\code{num_locs}: number of locations.}
@@ -94,8 +94,8 @@
 #'     \item{\code{locations}: character string with 
 #'       locations detected, separated by spaces.}
 #'   }
-#'  If \code{summ_type = "location"} (default): A data frame containing seven
-#'   columns:
+#'  If \code{summ_type = "location"} (default): A data frame, data.table, or
+#'  tibble containing seven columns:
 #'   \itemize{
 #'     \item{\code{LOCATION_COL}: defined by \code{location_col}.}
 #'     \item{\code{num_fish}: number of unique animals detected.}
@@ -107,8 +107,8 @@
 #'     \item{\code{animals}: character string with animal_ids detected,
 #'     separated by spaces.}
 #'   }
-#'  If \code{summ_type = "both"} (default): A data frame containing seven
-#'   columns:
+#'  If \code{summ_type = "both"} (default): A data frame, data.table, or tibble
+#'  containing seven columns:
 #'   \itemize{
 #'     \item{\code{animal_id}: described above.}
 #'     \item{\code{LOCATION_COL}: defined by \code{location_col}.}
@@ -243,7 +243,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
     
     data.table::setkeyv(loc_summary, location_col)
     
-    det_sum <- as.data.frame(loc_summary)
+    det_sum <- loc_summary
   } 
 
   if(summ_type == "animal"){
@@ -263,7 +263,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
     
     data.table::setkey(anim_summary, "animal_id")
 
-    det_sum <- as.data.frame(anim_summary)    
+    det_sum <- anim_summary   
   }     
     
   if(summ_type == "both"){
@@ -288,8 +288,14 @@ summarize_detections <- function(det, location_col = "glatos_array",
     both_summary <- both_summary[ , c(2, 1, 3:ncol(both_summary)), with = FALSE]    
     data.table::setkeyv(both_summary, c("animal_id", location_col))
 
-    det_sum <- as.data.frame(both_summary)
+    det_sum <- both_summary
   }   
 
-  return(det_sum)
+  #return data.table if input class data.table
+  if(inherits(det, "data.table")) return(det_sum)
+  
+  #return tibble if input class tibble
+  if(inherits(det, "tbl")) return(tibble::as_tibble(det_sum))  
+  
+  return(as.data.frame(det_sum))
 }

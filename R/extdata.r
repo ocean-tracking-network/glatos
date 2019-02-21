@@ -8,7 +8,7 @@
 #' 
 #' @section Filename: walleye_detections.zip
 #' 
-#' @usage 
+#' @usage
 #' system.file("extdata", "walleye_detections.zip", package="glatos")
 #'
 #' @author Todd Hayden
@@ -37,7 +37,7 @@ NULL
 #' 
 #' @section Filename: SMRSL_GLATOS_20140828.xlsm
 #' 
-#' @usage 
+#' @usage
 #' system.file("extdata", "SMRSL_GLATOS_20140828.xlsm", package="glatos")
 #'
 #' @author Chris Holbrook
@@ -77,7 +77,7 @@ NULL
 #' 
 #' @section Filename: shoreline.zip
 #' 
-#' @usage 
+#' @usage
 #' system.file("extdata", "shoreline.zip", package="glatos")
 #'
 #' @author Todd Hayden

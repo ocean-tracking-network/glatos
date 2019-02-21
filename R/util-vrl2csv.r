@@ -53,6 +53,8 @@
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'
 #' @examples
+#' \dontrun{
+#' 
 #' #get path to example VRL in this package
 #' myVRL <- system.file("extdata", "VR2W_109924_20110718_1.vrl",
 #'  package="glatos")
@@ -61,6 +63,7 @@
 #'
 #' #setting 'overwrite=FALSE' will make new file with '_n'added to name
 #' vrl2csv(myVRL, overwrite=F)
+#' }
 #'
 #' @export
 vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath=NA){

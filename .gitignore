@@ -1,5 +1,9 @@
+Meta
+doc
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 *.Rproj
+*.DS_Store
+*Icon*
