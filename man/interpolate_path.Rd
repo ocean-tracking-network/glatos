@@ -5,7 +5,7 @@
 \title{Interpolate new positions within a spatiotemporal path data}
 \usage{
 interpolate_path(det, trans = NULL, start_time = NULL,
-  int_time_stamp = 86400, lnl_thresh = 0.9, data.table = FALSE)
+  int_time_stamp = 86400, lnl_thresh = 0.9, out_class = NULL)
 }
 \arguments{
 \item{det}{An object of class \code{glatos_detections} or data frame
@@ -30,9 +30,8 @@ positions. Default is 86400 (one day).}
 \item{lnl_thresh}{A numeric threshold for determining if linear or
 non-linear interpolation shortest path will be used.}
 
-\item{data.table}{logical. Return results as a data.table
-(data.table = TRUE).  Default (data.table = FALSE) returns
-results as data frame}
+\item{out_class}{Return results as a data.table or tibble.  Default
+returns results as data.frame.  Accepts `data.table` or `tibble`.}
 }
 \value{
 A dataframe with animal_id, bin_timestamp,
@@ -178,7 +177,7 @@ points(foo$deploy_long, foo$deploy_lat, pch = 20, col = "red")
 
 # call with "transition matrix" (non-linear interpolation), other options
 # note that it is quite a bit slower due than linear interpolation
-pos2 <- interpolate_path(det, trans = tran1$transition)
+pos2 <- interpolate_path(det, trans = tran1$transition, out_class = "data.table")
 
 plot(maumee, col = "grey")
 points(latitude ~ longitude, data = pos2, pch=20, col='red', cex=0.5)

@@ -15,9 +15,8 @@
 #'     'POSIXct' or an object of class 'POSIXct'.  If character string
 #'     is supplied, timezone is automatically set to UTC.
 #'
-#' @param data.table logical. Return results as a data.table
-#'   (data.table = TRUE).  Default (data.table = FALSE) returns
-#'   results as data frame
+#' @param out_class Return results as a data.table or tibble.  Default
+#'   returns results as data.frame.  Accepts `data.table` or `tibble`.
 #' 
 #' @param int_time_stamp The time step size (in seconds) of interpolated 
 #'   positions. Default is 86400 (one day).
@@ -170,7 +169,7 @@
 #' 
 #' # call with "transition matrix" (non-linear interpolation), other options
 #' # note that it is quite a bit slower due than linear interpolation
-#' pos2 <- interpolate_path(det, trans = tran1$transition)
+#' pos2 <- interpolate_path(det, trans = tran1$transition, out_class = "data.table")
 #'
 #' plot(maumee, col = "grey")
 #' points(latitude ~ longitude, data = pos2, pch=20, col='red', cex=0.5)
@@ -181,8 +180,12 @@
                          
 interpolate_path <- function(det, trans = NULL, start_time = NULL,
                              int_time_stamp = 86400, lnl_thresh = 0.9,
-                             data.table = FALSE){
-  
+                             out_class = NULL){
+
+  # stop if out_class is not NULL, data.table, or tibble
+  if(!is.null(out_class)){
+    if( !(out_class %in% c("data.table", "tibble"))) {stop('out_class is not a "data.table" or "tibble"')}}
+   
   # check to see that trans is a transition layer or transition stack
   if(!is.null(trans) & 
        inherits(trans, c("TransitionLayer", "TransitionStack")) == FALSE){
@@ -507,7 +510,16 @@ arch <- nln_small
   out <- unique(out)
   data.table::setorder(out, animal_id, bin_timestamp, -record_type)
 
-  if(data.table == FALSE){out <- as.data.frame(out)}
+  # If out_class == NULL, then return data as data.table
+  if(is.null(out_class)){ out <- as.data.frame(out)
+    return(out)
+  }
+
+  # if out_class == "tibble", then return tibble object
+  if(out_class == "tibble"){ out <- tibble::as_tibble(out)
+    return(out)}
+
+  # if out_class == NULL, then return data.frame object
   return(out)
 }
  
