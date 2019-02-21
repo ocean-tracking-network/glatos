@@ -47,7 +47,7 @@
 #' hfx_receiver_efficiency_index <- glatos::REI(dets,hfx_deployments)
 #'
 #'
-#' @importFrom dplyr group_by mutate coalesce
+#' @importFrom dplyr group_by mutate coalesce filter summarise
 #' @importFrom magrittr "%>%"
 #'
 #' @export

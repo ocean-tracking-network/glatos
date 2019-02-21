@@ -7,7 +7,7 @@
 total_diff_days(detections)
 }
 \arguments{
-\item{Detections}{- data frame pulled from the compressed detections CSV}
+\item{detections}{- data frame pulled from the compressed detections CSV}
 }
 \description{
 The difference is determined by the minimal first_detection of every

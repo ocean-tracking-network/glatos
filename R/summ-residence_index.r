@@ -145,11 +145,16 @@
 #'                          package = "glatos")
 #' det <- read_glatos_detections(det_file)
 #' detection_events <- glatos::detection_events(det)
-#' rik_data <- glatos::residence_index(detection_events, calculation_method = 'kessel')
-#' rit_data <- glatos::residence_index(detection_events, calculation_method = 'time_interval')
-#' rit_data <- glatos::residence_index(detection_events, calculation_method = 'timedelta')
-#' riawo_data <- glatos::residence_index(detection_events, calculation_method = 'aggregate_with_overlap')
-#' riano_data <- glatos::residence_index(detection_events, calculation_method = 'aggregate_no_overlap')
+#' rik_data <- glatos::residence_index(detection_events, 
+#'                                     calculation_method = 'kessel')
+#' rit_data <- glatos::residence_index(detection_events, 
+#'                                     calculation_method = 'time_interval')
+#' rit_data <- glatos::residence_index(detection_events, 
+#'                                     calculation_method = 'timedelta')
+#' riawo_data <- glatos::residence_index(detection_events, 
+#'                              calculation_method = 'aggregate_with_overlap')
+#' riano_data <- glatos::residence_index(detection_events, 
+#'                              calculation_method = 'aggregate_no_overlap')
 #'
 #' @return A data.frame of days_detected, residency_index, location,
 #' mean_latitude, mean_longitude
@@ -307,7 +312,7 @@ interval_count <- function(detections, time_interval_size) {
 #' (86400). The function returns a floating point number of days (i.e.
 #' 503.76834).
 #'
-#' @param Detections - data frame pulled from the compressed detections CSV
+#' @param detections - data frame pulled from the compressed detections CSV
 #'
 total_diff_days <- function(detections) {
   first <- detections$first_detection[which.min(detections$first_detection)]
@@ -322,7 +327,7 @@ total_diff_days <- function(detections) {
 #' of days. If the first_detection and last_detection are the same, a timedelta
 #' of one second is assumed.
 #' 
-#' @param Detections -data frame pulled from the compressed detections CSV
+#' @param detections -data frame pulled from the compressed detections CSV
 #'
 #' @importFrom dplyr mutate
 aggregate_total_with_overlap <- function(detections) {
@@ -339,7 +344,7 @@ aggregate_total_with_overlap <- function(detections) {
 #' and the latest last_detection. If the first_detection and last_detection are
 #' the same, a timedelta of one second is assumed.
 #'
-#' @param Detections - data frame pulled from the compressed detections CSV
+#' @param detections - data frame pulled from the compressed detections CSV
 #'
 #' @importFrom data.table foverlaps
 aggregate_total_no_overlap <- function(detections) {
@@ -388,7 +393,9 @@ aggregate_total_no_overlap <- function(detections) {
 #' Wrapper method for the calulation methods above.
 #'
 #' @param dets - data frame pulled from the detection events
-#' @param calculation_method - determines which method above will be used to count total time and location time
+#' @param calculation_method - determines which method above will be used to
+#'   count total time and location time
+#' @param time_interval_size - size of time interval
 get_days <- function(dets, calculation_method='kessel', 
                      time_interval_size = "1 day") {
   days <- 0

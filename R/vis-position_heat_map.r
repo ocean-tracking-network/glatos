@@ -65,6 +65,12 @@
 #'  not specified then \code{folder} will be created in the working directory.
 #'  Default is "position_heat_map".
 #'  
+#' @param utm_zone UTM zone
+#' 
+#' @param hemisphere Default is \code{"N"}
+#' 
+#' @param output type of output Default is \code{"plot"}
+#'  
 #' @details When and 'interval' argument is supplied, the number of unique fish 
 #' x interval combinations that occurred each grid cell is calculated instead of
 #' raw number of positions. For example, in 4 hours there are a total of 4 1-h 

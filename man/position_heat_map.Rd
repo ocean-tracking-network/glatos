@@ -59,6 +59,10 @@ data.}
 y_limits == NULL (default), then it is determined from the extents of the
 data.}
 
+\item{utm_zone}{UTM zone}
+
+\item{hemisphere}{Default is \code{"N"}}
+
 \item{legend_gradient}{A character string indicating the orientation of the
 color legend; "y" = vertical, "x" = horizontal, "n" indicates that no 
 legend should be drawn. Default is "y".}
@@ -67,6 +71,8 @@ legend should be drawn. Default is "y".}
 legend as a portion of the total plot area (i.e., between 0 and 1). Only
 used if 'legend_gradient" in not "n". Default is c(0.99, 0.2, 1.0, 0.8),
 which puts the legend along the right hand side of the plot.}
+
+\item{output}{type of output Default is \code{"plot"}}
 
 \item{folder}{A character string indicating the output folder. If path is 
 not specified then \code{folder} will be created in the working directory.

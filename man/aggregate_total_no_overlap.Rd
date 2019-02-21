@@ -11,7 +11,7 @@ the same, a timedelta of one second is assumed.}
 aggregate_total_no_overlap(detections)
 }
 \arguments{
-\item{Detections}{- data frame pulled from the compressed detections CSV}
+\item{detections}{- data frame pulled from the compressed detections CSV}
 }
 \description{
 The function below aggregates timedelta of first_detection and
