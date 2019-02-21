@@ -39,7 +39,9 @@
 ##' @author Todd Hayden, Tom Binder, Chris Holbrook
 ##'
 ##' @examples
-##'
+##' 
+##' \dontrun{
+##' 
 ##' # load example frames 
 ##' frames <- system.file("extdata", "frames", package = "glatos")
 ##'
@@ -55,7 +57,7 @@
 ##' 
 ##' # speed up video 
 ##' adjust_playback_time(scale_factor=0.5, input = path, output = "faster.mp4")
-##'
+##' }
 ##' @export
 ##'
 

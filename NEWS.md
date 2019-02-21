@@ -1,3 +1,57 @@
+# glatos 0.3.0
+
+#### 2019-02-12
+   
+### New features
+
+- functions
+		- receiver_efficiency
+		- residence_index
+		- read_otn_deployments
+
+- vignettes and documentation
+    - added data-loading, data-requirements, receiver_efficency, residence_index
+    - added pkgdown files
+
+### Minor changes
+
+- detection_events
+		- output data.table or tibble object if input is either of those and 
+		  data.frame otherwise
+		- faster (e.g., 11 sec vs 31 sec for 7.2M records on wimpy laptop)
+		- coerce 'time_sep' argument to numeric if quoted and error if it cannot 
+		  be coerced to numeric
+
+- crw_in_polygon
+    - changed sampling algorithm to mimimize stuck-at-boundary errors
+    - added option to input SpatialPolygons object
+    - added explicit coordinate reference system (EPSG 3175 - Great Lakes
+      projected CRS) so that default units are in meters and simulations are 
+      done in that CRS. Other CRS can be specified for other areas (via 
+      EPSG argument).
+    - added option to return spatial object or simple data frame.
+
+- abacus_plot
+    - added optional arguments *x_res* and *x_format* to specify x-axis 
+      tick mark spacing and format (issue #30)
+    - removed input arguments that could also be passed via ellipses (issue #35)
+
+- position_heat_map
+    - corrected accuracy issues by converting lat-lon to UTM (issue #8)
+    - added optional argument *abs_or_rel* to specify it output is absolute 
+      numbers of fish are relative; simplified output so that only a single 
+      output type occurs in a given call
+    - Changed output to kmz instead of kml
+    - new folder is only created when output is png or kmz
+		
+- dropped fasttime as a depenedency and uses lubridates fasttime implementation instead
+
+- Update sysdata detection schema for OTN
+
+----
+
+
+
 # glatos 0.2.7
 
 #### 2018-08-29

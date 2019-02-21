@@ -32,6 +32,8 @@
 #' #rec_file <- "c:/path_to_file/GLATOS_receiverLocations_20150321_132242.csv"   
 #' 
 #' rcv <- read_glatos_receivers(rec_file)
+#' 
+#' @importFrom lubridate parse_date_time
 #'
 #' @export
 read_glatos_receivers <- function(rec_file, version = NULL) {
@@ -73,10 +75,12 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
     
     #coerce timestamps to POSIXct; note that with fastPOSIXct raw
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
+    options(lubridate.fasttime = TRUE)
     for (j in timestamp_cols) data.table::set(rec, 
                                 j = glatos_receivers_schema[["v1.0"]]$name[j], 
-                      value = fasttime::fastPOSIXct(
+                      value = lubridate::parse_date_time(
                         rec[[glatos_receivers_schema[["v1.0"]]$name[j]]], 
+                        orders="ymd HMS",
                         tz = "UTC"))
     #coerce dates to date
     for (j in date_cols) {

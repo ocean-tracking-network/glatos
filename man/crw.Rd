@@ -4,8 +4,8 @@
 \alias{crw}
 \title{Simulate a correlated random walk}
 \usage{
-crw(theta = c(0, 5), stepLen = 10, initPos = c(0, 0), initHeading = 0,
-  nsteps = 10000)
+crw(theta = c(0, 5), stepLen = 10, initPos = c(0, 0),
+  initHeading = 0, nsteps = 10000)
 }
 \arguments{
 \item{theta}{A 2-element numeric vector with turn angle parameters 

@@ -130,6 +130,8 @@
 ##'
 ##' @examples
 ##'
+##' \dontrun{
+##' 
 ##' # load frames
 ##' frames <- system.file("extdata", "frames", package = "glatos")
 ##'
@@ -156,7 +158,7 @@
 ##' make_video(dir=frames, fps_in = 1, pattern = "%02d.png", 
 ##'            preset = "ultrafast", output = "animation_5.mp4")
 ##'
-##' \dontrun{
+##' 
 ##' # add path to ffmpeg (windows)
 ##' make_video(dir = frames, pattern = "%02d.png", output = "animation.mp4", 
 ##'            ffmpeg = "c://path//to//windows//ffmpeg.exe")
