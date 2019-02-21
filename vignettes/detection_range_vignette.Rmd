@@ -951,8 +951,8 @@ grid_30km <- st_intersection(LH, st_make_grid(LH, cellsize = 30000, what = "cent
 # convert back to WGS84-lat/lon
 grid_30km <- st_transform(grid_30km, crs = 4326)
 
-# extract coordinates for detect_transmissions 
-grid_30km_coords <- as.data.frame(st_coordinates(grid_30km))
+# convert coordinates to sp for future use 
+grid_30km_sp <- as(grid_30km, "Spatial")
 
 ```
 
@@ -961,24 +961,28 @@ simulate fish movements in Lake Huron.  In the next chunk, we use the
 `crw_in_polygon` function to simulate a virtual fish movement starting
 from Saginaw Bay.  Theta controls the turn angles that fish exhibit
 and tweaking can produce a fish that changes directions a lot or tend
-to move in a straight line. We also provide an optional start point so
+to move in a straight line. We also provide coordinates for a start point so
 our virtual fish starts in Saginaw Bay and a location is calculated
 every 10 km.  We calculate positions for our virtual fish for 30 steps.
 
-This is a good time to remember that our virtual fish likely does not
-behave like real fish!
 
 ```{R, echo = TRUE}
 
 # do random walk in LH polygon starting in Saginaw Bay
-path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30, initPos = c(955609.31, 792130.14))
+#path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30, initPos = c(-83.6, 43.8))
+path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30)
 
 ```
 
-Time to bring together fish track and grid  in a visualization....
+Now it is time to bring together fish track, grid and outline to make
+sure everything looks good.  This is a good time to remember that our
+virtual fish likely does not behave like real fish!
 
+```{r, echo=FALSE}
+fig_cap_grid <- "Plot of receiver network grid (black circles) and movement track of virtual fish (red circle and line) in Lake Huron" 
+```
 
-```{R, echo = TRUE}
+```{R, echo = TRUE, fig.height=8,fig.width=8,fig.cap=fig_cap_grid}
 
 # plot path, grid and points
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
@@ -988,14 +992,33 @@ plot(st_geometry(grid_30km), pch = 20, col = "black", add = TRUE)
 
 ```
 
+In the next step, we use `transmit_along_path` to determine where
+along the path the tag transmits, given the virtual fish movement rate
+and tag transmission specifications.  For our example, we use the
+default values (movement velocity = 0.5 meters per second, and tag
+delay range from 60--180 seconds).
 
+```{R, echo = TRUE}
 
+tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) )
 
+```
 
+The final step is to determine which transmissions are detected.  This
+is done by the `transmit_along_path` function.  This function uses the
+virtual receiver locations, tag transmission information and a
+detection range function to simulate detection of the fish.  For this
+example, we are going to use the same detection range curve function used in
+the previous example of the line detection probability simulation.
+Recall that the `edrf` object in the previous line detection range
+simulation described the detection range curve.  We will leave it up
+to the reader to review how this object was created.
 
+```{R, echo = TRUE}
 
+mytrns <- detect_transmissions(transLoc = tag_trans, recLoc = grid_30km_sp, detRngFun = edrf )
 
-
+```
 
 
 
