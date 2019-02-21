@@ -58,7 +58,7 @@ install_ffmpeg <- function(){
 
 
 
-# install ffmpeg to GLATOS package
+# query OS
 get_os <- function(){
   sysinf <- Sys.info()
   if (!is.null(sysinf)){
@@ -76,3 +76,39 @@ get_os <- function(){
 }
 
 
+
+#get path to ffmpeg and test
+get_ffmpeg_path <- function(ffmpeg){
+  
+  os <- get_os()
+  
+  #use path to ffmpeg exe in user lib if exists
+  if(is.na(ffmpeg)) {
+    #check for local user lib
+    pkg <- find.package("glatos", lib.loc = .libPaths())
+    ffmpeg_file <- list.files(file.path(pkg, "bin"), 
+      recursive = TRUE, full.names = TRUE, pattern = "^ffmpeg$|ffmpeg.exe$")
+    if(length(ffmpeg_file) > 0){
+        ffmpeg <- ifelse(file.exists(ffmpeg_file), ffmpeg_file, NA)
+    }
+  }
+  
+  if(os == "windows") cmd <- ifelse(is.na(ffmpeg), 'ffmpeg.exe', ffmpeg)
+  if(os == "osx") cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)
+  
+  ffVers <- suppressWarnings(system2(cmd, "-version", stdout=F)) #call ffmpeg
+  if(ffVers == 127)
+    stop(paste0('"ffmpeg" was not found.\n',
+      "See install_ffmpeg() to install into the package directory.\n",
+      "or ",
+      'ensure it is installed add added to system PATH variable\n',
+      "or specify path using input argument 'ffmpeg'\n\n",
+      'FFmpeg is available from:\n https://ffmpeg.org/\n',
+      'You may create the individual frames and then combine them\n',
+      'into an animation manually using video editing software\n', 
+      '(e.g., Windows Movie Maker or iMovie) by setting the animate\n',
+      'argument to FALSE.'),
+      call. = FALSE)
+  
+  return(ffmpeg)
+}

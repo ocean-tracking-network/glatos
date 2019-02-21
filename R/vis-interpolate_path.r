@@ -273,7 +273,17 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
                                 "longitude", "record_type"))
     out <- unique(out)
     out <- data.table::setorder(out, animal_id, bin_timestamp, -record_type)
-    if(data.table == FALSE){out <- as.data.frame(out)}
+
+    # If out_class == NULL, then return data as data.table
+    if(is.null(out_class)){ out <- as.data.frame(out)
+    return(out)
+    }
+    
+    # if out_class == "tibble", then return tibble object
+    if(out_class == "tibble"){ out <- tibble::as_tibble(out)
+    return(out)}
+    
+    # if out_class == NULL, then return data.frame object
     return(out)
   }
 
