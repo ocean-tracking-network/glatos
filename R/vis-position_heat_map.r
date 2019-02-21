@@ -176,11 +176,6 @@ position_heat_map <- function (positions,
     stop(paste0("Argument 'interval' must be supplied when fish_pos_int == 'intervals'."))
   }
   
-  
-  # Load dependencies --------------------------------------------------------
-  library(PBSmapping)
-  library(utils)
-  
   # Determine x and y limits -------------------------------------------------
   # Set x and y extents based on data range or user-defined limits	
   if(is.null(x_limits)) x_limits <- range(positions$LON)
@@ -368,7 +363,7 @@ position_heat_map <- function (positions,
 	}
 
 	if(output%in% c("png","kmz")){
-	  dev.off(dev.cur())
+	  grDevices::dev.off(grDevices::dev.cur())
 	}
 
 	

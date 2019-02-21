@@ -238,9 +238,9 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     
     # Remove receivers not recovered (records with NA in recover_date_time)
     data.table::setkey(recs, recover_date_time)
-    recs <- recs[!J(NA_real_), c("station", "deploy_lat", "deploy_long", 
-                                 "deploy_date_time", "recover_date_time",
-                                 "row_in")]
+    recs <- recs[!data.table::J(NA_real_), c("station", "deploy_lat", 
+                                             "deploy_long", "deploy_date_time", 
+                                             "recover_date_time", "row_in")]
   }
   
   # capture optional plot arguments passed via ellipses

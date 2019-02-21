@@ -48,6 +48,7 @@
 #'
 #'
 #' @importFrom dplyr group_by mutate coalesce
+#' @importFrom magrittr "%>%"
 #'
 #' @export
 

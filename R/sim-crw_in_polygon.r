@@ -152,7 +152,7 @@
   path.fwd[1,] <- sp::coordinates(init)
   
   #create lines object from polyg (for distance measurement)
-  xl <- as(polyg, "SpatialLines") 
+  xl <- methods::as(polyg, "SpatialLines") 
 
   rows_i <- 1
   init_i <- init

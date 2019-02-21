@@ -30,6 +30,7 @@
 #' @importFrom lubridate parse_date_time
 #' @importFrom tidyr extract
 #' @importFrom dplyr mutate
+#' @importFrom magrittr "%>%"
 #' @export
 read_otn_deployments <- function(deployment_file) {
   col_classes <- otn_deployments_schema$type
