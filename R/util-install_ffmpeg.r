@@ -49,9 +49,9 @@ install_ffmpeg <- function(){
   pkg <- find.package("glatos", lib.loc = .libPaths())
   utils::unzip(destfile, exdir = tmp)
   fls <- list.files(tmp, full.names = TRUE, recursive = TRUE, 
-                    pattern = "ffmpeg.exe$")
+                    pattern = "^ffmpeg$|ffmpeg.exe$")
   if(!dir.exists(file.path(pkg, "bin"))) dir.create(file.path(pkg, "bin"))
-  fl_dest <- file.path(pkg, "bin/ffmpeg.exe")
+  fl_dest <- file.path(pkg, "bin", basename(fls))
   file.rename(fls, fl_dest)
 }
 

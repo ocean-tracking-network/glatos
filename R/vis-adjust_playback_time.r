@@ -70,9 +70,10 @@ adjust_playback_time <- function(scale_factor = 1,
   #use path to ffmpeg.exe in user lib if exists
   if(is.na(ffmpeg)) {
     pkg <- find.package("glatos", lib.loc = .libPaths())
-    ffmpeg_file <- file.path(pkg, "bin/ffmpeg.exe")
+    ffmpeg_file <- list.files(file.path(pkg, "bin"), 
+      recursive = TRUE, full.names = TRUE, pattern = "^ffmpeg$|ffmpeg.exe$")
     ffmpeg <- ifelse(file.exists(ffmpeg_file), ffmpeg_file, NA)
-  }  
+  }
   
 # try calling ffmpeg
     cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)	
