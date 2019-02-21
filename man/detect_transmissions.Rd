@@ -4,7 +4,8 @@
 \alias{detect_transmissions}
 \title{Simulate detection of transmitter signals in a receiver network}
 \usage{
-detect_transmissions(trnsLoc = NA, recLoc = NA, detRngFun = NA)
+detect_transmissions(trnsLoc = NA, recLoc = NA, detRngFun = NA,
+  EPSG = 3175, sp_out = TRUE)
 }
 \arguments{
 \item{trnsLoc}{A three-column data frame with locations (numeric columns 
@@ -17,6 +18,15 @@ columns named 'x' and 'y')}
 \item{detRngFun}{A function that defines detection range curve;
 must accept a numeric vector of distances and return a numeric vector of 
 detection probabilities at each distance.}
+
+\item{EPSG}{Numeric EPSG code of the coordinate system used for simulations. 
+Default is 3175, a projected coordinate system for the North American 
+Great Lakes Basin and St. Lawrence River system. 
+\url{http://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}}
+
+\item{sp_out}{Logical. If TRUE (default) then output is a 
+\link[sp]{SpatialPointsDataFrame} object. If FALSE, then output is a 
+data.frame.}
 }
 \value{
 A data frame containing:
@@ -34,11 +44,12 @@ Simulates detection of transmitter signals in a receiver network based on
   location of transmitter, and location of receivers.
 }
 \details{
-Distances between each signal transmission location and receiver are 
-calculated using pythagorean theorem. The probability of detecting each 
-signal on each receiver is determined from the detection range curve. 
-Detection of each signal on each receiver is determined stochastically by 
-draws from a Bernoulli distribution with probability p (detection prob).  
+Distances between each signal transmission location and receiver are
+calculated using pythagorean theorem in CRS specified by \code{EPSG}. The
+probability of detecting each signal on each receiver is determined from the
+detection range curve. Detection of each signal on each receiver is
+determined stochastically by draws from a Bernoulli distribution with
+probability p (detection prob).
  
 This function was written to be used along with 
   \code{\link{transmit_along_path}}.

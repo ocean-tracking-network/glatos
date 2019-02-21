@@ -15,13 +15,23 @@
 #' @param detRngFun A function that defines detection range curve;
 #'   must accept a numeric vector of distances and return a numeric vector of 
 #'   detection probabilities at each distance.
+#'   
+#' @param EPSG Numeric EPSG code of the coordinate system used for simulations. 
+#'   Default is 3175, a projected coordinate system for the North American 
+#'   Great Lakes Basin and St. Lawrence River system. 
+#'   \url{http://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/} 
+#' 
+#' @param sp_out Logical. If TRUE (default) then output is a 
+#'  \link[sp]{SpatialPointsDataFrame} object. If FALSE, then output is a 
+#'  data.frame.
 #'
 #' @details
-#' Distances between each signal transmission location and receiver are 
-#' calculated using pythagorean theorem. The probability of detecting each 
-#' signal on each receiver is determined from the detection range curve. 
-#' Detection of each signal on each receiver is determined stochastically by 
-#' draws from a Bernoulli distribution with probability p (detection prob).  
+#' Distances between each signal transmission location and receiver are
+#' calculated using pythagorean theorem in CRS specified by \code{EPSG}. The
+#' probability of detecting each signal on each receiver is determined from the
+#' detection range curve. Detection of each signal on each receiver is
+#' determined stochastically by draws from a Bernoulli distribution with
+#' probability p (detection prob).
 #'  
 #' This function was written to be used along with 
 #'   \code{\link{transmit_along_path}}.
@@ -72,28 +82,76 @@
 #' points(trns_y~trns_x, data=mydtc,pch=21, bg="red")
 #'
 #' @export
-detect_transmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
+detect_transmissions <- function(trnsLoc = NA , recLoc = NA, detRngFun = NA,
+  EPSG = 3175, sp_out = TRUE){
 	 
-  #check names of trnsLoc columns
-  missingCols <- setdiff(c("x","y","et"),names(trnsLoc))
-  if(length(missingCols) > 0) stop(paste0("'trnsLoc' must contain the ",
-    "following columns: \n",paste(missingCols,collapse="\n")))
+  if(inherits(trnsLoc, "data.frame")){
+    #check names of trnsLoc columns
+    missingCols <- setdiff(c("x","y","et"), names(trnsLoc))
+    if(length(missingCols) > 0) stop(paste0("'trnsLoc' must contain the ",
+      "following columns: \n",paste(missingCols,collapse="\n")))
+  } 
   
-  #check names of recLoc columns
-  missingCols <- setdiff(c("x","y"),names(recLoc))
-  if(length(missingCols) > 0) stop(paste0("'recLoc' must contain the ",
-    "following columns: \n",paste(missingCols,collapse="\n")))
+  if(inherits(recLoc, "data.frame")){
+    #check names of recLoc columns
+    missingCols <- setdiff(c("x","y"),names(recLoc))
+    if(length(missingCols) > 0) stop(paste0("'recLoc' must contain the ",
+      "following columns: \n",paste(missingCols,collapse="\n")))
+  } 
   
   
-	 #preallocate detection data frame
-	 dtc <- data.frame(
-          trns_id = NA,
-          recv_id = NA,
-          recv_x = NA,
-          recv_y = NA,
-          trns_x = NA,
-          trns_y = NA,
-          etime = NA)[0,]
+  #CRS
+  projargs <- paste0("+init=epsg:", EPSG)
+  
+  
+  #convert trnsLoc to SpatialPoints if not already
+  if(!inherits(trnsLoc, c("SpatialPointsDataFrame", "SpatialPoints"))){ 
+    trnsLoc <- sp::SpatialPointsDataFrame(trnsLoc[, c("x", "y")], data = trnsLoc, 
+                      proj4string = sp::CRS(projargs))
+    projargs_in <- projargs
+  } else { 
+    projargs_in <- sp::proj4string(trnsLoc) #get crs to assign output
+  }
+  
+  #convert trnsLoc CRS to EPSG if not needed
+  if(!identical(sp::proj4string(trnsLoc), rgdal::CRSargs(sp::CRS(projargs)))){
+    trnsLoc <- sp::spTransform(trnsLoc, sp::CRS(projargs))
+  }
+  
+  #if vector convert to data frame
+  if(!inherits(recLoc, "data.frame") & all(is.numeric(recLoc))){
+    if(length(recLoc) != 2) 
+      stop(paste("recLoc must be data.frame or 2-column vector (x,y)")) 
+    recLoc <- data.frame(x=recLoc[1], y=recLoc[2])
+  }
+  
+  #convert recLoc to SpatialPoints if not already
+  if(!inherits(recLoc, c("SpatialPointsDataFrame", "SpatialPoints"))){ 
+    recLoc <- sp::SpatialPoints(recLoc, proj4string = sp::CRS(projargs))
+    rec_projargs_in <- projargs
+  } else { 
+    rec_projargs_in <- sp::proj4string(recLoc) #get crs to assign output
+  }
+  
+  #convert recLoc CRS to EPSG if not needed
+  if(!identical(sp::proj4string(recLoc), rgdal::CRSargs(sp::CRS(projargs)))){
+    recLoc <- sp::spTransform(recLoc, sp::CRS(projargs))
+  }  
+  
+  #convert to data.frame (now in EPSG)
+  recLoc <- as.data.frame(recLoc)
+  trnsLoc <- as.data.frame(cbind(coordinates(trnsLoc), et = trnsLoc$et))
+
+  #preallocate detection data frame
+  dtc <- data.frame(
+        trns_id = NA,
+        recv_id = NA,
+        recv_x = NA,
+        recv_y = NA,
+        trns_x = NA,
+        trns_y = NA,
+        etime = NA,
+    stringsAsFactors= FALSE)[0,]
 	 
 	 #loop through receivers (because should be much smaller than transmissions)
 	 for(g in 1:nrow(recLoc)){
@@ -127,6 +185,24 @@ detect_transmissions <- function(trnsLoc=NA,recLoc=NA,detRngFun=NA){
 		if(g==nrow(recLoc)) close(pb)
 	 } #end g
   dtc <- dtc[order(dtc$etime),]#sort by time	 
+  
+  #export spatial object where locations are receiver locations of detection
+  dtc <- sp::SpatialPointsDataFrame(dtc[, c("recv_x", "recv_y")], data = dtc,
+                                       proj4string = sp::CRS(projargs))
+  dtc <- sp::spTransform(dtc, CRSobj = projargs_in)
+  
+  #convert to input coordinate system 
+  if(!sp_out){
+    #convert transmission locations of detections to input crs
+    dtc_trns <- sp::SpatialPoints(dtc@data[,c("trns_x", "trns_y")], 
+                                  proj4string = sp::CRS(projargs))
+    dtc_trns <- sp::spTransform(dtc_trns, CRSobj = projargs_in)
+    dtc <- sp::spTransform(dtc, CRSobj = projargs_in)
+    dtc <- as.data.frame(cbind(dtc@data[, c("trns_id", "recv_id")], 
+                               sp::coordinates(dtc), 
+                               sp::coordinates(dtc_trns), 
+                               etime = dtc$etime))
+  }
              
   return(dtc)
 }
