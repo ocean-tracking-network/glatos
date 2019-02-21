@@ -148,9 +148,9 @@ crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100,
   if(all(!is.na(initPos))) {
     init <-  sp::SpatialPoints(matrix(as.numeric(initPos), nrow = 1), 
       proj4string = sp::CRS(projargs_in)) 
+    init <-sp::spTransform(init, sp::CRS(projargs))
     inPoly <- rgeos::gDistance(polyg, init) == 0
     if(!inPoly) stop("initPos is outside polygon boundary.")
-    init <-sp::spTransform(init, sp::CRS(projargs))
   } #end if   
   
   
