@@ -6,7 +6,7 @@
 \usage{
 crw_in_polygon(polyg, theta = c(0, 10), stepLen = 100,
   initPos = c(NA, NA), initHeading = NA, nsteps = 30, EPSG = 3175,
-  sp_out = FALSE)
+  sp_out = TRUE)
 }
 \arguments{
 \item{polyg}{A \code{\link[sp]{SpatialPolygons}} object.
@@ -33,8 +33,8 @@ Default is 3175, a projected coordinate system for the North American
 Great Lakes Basin and St. Lawrence River system. 
 \url{http://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}}
 
-\item{sp_out}{Logical. If TRUE then output is a 
-\link[sp]{SpatialPoints} object. If FALSE (default), then output is a 
+\item{sp_out}{Logical. If TRUE (default) then output is a 
+\link[sp]{SpatialPoints} object. If FALSE, then output is a 
 data.frame.}
 }
 \value{
@@ -52,12 +52,18 @@ Uses \link{crw} to simulate a random walk as series of equal-length steps
   with turning angles drawn from a normal distribution inside a polygon.
 }
 \details{
-If initPos = NA, then a starting point is randomly selected within the 
-polygon boundary. A path is simulated forward using the crw function. 
-Initial heading is also randomly selected if initHeading = NA. When a step 
-crosses the polygon boundary, a new heading for that step is drawn and 
-the turn angle standard deviation is enlarged slightly for each subsequent 
-point that lands outside the polygon.
+If initPos = NA, then a starting point is randomly
+  selected within the polygon boundary. A path is simulated forward
+  using the crw function.  Initial heading is also randomly
+  selected if initHeading = NA. When a step crosses the polygon
+  boundary, a new heading for that step is drawn and the turn angle
+  standard deviation is enlarged slightly for each subsequent point
+  that lands outside the polygon.
+
+If polyg object is a data frame with x and y columns and
+  \code{sp_out} argument is TRUE, then \link[sp]{SpatialPoints} output object
+  will have coordinate system of \code{EPSG}.  Coordinate system on output
+  will be same as input if polyg object is \code{[sp]{SpatialPolygons}}.
 }
 \note{
 The path is constructed in segments based on the minimum distance between 
@@ -73,9 +79,10 @@ a valid EPSG for the study area.
 #Simple box example
 mypolygon <- data.frame(x = c(-50,-50, 50, 50), y = c(-50,50,50,-50))
 foo <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10, 
-                      initPos=c(0,0), initHeading=0, nsteps=50)
-plot(foo, type = "o", pch = 20, asp = c(1,1), xlim = range(mypolygon$x),
-     ylim=range(mypolygon$y))
+  initPos=c(0,0), initHeading=0, nsteps=50)
+class(foo) #note object is SpatialPoints
+plot(sp::coordinates(foo), type = "o", pch = 20, asp = c(1,1), 
+  xlim = range(mypolygon$x), ylim = range(mypolygon$y))
 polygon(mypolygon, border = "red")
 
 
