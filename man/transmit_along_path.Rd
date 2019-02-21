@@ -5,7 +5,7 @@
 \title{Simulate telemetry transmitter signals along a path}
 \usage{
 transmit_along_path(path = NA, vel = 0.5, delayRng = c(60, 180),
-  burstDur = 5)
+  burstDur = 5, EPSG = 3175, sp_out = TRUE)
 }
 \arguments{
 \item{path}{A two-column data frame with at least two rows and columns 
@@ -19,12 +19,21 @@ constant.}
 
 \item{burstDur}{A numeric scalar with duration (in seconds) of each coded 
 burst (i.e., pulse train).}
+
+\item{EPSG}{Numeric EPSG code of the coordinate system used for simulations. 
+Default is 3175, a projected coordinate system for the North American 
+Great Lakes Basin and St. Lawrence River system. 
+\url{http://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}}
+
+\item{sp_out}{Logical. If TRUE (default) then output is a 
+\link[sp]{SpatialPoints} object. If FALSE, then output is a 
+data.frame.}
 }
 \value{
-A two-column data frame containing:
-  \item{x}{ x coordinates for start of each transmission }
-  \item{y}{ y coordinates for start of each transmission }
-  \item{et}{ elapsed time to start of each transmission }
+A \link[sp]{SpatialPointsDataFrame} object in the same CRS as the
+  input \code{path} object. \cr \emph{OR} \cr \item{x}{ x coordinates for
+  start of each transmission } \item{y}{ y coordinates for start of each
+  transmission } \item{et}{ elapsed time to start of each transmission }
 }
 \description{
 Simulate tag signal transmission along a pre-defined path (x, y coords)
@@ -37,6 +46,12 @@ First, elapsed time in seconds at each node in path is calculated based on
 path length and velocity. Next, delays are simulated and burst durations 
 are added toeach delay to determine the time of each signal transmission. 
 Location of each signal transmission along the path is linearly interpolated.
+
+If path object is a data frame with x and y columns and
+  \code{sp_out} argument is TRUE, then \link[sp]{SpatialPointsDataFrame}
+  output object will have coordinate system of \code{EPSG}. Coordinate
+  system on output will be same as input if path object is
+  \code{[sp]{SpatialPoints}}.
 }
 \note{
 This function was written to be called before 
