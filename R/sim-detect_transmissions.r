@@ -106,8 +106,9 @@ detect_transmissions <- function(trnsLoc = NA , recLoc = NA, detRngFun = NA,
   
   #convert trnsLoc to SpatialPoints if not already
   if(!inherits(trnsLoc, c("SpatialPointsDataFrame", "SpatialPoints"))){ 
-    trnsLoc <- sp::SpatialPointsDataFrame(trnsLoc[, c("x", "y")], data = trnsLoc, 
-                      proj4string = sp::CRS(projargs))
+    trnsLoc <- sp::SpatialPointsDataFrame(trnsLoc[, c("x", "y")], 
+                                          data = trnsLoc, 
+                                          proj4string = sp::CRS(projargs))
     projargs_in <- projargs
   } else { 
     projargs_in <- sp::proj4string(trnsLoc) #get crs to assign output
@@ -139,9 +140,13 @@ detect_transmissions <- function(trnsLoc = NA , recLoc = NA, detRngFun = NA,
   }  
   
   #convert to data.frame (now in EPSG)
-  recLoc <- as.data.frame(recLoc)
-  trnsLoc <- as.data.frame(cbind(coordinates(trnsLoc), et = trnsLoc$et))
-
+  recLoc <- as.data.frame(sp::coordinates(recLoc))
+  trnsLoc <- as.data.frame(cbind(sp::coordinates(trnsLoc), et = trnsLoc$et))
+  
+  #rename columns
+  names(recLoc)[1:2] <- c("x", "y")
+  names(trnsLoc)[1:2] <- c("x", "y")
+  
   #preallocate detection data frame
   dtc <- data.frame(
         trns_id = NA,
@@ -184,24 +189,28 @@ detect_transmissions <- function(trnsLoc = NA , recLoc = NA, detRngFun = NA,
 		setTxtProgressBar(pb, g)
 		if(g==nrow(recLoc)) close(pb)
 	 } #end g
+  
   dtc <- dtc[order(dtc$etime),]#sort by time	 
   
-  #export spatial object where locations are receiver locations of detection
-  dtc <- sp::SpatialPointsDataFrame(dtc[, c("recv_x", "recv_y")], data = dtc,
-                                       proj4string = sp::CRS(projargs))
-  dtc <- sp::spTransform(dtc, CRSobj = projargs_in)
+  if(nrow(dtc) > 0){
   
-  #convert to input coordinate system 
-  if(!sp_out){
-    #convert transmission locations of detections to input crs
-    dtc_trns <- sp::SpatialPoints(dtc@data[,c("trns_x", "trns_y")], 
-                                  proj4string = sp::CRS(projargs))
-    dtc_trns <- sp::spTransform(dtc_trns, CRSobj = projargs_in)
+    #export spatial object where locations are receiver locations of detection
+    dtc <- sp::SpatialPointsDataFrame(dtc[, c("recv_x", "recv_y")], data = dtc,
+                                         proj4string = sp::CRS(projargs))
     dtc <- sp::spTransform(dtc, CRSobj = projargs_in)
-    dtc <- as.data.frame(cbind(dtc@data[, c("trns_id", "recv_id")], 
-                               sp::coordinates(dtc), 
-                               sp::coordinates(dtc_trns), 
-                               etime = dtc$etime))
+    
+    #convert to input coordinate system 
+    if(!sp_out){
+      #convert transmission locations of detections to input crs
+      dtc_trns <- sp::SpatialPoints(dtc@data[,c("trns_x", "trns_y")], 
+                                    proj4string = sp::CRS(projargs))
+      dtc_trns <- sp::spTransform(dtc_trns, CRSobj = projargs_in)
+      dtc <- sp::spTransform(dtc, CRSobj = projargs_in)
+      dtc <- as.data.frame(cbind(dtc@data[, c("trns_id", "recv_id")], 
+                                 sp::coordinates(dtc), 
+                                 sp::coordinates(dtc_trns), 
+                                 etime = dtc$etime))
+    }
   }
              
   return(dtc)
