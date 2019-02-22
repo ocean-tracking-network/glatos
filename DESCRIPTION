@@ -12,6 +12,7 @@ Imports:
 		fasttime,
 		gdistance,
 		lubridate,
+		knitr,
 		magrittr,
 		methods,
 		openxlsx (>= 4.0.0),
@@ -28,9 +29,9 @@ Imports:
 		tibble,
 		tidyr
 Suggests: 
-		testthat,
-    knitr,
-    rmarkdown
+		GISTools,
+    rmarkdown,
+		tint
 URL: https://gitlab.oceantrack.org/GreatLakes/glatos
 BugReports: https://gitlab.oceantrack.org/GreatLakes/glatos/issues
 Authors@R: c(
