@@ -991,7 +991,7 @@ fig_cap_grid <- "Plot of receiver network grid (black circles) and movement trac
 # plot path, grid and points
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
 points(path, type = "o", pch = 20, col = "red")
-plot(st_geometry(grid_30km), pch = 20, col = "black", add = TRUE)
+plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
 
 ```
 
@@ -1003,7 +1003,7 @@ delay range from 60--180 seconds).
 
 ```{R, echo = TRUE}
 
-tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) )
+tag_trans <- transmit_along_path(path_df, vel= 0.5, delayRng = c(60, 180) )
 
 ```
 
@@ -1055,7 +1055,7 @@ fig_cap_sim <- "Plot of receiver network grid (black circles), movement track of
 
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
 points(path, type = "o", pch = 20, col = "red")
-plot(st_geometry(grid_30km), pch = 20, col = "black", add = TRUE)
+plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
 points(mydtc, col = "blue", cex = 2, pch=20)
 
 ```
@@ -1073,20 +1073,20 @@ Stewart, T.R., Faust, M.D. , Watkinson, D.A., Charles, C., Pegg, M.,
 Enders, E.C., and Krueger, C.C. (2018) Evaluation of acoustic
 telemetry grids for determining aquatic animal movement and
 survival. Methods in Ecology and Evolution 2018:1-14, DOI:
-10.1111/2041-210X.12996.]  In the first chunk, we make the 5 km and
-2.5 km grids by adapting the code from the previous example.
+10.1111/2041-210X.12996.]  In the first chunk, we make the 10 km and
+5 km grids by adapting the code from the previous example.
 
 ```{R, echo = TRUE}
 
+# make 10 km grid
+grid_10km <- st_intersection(LH, st_make_grid(LH, cellsize = 5000, what = "centers"))
+grid_10km <- st_transform(grid_10km, crs = 4326)
+grid_10km_sp <- as(grid_10km, "Spatial")
+
 # make 5 km grid
-grid_5km <- st_intersection(LH, st_make_grid(LH, cellsize = 5000, what = "centers"))
+grid_5km <- st_intersection(LH, st_make_grid(LH, cellsize = 2500, what = "centers"))
 grid_5km <- st_transform(grid_5km, crs = 4326)
 grid_5km_sp <- as(grid_5km, "Spatial")
-
-# make 2.5 km grid
-grid_2.5km <- st_intersection(LH, st_make_grid(LH, cellsize = 2500, what = "centers"))
-grid_2.5km <- st_transform(grid_5km, crs = 4326)
-grid_2.5km_sp <- as(grid_2.5km, "Spatial")
 
 ```
 
@@ -1095,7 +1095,7 @@ Next, we create 100 virtual fish paths, starting in Saginaw Bay.  We
 store each virtual fish path as an object in a list.  Notice that we
 produce a data.frame with x and y coordinates as output for each virtual fish.
 
-```{r}
+```{r, echo = TRUE}
 
 # make empty list
 paths <- vector("list", length = 100)
@@ -1106,7 +1106,7 @@ for(i in 1:100){
 # do random walk in LH polygon of virtual fish starting in Saginaw Bay
   paths[[i]] <- crw_in_polygon(LH_latlon, theta = c(0,25),
                              stepLen= 10000, initHeading = 0,
-                             nsteps = 30, initPos = c(-83.6, 43.8), sp_out = FALSE)
+                             nsteps = 30, initPos = c(-83.6, 43.8), sp_out = TRUE)
 }
 
 ```
@@ -1114,40 +1114,131 @@ for(i in 1:100){
 Now we are going to collapse the list into a single data.table and add
 a ID column for each fish.
 
-```{r}
+```{r, echo = TRUE}
 
-# combine list into a data.table
-paths <- rbindlist(paths, idcol = "virt_fish")
+# make empty list to hold results
+trans <- vector("list", length = 100)
 
-# calculate transmissions along path for each virtual fish
-foo <- paths[, transmit_along_path(.SD, vel = 0.5, delayRng = c(60,180), sp_out = FALSE), by = virt_fish]
+# loop through and calculate transmissions along each path
+for(j in 1:100){
+  trans[[j]] <- transmit_along_path(paths[[j]], vel = 0.5, delayRng = c(60,180))
+}
 
-# 
+## # combine list into a data.table
+## paths <- rbindlist(paths, idcol = "virt_fish")
+
+## # calculate transmissions along path for each virtual fish
+## foo <- paths[, transmit_along_path(.SD[,c("x", "y")], vel = 0.5, delayRng = c(60,180), sp_out = FALSE), by = virt_fish]
 
 
+## #tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) )
+
+
+## # calculate transmissions for each virtual fish  
+## transmissions <-  vector("list", length = 100)
+## paths <- as.data.frame(paths)
+
+## for(i in 1:100){
+##   virt_fish.i <- paths[ paths$virt_fish == i, c("x", "y")]
+##   transmissions[[i]] <- transmit_along_path(virt_fish.i, vel = 0.5,
+##                                             delayRng = c(60,180), sp_out = FALSE)
+## }
 
 # plot path, grid and points
-sp::plot(LH_latlon, col = "lightgrey", border = "grey")
-points(paths[virt_fish == 1, get("x")], paths[virt_fish == 1, get(c("y"))], type = "o", pch = 20, col = "red")
-
-points(foo[virt_fish == 1, get("x")], foo[virt_fish == 1, get("y")], pch = 20, col = "blue")
-
-
+## sp::plot(LH_latlon, col = "lightgrey", border = "grey")
+## points(paths[[1]]$x, paths[[1]]$y, type = "o", pch = 20, col = "red")
+## points(trans[[1]]$x, trans[[1]]$y, pch = 20, col = "blue")
+## plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
 
 
-plot(st_geometry(grid_30km), pch = 20, col = "black", add = TRUE)
+# make empty list to hold results
+sim <- vector("list", length = 100)
 
+# loop through and calculate transmissions along each path
+for(k in 1:100){
+  sim[[k]] <- detect_transmissions(trans[[k]], recLoc = grid_10km_sp, detRngFun = edrf )
 
-mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_10km_sp, 
-                                detRngFun = edrf )
+}
+
+# convert each simulated object into a data.frame
+sim <- lapply(sim, as.data.frame)
+
+# combine list into a single data.table object
+sim <- rbindlist(foo, fill = TRUE, idcol = "virt_fish")
 
 # calculate the mean elapsed time (seconds) between detections
-sim <- as.data.table(mydtc)
-mean(diff(sim$etime))
 det_interval <- mean(diff(sim$etime))
 
-# calculate mean elapsed time difference between first detections on successive receivers
-foo <- sim[, .SD[1,"etime"],  by = recv_id]
-f_int <- mean(diff(foo$etime))
+# calculate mean elapsed time difference between
+# first detections on successive receivers by fish
+out <- sim[, .SD[1,"etime"],  by = c("recv_id", "virt_fish")]
+out[, t_diff := etime - shift(etime), by = virt_fish]
+rec_by_dtc <- mean(out$t_diff, na.rm = TRUE)
+
+######
+
+# make empty list to hold results
+trans <- vector("list", length = 100)
+
+# loop through and calculate transmissions along each path
+for(j in 1:100){
+  trans[[j]] <- transmit_along_path(paths[[j]], vel = 0.5, delayRng = c(60,180))
+}
+
+## # combine list into a data.table
+## paths <- rbindlist(paths, idcol = "virt_fish")
+
+## # calculate transmissions along path for each virtual fish
+## foo <- paths[, transmit_along_path(.SD[,c("x", "y")], vel = 0.5, delayRng = c(60,180), sp_out = FALSE), by = virt_fish]
+
+
+## #tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) )
+
+
+## # calculate transmissions for each virtual fish  
+## transmissions <-  vector("list", length = 100)
+## paths <- as.data.frame(paths)
+
+## for(i in 1:100){
+##   virt_fish.i <- paths[ paths$virt_fish == i, c("x", "y")]
+##   transmissions[[i]] <- transmit_along_path(virt_fish.i, vel = 0.5,
+##                                             delayRng = c(60,180), sp_out = FALSE)
+## }
+
+# plot path, grid and points
+## sp::plot(LH_latlon, col = "lightgrey", border = "grey")
+## points(paths[[1]]$x, paths[[1]]$y, type = "o", pch = 20, col = "red")
+## points(trans[[1]]$x, trans[[1]]$y, pch = 20, col = "blue")
+## plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
+
+
+# make empty list to hold results
+sim <- vector("list", length = 100)
+
+# loop through and calculate transmissions along each path
+for(k in 1:100){
+  sim[[k]] <- detect_transmissions(trans[[k]], recLoc = grid_10km_sp, detRngFun = edrf )
+
+}
+
+# convert each simulated object into a data.frame
+sim <- lapply(sim, as.data.frame)
+
+# combine list into a single data.table object
+sim <- rbindlist(foo, fill = TRUE, idcol = "virt_fish")
+
+# calculate the mean elapsed time (seconds) between detections
+det_interval <- mean(diff(sim$etime))
+
+# calculate mean elapsed time difference between
+# first detections on successive receivers by fish
+out <- sim[, .SD[1,"etime"],  by = c("recv_id", "virt_fish")]
+out[, t_diff := etime - shift(etime), by = virt_fish]
+rec_by_dtc <- mean(out$t_diff, na.rm = TRUE)
+
+
+
+
+
 
 ```
