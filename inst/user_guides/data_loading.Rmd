@@ -6,6 +6,10 @@ output:
     toc: true
     toc_depth: 3
     number_sections: true
+  rmarkdown::html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
 vignette: >
   %\VignetteIndexEntry{Data loading methods for the R package glatos}
   %\VignetteEngine{knitr::rmarkdown}
