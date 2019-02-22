@@ -108,7 +108,8 @@
 
 
 make_transition <- function(in_file, output = "out.tif",
-                            output_dir = NULL, res = c(0.1, 0.1), all_touched){
+                            output_dir = NULL, res = c(0.1, 0.1), 
+                            all_touched = TRUE){
 
   # check to see if gdal is installed on machine- stop if not.
   gdalUtils::gdal_setInstallation()

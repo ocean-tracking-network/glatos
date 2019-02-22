@@ -80,8 +80,7 @@ REI <- function(detections, deployments) {
     }
 
     # Get the total number of days the array/line was active
-    array_days_active <- as.integer(na.omit(max(deployments$recover_date_time)) - na.omit(min(deployments$deploy_date_time)))
-
+    array_days_active <- as.integer(max(na.omit(rcv$recover_date_time)) - min(na.omit(deployments$deploy_date_time)))
 
     # Calculate each receivers total days deployed
     deployments$days_deployed <- round(difftime(deployments$recover_date_time, deployments$deploy_date_time, units='days'), 0)
@@ -91,7 +90,7 @@ REI <- function(detections, deployments) {
       receiver_days_active = as.numeric(sum(days_deployed))
     )
     deployments <- na.omit(deployments)
-
+    
     # Exclude all detections that are not registered with receivers in the deployments
     detections <- subset(detections, detections$station %in% deployments$station)
 
@@ -100,7 +99,7 @@ REI <- function(detections, deployments) {
     array_unique_species <- length (unique(detections$common_name_e))
     days_with_detections <- length(unique(as.Date(detections$detection_timestamp_utc)))
 
-
+    
     # Loop through each station in the detections and Calculate REI for each station
     station_stats <- group_by(detections, station) %>% summarise(
       latitude = mean(deploy_lat),
@@ -109,7 +108,7 @@ REI <- function(detections, deployments) {
       receiver_unique_species = length(unique(common_name_e)),
       receiver_days_with_detections = length(unique(as.Date(detection_timestamp_utc)))
     )
-
+    
     station_reis <- merge(station_stats,deployments,by='station', all.x=TRUE)
 
     station_reis$rei <- (station_reis$receiver_unique_tags / array_unique_tags) * (station_reis$receiver_unique_species / array_unique_species) * (station_reis$receiver_days_with_detections / days_with_detections) * (array_days_active / station_reis$receiver_days_active)
@@ -122,6 +121,6 @@ REI <- function(detections, deployments) {
 
     return(station_reis)
   } else {
-    # print column errors
+    message("Please make sure detections and deployments have the correct columns.")
   }
 }
