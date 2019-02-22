@@ -1003,7 +1003,7 @@ delay range from 60--180 seconds).
 
 ```{R, echo = TRUE}
 
-tag_trans <- transmit_along_path(path_df, vel= 0.5, delayRng = c(60, 180) )
+tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) ) ###HOLBROOK LOOK HERE!!!!
 
 ```
 
@@ -1124,33 +1124,6 @@ for(j in 1:100){
   trans[[j]] <- transmit_along_path(paths[[j]], vel = 0.5, delayRng = c(60,180))
 }
 
-## # combine list into a data.table
-## paths <- rbindlist(paths, idcol = "virt_fish")
-
-## # calculate transmissions along path for each virtual fish
-## foo <- paths[, transmit_along_path(.SD[,c("x", "y")], vel = 0.5, delayRng = c(60,180), sp_out = FALSE), by = virt_fish]
-
-
-## #tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) )
-
-
-## # calculate transmissions for each virtual fish  
-## transmissions <-  vector("list", length = 100)
-## paths <- as.data.frame(paths)
-
-## for(i in 1:100){
-##   virt_fish.i <- paths[ paths$virt_fish == i, c("x", "y")]
-##   transmissions[[i]] <- transmit_along_path(virt_fish.i, vel = 0.5,
-##                                             delayRng = c(60,180), sp_out = FALSE)
-## }
-
-# plot path, grid and points
-## sp::plot(LH_latlon, col = "lightgrey", border = "grey")
-## points(paths[[1]]$x, paths[[1]]$y, type = "o", pch = 20, col = "red")
-## points(trans[[1]]$x, trans[[1]]$y, pch = 20, col = "blue")
-## plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
-
-
 # make empty list to hold results
 sim <- vector("list", length = 100)
 
@@ -1164,7 +1137,7 @@ for(k in 1:100){
 sim <- lapply(sim, as.data.frame)
 
 # combine list into a single data.table object
-sim <- rbindlist(foo, fill = TRUE, idcol = "virt_fish")
+sim <- rbindlist(sim, fill = TRUE, idcol = "virt_fish")
 
 # calculate the mean elapsed time (seconds) between detections
 det_interval <- mean(diff(sim$etime))
@@ -1174,71 +1147,48 @@ det_interval <- mean(diff(sim$etime))
 out <- sim[, .SD[1,"etime"],  by = c("recv_id", "virt_fish")]
 out[, t_diff := etime - shift(etime), by = virt_fish]
 rec_by_dtc <- mean(out$t_diff, na.rm = TRUE)
-
-######
-
-# make empty list to hold results
-trans <- vector("list", length = 100)
-
-# loop through and calculate transmissions along each path
-for(j in 1:100){
-  trans[[j]] <- transmit_along_path(paths[[j]], vel = 0.5, delayRng = c(60,180))
-}
-
-## # combine list into a data.table
-## paths <- rbindlist(paths, idcol = "virt_fish")
-
-## # calculate transmissions along path for each virtual fish
-## foo <- paths[, transmit_along_path(.SD[,c("x", "y")], vel = 0.5, delayRng = c(60,180), sp_out = FALSE), by = virt_fish]
-
-
-## #tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) )
-
-
-## # calculate transmissions for each virtual fish  
-## transmissions <-  vector("list", length = 100)
-## paths <- as.data.frame(paths)
-
-## for(i in 1:100){
-##   virt_fish.i <- paths[ paths$virt_fish == i, c("x", "y")]
-##   transmissions[[i]] <- transmit_along_path(virt_fish.i, vel = 0.5,
-##                                             delayRng = c(60,180), sp_out = FALSE)
-## }
-
-# plot path, grid and points
-## sp::plot(LH_latlon, col = "lightgrey", border = "grey")
-## points(paths[[1]]$x, paths[[1]]$y, type = "o", pch = 20, col = "red")
-## points(trans[[1]]$x, trans[[1]]$y, pch = 20, col = "blue")
-## plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
-
-
-# make empty list to hold results
-sim <- vector("list", length = 100)
-
-# loop through and calculate transmissions along each path
-for(k in 1:100){
-  sim[[k]] <- detect_transmissions(trans[[k]], recLoc = grid_10km_sp, detRngFun = edrf )
-
-}
-
-# convert each simulated object into a data.frame
-sim <- lapply(sim, as.data.frame)
-
-# combine list into a single data.table object
-sim <- rbindlist(foo, fill = TRUE, idcol = "virt_fish")
-
-# calculate the mean elapsed time (seconds) between detections
-det_interval <- mean(diff(sim$etime))
-
-# calculate mean elapsed time difference between
-# first detections on successive receivers by fish
-out <- sim[, .SD[1,"etime"],  by = c("recv_id", "virt_fish")]
-out[, t_diff := etime - shift(etime), by = virt_fish]
-rec_by_dtc <- mean(out$t_diff, na.rm = TRUE)
-
-
-
-
-
 
 ```
+
+Now that we've calculated the average elapsed time difference between
+first detections on successive receivers for all simulated fish on a
+10 km grid (`r rec_by_dtc`), we are going to
+repeat the simulation with a 5 km grid in the next chunk.
+
+```{R}
+
+# make empty list to hold results
+sim2 <- vector("list", length = 100)
+
+# loop through and calculate transmissions along each path
+for(k in 1:100){
+  sim2[[k]] <- detect_transmissions(trans[[k]], recLoc = grid_5km_sp, detRngFun = edrf )
+
+}
+
+# convert each simulated object into a data.frame
+sim2 <- lapply(sim2, as.data.frame)
+
+# combine list into a single data.table object
+sim2 <- rbindlist(sim2, fill = TRUE, idcol = "virt_fish")
+
+# calculate the mean elapsed time (seconds) between detections
+det_interval_sim2 <- mean(diff(sim2$etime))
+
+# calculate mean elapsed time difference between
+# first detections on successive receivers by fish
+sim2_out <- sim2[, .SD[1,"etime"],  by = c("recv_id", "virt_fish")]
+sim2_out[, t_diff := etime - shift(etime), by = virt_fish]
+rec_by_dtc_sim2 <- mean(sim2_out$t_diff, na.rm = TRUE)
+
+```
+From our simulations, we estimated the time interval between first
+detections on successive receivers was `r rec_by_dtc` for a 10 km grid
+and `r rec_by_dtc_sim2` for a 5 km grid.  Likewise, the mean time
+between detections was `r det_interval` seconds for the 10 km grid and
+`r det_interval_sim2` for the 5 km grid.  As you can see, the 5 km
+grid detected fish more often the the 10 km grid at the cost of many
+more receivers.  This is one example of how simulation may be used to
+estimate the theoretical performance of telemetry arrays.
+Additionally, simulation may be a helpful tool for post-hoc
+evaluation of telemetry array performance.
