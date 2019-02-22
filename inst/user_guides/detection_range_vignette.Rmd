@@ -943,7 +943,7 @@ LH_latlon <- as(LH_latlon, "Spatial")
 ```
 
 Next we set up a receiver grid in Lake Huron for use in the simulation
-and create a grid of virtual receivers that are spaced 30 km apart.
+and create a grid of virtual receivers that are spaced 10 km apart.
 After making the grid, we convert back to a cartesian coordinate
 system (i.e., WGS 84, latitude and longitude).
 
@@ -951,13 +951,13 @@ system (i.e., WGS 84, latitude and longitude).
 
 # make grid in LH polygon
 # cellsize is in meters...
-grid_30km <- st_intersection(LH, st_make_grid(LH, cellsize = 30000, what = "centers"))
+grid_10km <- st_intersection(LH, st_make_grid(LH, cellsize = 10000, what = "centers"))
 
 # convert back to WGS84-lat/lon
-grid_30km <- st_transform(grid_30km, crs = 4326)
+grid_10km <- st_transform(grid_10km, crs = 4326)
 
 # convert coordinates to sp for future use 
-grid_30km_sp <- as(grid_30km, "Spatial")
+grid_10km_sp <- as(grid_10km, "Spatial")
 
 ```
 
@@ -974,12 +974,11 @@ every 10 km.  We calculate positions for our virtual fish for 30 steps.
 ```{R, echo = TRUE}
 
 # do random walk in LH polygon starting in Saginaw Bay
-#path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30, initPos = c(-83.6, 43.8))
-path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30)
+path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30, initPos = c(-83.6, 43.8))
 
 ```
 
-Now it is time to bring together fish track, grid and outline to make
+Now it is time to bring together fish track, grid, and Lake Huron outline to make
 sure everything looks good.  This is a good time to remember that our
 virtual fish likely does not behave like real fish!
 
@@ -993,7 +992,6 @@ fig_cap_grid <- "Plot of receiver network grid (black circles) and movement trac
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
 points(path, type = "o", pch = 20, col = "red")
 plot(st_geometry(grid_30km), pch = 20, col = "black", add = TRUE)
-
 
 ```
 
@@ -1021,15 +1019,135 @@ to the reader to review how this object was created.
 
 ```{R, echo = TRUE}
 
-mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_30km_sp, 
+mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_10km_sp, 
                                 detRngFun = edrf )
 
-#points(mydtc, col = "blue", cex = 2, lwd = 2)
+# calculate the mean elapsed time (seconds) between detections
+sim <- as.data.table(mydtc)
+mean(diff(sim$etime))
+det_interval <- mean(diff(sim$etime))
+
+# calculate mean elapsed time difference between first detections on successive receivers
+foo <- sim[, .SD[1,"etime"],  by = recv_id]
+f_int <- mean(diff(foo$etime))
+
+```
+
+The output from the simulation consists of a spatial object that
+contains all locations where the fish was detected and coordinates for
+the receivers that detected the transmission.  We can see that this
+virtual fish was detected `r nrow(mydtc)` times on `r
+length(unique(mydtc$recv_id))` receivers.  The mean time interval
+between successive detections was `r det_interval` seconds and the
+mean elapsed time difference between first detections on successive
+receivers is `r f_int` seconds.
+
+Let's visualize our simulation.  We will create a plot of the virtual
+fish track, receiver grid and add the points where the fish was
+detected.
+
+
+```{r, echo=FALSE}
+fig_cap_sim <- "Plot of receiver network grid (black circles), movement track of virtual fish (red circle and line), and locations where virtual fish was detected (blue circles) in Lake Huron" 
+```
+
+```{R, echo = TRUE, fig.height=8,fig.width=8,fig.cap=fig_cap_sim}
+
+sp::plot(LH_latlon, col = "lightgrey", border = "grey")
+points(path, type = "o", pch = 20, col = "red")
+plot(st_geometry(grid_30km), pch = 20, col = "black", add = TRUE)
+points(mydtc, col = "blue", cex = 2, pch=20)
+
+```
+
+At this point, we have simulated detections for one virtual fish. In the next
+section we are going to simulate multiple fish (n=100) and compare the
+performance of a 5 km grid with a 2.5 km grid.  We will keep the tag
+specifications, movement rates, and turn angles the same for both grid
+configurations.  Comparison of different grid spacing is an important
+consideration when determing how to allocate limited number of
+receivers but the influence of many other parameters may also be
+critical for designing a grid study that meets project
+objectives.^[see Kraus, R.T., Holbrook, C.M., Vandergoot, C.S. ,
+Stewart, T.R., Faust, M.D. , Watkinson, D.A., Charles, C., Pegg, M.,
+Enders, E.C., and Krueger, C.C. (2018) Evaluation of acoustic
+telemetry grids for determining aquatic animal movement and
+survival. Methods in Ecology and Evolution 2018:1-14, DOI:
+10.1111/2041-210X.12996.]  In the first chunk, we make the 5 km and
+2.5 km grids by adapting the code from the previous example.
+
+```{R, echo = TRUE}
+
+# make 5 km grid
+grid_5km <- st_intersection(LH, st_make_grid(LH, cellsize = 5000, what = "centers"))
+grid_5km <- st_transform(grid_5km, crs = 4326)
+grid_5km_sp <- as(grid_5km, "Spatial")
+
+# make 2.5 km grid
+grid_2.5km <- st_intersection(LH, st_make_grid(LH, cellsize = 2500, what = "centers"))
+grid_2.5km <- st_transform(grid_5km, crs = 4326)
+grid_2.5km_sp <- as(grid_2.5km, "Spatial")
 
 ```
 
 
+Next, we create 100 virtual fish paths, starting in Saginaw Bay.  We
+store each virtual fish path as an object in a list.  Notice that we
+produce a data.frame with x and y coordinates as output for each virtual fish.
+
+```{r}
+
+# make empty list
+paths <- vector("list", length = 100)
+
+# loop through and create fish paths, store each fish as item in list.
+for(i in 1:100){
+
+# do random walk in LH polygon of virtual fish starting in Saginaw Bay
+  paths[[i]] <- crw_in_polygon(LH_latlon, theta = c(0,25),
+                             stepLen= 10000, initHeading = 0,
+                             nsteps = 30, initPos = c(-83.6, 43.8), sp_out = FALSE)
+}
+
+```
+
+Now we are going to collapse the list into a single data.table and add
+a ID column for each fish.
+
+```{r}
+
+# combine list into a data.table
+paths <- rbindlist(paths, idcol = "virt_fish")
+
+# calculate transmissions along path for each virtual fish
+foo <- paths[, transmit_along_path(.SD, vel = 0.5, delayRng = c(60,180), sp_out = FALSE), by = virt_fish]
+
+# 
+
+
+
+# plot path, grid and points
+sp::plot(LH_latlon, col = "lightgrey", border = "grey")
+points(paths[virt_fish == 1, get("x")], paths[virt_fish == 1, get(c("y"))], type = "o", pch = 20, col = "red")
+
+points(foo[virt_fish == 1, get("x")], foo[virt_fish == 1, get("y")], pch = 20, col = "blue")
 
 
 
 
+plot(st_geometry(grid_30km), pch = 20, col = "black", add = TRUE)
+
+
+mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_10km_sp, 
+                                detRngFun = edrf )
+
+# calculate the mean elapsed time (seconds) between detections
+sim <- as.data.table(mydtc)
+mean(diff(sim$etime))
+det_interval <- mean(diff(sim$etime))
+
+# calculate mean elapsed time difference between first detections on successive receivers
+foo <- sim[, .SD[1,"etime"],  by = recv_id]
+f_int <- mean(diff(foo$etime))
+
+```
