@@ -68,19 +68,11 @@ adjust_playback_time <- function(scale_factor = 1,
                                  overwrite = FALSE,
                                  ffmpeg = NA ){
 
-# try calling ffmpeg
-    cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)	
-    ffVers <- suppressWarnings(system2(cmd, "-version", stdout=F)) #call ffmpeg
-    if(ffVers == 127)
-      stop(paste0('"ffmpeg.exe" was not found.\n',
-                  'Ensure it is installed add added to system PATH variable\n',
-                  "or specify path using input argument 'ffmpeg'\n\n",
-                  'FFmpeg is available from:\n https://ffmpeg.org/\n',
-                  'You may create the individual frames and then combine them\n',
-                  'into an animation manually using video editing software\n', 
-                  '(e.g., Windows Movie Maker or iMovie) by setting the animate\n',
-                  'argument to FALSE.'),
-           call. = FALSE)
+  # test ffmpeg and get path
+  ffmpeg <- get_ffmpeg_path(ffmpeg)
+    
+  cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)
+  
   input <- shQuote(input)
   out <- shQuote(file.path(output_dir, output))
   ffcall <- sprintf('-i %s -filter:v "setpts=%f*PTS" %s %s', input,

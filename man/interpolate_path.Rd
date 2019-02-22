@@ -4,8 +4,8 @@
 \alias{interpolate_path}
 \title{Interpolate new positions within a spatiotemporal path data}
 \usage{
-interpolate_path(det, trans = NULL, int_time_stamp = 86400,
-  lnl_thresh = 0.9)
+interpolate_path(det, trans = NULL, start_time = NULL,
+  int_time_stamp = 86400, lnl_thresh = 0.9, out_class = NULL)
 }
 \arguments{
 \item{det}{An object of class \code{glatos_detections} or data frame
@@ -18,11 +18,20 @@ moving across each cell within the map extent. Must be of class
 \code{TransitionLayer}. A transition layer may be
 created from a polygon shapefile using \link{make_transition}.}
 
+\item{start_time}{specify the first time bin for interpolated data.
+If not supplied, default is first timestamp in the input data
+set.  Must be a character string that can be coerced to
+'POSIXct' or an object of class 'POSIXct'.  If character string
+is supplied, timezone is automatically set to UTC.}
+
 \item{int_time_stamp}{The time step size (in seconds) of interpolated 
 positions. Default is 86400 (one day).}
 
 \item{lnl_thresh}{A numeric threshold for determining if linear or
 non-linear interpolation shortest path will be used.}
+
+\item{out_class}{Return results as a data.table or tibble.  Default
+returns results as data.frame.  Accepts `data.table` or `tibble`.}
 }
 \value{
 A dataframe with animal_id, bin_timestamp,
@@ -168,7 +177,7 @@ points(foo$deploy_long, foo$deploy_lat, pch = 20, col = "red")
 
 # call with "transition matrix" (non-linear interpolation), other options
 # note that it is quite a bit slower due than linear interpolation
-pos2 <- interpolate_path(det, trans = tran1$transition)
+pos2 <- interpolate_path(det, trans = tran1$transition, out_class = "data.table")
 
 plot(maumee, col = "grey")
 points(latitude ~ longitude, data = pos2, pch=20, col='red', cex=0.5)

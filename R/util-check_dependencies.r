@@ -52,9 +52,11 @@
 ##' @author Todd Hayden
 ##'
 ##' @examples
-##'
+##'\dontrun{
 ##' # run check
 ##' check_dependencies() 
+##' }
+##'
 ##' @export
 
 
@@ -85,6 +87,8 @@ check_dependencies <- function(){
     message("OK... FFmpeg is installed and on system PATH.")
   } else {
     message(paste0("FFmpeg not found.\n",
+                   "To install in glatos package directory see \n",
+                   "\t- ?install_ffmpeg\n",
                    "To install and set system PATH variable, see:\n",
                    "\t- https://www.ffmpeg.org\n",
                    "\t- ?check_dependencies"))

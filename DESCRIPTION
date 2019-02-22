@@ -7,9 +7,9 @@ Date: 2019-02-19
 Depends: R (>= 3.2.0)
 Imports:
 		cellranger,
-		data.table,
-		dplyr,
-		gdalUtils,
+		data.table,		
+		fasterize,
+		fasttime,
 		gdistance,
 		lubridate,
 		magrittr,
@@ -23,6 +23,7 @@ Imports:
 		readxl,
 		rgdal,
 		rgeos,
+		sf,
 		sp,
 		tibble,
 		tidyr
