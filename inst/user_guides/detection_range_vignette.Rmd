@@ -81,7 +81,9 @@ library(GISTools)
 library(data.table)
 library(ggplot2)
 
-dtc <- read_glatos_detections("~/Documents/WBCCM_carp/WBCCM_20181115/WBCCM_detectionsWithLocs_20181115_162626.csv")
+#get sample range detection data from glatos pkg
+data(range_detection)
+dtc <- range_detection
 setDT(dtc)
 
 tags <- dtc[as.numeric(receiver_sn) - as.numeric(transmitter_id) == 420000]
@@ -143,12 +145,14 @@ vignettes. ^[Additional information about data.table for R, including vignettes:
  
 # Import data and clean up
 
-First, we need to load libraries, read in the detection data file, and
-do a little clean-up.  We will use the GLATOS `read_glatos_detections`
-function to load data.  Example data used in this vignette is included
-with the GLATOS package.  The most recent version of the GLATOS
-package and installation instructions can be obtained at
-https://gitlab.oceantrack.org/GreatLakes/glatos
+First, we need to load libraries, read in the detection data file, and do a
+little clean-up.  Example data used in this vignette are included with the
+GLATOS R package and will be loaded below using `data(range_detection)`, but
+note that this data object was created using the GLATOS `read_glatos_detections`
+function to load data from the original GLATOS detection export CSV file (e.g.,
+named *WBCCM_detectionsWithLocs_20181115_162626.csv*).  The most recent version
+of the GLATOS package and installation instructions can be obtained at
+https://gitlab.oceantrack.org/GreatLakes/glatos.
 
 ```{r, echo = TRUE, warning = FALSE}
 
@@ -158,8 +162,9 @@ library(data.table)
 library(geosphere)
 library(ggplot2)
 
-# load detection data 
-dtc <- read_glatos_detections("WBCCM_detectionsWithLocs_20181115_162626.csv")
+# load detection data from glatos package
+data(range_detection)
+dtc <- range_detection
 
 # convert dtc to data.table
 setDT(dtc)
@@ -1016,7 +1021,10 @@ to the reader to review how this object was created.
 
 ```{R, echo = TRUE}
 
-mytrns <- detect_transmissions(transLoc = tag_trans, recLoc = grid_30km_sp, detRngFun = edrf )
+mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_30km_sp, 
+                                detRngFun = edrf )
+
+#points(mydtc, col = "blue", cex = 2, lwd = 2)
 
 ```
 
