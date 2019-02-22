@@ -11,7 +11,7 @@ dep_file <- system.file("extdata", "hfx_deployments.csv",
 hfx_detections <- glatos::read_otn_detections(det_file)
 hfx_deployments <- glatos::read_otn_deployments(dep_file)
 
-hfx_rei <- glatos::REI(dets,hfx_deployments)
+hfx_rei <- glatos::REI(hfx_detections,hfx_deployments)
 
 
 

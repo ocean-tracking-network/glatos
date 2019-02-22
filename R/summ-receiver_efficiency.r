@@ -80,7 +80,7 @@ REI <- function(detections, deployments) {
     }
 
     # Get the total number of days the array/line was active
-    array_days_active <- as.integer(max(na.omit(rcv$recover_date_time)) - min(na.omit(deployments$deploy_date_time)))
+    array_days_active <- as.integer(max(na.omit(deployments$recover_date_time)) - min(na.omit(deployments$deploy_date_time)))
 
     # Calculate each receivers total days deployed
     deployments$days_deployed <- round(difftime(deployments$recover_date_time, deployments$deploy_date_time, units='days'), 0)
