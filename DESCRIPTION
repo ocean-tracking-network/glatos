@@ -12,6 +12,7 @@ Imports:
 		fasttime,
 		gdalUtils,
 		gdistance,
+		geosphere,
 		lubridate,
 		knitr,
 		magrittr,
