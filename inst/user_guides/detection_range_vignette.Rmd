@@ -129,7 +129,7 @@ the scope of this vignette.  Please contact the GLATOS Data Steward
 for more information about uploading range testing data and data
 export.^[GLATOS Data Steward- Nancy Nate, email: nnate@usgs.gov]
 
-In the first part of this vignette, we provide R code for importing
+In the first part of this vignette, we provide R code for loading
 and cleaning up the detection data.  In subsequent sections, we
 present a figure to visualize raw detection history of each receiver,
 code to calculate detection probability, extract detection range
@@ -145,7 +145,7 @@ vignettes. ^[Additional information about data.table for R, including vignettes:
  
 # Import data and clean up
 
-First, we need to load libraries, read in the detection data file, and do a
+First, we need to load libraries, load the detection data file, and do a
 little clean-up.  Example data used in this vignette are included with the
 GLATOS R package and will be loaded below using `data(range_detection)`, but
 note that this data object was created using the GLATOS `read_glatos_detections`
@@ -759,7 +759,7 @@ sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
 # pass a false detection filter).
 ```
 
-It looks like about `r round((sim*100))`% of virtual fish were detected. Now, let's repeat it with 10000 fish, but without the plot.
+It looks like about `r#round((sim*100))`% of virtual fish were detected. Now, let's repeat it with 10000 fish, but without the plot.
 
 ```{r echo=TRUE, fig.height=8, fig.width=8}
 # Again but with 10000 fish and no plot.
@@ -768,7 +768,7 @@ sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
 
 ```
 
-Results suggest that `r round((sim*100))`% of all fish should be
+Results suggest that `r#round((sim*100))`% of all fish should be
 detected under the conditions simulated. However, we might want to
 determine how the proportion of fish detected changes if we use more or
 less receivers. In order to conserve resources (i.e., receivers), we
@@ -838,9 +838,9 @@ These results suggest that the proportion of fish detected reaches a
 plateau at around 5 receivers.  Deploying a line with more than
 five receivers does not drastically increase the proportion of fish
 that are detected with the input parameters simulated.  If we deployed
-5 receivers, the percent of fish detected is `r#round(sim_out[5]*100,
-1)`%, but before we make our final decision, let's consider what might
-happen if we lost a receiver during our study, so that our line ended
+5 receivers, the percent of fish detected is
+`r#round(sim_out[5]*100,0)`%, but before we make our final decision,
+let's consider what might happen if we lost a receiver during our study, so that our line ended
 up having a hole in it. Again, we will simulate just ten fish with a
 plot to see what this looks like and then we'll run the simulation with 10000 virtual fish.
 
@@ -1024,8 +1024,7 @@ mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_10km_sp,
 
 # calculate the mean elapsed time (seconds) between detections
 sim <- as.data.table(mydtc)
-mean(diff(sim$etime))
-det_interval <- mean(diff(sim$etime))
+detinterval <- round(mean(diff(sim$etime))/60,0)
 
 # calculate mean elapsed time difference between first detections on successive receivers
 foo <- sim[, .SD[1,"etime"],  by = recv_id]
@@ -1036,11 +1035,11 @@ f_int <- mean(diff(foo$etime))
 The output from the simulation consists of a spatial object that
 contains all locations where the fish was detected and coordinates for
 the receivers that detected the transmission.  We can see that this
-virtual fish was detected `r nrow(mydtc)` times on `r
-length(unique(mydtc$recv_id))` receivers.  The mean time interval
-between successive detections was `r det_interval` seconds and the
-mean elapsed time difference between first detections on successive
-receivers is `r f_int` seconds.
+virtual fish was detected `r#nrow(mydtc)` times on
+`r#length(unique(mydtc$recv_id))` receivers.  The mean time interval
+between successive detections was `r#detinterval` minutes
+and the mean elapsed time difference between first detections on
+successive receivers was `r#round(f_int/60,0)` minutes.
 
 Let's visualize our simulation.  We will create a plot of the virtual
 fish track, receiver grid and add the points where the fish was
@@ -1062,7 +1061,7 @@ points(mydtc, col = "blue", cex = 2, pch=20)
 
 At this point, we have simulated detections for one virtual fish. In the next
 section we are going to simulate multiple fish (n=100) and compare the
-performance of a 5 km grid with a 2.5 km grid.  We will keep the tag
+performance of a 5 km grid with a 10 km grid.  We will keep the tag
 specifications, movement rates, and turn angles the same for both grid
 configurations.  Comparison of different grid spacing is an important
 consideration when determing how to allocate limited number of
@@ -1079,12 +1078,12 @@ survival. Methods in Ecology and Evolution 2018:1-14, DOI:
 ```{R, echo = TRUE}
 
 # make 10 km grid
-grid_10km <- st_intersection(LH, st_make_grid(LH, cellsize = 5000, what = "centers"))
+grid_10km <- st_intersection(LH, st_make_grid(LH, cellsize = 10000, what = "centers"))
 grid_10km <- st_transform(grid_10km, crs = 4326)
 grid_10km_sp <- as(grid_10km, "Spatial")
 
 # make 5 km grid
-grid_5km <- st_intersection(LH, st_make_grid(LH, cellsize = 2500, what = "centers"))
+grid_5km <- st_intersection(LH, st_make_grid(LH, cellsize = 5000, what = "centers"))
 grid_5km <- st_transform(grid_5km, crs = 4326)
 grid_5km_sp <- as(grid_5km, "Spatial")
 
@@ -1140,19 +1139,19 @@ sim <- lapply(sim, as.data.frame)
 sim <- rbindlist(sim, fill = TRUE, idcol = "virt_fish")
 
 # calculate the mean elapsed time (seconds) between detections
-det_interval <- mean(diff(sim$etime))
+det_interval_sim1 <- mean(diff(sim$etime))
 
 # calculate mean elapsed time difference between
 # first detections on successive receivers by fish
 out <- sim[, .SD[1,"etime"],  by = c("recv_id", "virt_fish")]
 out[, t_diff := etime - shift(etime), by = virt_fish]
-rec_by_dtc <- mean(out$t_diff, na.rm = TRUE)
+rec_by_dtc_sim1 <- mean(out$t_diff, na.rm = TRUE)
 
 ```
 
 Now that we've calculated the average elapsed time difference between
 first detections on successive receivers for all simulated fish on a
-10 km grid (`r rec_by_dtc`), we are going to
+10 km grid (`r#round(rec_by_dtc_sim1/60,0)`), we are going to
 repeat the simulation with a 5 km grid in the next chunk.
 
 ```{R}
@@ -1183,10 +1182,10 @@ rec_by_dtc_sim2 <- mean(sim2_out$t_diff, na.rm = TRUE)
 
 ```
 From our simulations, we estimated the time interval between first
-detections on successive receivers was `r rec_by_dtc` for a 10 km grid
-and `r rec_by_dtc_sim2` for a 5 km grid.  Likewise, the mean time
-between detections was `r det_interval` seconds for the 10 km grid and
-`r det_interval_sim2` for the 5 km grid.  As you can see, the 5 km
+detections on successive receivers was `r#round(rec_by_dtc_sim1/60,0)` minutes for a 10 km grid
+and `r#round(rec_by_dtc_sim2/60,0)` minutes for a 5 km grid.  Likewise, the mean time
+between detections was `r#round(det_interval_sim1/60,0)` minutes for the 10 km grid and
+`r#round(det_interval_sim2/60,0)` minutes for the 5 km grid.  As you can see, the 5 km
 grid detected fish more often the the 10 km grid at the cost of many
 more receivers.  This is one example of how simulation may be used to
 estimate the theoretical performance of telemetry arrays.
