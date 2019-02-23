@@ -6,7 +6,7 @@
 \usage{
 crw_in_polygon(polyg, theta = c(0, 10), stepLen = 100,
   initPos = c(NA, NA), initHeading = NA, nsteps = 30, EPSG = 3175,
-  sp_out = TRUE)
+  sp_out = TRUE, show_progress = TRUE)
 }
 \arguments{
 \item{polyg}{A \code{\link[sp]{SpatialPolygons}} object.
@@ -36,6 +36,9 @@ Great Lakes Basin and St. Lawrence River system.
 \item{sp_out}{Logical. If TRUE (default) then output is a 
 \link[sp]{SpatialPoints} object. If FALSE, then output is a 
 data.frame.}
+
+\item{show_progress}{Logical. Progress bar and status messages will be 
+shown if TRUE (default) and not shown if FALSE.}
 }
 \value{
 A \link[sp]{SpatialPoints} object in the same CRS as the input 

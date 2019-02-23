@@ -1,19 +1,18 @@
 ---
 title: "Residence Index"
+subtitle: "Workshop Handout - GLATOS, March 27, 2018"
+author: "Alex Nunes" 
 date: "Updated: `r Sys.Date()`"
 output:
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: true
   rmarkdown::pdf_document:
     toc: true
     toc_depth: 3
     number_sections: true
-  rmarkdown::html_document:
-    toc: true
-    toc_depth: 3
-    number_sections: true
-vignette: >
-  %\VignetteIndexEntry{Residence Index}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}

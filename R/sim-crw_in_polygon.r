@@ -31,6 +31,9 @@
 #' @param sp_out Logical. If TRUE (default) then output is a 
 #'  \link[sp]{SpatialPoints} object. If FALSE, then output is a 
 #'  data.frame.
+#'  
+#' @param show_progress Logical. Progress bar and status messages will be 
+#'  shown if TRUE (default) and not shown if FALSE.
 #'   
 #' @details If initPos = NA, then a starting point is randomly
 #'   selected within the polygon boundary. A path is simulated forward
@@ -100,7 +103,7 @@
 
 crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100, 
   initPos = c(NA,NA), initHeading = NA, nsteps = 30, 
-  EPSG = 3175, sp_out = TRUE){          
+  EPSG = 3175, sp_out = TRUE, show_progress = TRUE){          
   
   #convert to Polygon if not already
   if(!inherits(polyg, c("SpatialPolygonsDataFrame", "SpatialPolygons", 
@@ -174,8 +177,10 @@ crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100,
   k <- 0
 
   #initialize progress bar
-  message("Simulating tracks...")
-  pb <- txtProgressBar(min = 0, max = nsteps, initial = 0, style = 3)	  
+  if(show_progress) {
+    message("Simulating tracks...")
+    pb <- txtProgressBar(min = 0, max = nsteps, initial = 0, style = 3)	  
+  }
   
   while(max(rows_i) <= (nsteps + 1)){
 
@@ -226,11 +231,13 @@ crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100,
     
     
     #update progress bar
-    setTxtProgressBar(pb, max(rows_i))
-    if(max(rows_i) > (nsteps + 1)) close(pb)		
+    if(show_progress){
+      setTxtProgressBar(pb, max(rows_i))
+      if(max(rows_i) > (nsteps + 1)) close(pb)		
+    }
   } #end while
   
-  message("Done.")
+  if(show_progress) message("Done.")
   
   
   #convert to input coordinate system 
