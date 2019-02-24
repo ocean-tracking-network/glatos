@@ -11,14 +11,14 @@ pos1 <- structure(list(animal_id = c("153", "153", "153", "153"),
 
 # make preview image 
 temp_dir <- tempdir()
-make_frames(pos1, recs=recs, out_dir=temp_dir, preview = TRUE)
+make_frames(pos1, out_dir=temp_dir, preview = TRUE)
 
 # Actual file sizes
 img_file <- file.path(temp_dir, "1.png")
 img_size <- file.info(img_file)$size
 
 # Expected file sizes
-size_should_be <- 30958
+size_should_be <- 30901
 
 # Clean up
 unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,
