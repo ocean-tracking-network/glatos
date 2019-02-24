@@ -2,19 +2,18 @@
 title: "Data loading methods for the R package glatos"
 date: "Updated: `r Sys.Date()`"
 output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    number_sections: true
   rmarkdown::pdf_document:
     toc: true
     toc_depth: 3
     number_sections: true
-  rmarkdown::html_vignette:
-    toc: true
-    toc_float: true
-    toc_depth: 3
-    number_sections: true
 vignette: >
   %\VignetteIndexEntry{Data loading methods for the R package glatos}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include = FALSE}
@@ -330,7 +329,7 @@ exactly as they appear in the source text file rather than, for example,
 replacing spaces with a dot (`.`). This does mean that we need to wrap those column 
 names in back-ticks when called (e.g., ``dtc$`Sensor Value` ``). Third, 
 we set `fileEncoding = "UTF-8-BOM"` to match the encoding of the text file. 
-If this argument is omitted then you might see the special characters `﻿`
+If this argument is omitted then you might see special characters
 added to the first column name. Setting the *fileEncoding* may also slow 
 down the import.
 
