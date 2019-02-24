@@ -2,6 +2,19 @@
 title: "Assessing acoustic tag and receiver performance: An approach for visualizing and analyzing passive detection range studies in R"
 author: "Todd Hayden, Christopher Holbrook, Tom Binder, Mike Lowe"
 date: "`r Sys.Date()`"
+output: 
+  rmarkdown::pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+  rmarkdown::html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Assessing acoustic tag and receiver performance: An approach for visualizing and analyzing passive detection range studies in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 # Introduction
@@ -73,7 +86,7 @@ Two tags with different transmission levels were deployed at each end of
 receiver line."
 ```
 
-```{r fig1, fig.margin=TRUE, fig.width=8, fig.height=8, echo=FALSE, warning=FALSE, message=FALSE, fig.cap=cap1}
+```{r fig1, fig.width=6, fig.height=6, echo=FALSE, warning=FALSE, message=FALSE, fig.cap=cap1}
 
 library(sf)
 library(glatos)
@@ -243,7 +256,7 @@ dB signal.
 cap2 = "Detections (red circles) of acoustic tags over time as a function of distance between tag and receiver.  All tags were programmed to broadcast with nominal delay of 10 minutes. Output of tags 482223 and 482221 was 154 dB and output of tags 482215 and 482222 was 158 dB "
 ```
 
-```{r, fig.fullwidth=TRUE,fig.cap=cap2,echo=TRUE,fig.width=6,fig.height=2}
+```{r, ,fig.cap=cap2,echo=TRUE,fig.width=6,fig.height=4}
 
 # set base plot parameters
 par(mfrow=c(1,4), mar=c(3,2,1,0), oma=c(2,3,0,0), las=1, bty="l")
@@ -513,7 +526,7 @@ intervals on 8 receivers located 9-603 meters from tag (right y-axis labels).
 Black lines in each panel is detection probability and red line is a loess smoother."   
 ```
 
-```{r warning=FALSE,echo=TRUE,message=FALSE,fig.cap=cap3,fig.fullwidth=FALSE,fig.width=6,fig.height=6,fig.keep=1,fig.show="asis"}
+```{r warning=FALSE,echo=TRUE,message=FALSE,fig.cap=cap3,fig.width=8,fig.height=8,fig.keep=1,fig.show="asis"}
 
 # round distances for plot labels
 dp[, dist_rnd := round(dist_m)]
@@ -576,7 +589,7 @@ probability of detecting a fish on a receiver line or in a grid of receivers.
 cap4 = "Example of detection range curve.  Detection probability is on the y-axis and distance between tag and receiver is on the x-axis."
 ```
 
-```{r fig.keep="last",fig.width=6,fig.height=6,fig.fullwidth=TRUE,message=FALSE,fig.cap=cap4,fig.show="asis",}
+```{r fig.keep="last",fig.width=6,fig.height=6,message=FALSE,fig.cap=cap4,fig.show="asis"}
 
 # add tag-date name
 dp[, id := paste(transmitter_id, tbin, sep = ", ")]
@@ -723,7 +736,7 @@ interpolated range curve.
 
 
 ```{r, echo=FALSE}
-cap5 = "Detection range curve (red circles) and same detection range curve with interpolated points (black circles and line). Detection probability is on the y-axis and distance between tag and receiver is on the x-axis."
+cap5 = "Detection range curve (red circles) with interpolated points (black circles and line). Detection probability is on the y-axis and distance between tag and receiver is on the x-axis."
 ```
 
 ```{r, fig.cap=cap5,fig.show="asis", fig.width = 8, fig.height = 8 }
@@ -747,7 +760,7 @@ Let's run the simulation with our five receivers spaced at 200 m (`recSpc`) and 
 fig_cap6 <- "Paths of 10 virtual fish through receiver line"
 ```
 
-```{r echo=TRUE,fig.height=8,fig.width=8,fig.margin=TRUE,fig.cap=fig_cap6}
+```{r echo=TRUE,fig.height=8,fig.width=8,fig.cap=fig_cap6}
 # Five receivers and allow fish to pass to left and right of line.
 sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
 	outerLim=c(100, 100), nsim=10, showPlot=T)

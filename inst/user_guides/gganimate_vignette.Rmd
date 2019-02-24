@@ -2,6 +2,22 @@
 title: "Visualizing fish movements with animated videos in R: The ggplot2 and gganimate packages"
 author: "Todd Hayden, Christopher Holbrook, Tom Binder, Mike Lowe"
 date: "`r Sys.Date()`"
+output: 
+  rmarkdown::pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+  rmarkdown::html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Visualizing fish movements with animated videos in R: The ggplot2 and gganimate packages}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
 ---
 
 # Introduction
