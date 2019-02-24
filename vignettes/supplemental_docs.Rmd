@@ -26,7 +26,7 @@ https://glatos.glos.us/portal/downloadarchive?enc=7kUI8rtWVnajt36f1Ildc6yOSZgWRk
 
 #### Animations (w/ gganimate) - [pdf](./gganimate_handout.pdf) \- [html](./gganimate_handout.html)
 #### Detection range analysis - [pdf](./detection_range_handout.pdf) \- [html](./detection_range_handout.html)
-#### Receiver efficiency index - [pdf](./receiver_efficiency_handout.pdf) \- [html](./receiver_efficiency_handout.html)
+#### Receiver efficiency index - [pdf](./receiver_efficiency_index_handout.pdf) \- [html](./receiver_efficiency_index_handout.html)
 #### Residence index - [pdf](./residence_index_handout.pdf) \- [html](./residence_index_handout.html)
 
 

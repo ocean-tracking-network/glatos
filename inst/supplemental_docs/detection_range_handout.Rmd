@@ -4,15 +4,15 @@ subtitle: "Workshop Handout - GLATOS, March 27, 2018"
 author: "Todd Hayden, Christopher Holbrook, Tom Binder, Mike Lowe"
 date: "Updated: `r Sys.Date()`"
 output:
+  rmarkdown::pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
   rmarkdown::html_document:
     theme: default
     toc: true
     toc_float:
       collapsed: false 
-    toc_depth: 3
-    number_sections: true
-  rmarkdown::pdf_document:
-    toc: true
     toc_depth: 3
     number_sections: true
 ---
@@ -1033,7 +1033,7 @@ to the reader to review how this object was created.
 ```{R, echo = TRUE}
 
 mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_10km_sp, 
-                                detRngFun = edrf )
+                                detRngFun = edrf, show_progress = FALSE )
 
 # calculate the mean elapsed time (seconds) between detections
 sim <- as.data.table(mydtc)
@@ -1142,7 +1142,8 @@ sim <- vector("list", length = 100)
 
 # loop through and calculate transmissions along each path
 for(k in 1:100){
-  sim[[k]] <- detect_transmissions(trans[[k]], recLoc = grid_10km_sp, detRngFun = edrf )
+  sim[[k]] <- detect_transmissions(trans[[k]], recLoc = grid_10km_sp, 
+                                   detRngFun = edrf, show_progress = FALSE)
 
 }
 
@@ -1175,7 +1176,8 @@ sim2 <- vector("list", length = 100)
 
 # loop through and calculate transmissions along each path
 for(k in 1:100){
-  sim2[[k]] <- detect_transmissions(trans[[k]], recLoc = grid_5km_sp, detRngFun = edrf )
+  sim2[[k]] <- detect_transmissions(trans[[k]], recLoc = grid_5km_sp, 
+                                    detRngFun = edrf, show_progress = FALSE)
 
 }
 
