@@ -24,6 +24,9 @@
 #' @param sp_out Logical. If TRUE (default) then output is a 
 #'  \link[sp]{SpatialPointsDataFrame} object. If FALSE, then output is a 
 #'  data.frame.
+#'  
+#' @param show_progress Logical. Progress bar and status messages will be 
+#'  shown if TRUE (default) and not shown if FALSE.
 #'
 #' @details
 #' Distances between each signal transmission location and receiver are
@@ -83,7 +86,7 @@
 #'
 #' @export
 detect_transmissions <- function(trnsLoc = NA , recLoc = NA, detRngFun = NA,
-  EPSG = 3175, sp_out = TRUE){
+  EPSG = 3175, sp_out = TRUE, show_progress = TRUE){
 	 
   if(inherits(trnsLoc, "data.frame")){
     #check names of trnsLoc columns
@@ -161,7 +164,9 @@ detect_transmissions <- function(trnsLoc = NA , recLoc = NA, detRngFun = NA,
 	 #loop through receivers (because should be much smaller than transmissions)
 	 for(g in 1:nrow(recLoc)){
 		#initialize progress bar
-	     if(g==1)  pb <- txtProgressBar(min=0,max=nrow(recLoc),style=3)
+	     if(g==1 & show_progress){
+	        pb <- txtProgressBar(min=0,max=nrow(recLoc),style=3)
+	     }
 	  
 	    #distance between gth receiver and each transmission
 	    distM.g <- sqrt((trnsLoc$x-recLoc$x[g])^2 +
@@ -185,9 +190,11 @@ detect_transmissions <- function(trnsLoc = NA , recLoc = NA, detRngFun = NA,
 	  } # end if
 	 
 		#update progress bar
-		info <- sprintf("%d%% done", round(g/nrow(recLoc)*100))
-		setTxtProgressBar(pb, g)
-		if(g==nrow(recLoc)) close(pb)
+    if(show_progress){
+  		info <- sprintf("%d%% done", round(g/nrow(recLoc)*100))
+  		setTxtProgressBar(pb, g)
+  		if(g==nrow(recLoc)) close(pb)
+    }
 	 } #end g
   
   dtc <- dtc[order(dtc$etime),]#sort by time	 

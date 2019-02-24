@@ -5,7 +5,7 @@
 \title{Simulate detection of transmitter signals in a receiver network}
 \usage{
 detect_transmissions(trnsLoc = NA, recLoc = NA, detRngFun = NA,
-  EPSG = 3175, sp_out = TRUE)
+  EPSG = 3175, sp_out = TRUE, show_progress = TRUE)
 }
 \arguments{
 \item{trnsLoc}{A three-column data frame with locations (numeric columns 
@@ -27,6 +27,9 @@ Great Lakes Basin and St. Lawrence River system.
 \item{sp_out}{Logical. If TRUE (default) then output is a 
 \link[sp]{SpatialPointsDataFrame} object. If FALSE, then output is a 
 data.frame.}
+
+\item{show_progress}{Logical. Progress bar and status messages will be 
+shown if TRUE (default) and not shown if FALSE.}
 }
 \value{
 A data frame containing:

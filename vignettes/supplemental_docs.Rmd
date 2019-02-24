@@ -1,16 +1,33 @@
 ---
-title: "glatos user guides"
+title: "Supplemental documents & workshop handouts"
+subtitle: "for the R package glatos"
 date: "Updated: `r Sys.Date()`"
 output: 
   rmarkdown::html_document
 vignette: >
-  %\VignetteIndexEntry{user guides}
+  %\VignetteIndexEntry{Supplemental documents & workshop handouts}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+## Vignettes  
 
-### Data requirements - [pdf](./data_requirements.pdf) \- [html](./data_requirements.html)
-### Data loading - [pdf](./data_loading.pdf) \- [html](./data_loading.html)
-### Residence index - [pdf](./residence_index.pdf) \- [html](./residence_index.html)
-### Receiver efficiency - [pdf](./receiver_efficiency.pdf) \- [html](./receiver_efficiency.html)
+#### Data requirements - [pdf](./data_requirements_vignette.pdf) \- [html](./data_requirements_vignette.html)
+#### Data loading - [pdf](./data_loading_vignette.pdf) \- [html](./data_loading_vignette.html)
+
+
+## Supplemental Resources
+
+#### An Introduction to R for Analyzing Acoustic Telemetry Data (vers. 2.0) - [pdf link](
+https://glatos.glos.us/portal/downloadarchive?enc=7kUI8rtWVnajt36f1Ildc6yOSZgWRk9xUCSe6xoCQTr3JiFvzqpkWqU76AWD%2BU1gaX7L4uZALZ1h%2BxTCes%2Bhk6MrG%2FvtKi505AhzCvtFMDrCSrrB%2FXknscTRmxUUap%2FsgFnmQg5EPd3QJAe7gM3QbjJWNm19r%2F7maVHRFhRa4Rtnb0l63SLey%2FG7m7HiSMDkyyY%2BP4yxJ4Eh2%2B2FsM5c51eXdRuytXNjILZxxHT8AfQ%3D)  
+
+
+## Workshop Handouts
+
+#### Animations (w/ gganimate) - [pdf](./gganimate_handout.pdf) \- [html](./gganimate_handout.html)
+#### Detection range analysis - [pdf](./detection_range_handout.pdf) \- [html](./detection_range_handout.html)
+#### Receiver efficiency index - [pdf](./receiver_efficiency_handout.pdf) \- [html](./receiver_efficiency_handout.html)
+#### Residence index - [pdf](./residence_index_handout.pdf) \- [html](./residence_index_handout.html)
+
+
+
