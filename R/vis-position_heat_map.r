@@ -51,7 +51,16 @@
 #' @param y_limits An optional 2-element numeric containing limits of y axis. If 
 #'  y_limits == NULL (default), then it is determined from the extents of the
 #'  data.
-#'   
+#'
+#'  @param utm_zone An interger value between 1 and 60 (inclusive) indicating 
+#'  the primary UTM zone of the detection data. Required and used only when 
+#'  projection == "UTM". Default is NULL (i.e. assumes detection data are in 
+#'  projection == LL by default).
+#'  
+#' @param hemisphere A character string indicating whether detection data are 
+#' in the northern or southern hemisphere. Required and used only when 
+#' projection == "UTM". Valid values are c("N", "S"). Default is "N".
+#' 
 #' @param legend_gradient A character string indicating the orientation of the
 #'  color legend; "y" = vertical, "x" = horizontal, "n" indicates that no 
 #'  legend should be drawn. Default is "y".
@@ -61,29 +70,30 @@
 #'  used if 'legend_gradient" in not "n". Default is c(0.99, 0.2, 1.0, 0.8),
 #'  which puts the legend along the right hand side of the plot.
 #'  
+#' @param output An optional character string indicating how results will 
+#'  be displayed visually. Options include: 1) a plot in the R device window 
+#'  ("plot"), 2) a .png image file ("png"), or 3) a .kmz file ("kmz") for 
+#'  viewing results as an overlay in Google Earth. Accepted values are 
+#'  c("plot", "png", "kmz"). Default value is "plot".
+#'  
 #' @param folder A character string indicating the output folder. If path is 
 #'  not specified then \code{folder} will be created in the working directory.
 #'  Default is "position_heat_map".
 #'  
-#' @param utm_zone UTM zone
-#' 
-#' @param hemisphere Default is \code{"N"}
-#' 
-#' @param output type of output Default is \code{"plot"}
-#'  
-#' @details When and 'interval' argument is supplied, the number of unique fish 
-#' x interval combinations that occurred each grid cell is calculated instead of
-#' raw number of positions. For example, in 4 hours there are a total of 4 1-h 
-#' intervals. If fish 'A' was positioned in a single grid cell during 3 of the 
-#' 4 intervals, than the number of intervals for that fish and grid combination 
-#' is 3. Intervals are determined by applying the 'findInterval' function 
-#' (base R) to a sequence of timestamps (class: POSIXct) created using 
-#' seq(from = min(positions[, DATETIME]), to = min(positions[, DATETIME]), 
-#' by = interval), where interval is the user-assigned interval duration in 
-#' seconds. Number of intervals is a more robust surrogate than number of 
-#' positions for relative time spent in each grid in cases where spatial or 
-#' temporal variability in positioning probability are likely to significantly 
-#' bias the distribution of positions in the array.
+#' @details When and 'interval' argument is supplied, the number of unique fish
+#'   x interval combinations that occurred in each grid cell is calculated
+#'   instead of raw number of positions. For example, in 4 hours there are a
+#'   total of 4 1-h intervals. If fish 'A' was positioned in a single grid cell
+#'   during 3 of the 4 intervals, than the number of intervals for that fish and
+#'   grid combination is 3. Intervals are determined by applying the
+#'   \link[base]{findInterval} function (base R) to a sequence of timestamps
+#'   (class: POSIXct) created using seq(from = min(positions[, DATETIME]), to =
+#'   min(positions[, DATETIME]), by = interval), where interval is the
+#'   user-assigned interval duration in seconds. Number of intervals is a more
+#'   robust surrogate than number of positions for relative time spent in each
+#'   grid in cases where spatial or temporal variability in positioning
+#'   probability are likely to significantly bias the distribution of positions
+#'   in the array.
 #' 
 #' @details Calculated values (i.e., fish, positions, intervals) can be returned
 #'   as absolute or relative, which is specified using the abs_or_rel argument;
