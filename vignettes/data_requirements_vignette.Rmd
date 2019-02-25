@@ -286,7 +286,7 @@ A comma-separated-values text file with the following columns:
  associate each detection with a specific receiver (a physical instrument).*
  
 - tag\_type
- : *Character field that identifies type of tag used.*
+ : *Character field that identifies type of tag used (e.g., acoustic).*
   
 - tag\_model
  : *Character field that identifies tag model used.*
@@ -347,7 +347,7 @@ A comma-separated-values text file with the following columns:
   large.*
   
 - glatos\_caught\_date
- : *If tag is recovered, the date (in YYYY-MM-DD format) is in
+ : *If tag is recovered, the date (in YYYY-MM-DD format) of tag recovery is in
   the "glatos_caught_date" field.*
 
 - station
@@ -439,10 +439,11 @@ A comma-separated-values text file with the following columns:
   deployed.*
 
 - glatos\_ins\_frequency
-: *Integer field with instrument operating frequency.*
+: *Integer field with instrument operating frequency (e.g., 69, 180).*
 
 - ins\_serial\_no
-: *Character field of instrument model number.*
+: *Character field of instrument model number, uniquely identifies a physical 
+  instrument.*
 
 - deployed\_by
 : *Character field that contain name of person who deployed receiver.*
