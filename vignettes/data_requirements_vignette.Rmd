@@ -2,13 +2,14 @@
 title: "Data requirements of the R package glatos"
 date: "Updated: `r Sys.Date()`"
 output: 
-  rmarkdown::pdf_document:
+  rmarkdown::html_document:
     toc: true
     toc_depth: 3
     number_sections: true
-rmarkdown::html_vignette:
-    toc: true
     toc_float: true
+    toc_collapsed: false
+  rmarkdown::pdf_document:
+    toc: true
     toc_depth: 3
     number_sections: true
 vignette: >
@@ -247,7 +248,7 @@ A comma-separated-values text file with the following columns:
  : *Character field identifies subgroup of receivers, usually in close spatial proximity.* 
 
 - station\_no 
- : *Character field that identifies receiver within glatos\_array.* 
+ : *Character field that identifies receiver mooring within glatos\_array.* 
 
 - transmitter\_codespace 
  : *A character field with transmitter code space (e.g., "A69-1061"
@@ -352,7 +353,7 @@ A comma-separated-values text file with the following columns:
 
 - station
  : *Character field that combines glatos_array and station_no to
-  identify receiver within project.*
+  identify receiver mooring within project.*
   
 - min\_lag
  : *minimum time interval (seconds) between current detection and
@@ -366,13 +367,13 @@ A comma-separated-values text file with the following columns:
 
 - station
 : *Character field that combines glatos_array and station_no to
-  identify receiver within project.*
+  identify receiver mooring within project.*
   
 - glatos\_array
 : *Character field identifies subgroup of receivers, usually in close spatial proximity.* 
   
 - station\_no
-: *Character field that identifies receiver within glatos\_array.* 
+: *Character field that identifies receiver mooring within glatos\_array.* 
   
 - consecutive\_deploy\_no
 : *Integer field of the number of times a receiver was deployed at a location.*

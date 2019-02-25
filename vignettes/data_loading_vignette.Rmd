@@ -2,10 +2,12 @@
 title: "Data loading methods for the R package glatos"
 date: "Updated: `r Sys.Date()`"
 output: 
-  rmarkdown::html_vignette:
+  rmarkdown::html_document:
     toc: true
     toc_depth: 3
     number_sections: true
+    toc_float: true
+    toc_collapsed: false
   rmarkdown::pdf_document:
     toc: true
     toc_depth: 3
@@ -134,20 +136,20 @@ loaded into R using non-*glatos* functions and then modified to meet the
 
 ## Tips to improve speed and efficiency
 
-The main examples in the this vignette use only base R functions. However, 
-there are many contributed packages that can provide functions that can improve 
-workflow speed and efficiency. After most examples using base R 
-functions, boxed examples are also given to expose users to alternative 
-examples using functions from contributed packages. Most boxed tips 
-show use of functions from the *data.table* package. If you are not familiar with *data.table*, then read through the introductory 
-vignette (see `vignette("datatable-intro", package = "data.table")`). For more on *data.table*, see the vignettes (`browseVignettes("data.table")`). In addition 
-to *data.table*, one boxed tip draws from the *lubridate* package because it 
-is, to our knowledge, the fastest way to coerce timestamps strings to the 
-date-time class *POSIXct*. 
-No other examples show use of *tidyverse* packages (*dplyr*, *ggplot2*, 
-*readr*), simply because some of us have not yet drunk the kool-aid. 
-A future version of this vignette may include more examples using the 
-*tidyverse* or other packages.
+The main examples in the this vignette use only base R functions. However, there
+are many contributed packages that can provide functions that can improve
+workflow speed and efficiency. After most examples using base R functions, boxed
+examples are also given to expose users to alternative examples using functions
+from contributed packages. Most boxed tips show use of functions from the
+*data.table* package. If you are not familiar with *data.table*, then read
+through the introductory vignette (see `vignette("datatable-intro", package =
+"data.table")`). For more on *data.table*, see the vignettes
+(`browseVignettes("data.table")`). In addition to *data.table*, one boxed tip
+draws from the *lubridate* package because it is a fast way to coerce timestamps
+strings to the date-time class *POSIXct*.  
+
+A future version of this vignette may include examples using other packages such
+as the *tidyverse*.
 
 A few notes about boxed-example code:  
 
@@ -161,20 +163,11 @@ A few notes about boxed-example code:
 > library(lubridate)
 > ```
 
-2. For *data.table* functions, make sure you've converted the target object 
-to *data.table* class using *setDT*:
-
-> ```{r results = "hide", warning = FALSE, message = FALSE}
-> dx <- data.frame(a = 1 , b = 2)
-> setDT(dx) #convert to data.table
-> ```
-
-3. Go all-in. Running some base R examples, some boxed examples, or both  
-will cause trouble. For example if a base R example changes column names in 
-an object, then the old column names won't exist if you later run the 
-boxed example that changes those same column names using *data.table* 
-functions.  
-
+2. The detection data object has been named differently in the box examples than
+the data.frame version (`dtc2` for data.table vs. `dtc` for data.frame) so that
+both sets of code can be run without the box example code interacting with the
+base R examples. However, the box examples do require that all base R code that
+comes before it has also been run.
 
 
 
@@ -340,17 +333,22 @@ dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE,
 ```
 
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
-> __data.table tip:__ Use _fread_ instead of _read.csv_. 
+> __data.table tip:__ Use _fread_ instead of _read.csv_.  
 
 > ``` {r eval = FALSE}  
+> library(data.table)
+>
 > #read data from csv file using data.table::fread
-> dtc <- fread(csv_file, fill = TRUE)
+> #name dtc2 (data.table) to distinguish from dtc (data.frame) in this script
+> dtc2 <- fread(csv_file, sep = ",", header = TRUE, fill = TRUE)
+>
 >
 > Note also that we use `fill = TRUE` because by default VEMCO VUE 
 > exports do not include a comma for every column in the CSV file.
 > ```  
 > 
-> _fread_ is fast. That's one reason it is used used by _read_glatos_detections_ and other _glatos_ functions.  
+> _fread_ is fast. That's one reason it is used used by _read_glatos_detections_
+> and other _glatos_ functions.
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
 
@@ -375,7 +373,7 @@ names(dtc)[match("Date and Time (UTC)", names(dtc))] <- "detection_timestamp_utc
 
 > ``` {r eval = FALSE} 
 > #use data.table::setnames to change column names via old and new names
-> setnames(dtc, "Date and Time (UTC)", "detection_timestamp_utc") 
+> setnames(dtc2, "Date and Time (UTC)", "detection_timestamp_utc") 
 > ```  
 > *setnames(x, old, new)*... could it be more intuitive?
 > 
@@ -415,7 +413,7 @@ head(dtc$detection_timestamp_utc, 3)
 >
 > ``` {r eval = FALSE} 
 > #use ':=' to format timestamps
-> dtc[ , detection_timestamp_utc := as.POSIXct(detection_timestamp_utc,
+> dtc2[ , detection_timestamp_utc := as.POSIXct(detection_timestamp_utc,
 >                                              tz = "UTC")]
 > ```  
 > 
@@ -428,8 +426,12 @@ head(dtc$detection_timestamp_utc, 3)
 > __lubridate tip:__ Use _fast\_strptime_ to set timestamps.  
 
 > ``` {r eval = FALSE} 
-> #lubridate::fast_strptime is the fastest way we know to ceorce strings to POSIX
-> dtc[ , detection_timestamp_utc :=  
+> #just for this example, we convert detection_timestamp_utc back to string
+> dtc2$detection_timestamp_utc <- format(dtc2$detection_timestamp_utc)
+> class(dtc2$detection_timestamp_utc) #now character string again
+>
+> #fast_strptime is the fastest way we know to ceorce strings to POSIX
+> dtc2[ , detection_timestamp_utc :=  
 >          lubridate::fast_strptime(detection_timestamp_utc,
 >                                   format = "%Y-%m-%d %H:%M:%OS",
 >                                   tz = "UTC",
@@ -474,7 +476,7 @@ dtc$receiver_sn <- sapply(dtc$Receiver, get_rsn)
 
 > ``` {r eval = FALSE} 
 > #make new column "receiver_sn"; parse from "Receiver"
-> dtc[ , receiver_sn := get_rsn(Receiver), by = "Receiver"]
+> dtc2[ , receiver_sn := get_rsn(Receiver), by = "Receiver"]
 > ``` 
 > 
 > This is more efficient because it operates on groups instead of each 
@@ -529,11 +531,11 @@ Two limitations of this simple join shown above are that it:
 * includes detections that occurred before receiver deployment and after 
 receiver recovery.
 
-To ensure that detections are correctly associated with a location, we will
-subset detections to omit any that occurred before deployment or after recovery.
-For convenience, we use the base R function *with* so that we do not have 
-to repeatedly call *dtc$...* but note that this can be somewhat risky 
-(see `?with`).
+To account for those situations and ensure that detections are correctly
+associated with a location, we will subset detections to omit any that occurred
+before deployment or after recovery. For convenience, we use the base R function
+*with* so that we do not have to repeatedly call *dtc$...* but note that this
+can be somewhat risky (see `?with`).
 
 ```{r}
 #count rows before subset
@@ -543,29 +545,31 @@ nrow(dtc)
 dtc <- with(dtc, dtc[detection_timestamp_utc >= deploy_date_time & 
                      detection_timestamp_utc <= recover_date_time, ])
 
-```
-
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
-> __data.table tip:__ Use _between_ to subset records by intervals.
-
-> ``` {r eval = FALSE} 
-> #subset deployments between receiver deployment and recovery (omit others) 
-> dtc <- dtc[between(detection_timestamp_utc,                                 
->                    deploy_date_time, recover_date_time), ]  
-> ```
-
-> Note that the _<-_ assignment operator is used here because we are subsetting
-> the _data.table_ object `dtc` and there is no assignment operator inside 
-> the square brackets.  
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
-
-```{r}
 #count rows after subset
 nrow(dtc)
 ```
 We removed five rows. Those detections either occurred before receiver
 deployment or after receiver recovery, so the location of those detections are
 unknown.
+
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+> __data.table tip:__ Use _between_ to subset records by intervals.
+
+> ``` {r eval = FALSE} 
+> #merge detections and receivers
+> dtc2 <- merge(dtc2, rcv, by.x = "receiver_sn", by.y = "ins_serial_no", 
+>                all.x = TRUE)
+>
+> #subset detections that occurred after deployment and before recovery
+> dtc2 <- dtc2[between(detection_timestamp_utc, deploy_date_time,
+>                      recover_date_time)]
+> 
+> nrow(dtc2)
+>``` 
+>
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+
+
 
 
 
@@ -606,11 +610,11 @@ dtc$transmitter_id <- sapply(dtc$Transmitter, parse_tid)
 > than one column.
 
 > ``` {r eval = FALSE} 
-> dtc[ , `:=`(transmitter_codespace = parse_tcs(Transmitter),                    
->             transmitter_id = parse_tid(Transmitter), 
+> dtc2[ , `:=`(transmitter_codespace = parse_tcs(Transmitter),                    
+>              transmitter_id = parse_tid(Transmitter)), 
 >        by = "Transmitter"]  
 > ```
-
+>
 > See `?data.table::set` for description and examples of functional form of 
 > `:=`.  
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
@@ -633,8 +637,8 @@ names(dtc)[match(c("Sensor Value", "Sensor Unit"), names(dtc))] <-
 > __data.table tip:__  Use _setnames_ to change multiple column names.
 
 > ``` {r eval = FALSE} 
-> setnames(dtc, c("Sensor Value", "Sensor Unit"),
->               c("sensor_value", "sensor_unit"))  
+> setnames(dtc2, c("Sensor Value", "Sensor Unit"),
+>                c("sensor_value", "sensor_unit"))  
 > ```
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
@@ -684,10 +688,11 @@ Two limitations of this simple join are that it:
 * is inadequate if any transmitter was deployed more than once.
 * includes detections that occurred before transmitter deployment (animal 
   release) and after transmitter recovery (animal recapture).
-
-Note that one tag (`tag_id_code = 442`) was re-used, but we did not account for
-this in the above merge (a simple left join). So we now need to subset to omit
-detections that occurred before release or after recapture.
+  
+To account for these circumstances, we will perform a conditional subset in the
+next step. Specifically, one tag (`tag_id_code = 442`) was re-used, but we did
+not account for this in the above merge (a simple left join). So we now need to
+subset to omit detections that occurred before release or after recapture.
 
 ```{r}
 #count rows before subset
@@ -701,11 +706,19 @@ dtc <- with(dtc, dtc[detection_timestamp_utc >= release_date_time &
 ```
 
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
-> __data.table tip__  
-> Use _between_ to query records or evaluate statements by intervals.
+> __data.table tip__  Use _between_ to query records or evaluate statements 
+> by intervals.
 
 > ``` {r eval = FALSE} 
-> dtc <- dtc[between(detection_timestamp_utc, release_date_time,
+> #merge detection with fish data
+> #note that allow.cartesian is needed to acknowledge one-to-many join
+> dtc2 <- merge(dtc2, fsh, 
+>                by.x = c("transmitter_codespace", "transmitter_id"), 
+>                by.y = c("tag_code_space", "tag_id_code"),
+>                all.x = TRUE, allow.cartesian = TRUE)
+> 
+> #subset detections between release and recapture
+> dtc2 <- dtc2[between(detection_timestamp_utc, release_date_time,
 >                    recapture_date_time) | is.na(recapture_date_time), ] 
 > ```
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
@@ -742,7 +755,7 @@ but examples of such columns in a GLATOS standard receiver locations file are:
 - glatos\_project\_receiver 
 
 For definitions of any of the above fields, see the [Data Requirements
-vignette](data_requirements.html)) and function-specific help files (e.g.,
+vignette](data_requirements.html) and function-specific help files (e.g.,
 `?abacus_plot`).
 
 Any *data.frame* that contains the above columns (in the correct formats) should
