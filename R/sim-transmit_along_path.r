@@ -30,13 +30,13 @@
 #' are added toeach delay to determine the time of each signal transmission. 
 #' Location of each signal transmission along the path is linearly interpolated.
 #' 
-#' @details If path object is a data frame with x and y columns and
-#'   \code{sp_out} argument is TRUE, then \link[sp]{SpatialPointsDataFrame}
+#' @details If \code{path} object is a data frame with x and y columns and
+#'   \code{sp_out} argument is TRUE, then SpatialPointsDataFrame
 #'   output object will have coordinate system of \code{EPSG}. Coordinate
 #'   system on output will be same as input if path object is
-#'   \code{[sp]{SpatialPoints}}.
+#'   \code{\link[sp]{SpatialPoints}}.
 #'
-#' @return A \link[sp]{SpatialPointsDataFrame} object in the same CRS as the
+#' @return A SpatialPointsDataFrame object in the same CRS as the
 #'   input \code{path} object. \cr \emph{OR} \cr \item{x}{ x coordinates for
 #'   start of each transmission } \item{y}{ y coordinates for start of each
 #'   transmission } \item{et}{ elapsed time to start of each transmission }

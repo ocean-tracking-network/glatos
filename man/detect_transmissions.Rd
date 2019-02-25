@@ -25,20 +25,21 @@ Great Lakes Basin and St. Lawrence River system.
 \url{http://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}}
 
 \item{sp_out}{Logical. If TRUE (default) then output is a 
-\link[sp]{SpatialPointsDataFrame} object. If FALSE, then output is a 
+SpatialPointsDataFrame object. If FALSE, then output is a 
 data.frame.}
 
 \item{show_progress}{Logical. Progress bar and status messages will be 
 shown if TRUE (default) and not shown if FALSE.}
 }
 \value{
+A SpatialPointsDataFrame \cr \emph{OR} \cr 
 A data frame containing:
 \item{trns_id}{Unique signal transmission ID}
 \item{recv_id}{Unique receiver ID}
 \item{recv_x}{Receiver x coordinate}
 \item{recv_y}{Receiver y coordinate}
-\item{trns_x}{Transmitter x coordinate}
-\item{trns_y}{Transmitter y coordinate}
+\item{trns_x}{Transmitter x coordinate at time of transmission}
+\item{trns_y}{Transmitter y coordinate at time of transmission}
 \item{etime}{Elapsed time}
 }
 \description{
