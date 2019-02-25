@@ -102,8 +102,8 @@ false_detections <- function(det, tf, min_lag_col = "min_lag",
   
   # Identify possible false detections by comparing "min_lag" column to 
 	#  threshold defined in object "tf".
-  det$passed_filter <- ifelse(!is.na(det[, min_lag_col]) & 
-		                                       det[, min_lag_col] <= tf, 1, 0)
+  det$passed_filter <- ifelse(!is.na(det[[min_lag_col]]) & 
+		                                 det[[min_lag_col]] <= tf, 1, 0)
   
   nr <- nrow(det)
   
