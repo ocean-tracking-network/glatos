@@ -15,8 +15,9 @@ render(input = "inst/supplemental_docs/detection_range_handout.Rmd",
 
 
 render(input = "inst/supplemental_docs/gganimate_handout.Rmd", 
-  output_dir = "vignettes",
-  output_format = "all")
+  output_dir = "vignettes")
+#make sure pdf_document is first in Rmd
+#to render html_document without gifski progress, use knit in rstudio
 
 
 #render html versions of vignettes

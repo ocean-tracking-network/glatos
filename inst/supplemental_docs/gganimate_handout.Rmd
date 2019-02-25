@@ -4,10 +4,11 @@ subtitle: "Workshop Handout - GLATOS, March 27, 2018"
 author: "Todd Hayden, Christopher Holbrook, Mike Lowe"
 date: "Updated: `r Sys.Date()`"
 output:
-  rmarkdown::html_document:
-    theme: default
   rmarkdown::pdf_document:
     toc: false
+  rmarkdown::html_document:
+    theme: default
+
 ---
 
 # Introduction
@@ -233,6 +234,7 @@ cap4 <- "Animated figure of fish movements in lakes Huron and Erie.  Only last i
 
 ```
 
+
 ```{r,fig.width=8,fig.height=8,fig.cap=cap4,message=FALSE,warning=FALSE,fig.keep="last"}
 
 ggplot(data = lakes) +
@@ -248,7 +250,6 @@ ggplot(data = lakes) +
   scale_size_manual(values=c(2,1)) +
   transition_time(bin_timestamp) +
   ggtitle('{frame_time}')
-
 
 ```
 
