@@ -22,11 +22,13 @@ render(input = "inst/supplemental_docs/gganimate_handout.Rmd",
 
 #render html versions of vignettes
 render(input = "vignettes/data_loading_vignette.Rmd", 
-  output_dir = "vignettes")
+  output_dir = "vignettes",
+  output_format = "all")
 #output format -> make sure html_document is first in Rmd 
 
 render(input = "vignettes/data_requirements_vignette.Rmd", 
-  output_dir = "vignettes")
+  output_dir = "vignettes",
+  output_format = "all")
 #output format -> make sure html_document is first in Rmd 
 
 
