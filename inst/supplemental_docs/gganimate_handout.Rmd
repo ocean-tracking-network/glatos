@@ -1,7 +1,7 @@
 ---
 title: "Visualizing fish movements with animated videos in R: The ggplot2 and gganimate packages"
-subtitle: "Workshop Handout - GLATOS, March 27, 2018"
-author: "Todd Hayden, Christopher Holbrook, Mike Lowe"
+subtitle: "Workshop Handout - GLATOS, February 28, 2019"
+author: "Todd Hayden (haydento@msu.edu), Mike Lowe"
 date: "Updated: `r Sys.Date()`"
 output:
   rmarkdown::pdf_document:

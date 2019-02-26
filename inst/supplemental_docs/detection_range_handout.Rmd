@@ -1,7 +1,7 @@
 ---
 title: "Assessing acoustic tag and receiver performance: An approach for visualizing and analyzing passive detection range studies in R"
-subtitle: "Workshop Handout - GLATOS, March 27, 2018"
-author: "Todd Hayden, Christopher Holbrook, Tom Binder, Mike Lowe"
+subtitle: "Workshop Handout - GLATOS, February 28, 2019"
+author: "Todd Hayden (haydento@msu.edu), Tom Binder, Mike Lowe"
 date: "Updated: `r Sys.Date()`"
 output:
   rmarkdown::pdf_document:
@@ -1016,7 +1016,7 @@ delay range from 60--180 seconds).
 
 ```{R, echo = TRUE}
 
-tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) ) ###HOLBROOK LOOK HERE!!!!
+tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) ) 
 
 ```
 
