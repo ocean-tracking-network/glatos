@@ -203,7 +203,8 @@ detect_transmissions <- function(trnsLoc = NA , recLoc = NA, detRngFun = NA,
   if(nrow(dtc) > 0){
   
     #export spatial object where locations are receiver locations of detection
-    dtc <- sp::SpatialPointsDataFrame(dtc[, c("recv_x", "recv_y")], data = dtc,
+    dtc <- sp::SpatialPointsDataFrame(dtc[, c("recv_x", "recv_y")], 
+      data = dtc[, c("trns_id", "recv_id", "trns_x", "trns_y", "etime")],
                                          proj4string = sp::CRS(projargs))
     dtc <- sp::spTransform(dtc, CRSobj = projargs_in)
     
