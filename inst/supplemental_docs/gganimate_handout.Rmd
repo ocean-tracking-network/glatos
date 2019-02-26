@@ -25,9 +25,9 @@ interpolated and detected fish locations over time from the output of
 video of movements using the open source FFmpeg software.  Although
 `make_frames` was developed to allow customization of the output
 content and layout of frames, some may find the level of customization
-to be insufficient for their needs. In this vignette, we present a
-short example of an alternative approach for creating animations using
-the `ggplot2` and `gganimate` R packages. ^[For more information about
+to be insufficient for their needs. 
+
+In this vignette, we present a short example of an alternative approach for creating animations using the `ggplot2` and `gganimate` R packages. ^[For more information about
 obtaining `gganmiate` and `ggplot2`, see https://gganimate.com/ and
 https://ggplot2.tidyverse.org/] `ggplot2` is a popular and powerful
 package for plotting figures based on The Grammer of Graphics approach
@@ -35,7 +35,9 @@ to visualizing data and developed for R by Hadley Wickham.  ^[Leland
 Wilkinson,https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448]
 `ggplot2` differs from base plotting functions in R by its layered
 approach where graphical output is defined by combing layers of plot
-objects.  In `ggplot2` variables in data are mapped to aesthetic
+objects.  
+
+In `ggplot2` variables in data are mapped to aesthetic
 categories to build the plot.  In contrast, calls to base R plotting
 functions are rendered immediately after they are submitted. The
 `ggplot2` framework enables complex plots to be specified with few
@@ -43,7 +45,9 @@ lines of code however in our experience, customized `ggplot2` figures
 often require substantial effort.  Base R plotting functions often
 require extra effort to create but are easier customize.  Both
 frameworks will produce publication-quality graphical output and have
-large user-bases.  The `gganimate` package is an extension to
+large user-bases. 
+
+The `gganimate` package is an extension to
 `ggplot2` that provides support for animated graphical output ^[see
 https://gganimate.com/articles/gganimate.html].  In the following
 code, we use the `make_transition` function on an example dataset
@@ -106,10 +110,10 @@ recs_sf <- st_as_sf(recs, coords = c("deploy_long", "deploy_lat"), crs = 4326)
 In the next bit of code, we create a transition layer from the `lakes`
 object. The transition layer is needed to calculate non-linear interpolated
 movement paths that avoid impossible overland movements of fish. We
-set the `all_touched` argument = TRUE to allow any pixel that touches
-the polygon outline of the Great Lakes to be coded as water in the
-resulting transition layer.  If `all_touched` = FALSE, then more than
-half of the pixel must be in the polygon in order to be coded as
+set the `all_touched` argument to true (`all_touched = TRUE`) to allow any 
+pixel that touches the polygon outline of the Great Lakes to be coded as water in the
+resulting transition layer.  If `all_touched` is false (`all_touched = FALSE`), 
+then more than half of the pixel must be in the polygon in order to be coded as
 water.
 
 
@@ -230,7 +234,7 @@ animation and a layer to display a clock (`transition_time`, `ggtitle`).
 
 ```{r, echo = FALSE,tidy=TRUE,message=FALSE}
 
-cap4 <- "Animated figure of fish movements in lakes Huron and Erie.  Only last image of animation is included in this vignette"
+cap4 <- "Animated figure of fish movements in lakes Huron and Erie.  Only last image of animation is included in this vignette."
 
 ```
 
@@ -263,7 +267,7 @@ to disk.
 
 This vignette provides a basic, high-level summary of creating an
 animated video with `ggplot2` and `gganimate`.  These packages
-provides much more functionality than included in this vignette.
+provide much more functionality than included in this vignette.
 Please refer to documentation for `gganimate` and `ggplot2` for additional
 examples and customization that may be useful for visualizing fish
 movements.
