@@ -89,7 +89,8 @@ transmit_along_path <- function(path = NA, vel = 0.5, delayRng = c(60, 180),
         y = approx(path$etime, path$y, xout=etime)$y,
         et = etime)
               
-  trns <- sp::SpatialPointsDataFrame(trns[, c("x", "y")], data = trns,
+  trns <- sp::SpatialPointsDataFrame(trns[, c("x", "y")], 
+                                       data = trns[,"et", drop = FALSE],
                                        proj4string = sp::CRS(projargs))
   trns <- sp::spTransform(trns, CRSobj = projargs_in)
   
