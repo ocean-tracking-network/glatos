@@ -4,11 +4,10 @@ subtitle: "Workshop Handout - GLATOS, February 28, 2019"
 author: "Todd Hayden (haydento@msu.edu), Mike Lowe"
 date: "Updated: `r Sys.Date()`"
 output:
-  rmarkdown::pdf_document:
-    toc: false
   rmarkdown::html_document:
     theme: default
-
+  rmarkdown::pdf_document:
+    toc: false
 ---
 
 # Introduction

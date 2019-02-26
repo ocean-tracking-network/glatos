@@ -23,10 +23,10 @@
 #'   data loading from standard GLATOS and OTN data files to a single structure
 #'   that is compatible with other glatos functions.}
 #'
-#'   \item{\link{read_glatos_receivers}}{ Reads receiver location histories from
-#'   standard GLATOS data files to a single structure that is compatible with
-#'   other glatos functions.}
-#'
+#'   \item{\link{read_glatos_receivers} and \link{read_otn_deployments}}{
+#'   Reads receiver location histories from standard GLATOS and OTN data files
+#'   to a single structure that is compatible with other glatos functions.}
+#'   
 #'   \item{\link{read_glatos_workbook}}{ Reads project-specific receiver history
 #'   and fish taggging and release data from a standard glatos workbook file.}
 #'
@@ -54,6 +54,12 @@
 #'  number of detections, first and last detection timestamps, and/or mean
 #'  location of receivers or groups, depending on specific type of summary
 #'  requested.}
+#' 
+#'  \item{\link{residence_index}} calculates the relative proportion of time
+#'  spent at each location.
+#' 
+#'  \item{\link{REI}} calculates the relative activity at each receiver based 
+#'  on number of unique species and individual animals.
 #' }
 #' 
 #' @section Visualization and data exploration: \describe{

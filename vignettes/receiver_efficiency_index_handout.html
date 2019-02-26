@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Alex Nunes" />
+<meta name="author" content="Alex Nunes (anunes@dal.ca)" />
 
 
 <title>Receiver Efficiency Index</title>
@@ -1542,15 +1542,15 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Receiver Efficiency Index</h1>
-<h3 class="subtitle"><em>Workshop Handout - GLATOS, March 27, 2018</em></h3>
-<h4 class="author"><em>Alex Nunes</em></h4>
-<h4 class="date"><em>Updated: 2019-02-24</em></h4>
+<h3 class="subtitle"><em>Workshop Handout - GLATOS, February 28, 2019</em></h3>
+<h4 class="author"><em>Alex Nunes (<a href="mailto:anunes@dal.ca">anunes@dal.ca</a>)</em></h4>
+<h4 class="date"><em>Updated: 2019-02-26</em></h4>
 
 </div>
 
 
 <p>The receiver efficiency index is number between <code>0</code> and <code>1</code> indicating the amount of relative activity at each receiver compared to the entire set of receivers, regardless of positioning. The function takes a set detections and a deployment history of the receivers to create a context for the detections. Both the amount of unique tags and number of species are taken into consideration in the calculation.</p>
-<p>The receiver efficiency index implement is implemented based on the paper Acoustic telemetry array evolution: <a href="https://www.sciencedirect.com/science/article/pii/S0165783618302509?via%3Dihub">From species- and project-specific designs to large-scale, multispecies, cooperative networks</a>. Each receiver’s index is calculated on the formula of:</p>
+<p>The receiver efficiency index implement is implemented based on the paper Acoustic telemetry array evolution: From species- and project-specific designs to large-scale, multispecies, cooperative networks - <a href="https://www.sciencedirect.com/science/article/pii/S0165783618302509?via%3Dihub">https://www.sciencedirect.com/science/article/pii/S0165783618302509?via%3Dihub</a>. Each receiver’s index is calculated on the formula of:</p>
 <blockquote>
 <p><span class="math inline">\(REI = \frac{T_r}{T_a} \times \frac{S_r}{S_a} \times \frac{DD_r}{DD_a} \times \frac{D_a}{D_r}\)</span></p>
 <p>REI = Receiver Efficiency Index</p>
@@ -1593,12 +1593,12 @@ detections &lt;- read_glatos_detections(detection_file)</code></pre>
 <p>The resulting dataframe looks like this:</p>
 <pre class="r"><code>head(rei)
   station latitude longitude         rei
-1 DRF-004 42.24937 -83.11824 0.001238344
-2 DRL-004 42.12746 -83.11873 0.001562131
-3 DRL-010 42.07690 -83.12096 0.001413048
-4 DRL-011 42.09637 -83.11681 0.001162268
-5 DRU-001 42.35693 -82.93016 0.001685864
-6 DRU-002 42.35278 -82.92844 0.001576595</code></pre>
+1 DRF-004 42.24937 -83.11824 0.001238345
+2 DRL-004 42.12746 -83.11873 0.001562132
+3 DRL-010 42.07690 -83.12096 0.001413049
+4 DRL-011 42.09637 -83.11681 0.001162269
+5 DRU-001 42.35693 -82.93016 0.001685865
+6 DRU-002 42.35278 -82.92844 0.001576596</code></pre>
 </div>
 
 
