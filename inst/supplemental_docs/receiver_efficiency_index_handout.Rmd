@@ -1,7 +1,7 @@
 ---
 title: "Receiver Efficiency Index"
-subtitle: "Workshop Handout - GLATOS, March 27, 2018"
-author: "Alex Nunes"
+subtitle: "Workshop Handout - GLATOS, February 28, 2019"
+author: "Alex Nunes (anunes@dal.ca)"
 date: "Updated: `r Sys.Date()`"
 output: 
   rmarkdown::html_document:
