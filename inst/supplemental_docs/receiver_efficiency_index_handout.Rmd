@@ -32,9 +32,9 @@ number of species are taken into consideration in the calculation.
 
 
 The receiver efficiency index implement is implemented based on the
-paper Acoustic telemetry array evolution: [From species- and
+paper Acoustic telemetry array evolution: From species- and
 project-specific designs to large-scale, multispecies, cooperative
-networks](https://www.sciencedirect.com/science/article/pii/S0165783618302509?via%3Dihub). 
+networks - https://www.sciencedirect.com/science/article/pii/S0165783618302509?via%3Dihub. 
 Each receiver's index is calculated on the formula of:
 
 > $REI = \frac{T_r}{T_a} \times \frac{S_r}{S_a} \times \frac{DD_r}{DD_a} \times \frac{D_a}{D_r}$
