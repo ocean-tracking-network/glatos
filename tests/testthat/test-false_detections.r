@@ -68,7 +68,7 @@ det_df_exp <- structure(list(animal_id = c("153", "153", "153", "153", "153",
 #strip last col to create input
 
 #data.frame
-det_df_in <- det_df[ , 1:(ncol(det_df_exp) - 1)]
+det_df_in <- det_df_exp[ , 1:(ncol(det_df_exp) - 1)]
 
 
 #data.table
