@@ -1,6 +1,6 @@
 # glatos 0.3.0
 
-#### 2019-02-12
+#### 2019-02-26
    
 ### New features
 
@@ -8,10 +8,11 @@
 		- receiver_efficiency
 		- residence_index
 		- read_otn_deployments
+		- install_ffmpeg
+		- check_dependencies
 
 - vignettes and documentation
     - added data-loading, data-requirements, receiver_efficency, residence_index
-    - added pkgdown files
 
 ### Minor changes
 
@@ -31,6 +32,22 @@
       EPSG argument).
     - added option to return spatial object or simple data frame.
 
+- transmit_along_path
+    - added option to input SpatialPolygons object
+    - added explicit coordinate reference system (EPSG 3175 - Great Lakes
+      projected CRS) so that default units are in meters and simulations are 
+      done in that CRS. Other CRS can be specified for other areas (via 
+      EPSG argument).
+    - added option to return spatial object or simple data frame.	
+	
+- detect_transmissions
+    - added option to input SpatialPolygons object
+    - added explicit coordinate reference system (EPSG 3175 - Great Lakes
+      projected CRS) so that default units are in meters and simulations are 
+      done in that CRS. Other CRS can be specified for other areas (via 
+      EPSG argument).
+    - added option to return spatial object or simple data frame.	
+			
 - abacus_plot
     - added optional arguments *x_res* and *x_format* to specify x-axis 
       tick mark spacing and format (issue #30)
