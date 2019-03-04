@@ -72,7 +72,7 @@ information: https://github.com/Rdatatable/data.table/wiki]
 fig.cap1 <- "Lakes Huron and Erie extracted from Great Lakes polygon included in the `glatos` package"
 
 ```
-```{r, echo=TRUE,fig.margin=TRUE,fig.cap=fig.cap1, fig.height=8,fig.width=8,tidy=TRUE,warning=FALSE,message=FALSE}
+```{r, echo=TRUE, fig.cap=fig.cap1, fig.height=8,fig.width=8,tidy=TRUE,warning=FALSE,message=FALSE}
 
 library(glatos)
 library(sp)
@@ -88,9 +88,16 @@ data(greatLakesPoly)
 # convert to sf spatial object
 lakes <- st_as_sf(greatLakesPoly)
 
+# convert to Great Lakes Coordinate reference system
+# this is needed in order to crop out lakes Huron and Erie.
+lakes <- st_transform(lakes, crs = 3174)
+  
 # crop polygon to extract Lake Huron and Lake Erie
-lakes <-  st_crop(lakes, xmin = -84.8, xmax = -79.6, ymin = 41.3, ymax= 46.6)
+lakes <-  st_crop(lakes, xmin = 971159.58, xmax = 1371224.26, ymin = -525362.49, ymax= 1126020.41)
 plot(st_geometry(lakes), col = "grey")
+
+# convert lakes object back to 4326 crs
+lakes <- st_transform(lakes, crs = 4326)
 
 # get example walleye detection data
 det_file <- system.file("extdata", "walleye_detections.csv",
@@ -101,7 +108,7 @@ det <- read_glatos_detections(det_file)
 rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
 recs <- read_glatos_receivers(rec_file)
 setDT(recs) # convert to data.table object- necessary for sf package
-recs <- recs[deploy_long < -80,]
+#recs <- recs[deploy_long < -80,]
 recs_sf <- st_as_sf(recs, coords = c("deploy_long", "deploy_lat"), crs = 4326) 
 
 ```
@@ -154,20 +161,17 @@ Next we interpolate detection data and do some cleanup.
 ```{r, eval = FALSE,tidy=TRUE}
 
 # interpolate detections.
-pos2 <- interpolate_path(det, trans = tran$transition, lnl_thresh=0.99)
+pos2 <- interpolate_path(det, trans = tran$transition, lnl_thresh=0.99, out_class = "data.table")
 
 ```
 
 ```{r, echo = FALSE,tidy=TRUE,message=FALSE}
 
-dump <- capture.output( {pos2 <-interpolate_path(det, trans = tran$transition, lnl_thresh=0.99)})
+dump <- capture.output( {pos2 <-interpolate_path(det, trans = tran$transition, lnl_thresh=0.99, out_class = "data.table")})
 
 ```
 
 ```{r, echo=TRUE,tidy=TRUE}
-
-# convert pos2 to data.table
-setDT(pos2)
 
 # extract unique bin_timestamp from the interpolated data
 int <- unique(pos2, by = "bin_timestamp")
