@@ -108,7 +108,8 @@ det <- read_glatos_detections(det_file)
 rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
 recs <- read_glatos_receivers(rec_file)
 setDT(recs) # convert to data.table object- necessary for sf package
-#recs <- recs[deploy_long < -80,]
+# remove receivers that do not have a recovery_date_time (lost receivers)
+recs <- recs[!is.na(recover_date_time)]
 recs_sf <- st_as_sf(recs, coords = c("deploy_long", "deploy_lat"), crs = 4326) 
 
 ```
@@ -145,7 +146,6 @@ cap2 <- "Plot of transition layer, receivers (orange circles), fish detection lo
 
 ```{r, fig.width=8,fig.height=8,fig.margin=TRUE,fig.cap=cap2,tidy=TRUE}
 
-
 # create quick plot of fish and receivers to make sure they are "on the map" (Figure 2)
 unique_fish <- unique(det, by = c("deploy_lat", "deploy_long")) 
 plot(tran$rast)
@@ -176,33 +176,40 @@ dump <- capture.output( {pos2 <-interpolate_path(det, trans = tran$transition, l
 # extract unique bin_timestamp from the interpolated data
 int <- unique(pos2, by = "bin_timestamp")
 
+# set data.table key and order bin_timestamp from smallest to largest
+setkey(int, bin_timestamp)
+
 ```
 
-In the next code chunk, we use a `data.table` join to add the unique
-timestamps extracted from `pos2` in the last line of code above (named
-`int`) to the receiver object.  We use receiver deployment and
+In the next code chunk, we use a `data.table` overlap-join to add the
+unique timestamps extracted from `pos2` in the last line of code above
+(named `int`) to the receiver object.  We use receiver deployment and
 recovery timestamps to identify if the receiver was active in that
 `bin_timestamp`.  In other words, we need to know what receivers were
 deployed during each `bin_timestamp` interval so we can display
-receiver deployment and recovery in the animation.  This step is
-really easy with `data.table` and would be a bit complicated using
-base R functions.
+receiver deployment and recovery in the animation.  This step is easy
+with `data.table` and would be a bit complicated using base R
+functions.
 
 ```{r, echo=TRUE,tidy=TRUE}
 
-# Add bin_timestamp to receivers, based on deploy/recover timestamps.
-# Removes unnecessary columns in output to simplify
-# This is a data.table non-equi join...
-recs <- recs[int, .(deploy_lat = x.deploy_lat,
-                    deploy_long = x.deploy_long,
-                    station = x.station,
-                    deploy_date_time = x.deploy_date_time,
-                    recover_date_time = x.recover_date_time,
-                    bin_timestamp = i.bin_timestamp),
-             on = .(deploy_date_time <= bin_timestamp,
-                    recover_date_time >= bin_timestamp),
-             allow.cartesian = TRUE]
+# calculate start and end dates for bin_timestamp
+# start is bin_timestamp, end is next bin_timestamp, except for last bin where start and end is the same value
+int <- int[, c("start","end") := list(
+  bin_timestamp, shift(bin_timestamp, type = "lead",
+                       fill = max(bin_timestamp)))]
 
+# set data.table keys
+# this is required by data.table for join
+setkey(int, start, end)
+
+# do overlap join
+recs <- foverlaps(recs, int, by.x = c("deploy_date_time", "recover_date_time"),
+                  by.y = c("start", "end"))
+
+# clean up recs object.
+# Only need bin_timestamp, deploy_lat, deploy_long columns for animation
+recs <- recs[, c("bin_timestamp", "deploy_long", "deploy_lat")]
 
 ```
 
