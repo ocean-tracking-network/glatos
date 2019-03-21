@@ -26,28 +26,24 @@
 #'   \code{location_col}, but can contain values that are not in the det
 #'   data frame (i.e., can use this option to plot locations fish were
 #'   not detected).
-#'   
-#' @param show_receiver_status A logical value indicating whether or not to
-#'   display receiver status behind detection data (i.e., indicate when 
-#'   receivers were in the water). If \code{show_receiver_status} == TRUE, then
-#'   a receiver_history data frame (\code{receiver_history}) must be supplied.
-#'   Default is FALSE.
 #' 
 #' @param receiver_history An optional \code{glatos_receivers} object
 #'   (e.g., produced by \link{read_glatos_receivers}) containing receiver
 #'   history data for plotting receiver status behind the detection data when 
-#'   \code{show_receiver_status} == TRUE.
+#'   \code{receiver_history} is not \code{NULL}.
 #'   
 #'   \emph{OR} An optional data frame containing receiver history
-#'   data for plotting receiver status behind the detection data when 
-#'   \code{show_receiver_status} == TRUE. 
+#'   data for plotting receiver status behind the detection data. 
 #'   
-#'   The data frame must contain at least three columns: 
-#'   1) 'deploy_date_time, 2) 'recover_date_time', and 3) a grouping
-#'   column whose name is specified by \code{location_col} (see below). Columns 
-#'   'deploy_date_time' and 'recover_date_time' must be of class POSIXct. The 
-#'   grouping column must have the same name in both \code{det} and 
-#'   \code{receiver_history}.
+#'   The following column must be present: 
+#'   \describe{
+#'   \item{\code{deploy_date_time}}{Receiver deployment timestamps; MUST be of 
+#'   class POSIXct.}
+#'   \item{\code{recover_date_time}}{Receiver recovery timestamps; MUST be of 
+#'   class POSIXct.}
+#'   \item{a grouping
+#'   column whose name is specified by \code{location_col}}{See above.}
+#'   }   
 #'   
 #' @param out_file An optional character string with the name (including 
 #'   extension) of output image file to be created. File extension
@@ -72,8 +68,16 @@
 #'   
 #' @param outFile Deprecated. Use \code{out_file} instead.
 #'   
-#' @param ... Other plotting arguments that pass to "points" function (e.g.,
-#'   col, lwd, type).
+#' @param ... Other plotting arguments that pass to \link{points} function
+#'   (e.g., \code{col}, \code{lwd}, \code{type}) or \link{title} function (use
+#'   \code{main} to set title, \code{cex.main} to set title character size, 
+#'   and \code{col.main} to set title color.
+#'   
+#' @param show_receiver_status DEPCRECATED. No longer used. A logical value
+#'   indicating whether or not to display receiver status behind detection data
+#'   (i.e., indicate when receivers were in the water). If
+#'   \code{show_receiver_status} == TRUE, then a receiver_history data frame
+#'   (\code{receiver_history}) must be supplied. Default is FALSE.
 #'   
 #' @details NAs are not allowed in any of the two required columns.
 #'   
@@ -132,18 +136,35 @@
 #' #plot with custom x-axis format - 8-week bins
 #' abacus_plot(det2, main = "TagID: 32054", x_res = "months", x_format = "%b-%y")
 #'
+#'#example with receiver locations
+#'# get example receiver location data
+#'rec_file <- system.file("extdata", "sample_receivers.csv",
+#'  package = "glatos")
+#'rec <- read_glatos_receivers(rec_file)
+#'
+#'abacus_plot(det2, locations=c("DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
+#'  "DRM", "FDT"), receiver_history = rec,
+#'  main = "TagID: 32054", col = "red")
+#'  
 #' @export
 
 abacus_plot <- function(det,
                         location_col = 'glatos_array',
                         locations = NULL,
-                        show_receiver_status = FALSE,
+                        show_receiver_status = NULL,
                         receiver_history = NULL,
                         out_file = NULL,
                         x_res = 5, 
                         x_format = "%Y-%m-%d",
                         outFile = NULL,
                         ...){
+  
+  #deprecation message for show_receiver_status
+  if(!is.null(show_receiver_status)) warning(paste("argument", 
+    "'show_receiver_status' has been deprecated and is no longer used.",
+    "Receiver status will now be added to the plot whenever 'receiver_history'",
+    "is specified."))
+  
   
   #check if outFile was given
   if(!is.null(outFile)){
@@ -178,18 +199,12 @@ abacus_plot <- function(det,
       "' does not exist.", call. = FALSE)
   }
   
-  # Perform checks related to show_receiver_status
-  if(show_receiver_status){
-      # Check that receiver_history data frame is passed to function
-      if(is.null(receiver_history)){
-        stop("Argument 'receiver_history' (i.e., data frame containing deploy 
-             and recovery times for receievr locations) must be specified when 
-             show_receiver_status == TRUE.")
-      }
-    
-      # Check that the specified columns appear in the receiver history data frame
-      missingCols2 <- setdiff(c("deploy_date_time", "recover_date_time", location_col), 
-                              names(receiver_history))
+  # Perform checks related to receiver_history
+  if(!is.null(receiver_history)){
+
+      # Check that required columns appear in the receiver history data frame
+      missingCols2 <- setdiff(c("deploy_date_time", "recover_date_time",  
+                                location_col),names(receiver_history))
       if (length(missingCols2) > 0){
         stop(paste0("receiver_history is missing the following ","column(s):\n", 
                     paste0("       '", missingCols2, "'", collapse="\n")), 
@@ -242,7 +257,7 @@ abacus_plot <- function(det,
   det <- det[order(det$detection_timestamp_utc), ] 
   
   # Prepare receiver_history data frame for plotting
-  if(show_receiver_status){
+  if(!is.null(receiver_history)){
     # Merge receiver_history and locations_table data frames
     # Keep only locations that appear in the locations_table data frame
     receiver_history <- merge(receiver_history, locations_table, by = "location", all.y = TRUE)
@@ -289,7 +304,7 @@ abacus_plot <- function(det,
             yaxt = "n", xaxt = "n", ylab = "", 
             xlab = ""))
   
-  if(show_receiver_status){
+  if(!is.null(receiver_history)){
     with(receiver_history, 
          segments(deploy_date_time,
                   y_order, 
@@ -332,6 +347,11 @@ abacus_plot <- function(det,
         side = 1, line = 2.2, cex = 1.2)
   mtext(ifelse("ylab" %in% names(arguments), arguments$ylab, location_col),
         side = 2, line = 3.5 + YlabOffset, cex = 1.2)
+  
+  # Add plot title
+  title_args <- arguments[names(arguments) %in% 
+      c("main", "col.main", "cex.main")]
+  if(length(title_args) > 0) do.call(title, title_args)
   
   if(!is.na(file_type))	{
     dev.off()

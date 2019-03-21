@@ -1,3 +1,16 @@
+# glatos 0.3.2
+
+#### 2019-03-21
+   
+### bug fixes and minor changes
+
+- abacus_plot
+		- fixed bug where plot title (specified by *main* argument) was not 
+		  included in plot (issue #70)
+		- deprecated *show_receiver_status* argument. Receiver status will 
+		  be shown on plot whenever 'receiver_history' is given.
+
+----
 # glatos 0.3.0
 
 #### 2019-02-26
@@ -49,6 +62,8 @@
     - added option to return spatial object or simple data frame.	
 			
 - abacus_plot
+    - added optional arguments *show_receiver_status* and *receiver_history*
+		  to allow receiver history status to be added to plot (issue #36)
     - added optional arguments *x_res* and *x_format* to specify x-axis 
       tick mark spacing and format (issue #30)
     - removed input arguments that could also be passed via ellipses (issue #35)

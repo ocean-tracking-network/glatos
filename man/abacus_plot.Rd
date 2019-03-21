@@ -5,7 +5,7 @@
 \title{Plot detection locations of acoustic transmitters over time}
 \usage{
 abacus_plot(det, location_col = "glatos_array", locations = NULL,
-  show_receiver_status = FALSE, receiver_history = NULL,
+  show_receiver_status = NULL, receiver_history = NULL,
   out_file = NULL, x_res = 5, x_format = "\%Y-\%m-\%d",
   outFile = NULL, ...)
 }
@@ -35,27 +35,29 @@ in the vector (from bottom up). Should correspond to values in
 data frame (i.e., can use this option to plot locations fish were
 not detected).}
 
-\item{show_receiver_status}{A logical value indicating whether or not to
-display receiver status behind detection data (i.e., indicate when 
-receivers were in the water). If \code{show_receiver_status} == TRUE, then
-a receiver_history data frame (\code{receiver_history}) must be supplied.
-Default is FALSE.}
+\item{show_receiver_status}{DEPCRECATED. No longer used. A logical value
+indicating whether or not to display receiver status behind detection data
+(i.e., indicate when receivers were in the water). If
+\code{show_receiver_status} == TRUE, then a receiver_history data frame
+(\code{receiver_history}) must be supplied. Default is FALSE.}
 
 \item{receiver_history}{An optional \code{glatos_receivers} object
 (e.g., produced by \link{read_glatos_receivers}) containing receiver
 history data for plotting receiver status behind the detection data when 
-\code{show_receiver_status} == TRUE.
+\code{receiver_history} is not \code{NULL}.
 
 \emph{OR} An optional data frame containing receiver history
-data for plotting receiver status behind the detection data when 
-\code{show_receiver_status} == TRUE. 
+data for plotting receiver status behind the detection data. 
 
-The data frame must contain at least three columns: 
-1) 'deploy_date_time, 2) 'recover_date_time', and 3) a grouping
-column whose name is specified by \code{location_col} (see below). Columns 
-'deploy_date_time' and 'recover_date_time' must be of class POSIXct. The 
-grouping column must have the same name in both \code{det} and 
-\code{receiver_history}.}
+The following column must be present: 
+\describe{
+\item{\code{deploy_date_time}}{Receiver deployment timestamps; MUST be of 
+class POSIXct.}
+\item{\code{recover_date_time}}{Receiver recovery timestamps; MUST be of 
+class POSIXct.}
+\item{a grouping
+column whose name is specified by \code{location_col}}{See above.}
+}}
 
 \item{out_file}{An optional character string with the name (including 
 extension) of output image file to be created. File extension
@@ -80,8 +82,10 @@ minor ticks are not supported). Default is "%Y-%m-%d". Any valid
 
 \item{outFile}{Deprecated. Use \code{out_file} instead.}
 
-\item{...}{Other plotting arguments that pass to "points" function (e.g.,
-col, lwd, type).}
+\item{...}{Other plotting arguments that pass to \link{points} function
+(e.g., \code{col}, \code{lwd}, \code{type}) or \link{title} function (use
+\code{main} to set title, \code{cex.main} to set title character size, 
+and \code{col.main} to set title color.}
 }
 \value{
 An image to the default plot device or a file containing the 
@@ -143,6 +147,16 @@ abacus_plot(det2, main = "TagID: 32054", x_res = "8 weeks")
 #plot with custom x-axis format - 8-week bins
 abacus_plot(det2, main = "TagID: 32054", x_res = "months", x_format = "\%b-\%y")
 
+#example with receiver locations
+# get example receiver location data
+rec_file <- system.file("extdata", "sample_receivers.csv",
+ package = "glatos")
+rec <- read_glatos_receivers(rec_file)
+
+abacus_plot(det2, locations=c("DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
+ "DRM", "FDT"), receiver_history = rec,
+ main = "TagID: 32054", col = "red")
+ 
 }
 \author{
 T. R. Binder, edited by A. Dini
