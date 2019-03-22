@@ -1,8 +1,13 @@
 # glatos 0.3.2
 
-#### 2019-03-21
+#### 2019-03-22
    
 ### bug fixes and minor changes
+
+- make_frames
+		- fixed bug where receivers were not displayed near the end of the time 
+		  series in the images (and videos) when some receivers were missing 
+			recovery data (issue #79).
 
 - abacus_plot
 		- fixed bug where plot title (specified by *main* argument) was not 

@@ -204,7 +204,8 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         background_xlim = c(-92.45, -75.87),
                         show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
                         ani_name = "animation.mp4", frame_delete = FALSE,
-                        overwrite = FALSE, ffmpeg = NA, preview = FALSE, bg_map = NULL, ...){
+                        overwrite = FALSE, ffmpeg = NA, preview = FALSE, 
+                        bg_map = NULL, ...){
   
   # test ffmpeg and get path
   if(animate) ffmpeg <- get_ffmpeg_path(ffmpeg)
@@ -215,19 +216,6 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   #make column to identify original row to join with option plot arguments
   work_proc_obj[ , row_in := 1:.N]  
     
-  # set recs to data.table  
-  if(!is.null(recs)){
-    recs <- data.table::as.data.table(recs)
-
-    #make column to identify original row to join with option plot arguments
-    recs[ , row_in := 1:.N]    
-    
-    # Remove receivers not recovered (records with NA in recover_date_time)
-    data.table::setkey(recs, recover_date_time)
-    recs <- recs[!list(NA_real_), c("station", "deploy_lat", 
-                                             "deploy_long", "deploy_date_time", 
-                                             "recover_date_time", "row_in")]
-  }
   
   # capture optional plot arguments passed via ellipses
   #  and add original row indices to join on both
@@ -292,6 +280,21 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   dtc_args <- data.table::as.data.table(dtc_args)
   dtc_args[ , row_in := 1:.N]
   
+  
+  # set recs to data.table and remove receivers not recovered
+  if(!is.null(recs)){
+    recs <- data.table::as.data.table(recs)
+    
+    #make column to identify original row to join with option plot arguments
+    recs[ , row_in := 1:.N]    
+    
+    # Remove receivers not recovered (records with NA in recover_date_time)
+    data.table::setkey(recs, recover_date_time)
+    recs <- recs[!list(NA_real_), c("station", "deploy_lat", 
+      "deploy_long", "deploy_date_time", 
+      "recover_date_time", "row_in")]
+  }  
+
 
   # Make output directory if it does not already exist
   if(!dir.exists(out_dir)) dir.create(out_dir)
@@ -365,24 +368,24 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   time_period <- range(work_proc_obj$bin_timestamp) 
   
   # define custom plot function
-  cust_plot <- function(x, time_period, recs, out_dir, background,
-                        background_xlim, background_ylim){
+  cust_plot <- function(x, .time_period, .recs, .out_dir, .background,
+                        .background_xlim, .background_ylim){
 
     # Calculate great circle distance in meters of x and y limits.
     # needed to determine aspect ratio of the output
-    linear_x = geosphere::distMeeus(c(background_xlim[1],background_ylim[1]),
-                                    c(background_xlim[2],background_ylim[1]))
-    linear_y = geosphere::distMeeus(c(background_xlim[1],background_ylim[1]),
-                                    c(background_xlim[1],background_ylim[2]))
+    linear_x = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
+                                    c(.background_xlim[2], .background_ylim[1]))
+    linear_y = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
+                                    c(.background_xlim[1], .background_ylim[2]))
     
     # aspect ratio of image
-    figRatio <- linear_y/linear_x
+    figRatio <- linear_y / linear_x
 
     # calculate image height based on aspect ratio
-    height <- trunc(2000*figRatio)
+    height <- trunc(2000 * figRatio)
 
     # plot GL outline and movement points
-    png(file.path(out_dir, x$f_name[1]), width = 2000,
+    png(file.path(.out_dir, x$f_name[1]), width = 2000,
         height = ifelse(height%%2==0, height, height + 1), units = 'px',
         pointsize = 22*figRatio)
 
@@ -397,17 +400,17 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     do.call(par, par_args)
 
     # Note call to plot with sp
-    sp::plot(background, ylim = c(background_ylim), xlim = c(background_xlim),
+    sp::plot(.background, ylim = c(.background_ylim), 
+             xlim = c(.background_xlim),
              axes = FALSE, lwd = 2*figRatio, col = "white", bg = "gray74")
 
-    box(lwd = 3*figRatio)
+    box(lwd = 3 * figRatio)
     
     # Add receiver locations
-    if(!is.null(recs)){
+    if(!is.null(.recs)){
       # extract receivers in the water during plot interval
-      sub_recs <- recs[data.table::between(x$bin_timestamp[1], 
-                       lower = recs$deploy_date_time,
-                       upper = recs$recover_date_time)]
+      sub_recs <- .recs[deploy_date_time <= x$bin_timestamp[1] &  
+          (recover_date_time >= x$bin_timestamp[1] & !is.na(recover_date_time))]
       
       # get optional plot arguments that correspond with sub_recs
       sub_rcv_args <- rcv_args[match(sub_recs$row_in,rcv_args$row_in), ] 
@@ -421,20 +424,20 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     par(xpd = TRUE)
 
     # Define timeline x and y location
-    xlim_diff <- diff(background_xlim)
-    ylim_diff <- diff(background_ylim)
-    timeline_y <- rep(background_ylim[1] - (0.06*ylim_diff), 2)
-    timeline_x <- c(background_xlim[1] + (0.10*xlim_diff),
-                    background_xlim[2] - (0.10*xlim_diff))
+    xlim_diff <- diff(.background_xlim)
+    ylim_diff <- diff(.background_ylim)
+    timeline_y <- rep(.background_ylim[1] - (0.06*ylim_diff), 2)
+    timeline_x <- c(.background_xlim[1] + (0.10*xlim_diff),
+                    .background_xlim[2] - (0.10*xlim_diff))
 
-    time_dur <- diff(as.numeric(time_period))
+    time_dur <- diff(as.numeric(.time_period))
     
     # Add labels to timeline
-    labels <- seq(as.POSIXct(format(min(time_period), "%Y-%m-%d")),
-                  as.POSIXct(format(max(time_period), "%Y-%m-%d")),
+    labels <- seq(as.POSIXct(format(min(.time_period), "%Y-%m-%d")),
+                  as.POSIXct(format(max(.time_period), "%Y-%m-%d")),
                   length.out = 5)
     labels_ticks <- as.POSIXct(format(labels, "%Y-%m-%d"), tz = "GMT")
-    ptime <- (as.numeric(labels_ticks) - as.numeric(min(time_period))) / time_dur
+    ptime <- (as.numeric(labels_ticks) - as.numeric(min(.time_period))) / time_dur
     labels_x <- timeline_x[1] + (diff(timeline_x) * ptime)
     
     #set defaults and apply if needed
@@ -451,7 +454,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     
     
     # Update timeline
-    ptime <- (as.numeric(x[1,"grp"]) - as.numeric(min(time_period))) / time_dur
+    ptime <- (as.numeric(x[1,"grp"]) - as.numeric(min(.time_period))) / time_dur
 
     # Proportion of timeline elapsed
     timeline_x_i <- timeline_x[1] + diff(timeline_x) * ptime
@@ -493,12 +496,12 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   work_proc_obj[grp_num <= grpn, 
                {if(!preview) setTxtProgressBar(pb, .GRP)
                 cust_plot(x = .SD, 
-                          time_period = time_period, 
-                          recs = recs, 
-                          out_dir = out_dir,
-                          background = background, 
-                          background_xlim = background_xlim, 
-                          background_ylim = background_ylim 
+                          .time_period = time_period, 
+                          .recs = recs, 
+                          .out_dir = out_dir,
+                          .background = background, 
+                          .background_xlim = background_xlim, 
+                          .background_ylim = background_ylim 
                 )}
                 , by = grp,
                 .SDcols = c("bin_timestamp", "longitude", "latitude",
