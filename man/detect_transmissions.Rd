@@ -32,8 +32,10 @@ data.frame.}
 shown if TRUE (default) and not shown if FALSE.}
 }
 \value{
-A SpatialPointsDataFrame \cr \emph{OR} \cr 
-A data frame containing:
+A SpatialPointsDataFrame comprised of (1) a spatial component with  
+the coordinates of receivers that recorded each detection and (2) a data 
+frame component with the following columns: \cr 
+
 \item{trns_id}{Unique signal transmission ID}
 \item{recv_id}{Unique receiver ID}
 \item{recv_x}{Receiver x coordinate}
@@ -41,6 +43,8 @@ A data frame containing:
 \item{trns_x}{Transmitter x coordinate at time of transmission}
 \item{trns_y}{Transmitter y coordinate at time of transmission}
 \item{etime}{Elapsed time}
+
+Only the data frame component is returned when \code{sp_out = FALSE}.
 }
 \description{
 Simulates detection of transmitter signals in a receiver network based on
@@ -59,6 +63,9 @@ This function was written to be used along with
   \code{\link{transmit_along_path}}.
 }
 \examples{
+
+library(sp) #for plot methods for spatial objects
+
 #make a simple path in polygon
 mypath <- crw_in_polygon(data.frame(x = c(0, 0, 1000, 1000), 
   y = c(0, 1000, 1000, 0)), stepLen=100, nsteps=50)
@@ -88,6 +95,11 @@ pdrf(c(100,200,300,400,500)) #view detection probs. at some distances
 mydtc <- detect_transmissions(trnsLoc=mytrns, recLoc=recs, detRngFun=pdrf)
 #view transmissions that were detected
 points(trns_y~trns_x, data=mydtc,pch=21, bg="red")
+
+#link transmitter and receiver locations for each detection
+with(mydtc@data, segments(x0 = trns_x, y0 = trns_y, 
+                          x1 = recv_x, y1 = recv_y, 
+                          col = "red")) 
 
 }
 \seealso{

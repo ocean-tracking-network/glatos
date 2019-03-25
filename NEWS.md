@@ -1,8 +1,12 @@
 # glatos 0.3.2
 
-#### 2019-03-22
+#### 2019-03-25
    
 ### bug fixes and minor changes
+
+- detect_transmissions 
+		- fixed bug where 'trns_x' and 'trns_y' in data slot of output was not 
+		  converted to input coordinate reference system when *sp_out = TRUE*.
 
 - make_frames
 		- fixed bug where receivers were not displayed near the end of the time 

@@ -39,8 +39,10 @@
 #' This function was written to be used along with 
 #'   \code{\link{transmit_along_path}}.
 #' 
-#' @return A SpatialPointsDataFrame \cr \emph{OR} \cr 
-#' A data frame containing:
+#' @return A SpatialPointsDataFrame comprised of (1) a spatial component with  
+#' the coordinates of receivers that recorded each detection and (2) a data 
+#' frame component with the following columns: \cr 
+#' 
 #' \item{trns_id}{Unique signal transmission ID}
 #' \item{recv_id}{Unique receiver ID}
 #' \item{recv_x}{Receiver x coordinate}
@@ -48,6 +50,8 @@
 #' \item{trns_x}{Transmitter x coordinate at time of transmission}
 #' \item{trns_y}{Transmitter y coordinate at time of transmission}
 #' \item{etime}{Elapsed time}
+#' 
+#' Only the data frame component is returned when \code{sp_out = FALSE}.
 #'
 #' @seealso \code{\link{transmit_along_path}} to simulate transmissions along a 
 #' path (i.e., create \code{trnsLoc}).
@@ -55,6 +59,9 @@
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'
 #' @examples
+#' 
+#' library(sp) #for plot methods for spatial objects
+#' 
 #' #make a simple path in polygon
 #' mypath <- crw_in_polygon(data.frame(x = c(0, 0, 1000, 1000), 
 #'   y = c(0, 1000, 1000, 0)), stepLen=100, nsteps=50)
@@ -84,6 +91,11 @@
 #' mydtc <- detect_transmissions(trnsLoc=mytrns, recLoc=recs, detRngFun=pdrf)
 #' #view transmissions that were detected
 #' points(trns_y~trns_x, data=mydtc,pch=21, bg="red")
+#' 
+#' #link transmitter and receiver locations for each detection
+#' with(mydtc@data, segments(x0 = trns_x, y0 = trns_y, 
+#'                           x1 = recv_x, y1 = recv_y, 
+#'                           col = "red")) 
 #'
 #' @export
 detect_transmissions <- function(trnsLoc = NA , recLoc = NA, detRngFun = NA,
@@ -201,25 +213,30 @@ detect_transmissions <- function(trnsLoc = NA , recLoc = NA, detRngFun = NA,
   dtc <- dtc[order(dtc$etime),]#sort by time	 
   
   if(nrow(dtc) > 0){
-  
-    #export spatial object where locations are receiver locations of detection
-    dtc <- sp::SpatialPointsDataFrame(dtc[, c("recv_x", "recv_y")], 
-      data = dtc[, c("trns_id", "recv_id", "trns_x", "trns_y", "etime")],
-                                         proj4string = sp::CRS(projargs))
-    dtc <- sp::spTransform(dtc, CRSobj = projargs_in)
+
     
-    #convert to input coordinate system 
-    if(!sp_out){
-      #convert transmission locations of detections to input crs
-      dtc_trns <- sp::SpatialPoints(dtc@data[,c("trns_x", "trns_y")], 
-                                    proj4string = sp::CRS(projargs))
-      dtc_trns <- sp::spTransform(dtc_trns, CRSobj = projargs_in)
-      dtc <- sp::spTransform(dtc, CRSobj = projargs_in)
-      dtc <- as.data.frame(cbind(dtc@data[, c("trns_id", "recv_id")], 
-                                 sp::coordinates(dtc), 
-                                 sp::coordinates(dtc_trns), 
-                                 etime = dtc$etime))
-    }
+    #convert transmission locations of detections to input crs
+    dtc_recv <- sp::SpatialPoints(dtc[, c("recv_x", "recv_y")], 
+                                 proj4string = sp::CRS(projargs))
+    dtc_recv <- sp::spTransform(dtc_recv, CRSobj = projargs_in)
+    
+    
+    #convert transmission locations of detections to input crs
+    dtc_trns <- sp::SpatialPoints(dtc[, c("trns_x", "trns_y")], 
+                                  proj4string = sp::CRS(projargs))
+    dtc_trns <- sp::spTransform(dtc_trns, CRSobj = projargs_in)
+    
+    #combine to data frame
+    dtc <- as.data.frame(cbind(dtc[, c("trns_id", "recv_id")], 
+                               sp::coordinates(dtc_recv), 
+                               sp::coordinates(dtc_trns), 
+                               etime = dtc$etime))  
+    
+    if(sp_out) {
+      #export spatial object where locations are receiver locations of detection
+      dtc <- sp::SpatialPointsDataFrame(dtc_recv, data = dtc)
+    }  
+
   }
              
   return(dtc)
