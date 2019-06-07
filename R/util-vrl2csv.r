@@ -78,16 +78,17 @@ vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath=NA){
   
   #if vrl is single directory, get list of vrl file names
   if(all(file.info(vrl)$isdir)) {
-	if(!file.exists(vrl)) stop(paste0("File or folder ",vrl," not found."))
-	if(length(vrl) > 1) 
-	   stop("input argument 'vrl' cannot include more than one directory")
-	if(length(vrl) == 0) stop(paste0("No VRL files found at ",vrl))
-	if(length(vrl) == 1) vrl <- list.files(vrl,full.names=T, 
-	                                       pattern=".vrl$|.VRL$|.Vrl$")
+  	if(length(vrl) > 1) stop("input argument 'vrl' cannot include more than ",
+                             "one directory")
+  	if(length(vrl) == 1) vrl <- list.files(vrl, full.names = TRUE, 
+  	                                       pattern = "vrl$", ignore.case = TRUE)
+  	if(length(vrl) == 0) stop("No VRL files found.")
   } #end if
   
-  #combine multiple vrl files into one string
-  if(length(vrl) > 0) vrl <- paste(vrl,collapse=" ")
+  #check if missing
+  missing_vrls <- which(!file.exists(vrl))
+  if(length(missing_vrls) > 0) stop("VRL files not found: \n ",
+                        paste(basename(vrl)[missing_vrls], collapse = "\n "))
   
   #set output directory to working directory if not specified
   if(is.na(outDir)) outDir <- getwd()
@@ -95,15 +96,24 @@ vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath=NA){
   #set --overwrite-files option
   overwrite_file <- ifelse(overwrite,"--overwrite-file","")
   
-  #invoke vue command
-  foo <- system2(vuePath,c("--convert-files",
-    paste0("--output-path ",outDir),overwrite_file,paste0(" --output-format csv ",vrl)))
-  if(foo == '127') stop(paste0("\nVUE.exe was not found.\n",
-    "Ensure that VUE is installed on your system and that either the \n",
-    "PATH environment variable was set (see ?vrl2csv).\n",
-    "or specify the path to VUE.exe using the 'vueExePath' argument.\n"))
+  #invoke vue command for each file
+  for(i in 1:length(vrl)){
+    if(i == 1) {
+      message("Converting ", length(vrl), " detection files...")
+      pb <- txtProgressBar(0, max = length(vrl), style = 3)
+    }
+    foo_i <- system2(vuePath,c("--convert-files",
+      paste0("--output-path ", outDir), overwrite_file, 
+      paste0(" --output-format csv ", vrl[i])))
+    if(foo_i == '127') stop("VUE.exe was not found.\n",
+      " Ensure that VUE is installed on your system and that either the \n",
+      " PATH environment variable was set (see ?vrl2csv).\n",
+      " or specify the path to VUE.exe using the 'vueExePath' argument.\n")
+    
+    setTxtProgressBar(pb, i)
+  } #end i
   
   #return output path(s) and file name(s)
-  outFName <- gsub(".vrl|.VRL|.Vrl",".csv",basename(vrl))
-  return(paste0(outDir,"/",outFName))
+  outFName <- gsub("vrl$", "csv", basename(vrl), ignore.case = TRUE)
+  return(file.path(outDir, outFName))
 }

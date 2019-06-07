@@ -1,8 +1,16 @@
 # glatos 0.3.2
 
-#### 2019-03-25
+#### 2019-06-07
    
 ### bug fixes and minor changes
+
+-vrl2csv
+	  - fixed bug where output csv file names were not returned when input   
+		  was multiple VRL file names. A vector of output CSV file names 
+			is now returned.
+		- make separate call to VUE --convert-files for each VRL file.
+		- add progress bar
+		- improve error messaging.
 
 - detect_transmissions 
 		- fixed bug where 'trns_x' and 'trns_y' in data slot of output was not 
