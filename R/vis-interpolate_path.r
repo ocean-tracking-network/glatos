@@ -170,8 +170,38 @@
 #' @export 
 
 
-interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
-                             lnl_thresh = 0.9){
+
+library(sp) #for loading greatLakesPoly
+library(raster) #for raster manipulation (e.g., crop)
+
+ # get example walleye detection data
+ det_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
+ det <- glatos::read_glatos_detections(det_file)
+ 
+ 
+ # extract one fish and subset date
+ det <- det[det$animal_id == 22 & 
+            det$detection_timestamp_utc > as.POSIXct("2012-04-08") &
+            det$detection_timestamp_utc < as.POSIXct("2013-04-15") , ]
+
+#get polygon of the Great Lakes 
+data(greatLakesPoly, package = "glatos") #glatos example data; a SpatialPolygonsDataFrame
+
+# crop polygon to western Lake Erie
+maumee <-  crop(greatLakesPoly, extent(-83.7, -82.5, 41.3, 42.4))
+ 
+#' # not high enough resolution- bump up resolution
+tran1 <- glatos::make_transition(maumee, res = c(0.001, 0.001))
+
+#pos2 <- interpolate_path(det, trans = tran1$transition)
+
+trans = tran1$transition
+det = det
+int_time_stamp = 86400
+
+
+
+#interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400){
 
   # check to see that trans is a transition Layer or transition stack.
   if(!is.null(trans) & 
@@ -185,8 +215,7 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
   dtc <- data.table::as.data.table(det)
 
   # subset only columns for function:
-  dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", 
-                 "deploy_long")]
+  dtc <- dtc[, c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
 
   dtc[, record_type := "detection"]
   
@@ -198,8 +227,7 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
 
   # save original dataset to combine with interpolated data in the end
   det <- data.table::copy(dtc)
-  data.table::setnames(det, c("animal_id", "bin_stamp", "i_lat", "i_lon", 
-                              "record_type", "num_rows"))
+  data.table::setnames(det, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type", "num_rows"))
 
   # remove any fish with only one detection
   dtc <- dtc[num_rows != 1]
@@ -207,44 +235,44 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
   # error if only fish with one observation.
   if (nrow(dtc) == 0) stop("must have two observations to interpolate")
   
-  t_seq <- seq(min(dtc$detection_timestamp_utc),
-               max(dtc$detection_timestamp_utc), int_time_stamp)
+  t_seq <- seq(min(dtc$detection_timestamp_utc), max(dtc$detection_timestamp_utc), int_time_stamp)
 
   # bin data by time interval and add bin to dtc
   dtc[, bin := t_seq[findInterval(detection_timestamp_utc, t_seq)] ]
 
   # make all combinations of animals and detection bins
-  dtc <- merge(data.table::CJ(bin = t_seq, animal_id = unique(dtc$animal_id)), 
+dtc <- merge(data.table::CJ(bin = t_seq, animal_id =
+unique(dtc$animal_id)), 
                dtc,
                by = c("bin", "animal_id"), all.x = TRUE)
   data.table::setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
   # if only need to do linear interpolation:
-  if (is.null(trans) | lnl_thresh == 0){
-    dtc[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc), 
-          bin_stamp := bin]
-    dtc[, i_lat := approx(detection_timestamp_utc, deploy_lat, 
-          xout = bin_stamp)$y,
-        by = animal_id]
-    dtc[, i_lon := approx(detection_timestamp_utc, 
-          deploy_long, xout = bin_stamp)$y,
-          by = animal_id]
-    dtc[is.na(deploy_long), record_type := "interpolated"]
-    dtc <- dtc[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")]
-    det <- det[num_rows == 1, c("animal_id", "bin_stamp", "i_lat", "i_lon",
-                                "record_type")]
-    out <- rbind(dtc, det)
-    data.table::setkey(out, animal_id, bin_stamp)
-    out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
-    out <- na.omit(out, cols = "i_lat")
-    data.table::setnames(out, c("animal_id", "bin_timestamp", "latitude", 
-                                "longitude", "record_type"))
-    out <- unique(out)
-    out <- data.table::setorder(out, animal_id, bin_timestamp, -record_type)
-    return(as.data.frame(out))
-  }
+  ## if (is.null(trans){
+  ##   dtc[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc), 
+  ##         bin_stamp := bin]
+  ##   dtc[, i_lat := approx(detection_timestamp_utc, deploy_lat, 
+  ##         xout = bin_stamp)$y,
+  ##       by = animal_id]
+  ##   dtc[, i_lon := approx(detection_timestamp_utc, 
+  ##         deploy_long, xout = bin_stamp)$y,
+  ##         by = animal_id]
+  ##   dtc[is.na(deploy_long), record_type := "interpolated"]
+  ##   dtc <- dtc[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")]
+  ##   det <- det[num_rows == 1, c("animal_id", "bin_stamp", "i_lat", "i_lon",
+  ##                               "record_type")]
+  ##   out <- rbind(dtc, det)
+  ##   data.table::setkey(out, animal_id, bin_stamp)
+  ##   out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
+  ##   out <- na.omit(out, cols = "i_lat")
+  ##   data.table::setnames(out, c("animal_id", "bin_timestamp", "latitude", 
+  ##                               "longitude", "record_type"))
+  ##   out <- unique(out)
+  ##   out <- data.table::setorder(out, animal_id, bin_timestamp, -record_type)
+  ##   return(as.data.frame(out))
+  ## }
 
-  # routine for combined nln and ln interpolation
+  # routine for combined nln
   # identify start and end rows for observations before and after NA
   ends <- dtc[!is.na(deploy_lat), .(start = .I[-nrow(.SD)], end = .I[-1]),
               by = animal_id][end - start > 1]
@@ -277,27 +305,10 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
 
   data.table::setkey(dtc, animal_id, bin, detection_timestamp_utc)
 
-  # calculate great circle distance between coords
-  dtc[, gcd := geosphere::distHaversine(as.matrix(
-    .SD[1, c("deploy_long", "deploy_lat")]),
-    as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = i.start]
-
-  
-  
-  # calculate least cost (non-linear) distance between points
-  message("Calculating least-cost (non-linear) distances... (step 1 of 3)")
-  grpn = uniqueN(dtc$i.start)
-  pb <- txtProgressBar(min = 0, max = grpn, style = 3) 
-  
-   dtc[, lcd := {setTxtProgressBar(pb, value = .GRP);
-     gdistance::costDistance(trans, fromCoords = as.matrix(
-    .SD[1, c("deploy_long", "deploy_lat")]),
-    toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")]))},
-    by = i.start]
-  
-
-  # calculate ratio of gcd:lcd
-  dtc[, crit := gcd / lcd]
+  ## # calculate great circle distance between coords
+  ## dtc[, gcd := geosphere::distHaversine(as.matrix(
+  ##   .SD[1, c("deploy_long", "deploy_lat")]),
+  ##   as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = i.start]
 
   # create keys for lookup
   dtc[!is.na(detection_timestamp_utc),
@@ -310,52 +321,50 @@ interpolate_path <- function(det, trans = NULL, int_time_stamp = 86400,
 
   # extract rows that need non-linear interpolation
   # based on ratio between gcd:lcd
-  nln <- dtc[crit < lnl_thresh ]
-
-  land_chk <- dtc[is.infinite(lcd)][!is.na(deploy_lat),
-                                    c("deploy_lat", "deploy_long")]
-
-  # stop execution and display offending receivers if any receivers are on land.
-
-  capture <- function(x)paste(capture.output(print(x)), collapse = "\n")
   
-  if (nrow(land_chk) > 0) {stop("Some coordinates are on land or beyond extent.
-    Interpolation impossible! Check receiver locations or extents of transition
-    layer:\n", capture(as.data.table(land_chk)), call. = FALSE)
-  }
+  ## land_chk <- dtc[is.infinite(lcd)][!is.na(deploy_lat),
+  ##                                   c("deploy_lat", "deploy_long")]
+
+  ## # stop execution and display offending receivers if any receivers are on land.
+
+  ## capture <- function(x)paste(capture.output(print(x)), collapse = "\n")
+  
+  ## if (nrow(land_chk) > 0) {stop("Some coordinates are on land or beyond extent.
+  ##   Interpolation impossible! Check receiver locations or extents of transition
+  ##   layer:\n", capture(as.data.table(land_chk)), call. = FALSE)
+  ## }
 
   # extract data for linear interpolation
   # check to make sure that all points to be interpolated
   # are within the tranition layer is needed before any interpolation.
 
-  ln <- dtc[crit >= lnl_thresh | is.nan(crit) ]
-  if (nrow(ln) == 0){
-    ln <- data.table(animal_id = character(), i_lat = numeric(),
-                     i_lon = numeric(),
-                     bin_stamp = as.POSIXct(character()),
-                     record_type = character())
-    } else {
+ 
+## if (nrow(ln) == 0){
+##     ln <- data.table(animal_id = character(), i_lat = numeric(),
+##                      i_lon = numeric(),
+##                      bin_stamp = as.POSIXct(character()),
+##                      record_type = character())
+##     } else {
 
-    message("\nStarting linear interpolation... (step 2 of 3)")
-    # linear interpolation
-      grpn = uniqueN(ln$i.start)
-      pb <- txtProgressBar(min = 0, max = grpn, style = 3)
-      ln[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc),
-                                                 bin_stamp := bin]
-      ln[, i_lat := {setTxtProgressBar(pb, .GRP);
-                              tmp = .SD[c(1, .N),
-                               c("detection_timestamp_utc", "deploy_lat")];
-                               approx(c(tmp$detection_timestamp_utc),
-                                      c(tmp$deploy_lat),
-                                      xout = c(bin_stamp))$y}, by = i.start]
-      ln[, i_lon := {tmp = .SD[c(1, .N),
-                               c("detection_timestamp_utc", "deploy_long")];
-                               approx(c(tmp$detection_timestamp_utc),
-                                      c(tmp$deploy_long), 
-                                      xout = c(bin_stamp))$y},
-         by = i.start]
-      ln[is.na(deploy_long), record_type := "interpolated"]
-    }
+    ##   # linear interpolation
+    ##   grpn = uniqueN(ln$i.start)
+    ##   pb <- txtProgressBar(min = 0, max = grpn, style = 3)
+    ##   ln[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc),
+    ##                                              bin_stamp := bin]
+    ##   ln[, i_lat := {setTxtProgressBar(pb, .GRP);
+    ##                           tmp = .SD[c(1, .N),
+    ##                            c("detection_timestamp_utc", "deploy_lat")];
+    ##                            approx(c(tmp$detection_timestamp_utc),
+    ##                                   c(tmp$deploy_lat),
+    ##                                   xout = c(bin_stamp))$y}, by = i.start]
+    ##   ln[, i_lon := {tmp = .SD[c(1, .N),
+    ##                            c("detection_timestamp_utc", "deploy_long")];
+    ##                            approx(c(tmp$detection_timestamp_utc),
+    ##                                   c(tmp$deploy_long), 
+    ##                                   xout = c(bin_stamp))$y},
+    ##      by = i.start]
+    ##   ln[is.na(deploy_long), record_type := "interpolated"]
+    ## }
   
   # extract records to lookup
   nln_small <- nln[ !is.na(detection_timestamp_utc)][!is.na(t_lat)]
