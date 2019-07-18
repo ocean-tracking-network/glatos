@@ -1,19 +1,45 @@
-#' Glatos To ATT Conversion
+#' Convert detections and receiver metadata to a format that 
+#' ATT (https://github.com/vinayudyawer/ATT) accepts.
 #'
-#' Function to translate the glatos format to the ATT format
+#' @param glatosObj a list from \code{read_glatos_detections}
+#'
+#' @param receiverObj a list from \code{read_glatos_receivers}
+#'
+#' @details This function takes 2 lists containing detection and
+#' reciever data and transforms them into 3 \code{tibble} objects 
+#' inside of a list. The input that AAT uses to get this data product
+#' is located here: https://github.com/vinayudyawer/ATT/blob/master/README.md
+#' and our mappings are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
+#' in a comment by Ryan Gosse
+#'
+#' @author Ryan Gosse
+#'
+#' @return a list of 3 tibbles containing tag dectections, tag metadata, and
+#' station metadata, to be injested by VTrack/ATT
+#'
+#' @examples
+#'
+#' #--------------------------------------------------
+#' # EXAMPLE #1 - loading from the vignette data
+#'
+#' library(glatos)
+#' wal_det_file <- system.file("extdata", "walleye_detections.csv",
+#'      package = "glatos")
+#' walleye_detections <- read_glatos_detections(wal_det_file) # load walleye data
+#'
+#' rec_file <- system.file("extdata", "sample_receivers.csv", 
+#'      package = "glatos")
+#' rcv <- read_glatos_receivers(rec_file) # load receiver data
+#'
+#' ATTData <- glatos_to_att(walleye_detections, rcv)
 
 glatos_to_att <- function(glatosObj, receiverObj) {
-    library(tibble)
-    library(purrr)
-    library(dplyr)
   
-
     tagMetadata <- unique(tibble( # Start building Tag.Metadata table
         Tag.ID=as.integer(glatosObj$animal_id),
         Transmitter=as.factor(concat_list_strings(glatosObj$transmitter_codespace, glatosObj$transmitter_id)),
         Common.Name=as.factor(glatosObj$common_name_e)
     ))
-    # tagMetadata <- join_transmitter_to_frame(tagMetadata, glatosObj$transmitter_codespace, glatosObj$transmitter_id) # Add the Transmitter string
     
     tagMetadata <- unique(tagMetadata) # Cut out dupes
     
@@ -79,6 +105,8 @@ glatos_to_att <- function(glatosObj, receiverObj) {
     ))
 }
 
+
+# Function for taking 2 lists of string of the same length and concatenating the columns, row by row.
 concat_list_strings <- function(list1, list2, sep = "-") {
     if (length(list1) != length(list2)) {
         stop(sprintf("Lists are not the same size. %d != %d.", length(list1), length(list2)))
@@ -86,20 +114,9 @@ concat_list_strings <- function(list1, list2, sep = "-") {
     return (paste(list1, list2, sep = sep))
 }
 
-join_transmitter_to_frame <- function(frame, list1, list2) {
-    if (length(list1) != length(list2) | nrow(frame) != length(list1)) {
-        print(length(frame))
-        stop(sprintf("Lists are not the same size", length(list1), length(list2)))
-    }
-    newFrame <- mutate(frame,
-        Transmitter=paste(list1, list2, sep = "-")
-    )
-    return(newFrame)
-}
-
+# Simple query to WoRMS based on the common name and returns the sci name
 query_worms_common <- function(commonName) {
-    library(jsonlite) 
-    library(httr)
+
     url <- sprintf("http://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", commonName)
     tryCatch({
         payload <- fromJSON(url)
@@ -109,17 +126,9 @@ query_worms_common <- function(commonName) {
     })
 }
 
+# Convert the sex from 'F' and 'M' to 'FEMALE' and 'MALE'
 convert_sex <- function(sex) {
     if (sex == "F") return("FEMALE")
     if (sex == "M") return("MALE")
     return(sex)
-}
-
-get_reciever_from_station_and_time <- function(row, receiverObj=NA) {
-    station_record <- filter(receiverObj, between(row[['detection_timestamp_utc']]))
-    station_record <- filter(receiverObj, station==row[['station']] & deploy_date_time <= row[['detection_timestamp_utc']] & recover_date_time >= row[["detection_timestamp_utc"]])
-    if (nrow(station_record) > 1) {
-        stop(sprintf("Too many stations match to a detection. %d is more than 1. See station '%s'", length(station_record), row$station))
-    }
-    return(paste(station_record$ins_model_no, station_record$ins_serial_no, sep='-'))
 }
