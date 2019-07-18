@@ -58,3 +58,8 @@ species and individual animals.
 
 4.  [`adjust_playback_time`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/vis-adjust_playback_time.r) modify playback speed of videos and optionally convert between video file formats. Requires *FFmpeg*
 
+#### Data Exporting
+
+1. [`glatos_to_att`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/util-glatos_to_att.r) converts the glatos
+detection and receiver objects to a format support by [VTrack](https://github.com/RossDwyer/VTrack)/[ATT](https://github.com/vinayudyawer/ATT).
+

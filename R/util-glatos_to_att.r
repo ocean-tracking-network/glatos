@@ -32,6 +32,7 @@
 #' rcv <- read_glatos_receivers(rec_file) # load receiver data
 #'
 #' ATTData <- glatos_to_att(walleye_detections, rcv)
+#' @export
 
 glatos_to_att <- function(glatosObj, receiverObj) {
   
