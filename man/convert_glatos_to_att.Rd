@@ -13,7 +13,7 @@ convert_glatos_to_att(glatosObj, receiverObj)
 \item{receiverObj}{a list from \code{read_glatos_receivers}}
 }
 \value{
-a list of 3 tibbles containing tag dectections, tag metadata, and
+a list of 3 tibble::tibbles containing tag dectections, tag metadata, and
 station metadata, to be injested by VTrack/ATT
 }
 \description{
@@ -22,7 +22,7 @@ ATT (https://github.com/vinayudyawer/ATT) accepts.
 }
 \details{
 This function takes 2 lists containing detection and
-reciever data and transforms them into 3 \code{tibble} objects 
+reciever data and transforms them into 3 \code{tibble::tibble} objects 
 inside of a list. The input that AAT uses to get this data product
 is located here: https://github.com/vinayudyawer/ATT/blob/master/README.md
 and our mappings are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83

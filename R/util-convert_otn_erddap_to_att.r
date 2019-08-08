@@ -11,7 +11,7 @@
 #'
 #'
 #' @details This function takes 4 lists containing detection, and
-#' ERDDAP data from the tags receivers and animals tables, and transforms them into 3 \code{tibble} objects 
+#' ERDDAP data from the tags receivers and animals tables, and transforms them into 3 \code{tibble::tibble} objects 
 #' inside of a list. The input that AAT uses to get this data product
 #' is located here: https://github.com/vinayudyawer/ATT/blob/master/README.md
 #' and our mappings are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
@@ -20,7 +20,7 @@
 #'
 #' @author Ryan Gosse
 #'
-#' @return a list of 3 tibbles containing tag dectections, tag metadata, and
+#' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata, and
 #' station metadata, to be injested by VTrack/ATT
 #'
 #' @examples
@@ -48,7 +48,7 @@ convert_otn_erddap_to_att <- function(glatosObj, erdTags, erdRcv, erdAni) {
 
     transmitters <- if(all(grepl("-", glatosObj$transmitter_id, fixed=TRUE))) glatosObj$transmitter_id else  concat_list_strings(glatosObj$transmitter_codespace, glatosObj$transmitter_id)
 
-    tagMetadata <- unique(tibble( # Start building Tag.Metadata table
+    tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
         Tag.ID=glatosObj$animal_id,
         Transmitter=as.factor(transmitters),
         Common.Name=as.factor(glatosObj$common_name_e)
@@ -56,23 +56,23 @@ convert_otn_erddap_to_att <- function(glatosObj, erdTags, erdRcv, erdAni) {
     
     tagMetadata <- unique(tagMetadata) # Cut out dupes
     
-    nameLookup <- tibble( # Get all the unique common names
+    nameLookup <- tibble::tibble( # Get all the unique common names
         Common.Name=unique(tagMetadata$Common.Name)
     )
-    nameLookup <- mutate(nameLookup, # Add scinames to the name lookup
-        Sci.Name=as.factor(map(nameLookup$Common.Name, query_worms_common))
+    nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
+        Sci.Name=as.factor(purrr::map(nameLookup$Common.Name, query_worms_common))
     )
-    tagMetadata <- left_join(tagMetadata, nameLookup) # Apply sci names to frame
+    tagMetadata <- dplyr::left_join(tagMetadata, nameLookup) # Apply sci names to frame
 
     colnames(erdTags)[colnames(erdTags)=="tag_device_id"] <- "transmitter_id" # Matching cols that have different names
-    glatosObj <- left_join(glatosObj, erdTags)
-    erdRcv <- mutate(erdRcv,
-        station=as.character(map(erdRcv$receiver_reference_id, extract_station))
+    glatosObj <- dplyr::left_join(glatosObj, erdTags)
+    erdRcv <- dplyr::mutate(erdRcv,
+        station=as.character(purrr::map(erdRcv$receiver_reference_id, extract_station))
     )
     colnames(erdAni)[colnames(erdAni)=="animal_reference_id"] <- "animal_id" # Matching cols that have different names
-    glatosObj <- left_join(glatosObj, erdAni)
+    glatosObj <- dplyr::left_join(glatosObj, erdAni)
 
-    releaseData <- tibble( # Get the rest from glatosObj
+    releaseData <- tibble::tibble( # Get the rest from glatosObj
         Tag.ID=glatosObj$animal_id, 
         Tag.Project=as.factor(glatosObj$animal_project_reference), 
         Release.Latitude=as.double(glatosObj$latitude), 
@@ -81,23 +81,23 @@ convert_otn_erddap_to_att <- function(glatosObj, erdTags, erdRcv, erdAni) {
         Sex=as.factor(glatosObj$sex)
     )
 
-    releaseData <- mutate(releaseData, # Convert sex text and null missing columns
-        Sex=as.factor(map(Sex, convert_sex)),
+    releaseData <- dplyr::mutate(releaseData, # Convert sex text and null missing columns
+        Sex=as.factor(purrr::map(Sex, convert_sex)),
         Tag.Life=as.integer(NA),
         Tag.Status=as.factor(NA),
         Bio=as.factor(NA)
     ) 
-    tagMetadata <- unique(left_join(tagMetadata, releaseData)) # Final version of Tag.Metadata
+    tagMetadata <- unique(dplyr::left_join(tagMetadata, releaseData)) # Final version of Tag.Metadata
 
     glatosObj <- glatosObj %>%
-        mutate(dummy=TRUE) %>%
-        left_join(select(erdRcv %>% mutate(dummy=TRUE), rcv_latitude=latitude, rcv_longitude=longitude, station, receiver_model, receiver_serial_number, dummy, deploy_datetime_utc=time, recovery_datetime_utc)) %>%
-        mutate(deploy_datetime_utc=as.POSIXct(deploy_datetime_utc, format="%Y-%m-%dT%H:%M:%OS"), recovery_datetime_utc=as.POSIXct(recovery_datetime_utc, format="%Y-%m-%dT%H:%M:%OS")) %>%
-        filter(detection_timestamp_utc >= deploy_datetime_utc, detection_timestamp_utc <= recovery_datetime_utc) %>%
-        mutate(ReceiverFull=concat_list_strings(receiver_model, receiver_serial_number)) %>%
-        select(-dummy)
+        dplyr::mutate(dummy=TRUE) %>%
+        dplyr::left_join(dplyr::select(erdRcv %>% dplyr::mutate(dummy=TRUE), rcv_latitude=latitude, rcv_longitude=longitude, station, receiver_model, receiver_serial_number, dummy, deploy_datetime_utc=time, recovery_datetime_utc)) %>%
+        dplyr::mutate(deploy_datetime_utc=as.POSIXct(deploy_datetime_utc, format="%Y-%m-%dT%H:%M:%OS"), recovery_datetime_utc=as.POSIXct(recovery_datetime_utc, format="%Y-%m-%dT%H:%M:%OS")) %>%
+        dplyr::filter(detection_timestamp_utc >= deploy_datetime_utc, detection_timestamp_utc <= recovery_datetime_utc) %>%
+        dplyr::mutate(ReceiverFull=concat_list_strings(receiver_model, receiver_serial_number)) %>%
+        dplyr::select(-dummy)
 
-    detections <- tibble(
+    detections <- tibble::tibble(
         Date.Time=glatosObj$detection_timestamp_utc,
         Transmitter=as.factor(glatosObj$transmitter_id),
         Station.Name=as.factor(glatosObj$station),
@@ -108,7 +108,7 @@ convert_otn_erddap_to_att <- function(glatosObj, erdTags, erdRcv, erdAni) {
         Sensor.Unit=as.factor(glatosObj$sensorunit)
     )
 
-    stations <- unique(tibble(
+    stations <- unique(tibble::tibble(
         Station.Name=as.factor(glatosObj$station),
         Receiver=as.factor(glatosObj$ReceiverFull),
         Installation=as.factor(NA),
@@ -142,10 +142,10 @@ concat_list_strings <- function(list1, list2, sep = "-") {
 # Simple query to WoRMS based on the common name and returns the sci name
 query_worms_common <- function(commonName) {
 
-    url <- URLencode(sprintf("http://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", commonName))
+    url <- utils::URLencode(sprintf("http://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", commonName))
     tryCatch({
         print(url)
-        payload <- fromJSON(url)
+        payload <- jsonlite::fromJSON(url)
         return(payload$scientificname)
     }, error = function(e){
         print(geterrmessage())

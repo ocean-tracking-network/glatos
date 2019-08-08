@@ -17,7 +17,7 @@ convert_otn_erddap_to_att(glatosObj, erdTags, erdRcv, erdAni)
 \item{erdAni}{a list from the OTN ERDDAP of animals}
 }
 \value{
-a list of 3 tibbles containing tag dectections, tag metadata, and
+a list of 3 tibble::tibbles containing tag dectections, tag metadata, and
 station metadata, to be injested by VTrack/ATT
 }
 \description{
@@ -26,7 +26,7 @@ ATT (https://github.com/vinayudyawer/ATT) accepts.
 }
 \details{
 This function takes 4 lists containing detection, and
-ERDDAP data from the tags receivers and animals tables, and transforms them into 3 \code{tibble} objects 
+ERDDAP data from the tags receivers and animals tables, and transforms them into 3 \code{tibble::tibble} objects 
 inside of a list. The input that AAT uses to get this data product
 is located here: https://github.com/vinayudyawer/ATT/blob/master/README.md
 and our mappings are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83

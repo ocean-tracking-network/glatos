@@ -6,7 +6,7 @@
 #' @param receiverObj a list from \code{read_glatos_receivers}
 #'
 #' @details This function takes 2 lists containing detection and
-#' reciever data and transforms them into 3 \code{tibble} objects 
+#' reciever data and transforms them into 3 \code{tibble::tibble} objects 
 #' inside of a list. The input that AAT uses to get this data product
 #' is located here: https://github.com/vinayudyawer/ATT/blob/master/README.md
 #' and our mappings are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
@@ -14,7 +14,7 @@
 #'
 #' @author Ryan Gosse
 #'
-#' @return a list of 3 tibbles containing tag dectections, tag metadata, and
+#' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata, and
 #' station metadata, to be injested by VTrack/ATT
 #'
 #' @examples
@@ -38,7 +38,7 @@ convert_glatos_to_att <- function(glatosObj, receiverObj) {
 
     transmitters <- if(all(grepl("-", glatosObj$transmitter_id, fixed=TRUE))) glatosObj$transmitter_id else  concat_list_strings(glatosObj$transmitter_codespace, glatosObj$transmitter_id)
 
-    tagMetadata <- unique(tibble( # Start building Tag.Metadata table
+    tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
         Tag.ID=as.integer(glatosObj$animal_id),
         Transmitter=as.factor(transmitters),
         Common.Name=as.factor(glatosObj$common_name_e)
@@ -46,16 +46,16 @@ convert_glatos_to_att <- function(glatosObj, receiverObj) {
     
     tagMetadata <- unique(tagMetadata) # Cut out dupes
     
-    nameLookup <- tibble( # Get all the unique common names
+    nameLookup <- tibble::tibble( # Get all the unique common names
         Common.Name=unique(tagMetadata$Common.Name)
     )
-    nameLookup <- mutate(nameLookup, # Add scinames to the name lookup
-        Sci.Name=as.factor(map(nameLookup$Common.Name, query_worms_common))
+    nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
+        Sci.Name=as.factor(purrr::map(nameLookup$Common.Name, query_worms_common))
     )
-    tagMetadata <- left_join(tagMetadata, nameLookup) # Apply sci names to frame
+    tagMetadata <- dplyr::left_join(tagMetadata, nameLookup) # Apply sci names to frame
 
 
-    releaseData <- tibble( # Get the rest from glatosObj
+    releaseData <- tibble::tibble( # Get the rest from glatosObj
         Tag.ID=as.integer(glatosObj$animal_id), 
         Tag.Project=as.factor(glatosObj$glatos_project_transmitter), 
         Release.Latitude=glatosObj$release_latitude, 
@@ -64,22 +64,22 @@ convert_glatos_to_att <- function(glatosObj, receiverObj) {
         Sex=as.factor(glatosObj$sex)
     )
 
-    releaseData <- mutate(releaseData, # Convert sex text and null missing columns
-        Sex=as.factor(map(Sex, convert_sex)),
+    releaseData <- dplyr::mutate(releaseData, # Convert sex text and null missing columns
+        Sex=as.factor(purrr::map(Sex, convert_sex)),
         Tag.Life=as.integer(NA),
         Tag.Status=as.factor(NA),
         Bio=as.factor(NA)
     ) 
-    tagMetadata <- left_join(tagMetadata, releaseData) # Final version of Tag.Metadata
+    tagMetadata <- dplyr::left_join(tagMetadata, releaseData) # Final version of Tag.Metadata
 
     glatosObj <- glatosObj %>%
-        mutate(dummy=TRUE) %>%
-        left_join(select(receiverObj %>% mutate(dummy=TRUE), glatos_array, station_no, deploy_lat, deploy_long, station, dummy, ins_model_no, ins_serial_no, deploy_date_time, recover_date_time)) %>%
-        filter(detection_timestamp_utc >= deploy_date_time, detection_timestamp_utc <= recover_date_time) %>%
-        mutate(ReceiverFull=concat_list_strings(ins_model_no, ins_serial_no)) %>%
-        select(-dummy)
+        dplyr::mutate(dummy=TRUE) %>%
+        dplyr::left_join(dplyr::select(receiverObj %>% dplyr::mutate(dummy=TRUE), glatos_array, station_no, deploy_lat, deploy_long, station, dummy, ins_model_no, ins_serial_no, deploy_date_time, recover_date_time)) %>%
+        dplyr::filter(detection_timestamp_utc >= deploy_date_time, detection_timestamp_utc <= recover_date_time) %>%
+        dplyr::mutate(ReceiverFull=concat_list_strings(ins_model_no, ins_serial_no)) %>%
+        dplyr::select(-dummy)
 
-    detections <- unique(tibble(
+    detections <- unique(tibble::tibble(
         Date.Time=glatosObj$detection_timestamp_utc,
         Transmitter=as.factor(concat_list_strings(glatosObj$transmitter_codespace, glatosObj$transmitter_id)),
         Station.Name=as.factor(glatosObj$station),
@@ -90,7 +90,7 @@ convert_glatos_to_att <- function(glatosObj, receiverObj) {
         Sensor.Unit=as.factor(glatosObj$sensor_unit)
     ))
 
-    stations <- unique(tibble(
+    stations <- unique(tibble::tibble(
         Station.Name=as.factor(receiverObj$station),
         Receiver=as.factor(concat_list_strings(receiverObj$ins_model_no, receiverObj$ins_serial_no)),
         Installation=as.factor(NA),
@@ -125,10 +125,10 @@ concat_list_strings <- function(list1, list2, sep = "-") {
 # Simple query to WoRMS based on the common name and returns the sci name
 query_worms_common <- function(commonName) {
 
-    url <- URLencode(sprintf("http://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", commonName))
+    url <- utils::URLencode(sprintf("http://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", commonName))
     tryCatch({
         print(url)
-        payload <- fromJSON(url)
+        payload <- jsonlite::fromJSON(url)
         return(payload$scientificname)
     }, error = function(e){
         print(geterrmessage())
