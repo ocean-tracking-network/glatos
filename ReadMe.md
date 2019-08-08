@@ -60,6 +60,10 @@ species and individual animals.
 
 #### Data Exporting
 
-1. [`glatos_to_att`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/util-glatos_to_att.r) converts the glatos
-detection and receiver objects to a format support by [VTrack](https://github.com/RossDwyer/VTrack)/[ATT](https://github.com/vinayudyawer/ATT).
+1. [`convert_glatos_to_att`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/util-convert_glatos_to_att.r) converts the glatos
+detection and receiver objects to a format supported by [VTrack](https://github.com/RossDwyer/VTrack)/[ATT](https://github.com/vinayudyawer/ATT).
+
+2. [`convert_otn_erddap_to_att`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/util-convert_otn_erddap_to_att.r) converts the OTN
+detection and ERDDAP csvs of OTN animals, tags and stations to a format supported by [VTrack](https://github.com/RossDwyer/VTrack)/[ATT](https://github.com/vinayudyawer/ATT).
+
 

@@ -31,14 +31,16 @@
 #'      package = "glatos")
 #' rcv <- read_glatos_receivers(rec_file) # load receiver data
 #'
-#' ATTData <- glatos_to_att(walleye_detections, rcv)
+#' ATTData <- convert_glatos_to_att(walleye_detections, rcv)
 #' @export
 
-glatos_to_att <- function(glatosObj, receiverObj) {
-  
+convert_glatos_to_att <- function(glatosObj, receiverObj) {
+
+    transmitters <- if(all(grepl("-", glatosObj$transmitter_id, fixed=TRUE))) glatosObj$transmitter_id else  concat_list_strings(glatosObj$transmitter_codespace, glatosObj$transmitter_id)
+
     tagMetadata <- unique(tibble( # Start building Tag.Metadata table
         Tag.ID=as.integer(glatosObj$animal_id),
-        Transmitter=as.factor(concat_list_strings(glatosObj$transmitter_codespace, glatosObj$transmitter_id)),
+        Transmitter=as.factor(transmitters),
         Common.Name=as.factor(glatosObj$common_name_e)
     ))
     
@@ -51,6 +53,7 @@ glatos_to_att <- function(glatosObj, receiverObj) {
         Sci.Name=as.factor(map(nameLookup$Common.Name, query_worms_common))
     )
     tagMetadata <- left_join(tagMetadata, nameLookup) # Apply sci names to frame
+
 
     releaseData <- tibble( # Get the rest from glatosObj
         Tag.ID=as.integer(glatosObj$animal_id), 
@@ -76,7 +79,7 @@ glatos_to_att <- function(glatosObj, receiverObj) {
         mutate(ReceiverFull=concat_list_strings(ins_model_no, ins_serial_no)) %>%
         select(-dummy)
 
-    detections <- tibble(
+    detections <- unique(tibble(
         Date.Time=glatosObj$detection_timestamp_utc,
         Transmitter=as.factor(concat_list_strings(glatosObj$transmitter_codespace, glatosObj$transmitter_id)),
         Station.Name=as.factor(glatosObj$station),
@@ -85,9 +88,9 @@ glatos_to_att <- function(glatosObj, receiverObj) {
         Longitude=glatosObj$deploy_long,
         Sensor.Value=as.integer(glatosObj$sensor_value),
         Sensor.Unit=as.factor(glatosObj$sensor_unit)
-    )
+    ))
 
-    stations <- tibble(
+    stations <- unique(tibble(
         Station.Name=as.factor(receiverObj$station),
         Receiver=as.factor(concat_list_strings(receiverObj$ins_model_no, receiverObj$ins_serial_no)),
         Installation=as.factor(NA),
@@ -97,13 +100,17 @@ glatos_to_att <- function(glatosObj, receiverObj) {
         Station.Latitude=receiverObj$deploy_lat,
         Station.Longitude=receiverObj$deploy_long,
         Receiver.Status=as.factor(NA)
+    ))
+    
+    att_obj <- list(
+        Tag.Detections=detections,
+        Tag.Metadata=unique(tagMetadata),
+        Station.Information=unique(stations)
     )
     
-    return(list(
-        Tag.Detections=detections,
-        Tag.Metadata=tagMetadata,
-        Station.Information=stations
-    ))
+    class(att_obj) <- "ATT"
+
+    return(att_obj)
 }
 
 
@@ -118,11 +125,13 @@ concat_list_strings <- function(list1, list2, sep = "-") {
 # Simple query to WoRMS based on the common name and returns the sci name
 query_worms_common <- function(commonName) {
 
-    url <- sprintf("http://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", commonName)
+    url <- URLencode(sprintf("http://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", commonName))
     tryCatch({
+        print(url)
         payload <- fromJSON(url)
         return(payload$scientificname)
     }, error = function(e){
+        print(geterrmessage())
         stop(sprintf('Error in querying WoRMS, %s was probably not found.', commonName))
     })
 }
@@ -132,4 +141,14 @@ convert_sex <- function(sex) {
     if (sex == "F") return("FEMALE")
     if (sex == "M") return("MALE")
     return(sex)
+}
+
+# Converts the reciever reference id to station name
+extract_station <- function(reciever_ref) {
+    reciever_ref <- as.character(reciever_ref)
+    return( # Split the string by _ and drop the array name
+        unlist(
+            strsplit(c(reciever_ref), c("_"))
+        )[-1] 
+    )
 }
