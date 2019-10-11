@@ -163,8 +163,8 @@ query_worms_common <- function(commonName) {
 
 # Convert the sex from 'F' and 'M' to 'FEMALE' and 'MALE'
 convert_sex <- function(sex) {
-  if (to_upper(sex) %in% c("F", "FEMALE")) return("FEMALE")
-  if (to_upper(sex) %in% c("M", "MALE")) return("MALE")
+  if (toupper(sex) %in% c("F", "FEMALE")) return("FEMALE")
+  if (toupper(sex) %in% c("M", "MALE")) return("MALE")
   return(sex)
 }
 
