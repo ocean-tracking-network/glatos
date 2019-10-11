@@ -51,7 +51,7 @@ shrk_det_file <- system.file("extdata", "blue_shark_detections.csv",
      package = "glatos")
 blue_shark_detections <- read_glatos_detections(shrk_det_file) # load shark data
 
-ATTData <- convert_otn_erddap_to_att(blue_shark_detections, tags, stations, animals)
+ATTdata <- convert_otn_erddap_to_att(blue_shark_detections, tags, stations, animals)
 }
 \author{
 Ryan Gosse

@@ -41,7 +41,7 @@
 #'      package = "glatos")
 #' blue_shark_detections <- read_glatos_detections(shrk_det_file) # load shark data
 #'
-#' ATTData <- convert_otn_erddap_to_att(blue_shark_detections, tags, stations, animals)
+#' ATTdata <- convert_otn_erddap_to_att(blue_shark_detections, tags, stations, animals)
 #' @export
 
 convert_otn_erddap_to_att <- function(glatosObj, erdTags, erdRcv, erdAni) {

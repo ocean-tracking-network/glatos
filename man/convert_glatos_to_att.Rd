@@ -42,7 +42,7 @@ rec_file <- system.file("extdata", "sample_receivers.csv",
      package = "glatos")
 rcv <- read_glatos_receivers(rec_file) # load receiver data
 
-ATTData <- convert_glatos_to_att(walleye_detections, rcv)
+ATTdata <- convert_glatos_to_att(walleye_detections, rcv)
 }
 \author{
 Ryan Gosse
