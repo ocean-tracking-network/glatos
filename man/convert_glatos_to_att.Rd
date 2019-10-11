@@ -5,10 +5,10 @@
 \title{Convert detections and receiver metadata to a format that 
 ATT accepts.}
 \usage{
-convert_glatos_to_att(glatosObj, receiverObj)
+convert_glatos_to_att(detectionObj, receiverObj)
 }
 \arguments{
-\item{glatosObj}{a list from \code{read_glatos_detections}}
+\item{detectionObj}{a list from \code{read_glatos_detections}}
 
 \item{receiverObj}{a list from \code{read_glatos_receivers}}
 }

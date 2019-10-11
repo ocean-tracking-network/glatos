@@ -3,7 +3,7 @@
 #' 
 #' Convert \code{glatos_detections} and \code{glatos_receiver} objects to \code{ATT} for compatibility with the Animal Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
 #' 
-#' @param glatosObj a list from \code{read_glatos_detections}
+#' @param detectionObj a list from \code{read_glatos_detections}
 #'
 #' @param receiverObj a list from \code{read_glatos_receivers}
 #'
@@ -36,14 +36,14 @@
 #' ATTdata <- convert_glatos_to_att(walleye_detections, rcv)
 #' @export
 
-convert_glatos_to_att <- function(glatosObj, receiverObj) {
+convert_glatos_to_att <- function(detectionObj, receiverObj) {
 
-    transmitters <- if(all(grepl("-", glatosObj$transmitter_id, fixed=TRUE))) glatosObj$transmitter_id else  concat_list_strings(glatosObj$transmitter_codespace, glatosObj$transmitter_id)
+    transmitters <- if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))) detectionObj$transmitter_id else  concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
 
     tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
-        Tag.ID=as.integer(glatosObj$animal_id),
+        Tag.ID=as.integer(detectionObj$animal_id),
         Transmitter=as.factor(transmitters),
-        Common.Name=as.factor(glatosObj$common_name_e)
+        Common.Name=as.factor(detectionObj$common_name_e)
     ))
     
     tagMetadata <- unique(tagMetadata) # Cut out dupes
@@ -57,13 +57,13 @@ convert_glatos_to_att <- function(glatosObj, receiverObj) {
     tagMetadata <- dplyr::left_join(tagMetadata, nameLookup) # Apply sci names to frame
 
 
-    releaseData <- tibble::tibble( # Get the rest from glatosObj
-        Tag.ID=as.integer(glatosObj$animal_id), 
-        Tag.Project=as.factor(glatosObj$glatos_project_transmitter), 
-        Release.Latitude=glatosObj$release_latitude, 
-        Release.Longitude=glatosObj$release_longitude, 
-        Release.Date=as.Date(glatosObj$utc_release_date_time),
-        Sex=as.factor(glatosObj$sex)
+    releaseData <- tibble::tibble( # Get the rest from detectionObj
+        Tag.ID=as.integer(detectionObj$animal_id), 
+        Tag.Project=as.factor(detectionObj$glatos_project_transmitter), 
+        Release.Latitude=detectionObj$release_latitude, 
+        Release.Longitude=detectionObj$release_longitude, 
+        Release.Date=as.Date(detectionObj$utc_release_date_time),
+        Sex=as.factor(detectionObj$sex)
     )
 
     releaseData <- dplyr::mutate(releaseData, # Convert sex text and null missing columns
@@ -74,7 +74,7 @@ convert_glatos_to_att <- function(glatosObj, receiverObj) {
     ) 
     tagMetadata <- dplyr::left_join(tagMetadata, releaseData) # Final version of Tag.Metadata
 
-    glatosObj <- glatosObj %>%
+    detectionObj <- detectionObj %>%
         dplyr::mutate(dummy=TRUE) %>%
         dplyr::left_join(dplyr::select(receiverObj %>% dplyr::mutate(dummy=TRUE), glatos_array, station_no, deploy_lat, deploy_long, station, dummy, ins_model_no, ins_serial_no, deploy_date_time, recover_date_time)) %>%
         dplyr::filter(detection_timestamp_utc >= deploy_date_time, detection_timestamp_utc <= recover_date_time) %>%
@@ -82,14 +82,14 @@ convert_glatos_to_att <- function(glatosObj, receiverObj) {
         dplyr::select(-dummy)
 
     detections <- unique(tibble::tibble(
-        Date.Time=glatosObj$detection_timestamp_utc,
-        Transmitter=as.factor(concat_list_strings(glatosObj$transmitter_codespace, glatosObj$transmitter_id)),
-        Station.Name=as.factor(glatosObj$station),
-        Receiver=as.factor(glatosObj$ReceiverFull),
-        Latitude=glatosObj$deploy_lat,
-        Longitude=glatosObj$deploy_long,
-        Sensor.Value=as.integer(glatosObj$sensor_value),
-        Sensor.Unit=as.factor(glatosObj$sensor_unit)
+        Date.Time=detectionObj$detection_timestamp_utc,
+        Transmitter=as.factor(concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)),
+        Station.Name=as.factor(detectionObj$station),
+        Receiver=as.factor(detectionObj$ReceiverFull),
+        Latitude=detectionObj$deploy_lat,
+        Longitude=detectionObj$deploy_long,
+        Sensor.Value=as.integer(detectionObj$sensor_value),
+        Sensor.Unit=as.factor(detectionObj$sensor_unit)
     ))
 
     stations <- unique(tibble::tibble(
