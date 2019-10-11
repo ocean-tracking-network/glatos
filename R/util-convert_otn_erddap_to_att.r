@@ -65,126 +65,155 @@
 
 convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni) {
 
-    transmitters <- if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))) detectionObj$transmitter_id else  concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
+  transmitters <- 
+    if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))){
+      detectionObj$transmitter_id
+    } else { 
+      concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
+    }
+      
+  tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
+    Tag.ID = detectionObj$animal_id,
+    Transmitter = as.factor(transmitters),
+    Common.Name = as.factor(detectionObj$common_name_e)
+  ))
+  
+  tagMetadata <- unique(tagMetadata) # Cut out dupes
+  
+  nameLookup <- tibble::tibble( # Get all the unique common names
+    Common.Name = unique(tagMetadata$Common.Name)
+  )
+  nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
+    Sci.Name = as.factor(purrr::map(nameLookup$Common.Name, query_worms_common))
+  )
+  # Apply sci names to frame
+  tagMetadata <- dplyr::left_join(tagMetadata, nameLookup) 
 
-    tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
-        Tag.ID=detectionObj$animal_id,
-        Transmitter=as.factor(transmitters),
-        Common.Name=as.factor(detectionObj$common_name_e)
-    ))
-    
-    tagMetadata <- unique(tagMetadata) # Cut out dupes
-    
-    nameLookup <- tibble::tibble( # Get all the unique common names
-        Common.Name=unique(tagMetadata$Common.Name)
-    )
-    nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
-        Sci.Name=as.factor(purrr::map(nameLookup$Common.Name, query_worms_common))
-    )
-    tagMetadata <- dplyr::left_join(tagMetadata, nameLookup) # Apply sci names to frame
+  # Matching cols that have different names
+  colnames(erdTags)[colnames(erdTags) == "tag_device_id"] <- "transmitter_id" 
+  detectionObj <- dplyr::left_join(detectionObj, erdTags)
+  erdRcv <- dplyr::mutate(erdRcv,
+      station = as.character(purrr::map(erdRcv$receiver_reference_id, 
+                                        extract_station))
+  )
+  # Matching cols that have different names
+  colnames(erdAni)[colnames(erdAni) == "animal_reference_id"] <- "animal_id" 
+  detectionObj <- dplyr::left_join(detectionObj, erdAni)
 
-    colnames(erdTags)[colnames(erdTags)=="tag_device_id"] <- "transmitter_id" # Matching cols that have different names
-    detectionObj <- dplyr::left_join(detectionObj, erdTags)
-    erdRcv <- dplyr::mutate(erdRcv,
-        station=as.character(purrr::map(erdRcv$receiver_reference_id, extract_station))
-    )
-    colnames(erdAni)[colnames(erdAni)=="animal_reference_id"] <- "animal_id" # Matching cols that have different names
-    detectionObj <- dplyr::left_join(detectionObj, erdAni)
+  releaseData <- tibble::tibble( # Get the rest from detectionObj
+    Tag.ID = detectionObj$animal_id, 
+    Tag.Project = as.factor(detectionObj$animal_project_reference), 
+    Release.Latitude = as.double(detectionObj$latitude), 
+    Release.Longitude = as.double(detectionObj$longitude), 
+    Release.Date = as.Date(detectionObj$time),
+    Sex = as.factor(detectionObj$sex)
+  )
 
-    releaseData <- tibble::tibble( # Get the rest from detectionObj
-        Tag.ID=detectionObj$animal_id, 
-        Tag.Project=as.factor(detectionObj$animal_project_reference), 
-        Release.Latitude=as.double(detectionObj$latitude), 
-        Release.Longitude=as.double(detectionObj$longitude), 
-        Release.Date=as.Date(detectionObj$time),
-        Sex=as.factor(detectionObj$sex)
-    )
+  releaseData <- dplyr::mutate(releaseData, 
+    # Convert sex text and null missing columns
+    Sex = as.factor(purrr::map(Sex, convert_sex)),
+    Tag.Life = as.integer(NA),
+    Tag.Status = as.factor(NA),
+    Bio = as.factor(NA)
+  ) 
+  # Final version of Tag.Metadata
+  tagMetadata <- unique(dplyr::left_join(tagMetadata, releaseData)) 
 
-    releaseData <- dplyr::mutate(releaseData, # Convert sex text and null missing columns
-        Sex=as.factor(purrr::map(Sex, convert_sex)),
-        Tag.Life=as.integer(NA),
-        Tag.Status=as.factor(NA),
-        Bio=as.factor(NA)
-    ) 
-    tagMetadata <- unique(dplyr::left_join(tagMetadata, releaseData)) # Final version of Tag.Metadata
+  detectionObj <- detectionObj %>%
+    dplyr::mutate(dummy=TRUE) %>%
+    dplyr::left_join(dplyr::select(erdRcv %>% dplyr::mutate(dummy = TRUE), 
+                                   rcv_latitude = latitude, 
+                                   rcv_longitude = longitude, 
+                                   station, 
+                                   receiver_model, 
+                                   receiver_serial_number, 
+                                   dummy, 
+                                   deploy_datetime_utc = time, 
+                                   recovery_datetime_utc)) %>%
+    dplyr::mutate(deploy_datetime_utc = as.POSIXct(deploy_datetime_utc, 
+                                              format = "%Y-%m-%dT%H:%M:%OS"), 
+                  recovery_datetime_utc = as.POSIXct(recovery_datetime_utc, 
+                                              format="%Y-%m-%dT%H:%M:%OS")) %>%
+    dplyr::filter(detection_timestamp_utc >= deploy_datetime_utc, 
+                  detection_timestamp_utc <= recovery_datetime_utc) %>%
+    dplyr::mutate(ReceiverFull = concat_list_strings(receiver_model, 
+                                                   receiver_serial_number)) %>%
+    dplyr::select(-dummy)
 
-    detectionObj <- detectionObj %>%
-        dplyr::mutate(dummy=TRUE) %>%
-        dplyr::left_join(dplyr::select(erdRcv %>% dplyr::mutate(dummy=TRUE), rcv_latitude=latitude, rcv_longitude=longitude, station, receiver_model, receiver_serial_number, dummy, deploy_datetime_utc=time, recovery_datetime_utc)) %>%
-        dplyr::mutate(deploy_datetime_utc=as.POSIXct(deploy_datetime_utc, format="%Y-%m-%dT%H:%M:%OS"), recovery_datetime_utc=as.POSIXct(recovery_datetime_utc, format="%Y-%m-%dT%H:%M:%OS")) %>%
-        dplyr::filter(detection_timestamp_utc >= deploy_datetime_utc, detection_timestamp_utc <= recovery_datetime_utc) %>%
-        dplyr::mutate(ReceiverFull=concat_list_strings(receiver_model, receiver_serial_number)) %>%
-        dplyr::select(-dummy)
+  detections <- tibble::tibble(
+    Date.Time = detectionObj$detection_timestamp_utc,
+    Transmitter = as.factor(detectionObj$transmitter_id),
+    Station.Name = as.factor(detectionObj$station),
+    Receiver = as.factor(detectionObj$ReceiverFull),
+    Latitude = detectionObj$deploy_lat,
+    Longitude = detectionObj$deploy_long,
+    Sensor.Value = as.integer(detectionObj$sensorvalue),
+    Sensor.Unit = as.factor(detectionObj$sensorunit)
+  )
 
-    detections <- tibble::tibble(
-        Date.Time=detectionObj$detection_timestamp_utc,
-        Transmitter=as.factor(detectionObj$transmitter_id),
-        Station.Name=as.factor(detectionObj$station),
-        Receiver=as.factor(detectionObj$ReceiverFull),
-        Latitude=detectionObj$deploy_lat,
-        Longitude=detectionObj$deploy_long,
-        Sensor.Value=as.integer(detectionObj$sensorvalue),
-        Sensor.Unit=as.factor(detectionObj$sensorunit)
-    )
+  stations <- unique(tibble::tibble(
+    Station.Name = as.factor(detectionObj$station),
+    Receiver = as.factor(detectionObj$ReceiverFull),
+    Installation = as.factor(NA),
+    Receiver.Project = as.factor(detectionObj$collectioncode),
+    Deployment.Date = detectionObj$deploy_datetime_utc,
+    Recovery.Date = detectionObj$recovery_datetime_utc,
+    Station.Latitude = as.double(detectionObj$deploy_lat),
+    Station.Longitude = as.double(detectionObj$deploy_long),
+    Receiver.Status = as.factor(NA)
+  ))
+  att_obj <- list(
+    Tag.Detections = detections,
+    Tag.Metadata = tagMetadata,
+    Station.Information = stations
+  )
 
-    stations <- unique(tibble::tibble(
-        Station.Name=as.factor(detectionObj$station),
-        Receiver=as.factor(detectionObj$ReceiverFull),
-        Installation=as.factor(NA),
-        Receiver.Project=as.factor(detectionObj$collectioncode),
-        Deployment.Date=detectionObj$deploy_datetime_utc,
-        Recovery.Date=detectionObj$recovery_datetime_utc,
-        Station.Latitude=as.double(detectionObj$deploy_lat),
-        Station.Longitude=as.double(detectionObj$deploy_long),
-        Receiver.Status=as.factor(NA)
-    ))
-    att_obj <- list(
-        Tag.Detections=detections,
-        Tag.Metadata=tagMetadata,
-        Station.Information=stations
-    )
+  class(att_obj) <- "ATT"
 
-    class(att_obj) <- "ATT"
-
-    return(att_obj)
+  return(att_obj)
 }
 
 
-# Function for taking 2 lists of string of the same length and concatenating the columns, row by row.
+# Function for taking 2 lists of string of the same length and concatenating 
+#  the columns, row by row.
 concat_list_strings <- function(list1, list2, sep = "-") {
-    if (length(list1) != length(list2)) {
-        stop(sprintf("Lists are not the same size. %d != %d.", length(list1), length(list2)))
-    }
-    return (paste(list1, list2, sep = sep))
+  if (length(list1) != length(list2)) {
+      stop(sprintf("Lists are not the same size. %d != %d.", 
+                   length(list1), length(list2)))
+  }
+  return (paste(list1, list2, sep = sep))
 }
 
 # Simple query to WoRMS based on the common name and returns the sci name
 query_worms_common <- function(commonName) {
 
-    url <- utils::URLencode(sprintf("http://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", commonName))
-    tryCatch({
-        print(url)
-        payload <- jsonlite::fromJSON(url)
-        return(payload$scientificname)
-    }, error = function(e){
-        print(geterrmessage())
-        stop(sprintf('Error in querying WoRMS, %s was probably not found.', commonName))
-    })
+  url <- utils::URLencode(
+    sprintf("http://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", 
+      commonName))
+  tryCatch({
+      print(url)
+      payload <- jsonlite::fromJSON(url)
+      return(payload$scientificname)
+  }, error = function(e){
+      print(geterrmessage())
+      stop(sprintf('Error in querying WoRMS, %s was probably not found.', 
+                   commonName))
+  })
 }
 
 # Convert the sex from 'F' and 'M' to 'FEMALE' and 'MALE'
 convert_sex <- function(sex) {
-    if (sex == "F") return("FEMALE")
-    if (sex == "M") return("MALE")
-    return(sex)
+  if (toupper(sex) %in% c("F", "FEMALE")) return("FEMALE")
+  if (toupper(sex) %in% c("M", "MALE")) return("MALE")
+  return(sex)
 }
 
 # Converts the reciever reference id to station name
 extract_station <- function(reciever_ref) {
-    reciever_ref <- as.character(reciever_ref)
-    return( # Split the string by _ and drop the array name
-        unlist(
-            strsplit(c(reciever_ref), c("_"))
-        )[-1] 
-    )
+  reciever_ref <- as.character(reciever_ref)
+  return( # Split the string by _ and drop the array name
+    unlist(
+        strsplit(c(reciever_ref), c("_"))
+    )[-1] 
+  )
 }
