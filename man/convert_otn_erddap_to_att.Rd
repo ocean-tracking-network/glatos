@@ -5,10 +5,10 @@
 \title{Convert detections and receiver metadata to a format that 
 ATT (https://github.com/vinayudyawer/ATT) accepts.}
 \usage{
-convert_otn_erddap_to_att(glatosObj, erdTags, erdRcv, erdAni)
+convert_otn_erddap_to_att(detectionObj, erdTags, erdRcv, erdAni)
 }
 \arguments{
-\item{glatosObj}{a list from \code{read_glatos_detections}}
+\item{detectionObj}{a list from \code{read_glatos_detections}}
 
 \item{erdTags}{a list from the OTN ERDDAP of tags}
 

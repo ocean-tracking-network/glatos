@@ -1,7 +1,7 @@
 #' Convert detections and receiver metadata to a format that 
 #' ATT (https://github.com/vinayudyawer/ATT) accepts.
 #'
-#' @param glatosObj a list from \code{read_glatos_detections}
+#' @param detectionObj a list from \code{read_glatos_detections}
 #'
 #' @param erdTags a list from the OTN ERDDAP of tags
 #'
@@ -44,14 +44,14 @@
 #' ATTdata <- convert_otn_erddap_to_att(blue_shark_detections, tags, stations, animals)
 #' @export
 
-convert_otn_erddap_to_att <- function(glatosObj, erdTags, erdRcv, erdAni) {
+convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni) {
 
-    transmitters <- if(all(grepl("-", glatosObj$transmitter_id, fixed=TRUE))) glatosObj$transmitter_id else  concat_list_strings(glatosObj$transmitter_codespace, glatosObj$transmitter_id)
+    transmitters <- if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))) detectionObj$transmitter_id else  concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
 
     tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
-        Tag.ID=glatosObj$animal_id,
+        Tag.ID=detectionObj$animal_id,
         Transmitter=as.factor(transmitters),
-        Common.Name=as.factor(glatosObj$common_name_e)
+        Common.Name=as.factor(detectionObj$common_name_e)
     ))
     
     tagMetadata <- unique(tagMetadata) # Cut out dupes
@@ -65,20 +65,20 @@ convert_otn_erddap_to_att <- function(glatosObj, erdTags, erdRcv, erdAni) {
     tagMetadata <- dplyr::left_join(tagMetadata, nameLookup) # Apply sci names to frame
 
     colnames(erdTags)[colnames(erdTags)=="tag_device_id"] <- "transmitter_id" # Matching cols that have different names
-    glatosObj <- dplyr::left_join(glatosObj, erdTags)
+    detectionObj <- dplyr::left_join(detectionObj, erdTags)
     erdRcv <- dplyr::mutate(erdRcv,
         station=as.character(purrr::map(erdRcv$receiver_reference_id, extract_station))
     )
     colnames(erdAni)[colnames(erdAni)=="animal_reference_id"] <- "animal_id" # Matching cols that have different names
-    glatosObj <- dplyr::left_join(glatosObj, erdAni)
+    detectionObj <- dplyr::left_join(detectionObj, erdAni)
 
-    releaseData <- tibble::tibble( # Get the rest from glatosObj
-        Tag.ID=glatosObj$animal_id, 
-        Tag.Project=as.factor(glatosObj$animal_project_reference), 
-        Release.Latitude=as.double(glatosObj$latitude), 
-        Release.Longitude=as.double(glatosObj$longitude), 
-        Release.Date=as.Date(glatosObj$time),
-        Sex=as.factor(glatosObj$sex)
+    releaseData <- tibble::tibble( # Get the rest from detectionObj
+        Tag.ID=detectionObj$animal_id, 
+        Tag.Project=as.factor(detectionObj$animal_project_reference), 
+        Release.Latitude=as.double(detectionObj$latitude), 
+        Release.Longitude=as.double(detectionObj$longitude), 
+        Release.Date=as.Date(detectionObj$time),
+        Sex=as.factor(detectionObj$sex)
     )
 
     releaseData <- dplyr::mutate(releaseData, # Convert sex text and null missing columns
@@ -89,7 +89,7 @@ convert_otn_erddap_to_att <- function(glatosObj, erdTags, erdRcv, erdAni) {
     ) 
     tagMetadata <- unique(dplyr::left_join(tagMetadata, releaseData)) # Final version of Tag.Metadata
 
-    glatosObj <- glatosObj %>%
+    detectionObj <- detectionObj %>%
         dplyr::mutate(dummy=TRUE) %>%
         dplyr::left_join(dplyr::select(erdRcv %>% dplyr::mutate(dummy=TRUE), rcv_latitude=latitude, rcv_longitude=longitude, station, receiver_model, receiver_serial_number, dummy, deploy_datetime_utc=time, recovery_datetime_utc)) %>%
         dplyr::mutate(deploy_datetime_utc=as.POSIXct(deploy_datetime_utc, format="%Y-%m-%dT%H:%M:%OS"), recovery_datetime_utc=as.POSIXct(recovery_datetime_utc, format="%Y-%m-%dT%H:%M:%OS")) %>%
@@ -98,25 +98,25 @@ convert_otn_erddap_to_att <- function(glatosObj, erdTags, erdRcv, erdAni) {
         dplyr::select(-dummy)
 
     detections <- tibble::tibble(
-        Date.Time=glatosObj$detection_timestamp_utc,
-        Transmitter=as.factor(glatosObj$transmitter_id),
-        Station.Name=as.factor(glatosObj$station),
-        Receiver=as.factor(glatosObj$ReceiverFull),
-        Latitude=glatosObj$deploy_lat,
-        Longitude=glatosObj$deploy_long,
-        Sensor.Value=as.integer(glatosObj$sensorvalue),
-        Sensor.Unit=as.factor(glatosObj$sensorunit)
+        Date.Time=detectionObj$detection_timestamp_utc,
+        Transmitter=as.factor(detectionObj$transmitter_id),
+        Station.Name=as.factor(detectionObj$station),
+        Receiver=as.factor(detectionObj$ReceiverFull),
+        Latitude=detectionObj$deploy_lat,
+        Longitude=detectionObj$deploy_long,
+        Sensor.Value=as.integer(detectionObj$sensorvalue),
+        Sensor.Unit=as.factor(detectionObj$sensorunit)
     )
 
     stations <- unique(tibble::tibble(
-        Station.Name=as.factor(glatosObj$station),
-        Receiver=as.factor(glatosObj$ReceiverFull),
+        Station.Name=as.factor(detectionObj$station),
+        Receiver=as.factor(detectionObj$ReceiverFull),
         Installation=as.factor(NA),
-        Receiver.Project=as.factor(glatosObj$collectioncode),
-        Deployment.Date=glatosObj$deploy_datetime_utc,
-        Recovery.Date=glatosObj$recovery_datetime_utc,
-        Station.Latitude=as.double(glatosObj$deploy_lat),
-        Station.Longitude=as.double(glatosObj$deploy_long),
+        Receiver.Project=as.factor(detectionObj$collectioncode),
+        Deployment.Date=detectionObj$deploy_datetime_utc,
+        Recovery.Date=detectionObj$recovery_datetime_utc,
+        Station.Latitude=as.double(detectionObj$deploy_lat),
+        Station.Longitude=as.double(detectionObj$deploy_long),
         Receiver.Status=as.factor(NA)
     ))
     att_obj <- list(
