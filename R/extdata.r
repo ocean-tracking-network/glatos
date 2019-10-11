@@ -85,3 +85,50 @@ NULL
 #' @source \url{http://glatos.glos.us/home}
 NULL
 
+#' @title Example animal data from the OTN ERDDAP
+#' 
+#' @description An example animal data file from the OTN ERDDAP
+#' 
+#' @format CSV
+##' 
+#' @name otn_aat_animals
+#' 
+#' @section Filename: otn_aat_animals.csv
+#' 
+#' @usage
+#' system.file("extdata", "otn_aat_animals.csv", package = "glatos")
+#'
+#' @source Ryan Gosse, Ocean Tracking Network
+NULL
+
+#' @title Example station data from the OTN ERDDAP
+#' 
+#' @description An example receiver station data file from the OTN ERDDAP
+#' 
+#' @format CSV
+##' 
+#' @name otn_aat_receivers
+#' 
+#' @section Filename: otn_aat_receivers.csv
+#' 
+#' @usage
+#' system.file("extdata", "otn_aat_receivers.csv", package = "glatos")
+#'
+#' @source Ryan Gosse, Ocean Tracking Network
+NULL
+
+#' @title Example tag release data from the OTN ERDDAP
+#' 
+#' @description An example tag release data file from the OTN ERDDAP
+#' 
+#' @format CSV
+##' 
+#' @name otn_aat_tag_releases
+#' 
+#' @section Filename: otn_aat_tag_releases.csv
+#' 
+#' @usage
+#' system.file("extdata", "otn_aat_tag_releases.csv", package = "glatos")
+#'
+#' @source Ryan Gosse, Ocean Tracking Network
+NULL
