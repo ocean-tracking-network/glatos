@@ -56,7 +56,7 @@ rcv_erd_file <- system.file("extdata", "otn_aat_receivers.csv",
                             package = "glatos") 
 stations <- read.csv(rcv_erd_file)
 
-Remove first row; (blank or metadata about the column) 
+#Remove first row; (blank or metadata about the column) 
 animals <- animals[-1,] 
 tags <- tags[-1,]
 stations <- stations[-1,]
