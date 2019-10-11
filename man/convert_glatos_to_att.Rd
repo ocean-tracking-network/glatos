@@ -3,7 +3,7 @@
 \name{convert_glatos_to_att}
 \alias{convert_glatos_to_att}
 \title{Convert detections and receiver metadata to a format that 
-ATT (https://github.com/vinayudyawer/ATT) accepts.}
+ATT accepts.}
 \usage{
 convert_glatos_to_att(glatosObj, receiverObj)
 }
@@ -13,20 +13,19 @@ convert_glatos_to_att(glatosObj, receiverObj)
 \item{receiverObj}{a list from \code{read_glatos_receivers}}
 }
 \value{
-a list of 3 tibble::tibbles containing tag dectections, tag metadata, and
-station metadata, to be injested by VTrack/ATT
+a list of 3 tibble::tibbles containing tag dectections, tag metadata,
+  and station metadata, to be ingested by VTrack/ATT
 }
 \description{
-Convert detections and receiver metadata to a format that 
-ATT (https://github.com/vinayudyawer/ATT) accepts.
+Convert \code{glatos_detections} and \code{glatos_receiver} objects to \code{ATT} for compatibility with the Animal Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
 }
 \details{
-This function takes 2 lists containing detection and
-reciever data and transforms them into 3 \code{tibble::tibble} objects 
-inside of a list. The input that AAT uses to get this data product
-is located here: https://github.com/vinayudyawer/ATT/blob/master/README.md
-and our mappings are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
-in a comment by Ryan Gosse
+This function takes 2 lists containing detection and reciever data
+  and transforms them into one list containing 3 \code{tibble::tibble}
+  objects. The input that AAT uses to get this data product is located here:
+  https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
+  are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
+  in a comment by Ryan Gosse.
 }
 \examples{
 
