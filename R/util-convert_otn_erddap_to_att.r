@@ -1,27 +1,33 @@
-#' Convert detections and receiver metadata to a format that 
-#' ATT (https://github.com/vinayudyawer/ATT) accepts.
+#' Convert detections, transmitter, receiver, and animal metadata to a format
+#' that ATT accepts.
 #'
-#' @param detectionObj a list from \code{read_glatos_detections}
+#' Convert \code{glatos_detections} and transmitter, receiver, and animal
+#' metadata from the OTN ERDDAP to \code{ATT} format for use in the Animal
+#' Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
+#' 
+#' @param detectionObj a data frame from \code{read_glatos_detections}
 #'
-#' @param erdTags a list from the OTN ERDDAP of tags
+#' @param erdTags a data frame with tag release data from the OTN ERDDAP
 #'
-#' @param erdRcv a list from the OTN ERDDAP of receivers
+#' @param erdRcv a data frame with receiver station data from the OTN ERDDAP 
 #'
-#' @param erdAni a list from the OTN ERDDAP of animals
+#' @param erdAni a data frame with animal data from the OTN ERDDAP
 #'
 #'
-#' @details This function takes 4 lists containing detection, and
-#' ERDDAP data from the tags receivers and animals tables, and transforms them into 3 \code{tibble::tibble} objects 
-#' inside of a list. The input that AAT uses to get this data product
-#' is located here: https://github.com/vinayudyawer/ATT/blob/master/README.md
-#' and our mappings are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
-#' in a comment by Ryan Gosse. The OTN ERDDAP instance is here: https://members.oceantrack.org/erddap/tabledap/index.html
-#' but please note that this only contains public data.
-#'
+#' @details This function takes 4 data frames containing detection, and ERDDAP
+#'   data from the tags, receivers, and animals tables, and transforms them into
+#'   3 \code{tibble::tibble} objects inside of a list. The input that AAT uses
+#'   to get this data product is located here:
+#'   https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
+#'   are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
+#'   in a comment by Ryan Gosse. The OTN ERDDAP instance is here:
+#'   https://members.oceantrack.org/erddap/tabledap/index.html but please note
+#'   that this only contains public data.
+#'   
 #' @author Ryan Gosse
 #'
-#' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata, and
-#' station metadata, to be injested by VTrack/ATT
+#' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata,
+#'   and station metadata, to be ingested by VTrack/ATT
 #'
 #' @examples
 #'
@@ -29,19 +35,32 @@
 #' # EXAMPLE #1 - loading from the OTN ERDDAP + vignettes
 #'
 #' library(glatos)
-#' animals <- read.csv("/path/to/animal/csv/otn_aat_animals.csv") # load the CSVs from ERDDAP
-#' tags <- read.csv("/path/to/tag/csv/otn_aat_tags.csv")
-#' stations <- read.csv("/path/to/station/csv/otn_aat_stations.csv")
+#' 
+#' #get path to example files from OTN ERDDAP
+#' ani_erd_file <- system.file("extdata", "otn_aat_animals.csv",
+#'                             package = "glatos") 
+#' animals <- read.csv(ani_erd_file) # load the CSVs from ERDDAP
+#' 
+#' tags_erd_file <- system.file("extdata", "otn_aat_tag_releases.csv",
+#'                             package = "glatos") 
+#' tags <- read.csv(tags_erd_file)
+#' 
+#' rcv_erd_file <- system.file("extdata", "otn_aat_receivers.csv",
+#'                             package = "glatos") 
+#' stations <- read.csv(rcv_erd_file)
 #'
-#' animals <- animals[-1,] # First row is garbage (blank or metadata about the column) so we can cut it
+#' #Remove first row; (blank or metadata about the column) 
+#' animals <- animals[-1,] 
 #' tags <- tags[-1,]
 #' stations <- stations[-1,]
 #'
+#' #get blue shark example data
 #' shrk_det_file <- system.file("extdata", "blue_shark_detections.csv",
 #'      package = "glatos")
-#' blue_shark_detections <- read_glatos_detections(shrk_det_file) # load shark data
+#' blue_shark_detections <- read_otn_detections(shrk_det_file) # load shark data
 #'
-#' ATTdata <- convert_otn_erddap_to_att(blue_shark_detections, tags, stations, animals)
+#' ATTdata <- convert_otn_erddap_to_att(blue_shark_detections, 
+#'                                      tags, stations, animals)
 #' @export
 
 convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni) {
