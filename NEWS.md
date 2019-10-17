@@ -1,6 +1,6 @@
 # glatos 0.3.2
 
-#### 2019-06-07
+#### 2019-10-17
    
 ### bug fixes and minor changes
 
@@ -22,6 +22,8 @@
 			recovery data (issue #79).
 
 - abacus_plot
+    - added more flexible optional plotting arguments, including 'xlim' to 
+      set custom x limits.
 		- fixed bug where plot title (specified by *main* argument) was not 
 		  included in plot (issue #70)
 		- deprecated *show_receiver_status* argument. Receiver status will 

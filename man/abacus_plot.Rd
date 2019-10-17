@@ -11,29 +11,26 @@ abacus_plot(det, location_col = "glatos_array", locations = NULL,
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by
-\link{read_glatos_detections}) containing detections to be plotted.
+ \link{read_glatos_detections}) containing detections to be plotted.
 
-\emph{OR} A data frame containing detection data with at least two columns, 
-one of which must be named 'detection_timestamp_utc', described below,  
-and another column containing a location grouping variable,
-whose name is specified by \code{location_col} (see below).
+ \emph{OR} A data frame containing detection data with at least two columns,
+ one of which must be named 'detection_timestamp_utc', described below, and
+ another column containing a location grouping variable, whose name is
+ specified by \code{location_col} (see below).
 
-The following column must appear in \code{det}: 
-\describe{
-\item{\code{detection_timestamp_utc}}{Detection timestamps; MUST be of 
-class POSIXct.}
-}}
+ The following column must appear in \code{det}: \describe{
+ \item{\code{detection_timestamp_utc}}{Detection timestamps; MUST be of class
+ POSIXct.} }}
 
 \item{location_col}{A character string indicating the column name in
 \code{det} that will be used as the location grouping variable (e.g.
 "glatos_array"), in quotes.}
 
 \item{locations}{An optional vector containing the locations
-\code{location_col} to show in the plot. Plot order corresponds to order
-in the vector (from bottom up). Should correspond to values in
-\code{location_col}, but can contain values that are not in the det
-data frame (i.e., can use this option to plot locations fish were
-not detected).}
+\code{location_col} to show in the plot. Plot order corresponds to order in
+the vector (from bottom up). Should correspond to values in
+\code{location_col}, but can contain values that are not in the det data
+frame (i.e., can use this option to plot locations fish were not detected).}
 
 \item{show_receiver_status}{DEPCRECATED. No longer used. A logical value
 indicating whether or not to display receiver status behind detection data
@@ -41,30 +38,26 @@ indicating whether or not to display receiver status behind detection data
 \code{show_receiver_status} == TRUE, then a receiver_history data frame
 (\code{receiver_history}) must be supplied. Default is FALSE.}
 
-\item{receiver_history}{An optional \code{glatos_receivers} object
-(e.g., produced by \link{read_glatos_receivers}) containing receiver
-history data for plotting receiver status behind the detection data when 
-\code{receiver_history} is not \code{NULL}.
+\item{receiver_history}{An optional \code{glatos_receivers} object (e.g.,
+ produced by \link{read_glatos_receivers}) containing receiver history data
+ for plotting receiver status behind the detection data when
+ \code{receiver_history} is not \code{NULL}.
 
-\emph{OR} An optional data frame containing receiver history
-data for plotting receiver status behind the detection data. 
+ \emph{OR} An optional data frame containing receiver history data for
+ plotting receiver status behind the detection data.
 
-The following column must be present: 
-\describe{
-\item{\code{deploy_date_time}}{Receiver deployment timestamps; MUST be of 
-class POSIXct.}
-\item{\code{recover_date_time}}{Receiver recovery timestamps; MUST be of 
-class POSIXct.}
-\item{a grouping
-column whose name is specified by \code{location_col}}{See above.}
-}}
+ The following column must be present: \describe{
+ \item{\code{deploy_date_time}}{Receiver deployment timestamps; MUST be of
+ class POSIXct.} \item{\code{recover_date_time}}{Receiver recovery
+ timestamps; MUST be of class POSIXct.} \item{a grouping column whose name is
+ specified by \code{location_col}}{See above.} }}
 
-\item{out_file}{An optional character string with the name (including 
-extension) of output image file to be created. File extension
-will determine type of file written. For example, \code{"abacus_plot.png"}
-will write a png file to the working directory. If \code{NULL} (default)
-then the plot will be printed to the default plot device.
-Supported extensions: png, jpeg, bmp, and tiff.}
+\item{out_file}{An optional character string with the name (including
+extension) of output image file to be created. File extension will determine
+type of file written. For example, \code{"abacus_plot.png"} will write a png
+file to the working directory. If \code{NULL} (default) then the plot will
+be printed to the default plot device. Supported extensions: png, jpeg, bmp,
+and tiff.}
 
 \item{x_res}{Resolution of x-axis major tick marks. If numeric (e.g., 5
 (default value), then range of x-axis will be divided into that number of
@@ -76,20 +69,20 @@ optionally be preceded by a (positive or negative) integer and a space, or
 followed by "s". E.g., "10 days", "weeks", "4 weeks", etc. See
 \link[base]{seq.Date}.}
 
-\item{x_format}{Format of the x-axis tick mark labels (major ticks only; 
-minor ticks are not supported). Default is "%Y-%m-%d". Any valid 
+\item{x_format}{Format of the x-axis tick mark labels (major ticks only; minor
+ticks are not supported). Default is "%Y-%m-%d". Any valid
 \link[base]{strptime} specification should work.}
 
 \item{outFile}{Deprecated. Use \code{out_file} instead.}
 
-\item{...}{Other plotting arguments that pass to \link{points} function
-(e.g., \code{col}, \code{lwd}, \code{type}) or \link{title} function (use
-\code{main} to set title, \code{cex.main} to set title character size, 
-and \code{col.main} to set title color.}
+\item{...}{Other plotting arguments that pass to \link{plot}, \link{points}
+(e.g., \code{col}, \code{lwd}, \code{type}). Use \code{cex.main} to set
+title character size, and \code{col.main} to set title color. If \code{xlim}
+is specified, it must be a two-element vector of POSIXct.}
 }
 \value{
-An image to the default plot device or a file containing the 
-image if \code{out_file} is specified.
+An image to the default plot device or a file containing the image if
+ \code{out_file} is specified.
 }
 \description{
 Plot detection locations of acoustic transmitters over time.
@@ -97,23 +90,23 @@ Plot detection locations of acoustic transmitters over time.
 \details{
 NAs are not allowed in any of the two required columns.
 
-The locations vector is used to control which locations will
-  appear in the plot and in what order they will appear. If no locations
-  vector is supplied, the function will plot only those locations that
-  appear in the \code{det} data frame and the order of locations on the 
-  y-axis will be alphebetical from top to bottom.
+The locations vector is used to control which locations will appear
+ in the plot and in what order they will appear. If no locations vector is
+ supplied, the function will plot only those locations that appear in the
+ \code{det} data frame and the order of locations on the y-axis will be
+ alphebetical from top to bottom.
 
 By default, the function does not distinguish detections from
-  different transmitters and will therefore plot all transmitters the same
-  color. If more than one fish is desired in a single plot, a vector of
-  colors must be passed to the function using the 'col =' argument. The color
-  vector must be the same length as the number of rows in the detections data
-  frame or the colors will be recycled.
+ different transmitters and will therefore plot all transmitters the same
+ color. If more than one fish is desired in a single plot, a vector of colors
+ must be passed to the function using the 'col =' argument. The color vector
+ must be the same length as the number of rows in the detections data frame
+ or the colors will be recycled.
 
 Plotting options (i.e., line width and color) can be changed using
-  optional graphical parameters 
-  \url{http://www.statmethods.net/advgraphs/parameters.html} that are passed
-  to "points" (see ?points).
+ optional graphical parameters
+ \url{http://www.statmethods.net/advgraphs/parameters.html} that are passed
+ to "points" (see ?points).
 }
 \examples{
 #get path to example detection file
@@ -123,11 +116,11 @@ det <- read_glatos_detections(det_file)
 
 #subset one transmitter
 det2 <- det[det$animal_id == 153, ]
-	
+
 #plot without control table and main tile and change color to red
-abacus_plot(det2, locations=NULL, 
+abacus_plot(det2, locations=NULL,
   main = "TagID: 32054", col = "red")
-	
+
 #example with locations specified
 abacus_plot(det2, locations=c("DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
    "DRM", "FDT"), main = "TagID: 32054", col = "red")
@@ -144,8 +137,12 @@ abacus_plot(det2, main = "TagID: 32054", x_res = "month")
 #plot with custom x-axis resolution - 8-week bins
 abacus_plot(det2, main = "TagID: 32054", x_res = "8 weeks")
 
-#plot with custom x-axis format - 8-week bins
+#plot with custom x-axis format
 abacus_plot(det2, main = "TagID: 32054", x_res = "months", x_format = "\%b-\%y")
+
+#plot with custom x axis limits
+xLim <- as.POSIXct(c("2012-01-01", "2014-01-01"), tz = "UTC")
+abacus_plot(det2, main = "TagID: 32054", xlim = xLim)
 
 #example with receiver locations
 # get example receiver location data
@@ -156,7 +153,6 @@ rec <- read_glatos_receivers(rec_file)
 abacus_plot(det2, locations=c("DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
  "DRM", "FDT"), receiver_history = rec,
  main = "TagID: 32054", col = "red")
- 
 }
 \author{
 T. R. Binder, edited by A. Dini
