@@ -101,6 +101,17 @@
 #' and receiver network designs.}
 #' }
 #'
+#' @section Convert glatos data objects to other package classes: \describe{
+#' \item{\link{convert_glatos_to_att}}{ Converts glatos_detections and 
+#' glatos_receiver objects to ATT for compatibility with the Animal Tracking 
+#' Toolbox(https://github.com/vinayudyawer/ATT) and the VTrack package.}
+#'
+#' \item{\link{convert_otn_erddap_to_att}}{ Converts glatos_detections and 
+#' transmitter, receiver, and animal metadata from the OTN ERDDAP to ATT format 
+#' for compatibility with the Animal Tracking 
+#' Toolbox(https://github.com/vinayudyawer/ATT) and the VTrack package.}
+#' }
+
 #' @docType package
 #' @name glatos
 #' @import data.table sp
@@ -117,7 +128,7 @@ globalVariables(".") #to avoid R CMD check note
 #package startup message
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste0("version ",utils::packageVersion("glatos"), 
-    " ('dreamsicle-snow-cone')"))
+    " ('full-english-breakfast')"))
 }
 
 

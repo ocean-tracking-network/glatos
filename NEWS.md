@@ -1,3 +1,24 @@
+----
+# glatos 0.4.0
+
+#### 2019-11-06
+   
+### New features
+
+- functions
+		- convert_glatos_to_att
+		- convert_otn_erddap_to_att
+		
+- example data
+    - walleye_att
+		- blue_shart_att
+
+
+### Minor changes
+
+- change1
+
+----
 # glatos 0.3.2
 
 #### 2019-10-17
@@ -28,6 +49,17 @@
 		  included in plot (issue #70)
 		- deprecated *show_receiver_status* argument. Receiver status will 
 		  be shown on plot whenever 'receiver_history' is given.
+
+
+----
+# glatos 0.3.1
+
+#### 2019-02-27
+   
+### bug fixes
+
+- fix missing brackets in glatos.Rd
+
 
 ----
 # glatos 0.3.0
@@ -100,7 +132,6 @@
 - Update sysdata detection schema for OTN
 
 ----
-
 
 
 # glatos 0.2.7

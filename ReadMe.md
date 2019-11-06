@@ -58,3 +58,8 @@ species and individual animals.
 
 4.  [`adjust_playback_time`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/vis-adjust_playback_time.r) modify playback speed of videos and optionally convert between video file formats. Requires *FFmpeg*
 
+#### Convert glatos data objects to other package classes
+
+1.  [`convert_glatos_to_att`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/convert_glatos_to_att.r) converts *glatos\_detections* and *glatos\_receiver* objects to `ATT` for compatibility with the [`Animal Tracking Toolbox`](https://github.com/vinayudyawer/ATT) and the `VTrack` package.
+
+2.  [`convert_otn_erddap_to_att`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/convert_otn_erddap_to_att.r) converts *glatos\_detections* and transmitter, receiver, and animal metadata from the OTN ERDDAP to ATT` format for use in the [`Animal Tracking Toolbox`](https://github.com/vinayudyawer/ATT) and the `VTrack` package.
