@@ -57,6 +57,9 @@
 #'   processing large number of frames.  Default \code{preview = FALSE}
 #'   
 #' @param bg_map A spatial points, lines, or polygons object.
+#' 
+#' @param show_progress Logical. Progress bar and status messages will be 
+#'  shown if TRUE (default) and not shown if FALSE.
 #'
 #' @param ... Optional graphing parameters for customizing elments of 
 #'  fish location points, receiver location points, timeline, and 
@@ -205,7 +208,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
                         ani_name = "animation.mp4", frame_delete = FALSE,
                         overwrite = FALSE, ffmpeg = NA, preview = FALSE, 
-                        bg_map = NULL, ...){
+                        bg_map = NULL, show_progress = TRUE, ...){
   
   # test ffmpeg and get path
   if(animate) ffmpeg <- get_ffmpeg_path(ffmpeg)
@@ -489,12 +492,12 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   if(preview){ grpn <- 1 } else {
     # start progress bar
     grpn <- data.table::uniqueN(work_proc_obj$grp)
-    pb <- txtProgressBar(min = 0, max = grpn, style = 3)
+    if(show_progress) pb <- txtProgressBar(min = 0, max = grpn, style = 3)
   }
   
   # call cust_plot witin data.table
   work_proc_obj[grp_num <= grpn, 
-               {if(!preview) setTxtProgressBar(pb, .GRP)
+               {if(!preview & show_progress) setTxtProgressBar(pb, .GRP)
                 cust_plot(x = .SD, 
                           .time_period = time_period, 
                           .recs = recs, 
@@ -508,7 +511,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                   "record_type", "f_name", "grp", "row_in")]
   
   if(preview) { return(paste("preview frames are in \n", out_dir)) } else {
-     close(pb) }
+     if(show_progress) close(pb) }
   
   if(animate == FALSE & frame_delete == TRUE) message("are you sure?")
   if(animate == FALSE) message(paste("frames are in\n", out_dir))
@@ -522,6 +525,6 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   if(animate & !frame_delete){
     make_video(dir = out_dir, pattern = paste0(char, ".png"), output = ani_name,
                output_dir = out_dir, overwrite = overwrite, ffmpeg = ffmpeg)
-    message(paste("video and frames in \n", out_dir))}
+    if(show_progress) message(paste("video and frames in \n", out_dir))}
 }
 

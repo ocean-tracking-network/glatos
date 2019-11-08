@@ -28,6 +28,9 @@
 #'   
 #' @param lnl_thresh A numeric threshold for determining if linear or
 #'   non-linear interpolation shortest path will be used.
+#'   
+#' @param show_progress Logical. Progress bar and status messages will be 
+#'  shown if TRUE (default) and not shown if FALSE.
 #'
 #' @details Non-linear interpolation uses the \code{gdistance} package
 #'   to find the shortest pathway between two locations (i.e.,
@@ -180,7 +183,7 @@
                          
 interpolate_path <- function(det, trans = NULL, start_time = NULL,
                              int_time_stamp = 86400, lnl_thresh = 0.9,
-                             out_class = NULL){
+                             out_class = NULL, show_progress = TRUE){
 
   # stop if out_class is not NULL, data.table, or tibble
   if(!is.null(out_class)){
@@ -331,9 +334,9 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
 
   grpn = data.table::uniqueN(dtc$i.start)
 
-  pb <- txtProgressBar(min = 0, max = grpn, style = 3) 
+  if(show_progress) pb <- txtProgressBar(min = 0, max = grpn, style = 3) 
   
-   dtc[, lcd := {setTxtProgressBar(pb, value = .GRP);
+   dtc[, lcd := {if(show_progress) setTxtProgressBar(pb, value = .GRP);
      gdistance::costDistance(trans, fromCoords = as.matrix(
     .SD[1, c("deploy_long", "deploy_lat")]),
     toCoords = as.matrix(.SD[.N, c("deploy_long", "deploy_lat")]))},
@@ -382,10 +385,10 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
     message("Starting linear interpolation... (step 2 of 3)")
     # linear interpolation
       grpn = uniqueN(ln$i.start)
-      pb <- txtProgressBar(min = 0, max = grpn, style = 3)
+      if(show_progress) pb <- txtProgressBar(min = 0, max = grpn, style = 3)
       ln[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc),
                                                  bin_stamp := bin]
-      ln[, i_lat := {setTxtProgressBar(pb, .GRP);
+      ln[, i_lat := {if(show_progress) setTxtProgressBar(pb, .GRP);
                               tmp = .SD[c(1, .N),
                                c("detection_timestamp_utc", "deploy_lat")];
                                approx(c(tmp$detection_timestamp_utc),
@@ -417,9 +420,9 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
 
     message("\nStarting non-linear interpolation... (step 3 of 3)")
     grpn <- nrow(lookup)
-    pb <- txtProgressBar(min = 0, max = grpn, style = 3)
+    if(show_progress) pb <- txtProgressBar(min = 0, max = grpn, style = 3)
     # calculate non-linear interpolation for all unique movements in lookup
-    lookup[, coord := { setTxtProgressBar(pb, value = .GRP);
+    lookup[, coord := { if(show_progress) setTxtProgressBar(pb, value = .GRP);
               sp::coordinates(
               gdistance::shortestPath(trans, as.matrix(
               .SD[1, c("deploy_long", "deploy_lat")]), as.matrix(

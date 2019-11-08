@@ -9,7 +9,7 @@ make_frames(proc_obj, recs = NULL, out_dir = getwd(),
   show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
   ani_name = "animation.mp4", frame_delete = FALSE,
   overwrite = FALSE, ffmpeg = NA, preview = FALSE, bg_map = NULL,
-  ...)
+  show_progress = TRUE, ...)
 }
 \arguments{
 \item{proc_obj}{A data frame created by
@@ -63,6 +63,9 @@ subfolder, i.e., "/home/directory/Documents/bin/ffmpeg".}
 processing large number of frames.  Default \code{preview = FALSE}}
 
 \item{bg_map}{A spatial points, lines, or polygons object.}
+
+\item{show_progress}{Logical. Progress bar and status messages will be 
+shown if TRUE (default) and not shown if FALSE.}
 
 \item{...}{Optional graphing parameters for customizing elments of 
  fish location points, receiver location points, timeline, and 

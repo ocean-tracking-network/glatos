@@ -16,6 +16,14 @@
 
 ### Minor changes
 
+- make_frames
+    - add argument show_progress (default = TRUE) to optionally supress progress bars
+		- issue #74
+		
+- interpolate_path
+    - add argument show_progress (default = TRUE) to optionally supress progres bars
+		- issue #74
+		
 - calc_collision_probs
     - in help examples, make separate plots for detection and collision probs
 		- issue #77

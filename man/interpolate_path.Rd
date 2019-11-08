@@ -5,7 +5,8 @@
 \title{Interpolate new positions within a spatiotemporal path data}
 \usage{
 interpolate_path(det, trans = NULL, start_time = NULL,
-  int_time_stamp = 86400, lnl_thresh = 0.9, out_class = NULL)
+  int_time_stamp = 86400, lnl_thresh = 0.9, out_class = NULL,
+  show_progress = TRUE)
 }
 \arguments{
 \item{det}{An object of class \code{glatos_detections} or data frame
@@ -32,6 +33,9 @@ non-linear interpolation shortest path will be used.}
 
 \item{out_class}{Return results as a data.table or tibble.  Default
 returns results as data.frame.  Accepts `data.table` or `tibble`.}
+
+\item{show_progress}{Logical. Progress bar and status messages will be 
+shown if TRUE (default) and not shown if FALSE.}
 }
 \value{
 A dataframe with animal_id, bin_timestamp,
