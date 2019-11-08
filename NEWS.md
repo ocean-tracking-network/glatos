@@ -16,7 +16,9 @@
 
 ### Minor changes
 
-- change1
+- calc_collision_probs
+    - in help examples, make separate plots for detection and collision probs
+		- issue #77
 
 ----
 # glatos 0.3.2
