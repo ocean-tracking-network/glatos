@@ -1,4 +1,5 @@
 ----
+
 # glatos 0.4.0
 
 #### 2019-11-12
@@ -6,27 +7,27 @@
 ### New features
 
 - functions
-		- convert_glatos_to_att
-		- convert_otn_erddap_to_att
+    - convert_glatos_to_att
+    - convert_otn_erddap_to_att
 		
 - example data
     - walleye_att
-		- blue_shart_att
+    - blue_shart_att
 
 
 ### Minor changes
 
 - make_frames
     - add argument show_progress (default = TRUE) to optionally supress progress bars
-		- issue #74
+    - issue #74
 		
 - interpolate_path
     - add argument show_progress (default = TRUE) to optionally supress progres bars
-		- issue #74
+    - issue #74
 		
 - calc_collision_probs
     - in help examples, make separate plots for detection and collision probs
-		- issue #77
+    - issue #77
 		
 - make_video
     - issue #64
@@ -40,39 +41,41 @@
     - add warning when output file exists and overwrite = FALSE
 
 ----
+
 # glatos 0.3.2
 
 #### 2019-10-17
    
 ### bug fixes and minor changes
 
--vrl2csv
-	  - fixed bug where output csv file names were not returned when input   
+- vrl2csv
+    - fixed bug where output csv file names were not returned when input   
 		  was multiple VRL file names. A vector of output CSV file names 
 			is now returned.
-		- make separate call to VUE --convert-files for each VRL file.
-		- add progress bar
-		- improve error messaging.
+    - make separate call to VUE --convert-files for each VRL file.
+    - add progress bar
+    - improve error messaging.
 
 - detect_transmissions 
-		- fixed bug where 'trns_x' and 'trns_y' in data slot of output was not 
+    - fixed bug where 'trns_x' and 'trns_y' in data slot of output was not 
 		  converted to input coordinate reference system when *sp_out = TRUE*.
 
 - make_frames
-		- fixed bug where receivers were not displayed near the end of the time 
+    - fixed bug where receivers were not displayed near the end of the time 
 		  series in the images (and videos) when some receivers were missing 
 			recovery data (issue #79).
 
 - abacus_plot
     - added more flexible optional plotting arguments, including 'xlim' to 
       set custom x limits.
-		- fixed bug where plot title (specified by *main* argument) was not 
+    - fixed bug where plot title (specified by *main* argument) was not 
 		  included in plot (issue #70)
-		- deprecated *show_receiver_status* argument. Receiver status will 
+    - deprecated *show_receiver_status* argument. Receiver status will 
 		  be shown on plot whenever 'receiver_history' is given.
 
 
 ----
+
 # glatos 0.3.1
 
 #### 2019-02-27
@@ -83,6 +86,7 @@
 
 
 ----
+
 # glatos 0.3.0
 
 #### 2019-02-26
@@ -90,11 +94,11 @@
 ### New features
 
 - functions
-		- receiver_efficiency
-		- residence_index
-		- read_otn_deployments
-		- install_ffmpeg
-		- check_dependencies
+    - receiver_efficiency
+    - residence_index
+    - read_otn_deployments
+    - install_ffmpeg
+    - check_dependencies
 
 - vignettes and documentation
     - added data-loading, data-requirements, receiver_efficency, residence_index
@@ -102,10 +106,10 @@
 ### Minor changes
 
 - detection_events
-		- output data.table or tibble object if input is either of those and 
+    - output data.table or tibble object if input is either of those and 
 		  data.frame otherwise
-		- faster (e.g., 11 sec vs 31 sec for 7.2M records on wimpy laptop)
-		- coerce 'time_sep' argument to numeric if quoted and error if it cannot 
+    - faster (e.g., 11 sec vs 31 sec for 7.2M records on wimpy laptop)
+    - coerce 'time_sep' argument to numeric if quoted and error if it cannot 
 		  be coerced to numeric
 
 - crw_in_polygon
@@ -148,7 +152,8 @@
     - Changed output to kmz instead of kml
     - new folder is only created when output is png or kmz
 		
-- dropped fasttime as a depenedency and uses lubridates fasttime implementation instead
+- dropped fasttime as a depenedency and uses lubridates fasttime implementation 
+  instead
 
 - Update sysdata detection schema for OTN
 
