@@ -61,7 +61,7 @@ convert_glatos_to_att <- function(detectionObj, receiverObj) {
     Sci.Name = as.factor(purrr::map(nameLookup$Common.Name, query_worms_common))
   )
   # Apply sci names to frame
-  tagMetadata <- dplyr::left_join(tagMetadata, nameLookup) 
+  tagMetadata <- dplyr::left_join(tagMetadata, nameLookup, by = "Common.Name") 
 
 
   releaseData <- tibble::tibble( # Get the rest from detectionObj
@@ -81,7 +81,7 @@ convert_glatos_to_att <- function(detectionObj, receiverObj) {
     Bio = as.factor(NA)
   ) 
   # Final version of Tag.Metadata
-  tagMetadata <- dplyr::left_join(tagMetadata, releaseData) 
+  tagMetadata <- dplyr::left_join(tagMetadata, releaseData, by = "Tag.ID") 
 
   detectionObj <- detectionObj %>%
     dplyr::mutate(dummy = TRUE) %>%
@@ -89,7 +89,8 @@ convert_glatos_to_att <- function(detectionObj, receiverObj) {
                      dplyr::mutate(dummy=TRUE), 
                       glatos_array, station_no, deploy_lat, deploy_long, 
                       station, dummy, ins_model_no, ins_serial_no, 
-                      deploy_date_time, recover_date_time)) %>%
+                      deploy_date_time, recover_date_time),
+      by = c("glatos_array", "station_no", "deploy_lat", "deploy_long", "station", "dummy")) %>%
     dplyr::filter(detection_timestamp_utc >= deploy_date_time, 
                   detection_timestamp_utc <= recover_date_time) %>%
     dplyr::mutate(ReceiverFull = concat_list_strings(ins_model_no, 
