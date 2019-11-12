@@ -4,20 +4,24 @@ context("Check crw_in_polygon")
 mypolygon <- data.frame(x = c(-50,-50, 50, 50), y = c(-50,50,50,-50))
 set.seed(30)
 path_dfin_spout <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10, 
-                         initPos=c(0,0), initHeading=0, nsteps=5)
+                         initPos=c(0,0), initHeading=0, nsteps=5,
+                         show_progress = FALSE)
 set.seed(30)
 path_dfin_dfout <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10, 
-                         initPos=c(0,0), initHeading=0, nsteps=5, sp_out = FALSE)
+                         initPos=c(0,0), initHeading=0, nsteps=5, 
+                         sp_out = FALSE, show_progress = FALSE)
 
 
 # spatial input
 data(greatLakesPoly)
 set.seed(30)
 path_spin_spout <- crw_in_polygon(greatLakesPoly, theta=c(0,25), stepLen=10000,
-    initPos = c(-87.49017, 48.42314), initHeading=0, nsteps=5)
+    initPos = c(-87.49017, 48.42314), initHeading=0, nsteps=5,
+    show_progress = FALSE)
 set.seed(30)
 path_spin_dfout <- crw_in_polygon(greatLakesPoly, theta=c(0,25), stepLen=10000,
-    initPos = c(-87.49017, 48.42314), initHeading=0, nsteps=5, sp_out = FALSE)
+    initPos = c(-87.49017, 48.42314), initHeading=0, nsteps=5, sp_out = FALSE,
+    show_progress = FALSE)
 
 
 

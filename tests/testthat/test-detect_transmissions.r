@@ -14,12 +14,12 @@ tr_dfin_spout <- transmit_along_path(mypath,vel=0.5,delayRng=c(60,180),
 #  spatial detection output - 50% constant detection prob
 set.seed(33)
 dtc_spin_spout <- detect_transmissions(trnsLoc=tr_dfin_spout, recLoc=recs, 
-  detRngFun=function(x) 0.5)
+  detRngFun=function(x) 0.5, show_progress = FALSE)
 
 #  non-spatial detection output - 50% constant detection prob
 set.seed(33)
 dtc_spin_dfout <- detect_transmissions(trnsLoc=tr_dfin_spout, recLoc=recs, 
-  detRngFun=function(x) 0.5, sp_out = FALSE)
+  detRngFun=function(x) 0.5, sp_out = FALSE, show_progress = FALSE)
 
 
 #   non-spatial output
@@ -30,12 +30,12 @@ tr_dfin_dfout <- transmit_along_path(mypath,vel=0.5,delayRng=c(60,180),
 #  spatial detection output - 50% constant detection prob
 set.seed(33)
 dtc_dfin_spout <- detect_transmissions(trnsLoc=tr_dfin_dfout, recLoc=recs, 
-  detRngFun=function(x) 0.5)
+  detRngFun=function(x) 0.5, show_progress = FALSE)
 
 #  non-spatial detection output - 50% constant detection prob
 set.seed(33)
 dtc_dfin_dfout <- detect_transmissions(trnsLoc=tr_dfin_dfout, recLoc=recs, 
-  detRngFun=function(x) 0.5, sp_out = FALSE)
+  detRngFun=function(x) 0.5, sp_out = FALSE, show_progress = FALSE)
 
 
 # Expected results
