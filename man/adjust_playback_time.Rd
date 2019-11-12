@@ -5,7 +5,8 @@
 \title{Modify playback time of video}
 \usage{
 adjust_playback_time(scale_factor = 1, input, output_dir = getwd(),
-  output = "new.mp4", overwrite = FALSE, ffmpeg = NA)
+  output = "new.mp4", overwrite = FALSE, ffmpeg = NA,
+  diagnostic_mode = FALSE)
 }
 \arguments{
 \item{scale_factor}{multiplicative factor changes duration of
@@ -29,6 +30,9 @@ example on Windows machines,
 "C:\\Users\\Username\\Documents\\ffmpeg-3.4.1-win64-static\\bin\\ffmpeg.exe").
 On Mac, path must point to 'ffmpeg' within the 'bin'
 subfolder "/home/directory/Documents/bin/ffmpeg".  see \link{make_video}}
+
+\item{diagnostic_mode}{Logical (default = FALSE). If true, return value
+is a character vector with FFMPEG output.}
 }
 \value{
 One video animation will be written to \code{output_dir}

@@ -8,8 +8,8 @@
 ##' @param pattern character, pattern for matching image file names.
 ##'   See details.
 ##' @param output character, output file name.  See details.
-##' @param output_dir output directory, default is working directory, but will be 
-##'   created if it does not exist.
+##' @param output_dir output directory, default is working directory, but will
+##'   be created if it does not exist.
 ##' @param fps_in integer, intended framerate of input image sequence
 ##'   in frames per second.
 ##' @param start_frame integer, start frame. Defaults to
@@ -35,9 +35,12 @@
 ##'   path. For Windows machines, path must point to 'ffmpeg.exe',
 ##'   located in the bin subfolder within the ffmpeg folder.  For
 ##'   example on Windows machines,
-##'   "C:\\Users\\Username\\Documents\\ffmpeg-3.4.1-win64-static\\bin\\ffmpeg.exe").
+##'   "C:/Users/Username/Documents/ffmpeg-3.4.1-win64-static/bin/ffmpeg.exe").
 ##'   On Mac, path must point to 'ffmpeg' within the 'bin' subfolder
 ##'   "/home/directory/Documents/bin/ffmpeg".
+##'   
+##' @param diagnostic_mode Logical (default = FALSE). If true, return value
+##'  is a character vector with FFMPEG output.
 ##' 
 ##' @details \code{make_video} is based on \code{mapmate::ffmpeg}.
 ##'   More information about \code{mapmate} package is found at
@@ -185,14 +188,16 @@ make_video  <- function(dir = getwd(),
                         lossless = FALSE,
                         fps_out = 30,
                         overwrite = FALSE,
-                        ffmpeg = NA){
+                        ffmpeg = NA,
+                        diagnostic_mode = FALSE){
   
 
   # test ffmpeg and get path
-  ffmpeg <- get_ffmpeg_path(ffmpeg)
+  ffmpeg <- glatos:::get_ffmpeg_path(ffmpeg)
 
   #check if dir exists
-  if(!dir.exists(dir)) stop(paste0("Input dir '", dir , "' not found."), .call = FALSE)
+  if(!dir.exists(dir)) stop(paste0("Input dir '", dir , "' not found."), 
+                            .call = FALSE)
     
   #make output directory if it does not already exist
   if(!dir.exists(output_dir)) dir.create(output_dir)  
@@ -207,50 +212,63 @@ make_video  <- function(dir = getwd(),
   ext <- strsplit(output, "\\.")[[1]]
   ext_stop <- 
     "'output' must end in '.mp4', '.mov', '.mkv', '.gif', 'wmv', 'mpeg'"
-  if (length(ext) == 1)
+  if (length(ext) == 1) {
         stop(ext_stop)
-    else ext <- utils::tail(ext, 1)
-    if (!ext %in% c("mp4", "mov", "mkv", "gif", "wmv", "mpeg"))
-        stop(ext_stop)
-  output <- file.path(output_dir, output)
-  output <- paste0("\"", output, "\"")
-
-if (!is.null(end_frame)){
-    nframes <- end_frame - start_frame
-    output <- paste("-vframes", nframes, output)
-    }
-  
-    format <- paste0("format=", format)
-    if (size == "source") {
-        size <- ""
-    }
-    else if (ext != "gif") {
-        size <- paste0(",scale=", size, ",setsar=1:1")
-    }
-    else size <- paste("-s", size)
+  } else { ext <- utils::tail(ext, 1) }
     
-    if (ext == "gif") {
-        vf <- size
-    } else vf <- paste0("-vf ", "\"", format, size, "\"")
+  if (!ext %in% c("mp4", "mov", "mkv", "gif", "wmv", "mpeg")) stop(ext_stop)
+
+  output_file <- file.path(output_dir, output)
+  output <- paste0("\"", output_file, "\"")
+
+  if (!is.null(end_frame)){
+      nframes <- end_frame - start_frame
+      output <- paste("-vframes", nframes, output)
+  }
+  
+  format <- paste0("format=", format)
+  
+  if (size == "source") {
+    size <- ""
+  } else if (ext != "gif") {
+        size <- paste0(",scale=", size, ",setsar=1:1")
+    } else { size <- paste("-s", size) }
+    
+  if (ext == "gif") {
+      vf <- size
+  } else { vf <- paste0("-vf ", "\"", format, size, "\"")}
   
   output <- paste(vf, output)
 
   
-    outrate <- paste("-r", fps_out)
-    output <- paste(outrate, output, ifelse(overwrite, "-y", 
-        "-n"))
-    if (ext == "gif") {
-        vc <- " "
-    }
-    else {
-        if (codec == "default") 
-            codec <- switch(ext, mp4 = "libx264", mov = "libx264", 
-                mkv = "libx264", wmv = "libx264", mpeg = "libx264" )
-        vc <- paste0(" -c:v ", codec, " -preset ", preset, " ")
-        if (lossless & codec %in% c("h264", "libx264")) 
-            vc <- paste0(vc, "-qp 0 ")
-    }
+  outrate <- paste("-r", fps_out)
+  output <- paste(outrate, output, ifelse(overwrite, "-y", "-n"))
+  
+  if (ext == "gif") { vc <- " " 
+  } else {
+    if (codec == "default") 
+        codec <- switch(ext, mp4 = "libx264", mov = "libx264", 
+            mkv = "libx264", wmv = "libx264", mpeg = "libx264" )
+    vc <- paste0(" -c:v ", codec, " -preset ", preset, " ")
+    if (lossless & codec %in% c("h264", "libx264")) vc <- paste0(vc, "-qp 0 ")
+  }
+  
   x <- gsub("  ", " ", paste0(input, vc, output))
-    system2(cmd, x, stdout=FALSE)
-   return(paste(cmd, x))
+    
+  #check if output file exists
+  if(file.exists(output_file) & overwrite == FALSE) {
+    warning("No video file written because output file already exists and ",
+      "overwrite = FALSE.")
+    return()
+  }
+  
+  msg_i <-  system2(cmd, x, stdout = TRUE)
+  
+  if(diagnostic_mode) {
+    message("[diagnostic mode]: See return object for ffmpeg output.")
+    return(msg_i)
+  }
+
+  message("Video file written to ", output_file, ".")
+  return(output_file)
 }

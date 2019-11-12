@@ -8,7 +8,8 @@ make_video(dir = getwd(), pattern, output = "animation.mp4",
   output_dir = getwd(), fps_in = 30, start_frame = 1,
   end_frame = NULL, size = "source", preset = "medium",
   codec = "default", format = "yuv420p", lossless = FALSE,
-  fps_out = 30, overwrite = FALSE, ffmpeg = NA)
+  fps_out = 30, overwrite = FALSE, ffmpeg = NA,
+  diagnostic_mode = FALSE)
 }
 \arguments{
 \item{dir}{directory containing images, default is working
@@ -19,8 +20,8 @@ See details.}
 
 \item{output}{character, output file name.  See details.}
 
-\item{output_dir}{output directory, default is working directory, but will be 
-created if it does not exist.}
+\item{output_dir}{output directory, default is working directory, but will
+be created if it does not exist.}
 
 \item{fps_in}{integer, intended framerate of input image sequence
 in frames per second.}
@@ -56,9 +57,12 @@ argument is only needed if ffmpeg is not added to your system
 path. For Windows machines, path must point to 'ffmpeg.exe',
 located in the bin subfolder within the ffmpeg folder.  For
 example on Windows machines,
-"C:\\Users\\Username\\Documents\\ffmpeg-3.4.1-win64-static\\bin\\ffmpeg.exe").
+"C:/Users/Username/Documents/ffmpeg-3.4.1-win64-static/bin/ffmpeg.exe").
 On Mac, path must point to 'ffmpeg' within the 'bin' subfolder
 "/home/directory/Documents/bin/ffmpeg".}
+
+\item{diagnostic_mode}{Logical (default = FALSE). If true, return value
+is a character vector with FFMPEG output.}
 }
 \value{
 One video animation will be written to \code{output_dir}

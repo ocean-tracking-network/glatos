@@ -24,6 +24,9 @@
 ##'   On Mac, path must point to 'ffmpeg' within the 'bin'
 ##'   subfolder "/home/directory/Documents/bin/ffmpeg".  see \link{make_video}
 ##'
+##' @param diagnostic_mode Logical (default = FALSE). If true, return value
+##'  is a character vector with FFMPEG output.
+##'  
 ##' @details \code{adjust_playback_time} adjusts playback speed of
 ##'   video.  \code{scale_factor} controls the magnitude of speed-up
 ##'   or slow-down by modifying the presentation timestamp of each
@@ -63,10 +66,12 @@
 
 
 adjust_playback_time <- function(scale_factor = 1,
-                                 input, output_dir = getwd(),
+                                 input, 
+                                 output_dir = getwd(),
                                  output = "new.mp4",
                                  overwrite = FALSE,
-                                 ffmpeg = NA ){
+                                 ffmpeg = NA,
+                                 diagnostic_mode = FALSE){
 
   # test ffmpeg and get path
   ffmpeg <- get_ffmpeg_path(ffmpeg)
@@ -74,9 +79,26 @@ adjust_playback_time <- function(scale_factor = 1,
   cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)
   
   input <- shQuote(input)
-  out <- shQuote(file.path(output_dir, output))
+  output_file <- file.path(output_dir, output)
+  out <- shQuote(output_file)
   ffcall <- sprintf('-i %s -filter:v "setpts=%f*PTS" %s %s', input,
                     scale_factor, out, (ifelse(overwrite, "-y", "-n")))
-  system2(cmd, ffcall, stdout = FALSE)
+  
+  #check if output file exists
+  if(file.exists(output_file) & overwrite == FALSE) {
+    warning("No video file written because output file already exists and ",
+      "overwrite = FALSE.")
+    return()
+  }
+  
+  msg_i <-  system2(cmd, ffcall, stdout = TRUE)
+
+  if(diagnostic_mode) {
+    message("[diagnostic mode]: See return object for ffmpeg output.")
+    return(msg_i)
+  }
+  
+  message("Video file written to ", output_file, ".")
+  return(output_file)
 
 }

@@ -27,6 +27,17 @@
 - calc_collision_probs
     - in help examples, make separate plots for detection and collision probs
 		- issue #77
+		
+- make_video
+    - issue #64
+    - return output file name
+    - add diagnostic_mode arg to optionally return ffmpeg output (hide by default)
+    - add warning when output file exists and overwrite = FALSE
+    
+- adjust_playback_time
+    - return output file name
+    - add diagnostic_mode arg to optionally return ffmpeg output (hide by default)
+    - add warning when output file exists and overwrite = FALSE
 
 ----
 # glatos 0.3.2
