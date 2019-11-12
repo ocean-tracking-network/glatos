@@ -90,7 +90,8 @@ convert_glatos_to_att <- function(detectionObj, receiverObj) {
                       glatos_array, station_no, deploy_lat, deploy_long, 
                       station, dummy, ins_model_no, ins_serial_no, 
                       deploy_date_time, recover_date_time),
-      by = c("glatos_array", "station_no", "deploy_lat", "deploy_long", "station", "dummy")) %>%
+                      by = c("glatos_array", "station_no", "deploy_lat", 
+                             "deploy_long", "station", "dummy")) %>%
     dplyr::filter(detection_timestamp_utc >= deploy_date_time, 
                   detection_timestamp_utc <= recover_date_time) %>%
     dplyr::mutate(ReceiverFull = concat_list_strings(ins_model_no, 
