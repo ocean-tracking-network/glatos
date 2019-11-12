@@ -174,6 +174,7 @@ library(glatos)
 library(data.table)
 library(geosphere)
 library(ggplot2)
+library(reshape2)
 
 # load detection data from glatos package
 data(range_detection)
@@ -215,8 +216,9 @@ colnames(dist_matrix) <- rec_dist[,get("receiver_sn")]
 rownames(dist_matrix) <- paste0("6", substr(rec_dist[,get("receiver_sn")], 3,6))
 
 # convert matrix into 3-column data using data.table::melt
-dist_matrix <- as.data.table(melt(dist_matrix, id.vars = c("columns", "rows"),
-                                  value.name = "dist_m"))
+dist_matrix <- as.data.table(reshape2::melt(dist_matrix, 
+                                            id.vars = c("columns", "rows"),
+                                            value.name = "dist_m"))
 
 # change names
 setnames(dist_matrix, c("Var1", "Var2"),
@@ -526,7 +528,7 @@ intervals on 8 receivers located 9-603 meters from tag (right y-axis labels).
 Black lines in each panel is detection probability and red line is a loess smoother."   
 ```
 
-```{r warning=FALSE,echo=TRUE,message=FALSE,fig.cap=cap3,fig.width=8,fig.height=8,fig.keep=1,fig.show="asis"}
+```{r warning=FALSE,echo=TRUE,message=FALSE,fig.cap=cap3,fig.width=8,fig.height=8,fig.keep="first",fig.show="asis"}
 
 # round distances for plot labels
 dp[, dist_rnd := round(dist_m)]
