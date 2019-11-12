@@ -12,8 +12,9 @@
 #'  below and one column containing a location grouping variable, whose name is
 #'  specified by \code{location_col} (see below). 
 #'  
-#'  The following four columns must appear in \code{det}, except \code{deploy_lat} and \code{deploy_lon} are not needed 
-#'  if \code{receiver_locs} is specified: 
+#'  The following four columns must appear in \code{det}, 
+#'  except \code{deploy_lat} and \code{deploy_lon} are not needed 
+#'    if \code{receiver_locs} is specified: 
 #'  \describe{ 
 #'  \item{\code{animal_id}}{Individual animal
 #'  identifier; character.} 
