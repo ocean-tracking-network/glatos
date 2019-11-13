@@ -153,6 +153,20 @@ rec <- read_glatos_receivers(rec_file)
 abacus_plot(det2, locations=c("DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
  "DRM", "FDT"), receiver_history = rec,
  main = "TagID: 32054", col = "red")
+ 
+#example with grey box plotted in background (using panel.first)
+
+#set time range covered by rectangle
+rect_x_rng <- as.POSIXct(c("2012-07-31", "2013-04-15"), tz = "UTC")
+#get number of unique locations (y-axis)
+n_locs <- length(unique(det2$glatos_array))
+
+#plot as grey box in background
+abacus_plot(det2, locations=NULL,
+ main = "TagID: 32054", col = "red", 
+ panel.first = rect(rect_x_rng[1], 1, rect_x_rng[2], n_locs, col = "grey", 
+   border = NA))
+
 }
 \author{
 T. R. Binder, edited by A. Dini

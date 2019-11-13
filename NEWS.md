@@ -1,3 +1,17 @@
+
+----
+
+# glatos 0.4.1
+
+#### 2019-11-13
+   
+### Bug fixes
+
+- abacus_plot 
+    - fix issue where optional plot args passed as expressions 
+		  (e.g., `panel.first` and `panel.last`) had to be wrapped in `quote`
+    - fixes issue #87
+
 ----
 
 # glatos 0.4.0

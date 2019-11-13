@@ -142,7 +142,20 @@
 #'abacus_plot(det2, locations=c("DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
 #'  "DRM", "FDT"), receiver_history = rec,
 #'  main = "TagID: 32054", col = "red")
-
+#'  
+#'#example with grey box plotted in background (using panel.first)
+#'
+#'#set time range covered by rectangle
+#'rect_x_rng <- as.POSIXct(c("2012-07-31", "2013-04-15"), tz = "UTC")
+#'#get number of unique locations (y-axis)
+#'n_locs <- length(unique(det2$glatos_array))
+#'
+#'#plot as grey box in background
+#'abacus_plot(det2, locations=NULL,
+#'  main = "TagID: 32054", col = "red", 
+#'  panel.first = rect(rect_x_rng[1], 1, rect_x_rng[2], n_locs, col = "grey", 
+#'    border = NA))
+#'
 #' @export
 
 abacus_plot <- function(det,
@@ -228,8 +241,8 @@ abacus_plot <- function(det,
   
   # Make a list of optional arguments passed through ... for use in parsing out 
   # arguments for plotting.
-  arguments <- list(...)
-  
+  arguments <- as.list(match.call(expand.dots = FALSE)$`...`)
+
   # If locations not supplied, create one data frame with unique values
   # (ordered alphebetically from top to bottom) of location_col values with
   # plot order appended. Otherwise append a column of plot order to locations.
@@ -331,8 +344,8 @@ abacus_plot <- function(det,
     labels = locations_table$location, las = 1)
 
   #list to hold arguments for seq
-  seq_args <- list(from = plot_args$xlim[1], 
-                   to = plot_args$xlim[2])
+  seq_args <- list(from = eval(plot_args$xlim)[1], 
+                   to = eval(plot_args$xlim)[2])
   
   #set by and length.out for seq.Date based on input arg x_res
   if(is.numeric(x_res)) {
