@@ -118,7 +118,9 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni) {
   ) 
   # Final version of Tag.Metadata
   tagMetadata <- unique(dplyr::left_join(tagMetadata, releaseData)) 
-
+  
+  datetime_timezone = unique(detectionObj$timezone)
+  
   detectionObj <- detectionObj %>%
     dplyr::mutate(dummy=TRUE) %>%
     dplyr::left_join(dplyr::select(erdRcv %>% dplyr::mutate(dummy = TRUE), 
@@ -131,9 +133,9 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni) {
                                    deploy_datetime_utc = time, 
                                    recovery_datetime_utc)) %>%
     dplyr::mutate(deploy_datetime_utc = as.POSIXct(deploy_datetime_utc, 
-                                              format = "%Y-%m-%dT%H:%M:%OS"), 
+                                              format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone), 
                   recovery_datetime_utc = as.POSIXct(recovery_datetime_utc, 
-                                              format="%Y-%m-%dT%H:%M:%OS")) %>%
+                                              format="%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone)) %>%
     dplyr::filter(detection_timestamp_utc >= deploy_datetime_utc, 
                   detection_timestamp_utc <= recovery_datetime_utc) %>%
     dplyr::mutate(ReceiverFull = concat_list_strings(receiver_model, 
