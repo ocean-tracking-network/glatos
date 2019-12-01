@@ -7,6 +7,8 @@
 #'
 #' @param receiverObj a list from \code{read_glatos_receivers}
 #'
+#' @param crs a sp::CRS object with geographic coordinate system for all spatial information (latitude/longitude). If none provided defaults to WGS84.
+#'
 #' @details This function takes 2 lists containing detection and reciever data
 #'   and transforms them into one list containing 3 \code{tibble::tibble}
 #'   objects. The input that AAT uses to get this data product is located here:
@@ -36,7 +38,7 @@
 #' ATTdata <- convert_glatos_to_att(walleye_detections, rcv)
 #' @export
 
-convert_glatos_to_att <- function(detectionObj, receiverObj) {
+convert_glatos_to_att <- function(detectionObj, receiverObj, crs) {
 
   transmitters <- 
     if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))) { 
@@ -131,6 +133,14 @@ stations <- unique(tibble::tibble(
   )
   
   class(att_obj) <- "ATT"
+
+if (inherits(crs, "CRS")) {
+    attr(att_obj, "CRS") <- crs
+  }
+  else {
+    message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
+    attr(att_obj, "CRS") <- sp::CRS("+init=epsg:4326")
+  }
 
   return(att_obj)
 }
