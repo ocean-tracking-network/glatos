@@ -16,7 +16,7 @@
 #' 
 #' @return a data.frame created from the excel file.
 #' 
-#' @example 
+#' @examples 
 #' 
 #' #--------------------------------------------------
 #' # EXAMPLE #1 - loading from NSBS simplified Deployments

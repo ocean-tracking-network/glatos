@@ -27,7 +27,7 @@
 #' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata,
 #'   and station metadata, to be ingested by VTrack/ATT
 #' 
-#' @example
+#' @examples
 #' 
 #' #--------------------------------------------------
 #' # EXAMPLE #1 - loading from Deployment Object
