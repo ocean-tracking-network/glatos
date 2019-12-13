@@ -90,17 +90,17 @@ xlab="Distance between receiver and transmitter")
  dp
 
  #Again with only 10 virtual fish and optional plot to see simulated data
- dp <- receiver_line_det_sim(rngFun=pdrf, nsim=10, showPlot=T) #w/ optional plot
+ dp <- receiver_line_det_sim(rngFun=pdrf, nsim=10, showPlot=TRUE) #w/ optional plot
  dp
 
  #Again but six receivers and allow fish to pass to left and right of line
  dp <- receiver_line_det_sim(rngFun=pdrf, recSpc=rep(1000,5),
-	outerLim=c(1000, 1000), nsim=10, showPlot=T)
+	outerLim=c(1000, 1000), nsim=10, showPlot=TRUE)
  dp
 
  #Again but four receivers with irregular spacing
  dp <- receiver_line_det_sim(rngFun=pdrf, recSpc=c(2000,4000,2000),
- 	outerLim=c(1000, 1000), nsim=10, showPlot=T)
+ 	outerLim=c(1000, 1000), nsim=10, showPlot=TRUE)
  dp
 
 
@@ -159,7 +159,7 @@ xlab="Distance between receiver and transmitter")
   xlab="distance between receiver and transmitter, meters")
 
  #use empirical curve (edrf) in simulation
- dp <- receiver_line_det_sim(rngFun=edrf, nsim=10, showPlot=T) #w/ optional plot
+ dp <- receiver_line_det_sim(rngFun=edrf, nsim=10, showPlot=TRUE) #w/ optional plot
  dp
 
 }

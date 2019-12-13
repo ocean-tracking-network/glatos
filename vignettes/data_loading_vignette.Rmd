@@ -2,12 +2,7 @@
 title: "Data loading methods for the R package glatos"
 date: "Updated: `r Sys.Date()`"
 output: 
-  rmarkdown::html_document:
-    toc: true
-    toc_depth: 3
-    number_sections: true
-    toc_float: true
-    toc_collapsed: false
+  
   rmarkdown::pdf_document:
     toc: true
     toc_depth: 3
@@ -446,7 +441,7 @@ head(dtc$detection_timestamp_utc, 3)
 > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
 
-#### _**receiver_sn**_
+#### _**receiver\_sn**_
 
 There is no single column in the VUE export data with receiver serial number, 
 so we need to extract it from the *Receiver* column. 

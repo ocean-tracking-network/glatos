@@ -2,12 +2,7 @@
 title: "Data requirements of the R package glatos"
 date: "Updated: `r Sys.Date()`"
 output: 
-  rmarkdown::html_document:
-    toc: true
-    toc_depth: 3
-    number_sections: true
-    toc_float: true
-    toc_collapsed: false
+  
   rmarkdown::pdf_document:
     toc: true
     toc_depth: 3

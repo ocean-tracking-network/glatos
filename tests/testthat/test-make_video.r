@@ -1,3 +1,4 @@
+skip_on_cran()
 context("Check make_video")
 
 # load example frames 

@@ -75,7 +75,7 @@ Timezone attribute of all timestamp columns (class \code{POSIXct})
   \cr
   1. If the records are formatted according to the GLATOS Data Dictionary
   specification (e.g., "YYYY-MM-DD" for dates and "YYYY-MM-DD HH:MM" for
-  timestamps; see \url{https:\\glatos.glos.us}) those records should be
+  timestamps; see \url{https://glatos.glos.us}) those records should be
   properly loaded into R, but the user is encouraged to verify that they were
   loaded correctly, so a warning points the user to those records in the
   workbook. Users may want to format as custom date in the workbook to avoid

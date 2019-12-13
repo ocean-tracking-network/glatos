@@ -1,3 +1,4 @@
+skip_on_cran()
 context("Check adjust_playback_time")
 
 # load example frames 

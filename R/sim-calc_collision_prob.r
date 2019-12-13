@@ -56,7 +56,7 @@
 #'     
 #' #plot probabilities of detection
 #' plot(med~nTags, data=foo, type='p', pch=20, ylim=c(0,1),
-#'   b
+#'   xlab="# of transmitters within range", ylab="Probability of detection")
 #'   
 #' #plot probability of collision by subtracting detection probability from 1
 #' plot((1 - med)~nTags, data=foo, type='p', pch=20, ylim=c(0,1),

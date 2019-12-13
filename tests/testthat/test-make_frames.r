@@ -1,3 +1,4 @@
+skip_on_cran()
 context("Check make_frames")
 
 # make example records
