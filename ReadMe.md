@@ -25,7 +25,7 @@ Installation instructions can be found at [https://gitlab.oceantrack.org/GreatLa
 
 5.  [`real_sensor_values`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/proc-real_sensor_values.r) converts 'raw' transmitter sensor (e.g., depth, temperature) to 'real'-scale values (e.g., depth in meters) using transmitter specification data (e.g., from read\_vemco\_tag\_specs).
 
-6. ['prepare_tag_sheet](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/load-prepare_tag_sheet.r) and ['prepare_deploy_sheet](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/load-prepare_deploy_sheet.r) load OTN metadata sheets for Tagging and Deployment of Receivers and formats them for converting to ATT Data.
+6. [`prepare_tag_sheet`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/load-prepare_tag_sheet.r) and [`prepare_deploy_sheet`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/load-prepare_deploy_sheet.r) load OTN metadata sheets for Tagging and Deployment of Receivers and formats them for converting to ATT Data.
 
 
 #### Filtering and summarizing
