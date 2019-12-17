@@ -40,7 +40,8 @@ prepare_tag_sheet <- function(path, start = 1, sheet = 1) {
         time =  UTC_RELEASE_DATE_TIME,
         sex =  SEX,
         latitude = RELEASE_LATITUDE,
-        longitude = RELEASE_LONGITUDE
+        longitude = RELEASE_LONGITUDE,
+        sci_name = SCIENTIFIC_NAME
     )
     return(sheet)
 }

@@ -94,19 +94,11 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
     tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
         Tag.ID = detectionObj$animal_id,
         Transmitter = as.factor(transmitters),
-        Common.Name = as.factor(detectionObj$common_name_e)
+        Common.Name = as.factor(detectionObj$common_name_e), 
+        Sci.Name = as.factor(detectionObj$scientificname)
     ))
 
     tagMetadata <- unique(tagMetadata) # Cut out dupes
-  
-    nameLookup <- tibble::tibble( # Get all the unique common names
-        Common.Name = unique(tagMetadata$Common.Name)
-    )
-    nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
-        Sci.Name = as.factor(purrr::map(nameLookup$Common.Name, query_worms_common))
-    )
-    # Apply sci names to frame
-    tagMetadata <- dplyr::left_join(tagMetadata, nameLookup) 
 
     detectionObj <- dplyr::left_join(detectionObj %>% dplyr::select(-c('animal_id')), taggingSheet, by="transmitter_id")
     
@@ -145,7 +137,7 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
 
     releaseData <- dplyr::mutate(releaseData, 
         # Convert sex text and null missing columns
-        Sex = as.factor(purrr::map(Sex, convert_sex)),
+        Sex = purrr::map(Sex, convert_sex),
         Tag.Status = as.factor(NA),
         Bio = as.factor(NA)
     ) %>% unique()
@@ -161,13 +153,18 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
         Sensor.Unit = as.factor(detectionObj$sensorunit)
     )
 
+    tagMetadata <- dplyr::left_join(tagMetadata, releaseData, by = "Tag.ID") 
+    tagMetadata <- tagMetadata %>% dplyr::mutate(
+        Sex = as.factor(Sex)
+    )
+
     stations <- unique(tibble::tibble(
         Station.Name = as.factor(detectionObj$station),
         Receiver = as.factor(detectionObj$ReceiverFull),
         Installation = as.factor(NA),
         Receiver.Project = as.factor(detectionObj$collectioncode),
-        # Deployment.Date = detectionObj$deploy_date_time,
-        # Recovery.Date = detectionObj$recover_date_time,
+        Deployment.Date = detectionObj$deploy_date_time,
+        Recovery.Date = detectionObj$recover_date_time,
         Station.Latitude = as.double(detectionObj$deploy_lat),
         Station.Longitude = as.double(detectionObj$deploy_long),
         Receiver.Status = as.factor(NA)
