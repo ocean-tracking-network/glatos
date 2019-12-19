@@ -100,7 +100,7 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
 
     tagMetadata <- unique(tagMetadata) # Cut out dupes
 
-    detectionObj <- dplyr::left_join(detectionObj %>% dplyr::select(-c('animal_id')), taggingSheet, by="transmitter_id")
+    detectionObj <- dplyr::left_join(detectionObj, taggingSheet %>% dplyr::select(-c('animal_id')), by="transmitter_id")
     
 
 
@@ -132,7 +132,7 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
         Release.Longitude = as.double(detectionObj$longitude), 
         Release.Date = as.Date(detectionObj$time),
         Sex = as.factor(detectionObj$sex),
-        Tag.Life = detectionObj$est_tag_life
+        Tag.Life = as.factor(unlist(detectionObj$est_tag_life))
     ) %>% dplyr::filter(!Tag.ID %in% NA)
 
     releaseData <- dplyr::mutate(releaseData, 
@@ -141,12 +141,11 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
         Tag.Status = as.factor(NA),
         Bio = as.factor(NA)
     ) %>% unique()
-
     detections <- tibble::tibble(
         Date.Time = detectionObj$detection_timestamp_utc,
         Transmitter = as.factor(detectionObj$transmitter_id),
         Station.Name = as.factor(detectionObj$station),
-        # Receiver = as.factor(detectionObj$ReceiverFull),
+        Receiver = as.factor(detectionObj$ReceiverFull),
         Latitude = detectionObj$deploy_lat,
         Longitude = detectionObj$deploy_long,
         Sensor.Value = as.integer(detectionObj$sensorvalue),
@@ -154,8 +153,11 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
     )
 
     tagMetadata <- dplyr::left_join(tagMetadata, releaseData, by = "Tag.ID") 
+    
+    animal_sex <- tagMetadata$Sex
+    animal_sex[animal_sex == "NULL"] = NA
     tagMetadata <- tagMetadata %>% dplyr::mutate(
-        Sex = as.factor(Sex)
+        Sex = as.factor(as.character(animal_sex))
     )
 
     stations <- unique(tibble::tibble(
