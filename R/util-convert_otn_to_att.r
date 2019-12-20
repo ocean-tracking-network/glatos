@@ -67,7 +67,7 @@
 #' 
 #' @export
 
-convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL, deploymentSheet = NULL) {
+convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL, deploymentSheet = NULL, timeFilter = TRUE) {
     
     if (is.null(deploymentObj) && is.null(deploymentSheet)) {
         stop("Deployment data must be supplied by either 'deploymentObj' or 'deploymentSheet'")
@@ -102,28 +102,28 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
 
     detectionObj <- dplyr::left_join(detectionObj, taggingSheet %>% dplyr::select(-c('animal_id')), by="transmitter_id")
     
-
-
     detectionObj <- dplyr::left_join(detectionObj %>% dplyr::select(-deploy_lat, -deploy_long), deploymentObj, by = "station")
-    if (is.null(deploymentSheet)) {
+    if (timeFilter) {
+      if (is.null(deploymentSheet)) {
         detectionObj <- detectionObj %>% dplyr::filter(
-            detection_timestamp_utc >= deploy_date_time,
-            detection_timestamp_utc <= dplyr::coalesce(recover_date_time, last_download),
-            instrumenttype == "rcvr"
+          detection_timestamp_utc >= deploy_date_time,
+          detection_timestamp_utc <= dplyr::coalesce(recover_date_time, last_download),
+          instrumenttype == "rcvr"
         )
-    } else {
+      } else {
         detectionObj <- detectionObj %>% dplyr::filter(
-            detection_timestamp_utc >= deploy_date_time,
-            detection_timestamp_utc <= recover_date_time | recover_date_time %in% c(NA)
-            
+          detection_timestamp_utc >= deploy_date_time,
+          detection_timestamp_utc <= recover_date_time | recover_date_time %in% c(NA)
+          
         )
+      }
     }
+    
     
     detectionObj <- detectionObj %>% 
        dplyr::mutate(
             ReceiverFull = paste(ins_model_no, receiver_sn, sep = "-")
         )
-
 
     releaseData <- tibble::tibble( # Get the rest from detectionObj
         Tag.ID = detectionObj$animal_id, 
@@ -141,6 +141,7 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
         Tag.Status = as.factor(NA),
         Bio = as.factor(NA)
     ) %>% unique()
+    
     detections <- tibble::tibble(
         Date.Time = detectionObj$detection_timestamp_utc,
         Transmitter = as.factor(detectionObj$transmitter_id),
@@ -153,7 +154,7 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
     )
 
     tagMetadata <- dplyr::left_join(tagMetadata, releaseData, by = "Tag.ID") 
-    
+
     animal_sex <- tagMetadata$Sex
     animal_sex[animal_sex == "NULL"] = NA
     tagMetadata <- tagMetadata %>% dplyr::mutate(
