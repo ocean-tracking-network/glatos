@@ -62,17 +62,18 @@ impute_detections <- function(dtc,
 	}
 	
 	#define transmitter list if missing
-	if(missing(trnsm) | is.null(trnsm) | all(is.na(trnsm)))
-	  trnsm <- data.table(
-	      transmitter = unique(dtcx$transmitter),
-	      delay_min = NA_real_,
-	      delay_max = NA_real_)
+	if(missing(trnsm) | is.null(trnsm) | all(is.na(trnsm))) 
+	  trnsm <- unique(dtcx$transmitter)
 	
 	#define receiver list
 	if(missing(rcvr) | is.null(rcvr) | all(is.na(rcvr))) 
 	  rcvr <- sort(unique(dtcx$receiver))
 			
 	#estimate fixed delay (random delays not supported)
+	trnsm <- data.table(
+	  transmitter = trnsm,
+	  delay_min = NA_real_,
+	  delay_max = NA_real_)
 	trnsm[, delay_min := 
 	    estimate_delay(dtcx[, list(detection_timestamp_utc,
                             	   transmitter,
@@ -140,11 +141,13 @@ impute_detections <- function(dtc,
 		
 			#add missed transmissions
 			x2 <- as.data.frame(x.ij)[0,] #make like x
-			x2[1:length(trns_miss),] <- NA
-			x2$detection_timestamp_utc <- trns_miss
-			x2$transmitter <- trnsm$transmitter[j]
-			x2$receiver <- rcvr[i]
-			x2[["detected"]] <- 0	
+			if(length(trns_miss) > 0) {
+			  x2[1:length(trns_miss),] <- NA
+			  x2$detection_timestamp_utc <- trns_miss
+			  x2$transmitter <- trnsm$transmitter[j]
+			  x2$receiver <- rcvr[i]
+		  	x2[["detected"]] <- 0	
+			}
 			
 			#append to missed detections
 			if(i==1 & j==1) { x_missed <- x2 } else {
