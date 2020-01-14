@@ -13,6 +13,9 @@
 #' 
 #' @param deploymentSheet a data frame from \code{prepare_deploy_sheet}
 #' 
+#' @param timeFilter Whether the data should be filtered using the deployment and recovery/last download times of receivers.
+#' Defaults to TRUE, if not all receiver metadata is available, this should be set to FALSE otherwise there will be data loss.
+#' 
 #' 
 #' @details This function takes 3 data frames containing detections, tagging metadata, and
 #'  deployment metadata from either \code{read_otn_deployments} or \code{prepare_deploy_sheet} 

@@ -6,7 +6,7 @@
 accepts.}
 \usage{
 convert_otn_to_att(detectionObj, taggingSheet, deploymentObj = NULL,
-  deploymentSheet = NULL)
+  deploymentSheet = NULL, timeFilter = TRUE)
 }
 \arguments{
 \item{detectionObj}{a data frame from \code{read_otn_detections}}
@@ -16,6 +16,9 @@ convert_otn_to_att(detectionObj, taggingSheet, deploymentObj = NULL,
 \item{deploymentObj}{a data frame from \code{read_otn_deployments}}
 
 \item{deploymentSheet}{a data frame from \code{prepare_deploy_sheet}}
+
+\item{timeFilter}{Whether the data should be filtered using the deployment and recovery/last download times of receivers.
+Defaults to TRUE, if not all receiver metadata is available, this should be set to FALSE otherwise there will be data loss.}
 }
 \value{
 a list of 3 tibble::tibbles containing tag dectections, tag metadata,
