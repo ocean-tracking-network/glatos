@@ -127,6 +127,8 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
        dplyr::mutate(
             ReceiverFull = paste(ins_model_no, receiver_sn, sep = "-")
         )
+        
+    detectionObj$est_tag_life[detectionObj$est_tag_life == "NULL"] <- NA
 
     releaseData <- tibble::tibble( # Get the rest from detectionObj
         Tag.ID = detectionObj$animal_id, 

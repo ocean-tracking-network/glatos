@@ -1,5 +1,4 @@
-#Make internal data object blue_shark_att for testing
-# (example data object)
+context("Check convert_otn_to_att")
 
 dets_path <- system.file("extdata", "blue_shark_detections.csv", 
                          package = "glatos")
@@ -12,7 +11,9 @@ dets <- read_otn_detections(dets_path)
 tags <- prepare_tag_sheet(tag_path, 5, 2)
 deploy <- prepare_deploy_sheet(deploy_path)
 
-blue_shark_att <- convert_otn_to_att(dets, tags, deploymentSheet = deploy)
+bs_att <- convert_otn_to_att(dets, tags, deploymentSheet = deploy)
 
-rda_file <- file.path(".","R/sysdata.rda")
-glatos:::add_internal_data(blue_shark_att, rda_file)
+test_that("blue_shark_att gives expected result", {
+  # Check if expected and actual results are the same
+  expect_equal(bs_att, blue_shark_att)
+})
