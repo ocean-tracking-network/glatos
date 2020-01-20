@@ -42,7 +42,7 @@ prepare_deploy_sheet <- function(path, start = 1, sheet = 1) {
     sheet <- sheet %>% dplyr::mutate(
         station = paste(OTN_ARRAY, STATION_NO, sep = '')
     )
-    sheet <- sheet %>% select(
+    sheet <- sheet %>% dplyr::select(
         station, ins_model_no, deploy_lat, deploy_long,
         deploy_date_time, recover_date_time
     )
