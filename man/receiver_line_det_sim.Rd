@@ -4,9 +4,17 @@
 \alias{receiver_line_det_sim}
 \title{Simulate detection of acoustic-tagged fish crossing a receiver line}
 \usage{
-receiver_line_det_sim(vel = 1, delayRng = c(120, 360), burstDur = 5,
-  recSpc = 1000, maxDist = 2000, rngFun, outerLim = c(0, 0),
-  nsim = 1000, showPlot = FALSE)
+receiver_line_det_sim(
+  vel = 1,
+  delayRng = c(120, 360),
+  burstDur = 5,
+  recSpc = 1000,
+  maxDist = 2000,
+  rngFun,
+  outerLim = c(0, 0),
+  nsim = 1000,
+  showPlot = FALSE
+)
 }
 \arguments{
 \item{vel}{A numeric scalar with fish velocity in meters per second.}

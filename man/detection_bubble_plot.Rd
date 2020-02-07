@@ -4,10 +4,18 @@
 \alias{detection_bubble_plot}
 \title{Plot number of tagged animals or detections on a map}
 \usage{
-detection_bubble_plot(det, location_col = "glatos_array",
-  receiver_locs = NULL, map = NULL, out_file = NULL,
-  background_ylim = c(41.3, 49), background_xlim = c(-92.45, -75.87),
-  symbol_radius = 1, col_grad = c("white", "red"), scale_loc = NULL)
+detection_bubble_plot(
+  det,
+  location_col = "glatos_array",
+  receiver_locs = NULL,
+  map = NULL,
+  out_file = NULL,
+  background_ylim = c(41.3, 49),
+  background_xlim = c(-92.45, -75.87),
+  symbol_radius = 1,
+  col_grad = c("white", "red"),
+  scale_loc = NULL
+)
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by

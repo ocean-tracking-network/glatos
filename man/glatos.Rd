@@ -3,7 +3,6 @@
 \docType{package}
 \name{glatos}
 \alias{glatos}
-\alias{glatos-package}
 \title{An R package for the Great Lakes Acoustic Telemetry Observation System}
 \description{
 \code{glatos} is an R package with functions useful to members of the Great

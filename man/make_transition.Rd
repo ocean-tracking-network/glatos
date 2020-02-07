@@ -4,8 +4,13 @@
 \alias{make_transition}
 \title{Create transition layer from polygon shapefile}
 \usage{
-make_transition(in_file, output = "out.tif", output_dir = NULL,
-  res = c(0.1, 0.1), all_touched = TRUE)
+make_transition(
+  in_file,
+  output = "out.tif",
+  output_dir = NULL,
+  res = c(0.1, 0.1),
+  all_touched = TRUE
+)
 }
 \arguments{
 \item{in_file}{A SpatialPolygonsDataFrame object or a character string with file path to 

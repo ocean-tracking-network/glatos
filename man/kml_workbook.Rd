@@ -4,9 +4,18 @@
 \alias{kml_workbook}
 \title{Make a KML or KMZ file of receiver and animal release locations}
 \usage{
-kml_workbook(wb = NULL, wb_file = NULL, receiver_locs = NULL,
-  animals = NULL, kmz = FALSE, show_ongoing_recs = TRUE,
-  end_date = NULL, out_file = NULL, wb_version = NULL, ...)
+kml_workbook(
+  wb = NULL,
+  wb_file = NULL,
+  receiver_locs = NULL,
+  animals = NULL,
+  kmz = FALSE,
+  show_ongoing_recs = TRUE,
+  end_date = NULL,
+  out_file = NULL,
+  wb_version = NULL,
+  ...
+)
 }
 \arguments{
 \item{wb}{A \code{glatos_workbook} object created by 

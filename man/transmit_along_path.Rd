@@ -4,8 +4,14 @@
 \alias{transmit_along_path}
 \title{Simulate telemetry transmitter signals along a path}
 \usage{
-transmit_along_path(path = NA, vel = 0.5, delayRng = c(60, 180),
-  burstDur = 5, EPSG = 3175, sp_out = TRUE)
+transmit_along_path(
+  path = NA,
+  vel = 0.5,
+  delayRng = c(60, 180),
+  burstDur = 5,
+  EPSG = 3175,
+  sp_out = TRUE
+)
 }
 \arguments{
 \item{path}{A two-column data frame with at least two rows and columns 

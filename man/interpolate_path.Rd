@@ -4,9 +4,15 @@
 \alias{interpolate_path}
 \title{Interpolate new positions within a spatiotemporal path data}
 \usage{
-interpolate_path(det, trans = NULL, start_time = NULL,
-  int_time_stamp = 86400, lnl_thresh = 0.9, out_class = NULL,
-  show_progress = TRUE)
+interpolate_path(
+  det,
+  trans = NULL,
+  start_time = NULL,
+  int_time_stamp = 86400,
+  lnl_thresh = 0.9,
+  out_class = NULL,
+  show_progress = TRUE
+)
 }
 \arguments{
 \item{det}{An object of class \code{glatos_detections} or data frame

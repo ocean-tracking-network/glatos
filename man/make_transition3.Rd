@@ -4,8 +4,7 @@
 \alias{make_transition3}
 \title{Create transition layer from polygon shapefile}
 \usage{
-make_transition3(poly, res = c(0.1, 0.1), receiver_points = NULL,
-  epsg = 3175)
+make_transition3(poly, res = c(0.1, 0.1), receiver_points = NULL, epsg = 3175)
 }
 \arguments{
 \item{poly}{A spatial polygon object of class
