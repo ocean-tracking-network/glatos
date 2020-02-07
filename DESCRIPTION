@@ -3,9 +3,10 @@ Type: Package
 Title: A package for the Great Lakes Acoustic Telemetry Observation System
 Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System www.glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
 Version: 0.4.1.9000
-Date: 2019-11-13
+Date: 2020-02-07
 Depends: R (>= 3.2.0)
 Imports:
+		av,
 		cellranger,
 		data.table,		
 		fasterize,
@@ -31,8 +32,7 @@ Imports:
 		sf,
 		sp,
 		tibble,
-		tidyr,
-		av
+		tidyr
 Suggests: 
 		gganimate,
 		gifsky,
