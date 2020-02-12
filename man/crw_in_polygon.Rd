@@ -4,9 +4,17 @@
 \alias{crw_in_polygon}
 \title{Simulate a correlated random walk inside a polygon}
 \usage{
-crw_in_polygon(polyg, theta = c(0, 10), stepLen = 100,
-  initPos = c(NA, NA), initHeading = NA, nsteps = 30, EPSG = 3175,
-  sp_out = TRUE, show_progress = TRUE)
+crw_in_polygon(
+  polyg,
+  theta = c(0, 10),
+  stepLen = 100,
+  initPos = c(NA, NA),
+  initHeading = NA,
+  nsteps = 30,
+  EPSG = 3175,
+  sp_out = TRUE,
+  show_progress = TRUE
+)
 }
 \arguments{
 \item{polyg}{A \code{\link[sp]{SpatialPolygons}} object.

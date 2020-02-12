@@ -4,8 +4,13 @@
 \alias{point_offset}
 \title{Identify new location based on distance and bearing from another}
 \usage{
-point_offset(lon = NA, lat = NA, offsetDist = NA, offsetDir = NA,
-  distUnit = "m")
+point_offset(
+  lon = NA,
+  lat = NA,
+  offsetDist = NA,
+  offsetDir = NA,
+  distUnit = "m"
+)
 }
 \arguments{
 \item{lon}{vector of longitudes (dd) to calculate offset points}

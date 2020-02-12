@@ -4,8 +4,12 @@
 \alias{detection_events}
 \title{Classify discrete events in detection data}
 \usage{
-detection_events(det, location_col = "glatos_array", time_sep = Inf,
-  condense = TRUE)
+detection_events(
+  det,
+  location_col = "glatos_array",
+  time_sep = Inf,
+  condense = TRUE
+)
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by

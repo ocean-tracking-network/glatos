@@ -4,8 +4,13 @@
 \alias{make_transition2}
 \title{Create transition layer from a spatial polygon}
 \usage{
-make_transition2(poly, res = c(0.1, 0.1), extent_out = NULL,
-  x_lim = NULL, y_lim = NULL)
+make_transition2(
+  poly,
+  res = c(0.1, 0.1),
+  extent_out = NULL,
+  x_lim = NULL,
+  y_lim = NULL
+)
 }
 \arguments{
 \item{poly}{A spatial polygon object of class

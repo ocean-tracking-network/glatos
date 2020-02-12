@@ -4,10 +4,18 @@
 \alias{abacus_plot}
 \title{Plot detection locations of acoustic transmitters over time}
 \usage{
-abacus_plot(det, location_col = "glatos_array", locations = NULL,
-  show_receiver_status = NULL, receiver_history = NULL,
-  out_file = NULL, x_res = 5, x_format = "\%Y-\%m-\%d",
-  outFile = NULL, ...)
+abacus_plot(
+  det,
+  location_col = "glatos_array",
+  locations = NULL,
+  show_receiver_status = NULL,
+  receiver_history = NULL,
+  out_file = NULL,
+  x_res = 5,
+  x_format = "\%Y-\%m-\%d",
+  outFile = NULL,
+  ...
+)
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by

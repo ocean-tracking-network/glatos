@@ -4,12 +4,24 @@
 \alias{make_video}
 \title{Create video from sequence of still images}
 \usage{
-make_video(dir = getwd(), pattern, output = "animation.mp4",
-  output_dir = getwd(), fps_in = 30, start_frame = 1,
-  end_frame = NULL, size = "source", preset = "medium",
-  codec = "default", format = "yuv420p", lossless = FALSE,
-  fps_out = 30, overwrite = FALSE, ffmpeg = NA,
-  diagnostic_mode = FALSE)
+make_video(
+  dir = getwd(),
+  pattern,
+  output = "animation.mp4",
+  output_dir = getwd(),
+  fps_in = 30,
+  start_frame = 1,
+  end_frame = NULL,
+  size = "source",
+  preset = "medium",
+  codec = "default",
+  format = "yuv420p",
+  lossless = FALSE,
+  fps_out = 30,
+  overwrite = FALSE,
+  ffmpeg = NA,
+  diagnostic_mode = FALSE
+)
 }
 \arguments{
 \item{dir}{directory containing images, default is working
@@ -166,7 +178,7 @@ Presets provide a certain encoding speed to compression
 frames <- system.file("extdata", "frames", package = "glatos")
 
 # make .mp4 video
-# make sure ffmpeg is on system path (see \\code{make_frames} and details)
+# make sure ffmpeg is on system path (see \code{make_frames} and details)
 make_video(dir = frames, pattern = "\%02d.png", output = "animation.mp4"  )
 
 # make .wmv video

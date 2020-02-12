@@ -3,7 +3,7 @@
 
 # glatos 0.4.1
 
-#### 2019-11-13
+#### 2020-02-12
    
 ### Bug fixes
 
@@ -11,6 +11,15 @@
     - fix issue where optional plot args passed as expressions 
 		  (e.g., `panel.first` and `panel.last`) had to be wrapped in `quote`
     - fixes issue #87
+
+- summarize_detections
+    - fix error in documentation listing all three summ_type options as 
+      default
+    - fixes issue #94
+
+- check_dependencies
+    - ensure that glatos package directory is checked for ffmpeg.exe
+    - fixes issue #95
 
 ----
 
