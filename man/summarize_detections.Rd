@@ -4,8 +4,13 @@
 \alias{summarize_detections}
 \title{Summarize detections by animal, location, or both}
 \usage{
-summarize_detections(det, location_col = "glatos_array",
-  receiver_locs = NULL, animals = NULL, summ_type = "animal")
+summarize_detections(
+  det,
+  location_col = "glatos_array",
+  receiver_locs = NULL,
+  animals = NULL,
+  summ_type = "animal"
+)
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by
@@ -67,8 +72,8 @@ If \code{summ_type = "animal"} (default): A data frame, data.table, or
     \item{\code{locations}: character string with 
       locations detected, separated by spaces.}
   }
- If \code{summ_type = "location"} (default): A data frame, data.table, or
- tibble containing seven columns:
+ If \code{summ_type = "location"}: A data frame, data.table, or
+ tibble containing eight columns:
   \itemize{
     \item{\code{LOCATION_COL}: defined by \code{location_col}.}
     \item{\code{num_fish}: number of unique animals detected.}
@@ -80,7 +85,7 @@ If \code{summ_type = "animal"} (default): A data frame, data.table, or
     \item{\code{animals}: character string with animal_ids detected,
     separated by spaces.}
   }
- If \code{summ_type = "both"} (default): A data frame, data.table, or tibble
+ If \code{summ_type = "both"}: A data frame, data.table, or tibble
  containing seven columns:
   \itemize{
     \item{\code{animal_id}: described above.}
