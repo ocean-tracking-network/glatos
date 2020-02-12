@@ -15,9 +15,9 @@
 ##'   = NULL}.
 ##' @param codec character, video codec used.
 ##' @param verbose Logical (default = FALSE). If true, returns details
-##'   of processing
+##'   of processing.
 ##' @param audio audio or video input file with sound for the output
-##'   video
+##'   video.
 ##' @param vfilter a string defining an ffmpeg filter.  This is the
 ##'   same parameter as the -vf argument in FFmpeg.
 ##'
@@ -105,16 +105,7 @@
 ##'
 ##' @export
 
-make_video_av <- function(dir = getwd(),
-                       ext = ".png",
-                       output = "animation.mp4",
-                       fps_in = 30,
-                       start_frame = 1,
-                       end_frame = NULL,
-                       codec = NULL,
-                       vfilter = NULL,
-                       verbose = TRUE,
-                       audio = NULL){
+make_video_av <- function(...){
   
   # makes vector of images
   ext <- paste0("*", ext)
