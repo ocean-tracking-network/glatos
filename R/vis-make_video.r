@@ -177,28 +177,31 @@
 make_video  <- function(input_dir = getwd(),
                         ext = "png",
                         output = "animation.mp4",
+                        duration = NULL,
                         start_frame = 1,
                         end_frame = NULL,
-                        fps
-                        fps = 30,
-                        size = NA,
+                        size = NULL,
                         overwrite = FALSE,
                         verbose = FALSE,
                         ...){
   
   #parse ...
-  in_args <- c(output = output, list(...))
+  in_args <- c(output = output, verbose = verbose, list(...))
   #for debugging, use code on next line instead of previous
-  #in_args <- list(output = output) #none given
+  #in_args <- list(output = output, verbose = verbose) #none given
   #only ffmpeg arguments given
-  #in_args <- list(output = output, pattern = "%02d.png", preset = "ultrafast")
+  #in_args <- list(output = output, verbose = verbose, 
+  #                pattern = "%02d.png", preset = "ultrafast")
   #only av arguments given
-  #in_args <- list(output = output), framerate = 30, vfilter = "scale=320:240, setpts=10*PTS")
+  #in_args <- list(output = output, verbose = verbose, framerate = 30, 
+  #                vfilter = "scale=320:240, setpts=10*PTS")
   
   #identify av-specific optional arguments in ...
   av_args = formals(av::av_encode_video)
   
-  av_args_in = intersect(names(in_args), names(av_args))
+  av_args_in = in_args[intersect(names(in_args), names(av_args))]
+  
+  av_args[names(av_args_in)] <- av_args_in
     
   #identify ffmpeg-specific (legacy) arguments in ...
   #for backward compatibility with glatos <= v.0.4.0
@@ -240,93 +243,53 @@ make_video  <- function(input_dir = getwd(),
       "were provided but renderer was not specified")
   }
   
+  dir <- input_dir
   
-#!!!! PICK UP HERE !!!!!
-#TO DO: handle  case where renderer is given; ensure it matches input args
+  #make vector of images
   
-  #if output is full path, then ignore output_dir
+  #strip . from ext if present
+  ext <- gsub("^\\.", "", ext)
   
+  #make regex string
+  ext_regex <- paste0(".", eval(ext), "$")
   
+  files <- list.files(dir, full.names = TRUE, pattern = ext_regex)
   
-  # test ffmpeg and get path
-  ffmpeg <- glatos:::get_ffmpeg_path(ffmpeg)
-
   #check if dir exists
   if(!dir.exists(dir)) stop(paste0("Input dir '", dir , "' not found."), 
                             .call = FALSE)
-    
-  #make output directory if it does not already exist
-  if(!dir.exists(output_dir)) dir.create(output_dir)  
-    
-  cmd <- ifelse(is.na(ffmpeg), 'ffmpeg', ffmpeg)
   
-  input <- file.path(dir, pattern)
-  input <- paste0("-i ", "\"", input, "\"" )
-  inrate <- paste("-framerate", fps_in)
-  start <- paste("-start_number", start_frame)
-  input <- paste0(paste(inrate, start, input), collapse = " ")
-  ext <- strsplit(output, "\\.")[[1]]
-  ext_stop <- 
-    "'output' must end in '.mp4', '.mov', '.mkv', '.gif', 'wmv', 'mpeg'"
-  if (length(ext) == 1) {
-        stop(ext_stop)
-  } else { ext <- utils::tail(ext, 1) }
-    
-  if (!ext %in% c("mp4", "mov", "mkv", "gif", "wmv", "mpeg")) stop(ext_stop)
-
-  output_file <- file.path(output_dir, output)
-  output <- paste0("\"", output_file, "\"")
-
-  if (!is.null(end_frame)){
-      nframes <- end_frame - start_frame
-      output <- paste("-vframes", nframes, output)
-  }
+  # subset out frames if needed
+  if(is.null(end_frame)) end_frame <- length(files)
   
-  format <- paste0("format=", format)
+  fls <- files[start_frame:end_frame]
   
-  if (size == "source") {
-    size <- ""
-  } else if (ext != "gif") {
-        size <- paste0(",scale=", size, ",setsar=1:1")
-    } else { size <- paste("-s", size) }
-    
-  if (ext == "gif") {
-      vf <- size
-  } else { vf <- paste0("-vf ", "\"", format, size, "\"")}
+  if(is.null(vfilter)){
+    #set size only if vfilt is null; otherwise ignore size
+    if(is.null(size)) { vfilt <- "scale=320:240" } else { vfilt <- "null" }
+  } else { 
+    vfilt <- vfilter }
   
-  output <- paste(vf, output)
-
-  
-  outrate <- paste("-r", fps_out)
-  output <- paste(outrate, output, ifelse(overwrite, "-y", "-n"))
-  
-  if (ext == "gif") { vc <- " " 
+  #calculate duration if not given
+  if(is.null(duration)) { 
+    duration <- length(fls) / framerate 
   } else {
-    if (codec == "default") 
-        codec <- switch(ext, mp4 = "libx264", mov = "libx264", 
-            mkv = "libx264", wmv = "libx264", mpeg = "libx264" )
-    vc <- paste0(" -c:v ", codec, " -preset ", preset, " ")
-    if (lossless & codec %in% c("h264", "libx264")) vc <- paste0(vc, "-qp 0 ")
+    framerate <- round(length(fls) / duration)
   }
   
-  x <- gsub("  ", " ", paste0(input, vc, output))
-    
-  #check if output file exists
-  if(file.exists(output_file) & overwrite == FALSE) {
-    warning("No video file written because output file already exists and ",
-      "overwrite = FALSE.")
-    return()
-  }
+  #update input & framerate & vfilter
+  av_args$input <- fls
+  av_args$framerate <- framerate
+  av_args$vfilter <- vfilter
   
-  msg_i <-  system2(cmd, x, stdout = TRUE)
+  do.call(av::av_encode_video, av_args)
   
-  if(diagnostic_mode) {
-    message("[diagnostic mode]: See return object for ffmpeg output.")
-    return(msg_i)
-  }
-
-  message("Video file written to ", output_file, ".")
-  return(output_file)
+  message("Video file written to ", output, ".")  
+  
+  #warn if framerate is greater than 30
+  if(framerate > 30) warning("Specified duration (", duration, " seconds) ", 
+    "results in a framerate (", framerate, " fps) that may be too fast to see!")
+                             
 }
 
 
