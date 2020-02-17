@@ -175,7 +175,7 @@ glatos_workbook_schema$v1.3$tagging <- read.table(text="
 #----------------------------------------------------
 
 #add to sysdata.rda
-rda_file <- file.path("..","R/sysdata.rda")
+rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(glatos_workbook_schema, rda_file)
 
 #for exported ('public') data

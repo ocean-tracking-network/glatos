@@ -11,7 +11,7 @@ lamprey_detections <- read_glatos_detections(dtc_file)
 #----------------------------------------------------
 
 #add to sysdata.rda
-rda_file <- file.path("..","R/sysdata.rda")
+rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(lamprey_detections, rda_file)
 
 #for exported ('public') data

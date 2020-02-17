@@ -10,7 +10,7 @@ sample_receivers <- read_glatos_receivers(rec_file)
 #----------------------------------------------------
 
 #add to sysdata.rda
-rda_file <- file.path("..","R/sysdata.rda")
+rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(sample_receivers, rda_file)
 
 #for exported ('public') data

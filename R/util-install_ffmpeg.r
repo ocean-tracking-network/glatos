@@ -98,16 +98,17 @@ get_ffmpeg_path <- function(ffmpeg){
   
   ffVers <- suppressWarnings(system2(cmd, "-version", stdout=F)) #call ffmpeg
   if(ffVers == 127)
-    stop(paste0('"ffmpeg" was not found.\n',
-      "See install_ffmpeg() to install into the package directory.\n",
-      "or ",
-      'ensure it is installed add added to system PATH variable\n',
-      "or specify path using input argument 'ffmpeg'\n\n",
-      'FFmpeg is available from:\n https://ffmpeg.org/\n',
-      'You may create the individual frames and then combine them\n',
-      'into an animation manually using video editing software\n', 
-      '(e.g., Windows Movie Maker or iMovie) by setting the animate\n',
-      'argument to FALSE.'),
+    stop(" ffmpeg.exe was not found.\n\n",
+      "  To install ffmpeg the easiest way (for use only by this package),\n", 
+      "   see ?install_ffmpeg to install into the glatos package directory.\n",
+      "   Note that install_ffmpeg will need to be run each time the glatos\n",
+      "   package is installed.\n\n",
+      "  To install ffmpeg more permanently, download ffmpeg.exe from\n",
+      "   https://ffmpeg.org/ and then either (1) add the path to directory\n",
+      "   containing ffmpeg.exe to your operating system Path variable or\n",
+      "   (2) in calls to glatos functions 'make_frames', 'make_video', \n",
+      "   or 'adjust_playback_time', specify path to ffmpeg.exe using input\n",
+      "   argument 'ffmpeg'.\n\n",
       call. = FALSE)
   
   return(ffmpeg)

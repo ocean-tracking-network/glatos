@@ -35,7 +35,8 @@ blue_shark_att <- convert_otn_erddap_to_att(blue_shark_detections,
 #----------------------------------------------------
 
 #add to sysdata.rda
-rda_file <- file.path(".","R/sysdata.rda")
+
+rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(blue_shark_att, rda_file)
 
 #for exported ('public') data

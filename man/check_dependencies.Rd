@@ -7,7 +7,7 @@
 check_dependencies()
 }
 \value{
-results of checks to your terminal
+A message is printed to the console.
 }
 \description{
 Checks to make sure external dependencies required by functions in
@@ -42,15 +42,25 @@ Installation of the GDAL library and a number of other
   available (Windows, Mac, and Linux) at
   \url{https://qgis.org/en/site/forusers/download.html}.
 
-Installation of the ffmpeg library on windows is
+The simplest way to install FFMPEG for use by the 'glatos' package
+  functions is to use the \code{install_ffmpeg} function, which downloads
+  the excecutable from one of the websites listed below (depending on
+  operating system) and places it in the 'glatos' package directory.
+  \code{make_video} and other \code{glatos} functions that call ffmpeg will
+  from that location. The downside to this method is that
+  \code{install_ffmpeg} will need to be run each time the \code{glatos}
+  package is re-installed. For more permanent installations of FFMPEG, see
+  directions below, by operating system.
+
+Full installation of the ffmpeg library on windows is
   accomplished by downloading the recent 'static' build from
-  \url{http://ffmpeg.zeranoe.com/builds/}.  After the download is
+  \url{http://ffmpeg.zeranoe.com/builds/}. After the download is
   complete, use your favorite compression utility to extract the
   downloaded folder. Decompress the package and store contents on
-  your computer.  Last, Edit your system path variable to include
+  your computer.  Last, edit your system path variable to include
   the path to the directory containing ffmpeg.exe
 
-Installation of ffmpeg on Mac is similar to
+Full installation of ffmpeg on Mac is similar to
   windows. First, download most recent build from
   \url{http://www.evermeet.cx/ffmpeg/}.  The binary files are
   compressed with 7zip so may need toinstall an unarchiving
@@ -66,5 +76,5 @@ check_dependencies()
 
 }
 \author{
-Todd Hayden
+Todd Hayden, Chris Holbrook
 }

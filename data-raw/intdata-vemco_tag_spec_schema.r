@@ -64,7 +64,7 @@ vemco_tag_spec_schema$vemco_xls$`tag summary` <- read.table(text = '
 #---------------------------------
 
 #add to sysdata.rda
-rda_file <- file.path("..","R/sysdata.rda")
+rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(vemco_tag_spec_schema, rda_file)
 
 #for exported ('public') data

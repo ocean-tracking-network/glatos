@@ -53,7 +53,7 @@ glatos_detection_schema$v1.3 <- read.table(text = "
 
 
 #add to sysdata.rda
-rda_file <- file.path("..","R/sysdata.rda")
+rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(glatos_detection_schema, rda_file)
 
 #for exported ('public') data

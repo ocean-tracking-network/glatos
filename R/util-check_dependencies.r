@@ -31,15 +31,25 @@
 ##'   available (Windows, Mac, and Linux) at
 ##'   \url{https://qgis.org/en/site/forusers/download.html}.
 ##'
-##' @details Installation of the ffmpeg library on windows is
+##' @details The simplest way to install FFMPEG for use by the 'glatos' package
+##'   functions is to use the \code{install_ffmpeg} function, which downloads
+##'   the excecutable from one of the websites listed below (depending on
+##'   operating system) and places it in the 'glatos' package directory.
+##'   \code{make_video} and other \code{glatos} functions that call ffmpeg will
+##'   from that location. The downside to this method is that
+##'   \code{install_ffmpeg} will need to be run each time the \code{glatos}
+##'   package is re-installed. For more permanent installations of FFMPEG, see
+##'   directions below, by operating system.
+##'   
+##' @details Full installation of the ffmpeg library on windows is
 ##'   accomplished by downloading the recent 'static' build from
-##'   \url{http://ffmpeg.zeranoe.com/builds/}.  After the download is
+##'   \url{http://ffmpeg.zeranoe.com/builds/}. After the download is
 ##'   complete, use your favorite compression utility to extract the
 ##'   downloaded folder. Decompress the package and store contents on
-##'   your computer.  Last, Edit your system path variable to include
+##'   your computer.  Last, edit your system path variable to include
 ##'   the path to the directory containing ffmpeg.exe
 ##'
-##' @details Installation of ffmpeg on Mac is similar to
+##' @details Full installation of ffmpeg on Mac is similar to
 ##'   windows. First, download most recent build from
 ##'   \url{http://www.evermeet.cx/ffmpeg/}.  The binary files are
 ##'   compressed with 7zip so may need toinstall an unarchiving
@@ -47,9 +57,9 @@
 ##'   extract the program folder. After the folder is extracted, copy
 ##'   the ffmpeg folder to /usr/local/bin/ffmpeg on your machine.
 ##' 
-##' @return results of checks to your terminal
+##' @return A message is printed to the console.
 ##' 
-##' @author Todd Hayden
+##' @author Todd Hayden, Chris Holbrook
 ##'
 ##' @examples
 ##'\dontrun{
@@ -67,30 +77,30 @@ check_dependencies <- function(){
   suppressWarnings(gdalUtils::gdal_setInstallation())
   valid_install <- !is.null(getOption("gdalUtils_gdalPath"))
   if(valid_install){
-    message(sprintf("OK... gdal version %s is installed",
-                    getOption("gdalUtils_gdalPath")[[1]]$version))
+    message(sprintf(" OK... gdal version %s is installed",
+                    getOption("gdalUtils_gdalPath")[[1]]$version), "\n")
   } else {
-    message(paste0("gdal not found.\n",
-                   "To install gdal, see:\n",
-                   "\t- http://www.gdal.org\n",
-                   "\t- https://trac.osgeo.org/osgeo4w\n",
-                   "\t- https://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries\n",
-                   "or to install QGIS (gis software), see:\n",
-                   "\t- https://qgis.org/en/site/forusers/download.html"))
+    message(" gdal not found.\n",
+              " To install gdal, see:\n",
+              "\t- http://www.gdal.org\n",
+              "\t- https://trac.osgeo.org/osgeo4w\n",
+              "\t- https://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries\n",
+              " or to install QGIS (gis software), see:\n",
+              "\t- https://qgis.org/en/site/forusers/download.html")
   }
   
-  # check for ffmpeg installation
-  message("Checking for ffmpeg...") 
-  # check for FFmpeg
-  ffmpeg <-  Sys.which("ffmpeg")
-  if(ffmpeg != ""){
-    message("OK... FFmpeg is installed and on system PATH.")
+
+  # check for ffmpeg
+  message("Checking for ffmpeg...")
+  ffmpeg <- tryCatch(list(found = TRUE, value = glatos:::get_ffmpeg_path(NA)), 
+                     error = function(e) list(found = FALSE, value = e$message))
+                         
+  
+  # print message with result
+  if(ffmpeg$found) { 
+    message(" OK... FFmpeg is installed at \n  ", ffmpeg$value, ".", "\n") 
   } else {
-    message(paste0("FFmpeg not found.\n",
-                   "To install in glatos package directory see \n",
-                   "\t- ?install_ffmpeg\n",
-                   "To install and set system PATH variable, see:\n",
-                   "\t- https://www.ffmpeg.org\n",
-                   "\t- ?check_dependencies"))
+    message(ffmpeg$value, "\n")
   }
+  
 }

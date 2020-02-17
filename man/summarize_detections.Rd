@@ -72,8 +72,8 @@ If \code{summ_type = "animal"} (default): A data frame, data.table, or
     \item{\code{locations}: character string with 
       locations detected, separated by spaces.}
   }
- If \code{summ_type = "location"} (default): A data frame, data.table, or
- tibble containing seven columns:
+ If \code{summ_type = "location"}: A data frame, data.table, or
+ tibble containing eight columns:
   \itemize{
     \item{\code{LOCATION_COL}: defined by \code{location_col}.}
     \item{\code{num_fish}: number of unique animals detected.}
@@ -85,7 +85,7 @@ If \code{summ_type = "animal"} (default): A data frame, data.table, or
     \item{\code{animals}: character string with animal_ids detected,
     separated by spaces.}
   }
- If \code{summ_type = "both"} (default): A data frame, data.table, or tibble
+ If \code{summ_type = "both"}: A data frame, data.table, or tibble
  containing seven columns:
   \itemize{
     \item{\code{animal_id}: described above.}

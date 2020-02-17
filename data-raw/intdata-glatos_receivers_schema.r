@@ -46,7 +46,7 @@ glatos_receivers_schema$v1.0 <- read.table(text = "
 #----------------------------------------------------
 
 #add to sysdata.rda
-rda_file <- file.path("..","R/sysdata.rda")
+rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(glatos_receivers_schema, rda_file)
 
 #for exported ('public') data
