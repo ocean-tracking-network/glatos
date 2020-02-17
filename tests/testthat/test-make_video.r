@@ -23,7 +23,7 @@ make_video(dir = frames, pattern = "%02d.png", output_dir = temp_dir_2,
 vid_size <- file.info(c(temp_file_1, temp_file_2))$size
 
 # Expected file sizes
-size_should_be <- c(68929, 68929)
+size_should_be <- c(68872, 68872)
 
 # Clean up
 unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,

@@ -31,7 +31,7 @@ adjust_playback_time(scale_factor = 0.1, input = temp_file,
 vid_size <- file.info(c(temp_file_1, temp_file_2, temp_file_3))$size
 
 # Expected file sizes
-size_should_be <- c(166668, 48281, 48281)
+size_should_be <- c(166532, 48196, 48196)
 
 # Clean up
 unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,
