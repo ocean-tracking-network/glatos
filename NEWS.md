@@ -3,9 +3,32 @@
 
 # glatos 0.4.1
 
-#### 2020-02-12
+#### 2020-02-17
+   
+### Minor changes
+
+- make_video
+    - overhauled to no longer require ffmpeg. now is a simple wrapper for
+      av::av_encode_video
+    - added input argument 'duration' to set total video duration in seconds
+      previous version of make_video renamed 'make_video_ffmpeg'
+    - calls to new 'make_video' with "old" arguments are caught and 
+      redirected to 'make_video_ffmpeg' for backward compatibility
+
+- make_frames
+    - modified to call revised make_video (ffmpeg not required)
+    - deprecated ffmpeg input argument
+    
+- interpolate_path
+    - set `ties = "ordered"` for all calls to `stats::approx`
+    - fixes issue #93
    
 ### Bug fixes
+
+- abacus_plot 
+    - fix issue where optional plot args passed as expressions 
+		  (e.g., `panel.first` and `panel.last`) had to be wrapped in `quote`
+    - fixes issue #87
 
 - abacus_plot 
     - fix issue where optional plot args passed as expressions 

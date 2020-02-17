@@ -83,6 +83,10 @@ Linear interpolation is used for all points when
   be used for all points when \code{lnl_thresh} > 1 and linear
   interpolation will be used for all points when \code{lnl_thresh}
   = 0.
+
+All linear interpolation is done by code{stats::approx} with
+  argument \code{ties = "ordered"} controlling how tied \code{x} values 
+  are handled. See \code{\link{approxfun}}.
 }
 \examples{
 

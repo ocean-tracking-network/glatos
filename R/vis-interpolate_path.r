@@ -62,6 +62,10 @@
 #'   be used for all points when \code{lnl_thresh} > 1 and linear
 #'   interpolation will be used for all points when \code{lnl_thresh}
 #'   = 0.
+#'   
+#' @details All linear interpolation is done by code{stats::approx} with
+#'   argument \code{ties = "ordered"} controlling how tied \code{x} values 
+#'   are handled. See \code{\link{approxfun}}.
 #'
 #' @return A dataframe with animal_id, bin_timestamp,
 #'   latitude, longitude, and record_type.
@@ -260,9 +264,9 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
                                                 bin_stamp := bin]
 
     dtc[, i_lat := approx(detection_timestamp_utc, deploy_lat,
-                          xout = bin_stamp)$y, by = animal_id]
+                          xout = bin_stamp, ties = "ordered")$y, by = animal_id]
     dtc[, i_lon := approx(detection_timestamp_utc, deploy_long,
-                          xout = bin_stamp)$y, by = animal_id]
+                          xout = bin_stamp, ties = "ordered")$y, by = animal_id]
 
     dtc[is.na(deploy_long), record_type := "interpolated"]
     dtc <- dtc[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")]
@@ -393,12 +397,15 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
                                c("detection_timestamp_utc", "deploy_lat")];
                                approx(c(tmp$detection_timestamp_utc),
                                       c(tmp$deploy_lat),
-                                      xout = c(bin_stamp))$y}, by = i.start]
+                                      xout = c(bin_stamp), 
+                                      ties = "ordered")$y},
+         by = i.start]
       ln[, i_lon := {tmp = .SD[c(1, .N),
                                c("detection_timestamp_utc", "deploy_long")];
                                approx(c(tmp$detection_timestamp_utc),
                                       c(tmp$deploy_long), 
-                                      xout = c(bin_stamp))$y},
+                                      xout = c(bin_stamp), 
+                                      ties = "ordered")$y},
          by = i.start]
       ln[is.na(deploy_long), record_type := "interpolated"]
     }
@@ -481,7 +488,8 @@ arch <- nln_small
     ##           by = i.start]
 
     # interpolate missing timestamps for interpolated coordinates
-    nln_small[, i_time := as.POSIXct(approx(cumdist, i_time, xout = cumdist)$y,
+    nln_small[, i_time := as.POSIXct(approx(cumdist, i_time, xout = cumdist, 
+                                      ties = "ordered")$y,
                                      origin = "1970-01-01 00:00:00",
                                      tz = attr(nln_small$i_time, "tzone")),
               by = i.start]
@@ -497,12 +505,16 @@ arch <- nln_small
     nln[, i_lat := {tmp = nln_small[.(.SD[1, "i.start"]),
                                     c("i_time", "nln_latitude")];
                                     approx(tmp$i_time, tmp$nln_latitude,
-                                           xout = bin_stamp)$y}, by = grp]
+                                           xout = bin_stamp, 
+                                      ties = "ordered")$y}, 
+        by = grp]
 
     nln[, i_lon := {tmp = nln_small[.(.SD[1, "i.start"]),
                                     c("i_time", "nln_longitude")];
                                     approx(tmp$i_time, tmp$nln_longitude,
-                                           xout = bin_stamp)$y}, by = grp]
+                                           xout = bin_stamp, 
+                                      ties = "ordered")$y}, 
+        by = grp]
 
     nln[is.na(deploy_long), record_type := "interpolated"]
   }
