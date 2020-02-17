@@ -52,24 +52,28 @@ for x-scale of plot. Units are degrees.}
 trailing points in each frame. Default value is 0 (no trailing points). A
 value of \code{Inf} will show all points from start.}
 
-\item{animate}{Boolean. Default (TRUE) creates video animation}
+\item{animate}{Boolean. Default (TRUE) creates video animation by calling 
+\code{\link{make_video}} with \code{output = ani_name}. Default values 
+are used for all other arguments. See Details below.}
 
-\item{ani_name}{Name of animation (character string)}
+\item{ani_name}{Character string with name and extension of animation output
+video file. Full path is optional. If file name only (no path), then the
+output video is written to 'out_dir' (same as images). To write to working
+directory, use "./" prefix (e.g., \code{ani_name = "./animation.mp4"}. If
+\code{animate = TRUE}, the path and filename are passed to
+\code{\link{make_video}}.}
 
 \item{frame_delete}{Boolean.  Default (\code{frame_delete = TRUE}) delete
 individual image frames after animation is created}
 
-\item{overwrite}{Overwite the animation file if it already exists. Default
-(\code{overwrite = FALSE}) prevents file from being overwritten.}
+\item{overwrite}{Overwite the animation (output video) file if it already
+exists. Default (\code{overwrite = FALSE}) prevents file from being
+overwritten and will result in error if the file exists. Passed to
+\code{\link{make_video}} if \code{animate = TRUE}.}
 
-\item{ffmpeg}{A file path (characer) to FFmpeg executable. This
-argument is only needed if ffmpeg is not added to your system
-path. For Windows machines, path must point to 'ffmpeg.exe',
-located in the bin subfolder within the ffmpeg folder.  For
-example on Windows machines,
-"C:\\Users\\Username\\Documents\\ffmpeg-3.4.1-win64-static\\bin\\ffmpeg.exe").
-On Mac, path must point to 'ffmpeg' within the 'bin'
-subfolder, i.e., "/home/directory/Documents/bin/ffmpeg".}
+\item{ffmpeg}{DEPRECATED. As of glatos v. 0.4.1, \code{make_frames} calls 
+a version of \code{\link{make_video}} that does not use the external 
+program ffmpeg.exe.}
 
 \item{preview}{write first frame only.  Useful for checking output before
 processing large number of frames.  Default \code{preview = FALSE}}
@@ -152,6 +156,20 @@ Create a set of frames (png image files) showing geographic location data
 points in time on top of a Great Lakes shapefile and optionally stitches
 frames into a video animation (mp4 file).
 }
+\details{
+If \code{animate = TRUE} then the animation output file name
+  (\code{ani_name} argument) will be passed to the \code{output} argument in
+  \code{\link{make_video}}. Default values for all other
+  \code{\link{make_video}} arguments will be used. Note that the default
+  frame rate is 24 frames per second (\code{framerate} argument in
+  \code{\link{make_video}}), which will determine the total length (duration)
+  of the output video. For example, a video containing 240 images (frames)
+  will run for 10 seconds at these default parameters. Note that output video
+  duration, dimensions (size), and other ouput video characteristics can be
+  modified by calling \code{\link{make_video}} directly. To do this, set
+  \code{animate = FALSE} and then use \code{\link{make_video}} to create a
+  video from the resulting set of images.
+}
 \note{
 \emph{Customizing plot elements with input argument `\code{...}`}\cr
 The option to allow customization of plot elements with input argument 
@@ -179,13 +197,7 @@ rec_file <- system.file("extdata",
 recs <- read_glatos_receivers(rec_file)
 
 # call with defaults; linear interpolation
- pos1 <- interpolate_path(dtc)
-
-# make sequential frames and animation
-# make sure ffmpeg is installed if argument \code{animate = TRUE}
-# If you have not added path to 'ffmpeg.exe' to your Windows PATH 
-# environment variable then you'll need to do that  
-# or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
+pos1 <- interpolate_path(dtc)
 
 # make frames, preview the first frame
 myDir <- paste0(getwd(),"/frames1")
@@ -198,27 +210,19 @@ make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 # make sequential frames, and animate.  Make animation and frames.
 #change default color of fish markers to red and change marker and size.
 myDir <- paste0(getwd(), "/frames3")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, col="red", pch = 16, cex = 3)
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, 
+            ani_name = "animation3.mp4", col="red", pch = 16, cex = 3)
 
 # make sequential frames, animate, add 5-day tail
 myDir <- paste0(getwd(), "/frames4")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=5)
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, 
+            ani_name = "animation4.mp4", tail_dur=5)
 
 # make animation, remove frames.
 myDir <- paste0(getwd(), "/frames5")
-make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE, frame_delete = TRUE)
+make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, 
+            ani_name = "animation5.mp4", frame_delete = TRUE)
 
-# if ffmpeg is not on system path
-
-# windows
-myDir <- paste0(getwd(), "/frames6")
-make_frames(pos1, recs=recs, out_dir=my_dir, animate=TRUE,
-ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
-
-# mac
-myDir <- paste0(getwd(), "/frames7")
-make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE,
-ffmpeg="/path/to/ffmpeg")
 }
 
 }

@@ -29,24 +29,28 @@
 #'   
 #' @param show_interpolated Boolean. Default (TRUE) include interpolated points.
 #'   
-#' @param animate Boolean. Default (TRUE) creates video animation
+#' @param animate Boolean. Default (TRUE) creates video animation by calling 
+#'   \code{\link{make_video}} with \code{output = ani_name}. Default values 
+#'   are used for all other arguments. See Details below.
 #' 
-#' @param ani_name Name of animation (character string)
-#' 
+#' @param ani_name Character string with name and extension of animation output
+#'   video file. Full path is optional. If file name only (no path), then the
+#'   output video is written to 'out_dir' (same as images). To write to working
+#'   directory, use "./" prefix (e.g., \code{ani_name = "./animation.mp4"}. If
+#'   \code{animate = TRUE}, the path and filename are passed to
+#'   \code{\link{make_video}}.
+#'   
 #' @param frame_delete Boolean.  Default (\code{frame_delete = TRUE}) delete
 #'   individual image frames after animation is created
 #'   
-#' @param overwrite Overwite the animation file if it already exists. Default
-#'   (\code{overwrite = FALSE}) prevents file from being overwritten.
-#'
-#' @param ffmpeg A file path (characer) to FFmpeg executable. This
-#'   argument is only needed if ffmpeg is not added to your system
-#'   path. For Windows machines, path must point to 'ffmpeg.exe',
-#'   located in the bin subfolder within the ffmpeg folder.  For
-#'   example on Windows machines,
-#'   "C:\\Users\\Username\\Documents\\ffmpeg-3.4.1-win64-static\\bin\\ffmpeg.exe").
-#'   On Mac, path must point to 'ffmpeg' within the 'bin'
-#'   subfolder, i.e., "/home/directory/Documents/bin/ffmpeg".  
+#' @param overwrite Overwite the animation (output video) file if it already
+#'   exists. Default (\code{overwrite = FALSE}) prevents file from being
+#'   overwritten and will result in error if the file exists. Passed to
+#'   \code{\link{make_video}} if \code{animate = TRUE}.
+#'   
+#' @param ffmpeg DEPRECATED. As of glatos v. 0.4.1, \code{make_frames} calls 
+#'   a version of \code{\link{make_video}} that does not use the external 
+#'   program ffmpeg.exe.  
 #'
 #' @param tail_dur contains the duration (in same units as
 #'   \code{proc_obj$bin_timestamp}; see \code{\link{interpolate_path}}) of
@@ -125,6 +129,20 @@
 #' }
 #' 
 #' 
+#' @details If \code{animate = TRUE} then the animation output file name
+#'   (\code{ani_name} argument) will be passed to the \code{output} argument in
+#'   \code{\link{make_video}}. Default values for all other
+#'   \code{\link{make_video}} arguments will be used. Note that the default
+#'   frame rate is 24 frames per second (\code{framerate} argument in
+#'   \code{\link{make_video}}), which will determine the total length (duration)
+#'   of the output video. For example, a video containing 240 images (frames)
+#'   will run for 10 seconds at these default parameters. Note that output video
+#'   duration, dimensions (size), and other ouput video characteristics can be
+#'   modified by calling \code{\link{make_video}} directly. To do this, set
+#'   \code{animate = FALSE} and then use \code{\link{make_video}} to create a
+#'   video from the resulting set of images.
+#'    
+#' 
 #' @return Sequentially-numbered png files (one for each frame) and 
 #'   one mp4 file will be written to \code{out_dir}.
 #' 
@@ -158,14 +176,8 @@
 #' recs <- read_glatos_receivers(rec_file)
 #' 
 #' # call with defaults; linear interpolation
-#'  pos1 <- interpolate_path(dtc)
+#' pos1 <- interpolate_path(dtc)
 #'
-#' # make sequential frames and animation
-#' # make sure ffmpeg is installed if argument \code{animate = TRUE}
-#' # If you have not added path to 'ffmpeg.exe' to your Windows PATH 
-#' # environment variable then you'll need to do that  
-#' # or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
-#' 
 #' # make frames, preview the first frame
 #' myDir <- paste0(getwd(),"/frames1")
 #' make_frames(pos1, recs=recs, out_dir=myDir, preview = TRUE)
@@ -177,28 +189,20 @@
 #' # make sequential frames, and animate.  Make animation and frames.
 #' #change default color of fish markers to red and change marker and size.
 #' myDir <- paste0(getwd(), "/frames3")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, col="red", pch = 16, cex = 3)
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, 
+#'             ani_name = "animation3.mp4", col="red", pch = 16, cex = 3)
 #'
 #' # make sequential frames, animate, add 5-day tail
 #' myDir <- paste0(getwd(), "/frames4")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, tail_dur=5)
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, 
+#'             ani_name = "animation4.mp4", tail_dur=5)
 #' 
 #' # make animation, remove frames.
 #' myDir <- paste0(getwd(), "/frames5")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate=TRUE, frame_delete = TRUE)
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, 
+#'             ani_name = "animation5.mp4", frame_delete = TRUE)
 #'
-#' # if ffmpeg is not on system path
-#'
-#' # windows
-#' myDir <- paste0(getwd(), "/frames6")
-#' make_frames(pos1, recs=recs, out_dir=my_dir, animate=TRUE,
-#' ffmpeg="C://path//to//ffmpeg//bin//ffmpeg.exe")
-#'
-#' # mac
-#' myDir <- paste0(getwd(), "/frames7")
-#' make_frames(pos1, recs=recs, outDir=myDir, animate=TRUE,
-#' ffmpeg="/path/to/ffmpeg")
-#' }
+#'}
 #'
 #' @export
 
@@ -210,9 +214,37 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         overwrite = FALSE, ffmpeg = NA, preview = FALSE, 
                         bg_map = NULL, show_progress = TRUE, ...){
   
-  # test ffmpeg and get path
-  if(animate) ffmpeg <- get_ffmpeg_path(ffmpeg)
+  #handle deprecated ffmpeg path argument
+  if(!missing(ffmpeg)) warning("As of glatos v 0.4.1, make_frames() and ",
+                               "make_video() no longer use ",
+                               "the external program ffmpeg. See ?make_video ",
+                               " for details. ",
+                               "Input argument 'ffmpeg' has been ",
+                               "ignored in this call and will be removed ",
+                               "in a future version of make_frames().",
+                               call. = FALSE)
 
+  
+  #expand path to animation output file
+  # - place in same file as images (out_dir) if none specified
+  # - preserve "./" prefix if specified
+  if(animate){
+    #is working directory specifically included by "."?
+    starts_with_dot <- grepl(pattern = "^\\.", ani_name)
+    if(!starts_with_dot) {
+      #includes path to a dir? (separate from out_dir?)
+      contains_dir <- dirname(ani_name) != "."
+      #if no dir, add out_dir (video in same dir as images)
+      if(!contains_dir) ani_name <- file.path(out_dir, ani_name)
+    }
+  }
+  
+  #if overwrite = FALSE, check if animation output file exists
+  if(!overwrite & file.exists(ani_name)) stop("Operation aborted ", 
+                                              "because output video file ", 
+                                              "exists and 'overwrite = ", 
+                                              "FALSE'.", call. = FALSE)
+  
   # Convert proc_obj and recs dataframes into data.table objects
   work_proc_obj <- data.table::as.data.table(proc_obj)
 
@@ -510,21 +542,21 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                 .SDcols = c("bin_timestamp", "longitude", "latitude",
                   "record_type", "f_name", "grp", "row_in")]
   
-  if(preview) { return(paste("preview frames are in \n", out_dir)) } else {
-     if(show_progress) close(pb) }
+  if(preview) { 
+    message("Preview frames written to\n ", out_dir) 
+  } else {
+    
+    if(show_progress) close(pb) 
   
-  if(animate == FALSE & frame_delete == TRUE) message("are you sure?")
-  if(animate == FALSE) message(paste("frames are in\n", out_dir))
-
-  if(animate & frame_delete){
-    make_video(dir = out_dir, pattern = paste0(char, ".png"), output = ani_name,
-               output_dir = out_dir, overwrite = overwrite, ffmpeg = ffmpeg)
-    unlink(file.path(out_dir, unique(work_proc_obj$f_name)))
-    message(paste("video is in\n", out_dir))}
-
-  if(animate & !frame_delete){
-    make_video(dir = out_dir, pattern = paste0(char, ".png"), output = ani_name,
-               output_dir = out_dir, overwrite = overwrite, ffmpeg = ffmpeg)
-    if(show_progress) message(paste("video and frames in \n", out_dir))}
+    if(animate){
+      make_video(input_dir = out_dir, output = ani_name, overwrite = overwrite)
+    }
+    
+    if(frame_delete) {
+        unlink(file.path(out_dir, unique(work_proc_obj$f_name)))
+      } else {
+        message("Frames written to\n ", out_dir)
+      }      
+  }
 }
 
