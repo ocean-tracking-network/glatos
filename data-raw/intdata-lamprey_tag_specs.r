@@ -9,7 +9,7 @@ lamprey_tag_specs <- read_vemco_tag_specs(tag_file, file_format = "vemco_xls")
 #----------------------------------------------------
 
 #add to sysdata.rda
-rda_file <- file.path("..","R/sysdata.rda")
+rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(lamprey_tag_specs, rda_file)
 
 #for exported ('public') data

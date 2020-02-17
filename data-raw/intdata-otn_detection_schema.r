@@ -29,5 +29,5 @@ otn_detection_schema <- read.table(text = "
 
 
 #add to sysdata.rda
-rda_file <- file.path("..", "R/sysdata.rda")
+rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(otn_detection_schema, rda_file)
