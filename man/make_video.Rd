@@ -48,9 +48,6 @@ Ignored if \code{vfilter} is passed via \code{...}.}
 
 \item{...}{optional arguments passed to
 \link[=encoding]{av::av_encode_video}. Such as framerate, vfilter, codec.}
-
-\item{audio}{audio or video input file with sound for the output
-video.}
 }
 \value{
 One video animation will be written disk and the path and file 
@@ -147,10 +144,6 @@ make_video(input_dir=frames, input_ext=".png", output = "animation_7.mp4",
 # slow video by 10 times and scale to 320x240 resolution
 make_video(input_dir=frames, input_ext=".png", output = "animation_8.mp4", 
            vfilter = "scale=320:240, setpts=10*PTS")
-
-# slow video by 10 times and smooth movement
-make_video(input_dir=frames, input_ext=".png", output = "animation_8.mp4", 
- vfilter = "minterpolate='mi_mode=mci:mc_mode=aobmc:vsbmc=1:fps=120', setpts=10*PTS")
 
 }
 
