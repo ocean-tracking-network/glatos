@@ -19,10 +19,6 @@
 ##'   = NULL} (i.e., last frame).
 ##' @param size integer vector with width and height of output video in pixels.
 ##'   Ignored if \code{vfilter} is passed via \code{...}. 
-##' @param verbose Logical (default = FALSE). If true, returns details
-##'   of processing.
-##' @param audio audio or video input file with sound for the output
-##'   video.
 ##' @param overwrite logical, overwrite existing output file? (default = FALSE)
 ##' @param verbose logical, show output from
 ##'   \link[=encoding]{av::av_encode_video}? Default = FALSE.
