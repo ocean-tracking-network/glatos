@@ -117,10 +117,6 @@
 ##' make_video(input_dir=frames, input_ext=".png", output = "animation_8.mp4", 
 ##'            vfilter = "scale=320:240, setpts=10*PTS")
 ##'
-##' # slow video by 10 times and smooth movement
-##' make_video(input_dir=frames, input_ext=".png", output = "animation_8.mp4", 
-##'  vfilter = "minterpolate='mi_mode=mci:mc_mode=aobmc:vsbmc=1:fps=120', setpts=10*PTS")
-##' 
 ##' }
 ##'
 ##' @export
