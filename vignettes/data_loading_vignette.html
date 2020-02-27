@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
 <meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
@@ -67,6 +67,8 @@ overflow: auto;
 margin-left: 2%;
 position: fixed;
 border: 1px solid #ccc;
+webkit-border-radius: 6px;
+moz-border-radius: 6px;
 border-radius: 6px;
 }
 
@@ -94,14 +96,9 @@ font-size: 12px;
 .tocify-subheader .tocify-subheader {
 text-indent: 30px;
 }
+
 .tocify-subheader .tocify-subheader .tocify-subheader {
 text-indent: 40px;
-}
-.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
-text-indent: 50px;
-}
-.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
-text-indent: 60px;
 }
 
 .tocify .tocify-item > a, .tocify .nav-list .nav-header {
@@ -505,13 +502,13 @@ float: none;
 
           item.append($("<a/>", {
 
-            "html": self.html()
+            "text": self.text()
 
           }));
 
         } else {
 
-          item.html(self.html());
+          item.text(self.text());
 
         }
 
@@ -1328,7 +1325,9 @@ h6 {
 </style>
 
 
+</head>
 
+<body>
 
 <style type="text/css">
 .main-container {
@@ -1342,6 +1341,7 @@ code {
 }
 img {
   max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -1358,6 +1358,8 @@ summary {
 </style>
 
 
+
+<div class="container-fluid main-container">
 
 <!-- tabsets -->
 
@@ -1403,7 +1405,6 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
-  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -1416,9 +1417,48 @@ summary {
 }
 </style>
 
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
 <!-- code folding -->
 
 
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <style type="text/css">
 
@@ -1432,12 +1472,6 @@ summary {
 }
 }
 
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
 
 .toc-content {
   padding-left: 30px;
@@ -1473,6 +1507,8 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -1481,16 +1517,6 @@ div.tocify {
 
 
 </style>
-
-
-
-</head>
-
-<body>
-
-
-<div class="container-fluid main-container">
-
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -1509,12 +1535,12 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Data loading methods for the R package glatos</h1>
-<h4 class="date">Updated: 2020-02-26</h4>
+<h4 class="date"><em>Updated: 2019-02-26</em></h4>
 
 </div>
 
 
-<div style="page-break-after: always;"></div>
+
 <div id="overview" class="section level1">
 <h1><span class="header-section-number">1</span> Overview</h1>
 <p>This vignette describes methods for loading data into the R package <em>glatos</em>. Sections are organized by data type (<em>detections</em>, <em>receiver locations</em>, etc), and each section contains examples for:</p>
@@ -1592,7 +1618,7 @@ library(data.table)
 library(lubridate)</code></pre>
 </blockquote>
 <ol start="2" style="list-style-type: decimal">
-<li>The detection data object has been named differently in the box examples than the data.frame version (<code>dtc2</code> for data.table vs. <code>dtc</code> for data.frame) so that both sets of code can be run without the box example code interacting with the base R examples. However, the box examples do require that all base R code that comes before it has also been run.</li>
+<li>The detection data object has been named differently in the box examples than the data.frame version (<code>dtc2</code> for data.table vs. <code>dtc</code> for data.frame) so that both sets of code can be run without the box example code interacting with the base R examples. However, the box examples do require that all base R code that comes before it has also been run.</li>
 </ol>
 </div>
 </div>
@@ -1639,7 +1665,7 @@ walleye_detections &lt;- read_glatos_detections(wal_det_file)</code></pre>
 <p>Let’s view the structure of the resulting data frame (we’ve modified the <code>str</code> default arguments to show only first record in each column).</p>
 <pre class="r"><code># View the structure and data from first row
 str(walleye_detections)
-#&gt; Classes &#39;glatos_detections&#39; and &#39;data.frame&#39;:    7180 obs. of  30 variables:
+#&gt; Classes 'glatos_detections' and 'data.frame':    7180 obs. of  30 variables:
 #&gt; $ animal_id : chr &quot;153&quot; ...
 #&gt; $ detection_timestamp_utc : POSIXct, format: &quot;2012-04-29 01:48:37&quot; ...
 #&gt; $ glatos_array : chr &quot;TTB&quot; ...
@@ -1685,7 +1711,7 @@ blue_shark_detections &lt;- read_otn_detections(shrk_det_file)
 
 # View the structure of blue_shark_detections
 str(blue_shark_detections)
-#&gt; Classes &#39;glatos_detections&#39; and &#39;data.frame&#39;:    3000 obs. of  34 variables:
+#&gt; Classes 'glatos_detections' and 'data.frame':    3000 obs. of  34 variables:
 #&gt; $ collectioncode : chr &quot;NSBS&quot; ...
 #&gt; $ animal_id : chr &quot;NSBS-Hooker&quot; ...
 #&gt; $ scientificname : chr &quot;Prionace glauca&quot; ...
@@ -1718,7 +1744,7 @@ str(blue_shark_detections)
 #&gt; $ datereleasedpublic : logi NA ...
 #&gt; $ local_area : chr &quot;HALIFAX&quot; ...
 #&gt; $ notes : logi NA ...
-#&gt; $ citation : chr &quot;Hebert, D., Barthelotte, J., O&#39;Dor, R., Stokesbury, M., Branton,
+#&gt; $ citation : chr &quot;Hebert, D., Barthelotte, J., O'Dor, R., Stokesbury, M., Branton,
 #&gt;    R. 2009. Ocean Tracking Network Halifax Canada&quot;| __truncated__ ...
 #&gt; $ unqdetecid : chr &quot;HFX-A69-9001-24395-180148&quot; ...</code></pre>
 <p>The resulting object has 34 columns, many of which are not present in the GLATOS standard format. However, some columns have been modified to meet <em>glatos</em> requirements, and thus, the <em>glatos_detections</em> class name has been added.</p>
@@ -1790,7 +1816,7 @@ head(dtc$detection_timestamp_utc, 3)
 </blockquote>
 <blockquote>
 <p><em>:=</em> is an assignment operator for <em>data.table</em> objects that assigns objects by reference. We use it because it is more compact than base R methods.</p>
-<pre class="r"><code>#use &#39;:=&#39; to format timestamps
+<pre class="r"><code>#use ':=' to format timestamps
 dtc2[ , detection_timestamp_utc := as.POSIXct(detection_timestamp_utc,
                                              tz = &quot;UTC&quot;)]</code></pre>
 <p>Note that, like in the previous boxed tip, there are no assignment operators <em>&lt;-</em> or <em>=</em> because <em>dtc</em> is updated by reference.<br />
@@ -1960,7 +1986,7 @@ names(dtc)[match(c(&quot;Sensor Value&quot;, &quot;Sensor Unit&quot;), names(dtc
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 </blockquote>
 <pre class="r"><code>str(dtc)
-#&gt; &#39;data.frame&#39;:    69703 obs. of  19 variables:
+#&gt; 'data.frame':    69703 obs. of  19 variables:
 #&gt; $ receiver_sn : chr &quot;109924&quot; ...
 #&gt; $ detection_timestamp_utc: POSIXct, format: &quot;2011-05-08 05:38:32&quot; ...
 #&gt; $ Receiver : chr &quot;VR2W-109924&quot; ...
@@ -2075,12 +2101,12 @@ nrow(dtc)
 rec_file &lt;- system.file(&quot;extdata&quot;, &quot;sample_receivers.csv&quot;, 
                         package = &quot;glatos&quot;)
 
-#read sample_receivers.csv using &#39;read_glatos_receivers&#39;
+#read sample_receivers.csv using 'read_glatos_receivers'
 rcv &lt;- read_glatos_receivers(rec_file)
 
 #view structure
 str(rcv)
-#&gt; Classes &#39;glatos_receivers&#39; and &#39;data.frame&#39;: 898 obs. of  23 variables:
+#&gt; Classes 'glatos_receivers' and 'data.frame': 898 obs. of  23 variables:
 #&gt; $ station : chr &quot;WHT-009&quot; ...
 #&gt; $ glatos_array : chr &quot;WHT&quot; ...
 #&gt; $ station_no : chr &quot;9&quot; ...
@@ -2114,7 +2140,7 @@ str(rcv)
 wb_file &lt;- system.file(&quot;extdata&quot;, &quot;walleye_workbook.xlsm&quot;, 
                         package = &quot;glatos&quot;)
 
-#read walleye_workbook.xlsm using &#39;read_glatos_workbook&#39;
+#read walleye_workbook.xlsm using 'read_glatos_workbook'
 wb &lt;- read_glatos_workbook(wb_file)
 
 #view structure
@@ -2128,7 +2154,7 @@ rcv2 &lt;- wb[[&quot;receivers&quot;]]
 
 #view structure
 str(rcv2)
-#&gt; Classes &#39;glatos_receivers&#39; and &#39;data.frame&#39;: 1039 obs. of  41 variables:
+#&gt; Classes 'glatos_receivers' and 'data.frame': 1039 obs. of  41 variables:
 #&gt; $ glatos_array : chr &quot;BBI&quot; ...
 #&gt; $ glatos_project : chr &quot;HECWL&quot; ...
 #&gt; $ station_no : chr &quot;5&quot; ...
@@ -2201,7 +2227,7 @@ fsh &lt;- wb[[&quot;animals&quot;]]
 
 #view structure
 str(fsh)
-#&gt; Classes &#39;glatos_animals&#39; and &#39;data.frame&#39;:   543 obs. of  55 variables:
+#&gt; Classes 'glatos_animals' and 'data.frame':   543 obs. of  55 variables:
 #&gt; $ animal_id : chr &quot;120&quot; ...
 #&gt; $ tag_type : chr NA ...
 #&gt; $ tag_manufacturer : chr &quot;VEMCO&quot; ...
@@ -2287,7 +2313,7 @@ str(fsh)
 spec_file &lt;- system.file(&quot;extdata&quot;, &quot;lamprey_tag_specs.xls&quot;, 
                         package = &quot;glatos&quot;)
 
-#read lamprey_tag_specs.xls using &#39;read_vemco_tag_specs&#39;
+#read lamprey_tag_specs.xls using 'read_vemco_tag_specs'
 my_tags &lt;- read_vemco_tag_specs(spec_file, file_format = &quot;vemco_xls&quot;)
 
 #view structure
@@ -2298,7 +2324,7 @@ names(my_tags)
 <p>The result is a <em>list</em> object with two elements containing data about the transmitter specifications (<em>specs</em>) and the operating schedule (<em>schedule</em>). Next, we will view the structure of each element, starting with <em>specs</em>.</p>
 <pre class="r"><code>#view structure of specs element
 str(my_tags$specs)
-#&gt; &#39;data.frame&#39;:    4 obs. of  18 variables:
+#&gt; 'data.frame':    4 obs. of  18 variables:
 #&gt; $ sales_order : chr &quot;11189&quot; ...
 #&gt; $ serial_number : chr &quot;1109712&quot; ...
 #&gt; $ manufacturer : chr &quot;Vemco&quot; ...
@@ -2320,7 +2346,7 @@ str(my_tags$specs)
 <p>The result contains 18 columns of transmitter characteristics that do not change over time.</p>
 <pre class="r"><code>#view structure of schedule element
 str(my_tags$schedule)
-#&gt; &#39;data.frame&#39;:    16 obs. of  11 variables:
+#&gt; 'data.frame':    16 obs. of  11 variables:
 #&gt; $ serial_number : chr &quot;1109712&quot; ...
 #&gt; $ code_space : chr &quot;A69-1601&quot; ...
 #&gt; $ id_code : chr &quot;1362&quot; ...
@@ -2364,49 +2390,6 @@ $(document).ready(function () {
 });
 
 
-</script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
-<!-- code folding -->
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
