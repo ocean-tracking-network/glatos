@@ -1,34 +1,111 @@
+# shortest paths function in igraph
+# need to figure out how to revise function for interpolation use.
+
+.shortestPath <- function(x, origin, goal, output)
+{
+	originCells <- raster::cellFromXY(x, origin)
+	goalCells <- raster::cellFromXY(x, goal)
+	indexOrigin <- originCells 
+	indexGoal <- goalCells 
+  y <- transitionMatrix(x)
+	if(isSymmetric(y)) {
+	  mode <- "undirected"
+	}else{
+	    mode <- "directed"
+	}
+  
+	adjacencyGraph <- igraph::graph.adjacency(y, mode=mode, weighted=TRUE)
+	E(adjacencyGraph)$weight <- 1/E(adjacencyGraph)$weight
+
+	shortestPaths <- get.shortest.paths(adjacencyGraph,
+	                                    indexOrigin, indexGoal)$vpath
+	
+	if(output=="TransitionLayer")
+	{
+		
+		result <- x
+		transitionMatrix(result) <- Matrix::Matrix(0, ncol=ncell(x), nrow=ncell(x))			
+		for(i in 1:length(shortestPaths))
+		{
+			sPVector <- shortestPaths[[i]]
+			adj <- cbind(sPVector[-(length(sPVector))], sPVector[-1])
+			adj <- rbind(adj,cbind(adj[,2], adj[,1]))
+			transitionMatrix(result)[adj] <- 1/length(shortestPaths) + transitionMatrix(result)[adj]
+		}
+	}
+
+	if(output=="TransitionStack")
+	{
+		result <- x
+		transitionMatrix(result) <- Matrix::Matrix(0, ncol=ncell(x), nrow=ncell(x))			
+		for(i in 1:length(shortestPaths))
+		{
+			resultNew <- result
+			sPVector <- shortestPaths[[i]] 
+			adj <- cbind(sPVector[-(length(sPVector))], sPVector[-1])
+			adj <- rbind(adj,cbind(adj[,2], adj[,1]))
+			transitionMatrix(resultNew)[adj] <- 1/length(shortestPaths)
+			result <- raster::stack(result, resultNew)
+		}
+		result <- result[[2:nlayers(result)]]	
+	}
+
+	if(output=="SpatialLines")
+	{
+		linesList <- vector(mode="list", length=length(shortestPaths))
+				
+		for(i in 1:length(shortestPaths))
+		{
+			sPVector <- shortestPaths[[i]]
+			coords <- raster::xyFromCell(x, sPVector)
+			linesList[[i]] <- Line(coords)
+		}
+		
+  # Suggested by Sergei Petrov 
+		LinesObject <- mapply(Lines, 
+		                      slinelist = linesList,  
+		                      ID = as.character(1:length(shortestPaths)),
+		                      SIMPLIFY = FALSE)
+		
+		result <- sp::SpatialLines(LinesObject, proj4string = sp::CRS(projection(x)))
+	}
+
+	return(result)
+
+}
+##################
+
 library(glatos)
 library(sp) 
 library(raster)
 
-## # get example walleye detection data
-##  det_file <- system.file("extdata", "walleye_detections.csv",
-##                          package = "glatos")
-##  det <- read_glatos_detections(det_file)
+# get example walleye detection data
+ det_file <- system.file("extdata", "walleye_detections.csv",
+                         package = "glatos")
+ det <- read_glatos_detections(det_file)
 
-## # extract one fish and subset date
-## det <- det[det$animal_id == 22 & 
-##             det$detection_timestamp_utc > as.POSIXct("2012-04-08") &
-##             det$detection_timestamp_utc < as.POSIXct("2013-04-15") , ]
+# extract one fish and subset date
+det <- det[det$animal_id == 22 & 
+            det$detection_timestamp_utc > as.POSIXct("2012-04-08") &
+            det$detection_timestamp_utc < as.POSIXct("2013-04-15") , ]
  
-##  # get polygon of the Great Lakes 
-##  data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+ # get polygon of the Great Lakes 
+ data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
 
-## # crop polygon to western Lake Erie
-##  maumee <-  crop(greatLakesPoly, extent(-83.7, -82.5, 41.3, 42.4))
-## plot(maumee, col = "grey")
-##  points(deploy_lat ~ deploy_long, data = det, pch = 20, col = "red", 
-##    xlim = c(-83.7, -80))
+# crop polygon to western Lake Erie
+ maumee <-  crop(greatLakesPoly, extent(-83.7, -82.5, 41.3, 42.4))
+plot(maumee, col = "grey")
+ points(deploy_lat ~ deploy_long, data = det, pch = 20, col = "red", 
+   xlim = c(-83.7, -80))
  
-##  # not high enough resolution- bump up resolution
-##  tran1 <- make_transition(maumee, res = c(0.001, 0.001))
+ # not high enough resolution- bump up resolution
+ tran1 <- make_transition3(maumee, res = c(0.001, 0.001))
  
 ## ## pos2 <- interpolate_path(det, trans = tran1$transition, out_class = "data.table")
 
 det = dtc
-trans <- tran$transition
-  start_time = as.POSIXct("2018-08-01 00:00:00", tz = "UTC")
+trans <- tran1$transition
+  start_time = min(det$detection_timestamp_utc)
   int_time_stamp = 86400
   lnl_thresh= 0.9
   out_class= NULL
@@ -66,6 +143,10 @@ linear = FALSE
             call. = FALSE)
     }
 
+     # error if only fish with one observation.
+    if (nrow(det) == 0) stop("must have two observations to interpolate")
+
+
   # make copy of detections for function
   dtc <- data.table::as.data.table(det)
     
@@ -91,9 +172,6 @@ linear = FALSE
   # remove any fish with only one detection
   dtc <- dtc[num_rows != 1]
 
-  # error if only fish with one observation.
-    if (nrow(dtc) == 0) stop("must have two observations to interpolate")
-
   # extract and determine start time
   t_seq <- seq(start_time, max(dtc$detection_timestamp_utc),
                int_time_stamp)
@@ -106,28 +184,28 @@ linear = FALSE
              on = c("bin", "animal_id")]
 
   # if only need to do linear interpolation:
-  if(linear){
-    dtc[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc), 
-                                                bin_stamp := bin]
+ ##  if(linear){
+ ##    dtc[, bin_stamp := detection_timestamp_utc][is.na(detection_timestamp_utc), 
+ ##                                                bin_stamp := bin]
 
-    dtc[, i_lat := approx(detection_timestamp_utc, deploy_lat,
-                          xout = bin_stamp, ties = "ordered")$y, by = animal_id]
-    dtc[, i_lon := approx(detection_timestamp_utc, deploy_long,
-                          xout = bin_stamp, ties = "ordered")$y, by = animal_id]
+ ##    dtc[, i_lat := approx(detection_timestamp_utc, deploy_lat,
+ ##                          xout = bin_stamp, ties = "ordered")$y, by = animal_id]
+ ##    dtc[, i_lon := approx(detection_timestamp_utc, deploy_long,
+ ##                          xout = bin_stamp, ties = "ordered")$y, by = animal_id]
 
-    dtc[is.na(deploy_long), record_type := "interpolated"]
-    dtc <- dtc[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")]
-    det <- det[num_rows == 1, c("animal_id", "bin_stamp", "i_lat", "i_lon",
-                                "record_type")]
-    out <- data.table::rbindlist(list(dtc, det), use.names = TRUE)
-    data.table::setkey(out, animal_id, bin_stamp)
-    out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
-    out <- na.omit(out, cols = "i_lat")
-    data.table::setnames(out, c("animal_id", "bin_timestamp", "latitude", 
-                                "longitude", "record_type"))
-    out <- unique(out)
-    out <- data.table::setorder(out, animal_id, bin_timestamp, -record_type)
- }
+ ##    dtc[is.na(deploy_long), record_type := "interpolated"]
+ ##    dtc <- dtc[, c("animal_id", "bin_stamp", "i_lat", "i_lon", "record_type")]
+ ##    det <- det[num_rows == 1, c("animal_id", "bin_stamp", "i_lat", "i_lon",
+ ##                                "record_type")]
+ ##    out <- data.table::rbindlist(list(dtc, det), use.names = TRUE)
+ ##    data.table::setkey(out, animal_id, bin_stamp)
+ ##    out[, bin_stamp := t_seq[findInterval(bin_stamp, t_seq)] ]
+ ##    out <- na.omit(out, cols = "i_lat")
+ ##    data.table::setnames(out, c("animal_id", "bin_timestamp", "latitude", 
+ ##                                "longitude", "record_type"))
+ ##    out <- unique(out)
+ ##    out <- data.table::setorder(out, animal_id, bin_timestamp, -record_type)
+ ## }
 
   # routine for nonlinear interpolation
 
@@ -217,6 +295,15 @@ linear = FALSE
                 .SD[1, c("t_lon", "t_lat")]), output = "SpatialLines"))},
       by = 1:nrow(lookup)]
 message("\nFinalizing results.")
+
+
+# explore another way to work with output. 
+one <- gdistance::shortestPath(trans, as.matrix(lookup[1, c("deploy_long", "deploy_lat")]), as.matrix(lookup[1, c("t_lon", "t_lat")]), output = "SpatialLines")
+
+st_cast(st_as_sf(one), "POINT")
+
+
+
 
 lookup[, grp := 1:.N]
 
