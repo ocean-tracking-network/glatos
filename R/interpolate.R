@@ -1,83 +1,84 @@
-# shortest paths function in igraph
-# need to figure out how to revise function for interpolation use.
+## # shortest paths function in igraph
+## # need to figure out how to revise function for interpolation use.
 
-.shortestPath <- function(x, origin, goal, output)
-{
-	originCells <- raster::cellFromXY(x, origin)
-	goalCells <- raster::cellFromXY(x, goal)
-	indexOrigin <- originCells 
-	indexGoal <- goalCells 
-  y <- transitionMatrix(x)
-	if(isSymmetric(y)) {
-	  mode <- "undirected"
-	}else{
-	    mode <- "directed"
-	}
+## .shortestPath <- function(x, origin, goal, output)
+## {
+## 	originCells <- raster::cellFromXY(x, origin)
+## 	goalCells <- raster::cellFromXY(x, goal)
+## 	indexOrigin <- originCells 
+## 	indexGoal <- goalCells 
+##   y <- transitionMatrix(x)
+## 	if(isSymmetric(y)) {
+## 	  mode <- "undirected"
+## 	}else{
+## 	    mode <- "directed"
+## 	}
   
-	adjacencyGraph <- igraph::graph.adjacency(y, mode=mode, weighted=TRUE)
-	E(adjacencyGraph)$weight <- 1/E(adjacencyGraph)$weight
+## 	adjacencyGraph <- igraph::graph.adjacency(y, mode=mode, weighted=TRUE)
+## 	E(adjacencyGraph)$weight <- 1/E(adjacencyGraph)$weight
 
-	shortestPaths <- get.shortest.paths(adjacencyGraph,
-	                                    indexOrigin, indexGoal)$vpath
+## 	shortestPaths <- get.shortest.paths(adjacencyGraph,
+## 	                                    indexOrigin, indexGoal)$vpath
 	
-	if(output=="TransitionLayer")
-	{
+## 	if(output=="TransitionLayer")
+## 	{
 		
-		result <- x
-		transitionMatrix(result) <- Matrix::Matrix(0, ncol=ncell(x), nrow=ncell(x))			
-		for(i in 1:length(shortestPaths))
-		{
-			sPVector <- shortestPaths[[i]]
-			adj <- cbind(sPVector[-(length(sPVector))], sPVector[-1])
-			adj <- rbind(adj,cbind(adj[,2], adj[,1]))
-			transitionMatrix(result)[adj] <- 1/length(shortestPaths) + transitionMatrix(result)[adj]
-		}
-	}
+## 		result <- x
+## 		transitionMatrix(result) <- Matrix::Matrix(0, ncol=ncell(x), nrow=ncell(x))			
+## 		for(i in 1:length(shortestPaths))
+## 		{
+## 			sPVector <- shortestPaths[[i]]
+## 			adj <- cbind(sPVector[-(length(sPVector))], sPVector[-1])
+## 			adj <- rbind(adj,cbind(adj[,2], adj[,1]))
+## 			transitionMatrix(result)[adj] <- 1/length(shortestPaths) + transitionMatrix(result)[adj]
+## 		}
+## 	}
 
-	if(output=="TransitionStack")
-	{
-		result <- x
-		transitionMatrix(result) <- Matrix::Matrix(0, ncol=ncell(x), nrow=ncell(x))			
-		for(i in 1:length(shortestPaths))
-		{
-			resultNew <- result
-			sPVector <- shortestPaths[[i]] 
-			adj <- cbind(sPVector[-(length(sPVector))], sPVector[-1])
-			adj <- rbind(adj,cbind(adj[,2], adj[,1]))
-			transitionMatrix(resultNew)[adj] <- 1/length(shortestPaths)
-			result <- raster::stack(result, resultNew)
-		}
-		result <- result[[2:nlayers(result)]]	
-	}
+## 	if(output=="TransitionStack")
+## 	{
+## 		result <- x
+## 		transitionMatrix(result) <- Matrix::Matrix(0, ncol=ncell(x), nrow=ncell(x))			
+## 		for(i in 1:length(shortestPaths))
+## 		{
+## 			resultNew <- result
+## 			sPVector <- shortestPaths[[i]] 
+## 			adj <- cbind(sPVector[-(length(sPVector))], sPVector[-1])
+## 			adj <- rbind(adj,cbind(adj[,2], adj[,1]))
+## 			transitionMatrix(resultNew)[adj] <- 1/length(shortestPaths)
+## 			result <- raster::stack(result, resultNew)
+## 		}
+## 		result <- result[[2:nlayers(result)]]	
+## 	}
 
-	if(output=="SpatialLines")
-	{
-		linesList <- vector(mode="list", length=length(shortestPaths))
+## 	if(output=="SpatialLines")
+## 	{
+## 		linesList <- vector(mode="list", length=length(shortestPaths))
 				
-		for(i in 1:length(shortestPaths))
-		{
-			sPVector <- shortestPaths[[i]]
-			coords <- raster::xyFromCell(x, sPVector)
-			linesList[[i]] <- Line(coords)
-		}
+## 		for(i in 1:length(shortestPaths))
+## 		{
+## 			sPVector <- shortestPaths[[i]]
+## 			coords <- raster::xyFromCell(x, sPVector)
+## 			linesList[[i]] <- Line(coords)
+## 		}
 		
-  # Suggested by Sergei Petrov 
-		LinesObject <- mapply(Lines, 
-		                      slinelist = linesList,  
-		                      ID = as.character(1:length(shortestPaths)),
-		                      SIMPLIFY = FALSE)
+##   # Suggested by Sergei Petrov 
+## 		LinesObject <- mapply(Lines, 
+## 		                      slinelist = linesList,  
+## 		                      ID = as.character(1:length(shortestPaths)),
+## 		                      SIMPLIFY = FALSE)
 		
-		result <- sp::SpatialLines(LinesObject, proj4string = sp::CRS(projection(x)))
-	}
+## 		result <- sp::SpatialLines(LinesObject, proj4string = sp::CRS(projection(x)))
+## 	}
 
-	return(result)
+## 	return(result)
 
-}
-##################
+## }
+## ##################
 
 library(glatos)
 library(sp) 
 library(raster)
+library(data.table)
 
 # get example walleye detection data
  det_file <- system.file("extdata", "walleye_detections.csv",
@@ -103,7 +104,8 @@ plot(maumee, col = "grey")
  
 ## ## pos2 <- interpolate_path(det, trans = tran1$transition, out_class = "data.table")
 
-det = dtc
+dtc <- det
+#det = dtc
 trans <- tran1$transition
   start_time = min(det$detection_timestamp_utc)
   int_time_stamp = 86400
@@ -281,44 +283,31 @@ linear = FALSE
     # nln interpolation
     # create lookup table
     lookup <- unique(nln_small[, .(deploy_lat, deploy_long, t_lat, t_lon)]) 
-    
-    # calculate non-linear interpolation for all unique movements in lookup
-    message("\nStarting non-linear interpolation... (step 2)")
-    grpn <- nrow(lookup)
-    if (show_progress)
-      pb <- txtProgressBar(min = 0, max = grpn, style = 3)
-    lookup[, coord := {
-      if(show_progress)
-        setTxtProgressBar(pb, value = .GRP)
-         sp::coordinates(gdistance::shortestPath(trans, as.matrix(
-              .SD[1, c("deploy_long", "deploy_lat")]), as.matrix(
-                .SD[1, c("t_lon", "t_lat")]), output = "SpatialLines"))},
-      by = 1:nrow(lookup)]
-message("\nFinalizing results.")
 
+# find start and end points for all non-linear interpolation
+lookup[, start_cell := cellFromXY(trans, as.matrix(lookup[, c("deploy_long", "deploy_lat")]))]
+lookup[, end_cell := cellFromXY(trans, as.matrix(lookup[, c("t_lon", "t_lat")]))]
 
-# explore another way to work with output. 
-one <- gdistance::shortestPath(trans, as.matrix(lookup[1, c("deploy_long", "deploy_lat")]), as.matrix(lookup[1, c("t_lon", "t_lat")]), output = "SpatialLines")
+# create graph of movements from transition layer
+graph <- igraph::graph.adjacency(gdistance::transitionMatrix(trans), mode = "undirected", weighted = TRUE)
+E(graph)$weight <- 1/E(graph)$weight
 
-st_cast(st_as_sf(one), "POINT")
+# add row number to lookup table
+lookup[, num := 1:nrow(lookup)]
 
+# calculate interpolated positions (raster cell number)
+foo <- apply(lookup, MARGIN = 1, FUN = function(x){unlist(shortest_paths(graph, x["start_cell"], x[ "end_cell"], output = "vpath")$vpath)})
 
+# extract x and y coordinates from raster
+bar <- lapply(foo, FUN = function(x){data.table(xyFromCell(trans, x))})
 
+# combine into a single object
+out <- rbindlist(bar, idcol = "num")
 
-lookup[, grp := 1:.N]
+# add interpolated points to lookup table
+lookup <- lookup[out, on = "num"]
 
-    # extract interpolated points from coordinate lists...
-    res <- lookup[, .(nln_longitude = lookup$coord[[.I]][, 1],
-                      nln_latitude = lookup$coord[[.I]][, 2]), by = grp]
-    res[, seq_num := 1:.N, by = .(grp)]
-    lookup[, coord := NULL]
-    lookup <- lookup[res, on = .(grp)] 
-
-    # added first/last rows, number sequence for groups
-    lookup[lookup[, .I[1], by = grp]$V1, nln_longitude := deploy_long]
-    lookup[lookup[, .I[.N], by = grp]$V1, nln_longitude := t_lon]
-    lookup[lookup[, .I[1], by = grp]$V1, nln_latitude := deploy_lat]
-    lookup[lookup[, .I[.N], by = grp]$V1, nln_latitude := t_lat]
+# to here....
     
     # lookup interpolated values for original dataset
     data.table::setkey(lookup, deploy_lat, deploy_long, t_lat, t_lon)
@@ -326,11 +315,6 @@ lookup[, grp := 1:.N]
 
 nln_small <- lookup[nln_small, allow.cartesian = TRUE ]
     data.table::setkey(nln_small, i.start, seq_count)
-
-
-
-
-
 
 
     # add timeseries for interpolating nln movements
