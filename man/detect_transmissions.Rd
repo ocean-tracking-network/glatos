@@ -4,8 +4,14 @@
 \alias{detect_transmissions}
 \title{Simulate detection of transmitter signals in a receiver network}
 \usage{
-detect_transmissions(trnsLoc = NA, recLoc = NA, detRngFun = NA,
-  EPSG = 3175, sp_out = TRUE, show_progress = TRUE)
+detect_transmissions(
+  trnsLoc = NA,
+  recLoc = NA,
+  detRngFun = NA,
+  EPSG = 3175,
+  sp_out = TRUE,
+  show_progress = TRUE
+)
 }
 \arguments{
 \item{trnsLoc}{A three-column data frame with locations (numeric columns 

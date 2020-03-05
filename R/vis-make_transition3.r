@@ -21,7 +21,7 @@
 ##' @details \code{make_transition} uses \link[fasterize]{fasterize}
 ##'   to convert a polygon shapefile into a raster layer and
 ##'   geo-corrected transition layer \link{interpolate_path}.  Raster
-##'   cell values on land equal 1 cells in water equal 0. Output is a
+##'   cell values on land equal 0 and cells in water equal 1. Output is a
 ##'   two-object list containing the raster layer and transition
 ##'   layer.  Both objects have the same extents and geographic
 ##'   projection as input shapefile.

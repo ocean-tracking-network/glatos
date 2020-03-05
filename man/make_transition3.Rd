@@ -4,8 +4,7 @@
 \alias{make_transition3}
 \title{Create transition layer from polygon shapefile}
 \usage{
-make_transition3(poly, res = c(0.1, 0.1), receiver_points = NULL,
-  epsg = 3175)
+make_transition3(poly, res = c(0.1, 0.1), receiver_points = NULL, epsg = 3175)
 }
 \arguments{
 \item{poly}{A spatial polygon object of class
@@ -41,7 +40,7 @@ Create transition layer for \link{interpolate_path} from polygon shapefile.
 \code{make_transition} uses \link[fasterize]{fasterize}
   to convert a polygon shapefile into a raster layer and
   geo-corrected transition layer \link{interpolate_path}.  Raster
-  cell values on land equal 1 cells in water equal 0. Output is a
+  cell values on land equal 0 and cells in water equal 1. Output is a
   two-object list containing the raster layer and transition
   layer.  Both objects have the same extents and geographic
   projection as input shapefile.

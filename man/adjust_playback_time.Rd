@@ -4,9 +4,15 @@
 \alias{adjust_playback_time}
 \title{Modify playback time of video}
 \usage{
-adjust_playback_time(scale_factor = 1, input, output_dir = getwd(),
-  output = "new.mp4", overwrite = FALSE, ffmpeg = NA,
-  diagnostic_mode = FALSE)
+adjust_playback_time(
+  scale_factor = 1,
+  input,
+  output_dir = getwd(),
+  output = "new.mp4",
+  overwrite = FALSE,
+  ffmpeg = NA,
+  diagnostic_mode = FALSE
+)
 }
 \arguments{
 \item{scale_factor}{multiplicative factor changes duration of

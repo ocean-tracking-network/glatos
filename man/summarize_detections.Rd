@@ -4,8 +4,13 @@
 \alias{summarize_detections}
 \title{Summarize detections by animal, location, or both}
 \usage{
-summarize_detections(det, location_col = "glatos_array",
-  receiver_locs = NULL, animals = NULL, summ_type = "animal")
+summarize_detections(
+  det,
+  location_col = "glatos_array",
+  receiver_locs = NULL,
+  animals = NULL,
+  summ_type = "animal"
+)
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by

@@ -4,12 +4,24 @@
 \alias{make_frames}
 \title{Create an animated video of spatiotemporal path data}
 \usage{
-make_frames(proc_obj, recs = NULL, out_dir = getwd(),
-  background_ylim = c(41.3, 49), background_xlim = c(-92.45, -75.87),
-  show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
-  ani_name = "animation.mp4", frame_delete = FALSE,
-  overwrite = FALSE, ffmpeg = NA, preview = FALSE, bg_map = NULL,
-  show_progress = TRUE, ...)
+make_frames(
+  proc_obj,
+  recs = NULL,
+  out_dir = getwd(),
+  background_ylim = c(41.3, 49),
+  background_xlim = c(-92.45, -75.87),
+  show_interpolated = TRUE,
+  tail_dur = 0,
+  animate = TRUE,
+  ani_name = "animation.mp4",
+  frame_delete = FALSE,
+  overwrite = FALSE,
+  ffmpeg = NA,
+  preview = FALSE,
+  bg_map = NULL,
+  show_progress = TRUE,
+  ...
+)
 }
 \arguments{
 \item{proc_obj}{A data frame created by
@@ -170,7 +182,7 @@ recs <- read_glatos_receivers(rec_file)
  pos1 <- interpolate_path(dtc)
 
 # make sequential frames and animation
-# make sure ffmpeg is installed if argument \\code{animate = TRUE}
+# make sure ffmpeg is installed if argument \code{animate = TRUE}
 # If you have not added path to 'ffmpeg.exe' to your Windows PATH 
 # environment variable then you'll need to do that  
 # or set path to 'ffmpeg.exe' using the 'ffmpeg' input argument
