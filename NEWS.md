@@ -1,6 +1,19 @@
 
 ----
 
+# glatos 0.4.2
+
+#### 2020-03-12
+   
+### Minor changes
+
+- make_transition
+    - added new argument 'invert' for cases where input polygon represents land
+	- fixes issue #101
+   
+
+----
+
 # glatos 0.4.1
 
 #### 2020-02-18
