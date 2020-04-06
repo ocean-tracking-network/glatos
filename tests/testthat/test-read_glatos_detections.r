@@ -37,10 +37,42 @@ write.csv(lamprey_detections2, temp_file, row.names = FALSE)
 
 ld2 <- read_glatos_detections(temp_file)
 
-
 test_that("lamprey_detections with mixed columns gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(ld2, lamprey_detections2)
 })
 
+
+#test for some missing animal_id but not all
+
+#write data frame with some missing animal_id
+temp_file3 <- tempfile()
+lamprey_detections3 <- ld
+#make two animal_id missing
+lamprey_detections3$animal_id[lamprey_detections3$animal_id %in% 
+                                c("A69-1601-1363", "A69-9002-7189")] <- NA
+write.csv(lamprey_detections3, temp_file3, row.names = FALSE)
+
+ld3 <- suppressWarnings(read_glatos_detections(temp_file3))
+
+test_that("lamprey_detections with some missing anima_id expected result", {
+  # Check if expected and actual results are the same
+  expect_equal(ld3, ld)
+})
+
+
+#test that warning is correct when animal_id is missing
+ld3_w <- tryCatch(read_glatos_detections(temp_file3), 
+    warning = function(w) return(w$message)
+  )
+
+w_should_be <- paste("Some or all values of required column 'animal_id' were",
+ "missing so they were created from 'transmitter_codespace' and",
+ "'transmitter_id'.)")
+
+test_that("lamprey_detections with some missing anima_id expected result", {
+  # Check if expected and actual results are the same
+  expect_equal(ld3_w, w_should_be)
+})
+ 
 

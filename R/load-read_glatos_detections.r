@@ -84,19 +84,19 @@ read_glatos_detections <- function(det_file, version = NULL) {
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
     options(lubridate.fasttime = TRUE)
     for (j in timestamp_cols) data.table::set(dtc, 
-                                  j = glatos_detection_schema[["v1.3"]]$name[j], 
+                                  j = glatos:::glatos_detection_schema[["v1.3"]]$name[j], 
                       value = lubridate::parse_date_time(
-                           dtc[[glatos_detection_schema[["v1.3"]]$name[j]]], 
+                           dtc[[glatos:::glatos_detection_schema[["v1.3"]]$name[j]]], 
                            orders="ymd HMS",
                                 tz = "UTC"))
     #coerce dates to date
     for (j in date_cols) {
-      data.table::set(dtc, j = glatos_detection_schema[["v1.3"]]$name[j], 
-        value = ifelse(dtc[[glatos_detection_schema[["v1.3"]]$name[j]]] == "", 
+      data.table::set(dtc, j = glatos:::glatos_detection_schema[["v1.3"]]$name[j], 
+        value = ifelse(dtc[[glatos:::glatos_detection_schema[["v1.3"]]$name[j]]] == "", 
                        NA, 
-                       dtc[[glatos_detection_schema[["v1.3"]]$name[j]]]))
-      data.table::set(dtc, j = glatos_detection_schema[["v1.3"]]$name[j], 
-        value = as.Date(dtc[[glatos_detection_schema[["v1.3"]]$name[j]]]))
+                       dtc[[glatos:::glatos_detection_schema[["v1.3"]]$name[j]]]))
+      data.table::set(dtc, j = glatos:::glatos_detection_schema[["v1.3"]]$name[j], 
+        value = as.Date(dtc[[glatos:::glatos_detection_schema[["v1.3"]]$name[j]]]))
     }
   }
   #-end v1.3----------------------------------------------------------------
@@ -105,7 +105,7 @@ read_glatos_detections <- function(det_file, version = NULL) {
   anid_na <- is.na(dtc$animal_id)
   if(any(anid_na)){
     dtc$animal_id[anid_na] <- with(dtc, 
-      paste0(transmitter_codespace, "-", transmitter_id))
+      paste0(transmitter_codespace[anid_na], "-", transmitter_id[anid_na]))
     warning(paste0("Some or all values of required column 'animal_id' were ", 
       "missing so they were created from 'transmitter_codespace' and ",
       "'transmitter_id'.)"))
