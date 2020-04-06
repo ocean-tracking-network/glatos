@@ -3,14 +3,19 @@
 
 # glatos 0.4.2
 
-#### 2020-03-12
+#### 2020-04-06
    
 ### Minor changes
 
 - make_transition
     - added new argument 'invert' for cases where input polygon represents land
 	- fixes issue #101
-   
+
+### Bug fixes
+
+- read_glatos_detections 
+    - fix bug where animal_id was not created correctly if some but not all were missing
+    - fixes issue #106
 
 ----
 
