@@ -37,103 +37,61 @@
 #' @export
 
 convert_glatos_to_att <- function(detectionObj, receiverObj) {
+  transmitters <- if (all(grepl("-", detectionObj$transmitter_id,
+        fixed = TRUE))) {
+    detectionObj$transmitter_id
+  } else {
+    concat_list_strings(detectionObj$transmitter_codespace,
+            detectionObj$transmitter_id)
+  }
+  tagMetadata <- unique(tibble::tibble(Tag.ID = detectionObj$animal_id,
+        Transmitter = as.factor(transmitters), Common.Name = as.factor(detectionObj$common_name_e)))
+  tagMetadata <- unique(tagMetadata)
+  nameLookup <- tibble::tibble(Common.Name = unique(tagMetadata$Common.Name))
+  nameLookup <- dplyr::mutate(nameLookup, Sci.Name = as.factor(unlist(purrr::map(nameLookup$Common.Name,
+        query_worms_common))))
+  tagMetadata <- dplyr::left_join(tagMetadata, nameLookup,
+        by = "Common.Name")
+  releaseData <- tibble::tibble(Tag.ID = detectionObj$animal_id,
+        Tag.Project = as.factor(detectionObj$glatos_project_transmitter),
+        Release.Latitude = detectionObj$release_latitude, Release.Longitude = detectionObj$release_longitude,
+        Release.Date = as.Date(detectionObj$utc_release_date_time),
+        Sex = as.factor(detectionObj$sex))
+  releaseData <- dplyr::mutate(releaseData, Sex = as.factor(purrr::map(Sex,
+        convert_sex)), Tag.Life = as.integer(NA), Tag.Status = as.factor(NA),
+        Bio = as.factor(NA))
+  tagMetadata <- dplyr::left_join(tagMetadata, releaseData,
+        by = "Tag.ID")
+  detectionObj <- detectionObj %>% dplyr::mutate(dummy = TRUE) %>%
+        dplyr::left_join(dplyr::select(receiverObj %>% dplyr::mutate(dummy = TRUE),
+            glatos_array, station_no, deploy_lat, deploy_long,
+            station, dummy, ins_model_no, ins_serial_no, deploy_date_time,
+            recover_date_time), by = c("deploy_lat", "deploy_long",
+            "station", "dummy")) %>% dplyr::filter(detection_timestamp_utc >=
+        deploy_date_time, detection_timestamp_utc <= recover_date_time) %>%
+        dplyr::mutate(ReceiverFull = concat_list_strings(ins_model_no,
+            ins_serial_no)) %>% dplyr::select(-dummy)
 
-  transmitters <- 
-    if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))) { 
-        detectionObj$transmitter_id 
-    } else { 
-      concat_list_strings(detectionObj$transmitter_codespace, 
-                          detectionObj$transmitter_id)
-    }
+  detections <- unique(tibble::tibble(Date.Time = detectionObj$detection_timestamp_utc,
+        Transmitter = as.factor(detectionObj$transmitter_id),
+        Station.Name = as.factor(detectionObj$station), Receiver = as.factor(detectionObj$ReceiverFull),
+        Latitude = detectionObj$deploy_lat, Longitude = detectionObj$deploy_long,
+        Sensor.Value = as.integer(detectionObj$sensor_value),
+        Sensor.Unit = as.factor(detectionObj$sensor_unit)))
 
-  tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
-    Tag.ID = as.integer(detectionObj$animal_id),
-    Transmitter = as.factor(transmitters),
-    Common.Name = as.factor(detectionObj$common_name_e)
-  ))
-  
-  tagMetadata <- unique(tagMetadata) # Cut out dupes
-  
-  nameLookup <- tibble::tibble( # Get all the unique common names
-    Common.Name = unique(tagMetadata$Common.Name)
-  )
-  nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
-    Sci.Name = as.factor(purrr::map(nameLookup$Common.Name, query_worms_common))
-  )
-  # Apply sci names to frame
-  tagMetadata <- dplyr::left_join(tagMetadata, nameLookup, by = "Common.Name") 
-
-
-  releaseData <- tibble::tibble( # Get the rest from detectionObj
-    Tag.ID = as.integer(detectionObj$animal_id), 
-    Tag.Project = as.factor(detectionObj$glatos_project_transmitter), 
-    Release.Latitude = detectionObj$release_latitude, 
-    Release.Longitude = detectionObj$release_longitude, 
-    Release.Date = as.Date(detectionObj$utc_release_date_time),
-    Sex = as.factor(detectionObj$sex)
-  )
-
-  releaseData <- dplyr::mutate(releaseData, 
-    # Convert sex text and null missing columns
-    Sex = as.factor(purrr::map(Sex, convert_sex)),
-    Tag.Life = as.integer(NA),
-    Tag.Status = as.factor(NA),
-    Bio = as.factor(NA)
-  ) 
-  # Final version of Tag.Metadata
-  tagMetadata <- dplyr::left_join(tagMetadata, releaseData, by = "Tag.ID") 
-
-  detectionObj <- detectionObj %>%
-    dplyr::mutate(dummy = TRUE) %>%
-    dplyr::left_join(dplyr::select(receiverObj %>% 
-                     dplyr::mutate(dummy=TRUE), 
-                      glatos_array, station_no, deploy_lat, deploy_long, 
-                      station, dummy, ins_model_no, ins_serial_no, 
-                      deploy_date_time, recover_date_time),
-                      by = c("glatos_array", "station_no", "deploy_lat", 
-                             "deploy_long", "station", "dummy")) %>%
-    dplyr::filter(detection_timestamp_utc >= deploy_date_time, 
-                  detection_timestamp_utc <= recover_date_time) %>%
-    dplyr::mutate(ReceiverFull = concat_list_strings(ins_model_no, 
-                                                     ins_serial_no)) %>%
-    dplyr::select(-dummy)
-
-  detections <- unique(tibble::tibble(
-    Date.Time = detectionObj$detection_timestamp_utc,
-    Transmitter = as.factor(
-      concat_list_strings(detectionObj$transmitter_codespace, 
-                          detectionObj$transmitter_id)),
-    Station.Name = as.factor(detectionObj$station),
-    Receiver = as.factor(detectionObj$ReceiverFull),
-    Latitude = detectionObj$deploy_lat,
-    Longitude = detectionObj$deploy_long,
-    Sensor.Value = as.integer(detectionObj$sensor_value),
-    Sensor.Unit = as.factor(detectionObj$sensor_unit)
-  ))
-
-stations <- unique(tibble::tibble(
-    Station.Name = as.factor(receiverObj$station),
-    Receiver = as.factor(concat_list_strings(receiverObj$ins_model_no, 
-                         receiverObj$ins_serial_no)),
-    Installation = as.factor(NA),
-    Receiver.Project = as.factor(receiverObj$glatos_project),
-    Deployment.Date = receiverObj$deploy_date_time,
-    Recovery.Date = receiverObj$recover_date_time,
-    Station.Latitude = receiverObj$deploy_lat,
-    Station.Longitude = receiverObj$deploy_long,
-    Receiver.Status = as.factor(NA)
-  ))
-  
-  att_obj <- list(
-    Tag.Detections = detections,
-    Tag.Metadata = unique(tagMetadata),
-    Station.Information = unique(stations)
-  )
-  
+  stations <- unique(tibble::tibble(Station.Name = as.factor(receiverObj$station),
+        Receiver = as.factor(concat_list_strings(receiverObj$ins_model_no,
+            receiverObj$ins_serial_no)), Installation = as.factor(NA),
+        Receiver.Project = as.factor(receiverObj$glatos_project),
+        Deployment.Date = receiverObj$deploy_date_time, Recovery.Date = receiverObj$recover_date_time,
+        Station.Latitude = receiverObj$deploy_lat, Station.Longitude = receiverObj$deploy_long,
+        Receiver.Status = as.factor(NA)))
+  att_obj <- list(Tag.Detections = detections, Tag.Metadata = unique(tagMetadata),
+        Station.Information = unique(stations))
   class(att_obj) <- "ATT"
-
   return(att_obj)
 }
+
 
 
 # Function for taking 2 lists of string of the same length and concatenating the
