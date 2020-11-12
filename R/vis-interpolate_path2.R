@@ -224,7 +224,7 @@ interpolate_path2 <- function(det, trans = NULL, start_time = NULL,
 
   # pull out columns needed
   det <- det[detection_timestamp_utc >= start_time,
-             c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long")]
+             c("animal_id", "detection_timestamp_utc", "deploy_lat", "deploy_long", "glatos_array", "station_no")]
 
   # order detections
   data.table::setorder(det, animal_id, detection_timestamp_utc)
@@ -374,7 +374,7 @@ out <- ln_interpolation(det_ln = det, start_tm = start_time, int_time_bin = int_
 
     # interpolate timestamps for interpolated points
     nln_small[, grp_row := .N, by = i.start]
-    nln_small[grp_row > 1, i_time := as.POSIXct(approx(cumdist, i_time, xout = cumdist)$y,
+    nln_small[grp_row > 1, i_time := as.POSIXct(approx(cumdist, i_time, xout = cumdist, ties = "ordered")$y,
                                                 origin = "1970-01-01 00:00:00",
                                                 tz = attr(nln_small$i_time, "tzone")),
               by = i.start]
@@ -433,7 +433,7 @@ out <- ln_interpolation(det_ln = det, start_tm = start_time, int_time_bin = int_
 # checks for receivers not in the water
 land_chk <- function(dtc, trans){
   trans <- raster(trans)
-  dtc <- unique(dtc[, c("deploy_lat", "deploy_long")])
+  dtc <- unique(dtc[, c("deploy_lat", "deploy_long", "glatos_array", "station_no")], by = c("deploy_lat", "deploy_long"))
   dtc <- dtc[!is.na(deploy_lat)]
   sp::coordinates(dtc) <- c("deploy_long", "deploy_lat")
   raster::projection(dtc) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
@@ -444,10 +444,11 @@ land_chk <- function(dtc, trans){
     coordinates(tran_na) <- c("deploy_long", "deploy_lat")
     one <- union(extent(trans), extent(tran_na))
     out <- setExtent(trans, one) 
+    #pdf("check1.pdf")
     plot(out)
-    plot(bar, add = TRUE, pch = 16, col = "red")
-    stop("Some coordinates are on land or beyond extent.\n    Interpolation impossible! Check receiver locations or extents of transition\n    layer:\n", 
-         utils::capture.output(coordinates(tran_na)), call. = FALSE)
+    plot(tran_na, add = TRUE, pch = 16, col = "red")
+    #dev.off()
+    stop("Some coordinates are on land or beyond extent. \n Interpolation impossible! Check receiver locations or extents of transition layer of points on map", call. = FALSE)
   }
 } 
 

@@ -3,7 +3,9 @@
 \name{otn_aat_animals}
 \alias{otn_aat_animals}
 \title{Example animal data from the OTN ERDDAP}
-\format{CSV}
+\format{
+CSV
+}
 \source{
 Ryan Gosse, Ocean Tracking Network
 }
