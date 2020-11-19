@@ -6,8 +6,8 @@
 #' 
 #' @param det An object of class \code{glatos_detections} or data frame
 #'   containing spatiotemporal data with at least 4 columns containing
-#'   'animal_id', 'detection_timestamp_utc', 'deploy_long', and
-#'   'deploy_lat' columns.
+#'   'animal_id', 'detection_timestamp_utc', 'deploy_long',
+#'   'deploy_lat', 'glatos_array', and 'station_no' columns.
 #'
 #' @param start_time specify the first time bin for interpolated data.
 #'     If not supplied, default is first timestamp in the input data
@@ -74,7 +74,9 @@
 #'    deploy_long=c(-87,-82.5, -78),
 #'    deploy_lat=c(44, 44.5, 43.5),
 #'    detection_timestamp_utc=as.POSIXct(c("2000-01-01 00:00",
-#'      "2000-02-01 00:00", "2000-03-01 00:00"), tz = "UTC"))
+#'      "2000-02-01 00:00", "2000-03-01 00:00"), tz = "UTC"),
+#'    glatos_array = c("LM", "LH", "LO"),
+#'    station_no = c(1,1,1))
 #' 
 #' #add to plot
 #' points(deploy_lat ~ deploy_long, data = pos, pch = 20, cex = 2, col = 'red')
@@ -529,3 +531,19 @@ nln_inter <- function(in_dt, tran_layer, i_graph){
 
   return(out)
 }
+
+
+
+
+
+##########################
+
+library(data.table)
+tst <- data.table(bin = c(1:20), from_lat = seq(from = 41.1, to = 47, length.out = 20), from_lon = seq(from = -83, to = -85, length.out = 20))
+#tst[c(2,3,5,7,8,9,12,17,20), c("from_lat", "from_lon") := .(NA, NA)]
+tst[c(1,3,5,7,9), c("from_lat", "from_lon") := .(NA, NA)]
+
+
+
+foo <- na.omit(tst, cols = c("from_lat", "from_lon"))
+foo[, c("to_lat", "to_lon", "to_bin") := .(shift(from_lat, type = "lead"), shift(from_lon, type = "lead"), shift(bin, type = "lead"))][bin + 1 != to_bin]
