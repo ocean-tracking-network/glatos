@@ -180,9 +180,55 @@
 #' 
 #' @export 
 
-interpolate_path2 <- function(det, trans = NULL, start_time = NULL,
-                               int_time_stamp = 86400,
-                               out_class = NULL){
+## interpolate_path2 <- function(det, trans = NULL, start_time = NULL,
+##                                int_time_stamp = 86400,
+##                                out_class = NULL){
+
+
+
+
+
+
+library(glatos)
+library(sp) #for loading greatLakesPoly
+ library(raster) #for raster manipulation (e.g., crop)
+# get example walleye detection data
+ det_file <- system.file("extdata", "walleye_detections.csv",
+                         package = "glatos")
+det <- read_glatos_detections(det_file)
+
+ # extract one fish and subset date
+ det <- det[det$animal_id == 22 & 
+            det$detection_timestamp_utc > as.POSIXct("2012-04-08") &
+            det$detection_timestamp_utc < as.POSIXct("2013-04-15") , ]
+ 
+data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+
+# crop polygon to western Lake Erie
+ maumee <-  crop(greatLakesPoly, extent(-83.7, -82.5, 41.3, 42.4))
+ plot(maumee, col = "grey")
+ points(deploy_lat ~ deploy_long, data = det, pch = 20, col = "red", 
+   xlim = c(-83.7, -80))
+ 
+ # not high enough resolution- bump up resolution
+ tran1 <- make_transition3(maumee, res = c(0.001, 0.001))
+ 
+
+
+
+
+trans = tran1$transition
+out_class = "data.table"
+start_time = NULL
+int_time_stamp = 86400
+
+#pos2 <- interpolate_path2(det, trans = tran1$transition, out_class = "data.table")
+
+
+
+
+
+
 
   # check for output type specification
   if (!is.null(out_class)) {
@@ -260,6 +306,9 @@ out <- ln_interpolation(det_ln = det, start_tm = start_time, int_time_bin = int_
   return(out)
 }  
 
+
+
+
 # routine for nonlinear interpolation
 
   # count number of rows- single observations are not interpolated
@@ -297,7 +346,7 @@ out <- ln_interpolation(det_ln = det, start_tm = start_time, int_time_bin = int_
     # identify start and end rows for observations before and after NA
     ends <- dtc[!is.na(deploy_lat), .(start = .I[-nrow(.SD)], end = .I[-1]),
                 by = animal_id][end - start > 1]
-
+    
     # identify observations that are both start and ends
     dups <-  c(ends$start, ends$end)[ ends[, duplicated(c(start, end))]]
 
@@ -325,7 +374,7 @@ out <- ln_interpolation(det_ln = det, start_tm = start_time, int_time_bin = int_
                            num_rows = x.num_rows,
                            bin = x.bin, i.start = start),
                on = .(start_dtc >= start, start_dtc <= end)]
-
+    
     # create keys for lookup
     dtc[!is.na(detection_timestamp_utc),
         t_lat := data.table::shift(deploy_lat, type = "lead"), by = i.start]
@@ -348,20 +397,23 @@ out <- ln_interpolation(det_ln = det, start_tm = start_time, int_time_bin = int_
     # make interpolated lookup table
     lookup <- nln_inter(lookup, trans, graph)
 
+    
     nln_small <- lookup[nln_small, on = .(deploy_lat, deploy_long, t_lat, t_lon),
                         allow.cartesian = TRUE]
 
     data.table::setkey(nln_small, i.start, seq_count)
-
+    
     # calculate cumdist 
     nln_small[, latitude_lead := data.table::shift(nln_latitude, type = "lag", fill = NA),
               by = i.start]
+
     nln_small[, longitude_lead := data.table::shift(nln_longitude, type = "lag", fill = NA),
               by = i.start]
 
     nln_small[, cumdist :=  geosphere::distGeo(.SD[, c("nln_longitude", "nln_latitude")],
                                                .SD[,c("longitude_lead", "latitude_lead")]),
               by = i.start]
+
     
     nln_small[is.na(cumdist), cumdist := 0]
     nln_small[, cumdist := cumsum(cumdist), by = i.start]
@@ -539,11 +591,28 @@ nln_inter <- function(in_dt, tran_layer, i_graph){
 ##########################
 
 library(data.table)
-tst <- data.table(bin = c(1:20), from_lat = seq(from = 41.1, to = 47, length.out = 20), from_lon = seq(from = -83, to = -85, length.out = 20))
+tst <- data.table(bin = seq(as.POSIXct('2012-01-01 00:00:00', tz = "UTC"), by = "1 day", length.out = 20), from_lat = seq(from = 41.1, to = 47, length.out = 20), from_lon = seq(from = -83, to = -85, length.out = 20), animal_id = c(rep(1,10), rep(2,10)))
+
 #tst[c(2,3,5,7,8,9,12,17,20), c("from_lat", "from_lon") := .(NA, NA)]
 tst[c(1,3,5,7,9), c("from_lat", "from_lon") := .(NA, NA)]
 
 
+tst[, lead := data.table::shift(from_lat, type = "lag"), by = "animal_id"]
+tst[!is.na(from_lat) & is.na(lead), flg := 1]
+
+
+
+
+
+tst[, .(em = .I[is.na(from_lat)] + 1), by = .(animal_id)]
+tst[, .I[is.na(from_lat)], by = .(animal_id)]
+
 
 foo <- na.omit(tst, cols = c("from_lat", "from_lon"))
-foo[, c("to_lat", "to_lon", "to_bin") := .(shift(from_lat, type = "lead"), shift(from_lon, type = "lead"), shift(bin, type = "lead"))][bin + 1 != to_bin]
+foo[, c("to_lat", "to_lon", "to_bin") := .(data.table::shift(from_lat, type = "lead"), data.table::shift(from_lon, type = "lead"), data.table::shift(bin, type = "lead")), by = "animal_id"]
+
+foo[bin + (3600 * 24) !=  to_bin]
+
+
+
+
