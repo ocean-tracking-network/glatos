@@ -180,55 +180,9 @@
 #' 
 #' @export 
 
-## interpolate_path2 <- function(det, trans = NULL, start_time = NULL,
-##                                int_time_stamp = 86400,
-##                                out_class = NULL){
-
-
-
-
-
-
-library(glatos)
-library(sp) #for loading greatLakesPoly
- library(raster) #for raster manipulation (e.g., crop)
-# get example walleye detection data
- det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
-det <- read_glatos_detections(det_file)
-
- # extract one fish and subset date
- det <- det[det$animal_id == 22 & 
-            det$detection_timestamp_utc > as.POSIXct("2012-04-08") &
-            det$detection_timestamp_utc < as.POSIXct("2013-04-15") , ]
- 
-data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
-
-# crop polygon to western Lake Erie
- maumee <-  crop(greatLakesPoly, extent(-83.7, -82.5, 41.3, 42.4))
- plot(maumee, col = "grey")
- points(deploy_lat ~ deploy_long, data = det, pch = 20, col = "red", 
-   xlim = c(-83.7, -80))
- 
- # not high enough resolution- bump up resolution
- tran1 <- make_transition3(maumee, res = c(0.001, 0.001))
- 
-
-
-
-
-trans = tran1$transition
-out_class = "data.table"
-start_time = NULL
-int_time_stamp = 86400
-
-#pos2 <- interpolate_path2(det, trans = tran1$transition, out_class = "data.table")
-
-
-
-
-
-
+interpolate_path <- function(det, trans = NULL, start_time = NULL,
+                             int_time_stamp = 86400, lnl_thresh = 0.9,
+                             out_class = NULL, show_progress = TRUE){
 
   # check for output type specification
   if (!is.null(out_class)) {
@@ -288,15 +242,6 @@ int_time_stamp = 86400
 # if transition argument is null, only need to do linear interpolation:
 if(is.null(trans)){
 
-  # det contains animal_id, bin_stamp, i_lat, i_lon, record type,
-  # start_tm is start_time
-  # int_time_bin is int_time_stamp
-
-
-  ## det_ln <- det
-  ## start_tm <- start_time
-  ## int_time_bin <- int_time_stamp
-
 out <- ln_interpolation(det_ln = det, start_tm = start_time, int_time_bin = int_time_stamp)
 
   # fix output names 
@@ -305,8 +250,6 @@ out <- ln_interpolation(det_ln = det, start_tm = start_time, int_time_bin = int_
   # return results- linear interpolation
   return(out)
 }  
-
-
 
 
 # routine for nonlinear interpolation
@@ -584,34 +527,6 @@ nln_inter <- function(in_dt, tran_layer, i_graph){
   return(out)
 }
 
-
-
-
-
-##########################
-
-library(data.table)
-tst <- data.table(bin = seq(as.POSIXct('2012-01-01 00:00:00', tz = "UTC"), by = "1 day", length.out = 20), from_lat = seq(from = 41.1, to = 47, length.out = 20), from_lon = seq(from = -83, to = -85, length.out = 20), animal_id = c(rep(1,10), rep(2,10)))
-
-#tst[c(2,3,5,7,8,9,12,17,20), c("from_lat", "from_lon") := .(NA, NA)]
-tst[c(1,3,5,7,9), c("from_lat", "from_lon") := .(NA, NA)]
-
-
-tst[, lead := data.table::shift(from_lat, type = "lag"), by = "animal_id"]
-tst[!is.na(from_lat) & is.na(lead), flg := 1]
-
-
-
-
-
-tst[, .(em = .I[is.na(from_lat)] + 1), by = .(animal_id)]
-tst[, .I[is.na(from_lat)], by = .(animal_id)]
-
-
-foo <- na.omit(tst, cols = c("from_lat", "from_lon"))
-foo[, c("to_lat", "to_lon", "to_bin") := .(data.table::shift(from_lat, type = "lead"), data.table::shift(from_lon, type = "lead"), data.table::shift(bin, type = "lead")), by = "animal_id"]
-
-foo[bin + (3600 * 24) !=  to_bin]
 
 
 
