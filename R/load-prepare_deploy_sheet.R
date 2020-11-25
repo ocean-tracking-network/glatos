@@ -30,7 +30,7 @@
 #' @export
 
 prepare_deploy_sheet <- function(path, start = 1, sheet = 1) {
-    sheet <- readxl::read_excel(path, sheet = sheet, skip = start - 1)
+    sheet <- read_csv(path)
     sheet <- sheet %>% dplyr::rename(
         deploy_lat = DEPLOY_LAT,
         deploy_long = DEPLOY_LONG,

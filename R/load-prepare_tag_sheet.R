@@ -30,7 +30,7 @@
 #' @export
 
 prepare_tag_sheet <- function(path, start = 1, sheet = 1) {
-    sheet <- readxl::read_excel(path, sheet = sheet, skip = start - 1)
+    sheet <- read_csv(path)
     sheet <- sheet %>% dplyr::mutate(
         transmitter_id = paste(TAG_CODE_SPACE, TAG_ID_CODE, sep = '-'),
         est_tag_life = purrr::map(EST_TAG_LIFE, convert_life_to_days)
