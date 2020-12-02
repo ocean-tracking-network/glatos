@@ -1,8 +1,6 @@
-context("Check convert_otn_erddap_to_att")
+#Make internal data object blue_shark_erddap_att for testing
+# (example data object)
 
-#check against internal data object 'blue_shark_att' in R/sysdata.r
-
-# Actual result
 #get blue shark example data
 dtc_file <- system.file("extdata", 
   "blue_shark_detections.csv", package = "glatos")
@@ -30,17 +28,15 @@ tags <- tags[-1,]
 stations <- stations[-1,]
 
 #create ATT object
-bs_att <- convert_otn_erddap_to_att(blue_shark_detections, 
+blue_shark_erddap_att <- convert_otn_erddap_to_att(blue_shark_detections, 
   tags, stations, animals)
 
 
+#----------------------------------------------------
 
-# Test using testthat library
-test_that("blue_shark_erddap_att gives expected result", {
-  # Check if expected and actual results are the same
-  expect_equal(bs_att, blue_shark_erddap_att)
-})
+#add to sysdata.rda
+rda_file <- file.path(".","R/sysdata.rda")
+glatos:::add_internal_data(blue_shark_erddap_att, rda_file)
 
-
-
-
+#for exported ('public') data
+#devtools::use_data(walleye_detections, pkg = "..", overwrite = TRUE)

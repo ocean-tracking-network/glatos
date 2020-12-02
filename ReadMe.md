@@ -25,6 +25,9 @@ Installation instructions can be found at [https://gitlab.oceantrack.org/GreatLa
 
 5.  [`real_sensor_values`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/proc-real_sensor_values.r) converts 'raw' transmitter sensor (e.g., depth, temperature) to 'real'-scale values (e.g., depth in meters) using transmitter specification data (e.g., from read\_vemco\_tag\_specs).
 
+6. [`prepare_tag_sheet`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/load-prepare_tag_sheet.r) and [`prepare_deploy_sheet`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/load-prepare_deploy_sheet.r) load OTN metadata sheets for Tagging and Deployment of Receivers and formats them for converting to ATT Data.
+
+
 #### Filtering and summarizing
 
 1.  [`min_lag`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/proc-min_lag.r) facilitates identification and removal of false positive detections by calculating the minimum time interval (min\_lag) between successive detections.
@@ -66,3 +69,4 @@ detection and receiver objects to a format supported by [VTrack](https://github.
 2. [`convert_otn_erddap_to_att`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/util-convert_otn_erddap_to_att.r) converts the OTN
 detection and ERDDAP csvs of OTN animals, tags and stations to a format supported by [VTrack](https://github.com/RossDwyer/VTrack)/[ATT](https://github.com/vinayudyawer/ATT).
 
+3. [`convert_otn_to_att`](https://gitlab.oceantrack.org/GreatLakes/glatos/blob/master/R/util-convert_otn_to_att.r) converts the OTN detections and metadata sheets to the ATT format. Also accepts deployment metadata from the [OTN website](https://members.oceantrack.org/) in CSV format.
