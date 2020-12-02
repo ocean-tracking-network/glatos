@@ -38,10 +38,18 @@ read_otn_detections <- function(det_file) {
   date_cols <- which(col_classes == "Date")
   col_classes[c(timestamp_cols, date_cols)] <- "character"
 
-  #read data
-  dtc <- data.table::fread(det_file, sep = ",", colClasses = col_classes,
-                            na.strings = c("", "NA"))
-
+  #read data, suppressWarnings because some columns could be missing
+  dtc <- suppressWarnings(data.table::fread(det_file, sep = ",", colClasses = col_classes,
+                            na.strings = c("", "NA")))
+  # This check is for non-matched detection extracts. They are missing some required columns, this attempts to create them.
+  # More info on OTN detection extracts here: https://members.oceantrack.org/data/otn-detection-extract-documentation-matched-to-animals
+  if (all(otn_detection_schema_min_columns %in% colnames(dtc)) && !all(otn_detection_schema$name %in% colnames(dtc))) {
+    dtc$commonname <- "Unknown"
+    dtc$receiver_group  <- substr(dtc$station, 1, nchar(dtc$station) - 3)
+    dtc$receiver <- dtc$collectornumber
+    dtc$tagname <- dtc$fieldnumber
+    dtc$codespace <- purrr::map(dtc$fieldnumber, get_codemap)
+  }
   #coerce timestamps to POSIXct; note that with fastPOSIXct raw
   #  timestamp must be in UTC; and tz argument sets the tzone attr only
   options(lubridate.fasttime = TRUE)
@@ -56,3 +64,10 @@ read_otn_detections <- function(det_file) {
   dtc <- glatos_detections(dtc)
   return(dtc)
 }
+
+get_codemap <- function(x){
+  x0 <- unlist(strsplit(x, '-'))
+  return(paste0(x0[1:2], collapse = '-'))
+}
+
+
