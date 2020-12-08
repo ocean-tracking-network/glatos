@@ -5,8 +5,13 @@
 \title{Convert detections, tagging metadata, and deployment metadata to a format that ATT
 accepts.}
 \usage{
-convert_otn_to_att(detectionObj, taggingSheet, deploymentObj = NULL,
-  deploymentSheet = NULL, timeFilter = TRUE)
+convert_otn_to_att(
+  detectionObj,
+  taggingSheet,
+  deploymentObj = NULL,
+  deploymentSheet = NULL,
+  timeFilter = TRUE
+)
 }
 \arguments{
 \item{detectionObj}{a data frame from \code{read_otn_detections}}
