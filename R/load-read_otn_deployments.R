@@ -42,9 +42,9 @@
 #' @importFrom magrittr "%>%"
 #' @export
 read_otn_deployments <- function(deployment_file,
-                                 deploy_date_col = deploy_date,
-                                 recovery_date_col = recovery_date,
-                                 last_download_col = last_download) {
+                                 deploy_date_col = "deploy_date",
+                                 recovery_date_col = "recovery_date",
+                                 last_download_col = "last_download") {
   col_classes <- otn_deployments_schema$type
   names(col_classes) <- otn_deployments_schema$name
   timestamp_cols <- which(col_classes == "POSIXct")
