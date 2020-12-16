@@ -137,7 +137,7 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
         Release.Longitude = as.double(detectionObj$longitude), 
         Release.Date = as.Date(detectionObj$time),
         Sex = as.factor(detectionObj$sex),
-        Tag.Life = as.factor(unlist(detectionObj$est_tag_life))
+        Tag.Life = as.integer(detectionObj$est_tag_life)
     ) %>% dplyr::filter(!Tag.ID %in% NA)
 
     releaseData <- dplyr::mutate(releaseData, 
