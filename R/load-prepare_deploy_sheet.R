@@ -25,7 +25,7 @@
 #' deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
 #'                         package = "glatos")
 #'
-#' deploy <- prepare_deploy_sheet(deploy_path, 5, 2)
+#' deploy <- prepare_deploy_sheet(deploy_path, 5, 1)
 #' 
 #' @export
 
