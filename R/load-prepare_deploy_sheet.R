@@ -30,7 +30,10 @@
 #' @export
 
 prepare_deploy_sheet <- function(path, start = 1, sheet = 1) {
-    sheet <- readxl::read_excel(path, sheet = sheet, skip = start - 1)
+    #get row names to skipping when start > 1
+    col_names <- names(readxl::read_excel(path, n_max = 1))
+    sheet <- readxl::read_excel(path, sheet = sheet, skip = start,
+                                col_names = col_names)
     sheet <- sheet %>% dplyr::rename(
         deploy_lat = DEPLOY_LAT,
         deploy_long = DEPLOY_LONG,
