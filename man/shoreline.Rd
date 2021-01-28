@@ -3,7 +3,9 @@
 \name{shoreline}
 \alias{shoreline}
 \title{zipped polygon shapefile of Great Lakes}
-\format{shapefile}
+\format{
+shapefile
+}
 \source{
 \url{http://glatos.glos.us/home}
 }

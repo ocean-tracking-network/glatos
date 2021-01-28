@@ -224,8 +224,10 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                                "in a future version of make_frames().",
                                call. = FALSE)
 
-  
-  #expand path to animation output file
+
+
+  # block controls creation of output file and directory
+  # expand path to animation output file
   # - place in same file as images (out_dir) if none specified
   # - preserve "./" prefix if specified
   if(animate){
@@ -255,6 +257,8 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   # capture optional plot arguments passed via ellipses
   #  and add original row indices to join on both
   inargs <- list(...)
+
+
   #set defaults and apply if needed
   rcv_args <- list(pch = 16, cex = 1.5)
   dtc_args <- list(pch = 16, col = "blue", cex = 2)
@@ -334,15 +338,12 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   # Make output directory if it does not already exist
   if(!dir.exists(out_dir)) dir.create(out_dir)
 
-  # extract time sequence for plotting
-  t_seq <- unique(work_proc_obj$bin_timestamp)
-
- 
   # make tails if needed
   if(tail_dur == 0){
 
     #  Create group identifier for plotting
     work_proc_obj[, grp := bin_timestamp]
+
   } else {
 
     # make tail groups if needed
@@ -367,20 +368,15 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   }
 
   # set rows in time order
-  data.table::setorder(work_proc_obj, bin_timestamp)
-  
+  data.table::setkey(work_proc_obj, bin_timestamp, animal_id, record_type)
+
   # create num group for later
-  work_proc_obj[, grp_num := .GRP, by = bin_timestamp]
+  #work_proc_obj[, grp_num := .GRP, by = bin_timestamp]
   
-  # determine leading zeros needed by ffmpeg and add as new column
-  char <- paste0("%", 0, nchar((length(t_seq))), "d")
-  data.table::setkey(work_proc_obj, bin_timestamp)
-  work_proc_obj[, f_name := .GRP, by = grp]
-  work_proc_obj[, f_name := paste0(sprintf(char, f_name), ".png")]
-
-  # order data for plotting
-  data.table::setkey(work_proc_obj, bin_timestamp, animal_id,  record_type)
-
+  # create group index by bin_timestamp
+  work_proc_obj[, f_name := .GRP, by = bin_timestamp]
+  
+  
   # Load background (use example Great Lakes if null)
   if(is.null(bg_map)){
     background <- greatLakesPoly #example in glatos package
@@ -388,9 +384,9 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     background <- bg_map 
     #if not equal to default or NULL, then set to extent of bg_map
     if(is.null(background_ylim) | all(background_ylim == c(41.3, 49.0))) background_ylim <- 
-                                              as.numeric(bbox(bg_map)[ "y", ])
+                                              as.numeric(sp::bbox(bg_map)[ "y", ])
     if(is.null(background_xlim) | all(background_xlim == c(-92.45, -75.87))) background_xlim <- 
-        as.numeric(bbox(bg_map)[ "x", ])
+        as.numeric(sp::bbox(bg_map)[ "x", ])
   }
 
   # turn off interpolated points if show_interpolated = FALSE
@@ -398,29 +394,42 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     work_proc_obj[record_type == "interpolated", latitude := NA]
     work_proc_obj[record_type == "interpolated", longitude := NA]
   }
-  
+
   # Calculate the duration of the animation for timeline
   time_period <- range(work_proc_obj$bin_timestamp) 
   
-  # define custom plot function
-  cust_plot <- function(x, .time_period, .recs, .out_dir, .background,
-                        .background_xlim, .background_ylim){
-
     # Calculate great circle distance in meters of x and y limits.
     # needed to determine aspect ratio of the output
-    linear_x = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
-                                    c(.background_xlim[2], .background_ylim[1]))
-    linear_y = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
-                                    c(.background_xlim[1], .background_ylim[2]))
-    
-    # aspect ratio of image
+    linear_x = geosphere::distMeeus(c(background_xlim[1], background_ylim[1]),
+                                    c(background_xlim[2], background_ylim[1]))
+    linear_y = geosphere::distMeeus(c(background_xlim[1], background_ylim[1]),
+                                    c(background_xlim[1], background_ylim[2]))
+        # aspect ratio of image
     figRatio <- linear_y / linear_x
 
     # calculate image height based on aspect ratio
     height <- trunc(2000 * figRatio)
 
+# setup progress bar
+if(preview){ grpn <- 1 } else {
+
+  # start progress bar
+    grpn <- data.table::uniqueN(work_proc_obj$grp)
+    if(show_progress) pb <- txtProgressBar(min = 0, max = grpn, style = 3)
+  }
+
+grp_v <- sort(unique(work_proc_obj$grp))
+
+###################
+
+char <- paste0("%", 0, nchar(length(unique(work_proc_obj$bin_timestamp))), "d")
+work_proc_obj[, f_name := paste0(sprintf(char, f_name), ".png")]
+  
+for (i in 1:grpn){
+work_proc_obj_i <- work_proc_obj[.(grp_v[i]), on = "grp"]
+
     # plot GL outline and movement points
-    png(file.path(.out_dir, x$f_name[1]), width = 2000,
+    png(file.path(out_dir, work_proc_obj_i$f_name[1]), width = 2000,
         height = ifelse(height%%2==0, height, height + 1), units = 'px',
         pointsize = 22*figRatio)
 
@@ -435,17 +444,17 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     do.call(par, par_args)
 
     # Note call to plot with sp
-    sp::plot(.background, ylim = c(.background_ylim), 
-             xlim = c(.background_xlim),
+    sp::plot(background, ylim = c(background_ylim), 
+             xlim = c(background_xlim),
              axes = FALSE, lwd = 2*figRatio, col = "white", bg = "gray74")
 
     box(lwd = 3 * figRatio)
     
     # Add receiver locations
-    if(!is.null(.recs)){
+    if(!is.null(recs)){
       # extract receivers in the water during plot interval
-      sub_recs <- .recs[deploy_date_time <= x$bin_timestamp[1] &  
-          (recover_date_time >= x$bin_timestamp[1] & !is.na(recover_date_time))]
+      sub_recs <- recs[deploy_date_time <= work_proc_obj_i$bin_timestamp[1] &  
+          (recover_date_time >= work_proc_obj_i$bin_timestamp[1] & !is.na(recover_date_time))]
       
       # get optional plot arguments that correspond with sub_recs
       sub_rcv_args <- rcv_args[match(sub_recs$row_in,rcv_args$row_in), ] 
@@ -459,20 +468,20 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     par(xpd = TRUE)
 
     # Define timeline x and y location
-    xlim_diff <- diff(.background_xlim)
-    ylim_diff <- diff(.background_ylim)
-    timeline_y <- rep(.background_ylim[1] - (0.06*ylim_diff), 2)
-    timeline_x <- c(.background_xlim[1] + (0.10*xlim_diff),
-                    .background_xlim[2] - (0.10*xlim_diff))
+    xlim_diff <- diff(background_xlim)
+    ylim_diff <- diff(background_ylim)
+    timeline_y <- rep(background_ylim[1] - (0.06*ylim_diff), 2)
+    timeline_x <- c(background_xlim[1] + (0.10*xlim_diff),
+                    background_xlim[2] - (0.10*xlim_diff))
 
-    time_dur <- diff(as.numeric(.time_period))
+    time_dur <- diff(as.numeric(time_period))
     
     # Add labels to timeline
-    labels <- seq(as.POSIXct(format(min(.time_period), "%Y-%m-%d")),
-                  as.POSIXct(format(max(.time_period), "%Y-%m-%d")),
+    labels <- seq(as.POSIXct(format(min(time_period), "%Y-%m-%d")),
+                  as.POSIXct(format(max(time_period), "%Y-%m-%d")),
                   length.out = 5)
     labels_ticks <- as.POSIXct(format(labels, "%Y-%m-%d"), tz = "GMT")
-    ptime <- (as.numeric(labels_ticks) - as.numeric(min(.time_period))) / time_dur
+    ptime <- (as.numeric(labels_ticks) - as.numeric(min(time_period))) / time_dur
     labels_x <- timeline_x[1] + (diff(timeline_x) * ptime)
     
     #set defaults and apply if needed
@@ -489,7 +498,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     
     
     # Update timeline
-    ptime <- (as.numeric(x[1,"grp"]) - as.numeric(min(.time_period))) / time_dur
+    ptime <- (as.numeric(work_proc_obj_i[1,"grp"]) - as.numeric(min(time_period))) / time_dur
 
     # Proportion of timeline elapsed
     timeline_x_i <- timeline_x[1] + diff(timeline_x) * ptime
@@ -509,39 +518,17 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     
     # Add fish positions
     # get optional plot arguments that correspond with x
-    sub_dtc_args <- dtc_args[match(x$row_in, dtc_args$row_in), ] 
+    sub_dtc_args <- dtc_args[match(work_proc_obj_i$row_in, dtc_args$row_in), ] 
     
-    do.call(points, c(list(x = x$longitude, y = x$latitude), 
+    do.call(points, c(list(x = work_proc_obj_i$longitude, y = work_proc_obj_i$latitude), 
                       sub_dtc_args[ , !"row_in", with = FALSE]))
+    
+    if(!preview & show_progress) setTxtProgressBar(pb, i)
 
     dev.off()
   }
 
-  # order for plotting
-  data.table::setkey(work_proc_obj, grp_num)
 
-
-  if(preview){ grpn <- 1 } else {
-    # start progress bar
-    grpn <- data.table::uniqueN(work_proc_obj$grp)
-    if(show_progress) pb <- txtProgressBar(min = 0, max = grpn, style = 3)
-  }
-  
-  # call cust_plot witin data.table
-  work_proc_obj[grp_num <= grpn, 
-               {if(!preview & show_progress) setTxtProgressBar(pb, .GRP)
-                cust_plot(x = .SD, 
-                          .time_period = time_period, 
-                          .recs = recs, 
-                          .out_dir = out_dir,
-                          .background = background, 
-                          .background_xlim = background_xlim, 
-                          .background_ylim = background_ylim 
-                )}
-                , by = grp,
-                .SDcols = c("bin_timestamp", "longitude", "latitude",
-                  "record_type", "f_name", "grp", "row_in")]
-  
   if(preview) { 
     message("Preview frames written to\n ", out_dir) 
   } else {
@@ -559,4 +546,3 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
       }      
   }
 }
-

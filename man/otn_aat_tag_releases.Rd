@@ -3,7 +3,9 @@
 \name{otn_aat_tag_releases}
 \alias{otn_aat_tag_releases}
 \title{Example tag release data from the OTN ERDDAP}
-\format{CSV}
+\format{
+CSV
+}
 \source{
 Ryan Gosse, Ocean Tracking Network
 }
