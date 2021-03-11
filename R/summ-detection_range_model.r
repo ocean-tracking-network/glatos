@@ -1,31 +1,22 @@
-# documentation -----
+# Description -----
 
 #' Detection Range Probability Model
 #' 
-#' @description
-#' Uses a third-order polynomial, a logit or a probit model to 
+#' Uses a third-order polynomial, logit, or, probit model to 
 #' determine detection range based on a expected percentage of detections
 #' for acoustic telemetry receivers. This function is to be used after a 
 #' preliminary range test which uses multiple distances away from 
 #' representative receiver. Preliminary detection efficiency is to be 
 #' determined in Vemco's Range Testing software and exported as a csv. 
-#' 
-#' @usage detection_range_model(formula, 
-#'                              data, 
-#'                              percentage = NULL,
-#'                              link = NULL, 
-#'                              subset = NULL, 
-#'                              summary_stats = TRUE, 
-#'                              model_frame = NULL)
-#'                              
-#' @param formula an object of class `formula` or one that can be coerced 
+#
+#' @param formula an object of class \code{formula} or one that can be coerced 
 #' to that class): a symbolic description of the model to be fitted. 
 #' The details of model specification are given under Details.
 #' 
 #' @param data an optional data frame, list or environment (or object coercible
 #' by as.data.frame to a data frame) containing the variables in the model. 
 #' If not found in data, the variables are taken from environment(formula), 
-#' typically the environment from which `detection_range_model` is called.
+#' typically the environment from which \code{detection_range_model()} is called.
 #' 
 #' @param percentage a given percentage of expected detections to be heard 
 #' by representative receiver. For example a value of 50 will calculate the 
@@ -36,32 +27,106 @@
 #' the less accurate the model becomes. The resulting dataframe may round the 
 #' display, if it does just call the specific column desired.
 #'   
-#' @param link  link default is `"logit"` which  will  use and return a 
-#' logit model. However, if a probit or third order polynomial model is 
-#' desired the argument can be supplied with `"probit"` or `"polynomial"` which 
-#' will use and return a probit or third order polynomial model.
+#' @param link default is \code{"polynomial"} which  will  use and return a 
+#' third order polynomial model. However, if a logit or probit model is 
+#' desired the argument can be supplied with  \code{"logit"} or
+#'  \code{"probit"} and will return a logit or probit model. See Details about 
+#'  y variable format depending on which link is chosen.  
 #' 
 #' @param subset allows for the data to be subsetted if desired. Default set 
 #' to `NULL` and does not need to be supplied. 
 #' 
-#' @param summary_stats default is set to TRUE resulting in all summary 
-#' statistics of the model to be returned. If set to FALSE, summary statistics 
-#' of the model will not be displayed. Summary statistics should always be 
-#' evaluated, however the argument exists solely to shorten the dataframe in 
-#' the need to quickly look at predicted distances. 
+#' @param summary_stats default is set to \code{TRUE} resulting in all summary 
+#' statistics of the model to be returned. If set to \code{FALSE}, summary 
+#' statistics of the model will not be displayed. Summary statistics should 
+#' always be evaluated, however the argument exists solely to shorten the 
+#' dataframe in the need to quickly look at predicted distances. Use with caution.  
 #' 
-#' @details test
-#' @return A tibble
-#' @references Bronscomebe et al. 
+#' @param model_frame  argument call is only required when link is set to
+#' \code{"polynomial"} default is \code{"data_frame"}. See details about 
+#' polynomial \code{formula} call and when it is appropriate to use 
+#' \code{"data_frame"} or \code{"matrix"}.   
+#' 
+#' @details If a third order polynomial model is selected the formula call 
+#' can be in two different formats. The preferred format is 
+#' \code{y ~ -1 + x + I(x ^ 2) + I(x ^ 3) + offset(y-intercept)}. \code{model_frame} 
+#' needs to be set \code{"data_frame"}, which is its default, to properly extract
+#' parameters and determine distances away from a receiver given a percentage 
+#' of interest. If using the \code{base::poly()} within the formula as such
+#' \code{y ~ -1 + poly(x, 3, raw = TRUE) + offset(y-intercept)}, then
+#' \code{model_frame} argument needs to be set to \code{"matrix"}.
+#' Both formula formats have \code{offset()} which sets the  y-intercept. 
+#' The y-intercept needs to be set to 100, as x = 0 m away from a receiver 
+#' you expect to hear a tag 100\% of the time.
+#' 
+#' A third order polynomial will handle preliminary detection efficiency 
+#' percentages (y variable) as whole numbers as the model is not bound by 
+#' 0 and 1. While both logit and probit models have to use percentages as 
+#' decimals as the models is bound by 0 and 1. 
+#' 
+#' Additionally, its been noticed that with fewer data points a third order 
+#' polynomial often fits the data better however this does not mean that neither
+#' a logit or probit model should not be assessed as well.
+#'  
+#' 
+#' @return A tibble object that consists of the percentage of interest, the predicted 
+#' distance from the model, and model summary statistics: 
+#' 
+#' If a third order polynomial is selected the following summary statistics are displayed: 
+#' degrees of freedom, chi-square test, person's goodness of fit test, 
+#' slopes, slopes' standard error, slopes' p-value, residual standard error, 
+#' r squared and adjusted r squared values, and aic value. 
+#' 
+#' If a logit or probit model is selected the following summary statistics are displayed:
+#' degrees of freedom, chi-square (deviance), person's goodness of fit test, 
+#' slope, slope's standard error, slope's p-value, z-value, null deviance, and aic value. 
+#' 
+#' @references This function was developed for an ongoing study which followed 
+#' detection range efficiency methods similar to: 
+#' 
+#' Brownscombe, J.W., L.P. Griffin, J.M. Chapman, D. Morley, A. 
+#' Acosta, G.T. Crossin, S.J. Iverson, A.J. Adams, S.J. Cooke, and A.J. 
+#' Danylchuk. 2020. A practical method to account for variation in detection 
+#' range in acoustic telemetry arrays to accurately quantify the spatial ecology
+#' of aquatic animals. Methods in Ecology and Evolution 11(1):82–94. 
+#'  
 #' @author Benjamin L. Hlina
-#' @example 
-#' # test this 
+#' @examples 
+#' sample_detection_efficiency
+#' 
+#' # third order polynomial: # ave_ percent is a whole number
+#' 
+#' m <- detection_range_model(avg_percent ~ -1 + distance_m + I(distance_m ^ 2) + 
+#'                              I(distance_m ^ 3) + offset(intercept), 
+#'                             data = sample_detection_efficiency, 
+#'                             percentage = c(10, 50, 90), 
+#'                             link = "polynomial", 
+#'                             model_frame = "data_frame")
+#'                             
+#' # logit model: aver percent is in decimal form
+#' 
+#' m1 <- detection_range_model(avg_percent_d ~ distance_m, 
+#'                            data = sample_detection_efficiency, 
+#'                            percentage = c(10, 50, 90), 
+#'                            link = "logit",
+#'                            summary_stats = TRUE)
+#'
+#' # probit model: aver percent is in decimal form
+#' 
+#' m2 <- detection_range_model(avg_percent_d ~ distance_m, 
+#'                             data = sample_detection_efficiency, 
+#'                             percentage = c(10, 50, 90), 
+#'                             link = "probit",
+#'                             summary_stats = TRUE)
+#'                             
+#' m
+#' m1
+#' m2                             
 
+#' @import tibble
 #' @export
 
-
-
-# function -----
+# function ------
 detection_range_model <- function(formula, 
                                   data, 
                                   percentage = NULL, 
@@ -72,11 +137,10 @@ detection_range_model <- function(formula,
   
   # set null for link to logit however probit and polynomail can be used if supplied -----
   if (is.null(link)) {
-    link <- c("logit")
-  } 
-  
-  if (link == "polynomial") {
     link <- c("polynomial")
+  } 
+  if (link == "logit") {
+    link <- c("logit")
   }
   if (link == "probit") {
     link <- c("probit")
