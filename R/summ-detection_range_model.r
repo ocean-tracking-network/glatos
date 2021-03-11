@@ -247,13 +247,23 @@ detection_range_model <- function(formula,
     # tried to not hard code this as much as its flexible with forumual 
     if (is.null(model_frame)) {
       model_frame <- c("data_frame")
+    } 
+    if (model_frame == "matrix"){
+      model_frame <- c("matrix")
     }
+    
+    form <- formula(model)
+    
+    # create vector of distance value used in approx function 
     if (model_frame == "data_frame") {
+      # if(any(form == "y ~ -1 + poly(x, 3, raw = TRUE) + offset(y-intercept")) 
+      # stopifnot(form == "y ~ -1 + x + I(x ^ 2) + I(x ^ 3) + offset(y-intercept)")
+      # warning("Check formula for model_frame argument", call. = FALSE)
       dist <- model.frame(model)[[2]]
     }
     
     if (model_frame == "matrix"){
-      
+      # model_frame <- c("matrix")
       matr <- model.frame(model)[[2]]
       dist <- matr[, 1]
     }
@@ -298,8 +308,7 @@ detection_range_model <- function(formula,
                       intercept_se = intercept_se,
                       intercept_sig = intercept_sig,
                       z_value = z_value,
-                      deviance = deviance,
-                      null_deviance = deviance,
+                      null_deviance = null_deviance,
                       aic = aic
       )
     } 
