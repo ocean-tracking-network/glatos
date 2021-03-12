@@ -322,26 +322,17 @@ detection_range_model <- function(formula,
     if (model_frame == "data_frame") {
       # if(any(form == "y ~ -1 + poly(x, 3, raw = TRUE) + offset(y-intercept")) 
       # stopifnot(form == "y ~ -1 + x + I(x ^ 2) + I(x ^ 3) + offset(y-intercept)")
-      # warning("Check formula for model_frame argument", call. = FALSE)
+      warning("Check if your formula is correct for the model_frame argument", call. = FALSE)
       dist <- model.frame(model)[[2]]
     }
     
     if (model_frame == "matrix"){
       # model_frame <- c("matrix")
+      warning("Check if your formula is correct for the model_frame argument", call. = FALSE)
       matr <- model.frame(model)[[2]]
       dist <- matr[, 1]
     }
-    
-    
-    # if (model_frame == "data_frame") {
-    #   
-    # }
-    # 
-    # if (model_frame == "matrix"){
-    #   
-    #   
-    #   
-    # }
+
     
     fit <- model$fitted.values
     
