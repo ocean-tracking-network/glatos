@@ -67,3 +67,28 @@ test_that("Test if probit model is correct", {
   
   
 })
+
+
+test_that("test warning if model_frame = 'data_frame'" , {
+  
+  expect_warning(detection_range_model(avg_percent ~ -1 + distance_m + I(distance_m ^ 2) + 
+                                         I(distance_m ^ 3) + offset(intercept),
+                                       data = sample_detection_efficiency, 
+                                       p = c(50),
+                                       link = "polynomial", 
+                                       model_frame = "data_frame", 
+                                       summary_stats = TRUE))
+  
+})
+
+test_that("test warning if model_frame = 'matrix'" , {
+  
+  expect_warning(detection_range_model(avg_percent ~ -1 + poly(distance_m, 3, raw = TRUE) + 
+                                         offset(intercept), 
+                                       data = sample_detection_efficiency, 
+                                       p = c(50), 
+                                       link = "polynomial",
+                                       model_frame = "matrix",
+                                       summary_stats = TRUE))
+  
+})
