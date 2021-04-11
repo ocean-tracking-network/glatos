@@ -111,7 +111,8 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
         detectionObj <- detectionObj %>% dplyr::filter(
           detection_timestamp_utc >= deploy_date_time,
           detection_timestamp_utc <= dplyr::coalesce(recover_date_time, last_download),
-          instrumenttype == "rcvr"
+          instrumenttype %in% c("rcvr", "Acoustic", "Transceiver", 
+                  "Acoustic, Transceiver")
         )
       } else {
         detectionObj <- detectionObj %>% dplyr::filter(
