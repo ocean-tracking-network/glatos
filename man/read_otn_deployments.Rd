@@ -6,9 +6,9 @@
 \usage{
 read_otn_deployments(
   deployment_file,
-  deploy_date_col = deploy_date,
-  recovery_date_col = recovery_date,
-  last_download_col = last_download
+  deploy_date_col = "deploy_date",
+  recovery_date_col = "recovery_date",
+  last_download_col = "last_download"
 )
 }
 \arguments{
