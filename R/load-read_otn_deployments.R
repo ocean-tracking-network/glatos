@@ -34,7 +34,7 @@
 #' #get path to example deployments file
 #' deployment_file <- system.file("extdata", "blue_shark_detections.csv",
 #'                          package = "glatos")
-#' det <- read_otn_deploymentss(deployment_file)
+#' det <- read_otn_deployments(deployment_file)
 #'
 #' @importFrom lubridate parse_date_time
 #' @importFrom tidyr extract
