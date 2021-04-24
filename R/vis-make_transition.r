@@ -19,7 +19,7 @@
 #'
 #' @param all_touched logical. If TRUE (default) then any pixel touched by
 #'   polygon 'in_file' will be coded as water in the output. Alternatively,
-#'   pixel must be at least 50% covered by polygon to be coded as water.
+#'   pixel must be at least 50\% covered by polygon to be coded as water.
 #'
 #' @param invert logical. Passes into \link[gdalUtils]{gdal_rasterize}. If
 #'   true, it will return the inverse of the raster object it would normally
@@ -52,12 +52,11 @@
 #' @return A list with two elements:
 #' \describe{
 #'    \item{transition}{a geo-corrected transition raster layer where land = 0
-#'       and water=1
-#'   (see \code{gdistance})}
+#'       and water=1 (see \code{gdistance})}
 #'    \item{rast}{rasterized input layer of class \code{raster}}}
-#'   Additonally, rasterized version of input shapefile (*.tif extension) is written to computer
-#'   at \code{output_dir}
-#'
+#'   Additonally, rasterized version of input shapefile (*.tif extension) is
+#'   written to computer at \code{output_dir}
+#' 
 #'
 #' @author Todd Hayden, Tom Binder, Chris Holbrook
 #'
