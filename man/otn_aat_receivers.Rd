@@ -3,7 +3,9 @@
 \name{otn_aat_receivers}
 \alias{otn_aat_receivers}
 \title{Example station data from the OTN ERDDAP}
-\format{CSV}
+\format{
+CSV
+}
 \source{
 Ryan Gosse, Ocean Tracking Network
 }

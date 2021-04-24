@@ -5,7 +5,9 @@
 \alias{greatLakesPoly}
 \title{A SpatialPolygonDataFrame with Great Lakes coastline and some major 
 tributaries.}
-\format{An object of class \code{SpatialPolygonsDataFrame} with 4 rows and 8 columns.}
+\format{
+An object of class \code{SpatialPolygonsDataFrame} with 4 rows and 8 columns.
+}
 \usage{
 greatLakesPoly
 }

@@ -3,7 +3,9 @@
 \name{raw_walleye_detections}
 \alias{raw_walleye_detections}
 \title{Zipped GLATOS detection file from Huron Erie Corridor Walleye project}
-\format{A zipped walleye detection file in detection file format 1.3:}
+\format{
+A zipped walleye detection file in detection file format 1.3:
+}
 \source{
 \url{http://glatos.glos.us/home/project/HECWL}
 }
