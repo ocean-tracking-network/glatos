@@ -50,7 +50,7 @@ Authors@R: c(
 		person("Jon", "Pye", role = "aut"),
 		person("Alex", "Nunes", role = "ctb"),
 		person("Angela", "Dini", role = "ctb"),
-		person("Ryan", "Goss", role = "ctb"))
+		person("Ryan", "Gosse", role = "ctb"))
 License: GPL-2
 LazyLoad: yes
 LazyData: true

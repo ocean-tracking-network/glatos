@@ -24,6 +24,13 @@ otn_detection_schema <- read.table(text = "
                                    header = TRUE,
                                    stringsAsFactors = FALSE)
 
+# for non-matched detection extracts from OTN
+otn_detection_schema_min_columns <- c( 
+                                   "catalognumber",
+                                   "station",
+                                   "datecollected",
+                                   "longitude",
+                                   "latitude")
 #\OTN
 #----------------------------------------------------
 
@@ -31,3 +38,4 @@ otn_detection_schema <- read.table(text = "
 #add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(otn_detection_schema, rda_file)
+glatos:::add_internal_data(otn_detection_schema_min_columns, rda_file)
