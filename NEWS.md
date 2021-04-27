@@ -1,4 +1,25 @@
+----
 
+# glatos 0.4.3
+
+#### 2021-04-27
+   
+### New features
+
+- functions
+    - prepare_deploy_sheet
+    - prepare_tag_sheet
+
+### Minor changes
+
+- covert_glatos_to_att
+    - added argument `CRS` for ATT compatibility
+
+- residence_index
+    - replaced deprecated .dots with across in dplyr::group_by calls to 
+      fix "Warning: The `.dots` argument of `group_by()` is deprecated as 
+      of dplyr 1.0.0"
+    
 ----
 
 # glatos 0.4.2
