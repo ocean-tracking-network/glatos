@@ -5,14 +5,14 @@
 \title{Loads the OTN receiver deployment metadata sheet to prepare it for use in 
 \code{convert_otn_to_att}}
 \usage{
-prepare_deploy_sheet(path, start = 1, sheet = 1)
+prepare_deploy_sheet(path, header_line = 5, sheet_name = 1)
 }
 \arguments{
 \item{path}{the path to the deployment sheet}
 
-\item{start}{what line to start reading data in from}
+\item{header_line}{what line the headers are on}
 
-\item{sheet}{the sheet name or number containing the metadata}
+\item{sheet_name}{the sheet name or number containing the metadata}
 }
 \value{
 a data.frame created from the excel file.
@@ -35,7 +35,7 @@ library(glatos)
 deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
                         package = "glatos")
 
-deploy <- prepare_deploy_sheet(deploy_path, 5, 1)
+deploy <- prepare_deploy_sheet(header_line, 5, 1)
 
 }
 \author{

@@ -5,14 +5,14 @@
 \title{Loads the OTN tagging metadata sheet to prepare it for use in 
 \code{convert_otn_to_att}}
 \usage{
-prepare_tag_sheet(path, start = 1, sheet = 1)
+prepare_tag_sheet(path, header_line = 5, sheet_name = 2)
 }
 \arguments{
 \item{path}{the path to the tagging sheet}
 
-\item{start}{what line to start reading data in from}
+\item{header_line}{what line the headers are on}
 
-\item{sheet}{the sheet name or number containing the metadata}
+\item{sheet_name}{the sheet name or number containing the metadata}
 }
 \value{
 a data.frame created from the excel file.
@@ -23,7 +23,7 @@ Loads the OTN tagging metadata sheet to prepare it for use in
 }
 \details{
 The function takes the path to the tagging sheet, what line to start
-reading from, and what sheet in the excel file to use. It converts column names
+reading the headers from, and what sheet in the excel file to use. It converts column names
 to be used by \code{convert_otn_to_att}.
 }
 \examples{
