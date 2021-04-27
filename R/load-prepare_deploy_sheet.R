@@ -3,9 +3,9 @@
 #' 
 #' @param path the path to the deployment sheet
 #' 
-#' @param start what line to start reading data in from
+#' @param header_line what line the headers are on
 #' 
-#' @param sheet the sheet name or number containing the metadata
+#' @param sheet_name the sheet name or number containing the metadata
 #' 
 #' 
 #' @details The function takes the path to the deployment sheet, what line to start
@@ -25,16 +25,16 @@
 #' deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
 #'                         package = "glatos")
 #'
-#' deploy <- prepare_deploy_sheet(deploy_path, 5, 1)
+#' deploy <- prepare_deploy_sheet(header_line, 5, 1)
 #' 
 #' @export
 
-prepare_deploy_sheet <- function(path, start = 1, sheet = 1) {
+prepare_deploy_sheet <- function(path, header_line = 5, sheet_name = 1) {
     #get row names to skipping when start > 1
     col_names <- names(readxl::read_excel(path, n_max = 1))
-    sheet <- readxl::read_excel(path, sheet = sheet, skip = start,
+    deploy_sheet <- readxl::read_excel(path, sheet = sheet_name, skip = header_line,
                                 col_names = col_names)
-    sheet <- sheet %>% dplyr::rename(
+    deploy_sheet <- deploy_sheet %>% dplyr::rename(
         deploy_lat = DEPLOY_LAT,
         deploy_long = DEPLOY_LONG,
         ins_model_no = INS_MODEL_NO,
@@ -42,13 +42,13 @@ prepare_deploy_sheet <- function(path, start = 1, sheet = 1) {
         recover_date_time = `RECOVER_DATE_TIME (yyyy-mm-ddThh:mm:ss)`,
         
     )
-    sheet <- sheet %>% dplyr::mutate(
+    deploy_sheet <- deploy_sheet %>% dplyr::mutate(
         station = paste(OTN_ARRAY, STATION_NO, sep = '')
     )
-    sheet <- sheet %>% dplyr::select(
+    deploy_sheet <- deploy_sheet %>% dplyr::select(
         station, ins_model_no, deploy_lat, deploy_long,
         deploy_date_time, recover_date_time
     )
-    return(sheet)
+    return(deploy_sheet)
 
 }

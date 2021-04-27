@@ -3,13 +3,13 @@
 #' 
 #' @param path the path to the tagging sheet
 #' 
-#' @param start what line to start reading data in from
+#' @param header_line what line the headers are on
 #' 
-#' @param sheet the sheet name or number containing the metadata
+#' @param sheet_name the sheet name or number containing the metadata
 #' 
 #' 
 #' @details The function takes the path to the tagging sheet, what line to start
-#' reading from, and what sheet in the excel file to use. It converts column names
+#' reading the headers from, and what sheet in the excel file to use. It converts column names
 #' to be used by \code{convert_otn_to_att}.
 #' 
 #' @author Ryan Gosse
@@ -29,13 +29,13 @@
 #' 
 #' @export
 
-prepare_tag_sheet <- function(path, start = 1, sheet = 1) {
-    sheet <- readxl::read_excel(path, sheet = sheet, skip = start - 1)
-    sheet <- sheet %>% dplyr::mutate(
+prepare_tag_sheet <- function(path, header_line = 5, sheet_name = 2) {
+    tag_sheet <- readxl::read_excel(path, sheet = sheet_name, skip = header_line - 1)
+    tag_sheet <- tag_sheet %>% dplyr::mutate(
         transmitter_id = paste(TAG_CODE_SPACE, TAG_ID_CODE, sep = '-'),
-        est_tag_life = purrr::map(EST_TAG_LIFE, convert_life_to_days)
+        est_tag_life = as.integer(purrr::map(EST_TAG_LIFE, convert_life_to_days))
     )
-    sheet <- sheet %>% dplyr::rename(
+    tag_sheet <- tag_sheet %>% dplyr::rename(
         animal_id = 'ANIMAL_ID   (floy tag ID, pit tag code, etc.)',
         time =  UTC_RELEASE_DATE_TIME,
         sex =  SEX,
@@ -43,7 +43,7 @@ prepare_tag_sheet <- function(path, start = 1, sheet = 1) {
         longitude = RELEASE_LONGITUDE,
         sci_name = SCIENTIFIC_NAME
     )
-    return(sheet)
+    return(tag_sheet)
 }
 
 # For converting tag life column to a count of days
