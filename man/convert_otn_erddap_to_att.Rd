@@ -5,7 +5,13 @@
 \title{Convert detections, transmitter, receiver, and animal metadata to a format
 that ATT accepts.}
 \usage{
-convert_otn_erddap_to_att(detectionObj, erdTags, erdRcv, erdAni)
+convert_otn_erddap_to_att(
+  detectionObj,
+  erdTags,
+  erdRcv,
+  erdAni,
+  crs = sp::CRS("+init=epsg:4326")
+)
 }
 \arguments{
 \item{detectionObj}{a data frame from \code{read_glatos_detections}}
@@ -15,6 +21,8 @@ convert_otn_erddap_to_att(detectionObj, erdTags, erdRcv, erdAni)
 \item{erdRcv}{a data frame with receiver station data from the OTN ERDDAP}
 
 \item{erdAni}{a data frame with animal data from the OTN ERDDAP}
+
+\item{crs}{a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.}
 }
 \value{
 a list of 3 tibble::tibbles containing tag dectections, tag metadata,

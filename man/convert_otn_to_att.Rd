@@ -10,7 +10,8 @@ convert_otn_to_att(
   taggingSheet,
   deploymentObj = NULL,
   deploymentSheet = NULL,
-  timeFilter = TRUE
+  timeFilter = TRUE,
+  crs = sp::CRS("+init=epsg:4326")
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ convert_otn_to_att(
 
 \item{timeFilter}{Whether the data should be filtered using the deployment and recovery/last download times of receivers.
 Defaults to TRUE, if not all receiver metadata is available, this should be set to FALSE otherwise there will be data loss.}
+
+\item{crs}{a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.}
 }
 \value{
 a list of 3 tibble::tibbles containing tag dectections, tag metadata,

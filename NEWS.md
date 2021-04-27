@@ -3,7 +3,7 @@
 # glatos 0.4.3
 
 #### 2021-04-27
-   
+
 ### New features
 
 - functions
@@ -13,7 +13,7 @@
 
 ### Minor changes
 
-- covert_glatos_to_att
+- convert_glatos_to_att, 
     - added argument `CRS` for ATT compatibility
 
 - residence_index
@@ -23,7 +23,8 @@
 
 - convert_otn_erddap_to_att
     - renamed convert_otn_to_att to convert_otn_erddap_to_att to better describe what the function does
-    
+
+
 ----
 
 # glatos 0.4.2
