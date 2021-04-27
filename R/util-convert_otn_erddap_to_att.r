@@ -12,6 +12,8 @@
 #' @param erdRcv a data frame with receiver station data from the OTN ERDDAP 
 #'
 #' @param erdAni a data frame with animal data from the OTN ERDDAP
+#' 
+#' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.
 #'
 #'
 #' @details This function takes 4 data frames containing detection, and ERDDAP
@@ -63,7 +65,7 @@
 #'                                      tags, stations, animals)
 #' @export
 
-convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni) {
+convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni, crs = sp::CRS("+init=epsg:4326")) {
 
   transmitters <- 
     if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))){
@@ -171,6 +173,14 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni) {
   )
 
   class(att_obj) <- "ATT"
+
+  if (inherits(crs, "CRS")) {
+    attr(att_obj, "CRS") <- crs
+  } 
+  else {
+    message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
+    attr(att_obj, "CRS") <- eval(formals()$crs)
+  }
 
   return(att_obj)
 }

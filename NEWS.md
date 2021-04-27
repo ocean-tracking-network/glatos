@@ -9,6 +9,7 @@
 - functions
     - prepare_deploy_sheet
     - prepare_tag_sheet
+    - convert_otn_to_att
 
 ### Minor changes
 
@@ -19,6 +20,9 @@
     - replaced deprecated .dots with across in dplyr::group_by calls to 
       fix "Warning: The `.dots` argument of `group_by()` is deprecated as 
       of dplyr 1.0.0"
+
+- convert_otn_erddap_to_att
+    - renamed convert_otn_to_att to convert_otn_erddap_to_att to better describe what the function does
     
 ----
 

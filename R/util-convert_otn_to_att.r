@@ -16,6 +16,8 @@
 #' @param timeFilter Whether the data should be filtered using the deployment and recovery/last download times of receivers.
 #' Defaults to TRUE, if not all receiver metadata is available, this should be set to FALSE otherwise there will be data loss.
 #' 
+#' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.
+#' 
 #' 
 #' @details This function takes 3 data frames containing detections, tagging metadata, and
 #'  deployment metadata from either \code{read_otn_deployments} or \code{prepare_deploy_sheet} 
@@ -70,7 +72,7 @@
 #' 
 #' @export
 
-convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL, deploymentSheet = NULL, timeFilter = TRUE) {
+convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL, deploymentSheet = NULL, timeFilter = TRUE, crs = sp::CRS("+init=epsg:4326")) {
     
     if (is.null(deploymentObj) && is.null(deploymentSheet)) {
         stop("Deployment data must be supplied by either 'deploymentObj' or 'deploymentSheet'")
@@ -185,6 +187,14 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
     )
 
     class(att_obj) <- "ATT"
+
+    if (inherits(crs, "CRS")) {
+      attr(att_obj, "CRS") <- crs
+    } 
+    else {
+      message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
+      attr(att_obj, "CRS") <- eval(formals()$crs)
+    }
 
     return(att_obj)
 
