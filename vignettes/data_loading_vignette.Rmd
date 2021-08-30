@@ -793,19 +793,19 @@ rcv <- read_glatos_receivers(rec_file)
 str(rcv)
 ```
 
-The result is an object with `r ncol(rcv)` columns (including the required 
-columns described above) and two classes: *glatos_receivers* and *data.frame*. 
-The *glatos_receivers* class label indicates that the data set was created using 
-a *glatos* load function and therefore should work with any *glatos* function that 
-accepts receiver data as input.
+The result is an object with `r ncol(rcv)` columns (including the required
+columns described above) and two classes: *glatos_receivers* and *data.frame*.
+The *glatos_receivers* class label indicates that the data set was created using
+a *glatos* load function and therefore should work with any *glatos* function
+that accepts receiver data as input.
 
 
 ### Loading GLATOS data (single project workbook)
 
-The *read_glatos_workbook* function reads in receiver location data from a 
-standard GLATOS project workbook (\*.xlsm file) and checks that the
-data meet requirements of *glatos* functions. Data are read using *readWorkbook* in the
-*openxlsx* package, timestamps are formatted as class *POSIXct*.
+The *read_glatos_workbook* function reads in receiver location data from a
+standard GLATOS project workbook (\*.xlsm file) and checks that the data meet
+requirements of *glatos* functions. Data are read using *read_excel* in the
+*readxl* package, timestamps are formatted as class *POSIXct*.
 
 We will get the path to the *walleye_workbook.xlsm* (example included in the 
 *glatos* package) using *system.file*, then read the data using 
@@ -890,7 +890,7 @@ expected to be consistent with the *glatos_animals* class.
 
 The *read_glatos_workbook* function reads animal tagging and biological data
 from a standard GLATOS project workbook (\*.xlsm file; *tagging* sheet). Data
-are read using *readWorkbook* in the *openxlsx* package, timestamps are
+are read using *read_excel* in the *readxl* package, timestamps are
 formatted as class *POSIXct*.
 
 We will again use data from the same *walleye_workbook.xlsm* example file used in the previous section (see data loading steps above), but will extract the *animals* element
