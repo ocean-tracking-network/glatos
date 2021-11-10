@@ -214,7 +214,7 @@ position_heat_map <- function (positions,
   # Remove columns in original dataframe called "X" and "Y" - do this because
   # convUL function requires the LON and LAT data to be stored in columns
   # named X and Y
-  positions <- positions[,-which(names(positions) %in% c("X","Y"))]
+  positions <- positions[,!names(positions) %in% c("X","Y")]
   
   # Rename LON and LAT columns to X and Y for convUL function
   names(positions)[match(c("LON", "LAT"), names(positions))] = c('X', 'Y')

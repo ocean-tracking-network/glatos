@@ -1,5 +1,17 @@
 ----
 
+# glatos 0.5.1
+
+#### 2021-11-09
+
+### Bug fix
+
+- position_heat_map
+    - fix issue #121 (error when input does not contain columns X and Y)
+
+
+----
+
 # glatos 0.5.0
 
 #### 2021-04-27
