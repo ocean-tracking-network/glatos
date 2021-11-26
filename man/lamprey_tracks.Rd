@@ -4,7 +4,8 @@
 \name{lamprey_tracks}
 \alias{lamprey_tracks}
 \title{Sea Lamprey positions from Lake George, St. Marys River, 2012}
-\format{A data frame with 21043 rows and 14 variables: 
+\format{
+A data frame with 21043 rows and 14 variables: 
 \describe{ 
   \item{DETECTEDID}{transmitter identifier (channel, frequency, code space, 
      and ID code)} 
@@ -21,7 +22,8 @@
   \item{DEPTH}{depth at time of detection (from pressure sensor)} 
   \item{ACCEL}{acceleration at time of detection (from accelerometer)}
   \item{DRX}{receivers that detected the associated transmission} 
-}}
+}
+}
 \source{
 Chris Holbrook, US Geological Survey (cholbrook@usgs.gov)
 }

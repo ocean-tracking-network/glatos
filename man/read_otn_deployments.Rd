@@ -2,22 +2,36 @@
 % Please edit documentation in R/load-read_otn_deployments.R
 \name{read_otn_deployments}
 \alias{read_otn_deployments}
-\title{Read data from a OTN detection file}
+\title{Read data from a OTN deployment file}
 \usage{
-read_otn_deployments(deployment_file)
+read_otn_deployments(
+  deployment_file,
+  deploy_date_col = "deploy_date",
+  recovery_date_col = "recovery_date",
+  last_download_col = "last_download"
+)
 }
 \arguments{
-\item{deployment_file}{A character string with path and name of detection file in
-OTN deploymeny format (*.csv). If only file name is given, then the
-file must be located in the working directory.}
+\item{deployment_file}{A character string with path and name of deployment
+ file in OTN deployment format (*.csv). If only file name is given, then the
+ file must be located in the working directory.
+
+@param deploy_date_col A character string representing the column
+name containing deploy_date data. Defaults to "deploy_date".
+
+@param recovery_date_col A character string representing the column
+name containing recovery_date. Defaults to "recovery_date."
+
+@param last_download_col A character string representing the column
+name containing the last_download date. Defaults to "last_download."}
 }
 \value{
 A data.frame of class \code{glatos_receivers} that includes OTN
 columns that do not map directly to GLATOS columns.
 }
 \description{
-Read data from a standard OTN detection (csv) file and return
-a data.frame of class \code{glatos_detections}.
+Read data from a standard OTN deployment (csv) file and return
+a data.frame of class \code{glatos_receivers}.
 }
 \details{
 Data are loaded using \code{\link[data.table]{fread}} package and timestamps
@@ -29,9 +43,9 @@ Otherwise, OTN columns and column names are retained.
 }
 \examples{
 #get path to example deployments file
-deployment_file <- system.file("extdata", "blue_shark_detections.csv",
+deployment_file <- system.file("extdata", "hfx_deployments.csv",
                          package = "glatos")
-det <- read_otn_deploymentss(deployment_file)
+dep <- read_otn_deployments(deployment_file)
 
 }
 \author{

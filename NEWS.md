@@ -1,10 +1,54 @@
+----
+
+# glatos 0.5.1
+
+#### 2021-11-09
+
+### Bug fix
+
+- position_heat_map
+    - fix issue #121 (error when input does not contain columns X and Y)
+
+
+----
+
+# glatos 0.5.0
+
+#### 2021-04-27
+
+### New features
+
+- functions
+    - prepare_deploy_sheet
+    - prepare_tag_sheet
+    - convert_otn_to_att
+
+### Minor changes
+
+- convert_glatos_to_att, 
+    - added argument `CRS` for ATT compatibility
+
+- residence_index
+    - replaced deprecated .dots with across in dplyr::group_by calls to 
+      fix "Warning: The `.dots` argument of `group_by()` is deprecated as 
+      of dplyr 1.0.0"
+
+- convert_otn_erddap_to_att
+    - renamed convert_otn_to_att to convert_otn_erddap_to_att to better describe what the function does
+
 
 ----
 
 # glatos 0.4.2
 
 #### 2020-04-06
-      
+   
+### Minor changes
+
+- make_transition
+    - added new argument 'invert' for cases where input polygon represents land
+	- fixes issue #101
+
 ### Bug fixes
 
 - read_glatos_detections 

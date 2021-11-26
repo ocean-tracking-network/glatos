@@ -5,7 +5,9 @@
 \alias{greatLakesTrLayer}
 \title{A TransitionLayer object that only allows transitions to occur within 
 water of the Great Lakes Basin.}
-\format{An object of class \code{TransitionLayer} of dimension 692 x 504 x 1.}
+\format{
+An object of class \code{TransitionLayer} of dimension 692 x 504 x 1.
+}
 \usage{
 greatLakesTrLayer
 }

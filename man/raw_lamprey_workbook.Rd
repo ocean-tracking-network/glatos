@@ -3,7 +3,8 @@
 \name{raw_lamprey_workbook}
 \alias{raw_lamprey_workbook}
 \title{Raw GLATOS Workbook from St. Marys River Sea Lamprey project}
-\format{A macro-enabled Microsoft Excel workbook file (*.xlsm) with six 
+\format{
+A macro-enabled Microsoft Excel workbook file (*.xlsm) with six 
  worksheets:
  \describe{
    \item{project}{project code, principal investigator and contact}
@@ -12,7 +13,8 @@
    \item{deployment}{receiver deployment data (what, where, when, how)}
    \item{recovery}{receiver recovery data (what, where, when, how)}
    \item{tagging}{animal collection, tagging, and recovery data}
- }}
+ }
+}
 \source{
 \url{http://glatos.glos.us/home/project/SMRSL}
 }

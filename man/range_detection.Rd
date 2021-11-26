@@ -4,7 +4,9 @@
 \name{range_detection}
 \alias{range_detection}
 \title{Detection range data set}
-\format{A data frame with 58309 rows and 30 variables}
+\format{
+A data frame with 58309 rows and 30 variables
+}
 \source{
 F. Zomer, T. Hayden
 }

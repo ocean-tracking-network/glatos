@@ -12,6 +12,8 @@
 #' @param erdRcv a data frame with receiver station data from the OTN ERDDAP 
 #'
 #' @param erdAni a data frame with animal data from the OTN ERDDAP
+#' 
+#' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.
 #'
 #'
 #' @details This function takes 4 data frames containing detection, and ERDDAP
@@ -63,7 +65,7 @@
 #'                                      tags, stations, animals)
 #' @export
 
-convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni) {
+convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni, crs = sp::CRS("+init=epsg:4326")) {
 
   transmitters <- 
     if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))){
@@ -118,7 +120,9 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni) {
   ) 
   # Final version of Tag.Metadata
   tagMetadata <- unique(dplyr::left_join(tagMetadata, releaseData)) 
-
+  
+  datetime_timezone = unique(detectionObj$timezone)
+  
   detectionObj <- detectionObj %>%
     dplyr::mutate(dummy=TRUE) %>%
     dplyr::left_join(dplyr::select(erdRcv %>% dplyr::mutate(dummy = TRUE), 
@@ -131,9 +135,9 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni) {
                                    deploy_datetime_utc = time, 
                                    recovery_datetime_utc)) %>%
     dplyr::mutate(deploy_datetime_utc = as.POSIXct(deploy_datetime_utc, 
-                                              format = "%Y-%m-%dT%H:%M:%OS"), 
+                                              format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone), 
                   recovery_datetime_utc = as.POSIXct(recovery_datetime_utc, 
-                                              format="%Y-%m-%dT%H:%M:%OS")) %>%
+                                              format="%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone)) %>%
     dplyr::filter(detection_timestamp_utc >= deploy_datetime_utc, 
                   detection_timestamp_utc <= recovery_datetime_utc) %>%
     dplyr::mutate(ReceiverFull = concat_list_strings(receiver_model, 
@@ -169,6 +173,14 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni) {
   )
 
   class(att_obj) <- "ATT"
+
+  if (inherits(crs, "CRS")) {
+    attr(att_obj, "CRS") <- crs
+  } 
+  else {
+    message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
+    attr(att_obj, "CRS") <- eval(formals()$crs)
+  }
 
   return(att_obj)
 }

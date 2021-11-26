@@ -222,7 +222,7 @@ residence_index <- function(detections, calculation_method='kessel',
   #numerator
   group_cols <- c("location", group_col)
   
-  detections <- dplyr::group_by(detections, .dots = group_cols)
+  detections <- dplyr::group_by(detections, across(group_cols))
   
   ri <- dplyr::do(detections, 
                     data.frame(days_detected = get_days(., calculation_method, 
@@ -241,7 +241,7 @@ residence_index <- function(detections, calculation_method='kessel',
     ri$total_days <- get_days(detections, calculation_method, 
                               time_interval_size)
   } else{
-    detections <- dplyr::group_by(detections, .dots = group_col)
+    detections <- dplyr::group_by(detections, across(group_col))
     ri <- dplyr::left_join(ri,
                            dplyr::do(detections, 
                              data.frame(total_days = 

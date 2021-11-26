@@ -36,9 +36,9 @@ bs_att <- convert_otn_erddap_to_att(blue_shark_detections,
 
 
 # Test using testthat library
-test_that("blue_shark_att gives expected result", {
+test_that("blue_shark_erddap_att gives expected result", {
   # Check if expected and actual results are the same
-  expect_equal(bs_att, blue_shark_att)
+  expect_equal(bs_att, blue_shark_erddap_att)
 })
 
 
