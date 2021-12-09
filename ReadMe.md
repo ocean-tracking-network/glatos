@@ -55,9 +55,9 @@ species and individual animals.
 
 1.  [`abacus_plot`](https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-abacus_plot.r) is useful for exploring movement patterns of individual tagged animals through time.
 
-2.  [`detection_bubble_plot`]https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-detection_bubble_plot.r) is useful for exploring distribution of tagged individuals among receivers.
+2.  [`detection_bubble_plot`](https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-detection_bubble_plot.r) is useful for exploring distribution of tagged individuals among receivers.
 
-3.  [`interpolate_path`](https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-interpolate_path.r), [`make_frames`](https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-make_frames.r), and [`make_video`]https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-make_video.r) Interpolate spatio-temporal movements, between detections, create video frames, and stitch frames together to create animated video file using *FFmpeg* software.
+3.  [`interpolate_path`](https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-interpolate_path.r), [`make_frames`](https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-make_frames.r), and [`make_video`](https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-make_video.r) Interpolate spatio-temporal movements, between detections, create video frames, and stitch frames together to create animated video file using *FFmpeg* software.
 
 4.  [`adjust_playback_time`](https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-adjust_playback_time.r) modify playback speed of videos and optionally convert between video file formats. Requires *FFmpeg*
 
