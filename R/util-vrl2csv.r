@@ -103,8 +103,8 @@ vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath=NA){
       pb <- txtProgressBar(0, max = length(vrl), style = 3)
     }
     foo_i <- system2(vuePath,c("--convert-files",
-      paste0("--output-path ", outDir), overwrite_file, 
-      paste0(" --output-format csv ", vrl[i])))
+      paste("--output-path ", outDir, "", sep = '"'), overwrite_file, 
+      paste(" --output-format csv ", vrl[i],"", sep = '"')))
     if(foo_i == '127') stop("VUE.exe was not found.\n",
       " Ensure that VUE is installed on your system and that either the \n",
       " PATH environment variable was set (see ?vrl2csv).\n",
