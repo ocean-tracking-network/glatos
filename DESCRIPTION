@@ -3,7 +3,7 @@ Type: Package
 Title: A package for the Great Lakes Acoustic Telemetry Observation System
 Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System www.glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
 Version: 0.5.1.9001
-Date: 2021-08-30
+Date: 2021-11-09
 Depends: R (>= 3.2.0)
 Imports:
 		av,
@@ -39,8 +39,8 @@ Suggests:
 		png,
     rmarkdown,
 		tint
-URL: https://gitlab.oceantrack.org/GreatLakes/glatos
-BugReports: https://gitlab.oceantrack.org/GreatLakes/glatos/issues
+URL: https://github.com/ocean-tracking-network/glatos
+BugReports: https://github.com/ocean-tracking-network/glatos/issues
 Authors@R: c(
     person("Christopher", "Holbrook", email = "cholbrook@usgs.gov",
 			role = c("cre", "aut")),
@@ -53,6 +53,6 @@ Authors@R: c(
 License: GPL-2
 LazyLoad: yes
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 Encoding: UTF-8

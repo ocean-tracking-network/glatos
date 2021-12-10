@@ -6,7 +6,7 @@
 \title{An R package for the Great Lakes Acoustic Telemetry Observation System}
 \description{
 \code{glatos} is an R package with functions useful to members of the Great
-Lakes Acoustic Telemetry Observation System (\url{http://glatos.glos.us}).
+Lakes Acoustic Telemetry Observation System (\url{https://glatos.glos.us}).
 Functions may be generally useful for processing, analyzing, simulating, and
 visualizing acoustic telemetry data, but are not strictly limited to acoustic
 telemetry applications.
@@ -14,14 +14,14 @@ telemetry applications.
 \section{Package status}{
  \emph{This package is in early development and its
   content is evolving.} To access the package or contribute code, join the
-  project at (\url{https://gitlab.oceantrack.org/GreatLakes/glatos}). If you
+  project at (\url{https://github.com/ocean-tracking-network/glatos}). If you
   encounter problems or have questions or suggestions, please post a new
   issue or email <cholbrook@usgs.gov> (maintainer: Chris Holbrook).
 }
 
 \section{Installation}{
  Installation instructions can be found at
-  \url{https://gitlab.oceantrack.org/GreatLakes/glatos/wikis/installation-instructions}.
+  \url{https://github.com/ocean-tracking-network/glatos/wiki/installation-instructions}.
 }
 
 \section{Data loading and processing}{
