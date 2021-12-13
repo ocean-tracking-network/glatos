@@ -29,11 +29,11 @@
 #'   each sheet in workbook will be included in result.
 #'   
 #' @details Data are read from the input file using
-#'   \link[openxlsx]{readWorkbook} in the package 'openxlsx' package. If
+#'   \link[readxl]{read_excel} in the 'readxl' package. If
 #'   \code{read_all = TRUE} then the type of data in each user-defined column
-#'   (and sheet) will be 'guessed' by \link[openxlsx]{readWorkbook}. Therefore,
+#'   (and sheet) will be 'guessed' by \link[readxl]{read_excel}. Therefore,
 #'   if \code{read_all = TRUE} then the structure of those columnns should be
-#'   carefully reviewed in the result. See \link[openxlsx]{readWorkbook} for
+#'   carefully reviewed in the result. See \link[readxl]{read_excel} for
 #'   details.
 #'
 #' @details Column \code{animal_id} is considered a required column by many
@@ -83,7 +83,7 @@
 #'
 #' @author C. Holbrook \email{cholbrook@usgs.gov} 
 #'
-#' @seealso \link[openxlsx]{readWorkbook}
+#' @seealso \link[readxl]{read_excel}
 #'
 #' @examples
 #' #get path to example GLATOS Data Workbook
@@ -107,7 +107,7 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
   
   
   #Get sheet names
-  sheets <- tolower(openxlsx::getSheetNames(wb_file))
+  sheets <- tolower(readxl::excel_sheets(wb_file))
     
   #Identify workbook version (based on sheet names)
   id_workbook_version <- function(wb_file, sheets){
@@ -137,9 +137,10 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
     wb[names(glatos:::glatos_workbook_schema$v1.3)] <- NA
     
     #Get project data
-    tmp <- tryCatch(openxlsx::readWorkbook(wb_file, sheet = "Project", 
-                                     startRow = 1, 
-                                     colNames = FALSE), error = function(e){
+    tmp <- tryCatch(readxl::read_excel(wb_file, sheet = "Project",
+                                     col_names = FALSE,
+                                     .name_repair = "minimal"), 
+                    error = function(e){
       if(e$message == 
           "Expecting a single string value: [type=character; extent=0]."){
         stop("There was a problem reading from input file specified. It may ",
@@ -147,9 +148,8 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
           "file.")
       } else {stop(e)}
     })
-    #tmp <- openxlsx::readWorkbook(wb_file, sheet = "Project", startRow = 1, 
-    #                              colNames = FALSE)
     
+    tmp <- as.data.frame(tmp)
     wb$project <- list(project_code = tmp[1,2],
                         principle_investigator = tmp[2,2],
                         pi_email = tmp[3,2],
@@ -176,10 +176,11 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
       if(is.null(schema_i)){ xl_start_row <- 1 } else { xl_start_row <- 2 }
         
       #read one row to get dimension and column names
-      tmp <- openxlsx::readWorkbook(wb_file, 
-        sheet = match(sheets_to_read[i], tolower(sheets)), 
-        check.names = FALSE,
-        startRow = xl_start_row, na.strings = c("", "NA"))      
+      tmp <- readxl::read_excel(wb_file, 
+                            sheet = match(sheets_to_read[i], tolower(sheets)), 
+                            skip = xl_start_row - 1, na = c("", "NA")) 
+      
+      tmp <- as.data.frame(tmp, stringsAsFactors = FALSE)
         
       if(!is.null(schema_i)){
       
@@ -268,8 +269,19 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
             
             #identify timestamps that can be numeric; assume others character
             posix_na <- is.na(tmp[, j]) #identify missing first
-            posix_as_num <- suppressWarnings(as.numeric(tmp[, j]))
+            
+            if(inherits(tmp[, j], "POSIXct")){
+              posix_as_num <- tmp[, j]
+            } else {
+              posix_as_num <- suppressWarnings(as.numeric(tmp[, j]))
+              
+              #convert excel number to posix
+              posix_as_num <- as.POSIXct("1899-12-30", tz = "GMT") + 
+                                         (posix_as_num * 86400)
+            }
+            
             posix_as_char <- !posix_na & is.na(posix_as_num)
+            
             if(any(posix_as_char)) {
               bad_pc_rows <- which(posix_as_char) + 2
               bad_pc_rows <- ifelse(length(bad_pc_rows) < 10, 
@@ -285,21 +297,19 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
               "Column: '", j, "'\n   Rows:  ", bad_pc_rows, "\n "))
             }
     
-            #convert numeric
-            posix_as_num <- openxlsx::convertToDateTime(posix_as_num, 
-                                    tz = Sys.timezone())
-            
             #handle multiple time zones
             for(k in 1:length(tz_cmd)){
               rows_k <- tzone_j %in% tz_cmd[k] #get rows with kth tz
               #round to nearest minute and force to correct timezone
               posix_as_num[rows_k] <- as.POSIXct(round(posix_as_num[rows_k], 
-                                       "mins"), tz = tz_cmd[k])
+                                                       "mins"), 
+                                                 tz = tz_cmd[k])
       
               #do same for posix_as_char and insert into posix_as_num
               if(any(posix_as_char[rows_k])){
-                posix_as_num[posix_as_char & rows_k] <- as.POSIXct(tmp[posix_as_char & rows_k , j], 
-                                                          tz = tz_cmd[k])
+                posix_as_num[posix_as_char & rows_k] <- 
+                  as.POSIXct(tmp[posix_as_char & rows_k , j], 
+                             tz = tz_cmd[k])
               }
             } # end k
             
@@ -317,16 +327,23 @@ read_glatos_workbook <- function(wb_file, read_all = FALSE,
         for(j in date_cols) {
           schema_row <- match(j, schema_i$name)
           
+          
           #identify date that can be numeric; assume others character
           date_na <- is.na(tmp[, j]) #identify missing 
-          date_as_num <- suppressWarnings(as.numeric(tmp[, j]))
-          date_as_char <- !date_na & is.na(date_as_num)
           
-          #convert numeric
-          date_as_num <- openxlsx::convertToDate(date_as_num)
-          
-          #do same for posix_as_char and insert into posix_as_num
+          if(inherits(tmp[, j], "POSIXct")){
+            date_as_num <- suppressWarnings(as.Date(tmp[, j]))
+          } else {
+            #convert excel number to R date
+            date_as_num <- suppressWarnings(as.numeric(tmp[, j]))
+            date_as_num <- as.Date("1899-12-30") + date_as_num
+          }
+            
+          date_as_char <- !date_na & is.na(date_as_num)         
+
+          #do same for date_as_char and insert into ate_as_num
           if(any(date_as_char)){
+
             bad_dc_rows <- which(date_as_char) + 2
             bad_dc_rows <- ifelse(length(bad_dc_rows) < 10, 
               paste0(bad_dc_rows, collapse = ", "),

@@ -51,11 +51,11 @@ In the standard glatos workbook (v1.3), data in workbook sheets
   each sheet in workbook will be included in result.
 
 Data are read from the input file using
-  \link[openxlsx]{readWorkbook} in the package 'openxlsx' package. If
+  \link[readxl]{read_excel} in the 'readxl' package. If
   \code{read_all = TRUE} then the type of data in each user-defined column
-  (and sheet) will be 'guessed' by \link[openxlsx]{readWorkbook}. Therefore,
+  (and sheet) will be 'guessed' by \link[readxl]{read_excel}. Therefore,
   if \code{read_all = TRUE} then the structure of those columnns should be
-  carefully reviewed in the result. See \link[openxlsx]{readWorkbook} for
+  carefully reviewed in the result. See \link[readxl]{read_excel} for
   details.
 
 Column \code{animal_id} is considered a required column by many
@@ -105,7 +105,7 @@ wb <- read_glatos_workbook(wb_file)
 
 }
 \seealso{
-\link[openxlsx]{readWorkbook}
+\link[readxl]{read_excel}
 }
 \author{
 C. Holbrook \email{cholbrook@usgs.gov}
