@@ -7,6 +7,8 @@
 #' 
 #' @param sheet_name the sheet name or number containing the metadata
 #' 
+#' @param combine_arr_stn whether or not to to join the station and array columns. Format depends on OTN node 
+#' 
 #' 
 #' @details The function takes the path to the deployment sheet, what line to start
 #' reading from, and what sheet in the excel file to use. It converts column names
