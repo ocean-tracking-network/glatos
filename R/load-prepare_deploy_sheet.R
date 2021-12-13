@@ -29,7 +29,7 @@
 #' 
 #' @export
 
-prepare_deploy_sheet <- function(path, header_line = 5, sheet_name = 1) {
+prepare_deploy_sheet <- function(path, header_line = 5, sheet_name = 1, combine_arr_stn = TRUE) {
     deploy_sheet <- readxl::read_excel(path, sheet = sheet_name, skip = header_line)
     deploy_sheet <- deploy_sheet %>% dplyr::rename(
         deploy_lat = DEPLOY_LAT,
@@ -37,11 +37,14 @@ prepare_deploy_sheet <- function(path, header_line = 5, sheet_name = 1) {
         ins_model_no = INS_MODEL_NO,
         deploy_date_time = `DEPLOY_DATE_TIME   (yyyy-mm-ddThh:mm:ss)`,
         recover_date_time = `RECOVER_DATE_TIME (yyyy-mm-ddThh:mm:ss)`,
+        station = STATION_NO
         
     )
-    deploy_sheet <- deploy_sheet %>% dplyr::mutate(
-        station = paste(OTN_ARRAY, STATION_NO, sep = '')
-    )
+    if (combine_arr_stn) {
+        deploy_sheet <- deploy_sheet %>% dplyr::mutate(
+            station = paste(OTN_ARRAY, station, sep = '')
+        )
+    }
     deploy_sheet <- deploy_sheet %>% dplyr::select(
         station, ins_model_no, deploy_lat, deploy_long,
         deploy_date_time, recover_date_time
