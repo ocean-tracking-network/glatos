@@ -154,8 +154,8 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
         Transmitter = as.factor(detectionObj$transmitter_id),
         Station.Name = as.factor(detectionObj$station),
         Receiver = as.factor(detectionObj$ReceiverFull),
-        Latitude = detectionObj$deploy_lat,
-        Longitude = detectionObj$deploy_long,
+        Latitude = as.double(detectionObj$deploy_lat),
+        Longitude = as.double(detectionObj$deploy_long),
         Sensor.Value = as.integer(detectionObj$sensorvalue),
         Sensor.Unit = as.factor(detectionObj$sensorunit)
     )
