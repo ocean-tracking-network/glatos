@@ -1,5 +1,23 @@
 ----
 
+# glatos 0.5.x
+
+#### 2021-12-10
+
+### Bug fixes and minor changes
+
+- read_glatos_workbook
+    - use readr::readexcel instead of openxlsx to read xlsm file
+    - fix [issue #138](https://github.com/ocean-tracking-network/glatos/issues/138#)
+
+- removed openxlsx and cellranger dependencies from DESCRIPTION
+
+- fix issue preventing vignettes from building when installed (missing space in data_loading_vignette.Rmd).
+
+
+
+----
+
 # glatos 0.5.1
 
 #### 2021-11-09
