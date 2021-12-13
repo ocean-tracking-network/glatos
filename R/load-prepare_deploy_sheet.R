@@ -31,7 +31,6 @@
 
 prepare_deploy_sheet <- function(path, header_line = 5, sheet_name = 1) {
     #get row names to skipping when start > 1
-    header_line = header_line - 1 # read_excel is 0-indexed cause the param is called skip, so 0 starts on 1
     col_names <- names(readxl::read_excel(path, sheet = sheet_name, skip = header_line, n_max = 1))
     deploy_sheet <- readxl::read_excel(path, sheet = sheet_name, skip = header_line,
                                 col_names = col_names)
