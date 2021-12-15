@@ -118,7 +118,6 @@ vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath=NA){
   fileCheck <- file.exists(outFName)
   
   cat('\n')
-  print(outFName[fileCheck])
   
   # Warn if any files were not created.
   if(any(!fileCheck)){
@@ -126,4 +125,7 @@ vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath=NA){
       warning(basename(outFName[!fileCheck][i]), " was not created.")
     }
   }
+  
+  return(outFName[fileCheck])
+  
 }

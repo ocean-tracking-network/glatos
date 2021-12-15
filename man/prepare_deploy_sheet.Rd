@@ -5,7 +5,12 @@
 \title{Loads the OTN receiver deployment metadata sheet to prepare it for use in 
 \code{convert_otn_to_att}}
 \usage{
-prepare_deploy_sheet(path, header_line = 5, sheet_name = 1)
+prepare_deploy_sheet(
+  path,
+  header_line = 5,
+  sheet_name = 1,
+  combine_arr_stn = TRUE
+)
 }
 \arguments{
 \item{path}{the path to the deployment sheet}
@@ -13,6 +18,8 @@ prepare_deploy_sheet(path, header_line = 5, sheet_name = 1)
 \item{header_line}{what line the headers are on}
 
 \item{sheet_name}{the sheet name or number containing the metadata}
+
+\item{combine_arr_stn}{whether or not to to join the station and array columns. Format depends on OTN node}
 }
 \value{
 a data.frame created from the excel file.
