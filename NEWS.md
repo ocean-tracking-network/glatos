@@ -1,6 +1,19 @@
 ----
 
-# glatos 0.5.x
+# glatos 0.5.3
+
+#### 2022-1-22
+
+### Bug fixes and minor changes
+
+- crw_in_polygon
+    - convert to sf
+	- improve speed
+
+
+----
+
+# glatos 0.5.2
 
 #### 2021-12-10
 

@@ -12,6 +12,7 @@ crw_in_polygon(
   initHeading = NA,
   nsteps = 30,
   EPSG = 3175,
+  output_class = "sf",
   sp_out = TRUE,
   show_progress = TRUE
 )
@@ -41,22 +42,30 @@ Default is 3175, a projected coordinate system for the North American
 Great Lakes Basin and St. Lawrence River system. 
 \url{http://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}}
 
-\item{sp_out}{Logical. If TRUE (default) then output is a 
-\link[sp]{SpatialPoints} object. If FALSE, then output is a 
-data.frame.}
+\item{output_class}{Specifies class of output object. Possible values are
+\code{"sf"} (default), \code{"sp"} (for \code{SpatialPointsDataFrame}),
+\code{"df"}, (for \code{data.frame}, or \code{"matrix"}.  If TRUE (default)
+then output is a spatial object of \link[sf]{sf}. If FALSE, then output is
+a data.frame.}
+
+\item{sp_out}{DEPRECATED but maintained for backward compatibility. If
+specified and \code{sp_out = TRUE}, then \code{output_class} is set to
+\code{"sp"}. If specificed and ]code{sp_out = FALSE}, then
+]code{output_class} is set to \code{"df"}.}
 
 \item{show_progress}{Logical. Progress bar and status messages will be 
 shown if TRUE (default) and not shown if FALSE.}
 }
 \value{
-A \link[sp]{SpatialPoints} object in the same CRS as the input 
+A \link[sf]{sf}, \link[sp]{SpatialPoints}, \code{data.frame}, or 
+\code{matrix} object in the same CRS as the input 
 \code{polyg} object. 
 \cr \emph{OR} \cr 
 A two-column data frame containing:
 \item{x}{x coordinates}
 \item{y}{y coordinates}
 in the same units as \code{polyg}.
-\cr See argument \code{sp_out}.
+\cr See argument \code{output_class}.
 }
 \description{
 Uses \link{crw} to simulate a random walk as series of equal-length steps 
@@ -72,9 +81,10 @@ If initPos = NA, then a starting point is randomly
   that lands outside the polygon.
 
 If polyg object is a data frame with x and y columns and
-  \code{sp_out} argument is TRUE, then \link[sp]{SpatialPoints} output object
+  \code{output_class = "sp"}, then \link[sp]{SpatialPoints} output object
   will have coordinate system of \code{EPSG}.  Coordinate system on output
-  will be same as input if polyg object is \code{[sp]{SpatialPolygons}}.
+  will be same as input if polyg object is \code{[sp]{SpatialPolygons}} 
+  or \code{[sf]{sf}}.
 }
 \note{
 The path is constructed in segments based on the minimum distance between 
