@@ -14,13 +14,9 @@ Checks to make sure external dependencies required by functions in
 'glatos' are installed and available to R.
 }
 \details{
-\code{check_dependencies} checks that the Geospatial Data
-  Abstraction Library (GDAL) and ffmpeg (cross platform software
-  for manipulating video content) software are installed on your
-  computer and accessible to R.  GDAL is used by the
-  \code{make_transition} function to create a transition layer
-  required by \code{interpolate_path} for non-linear
-  interpolation.  FFmpeg is required to create or modify video
+\code{check_dependencies} checks that ffmpeg (cross platform software
+  for manipulating video content) software is installed on your
+  computer and accessible to R. FFmpeg is required to create or modify video
   animations of fish movement using the \code{make_frames},
   \code{make_video}, and \code{adjust_video_playback} functions.
 
@@ -29,18 +25,6 @@ When \code{check_dependencies} is executed, R attempts to
   are installed and accessible, a message is returned to the
   terminal stating that the check was successful. Failed attempts
   to access the external libraries are printed to the terminal.
-
-Installation of the GDAL library and a number of other
-  open-source programs useful for working with spatial data on
-  windows is accomplished by downloading the network installer for
-  your appropriate windows computer (32 or 64 bit) at
-  \url{https://trac.osgeo.org/osgeo4w/}. Installation of the GDAL
-  library on Mac is possible using Homebrew or KyngChaos 3rd party
-  repositories.  Alternatively, the GDAL library is incorporated
-  in QGIS (open source desktop GIS) software and may be obtained
-  by installing QGIS.  Standalone installers for QGIS are
-  available (Windows, Mac, and Linux) at
-  \url{https://qgis.org/en/site/forusers/download.html}.
 
 The simplest way to install FFMPEG for use by the 'glatos' package
   functions is to use the \code{install_ffmpeg} function, which downloads
