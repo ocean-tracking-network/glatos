@@ -2,21 +2,19 @@
 
 # glatos 0.6.0
 
-#### 2022-05-05
+#### 2022-05-06
 
 ### Bug fixes and minor changes
 
 - remove dependency on gdalUtils
     - use gdalUtilities::gdal_rasterize instead of gdalUtils::gdal_rasterize
     - fix [issue #174](https://github.com/ocean-tracking-network/glatos/issues/174#)
+    - removed gdalUtils dependency from DESCRIPTION and added gdalUtilities
 
-- removed gdalUtils dependency from DESCRIPTION and added gdalUtilities
+- removed rgdal dependency from DESCRIPTION 
+    - removed GDAL installation check from check_dependencies
 
-- removed rgdal dependency from DESCRIPTION
-
-- removed GDAL installation check from check_dependencies
-
-- major changes to kml_to_csv
+- changes to kml_to_csv
     - read data from kml with sf::read_sf instead of rgdal::readOGR
     - allow multiple feature types to be read from kml
     - change export format from separate csv files to a single csv file
