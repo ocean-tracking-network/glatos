@@ -8,6 +8,7 @@
 #' @author Todd Hayden
 "greatLakesPoly"
 
+
 #' @title An sf POLYGON object with Great Lakes coastline and some major 
 #' tributaries.
 #' 
@@ -16,6 +17,26 @@
 #'
 #' @author Todd Hayden (coerced to sf by C. Holbrook)
 "great_lakes_polygon"
+
+
+#' @title An sf POLYGON object with coastline of Higgins Lake
+#' 
+#' @description An sf POLYGON object with coastline of Higgins Lake, Michigan. 
+#' Used as an example of a polygon representing a water body.
+#'
+#' @author Chris Holbrook
+"higgins_lake_polygon"
+
+
+#' @title An sf POLYGON object with coastline of Flynn Island
+#' 
+#' @description An sf POLYGON object with coastline of Flynn Island; and 
+#' island within Higgins Lake, Michigan. 
+#' Used as an example of a polygon representing a body of land (as opposed to 
+#' water body).
+#'
+#' @author Chris Holbrook
+"flynn_island_polygon"
 
 
 #' @title A TransitionLayer object that only allows transitions to occur within 
@@ -29,6 +50,7 @@
 #' @seealso \link{interpolate_path}, \link{gdistance}
 #' @author Todd Hayden 
 "greatLakesTrLayer"
+
 
 #' Sea Lamprey positions from Lake George, St. Marys River, 2012
 #' 
