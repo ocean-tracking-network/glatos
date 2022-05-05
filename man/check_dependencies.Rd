@@ -15,7 +15,7 @@ Checks to make sure external dependencies required by functions in
 }
 \details{
 \code{check_dependencies} checks that ffmpeg (cross platform software
-  for manipulating video content) software is installed on your
+  for manipulating video content) software are installed on your
   computer and accessible to R. FFmpeg is required to create or modify video
   animations of fish movement using the \code{make_frames},
   \code{make_video}, and \code{adjust_video_playback} functions.

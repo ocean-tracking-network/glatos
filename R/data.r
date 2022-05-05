@@ -8,6 +8,15 @@
 #' @author Todd Hayden
 "greatLakesPoly"
 
+#' @title An sf POLYGON object with Great Lakes coastline and some major 
+#' tributaries.
+#' 
+#' @description Created from \code{\link{greatLakesPoly}}. This is used as a
+#'   default map background in several \link{glatos} functions.
+#'
+#' @author Todd Hayden (coerced to sf by C. Holbrook)
+"great_lakes_polygon"
+
 
 #' @title A TransitionLayer object that only allows transitions to occur within 
 #' water of the Great Lakes Basin.
