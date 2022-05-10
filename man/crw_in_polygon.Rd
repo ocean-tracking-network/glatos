@@ -21,7 +21,7 @@ crw_in_polygon(
 \code{\link[sp]{SpatialPolygonsDataFrame}},
 \code{\link[sp]{SpatialPolygons}}, or \code{\link[sf]{sf}} or
 \code{\link[sf]{sfc}} object containing a 'POLYGON' feature); \cr \emph{OR}
-\cr A polygon defined as data frame with numeric columns x and y.}
+\cr A polygon defined as data frame or matrix with numeric columns x and y.}
 
 \item{theta}{A 2-element numeric vector with turn angle parameters (theta[1]
 = mean; theta[2] = sd) from normal distribution.}
@@ -99,14 +99,14 @@ The path is constructed in segments based on the minimum distance
 #Simple box example
 mypolygon <- data.frame(x = c(-50,-50, 50, 50), y = c(-50,50,50,-50))
 foo <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10,
-  initPos=c(0,0), initHeading=0, nsteps=50)
-class(foo) #note object is SpatialPoints
-plot(sp::coordinates(foo), type = "o", pch = 20, asp = c(1,1),
+  initPos=c(0,0), initHeading=0, nsteps=50, sp_out = FALSE)
+class(foo) #note object is data.frame
+plot(foo, type = "o", pch = 20, asp = c(1,1),
   xlim = range(mypolygon$x), ylim = range(mypolygon$y))
 polygon(mypolygon, border = "red")
 
 
-#Great Lakes Example
+#Great Lakes Example (SpatialPolygonsDataFrame)
 data(greatLakesPoly)
 
 #simulate in great lakes polygon
@@ -124,7 +124,7 @@ points(foo2,type="o", pch = 20, col = "red")
 
 }
 \seealso{
-\link{crw}
+\link{crw}, \link{transmit_along_path}, \link{detect_transmission}
 }
 \author{
 C. Holbrook \email{cholbrook@usgs.gov}

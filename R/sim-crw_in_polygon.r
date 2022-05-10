@@ -17,7 +17,6 @@
 #'   argument \code{EPSG} (meters for the default Great Lakes projected
 #'   coordinate system).
 #'
-#'
 #' @param initPos A 2-element numeric vector with initial position
 #'   (initPos[1]=x, initPos[2]=y) in same coordinate reference system as
 #'   \code{polyg}.
@@ -68,7 +67,7 @@
 #'
 #' @author C. Holbrook \email{cholbrook@@usgs.gov}
 #'
-#' @seealso \link{crw}
+#' @seealso \link{crw}, \link{transmit_along_path}, \link{detect_transmission}
 #'
 #' @note The path is constructed in segments based on the minimum distance
 #'   between the previous point and the closest polygon boundary.
@@ -84,14 +83,14 @@
 #' #Simple box example
 #' mypolygon <- data.frame(x = c(-50,-50, 50, 50), y = c(-50,50,50,-50))
 #' foo <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10,
-#'   initPos=c(0,0), initHeading=0, nsteps=50)
-#' class(foo) #note object is SpatialPoints
-#' plot(sp::coordinates(foo), type = "o", pch = 20, asp = c(1,1),
+#'   initPos=c(0,0), initHeading=0, nsteps=50, sp_out = FALSE)
+#' class(foo) #note object is data.frame
+#' plot(foo, type = "o", pch = 20, asp = c(1,1),
 #'   xlim = range(mypolygon$x), ylim = range(mypolygon$y))
 #' polygon(mypolygon, border = "red")
 #'
 #'
-#' #Great Lakes Example
+#' #Great Lakes Example (SpatialPolygonsDataFrame)
 #' data(greatLakesPoly)
 #'
 #' #simulate in great lakes polygon
