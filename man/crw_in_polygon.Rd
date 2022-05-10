@@ -21,7 +21,7 @@ crw_in_polygon(
 \code{\link[sp]{SpatialPolygonsDataFrame}},
 \code{\link[sp]{SpatialPolygons}}, or \code{\link[sf]{sf}} or
 \code{\link[sf]{sfc}} object containing a 'POLYGON' feature); \cr \emph{OR}
-\cr A polygon defined as data frame or matrix with numeric columns x and y.}
+\cr A polygon defined as data frame with numeric columns x and y.}
 
 \item{theta}{A 2-element numeric vector with turn angle parameters (theta[1]
 = mean; theta[2] = sd) from normal distribution.}
@@ -116,6 +116,28 @@ foo2 <- crw_in_polygon(greatLakesPoly,theta=c(0,25), stepLen=10000,
 #plot
 sp::plot(greatLakesPoly, col = "lightgrey", border = "grey")
 points(foo2,type="o", pch = 20, col = "red")
+
+#zoom in
+sp::plot(greatLakesPoly, col = "lightgrey", border = "grey",
+  xlim = sp::bbox(foo2)[1,], ylim = sp::bbox(foo2)[2,])
+points(foo2,type="o", pch = 20, col = "red")
+
+
+#' #Great Lakes Example (sf POLYGON)
+data(great_lakes_polygon)
+
+#simulate in great lakes polygon
+foo3 <- crw_in_polygon(great_lakes_polygon,
+                       theta = c(0, 25), 
+                       stepLen = 10000,
+                       initHeading = 0, 
+                       nsteps = 100)
+
+#plot
+plot(sf::st_geometry(great_lakes_polygon),
+                     col = "lightgrey", 
+                     border = "grey")
+points(sf::st_geometry(foo2), type = "o", pch = 20, col = "red")
 
 #zoom in
 sp::plot(greatLakesPoly, col = "lightgrey", border = "grey",

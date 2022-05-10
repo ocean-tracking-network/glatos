@@ -1,7 +1,7 @@
 ----
 # glatos 0.6.0
 
-#### 2022-05-06
+#### 2022-05-09
 
 ### Bug fixes and minor changes
 

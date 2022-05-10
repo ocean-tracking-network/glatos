@@ -106,6 +106,29 @@
 #'   xlim = sp::bbox(foo2)[1,], ylim = sp::bbox(foo2)[2,])
 #' points(foo2,type="o", pch = 20, col = "red")
 #'
+#'
+#'#' #Great Lakes Example (sf POLYGON)
+#' data(great_lakes_polygon)
+#'
+#' #simulate in great lakes polygon
+#' foo3 <- crw_in_polygon(great_lakes_polygon,
+#'                        theta = c(0, 25), 
+#'                        stepLen = 10000,
+#'                        initHeading = 0, 
+#'                        nsteps = 100)
+#'
+#' #plot
+#' plot(sf::st_geometry(great_lakes_polygon),
+#'                      col = "lightgrey", 
+#'                      border = "grey")
+#' points(sf::st_coordinates(foo3), type = "o", pch = 20, col = "red")
+#'
+#' #zoom in
+#' plot(sf::st_geometry(great_lakes_polygon), col = "lightgrey",
+#'   xlim = sf::st_bbox(foo3)[c("xmin", "xmax")], 
+#'   ylim = sf::st_bbox(foo3)[c("ymin", "ymax")])
+#' points(sf::st_coordinates(foo3),type="o", pch = 20, col = "red")
+#'
 #' @export
 
 crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100, 
@@ -258,9 +281,11 @@ crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100,
     if(inherits(polyg, c("sf", "sfc"))) return(path_fwd_sf)
 
     #return sp object if input is sp or data.frame
-    return(sf::as_Spatial(path_fwd_sf))  
+    path_fwd_sp <- sf::as_Spatial(path_fwd_sf)
+    return(path_fwd_sp)  
   } else {
-    return(as.data.frame(sf::st_coordinates(path_fwd_sf)))
+    path_fwd_df <- as.data.frame(sf::st_coordinates(path_fwd_sf))[,c("X", "Y")]
+    return(path_fwd_df)
   }
 } 
  
