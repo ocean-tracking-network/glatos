@@ -1,5 +1,4 @@
 ----
-
 # glatos 0.6.0
 
 #### 2022-05-06
@@ -24,6 +23,10 @@
 
 - added example data 'great_lakes_polygon'; an sf POLYGON version of 
   'greatLakesPoly' (a SpatialPolygonsDataFrame)
+  
+- crw_in_polygon
+    - convert to sf
+	  - improve speed
 
 
 ----

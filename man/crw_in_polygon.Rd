@@ -17,87 +17,96 @@ crw_in_polygon(
 )
 }
 \arguments{
-\item{polyg}{A \code{\link[sp]{SpatialPolygons}} object.
-\cr \emph{OR} \cr
-A polygon defined as data frame with numeric columns x and y.}
+\item{polyg}{A spatial polygon object (class must be
+\code{\link[sp]{SpatialPolygonsDataFrame}},
+\code{\link[sp]{SpatialPolygons}}, or \code{\link[sf]{sf}} or
+\code{\link[sf]{sfc}} object containing a 'POLYGON' feature); \cr \emph{OR}
+\cr A polygon defined as data frame or matrix with numeric columns x and y.}
 
-\item{theta}{A 2-element numeric vector with turn angle parameters 
-(theta[1] = mean; theta[2] = sd) from normal distribution.}
+\item{theta}{A 2-element numeric vector with turn angle parameters (theta[1]
+= mean; theta[2] = sd) from normal distribution.}
 
-\item{stepLen}{A numeric scalar with total distance moved in each step. 
-Units are same as the units of the coordinate reference system specified 
-by argument \code{EPSG} (meters for the default Great Lakes projected 
+\item{stepLen}{A numeric scalar with total distance moved in each step. Units
+are same as the units of the coordinate reference system specified by
+argument \code{EPSG} (meters for the default Great Lakes projected
 coordinate system).}
 
 \item{initPos}{A 2-element numeric vector with initial position
-(initPos[1]=x, initPos[2]=y) in same units as \code{polyg}.}
+(initPos[1]=x, initPos[2]=y) in same coordinate reference system as
+\code{polyg}.}
 
-\item{initHeading}{A numeric scalar with initial heading in degrees.}
+\item{initHeading}{A numeric scalar with initial heading in degrees. E.g., 0
+= North; 90 = East, 180 = South, 270 = West; etc.}
 
 \item{nsteps}{A numeric scalar with number of steps to simulate.}
 
-\item{EPSG}{Numeric EPSG code of the coordinate system used for simulations. 
-Default is 3175, a projected coordinate system for the North American 
-Great Lakes Basin and St. Lawrence River system. 
-\url{http://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}}
+\item{EPSG}{Numeric EPSG code of coordinate system used for simulations.
+Default is 3175, a projected coordinate system for the North American Great
+Lakes Basin and St. Lawrence River system.
+\url{https://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}.
+ Must be a projected (Cartesian) coordinate system.}
 
-\item{sp_out}{Logical. If TRUE (default) then output is a 
-\link[sp]{SpatialPoints} object. If FALSE, then output is a 
-data.frame.}
+\item{sp_out}{A logical scalar that determines if returned object is a
+so-called spatial class. If \code{TRUE} (default value) and input
+\code{polyg} is class \code{\link[sp]{SpatialPolygonsDataFrame}},
+\code{\link[sp]{SpatialPolygons}}, \code{\link[sf]{sf}}, or
+\code{\link[sf]{sfc}} (must be 'POLYGON' feature) then class of returned
+object will be same as input object \code{polyg}. If \code{TRUE} and input
+\code{polyg} is a \code{data.frame} then returned object will be of class
+\code{\link[sp]{SpatialPolygonsDataFrame}}. If \code{FALSE} then returned
+object will be of class \code{data.frame}.}
 
-\item{show_progress}{Logical. Progress bar and status messages will be 
-shown if TRUE (default) and not shown if FALSE.}
+\item{show_progress}{Logical. Progress bar and status messages will be shown
+if TRUE (default) and not shown if FALSE.}
 }
 \value{
-A \link[sp]{SpatialPoints} object in the same CRS as the input 
-\code{polyg} object. 
-\cr \emph{OR} \cr 
-A two-column data frame containing:
-\item{x}{x coordinates}
-\item{y}{y coordinates}
-in the same units as \code{polyg}.
-\cr See argument \code{sp_out}.
+A \code{\link[sf]{sf}}, \code{\link[sp]{SpatialPoints}}, or
+  \code{data.frame}, object in the same coordinate system as the input
+  \code{polyg} object. \cr \emph{OR} \cr A two-column data frame containing:
+  \item{x}{x coordinates} \item{y}{y coordinates} in the same units as
+  \code{polyg}. \cr See argument \code{sp_out}.
 }
 \description{
-Uses \link{crw} to simulate a random walk as series of equal-length steps 
-  with turning angles drawn from a normal distribution inside a polygon.
+Uses \link{crw} to simulate a random walk as series of equal-length steps
+with turning angles drawn from a normal distribution inside a polygon.
 }
 \details{
-If initPos = NA, then a starting point is randomly
-  selected within the polygon boundary. A path is simulated forward
-  using the crw function.  Initial heading is also randomly
-  selected if initHeading = NA. When a step crosses the polygon
-  boundary, a new heading for that step is drawn and the turn angle
-  standard deviation is enlarged slightly for each subsequent point
-  that lands outside the polygon.
+If initPos = NA, then a starting point is randomly selected within
+  the polygon boundary. A path is simulated forward using the crw function.
+  Initial heading is also randomly selected if initHeading = NA. When a step
+  crosses the polygon boundary, a new heading for that step is drawn and the
+  turn angle standard deviation is enlarged slightly for each subsequent
+  point that lands outside the polygon.
 
 If polyg object is a data frame with x and y columns and
-  \code{sp_out} argument is TRUE, then \link[sp]{SpatialPoints} output object
+  \code{sp_out = TRUE}, then \code{\link[sp]{SpatialPoints}} output object
   will have coordinate system of \code{EPSG}.  Coordinate system on output
-  will be same as input if polyg object is \code{[sp]{SpatialPolygons}}.
+  will be same as input if polyg object is \code{\link[sp]{SpatialPolygons}}
+  or \code{\link[sf]{sf}}.
 }
 \note{
-The path is constructed in segments based on the minimum distance between 
-the previous point and the closest polygon boundary.
+The path is constructed in segments based on the minimum distance
+  between the previous point and the closest polygon boundary.
 
-Simulations are conducted within the coordinate system specified by 
-argument \code{EPSG}. The default EPSG (3175), covers only the Great Lakes
-of North America. Simulations conducted in other areas will need to specify 
-a valid EPSG for the study area.
+  Simulations are conducted within the coordinate system specified by
+  argument \code{EPSG}. The default EPSG (3175), covers only the Great Lakes
+  of North America. Simulations conducted in other areas will need to specify
+  a valid EPSG representing an appropriate projected (Cartesian) coordinate
+  system for the study area.
 }
 \examples{
 
 #Simple box example
 mypolygon <- data.frame(x = c(-50,-50, 50, 50), y = c(-50,50,50,-50))
-foo <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10, 
-  initPos=c(0,0), initHeading=0, nsteps=50)
-class(foo) #note object is SpatialPoints
-plot(sp::coordinates(foo), type = "o", pch = 20, asp = c(1,1), 
+foo <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10,
+  initPos=c(0,0), initHeading=0, nsteps=50, sp_out = FALSE)
+class(foo) #note object is data.frame
+plot(foo, type = "o", pch = 20, asp = c(1,1),
   xlim = range(mypolygon$x), ylim = range(mypolygon$y))
 polygon(mypolygon, border = "red")
 
 
-#Great Lakes Example
+#Great Lakes Example (SpatialPolygonsDataFrame)
 data(greatLakesPoly)
 
 #simulate in great lakes polygon
@@ -109,13 +118,13 @@ sp::plot(greatLakesPoly, col = "lightgrey", border = "grey")
 points(foo2,type="o", pch = 20, col = "red")
 
 #zoom in
-sp::plot(greatLakesPoly, col = "lightgrey", border = "grey", 
+sp::plot(greatLakesPoly, col = "lightgrey", border = "grey",
   xlim = sp::bbox(foo2)[1,], ylim = sp::bbox(foo2)[2,])
 points(foo2,type="o", pch = 20, col = "red")
 
 }
 \seealso{
-\link{crw}
+\link{crw}, \link{transmit_along_path}, \link{detect_transmission}
 }
 \author{
 C. Holbrook \email{cholbrook@usgs.gov}
