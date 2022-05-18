@@ -137,16 +137,17 @@ foo3 <- crw_in_polygon(great_lakes_polygon,
 plot(sf::st_geometry(great_lakes_polygon),
                      col = "lightgrey", 
                      border = "grey")
-points(sf::st_geometry(foo2), type = "o", pch = 20, col = "red")
+points(sf::st_coordinates(foo3), type = "o", pch = 20, col = "red")
 
 #zoom in
-sp::plot(greatLakesPoly, col = "lightgrey", border = "grey",
-  xlim = sp::bbox(foo2)[1,], ylim = sp::bbox(foo2)[2,])
-points(foo2,type="o", pch = 20, col = "red")
+plot(sf::st_geometry(great_lakes_polygon), col = "lightgrey",
+  xlim = sf::st_bbox(foo3)[c("xmin", "xmax")], 
+  ylim = sf::st_bbox(foo3)[c("ymin", "ymax")])
+points(sf::st_coordinates(foo3),type="o", pch = 20, col = "red")
 
 }
 \seealso{
-\link{crw}, \link{transmit_along_path}, \link{detect_transmission}
+\link{crw}, \link{transmit_along_path}, \link{detect_transmissions}
 }
 \author{
 C. Holbrook \email{cholbrook@usgs.gov}

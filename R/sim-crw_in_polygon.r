@@ -67,7 +67,7 @@
 #'
 #' @author C. Holbrook \email{cholbrook@@usgs.gov}
 #'
-#' @seealso \link{crw}, \link{transmit_along_path}, \link{detect_transmission}
+#' @seealso \link{crw}, \link{transmit_along_path}, \link{detect_transmissions}
 #'
 #' @note The path is constructed in segments based on the minimum distance
 #'   between the previous point and the closest polygon boundary.
