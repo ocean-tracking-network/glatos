@@ -32,12 +32,15 @@
 - transmit_along_path
     - convert to sf (remove sp)
     - return sf object (default) or data.frame
-    - remove EPSG input arg
-    - add CRS input arg
-    - calculate distances along path using sf::st_distance instead of 
-      euclidean (no longer requires transformation to Cartesian CRS for 
-      calculations).
-    - change name of column 'et' in output to 'elapsed_time'.
+    - calculate distances along path using geodist::geodist for geographic and 
+      simple Euclidean for Cartesian coordinates. Cartesian input results in 
+      fastest computations.
+    - remove EPSG input (no longer requires transformation to Cartesian CRS for 
+      calculations)
+    - add CRS input arg for non-spatial inputs
+    - change name of column 'et' in output to 'time'.
+    - add input arg "colNames" for non-default coordinate column name 
+      specification.
 
 
 ----
