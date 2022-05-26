@@ -17,11 +17,11 @@ crw_in_polygon(
 )
 }
 \arguments{
-\item{polyg}{A spatial polygon object (class must be
-\code{\link[sp]{SpatialPolygonsDataFrame}},
-\code{\link[sp]{SpatialPolygons}}, or \code{\link[sf]{sf}} or
-\code{\link[sf]{sfc}} object containing a 'POLYGON' feature); \cr \emph{OR}
-\cr A polygon defined as data frame with numeric columns x and y.}
+\item{polyg}{A spatial polygon object of class \code{\link[sf]{sf}} or
+\code{\link[sf]{sfc}} containing \code{POLYGON} features (but
+\code{SpatialPolygonsDataFrame} and \code{SpatialPolygons} are also
+accepted); \cr \emph{OR} \cr A polygon defined as data frame with numeric
+columns x and y.}
 
 \item{theta}{A 2-element numeric vector with turn angle parameters (theta[1]
 = mean; theta[2] = sd) from normal distribution.}
@@ -46,43 +46,35 @@ Lakes Basin and St. Lawrence River system.
 \url{https://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}.
  Must be a projected (Cartesian) coordinate system.}
 
-\item{sp_out}{A logical scalar that determines if returned object is a
-so-called spatial class. If \code{TRUE} (default value) and input
-\code{polyg} is class \code{\link[sp]{SpatialPolygonsDataFrame}},
-\code{\link[sp]{SpatialPolygons}}, \code{\link[sf]{sf}}, or
-\code{\link[sf]{sfc}} (must be 'POLYGON' feature) then class of returned
-object will be same as input object \code{polyg}. If \code{TRUE} and input
-\code{polyg} is a \code{data.frame} then returned object will be of class
-\code{\link[sp]{SpatialPolygonsDataFrame}}. If \code{FALSE} then returned
-object will be of class \code{data.frame}.}
+\item{sp_out}{Logical. If TRUE (default) then output is an \code{sf} object.
+If FALSE, then output is a \code{data.frame}.}
 
 \item{show_progress}{Logical. Progress bar and status messages will be shown
 if TRUE (default) and not shown if FALSE.}
 }
 \value{
-A \code{\link[sf]{sf}}, \code{\link[sp]{SpatialPoints}}, or
-  \code{data.frame}, object in the same coordinate system as the input
-  \code{polyg} object. \cr \emph{OR} \cr A two-column data frame containing:
+When \code{sp_out = TRUE}, an \code{sf} object containing one
+  \code{POINT} feature for each vertex in the simulated path. \cr \emph{OR}
+  \cr When \code{sp_out = FALSE}, a two-column data frame containing:
   \item{x}{x coordinates} \item{y}{y coordinates} in the same units as
-  \code{polyg}. \cr See argument \code{sp_out}.
+  \code{polyg}.
 }
 \description{
-Uses \link{crw} to simulate a random walk as series of equal-length steps
+Uses \code{\link{crw}} to simulate a random walk as series of equal-length steps
 with turning angles drawn from a normal distribution inside a polygon.
 }
 \details{
 If initPos = NA, then a starting point is randomly selected within
-  the polygon boundary. A path is simulated forward using the crw function.
-  Initial heading is also randomly selected if initHeading = NA. When a step
-  crosses the polygon boundary, a new heading for that step is drawn and the
-  turn angle standard deviation is enlarged slightly for each subsequent
-  point that lands outside the polygon.
+  the polygon boundary. A path is simulated forward using \code{\link{crw}}.
+  Initial heading is also randomly selected if \code{initHeading = NA}. When
+  a step crosses the polygon boundary, a new heading for that step is drawn
+  and the turn angle standard deviation is enlarged slightly for each
+  subsequent point that lands outside the polygon.
 
-If polyg object is a data frame with x and y columns and
-  \code{sp_out = TRUE}, then \code{\link[sp]{SpatialPoints}} output object
-  will have coordinate system of \code{EPSG}.  Coordinate system on output
-  will be same as input if polyg object is \code{\link[sp]{SpatialPolygons}}
-  or \code{\link[sf]{sf}}.
+If input \code{polyg} object is a data.frame with x and y columns and
+  \code{sp_out = TRUE}, then output object
+  coordinate system is defined by \code{EPSG}. Coordinate system on output
+  will be same as input if polyg contains a valid CRS.
 }
 \note{
 The path is constructed in segments based on the minimum distance
@@ -96,54 +88,58 @@ The path is constructed in segments based on the minimum distance
 }
 \examples{
 
-#Simple box example
+# Example 1 - data.frame input
 mypolygon <- data.frame(x = c(-50,-50, 50, 50), y = c(-50,50,50,-50))
-foo <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10,
+path_df <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10,
   initPos=c(0,0), initHeading=0, nsteps=50, sp_out = FALSE)
-class(foo) #note object is data.frame
-plot(foo, type = "o", pch = 20, asp = c(1,1),
+class(path_df) #note object is data.frame
+plot(path_df, type = "o", pch = 20, asp = c(1,1),
   xlim = range(mypolygon$x), ylim = range(mypolygon$y))
 polygon(mypolygon, border = "red")
 
 
-#Great Lakes Example (SpatialPolygonsDataFrame)
-data(greatLakesPoly)
-
-#simulate in great lakes polygon
-foo2 <- crw_in_polygon(greatLakesPoly,theta=c(0,25), stepLen=10000,
-  initHeading=0, nsteps=100, sp_out = TRUE)
-
-#plot
-sp::plot(greatLakesPoly, col = "lightgrey", border = "grey")
-points(foo2,type="o", pch = 20, col = "red")
-
-#zoom in
-sp::plot(greatLakesPoly, col = "lightgrey", border = "grey",
-  xlim = sp::bbox(foo2)[1,], ylim = sp::bbox(foo2)[2,])
-points(foo2,type="o", pch = 20, col = "red")
-
-
-#' #Great Lakes Example (sf POLYGON)
+# Example 2 - sf POLYGON input
 data(great_lakes_polygon)
 
 #simulate in great lakes polygon
-foo3 <- crw_in_polygon(great_lakes_polygon,
-                       theta = c(0, 25), 
-                       stepLen = 10000,
-                       initHeading = 0, 
-                       nsteps = 100)
+path_sf <- crw_in_polygon(great_lakes_polygon,
+                          theta = c(0, 25), 
+                          stepLen = 10000,
+                          initHeading = 0, 
+                          nsteps = 100)
 
 #plot
 plot(sf::st_geometry(great_lakes_polygon),
                      col = "lightgrey", 
                      border = "grey")
-points(sf::st_coordinates(foo3), type = "o", pch = 20, col = "red")
+points(sf::st_coordinates(path_sf), type = "o", pch = 20, col = "red")
 
 #zoom in
 plot(sf::st_geometry(great_lakes_polygon), col = "lightgrey",
-  xlim = sf::st_bbox(foo3)[c("xmin", "xmax")], 
-  ylim = sf::st_bbox(foo3)[c("ymin", "ymax")])
-points(sf::st_coordinates(foo3),type="o", pch = 20, col = "red")
+  xlim = sf::st_bbox(path_sf)[c("xmin", "xmax")], 
+  ylim = sf::st_bbox(path_sf)[c("ymin", "ymax")])
+points(sf::st_coordinates(path_sf),type="o", pch = 20, col = "red")
+
+
+
+# Example 3 - SpatialPolygonsDataFrame input
+data(greatLakesPoly)
+
+#simulate in great lakes polygon
+path_sp <- crw_in_polygon(greatLakesPoly, theta = c(0, 25), stepLen = 10000,
+                          initHeading = 0, nsteps = 100, sp_out = TRUE)
+
+#plot
+plot(sf::st_as_sfc(greatLakesPoly), col = "lightgrey", border = "grey")
+points(sf::st_coordinates(sf::st_as_sf(path_sp)), type = "o", pch = 20, 
+                          col = "red")
+
+#zoom in
+plot(sf::st_as_sfc(greatLakesPoly), col = "lightgrey", border = "grey",
+  xlim = sp::bbox(sf::st_coordinates(sf::st_as_sf(path_sp)))[1,], 
+  ylim = sp::bbox(sf::st_coordinates(sf::st_as_sf(path_sp)))[2,])
+points(sf::st_coordinates(sf::st_as_sf(path_sp)), type = "o", pch = 20, 
+       col = "red")
 
 }
 \seealso{

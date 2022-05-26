@@ -1,7 +1,7 @@
 ----
 # glatos 0.6.0
 
-#### 2022-05-09
+#### 2022-05-26
 
 ### Bug fixes and minor changes
 
@@ -25,8 +25,19 @@
   'greatLakesPoly' (a SpatialPolygonsDataFrame)
   
 - crw_in_polygon
-    - convert to sf
+    - convert to sf (remove sp)
 	  - improve speed
+	  - return sf object (default) or data.frame
+	  
+- transmit_along_path
+    - convert to sf (remove sp)
+    - return sf object (default) or data.frame
+    - remove EPSG input arg
+    - add CRS input arg
+    - calculate distances along path using sf::st_distance instead of 
+      euclidean (no longer requires transformation to Cartesian CRS for 
+      calculations).
+    - change name of column 'et' in output to 'elapsed_time'.
 
 
 ----
