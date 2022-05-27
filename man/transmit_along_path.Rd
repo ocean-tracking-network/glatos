@@ -9,7 +9,7 @@ transmit_along_path(
   vel = 0.5,
   delayRng = c(60, 180),
   burstDur = 5,
-  colNames = list(time = "elapsed_time", x = "x", y = "y"),
+  colNames = list(x = "x", y = "y"),
   CRS = NA,
   sp_out = TRUE
 )
