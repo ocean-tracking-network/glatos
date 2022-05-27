@@ -1,7 +1,7 @@
 ----
 # glatos 0.6.0
 
-#### 2022-05-26
+#### 2022-05-27
 
 ### Bug fixes and minor changes
 
@@ -41,7 +41,19 @@
     - change name of column 'et' in output to 'time'.
     - add input arg "colNames" for non-default coordinate column name 
       specification.
-
+      
+- detect_transmissions
+    - convert to sf (remove sp)
+    - return sf object (default) or data.frame
+    - calculate distances along path using geodist::geodist for geographic and 
+      simple Euclidean for Cartesian coordinates. Cartesian input results in 
+      fastest computations.
+    - remove EPSG input (no longer requires transformation to Cartesian CRS for 
+      calculations)
+    - add CRS input arg for non-spatial inputs
+    - change name of column 'et' in output to 'time'.
+    - add input arg "colNames" for non-default coordinate column name 
+      specification.    
 
 ----
 
