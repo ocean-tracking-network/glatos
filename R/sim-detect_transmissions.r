@@ -14,9 +14,7 @@
 #'   locations.\cr \emph{OR} \cr An object of class \code{\link[sf]{sf}} or
 #'   \code{\link[sf]{sfc}} containing a \code{POINT} feature (geometry column)
 #'   for each receiver. (\code{\link[sp]{SpatialPointsDataFrame}} is also
-#'   allowed.) \cr \emph{OR} \cr An object of class \code{glatos_receivers}
-#'   (e.g., created by \code{\link{read_glatos_receivers}} or
-#'   \code{\link{read_glatos_workbook}}).
+#'   allowed.)
 #'
 #' @param detRngFun A function that defines detection range curve; must accept a
 #'   numeric vector of distances (in meters) and return a numeric vector of
@@ -31,14 +29,12 @@
 #' @param recColNames A named list containing the names of columns in
 #'   \code{recLoc} with coordinates of receiver locations (defaults are
 #'   \code{"x"} and \code{"y"}). Location column names are ignored if
-#'   \code{recLoc} is a spatial object with a geometry column or a
-#'   \code{glatos_receivers} object.
+#'   \code{recLoc} is a spatial object with a geometry column.
 #'
 #' @param CRS Defines the coordinate reference system (object of class
 #'   \code{crs}) if crs is missing from inputs \code{trnsLoc} or \code{recLoc};
 #'   ignored if input \code{trnsLoc} and \code{recLoc} are of class \code{sf},
-#'   \code{sfc}, or \code{SpatialPointsDataFrame}). For \code{glatos_receivers}
-#'   object, EPSG 4326 is used.
+#'   \code{sfc}, or \code{SpatialPointsDataFrame}). 
 #'
 #' @param sp_out Logical. If TRUE (default) then output is an \code{sf} object.
 #'   If FALSE, then output is a \code{data.frame}.
