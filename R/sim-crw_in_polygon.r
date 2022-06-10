@@ -6,16 +6,14 @@
 #' @param polyg A spatial polygon object of class \code{\link[sf]{sf}} or
 #'   \code{\link[sf]{sfc}} containing \code{POLYGON} features (but
 #'   \code{SpatialPolygonsDataFrame} and \code{SpatialPolygons} are also
-#'   accepted); \cr \emph{OR} \cr A polygon defined as data frame with numeric
-#'   columns x and y.
+#'   accepted); \cr \emph{OR} \cr A polygon defined as data frame or matrix with
+#'   numeric columns x and y.
 #'   
 #' @param theta A 2-element numeric vector with turn angle parameters (theta[1]
-#'   = mean; theta[2] = sd) from normal distribution.
+#'   = mean; theta[2] = sd), in degrees, from normal distribution.
 #'
-#' @param stepLen A numeric scalar with total distance moved in each step. Units
-#'   are same as the units of the coordinate reference system specified by
-#'   argument \code{EPSG} (meters for the default Great Lakes projected
-#'   coordinate system).
+#' @param stepLen A numeric scalar with total distance moved in each step, in 
+#'   meters.
 #'
 #' @param initPos A 2-element numeric vector with initial position
 #'   (initPos[1]=x, initPos[2]=y) in same coordinate reference system as
@@ -26,18 +24,21 @@
 #'
 #' @param nsteps A numeric scalar with number of steps to simulate.
 #'
-#' @param EPSG Numeric EPSG code of coordinate system used for simulations.
-#'   Default is 3175, a projected coordinate system for the North American Great
-#'   Lakes Basin and St. Lawrence River system.
-#'   \url{https://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}.
-#'    Must be a projected (Cartesian) coordinate system.
+#' @param inputCRS A \code{crs} object or numeric EPSG code of coordinate system
+#'   of input \code{polyg}. Only used if \code{polyg} does not contain a
+#'   \code{crs}. If missing, then \code{polyg} is assumed in an arbitrary Cartesian
+#'   (projected) system with base unit of one meter.
+#'   
+#' @param cartesianCRS Coordinate reference system used for simulations. Must be
+#'   a Cartesian (projected) coordinate system. Must be given when input CRS 
+#'   is non-Cartesian (e.g., long-lat); optional otherwise. See Note.
 #'
 #' @param sp_out Logical. If TRUE (default) then output is an \code{sf} object.
 #'   If FALSE, then output is a \code{data.frame}.
 #'
 #' @param show_progress Logical. Progress bar and status messages will be shown
 #'   if TRUE (default) and not shown if FALSE.
-#'
+#'   
 #' @details If initPos = NA, then a starting point is randomly selected within
 #'   the polygon boundary. A path is simulated forward using \code{\link{crw}}.
 #'   Initial heading is also randomly selected if \code{initHeading = NA}. When
@@ -47,8 +48,8 @@
 #'
 #' @details If input \code{polyg} object is a data.frame with x and y columns and
 #'   \code{sp_out = TRUE}, then output object
-#'   coordinate system is defined by \code{EPSG}. Coordinate system on output
-#'   will be same as input if polyg contains a valid CRS.
+#'   coordinate system is defined by \code{inputCRS}. Coordinate system on output
+#'   will be same as input if \code{polyg} contains a valid CRS.
 #'
 #'
 #' @return When \code{sp_out = TRUE}, an \code{sf} object containing one
@@ -65,24 +66,48 @@
 #'   between the previous point and the closest polygon boundary.
 #'
 #'   Simulations are conducted within the coordinate system specified by
-#'   argument \code{EPSG}. The default EPSG (3175), covers only the Great Lakes
-#'   of North America. Simulations conducted in other areas will need to specify
-#'   a valid EPSG representing an appropriate projected (Cartesian) coordinate
-#'   system for the study area.
+#'   argument \code{cartesianCRS}. 
+#'   
+#' @note  EPSG 3175 (\code{cartesianCRS = 3175}) is recommended projected
+#'   coordinate system for the North American Great Lakes Basin and St. Lawrence
+#'   River system.
+#'   \url{https://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}.
 #'
 #' @examples
 #'
 #' # Example 1 - data.frame input
 #' mypolygon <- data.frame(x = c(-50,-50, 50, 50), y = c(-50,50,50,-50))
+#' 
 #' path_df <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10,
 #'   initPos=c(0,0), initHeading=0, nsteps=50, sp_out = FALSE)
+#' 
 #' class(path_df) #note object is data.frame
+#' 
 #' plot(path_df, type = "o", pch = 20, asp = c(1,1),
 #'   xlim = range(mypolygon$x), ylim = range(mypolygon$y))
+#' 
+#' polygon(mypolygon, border = "red")
+#' 
+#'
+#' # Example 2 - data.frame input; input CRS specified
+#' mypolygon <- data.frame(x = c(-84,-85, -85, -84), 
+#'                         y = c(45, 44, 45, 45))
+#' path_df <- crw_in_polygon(mypolygon, 
+#'                           theta = c(0, 20), 
+#'                           stepLen = 1000,
+#'                           initPos = c(-84.75, 44.75),
+#'                           initHeading = 0, 
+#'                           nsteps = 50, 
+#'                           inputCRS = 4326,
+#'                           cartesianCRS = 3175,
+#'                           sp_out = FALSE)
+#' plot(path_df, type = "o", pch = 20, asp = c(1,1),
+#'   xlim = range(mypolygon$x), ylim = range(mypolygon$y))
+#' class(path_df) #note object is data.frame
 #' polygon(mypolygon, border = "red")
 #'
 #'
-#' # Example 2 - sf POLYGON input
+#' # Example 3 - sf POLYGON input
 #' data(great_lakes_polygon)
 #'
 #' #simulate in great lakes polygon
@@ -90,7 +115,8 @@
 #'                           theta = c(0, 25), 
 #'                           stepLen = 10000,
 #'                           initHeading = 0, 
-#'                           nsteps = 100)
+#'                           nsteps = 100,
+#'                           cartesianCRS = 3175)
 #'
 #' #plot
 #' plot(sf::st_geometry(great_lakes_polygon),
@@ -105,13 +131,17 @@
 #' points(sf::st_coordinates(path_sf),type="o", pch = 20, col = "red")
 #'
 #'
-#'
-#' # Example 3 - SpatialPolygonsDataFrame input
+#' # Example 4 - SpatialPolygonsDataFrame input
 #' data(greatLakesPoly)
 #'
 #' #simulate in great lakes polygon
-#' path_sp <- crw_in_polygon(greatLakesPoly, theta = c(0, 25), stepLen = 10000,
-#'                           initHeading = 0, nsteps = 100, sp_out = TRUE)
+#' path_sp <- crw_in_polygon(greatLakesPoly, 
+#'                           theta = c(0, 25), 
+#'                           stepLen = 10000,
+#'                           initHeading = 0, 
+#'                           nsteps = 100, 
+#'                           cartesianCRS = 3175,
+#'                           sp_out = TRUE)
 #'
 #' #plot
 #' plot(sf::st_as_sfc(greatLakesPoly), col = "lightgrey", border = "grey")
@@ -128,59 +158,86 @@
 #' @export
 
 crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100, 
-  initPos = c(NA,NA), initHeading = NA, nsteps = 30, 
-  EPSG = 3175, sp_out = TRUE, show_progress = TRUE){          
+                           initPos = c(NA,NA), initHeading = NA, nsteps = 30, 
+                           inputCRS = NA, cartesianCRS = NA, sp_out = TRUE, 
+                           show_progress = TRUE){          
   
-  #check polyg
+  # Check input class
   if(!inherits(polyg, c("data.frame", "sf", "sfc", "SpatialPolygonsDataFrame", 
                         "SpatialPolygons"))) 
     stop("Input 'polyg' must be of class 'data.frame', 'sf', 'sfc', ",
           "'SpatialPolygonsDataFrame', or 'SpatialPolygons'.")
   
-  #check that sf geometry is POLYGON
+  # Get input CRS and use CRS arg if missing
+  crs_in <- sf::st_crs(polyg)
+  
+  if(is.na(crs_in)) crs_in <- sf::st_crs(inputCRS)
+  
+  # Get or set Cartesian CRS
+  crs_cartesian <- sf::st_crs(cartesianCRS)
+  
+  # Set crs_cartesian = crs_input if Cartesian and cartesianCRS missing
+  if(is.na(crs_cartesian) & isTRUE(crs_in$IsGeographic)) crs_cartesian <- crs_in
+  
+  
+  # Check for Cartesian CRS
+  if(isTRUE(crs_in$IsGeographic) & is.na(cartesianCRS)) stop("Coordinate ",
+                        "reference system of input 'polyg' must be Cartesian ",
+                        "(projected) \nor 'cartesianCRS' must be specified.")
+  
+  
+  if(isTRUE(crs_cartesian$IsGeographic)) stop("Coordinate reference system ",
+                        "specified by 'cartesianCRS' is not ",
+                        "Cartesian/projected.")
+  
+  
+  # Check that sf geometry is POLYGON
   if(inherits(polyg, c("sf", "sfc"))) {
     if(!("POLYGON" %in% sf::st_geometry_type(polyg)))
     stop("Input object 'polyg' must contain geometry of type 'POLYGON' when ",
           "class is 'sf' or 'sfc'.")
     polyg_sf <- polyg
-  } else if(inherits(polyg, "data.frame")){
-    #check for names
-    if(!all(c("x", "y") %in% names(polyg))) stop("Input data.frame 'polyg' ",
-                                                 "must have columns named ",
-                                                 "'x' and 'y'.")
+  } else if(inherits(polyg, c("data.frame", "matrix"))){
+    # Check names
+    if(!all(c("x", "y") %in% colnames(polyg))) stop("Input 'polyg' must have ",
+                                                 "columns named 'x' and 'y'.")
     
-    #close polyg if needed
+    # Close polyg if needed (first and last point must be same)
     if(!identical(polyg[1,], tail(polyg, 1))) polyg <- rbind(polyg, polyg[1,])
     
+    # Make sf object
     polyg_sf <- sf::st_polygon(list(as.matrix(polyg[c("x","y")])))
-    polyg_sf <- sf::st_sfc(polyg_sf, crs = EPSG)
+    polyg_sf <- sf::st_sfc(polyg_sf, crs = sf::st_crs(crs_in))
     polyg_sf <- sf::st_sf(ID=1:length(polyg_sf), geom = polyg_sf)
   }
   
   
-  #convert to sf_polygon if polyg is SpatialPolygonsDataFrame or SpatialPolygons
+  # Convert to sf_polygon if SpatialPolygonsDataFrame or SpatialPolygons
   if(inherits(polyg, c("SpatialPolygonsDataFrame", "SpatialPolygons"))){
 
     polyg_sf <- sf::st_as_sf(polyg)
   }
   
-  #set CRS
-  polyg_sf <- sf::st_transform(polyg_sf, crs = EPSG)
+  # Set or change CRS for calculations
+  if(!is.na(crs_cartesian)) {
+    polyg_sf <- sf::st_transform(polyg_sf, crs = crs_cartesian)
+  }
   
-  #if any initPos were not given
-  #randomly select one point in the study area
+  # If any initPos were not given
+  # randomly select one point in the study area
   if(any(is.na(initPos))) init <- sf::st_sample(polyg_sf, size = 1)
 
   
-  #if initPos are both given, check to see if in polyg
+  # If initPos are both given, check to see if in polyg
   if(all(!is.na(initPos))) {
-    init_crs <- sf::st_crs(polyg)
-    if(is.na(init_crs)) init_crs <- sf::st_crs(EPSG)
-    init <- sf::st_as_sf(data.frame(x=initPos[1], y = initPos[2]),
-                         coords = c("x", "y"),
-                         crs = init_crs)
-    init <- sf::st_transform(init, crs = sf::st_crs(EPSG))
-    inPoly <- any(sf::st_contains(polyg_sf, sparse = FALSE))
+
+    init <- sf::st_as_sf(data.frame(x=initPos[1], 
+                                    y = initPos[2]),
+                                    coords = c("x", "y"),
+                                    crs = crs_in)
+    if(!is.na(crs_in)) init <- sf::st_transform(init, 
+                                                crs = sf::st_crs(crs_cartesian))
+    inPoly <- any(sf::st_contains(polyg_sf, init, sparse = FALSE))
     if(!inPoly) stop("initPos is outside polygon boundary.")
   } #end if   
   
@@ -221,7 +278,8 @@ crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100,
                       initPos = as.vector(sf::st_coordinates(init_i)),
                       initHeading, nsteps = length(rows_i))
     
-    inPoly <- check_in_polygon(path_fwd_i, polyg_sf, EPSG)
+    inPoly <- check_in_polygon(path_fwd_i, polyg_sf, 
+                               EPSG = crs_cartesian)
     
     if(all(!inPoly)) {
       k <- k + 1 #counter
@@ -238,7 +296,7 @@ crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100,
     #simulate track forward
     init_i <- sf::st_as_sf(path_fwd[max(rows_i), ], 
                            coords = c("x", "y"),
-                           crs = EPSG)
+                           crs = crs_cartesian)
     
     #smallest distance to boundary
     dist_i <- min(sf::st_distance(init_i, xl, sparse = TRUE), na.rm = TRUE)
@@ -264,23 +322,28 @@ crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100,
   
   if(show_progress) message("Done.")
   
-  #set output CRS to polygon CRS if polygon has CRS; EPSG otherwise
-  if(!is.na(sf::st_crs(polyg))) { 
-    crs_out <- sf::st_crs(polyg) } else { crs_out <- sf::st_crs(EPSG) }
+  # Set output CRS
+  if(!is.na(crs_in)) { 
+    crs_out <- crs_in } else { crs_out <- sf::st_crs(NA) }
 
-  #coerce to sf in output crs
-  path_fwd_sf <- sf::st_as_sf(path_fwd, coords = c("x", "y"), 
-                              crs = EPSG)
-  path_fwd_sf <- sf::st_transform(path_fwd_sf, crs = crs_out)
+  # Coerce to sf
+  path_fwd_sf <- sf::st_as_sf(path_fwd, 
+                              coords = c("x", "y"), 
+                              crs = crs_cartesian)
+  
+  if(!is.na(crs_cartesian)) path_fwd_sf <- sf::st_transform(
+                                                       path_fwd_sf,
+                                                       crs = crs_out)
   
   if(sp_out) return(path_fwd_sf)
  
   path_fwd_df <- as.data.frame(sf::st_coordinates(path_fwd_sf))[,c("X", "Y")]
+  names(path_fwd_df) <- c("x", "y")
   return(path_fwd_df)
 
 } 
  
-#check if in polygon
+#' Check if in polygon
 check_in_polygon <- function(points, polygon, EPSG){
   points_sf <- sf::st_as_sf(points,
                             coords = c("x", "y"),

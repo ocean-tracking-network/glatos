@@ -1,11 +1,48 @@
 ----
 # glatos 0.6.0
 
-#### 2022-05-27
+#### 2022-06-09
+
+### Breaking changes
+
+- crw_in_polygon
+    - replace input arg 'EPSG' with 'inputCRS' and 'cartesianCRS'
+    - unlike previous versions, input polygon ('polyg') must now be in 
+      Cartesian (projected) coordinate reference system or 'cartesianCRS' must 
+      be specified (there is no default).
+    - remove dependence on sp
+	  - improve speed
+	  - return sf object (default) or data.frame
+	  
+- transmit_along_path
+    - remove dependence on sp
+    - return sf object (default) or data.frame
+    - calculate distances along path using geodist::geodist for geographic and 
+      simple Euclidean for Cartesian coordinates. Cartesian input results in 
+      fastest computations.
+    - remove EPSG input (no longer requires transformation to Cartesian CRS for 
+      calculations); but non-Cartesian input will be slower than Cartesian.
+    - add CRS input arg for non-spatial inputs
+    - change name of column 'et' in output to 'time'.
+    - add input arg "colNames" for non-default coordinate column name 
+      specification.
+      
+- detect_transmissions
+    - remove dependence on sp
+    - return sf object (default) or data.frame
+    - calculate distances along path using geodist::geodist for geographic and 
+      simple Euclidean for Cartesian coordinates. Cartesian input results in 
+      fastest computations.
+    - remove EPSG input (no longer requires transformation to Cartesian CRS for 
+      calculations); but non-Cartesian input will be slower than Cartesian.
+    - add CRS input arg for non-spatial inputs
+    - change name of column 'et' in output to 'time'.
+    - add input arg "colNames" for non-default coordinate column name 
+      specification.    
 
 ### Bug fixes and minor changes
 
-- remove dependency on gdalUtils
+- remove dependence on gdalUtils
     - use gdalUtilities::gdal_rasterize instead of gdalUtils::gdal_rasterize
     - fix [issue #174](https://github.com/ocean-tracking-network/glatos/issues/174#)
     - removed gdalUtils dependency from DESCRIPTION and added gdalUtilities
@@ -23,37 +60,7 @@
 
 - added example data 'great_lakes_polygon'; an sf POLYGON version of 
   'greatLakesPoly' (a SpatialPolygonsDataFrame)
-  
-- crw_in_polygon
-    - convert to sf (remove sp)
-	  - improve speed
-	  - return sf object (default) or data.frame
 	  
-- transmit_along_path
-    - convert to sf (remove sp)
-    - return sf object (default) or data.frame
-    - calculate distances along path using geodist::geodist for geographic and 
-      simple Euclidean for Cartesian coordinates. Cartesian input results in 
-      fastest computations.
-    - remove EPSG input (no longer requires transformation to Cartesian CRS for 
-      calculations)
-    - add CRS input arg for non-spatial inputs
-    - change name of column 'et' in output to 'time'.
-    - add input arg "colNames" for non-default coordinate column name 
-      specification.
-      
-- detect_transmissions
-    - convert to sf (remove sp)
-    - return sf object (default) or data.frame
-    - calculate distances along path using geodist::geodist for geographic and 
-      simple Euclidean for Cartesian coordinates. Cartesian input results in 
-      fastest computations.
-    - remove EPSG input (no longer requires transformation to Cartesian CRS for 
-      calculations)
-    - add CRS input arg for non-spatial inputs
-    - change name of column 'et' in output to 'time'.
-    - add input arg "colNames" for non-default coordinate column name 
-      specification.    
 
 ----
 

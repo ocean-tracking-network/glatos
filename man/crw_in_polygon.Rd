@@ -11,7 +11,8 @@ crw_in_polygon(
   initPos = c(NA, NA),
   initHeading = NA,
   nsteps = 30,
-  EPSG = 3175,
+  inputCRS = NA,
+  cartesianCRS = NA,
   sp_out = TRUE,
   show_progress = TRUE
 )
@@ -20,16 +21,14 @@ crw_in_polygon(
 \item{polyg}{A spatial polygon object of class \code{\link[sf]{sf}} or
 \code{\link[sf]{sfc}} containing \code{POLYGON} features (but
 \code{SpatialPolygonsDataFrame} and \code{SpatialPolygons} are also
-accepted); \cr \emph{OR} \cr A polygon defined as data frame with numeric
-columns x and y.}
+accepted); \cr \emph{OR} \cr A polygon defined as data frame or matrix with
+numeric columns x and y.}
 
 \item{theta}{A 2-element numeric vector with turn angle parameters (theta[1]
-= mean; theta[2] = sd) from normal distribution.}
+= mean; theta[2] = sd), in degrees, from normal distribution.}
 
-\item{stepLen}{A numeric scalar with total distance moved in each step. Units
-are same as the units of the coordinate reference system specified by
-argument \code{EPSG} (meters for the default Great Lakes projected
-coordinate system).}
+\item{stepLen}{A numeric scalar with total distance moved in each step, in 
+meters.}
 
 \item{initPos}{A 2-element numeric vector with initial position
 (initPos[1]=x, initPos[2]=y) in same coordinate reference system as
@@ -40,11 +39,14 @@ coordinate system).}
 
 \item{nsteps}{A numeric scalar with number of steps to simulate.}
 
-\item{EPSG}{Numeric EPSG code of coordinate system used for simulations.
-Default is 3175, a projected coordinate system for the North American Great
-Lakes Basin and St. Lawrence River system.
-\url{https://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}.
- Must be a projected (Cartesian) coordinate system.}
+\item{inputCRS}{A \code{crs} object or numeric EPSG code of coordinate system
+of input \code{polyg}. Only used if \code{polyg} does not contain a
+\code{crs}. If missing, then \code{polyg} is assumed in an arbitrary Cartesian
+(projected) system with base unit of one meter.}
+
+\item{cartesianCRS}{Coordinate reference system used for simulations. Must be
+a Cartesian (projected) coordinate system. Must be given when input CRS 
+is non-Cartesian (e.g., long-lat); optional otherwise. See Note.}
 
 \item{sp_out}{Logical. If TRUE (default) then output is an \code{sf} object.
 If FALSE, then output is a \code{data.frame}.}
@@ -73,32 +75,56 @@ If initPos = NA, then a starting point is randomly selected within
 
 If input \code{polyg} object is a data.frame with x and y columns and
   \code{sp_out = TRUE}, then output object
-  coordinate system is defined by \code{EPSG}. Coordinate system on output
-  will be same as input if polyg contains a valid CRS.
+  coordinate system is defined by \code{inputCRS}. Coordinate system on output
+  will be same as input if \code{polyg} contains a valid CRS.
 }
 \note{
 The path is constructed in segments based on the minimum distance
   between the previous point and the closest polygon boundary.
 
   Simulations are conducted within the coordinate system specified by
-  argument \code{EPSG}. The default EPSG (3175), covers only the Great Lakes
-  of North America. Simulations conducted in other areas will need to specify
-  a valid EPSG representing an appropriate projected (Cartesian) coordinate
-  system for the study area.
+  argument \code{cartesianCRS}.
+
+EPSG 3175 (\code{cartesianCRS = 3175}) is recommended projected
+  coordinate system for the North American Great Lakes Basin and St. Lawrence
+  River system.
+  \url{https://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}.
 }
 \examples{
 
 # Example 1 - data.frame input
 mypolygon <- data.frame(x = c(-50,-50, 50, 50), y = c(-50,50,50,-50))
+
 path_df <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10,
   initPos=c(0,0), initHeading=0, nsteps=50, sp_out = FALSE)
+
 class(path_df) #note object is data.frame
+
 plot(path_df, type = "o", pch = 20, asp = c(1,1),
   xlim = range(mypolygon$x), ylim = range(mypolygon$y))
+
 polygon(mypolygon, border = "red")
 
 
-# Example 2 - sf POLYGON input
+# Example 2 - data.frame input; input CRS specified
+mypolygon <- data.frame(x = c(-84,-85, -85, -84), 
+                        y = c(45, 44, 45, 45))
+path_df <- crw_in_polygon(mypolygon, 
+                          theta = c(0, 20), 
+                          stepLen = 1000,
+                          initPos = c(-84.75, 44.75),
+                          initHeading = 0, 
+                          nsteps = 50, 
+                          inputCRS = 4326,
+                          cartesianCRS = 3175,
+                          sp_out = FALSE)
+plot(path_df, type = "o", pch = 20, asp = c(1,1),
+  xlim = range(mypolygon$x), ylim = range(mypolygon$y))
+class(path_df) #note object is data.frame
+polygon(mypolygon, border = "red")
+
+
+# Example 3 - sf POLYGON input
 data(great_lakes_polygon)
 
 #simulate in great lakes polygon
@@ -106,7 +132,8 @@ path_sf <- crw_in_polygon(great_lakes_polygon,
                           theta = c(0, 25), 
                           stepLen = 10000,
                           initHeading = 0, 
-                          nsteps = 100)
+                          nsteps = 100,
+                          cartesianCRS = 3175)
 
 #plot
 plot(sf::st_geometry(great_lakes_polygon),
@@ -121,13 +148,17 @@ plot(sf::st_geometry(great_lakes_polygon), col = "lightgrey",
 points(sf::st_coordinates(path_sf),type="o", pch = 20, col = "red")
 
 
-
-# Example 3 - SpatialPolygonsDataFrame input
+# Example 4 - SpatialPolygonsDataFrame input
 data(greatLakesPoly)
 
 #simulate in great lakes polygon
-path_sp <- crw_in_polygon(greatLakesPoly, theta = c(0, 25), stepLen = 10000,
-                          initHeading = 0, nsteps = 100, sp_out = TRUE)
+path_sp <- crw_in_polygon(greatLakesPoly, 
+                          theta = c(0, 25), 
+                          stepLen = 10000,
+                          initHeading = 0, 
+                          nsteps = 100, 
+                          cartesianCRS = 3175,
+                          sp_out = TRUE)
 
 #plot
 plot(sf::st_as_sfc(greatLakesPoly), col = "lightgrey", border = "grey")
