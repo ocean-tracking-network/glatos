@@ -2,7 +2,7 @@ context("Check transmit_along_path")
 
 
 # Spatial input
-path_sf <- readRDS("./inst/testdata/test-crw_in_polygon-path_spin_spout.RDS")
+path_sf <- readRDS("../../inst/testdata/test-crw_in_polygon-path_spin_spout.RDS")
 
 # spatial output
 set.seed(30)
@@ -39,13 +39,13 @@ tr_dfin_dfout <- transmit_along_path(path_df, vel = 5.0,
 
 # Expected results
 
-tr_spin_spout_shouldBe <- readRDS("./inst/testdata/test-transmit_along_path-tr_spin_spout.rds")
+tr_spin_spout_shouldBe <- readRDS("../../inst/testdata/test-transmit_along_path-tr_spin_spout.rds")
 
-tr_dfin_spout_shouldBe <- readRDS("./inst/testdata/test-transmit_along_path-tr_dfin_spout.rds")
+tr_dfin_spout_shouldBe <- readRDS("../../inst/testdata/test-transmit_along_path-tr_dfin_spout.rds")
 
-tr_dfout_shouldBe <- data.frame(x = sf::st_coordinates(tr_spout_shouldBe)[,"X"],
-                                y = sf::st_coordinates(tr_spout_shouldBe)[,"Y"],
-                                time = tr_spout_shouldBe$time,
+tr_dfout_shouldBe <- data.frame(x = sf::st_coordinates(tr_spin_spout_shouldBe)[,"X"],
+                                y = sf::st_coordinates(tr_spin_spout_shouldBe)[,"Y"],
+                                time = tr_spin_spout_shouldBe$time,
                                 row.names = NULL)
 
 # Testing output matches desired format for each input
@@ -63,5 +63,5 @@ test_that("spatial input, data.frame output gives expected result", {
 })
 test_that("spatial input, spatial output gives expected result", {
   # Check if expected and actual results are the same
-  expect_equal(tr_spin_spout, tr_spout_shouldBe)
+  expect_equal(tr_spin_spout, tr_spin_spout_shouldBe)
 })

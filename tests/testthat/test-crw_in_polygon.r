@@ -24,7 +24,7 @@ path_spin_dfout <- crw_in_polygon(greatLakesPoly, theta=c(0,25), stepLen=10000,
     cartesianCRS = 3175, show_progress = FALSE)
 
 path_spin_spout_shouldBe <- 
-  readRDS("./inst/testdata/test-crw_in_polygon-path_spin_spout.rds")
+  readRDS("../../inst/testdata/test-crw_in_polygon-path_spin_spout.rds")
 
   
 path_spin_dfout_shouldBe <- 
@@ -35,7 +35,7 @@ structure(list(x = c(-87.49017, -87.5682764367357, -87.6624051520051,
 "2", "3", "4", "5", "6"))
 
 path_dfin_spout_shouldBe <- 
-  readRDS("./inst/testdata/test-crw_in_polygon-path_dfin_spout.rds")
+  readRDS("../../inst/testdata/test-crw_in_polygon-path_dfin_spout.rds")
   
 path_dfin_dfout_shouldBe <- 
 structure(list(x = c(0, -4.34765355285354, -9.75360353139628, 

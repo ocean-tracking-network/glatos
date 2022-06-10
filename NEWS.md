@@ -22,7 +22,7 @@
       fastest computations.
     - remove EPSG input (no longer requires transformation to Cartesian CRS for 
       calculations); but non-Cartesian input will be slower than Cartesian.
-    - add CRS input arg for non-spatial inputs
+    - add pathCRS input arg for non-spatial inputs
     - change name of column 'et' in output to 'time'.
     - add input arg "colNames" for non-default coordinate column name 
       specification.
@@ -35,7 +35,7 @@
       fastest computations.
     - remove EPSG input (no longer requires transformation to Cartesian CRS for 
       calculations); but non-Cartesian input will be slower than Cartesian.
-    - add CRS input arg for non-spatial inputs
+    - add inputCRS input arg for non-spatial inputs
     - change name of column 'et' in output to 'time'.
     - add input arg "colNames" for non-default coordinate column name 
       specification.    
