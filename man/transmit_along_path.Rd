@@ -10,7 +10,7 @@ transmit_along_path(
   delayRng = c(60, 180),
   burstDur = 5,
   colNames = list(x = "x", y = "y"),
-  CRS = NA,
+  pathCRS = NA,
   sp_out = TRUE
 )
 }
@@ -34,10 +34,10 @@ burst (i.e., pulse train).}
 (defaults are \code{x} and \code{y}) in \code{path}. Ignored if
 \code{trnsLoc} is a spatial object with a geometry column.}
 
-\item{CRS}{Defines the coordinate reference system (object of class
-\code{crs}) of coordinates in \code{path}, if missing; ignored otherwise.
-If no valid \code{crs} is specified in \code{path} or via \code{CRS = NA}
-(default value), then \code{path} coordinates are assumed to be in an
+\item{pathCRS}{Defines the coordinate reference system (object of class
+\code{crs} or a numeric EPSG code) of coordinates in \code{path}, if missing; ignored otherwise.
+If no valid \code{crs} is specified in \code{path} or via \code{pathCRS =
+NA} (default value), then \code{path} coordinates are assumed to be in an
 arbitrary Cartesian coordinate system with base unit of 1 meter. See Note.}
 
 \item{sp_out}{Logical. If TRUE (default) then output is an \code{sf} object.
@@ -46,11 +46,13 @@ If FALSE, then output is a \code{data.frame}.}
 \value{
 When \code{sp_out = TRUE}, an \code{sf} object containing one
   \code{POINT} feature for each simulated transmission and a column named
-  \code{elapsed_time} (defined below). \cr \emph{OR} \cr When \code{sp_out =
-  FALSE}, a data.frame with the following columns: \item{x}{ x coordinates
-  for start of each transmission. } \item{y}{ y coordinates for start of each
-  transmission. } \item{elapsed_time}{ Elapsed time, in seconds, from the
-  start of input \code{path} to the start of each transmission.}
+  \code{time} (defined below). 
+  
+  When \code{sp_out = FALSE}, a data.frame with the following columns:
+  \item{x}{ x coordinates for start of each transmission. } \item{y}{ y
+  coordinates for start of each transmission. } \item{time}{ Elapsed time, in
+  seconds, from the start of input \code{path} to the start of each
+  transmission.}
 }
 \description{
 Simulate tag signal transmission along a pre-defined path (x, y
@@ -65,18 +67,18 @@ Delays are drawn from uniform distribution defined by delay range.
   transmission. Location of each signal transmission along the path is
   linearly interpolated.
 
-Computation time is fastest if coordinates in \code{path} are are in
-  a Cartesian (projected) coordinate system and slowest if coordinates are in
-  a geographic coordinate system because different methods are used to
-  calculate step lengths in each case. When CRS is Cartesian (e.g., UTM),
-  step lengths are calculated as simple Euclidean distance. When CRS is
-  geographic (e.g., longitude, latitude), step lengths are calculated as
-  Haversine distances using \code{\link[geodist]{geodist}} (with \code{measure
-  = "haversine"}).
+Computation time is fastest if coordinates in \code{path} are in a
+  Cartesian (projected) coordinate system and slowest if coordinates are in a
+  geographic coordinate system (e.g., longitude, latitude) because different
+  methods are used to calculate step lengths in each case. When \code{path}
+  CRS is Cartesian (e.g., UTM), step lengths are calculated as simple
+  Euclidean distance. When CRS is geographic, step lengths are calculated as
+  Haversine distances using \code{\link[geodist]{geodist}} (with
+  \code{measure = "haversine"}).
 }
 \note{
 This function was written to be called after
-  \code{\link{crs_in_polygon}} and before \code{\link{detect_transmissions}},
+  \code{\link{crw_in_polygon}} and before \code{\link{detect_transmissions}},
   which was designed to accept the result as input (\code{trnsLoc}).
 }
 \examples{
@@ -86,7 +88,8 @@ This function was written to be called after
 mypath <- data.frame(x = seq(0, 1000, 100), 
                      y = seq(0, 1000, 100))
                      
-mytrns <- transmit_along_path(mypath, vel = 0.5, delayRng = c(60, 180),
+mytrns <- transmit_along_path(mypath, vel = 0.5, 
+                              delayRng = c(60, 180),
                               burstDur = 5.0, 
                               sp_out = FALSE)
 plot(mypath, type = "o")
@@ -107,7 +110,22 @@ plot(mypath, type = "o")
 points(mytrns, pch = 20, col = "red")
 
 
-#Example 3 - sf POINT input
+#Example 3 - data.frame input using pathCRS arg
+
+mypath <- data.frame(deploy_long = c(-87, -87.1, -87),
+                     deploy_lat = c(44, 44.1, 44.2))
+
+mytrns <- transmit_along_path(mypath, vel = 0.5, delayRng = c(600, 1800),
+                              burstDur = 5.0, 
+                              colNames = list(x = "deploy_long", 
+                                              y = "deploy_lat"),
+                              pathCRS = 4326,
+                              sp_out = FALSE)
+plot(mypath, type = "o")
+points(mytrns, pch = 20, col = "red")
+
+
+#Example 4 - sf POINT input
 
 #simulate in great lakes polygon
 data(great_lakes_polygon)
@@ -116,15 +134,18 @@ mypath_sf <- crw_in_polygon(great_lakes_polygon,
                             theta = c(0, 25),
                             stepLen = 100,
                             initHeading = 0,
-                            nsteps = 10)
+                            nsteps = 10,
+                            cartesianCRS = 3175)
 
-mytrns_sf <- transmit_along_path(mypath_sf, vel = 0.5, delayRng = c(60, 180),
+mytrns_sf <- transmit_along_path(mypath_sf, 
+                                 vel = 0.5, 
+                                 delayRng = c(60, 180),
                                  burstDur = 5.0)
 plot(mypath_sf, type = "o")
 points(sf::st_coordinates(mytrns_sf), pch = 20, col = "red")
 
 
-#Example 4 - SpatialPointsDataFrame input
+#Example 5 - SpatialPointsDataFrame input
 
 #simulate in great lakes polygon
 data(greatLakesPoly)
@@ -133,9 +154,12 @@ mypath_sp <- crw_in_polygon(greatLakesPoly,
                             theta = c(0, 25),
                             stepLen = 100,
                             initHeading = 0,
-                            nsteps = 10)
+                            nsteps = 10, 
+                            cartesianCRS = 3175)
 
-mytrns_sp <- transmit_along_path(mypath_sp, vel = 0.5, delayRng = c(60, 180),
+mytrns_sp <- transmit_along_path(mypath_sp, 
+                                 vel = 0.5, 
+                                 delayRng = c(60, 180),
                                  burstDur = 5.0)
 
 plot(sf::st_coordinates(sf::st_as_sf(mypath_sp)), type = "o")
