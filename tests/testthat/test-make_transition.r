@@ -29,38 +29,33 @@ trl2 <- make_transition(poly2, res = c(0.001, 0.001),
 
 
 # Expected results
-trl1_trns_exp <- system.file("inst/testdata", "higgins_lake_transition.rds", 
-                             package = "glatos")
-trl1_trns_exp <- readRDS(trl1_trns_exp)
+trl1_trns_shouldBe <- readRDS("../../inst/testdata/higgins_lake_transition.rds")
 
-
-trl2_trns_exp <- system.file("inst/testdata", "flynn_island_transition.rds",
-                             package = "glatos")
-trl2_trns_exp <- readRDS(trl2_trns_exp)
+trl2_trns_shouldBe <- readRDS("../../inst/testdata/flynn_island_transition.rds")
 
 
 
 # Testing water polygon transition matrix
 test_that("Transition matrix for water polygon as expected", {
   # Check if expected and actual equal
-  expect_equal(trl1$transition, trl1_trns_exp$transition)
+  expect_equal(trl1$transition, trl1_trns_shouldBe$transition)
 })
 
 # Testing water polygon raster
 test_that("Raster values for water polygon as expected", {
   # Check if expected and actual equal
-  expect_equal(trl1$rast, trl1_trns_exp$rast)
+  expect_equal(trl1$rast, trl1_trns_shouldBe$rast)
 })
 
 
 # Testing land polygon transition matrix
 test_that("Transition matrix for land polygon as expected", {
   # Check if expected and actual equal
-  expect_equal(trl2$transition, trl2_trns_exp$transition)
+  expect_equal(trl2$transition, trl2_trns_shouldBe$transition)
 })
 
 # Testing land polygon raster
 test_that("Raster values for land polygon as expected", {
   # Check if expected and actual equal
-  expect_equal(trl2$rast, trl2_trns_exp$rast)
+  expect_equal(trl2$rast, file.info(trl2_trns_shouldBe$rast))
 })

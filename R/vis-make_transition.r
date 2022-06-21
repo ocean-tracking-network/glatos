@@ -62,7 +62,28 @@
 #'
 #' @examples
 #' \dontrun{
-#' #Example 1 - read from SpatialPolygonsDataFrame
+#' 
+#' #Example 1 - read from sf polygon
+#' # use example polygon for Great lakes
+#'
+#' library(sf) #for loading great_lakes_polygon
+#' library(raster) # for plotting rasters
+#'
+#' # Get polygon of the Great Lakes
+#' data(great_lakes_polygon) #glatos example data; an sf polygons object
+#'
+#' # Make transition layer
+#' tst <- make_transition(great_lakes_polygon, res = c(0.1, 0.1))
+#'
+#' # plot raster layer
+#' # notice land = 1, water = 0
+#' plot(tst$rast)
+#'
+#' #compare to polygon
+#' plot(sf::st_geometry(great_lakes_polygon), add = TRUE)
+#' 
+#' 
+#' #Example 2 - read from SpatialPolygonsDataFrame
 #' # use example polygon for Great lakes
 #'
 #' library(sp) #for loading greatLakesPoly
@@ -84,7 +105,7 @@
 #' # increase resolution and repeat if needed
 #'
 #' #------------------------------------------
-#' #Example 2 - read from ESRI Shapefile
+#' #Example 3 - read from ESRI Shapefile
 #' # path to polygon shapefile
 #' poly <- system.file("extdata", "shoreline.zip", package = "glatos")
 #' poly <- unzip(poly, exdir = tempdir())
@@ -131,7 +152,8 @@ make_transition <- function(in_file,
 
       in_dir <- dirname(in_file)
 
-      if(!file.exists(in_dir)) stop(paste0("'in_file' directory '", in_dir, "' not found."))
+      if(!file.exists(in_dir)) stop("'in_file' directory '", in_dir, 
+                                    "' not found.")
 
       #get layer name from file name
       in_layer <- basename(tools::file_path_sans_ext(basename(in_file)))
@@ -209,7 +231,8 @@ make_transition <- function(in_file,
   
 
   tran <- function(x){if(x[1] * x[2] == 0){return(0)} else {return(1)}}
-  tr1 <- gdistance::transition(burned, transitionFunction = tran, directions = 16)
+  tr1 <- gdistance::transition(burned, transitionFunction = tran, 
+                               directions = 16)
   tr1 <- gdistance::geoCorrection(tr1, type="c")
   out <- list(transition = tr1, rast = burned)
   return(out)
