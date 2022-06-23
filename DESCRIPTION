@@ -19,7 +19,6 @@ Imports:
 		lubridate,
 		magrittr,
 		methods,
-		PBSmapping,
 		plotrix,
 		plotly,
 		plyr,

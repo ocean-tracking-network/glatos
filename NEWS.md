@@ -42,6 +42,10 @@
 
 ### Bug fixes and minor changes
 
+- remove dependence on PBSmapping
+    - replace calls to PBSmapping::convUL with local functions 
+      lonlat_to_utm and utm_to_lonlat
+
 - remove dependence on gdalUtils
     - use gdalUtilities::gdal_rasterize instead of gdalUtils::gdal_rasterize
     - fix [issue #174](https://github.com/ocean-tracking-network/glatos/issues/174#)
