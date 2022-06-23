@@ -203,7 +203,8 @@ position_heat_map <- function (positions,
                                   y_limits[2]), X=c(x_limits[1], x_limits[2],
                                                     x_limits[1], x_limits[2]))
     attr(range_xylim, which = "projection") <- "LL"
-    range_xylim <- PBSmapping::convUL(range_xylim, km=FALSE, southern=NULL)
+    #range_xylim <- PBSmapping::convUL(range_xylim, km=FALSE, southern=NULL)
+    range_xylim <- lonlat_to_utm(range_xylim)
     x_limits <- range(range_xylim$X)
     y_limits <- range(range_xylim$Y)
   }
@@ -229,7 +230,8 @@ position_heat_map <- function (positions,
   # If projection=="LL", convert positions to UTM coordinates using 'convUL'
   # from PBSmapping package
   if(attr(positions, which="projection")=="LL"){
-    positions <- PBSmapping::convUL(positions, km=FALSE, southern=NULL)
+    #positions <- PBSmapping::convUL(positions, km=FALSE, southern=NULL)
+    positions <- lonlat_to_utm(positions)
     # Change X and Y column names back to original LON and LAT
     names(positions)[match(c('X', 'Y'), names(positions))] = c("LON", "LAT")
   }
@@ -272,8 +274,8 @@ position_heat_map <- function (positions,
 	# Convert b_box to LL for kmz output
 	attr(b_box_UTM, which="projection")<-"UTM"
 	attr(b_box_UTM, which="zone")<-ifelse(projection=="LL", attr(positions, which="zone"), utm_zone)
-	b_box_LL <- PBSmapping::convUL(b_box_UTM, km=FALSE, southern=ifelse(hemisphere=="N", FALSE, TRUE))
-	
+	#b_box_LL <- PBSmapping::convUL(b_box_UTM, km=FALSE, southern=ifelse(hemisphere=="N", FALSE, TRUE))
+	b_box_LL <- utm_to_lonlat(b_box_UTM)
 	
   # Calculate the values to be displayed -------------------------------------
 	# Determines in which grid number each position resides.
@@ -487,3 +489,61 @@ position_heat_map <- function (positions,
 	            bbox_LL = b_box_LL,
 	            function_call = sys.call()))
 }	
+
+
+#' Convert geographic positions to UTM
+lonlat_to_utm <- function(lonlat){
+  
+  # Calculate UTM zone
+  utm_zone <- (floor((lonlat[["X"]] + 180) / 6) %% 60) + 1
+  
+  # Add first three digits of EPSG based on hemisphere
+  utm_epsg <- rep(NA_real_, length(utm_zone))
+  
+  # southern hemisphere
+  utm_epsg[lonlat[["Y"]] < 0] <- utm_zone + 32700
+  
+  # northern hemisphere
+  utm_epsg[lonlat[["Y"]] >= 0] <- utm_zone + 32600
+  
+  # if multiple epsg, choose zone with most obs; in case of tie, choose first
+  utm_epsg_freq <- table(utm_epsg)
+  utm_epsg <- as.integer(names(utm_epsg_freq)[which.max(utm_epsg_freq)][1])
+  
+  # Convert to UTM
+  lonlat_sf <- sf::st_as_sf(lonlat, coords = c("X", "Y"), crs = 4326)
+  utm_sf <- sf::st_transform(lonlat_sf, crs = utm_epsg)
+  
+  # Return format consistent with PBSMapping::convUL
+  lonlat[, c("Y", "X")] <- 
+    as.data.frame(sf::st_coordinates(utm_sf))[, c("Y", "X")]
+  
+  attr(lonlat, "projection") <- "UTM"
+  attr(lonlat, "zone") <- utm_epsg %% 100
+  
+  return(lonlat)
+  
+}
+
+#' Convert UTM positions to lonlat
+utm_to_lonlat <- function(utm){
+  
+  # Define EPSG
+  utm_epsg <- ifelse(hemisphere == "N", 
+                     32600 + attr(utm, "zone"), 
+                     32700 + attr(utm, "zone"))
+  
+  # Convert to longlat
+  utm_sf <- sf::st_as_sf(utm, coords = c("X", "Y"), crs = utm_epsg)
+  lonlat_sf <- sf::st_transform(utm_sf, crs = 4326)
+  
+  # Return format consistent with PBSMapping::convUL
+  lonlat_df <- cbind(corner = lonlat_sf$corner, 
+                     as.data.frame(sf::st_coordinates(lonlat_sf))[,c("X", "Y")])
+  
+  attr(lonlat_df, "projection") <- "LL"
+  attr(lonlat_df, "zone") <- attr(utm, "zone")
+  
+  return(lonlat_df)
+  
+}
