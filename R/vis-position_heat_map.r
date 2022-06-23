@@ -129,18 +129,18 @@
 
 position_heat_map <- function (positions,
                                projection = "LL",
-                               fish_pos_int="fish",
-                               abs_or_rel="absolute",
-                               resolution=10,
-                               interval=NULL,
-                               x_limits=NULL,
-                               y_limits=NULL,
-                               utm_zone=NULL,
-                               hemisphere="N",
-                               legend_gradient="y",
-                               legend_pos=c(0.99, 0.2, 1.0, 0.8),
-                               output="plot",
-                               folder="position_heat_map") {
+                               fish_pos_int = "fish",
+                               abs_or_rel = "absolute",
+                               resolution = 10,
+                               interval = NULL,
+                               x_limits = NULL,
+                               y_limits = NULL,
+                               utm_zone = NULL,
+                               hemisphere = "N",
+                               legend_gradient = "y",
+                               legend_pos = c(0.99, 0.2, 1.0, 0.8),
+                               output = "plot",
+                               folder = "position_heat_map") {
 	
   # Perform checks on supplied data and arguiments ---------------------------
 	
@@ -444,25 +444,35 @@ position_heat_map <- function (positions,
   
   	# Write the kml object to kml text file and places it in the folder 
     # containing the three png files.
+    
+    kmz_file <- file.path(folder, paste0(fish_pos_int, "",
+                                         abs_or_rel, ".kmz"))
+    
+    kml_file <- file.path(folder, paste0(fish_pos_int, "",
+                                         abs_or_rel, ".kml"))
+    
+    png_file <- file.path(folder, paste0(fish_pos_int, "",
+                                         abs_or_rel, ".png"))
+    
   	write.table(kml,
-  	            file = file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                                    abs_or_rel,".kml")),
+  	            file = kml_file,
   	            col.names = FALSE,
-  	            row.names = FALSE, quote = FALSE)
-  	# Zip the kml and opng into a KMZ file
-  	utils::zip(zipfile = file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                                      abs_or_rel, ".kmz")),
-  	           files = c(file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                                      abs_or_rel,".kml")),
-  	                     file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                                      abs_or_rel,".png"))),
-  	           flags = "-j")
+  	            row.names = FALSE, 
+  	            quote = FALSE)
+  	
+  	# OS-specific storage mode
+  	zip_mode <- ifelse(Sys.info()["sysname"] == "Darwin", 
+  	                   "cherry-pick", 
+  	                   "mirror")
+  	
+	  zip::zip(zipfile = kmz_file,
+	           files = c(kml_file, png_file),
+	           mode = zip_mode)
+
   	
   	# Delete the kml and png files.
-  	file.remove(file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                             abs_or_rel,".kml")))
-  	file.remove(file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                             abs_or_rel,".png")))
+  	file.remove(kml_file)
+  	file.remove(png_file)
   }
 	if(output %in% c("png", "kmz")){
 	    message(paste0("Output file are located in:", getwd(),"/", folder, "/"))
