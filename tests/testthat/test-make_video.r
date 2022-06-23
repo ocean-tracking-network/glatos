@@ -21,9 +21,12 @@ make_video(dir = frames, pattern = "%02d.png", output_dir = temp_dir_2,
 
 # Actual file sizes
 vid_size <- file.info(c(temp_file_1, temp_file_2))$size
+# round to nearest MB
+vid_size <- round(vid_size * 0.001)
 
 # Expected file sizes
-size_should_be <- c(68872, 68872)
+size_should_be <- round(c(68872, 68872) * 0.001)
+
 
 # Clean up
 unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,
