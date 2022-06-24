@@ -25,6 +25,7 @@ Imports:
 		purrr,
 		raster,
 		readxl,
+		rgdal,
 		rgeos,
 		rmarkdown,
 		sf,
