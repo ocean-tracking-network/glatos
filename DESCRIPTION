@@ -26,6 +26,7 @@ Imports:
 		raster,
 		readxl,
 		rgeos,
+		rmarkdown,
 		sf,
 		sp,
 		tibble,
@@ -35,7 +36,6 @@ Suggests:
 		gifsky,
 		GISTools,
 		png,
-    		rmarkdown,
 		tint
 URL: https://github.com/ocean-tracking-network/glatos
 BugReports: https://github.com/ocean-tracking-network/glatos/issues
