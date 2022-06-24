@@ -138,7 +138,7 @@ position_heat_map <- function (positions,
                                folder = "position_heat_map") {
 	
   # Perform checks on supplied data and arguiments ---------------------------
-	
+  
   # Check that the required columns appear in the detections dataframe
     if (sum(c("DETECTEDID", "DATETIME", "LAT", "LON") %in% 
       names(positions)) != 4){
@@ -205,12 +205,15 @@ position_heat_map <- function (positions,
   }
 
   
+  # Coerce positions to data.frame
+  positions <- as.data.frame(positions)
+  
   
   # Prepare the positions dataframe ------------------------------------------
   # Remove columns in original dataframe called "X" and "Y" - do this because
   # convUL function requires the LON and LAT data to be stored in columns
   # named X and Y
-  positions <- positions[,!names(positions) %in% c("X","Y")]
+  positions <- positions[, !names(positions) %in% c("X","Y")]
   
   # Rename LON and LAT columns to X and Y for convUL function
   names(positions)[match(c("LON", "LAT"), names(positions))] = c('X', 'Y')
