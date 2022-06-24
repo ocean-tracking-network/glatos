@@ -4,7 +4,7 @@
 \alias{utm_to_lonlat}
 \title{Convert UTM positions to lonlat}
 \usage{
-utm_to_lonlat(utm)
+utm_to_lonlat(utm, hemisphere)
 }
 \description{
 Convert UTM positions to lonlat
