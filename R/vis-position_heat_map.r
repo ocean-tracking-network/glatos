@@ -1,149 +1,144 @@
-#' Position Heat Maps
+#'Position Heat Maps
 #'
-#' Create heat maps to display the spatial distribution of 
-#'  acoustic telemetry positions. Most useful when used on data with high spatial
-#'  resultion, such as VPS positional telemetry data.
+#'Create heat maps to display the spatial distribution of acoustic telemetry
+#'positions. Most useful when used on data with high spatial resultion, such as
+#'VPS positional telemetry data.
 #'
-#' @param positions A dataframe containing detection data with at least the 
-#'  following 4 columns:
-#'   \describe{
-#'   \item{\code{DETECTEDID}}{Individual animal identifier; character.}
-#'	 \item{\code{DATETIME}}{Date-time stamps for the positions (MUST be of 
-#'	   class 'POSIXct')}
-#'	 \item{\code{LAT}}{Position latitude.}
-#'	 \item{\code{LON}}{Position longitude.}
-#'	 }
-#'  
-#' @param projection A character string indicating the projection of the
-#'   positions in the 'positions' dataframe. Used in the call to
-#'   \link[PBSmapping]{convUL}, which converts coordinates between
-#'   latitude/longitude in decimal degrees ("LL"; e.g., 45.98753) and UTM. Valid
-#'   arguments are "LL" (latitude/longitude) and "UTM". If projection=="UTM",
-#'   then \code{utm_zone} and '\code{hemisphere} arguments must also be
-#'   supplied.
-#' 
-#' @param fish_pos_int A character string indicating whether output will display
-#'   number of fish or number of positions occuring in each cell of the grid.
-#'   Valid arguments are c("fish", "positions", "intervals"). Default is "fish".
-#'   If fish_pos_interval == "intervals", then argument "interval" must be
-#'   supplied.
-#'   
-#' @param abs_or_rel A character string indicating whether output will display
-#'   values as absolute value (i.e, the actual number of fish, positions, or
-#'   intervals) or as relative number (relative to total number of fish
-#'   detected). Valid arguments are c("absolute", "relative"). Default is
-#'   "absolute".
-#'     
-#' @param  resolution A numeric value indicating the spatial resolution 
-#'  (in meters) of the grid system used to make the heat maps. Default is 10 m.
+#'@param positions A dataframe containing detection data with at least the
+#'  following 4 columns: \describe{ \item{\code{DETECTEDID}}{Individual animal
+#'  identifier; character.} \item{\code{DATETIME}}{Date-time stamps for the
+#'  positions (MUST be of class 'POSIXct')} \item{\code{LAT}}{Position
+#'  latitude.} \item{\code{LON}}{Position longitude.} }
 #'
-#' @param interval A numeric value indicating the duration (in seconds) of time
-#'   bin (in seconds) for use in calculating number of intervals fish were
-#'   resident in a grid cell (i.e., a surrogate for amount of time spent in each
-#'   cell of the grid). If interval==NULL (default), than raw number of
-#'   positions is calculated. This value is only used when fish_pos_int ==
-#'   "intervals'.
-#'   
-#' @param x_limits An optional 2-element numeric containing limits of x axis. If
+#'@param projection A character string indicating if the coordinates in the
+#'  'positions' dataframe are geographic (\code{projection = "LL"}) or
+#'  projected/Cartesian(\code{projection = "UTM"}). Used to convert coordinates
+#'  between latitude/longitude in decimal degrees ("LL"; e.g., 45.98753) and
+#'  UTM. Valid arguments are "LL" (latitude/longitude) and "UTM". If
+#'  projection=="UTM", then \code{utm_zone} and '\code{hemisphere} arguments
+#'  must also be supplied.
+#'
+#'@param fish_pos_int A character string indicating whether output will display
+#'  number of fish or number of positions occuring in each cell of the grid.
+#'  Valid arguments are c("fish", "positions", "intervals"). Default is "fish".
+#'  If fish_pos_interval == "intervals", then argument "interval" must be
+#'  supplied.
+#'
+#'@param abs_or_rel A character string indicating whether output will display
+#'  values as absolute value (i.e, the actual number of fish, positions, or
+#'  intervals) or as relative number (relative to total number of fish
+#'  detected). Valid arguments are c("absolute", "relative"). Default is
+#'  "absolute".
+#'
+#'@param  resolution A numeric value indicating the spatial resolution (in
+#'  meters) of the grid system used to make the heat maps. Default is 10 m.
+#'
+#'@param interval A numeric value indicating the duration (in seconds) of time
+#'  bin (in seconds) for use in calculating number of intervals fish were
+#'  resident in a grid cell (i.e., a surrogate for amount of time spent in each
+#'  cell of the grid). If interval==NULL (default), than raw number of positions
+#'  is calculated. This value is only used when fish_pos_int == "intervals'.
+#'
+#'@param x_limits An optional 2-element numeric containing limits of x axis. If
 #'  x_limits == NULL (default), then it is determined from the extents of the
 #'  data.
-#'  
-#' @param y_limits An optional 2-element numeric containing limits of y axis. If 
+#'
+#'@param y_limits An optional 2-element numeric containing limits of y axis. If
 #'  y_limits == NULL (default), then it is determined from the extents of the
 #'  data.
 #'
-#'  @param utm_zone An interger value between 1 and 60 (inclusive) indicating 
-#'  the primary UTM zone of the detection data. Required and used only when 
-#'  projection == "UTM". Default is NULL (i.e. assumes detection data are in 
+#'@param utm_zone An interger value between 1 and 60 (inclusive) indicating the
+#'  primary UTM zone of the detection data. Required and used only when
+#'  projection == "UTM". Default is NULL (i.e. assumes detection data are in
 #'  projection == LL by default).
-#'  
-#' @param hemisphere A character string indicating whether detection data are 
-#' in the northern or southern hemisphere. Required and used only when 
-#' projection == "UTM". Valid values are c("N", "S"). Default is "N".
-#' 
-#' @param legend_gradient A character string indicating the orientation of the
-#'  color legend; "y" = vertical, "x" = horizontal, "n" indicates that no 
-#'  legend should be drawn. Default is "y".
-#' 
-#' @param legend_pos A numeric vector indicating the location of the color 
-#'  legend as a portion of the total plot area (i.e., between 0 and 1). Only
-#'  used if 'legend_gradient" in not "n". Default is c(0.99, 0.2, 1.0, 0.8),
-#'  which puts the legend along the right hand side of the plot.
-#'  
-#' @param output An optional character string indicating how results will 
-#'  be displayed visually. Options include: 1) a plot in the R device window 
-#'  ("plot"), 2) a .png image file ("png"), or 3) a .kmz file ("kmz") for 
-#'  viewing results as an overlay in Google Earth. Accepted values are 
-#'  c("plot", "png", "kmz"). Default value is "plot".
-#'  
-#' @param folder A character string indicating the output folder. If path is 
-#'  not specified then \code{folder} will be created in the working directory.
+#'
+#'@param hemisphere A character string indicating whether detection data are in
+#'  the northern or southern hemisphere. Required and used only when projection
+#'  == "UTM". Valid values are c("N", "S"). Default is "N".
+#'
+#'@param legend_gradient A character string indicating the orientation of the
+#'  color legend; "y" = vertical, "x" = horizontal, "n" indicates that no legend
+#'  should be drawn. Default is "y".
+#'
+#'@param legend_pos A numeric vector indicating the location of the color legend
+#'  as a portion of the total plot area (i.e., between 0 and 1). Only used if
+#'  'legend_gradient" in not "n". Default is c(0.99, 0.2, 1.0, 0.8), which puts
+#'  the legend along the right hand side of the plot.
+#'
+#'@param output An optional character string indicating how results will be
+#'  displayed visually. Options include: 1) a plot in the R device window
+#'  ("plot"), 2) a .png image file ("png"), or 3) a .kmz file ("kmz") for
+#'  viewing results as an overlay in Google Earth. Accepted values are c("plot",
+#'  "png", "kmz"). Default value is "plot".
+#'
+#'@param folder A character string indicating the output folder. If path is not
+#'  specified then \code{folder} will be created in the working directory.
 #'  Default is "position_heat_map".
-#'  
-#' @details When and 'interval' argument is supplied, the number of unique fish
-#'   x interval combinations that occurred in each grid cell is calculated
-#'   instead of raw number of positions. For example, in 4 hours there are a
-#'   total of 4 1-h intervals. If fish 'A' was positioned in a single grid cell
-#'   during 3 of the 4 intervals, than the number of intervals for that fish and
-#'   grid combination is 3. Intervals are determined by applying the
-#'   \link[base]{findInterval} function (base R) to a sequence of timestamps
-#'   (class: POSIXct) created using seq(from = min(positions[, DATETIME]), to =
-#'   min(positions[, DATETIME]), by = interval), where interval is the
-#'   user-assigned interval duration in seconds. Number of intervals is a more
-#'   robust surrogate than number of positions for relative time spent in each
-#'   grid in cases where spatial or temporal variability in positioning
-#'   probability are likely to significantly bias the distribution of positions
-#'   in the array.
-#' 
-#' @details Calculated values (i.e., fish, positions, intervals) can be returned
-#'   as absolute or relative, which is specified using the abs_or_rel argument;
-#'   "absolute" is the actual value, "relative" is the absolute value divided by
-#'   the total number of fish appearing in the 'positions' dataframe. Units for
-#'   plots: fish = number of unique fish (absolute) or % of total fish in
-#'   'positions' dataframe (relative); positions = number of positions
-#'   (absolute) or mean number of positions per fish in 'positions' dataframe
-#'   (relative); intervasls = number of unique fish x interval combinations
-#'   (absolute) or mean number of unique fish x interval combinations per fish
-#'   in 'positions' dataframe (relative).
 #'
-#' @return A list object containing 1) a matrix of the calulated values (i.e.,
-#' fish, positions, intervals), with row and column names indicating location of
-#' each grid in UTM, 2) a character string specifying the UTM zone of the data
-#' in the matrix, 3) the bounding box of the data in UTM, 4) and the bounding
-#' box of the data in latitude (Y) and longitude (X), 5) a character string
-#' displaying the function call (i.e., a record of the arguments passed to the
-#' function).
+#'@details When and 'interval' argument is supplied, the number of unique fish x
+#'  interval combinations that occurred in each grid cell is calculated instead
+#'  of raw number of positions. For example, in 4 hours there are a total of 4
+#'  1-h intervals. If fish 'A' was positioned in a single grid cell during 3 of
+#'  the 4 intervals, than the number of intervals for that fish and grid
+#'  combination is 3. Intervals are determined by applying the
+#'  \link[base]{findInterval} function (base R) to a sequence of timestamps
+#'  (class: POSIXct) created using seq(from = min(positions[, DATETIME]), to =
+#'  min(positions[, DATETIME]), by = interval), where interval is the
+#'  user-assigned interval duration in seconds. Number of intervals is a more
+#'  robust surrogate than number of positions for relative time spent in each
+#'  grid in cases where spatial or temporal variability in positioning
+#'  probability are likely to significantly bias the distribution of positions
+#'  in the array.
 #'
-#' @return In addition, the user specifies an image output for displaying the
-#' heat map. Options are a "plot" (displayed in R), "png" (png file saved to
-#' specified folder), and "kmz" for viewing the png image as an overlay in
-#' Google Earth (kmz file saved to specified folder).
-#' 
-#' @author Thomas R. Binder
-#' 
+#'@details Calculated values (i.e., fish, positions, intervals) can be returned
+#'  as absolute or relative, which is specified using the abs_or_rel argument;
+#'  "absolute" is the actual value, "relative" is the absolute value divided by
+#'  the total number of fish appearing in the 'positions' dataframe. Units for
+#'  plots: fish = number of unique fish (absolute) or % of total fish in
+#'  'positions' dataframe (relative); positions = number of positions (absolute)
+#'  or mean number of positions per fish in 'positions' dataframe (relative);
+#'  intervasls = number of unique fish x interval combinations (absolute) or
+#'  mean number of unique fish x interval combinations per fish in 'positions'
+#'  dataframe (relative).
+#'
+#'@return A list object containing 1) a matrix of the calulated values (i.e.,
+#'  fish, positions, intervals), with row and column names indicating location
+#'  of each grid in UTM, 2) a character string specifying the UTM zone of the
+#'  data in the matrix, 3) the bounding box of the data in UTM, 4) and the
+#'  bounding box of the data in latitude (Y) and longitude (X), 5) a character
+#'  string displaying the function call (i.e., a record of the arguments passed
+#'  to the function).
+#'
+#'@return In addition, the user specifies an image output for displaying the
+#'  heat map. Options are a "plot" (displayed in R), "png" (png file saved to
+#'  specified folder), and "kmz" for viewing the png image as an overlay in
+#'  Google Earth (kmz file saved to specified folder).
+#'
+#'@author Thomas R. Binder
+#'
 #' @examples
 #' data(lamprey_tracks)
 #' phm <- position_heat_map(lamprey_tracks)
-#' 
-#' @export
+#'
+#'@export
 
 position_heat_map <- function (positions,
                                projection = "LL",
-                               fish_pos_int="fish",
-                               abs_or_rel="absolute",
-                               resolution=10,
-                               interval=NULL,
-                               x_limits=NULL,
-                               y_limits=NULL,
-                               utm_zone=NULL,
-                               hemisphere="N",
-                               legend_gradient="y",
-                               legend_pos=c(0.99, 0.2, 1.0, 0.8),
-                               output="plot",
-                               folder="position_heat_map") {
+                               fish_pos_int = "fish",
+                               abs_or_rel = "absolute",
+                               resolution = 10,
+                               interval = NULL,
+                               x_limits = NULL,
+                               y_limits = NULL,
+                               utm_zone = NULL,
+                               hemisphere = "N",
+                               legend_gradient = "y",
+                               legend_pos = c(0.99, 0.2, 1.0, 0.8),
+                               output = "plot",
+                               folder = "position_heat_map") {
 	
   # Perform checks on supplied data and arguiments ---------------------------
-	
+  
   # Check that the required columns appear in the detections dataframe
     if (sum(c("DETECTEDID", "DATETIME", "LAT", "LON") %in% 
       names(positions)) != 4){
@@ -203,18 +198,22 @@ position_heat_map <- function (positions,
                                   y_limits[2]), X=c(x_limits[1], x_limits[2],
                                                     x_limits[1], x_limits[2]))
     attr(range_xylim, which = "projection") <- "LL"
-    range_xylim <- PBSmapping::convUL(range_xylim, km=FALSE, southern=NULL)
+   
+    range_xylim <- lonlat_to_utm(range_xylim)
     x_limits <- range(range_xylim$X)
     y_limits <- range(range_xylim$Y)
   }
 
+  
+  # Coerce positions to data.frame
+  positions <- as.data.frame(positions)
   
   
   # Prepare the positions dataframe ------------------------------------------
   # Remove columns in original dataframe called "X" and "Y" - do this because
   # convUL function requires the LON and LAT data to be stored in columns
   # named X and Y
-  positions <- positions[,!names(positions) %in% c("X","Y")]
+  positions <- positions[, !names(positions) %in% c("X","Y")]
   
   # Rename LON and LAT columns to X and Y for convUL function
   names(positions)[match(c("LON", "LAT"), names(positions))] = c('X', 'Y')
@@ -226,10 +225,9 @@ position_heat_map <- function (positions,
     attr(positions, which="zone") <- "utm_zone"  
   }
   
-  # If projection=="LL", convert positions to UTM coordinates using 'convUL'
-  # from PBSmapping package
+  # If projection=="LL", convert positions to UTM coordinates 
   if(attr(positions, which="projection")=="LL"){
-    positions <- PBSmapping::convUL(positions, km=FALSE, southern=NULL)
+    positions <- lonlat_to_utm(positions)
     # Change X and Y column names back to original LON and LAT
     names(positions)[match(c('X', 'Y'), names(positions))] = c("LON", "LAT")
   }
@@ -272,8 +270,7 @@ position_heat_map <- function (positions,
 	# Convert b_box to LL for kmz output
 	attr(b_box_UTM, which="projection")<-"UTM"
 	attr(b_box_UTM, which="zone")<-ifelse(projection=="LL", attr(positions, which="zone"), utm_zone)
-	b_box_LL <- PBSmapping::convUL(b_box_UTM, km=FALSE, southern=ifelse(hemisphere=="N", FALSE, TRUE))
-	
+	b_box_LL <- utm_to_lonlat(b_box_UTM, hemisphere)
 	
   # Calculate the values to be displayed -------------------------------------
 	# Determines in which grid number each position resides.
@@ -444,25 +441,35 @@ position_heat_map <- function (positions,
   
   	# Write the kml object to kml text file and places it in the folder 
     # containing the three png files.
+    
+    kmz_file <- file.path(folder, paste0(fish_pos_int, "",
+                                         abs_or_rel, ".kmz"))
+    
+    kml_file <- file.path(folder, paste0(fish_pos_int, "",
+                                         abs_or_rel, ".kml"))
+    
+    png_file <- file.path(folder, paste0(fish_pos_int, "",
+                                         abs_or_rel, ".png"))
+    
   	write.table(kml,
-  	            file = file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                                    abs_or_rel,".kml")),
+  	            file = kml_file,
   	            col.names = FALSE,
-  	            row.names = FALSE, quote = FALSE)
-  	# Zip the kml and opng into a KMZ file
-  	utils::zip(zipfile = file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                                      abs_or_rel, ".kmz")),
-  	           files = c(file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                                      abs_or_rel,".kml")),
-  	                     file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                                      abs_or_rel,".png"))),
-  	           flags = "-j")
+  	            row.names = FALSE, 
+  	            quote = FALSE)
+  	
+  	# OS-specific storage mode
+  	zip_mode <- ifelse(Sys.info()["sysname"] == "Darwin", 
+  	                   "cherry-pick", 
+  	                   "mirror")
+  	
+	  zip::zip(zipfile = kmz_file,
+	           files = c(kml_file, png_file),
+	           mode = zip_mode)
+
   	
   	# Delete the kml and png files.
-  	file.remove(file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                             abs_or_rel,".kml")))
-  	file.remove(file.path(paste0(folder, "/", fish_pos_int,"_",
-  	                             abs_or_rel,".png")))
+  	file.remove(kml_file)
+  	file.remove(png_file)
   }
 	if(output %in% c("png", "kmz")){
 	    message(paste0("Output file are located in:", getwd(),"/", folder, "/"))
@@ -477,3 +484,61 @@ position_heat_map <- function (positions,
 	            bbox_LL = b_box_LL,
 	            function_call = sys.call()))
 }	
+
+
+#' Convert geographic positions to UTM
+lonlat_to_utm <- function(lonlat){
+  
+  # Calculate UTM zone
+  utm_zone <- (floor((lonlat[["X"]] + 180) / 6) %% 60) + 1
+  
+  # Add first three digits of EPSG based on hemisphere
+  utm_epsg <- rep(NA_real_, length(utm_zone))
+  
+  # southern hemisphere
+  utm_epsg[lonlat[["Y"]] < 0] <- utm_zone + 32700
+  
+  # northern hemisphere
+  utm_epsg[lonlat[["Y"]] >= 0] <- utm_zone + 32600
+  
+  # if multiple epsg, choose zone with most obs; in case of tie, choose first
+  utm_epsg_freq <- table(utm_epsg)
+  utm_epsg <- as.integer(names(utm_epsg_freq)[which.max(utm_epsg_freq)][1])
+  
+  # Convert to UTM
+  lonlat_sf <- sf::st_as_sf(lonlat, coords = c("X", "Y"), crs = 4326)
+  utm_sf <- sf::st_transform(lonlat_sf, crs = utm_epsg)
+  
+  # Return format consistent with PBSMapping::convUL
+  lonlat[, c("Y", "X")] <- 
+    as.data.frame(sf::st_coordinates(utm_sf))[, c("Y", "X")]
+  
+  attr(lonlat, "projection") <- "UTM"
+  attr(lonlat, "zone") <- utm_epsg %% 100
+  
+  return(lonlat)
+  
+}
+
+#' Convert UTM positions to lonlat
+utm_to_lonlat <- function(utm, hemisphere){
+  
+  # Define EPSG
+  utm_epsg <- ifelse(hemisphere == "N", 
+                     32600 + attr(utm, "zone"), 
+                     32700 + attr(utm, "zone"))
+  
+  # Convert to longlat
+  utm_sf <- sf::st_as_sf(utm, coords = c("X", "Y"), crs = utm_epsg)
+  lonlat_sf <- sf::st_transform(utm_sf, crs = 4326)
+  
+  # Return format consistent with PBSMapping::convUL
+  lonlat_df <- cbind(corner = lonlat_sf$corner, 
+                     as.data.frame(sf::st_coordinates(lonlat_sf))[,c("X", "Y")])
+  
+  attr(lonlat_df, "projection") <- "LL"
+  attr(lonlat_df, "zone") <- attr(utm, "zone")
+  
+  return(lonlat_df)
+  
+}

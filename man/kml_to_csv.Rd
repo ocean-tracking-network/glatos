@@ -4,29 +4,41 @@
 \alias{kml_to_csv}
 \title{KML To CSV Conversion}
 \usage{
-kml_to_csv(filePath, type)
+kml_to_csv(filePath, type = c("points", "lines", "polygons"))
 }
 \arguments{
 \item{filePath}{The pathname for the kml file you wish to convert.}
 
-\item{type}{A character string indicating the type of feature contained in the kml file. Valid arguments are c("points", "lines", and "polygons"). Cannot accomodate files with multiple feature types, so each kml file must contain only a single type.}
+\item{type}{Optional character string indicating the type(s) of feature(s)
+to read from the kml file. Valid values are \code{c("points", "lines", and
+"polygons")}.}
 }
 \value{
-For type = "points": a single csv file for all points
-
-For type = "lines" or "polygons": a single csv for each feature in the kml file
+A csv file (same name as input \code{filePath} but with \code{csv} 
+  extension) is written to directory containing input \code{filePath} 
+  with five columns \describe{
+  \item{name}{Feature name}
+  \item{feature_type}{Feature type}
+  \item{seq}{Sequential position in feature}
+  \item{longitude}{Longitude}
+  \item{latitude}{Latitude}
+  \item{altitude}{Altitude}
+  }
 }
 \description{
-Function for extracting features (points, lines, polygons) from kml files and writing them to csv files.
+Function for extracting features (points, lines, polygons) from kml files and
+writing them to csv files.
 }
 \details{
-The function utilizes the readOGR function in the rgdal package to parse the contents of the kml file. The readOGR function requires that the layer name be spefified, which is determined automatically by from the kml file by reading the <name> tag in the first line after the <Folder> tag.
-
-The function cannot convert multiple feature types (i.e., points, lines, polygons) in the same kml file. When exporting the kml from Google Earth, make sure that only one feature type is present for each kml. The function can handle multiple features as long as they are the same type.
-
-kmz files are not supported. Make sure exports from Google earth are saved as kml.
+kmz files are not supported. Make sure exports from Google earth are
+  saved as kml. Or extract (unzip) kml from kmz.
 }
 \examples{
-#TBD
+
+#Get example kml with two polygons
+kml_file <- system.file("inst/extdata", "example_polygons.kml",
+                        package = "glatos")
+                        
+kml_to_csv(kml_file)
 
 }

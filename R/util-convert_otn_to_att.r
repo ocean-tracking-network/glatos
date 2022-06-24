@@ -201,20 +201,25 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
     
 }
 
-query_worms_common <- function(commonName) {
 
+# Simple query to WoRMS based on the common name and returns the sci name
+query_worms_common <- function(commonName) {
+  
   url <- utils::URLencode(
-    sprintf("http://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", 
-      commonName))
-  tryCatch({
-      print(url)
-      payload <- jsonlite::fromJSON(url)
-      return(payload$scientificname)
+    sprintf("https://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", 
+            commonName))
+  
+  sciname <- tryCatch({
+    print(url)
+    payload <- jsonlite::fromJSON(url)
+    sciname <- payload$scientificname
   }, error = function(e){
-      print(geterrmessage())
-      stop(sprintf('Error in querying WoRMS, %s was probably not found.', 
-                   commonName))
+    print(geterrmessage())
+    stop(sprintf('Error in querying WoRMS, %s was probably not found.', 
+                 commonName))
   })
+  
+  return(sciname)
 }
 
 convert_sex <- function(sex) {

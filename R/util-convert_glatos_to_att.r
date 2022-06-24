@@ -158,36 +158,5 @@ concat_list_strings <- function(list1, list2, sep = "-") {
   return (paste(list1, list2, sep = sep))
 }
 
-# Simple query to WoRMS based on the common name and returns the sci name
-query_worms_common <- function(commonName) {
 
-  url <- utils::URLencode(
-    sprintf("http://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", 
-      commonName))
-  tryCatch({
-      print(url)
-      payload <- jsonlite::fromJSON(url)
-      return(payload$scientificname)
-  }, error = function(e){
-      print(geterrmessage())
-      stop(sprintf('Error in querying WoRMS, %s was probably not found.', 
-                   commonName))
-  })
-}
 
-# Convert the sex from 'F' and 'M' to 'FEMALE' and 'MALE'
-convert_sex <- function(sex) {
-  if (toupper(sex) %in% c("F", "FEMALE")) return("FEMALE")
-  if (toupper(sex) %in% c("M", "MALE")) return("MALE")
-  return(sex)
-}
-
-# Converts the reciever reference id to station name
-extract_station <- function(reciever_ref) {
-  reciever_ref <- as.character(reciever_ref)
-  return( # Split the string by _ and drop the array name
-      unlist(
-          strsplit(c(reciever_ref), c("_"))
-      )[-1] 
-  )
-}

@@ -9,66 +9,162 @@ transmit_along_path(
   vel = 0.5,
   delayRng = c(60, 180),
   burstDur = 5,
-  EPSG = 3175,
+  colNames = list(x = "x", y = "y"),
+  pathCRS = NA,
   sp_out = TRUE
 )
 }
 \arguments{
-\item{path}{A two-column data frame with at least two rows and columns 
-\code{x} and \code{y} with coordinates that define path.}
+\item{path}{A data frame or matrix with at least two rows and named columns
+with coordinates that define path.\cr \emph{OR} \cr A object of class
+\code{\link[sf]{sf}} or \code{\link[sf]{sfc}} containing \code{POINT}
+features with a geometry column. (\code{\link[sp]{SpatialPointsDataFrame}}
+is also allowed.)}
 
-\item{vel}{A numeric scalar with movement velocity along track; assumed 
-constant.}
+\item{vel}{A numeric scalar with movement velocity along track; assumed
+constant; in meters per second.}
 
-\item{delayRng}{A 2-element numeric vector with minimum and maximum delay 
+\item{delayRng}{A 2-element numeric vector with minimum and maximum delay
 (time in seconds from end of one coded burst to beginning of next).}
 
-\item{burstDur}{A numeric scalar with duration (in seconds) of each coded 
+\item{burstDur}{A numeric scalar with duration (in seconds) of each coded
 burst (i.e., pulse train).}
 
-\item{EPSG}{Numeric EPSG code of the coordinate system used for simulations. 
-Default is 3175, a projected coordinate system for the North American 
-Great Lakes Basin and St. Lawrence River system. 
-\url{http://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}}
+\item{colNames}{A named list containing the names of columns with coordinates
+(defaults are \code{x} and \code{y}) in \code{path}. Ignored if
+\code{trnsLoc} is a spatial object with a geometry column.}
 
-\item{sp_out}{Logical. If TRUE (default) then output is a 
-\link[sp]{SpatialPoints} object. If FALSE, then output is a 
-data.frame.}
+\item{pathCRS}{Defines the coordinate reference system (object of class
+\code{crs} or a numeric EPSG code) of coordinates in \code{path}, if missing; ignored otherwise.
+If no valid \code{crs} is specified in \code{path} or via \code{pathCRS =
+NA} (default value), then \code{path} coordinates are assumed to be in an
+arbitrary Cartesian coordinate system with base unit of 1 meter. See Note.}
+
+\item{sp_out}{Logical. If TRUE (default) then output is an \code{sf} object.
+If FALSE, then output is a \code{data.frame}.}
 }
 \value{
-A SpatialPointsDataFrame object in the same CRS as the
-  input \code{path} object. \cr \emph{OR} \cr \item{x}{ x coordinates for
-  start of each transmission } \item{y}{ y coordinates for start of each
-  transmission } \item{et}{ elapsed time to start of each transmission }
+When \code{sp_out = TRUE}, an \code{sf} object containing one
+  \code{POINT} feature for each simulated transmission and a column named
+  \code{time} (defined below). 
+  
+  When \code{sp_out = FALSE}, a data.frame with the following columns:
+  \item{x}{ x coordinates for start of each transmission. } \item{y}{ y
+  coordinates for start of each transmission. } \item{time}{ Elapsed time, in
+  seconds, from the start of input \code{path} to the start of each
+  transmission.}
 }
 \description{
-Simulate tag signal transmission along a pre-defined path (x, y coords)
-  based on constant movement velocity, transmitter delay range, and duration
-  of signal.
+Simulate tag signal transmission along a pre-defined path (x, y
+  coords) based on constant movement velocity, transmitter delay range, and
+  duration of signal.
 }
 \details{
 Delays are drawn from uniform distribution defined by delay range.
-First, elapsed time in seconds at each node in path is calculated based on 
-path length and velocity. Next, delays are simulated and burst durations 
-are added toeach delay to determine the time of each signal transmission. 
-Location of each signal transmission along the path is linearly interpolated.
+  First, elapsed time in seconds at each vertex in \code{path} is calculated
+  based on path length and velocity. Next, delays are simulated and burst
+  durations are added to each delay to determine the time of each signal
+  transmission. Location of each signal transmission along the path is
+  linearly interpolated.
 
-If \code{path} object is a data frame with x and y columns and
-  \code{sp_out} argument is TRUE, then SpatialPointsDataFrame
-  output object will have coordinate system of \code{EPSG}. Coordinate
-  system on output will be same as input if path object is
-  \code{\link[sp]{SpatialPoints}}.
+Computation time is fastest if coordinates in \code{path} are in a
+  Cartesian (projected) coordinate system and slowest if coordinates are in a
+  geographic coordinate system (e.g., longitude, latitude) because different
+  methods are used to calculate step lengths in each case. When \code{path}
+  CRS is Cartesian (e.g., UTM), step lengths are calculated as simple
+  Euclidean distance. When CRS is geographic, step lengths are calculated as
+  Haversine distances using \code{\link[geodist]{geodist}} (with
+  \code{measure = "haversine"}).
 }
 \note{
-This function was written to be called before 
-  \code{\link{detect_transmissions}}, which was designed to accept the result
-  as input (\code{trnsLoc}).
+This function was written to be called after
+  \code{\link{crw_in_polygon}} and before \code{\link{detect_transmissions}},
+  which was designed to accept the result as input (\code{trnsLoc}).
 }
 \examples{
-mypath <- data.frame(x=seq(0,1000,100),y=seq(0,1000,100))
-mytrns <- transmit_along_path(mypath,vel=0.5,delayRng=c(60,180),burstDur=5.0)
-plot(mypath,type="b")
-points(mytrns,pch=20,col="red")
+
+#Example 1 - data.frame input (default column names)
+
+mypath <- data.frame(x = seq(0, 1000, 100), 
+                     y = seq(0, 1000, 100))
+                     
+mytrns <- transmit_along_path(mypath, vel = 0.5, 
+                              delayRng = c(60, 180),
+                              burstDur = 5.0, 
+                              sp_out = FALSE)
+plot(mypath, type = "o")
+points(mytrns, pch = 20, col = "red")
+
+
+#Example 2 - data.frame input (non-default column names)
+
+mypath <- data.frame(Easting = seq(0, 1000, 100), 
+                     Northing = seq(0, 1000, 100))
+                     
+mytrns <- transmit_along_path(mypath, vel = 0.5, delayRng = c(60, 180),
+                              burstDur = 5.0, 
+                              colNames = list(x = "Easting", 
+                                              y = "Northing"),
+                              sp_out = FALSE)
+plot(mypath, type = "o")
+points(mytrns, pch = 20, col = "red")
+
+
+#Example 3 - data.frame input using pathCRS arg
+
+mypath <- data.frame(deploy_long = c(-87, -87.1, -87),
+                     deploy_lat = c(44, 44.1, 44.2))
+
+mytrns <- transmit_along_path(mypath, vel = 0.5, delayRng = c(600, 1800),
+                              burstDur = 5.0, 
+                              colNames = list(x = "deploy_long", 
+                                              y = "deploy_lat"),
+                              pathCRS = 4326,
+                              sp_out = FALSE)
+plot(mypath, type = "o")
+points(mytrns, pch = 20, col = "red")
+
+
+#Example 4 - sf POINT input
+
+#simulate in great lakes polygon
+data(great_lakes_polygon)
+
+mypath_sf <- crw_in_polygon(great_lakes_polygon,
+                            theta = c(0, 25),
+                            stepLen = 100,
+                            initHeading = 0,
+                            nsteps = 10,
+                            cartesianCRS = 3175)
+
+mytrns_sf <- transmit_along_path(mypath_sf, 
+                                 vel = 0.5, 
+                                 delayRng = c(60, 180),
+                                 burstDur = 5.0)
+plot(mypath_sf, type = "o")
+points(sf::st_coordinates(mytrns_sf), pch = 20, col = "red")
+
+
+#Example 5 - SpatialPointsDataFrame input
+
+#simulate in great lakes polygon
+data(greatLakesPoly)
+
+mypath_sp <- crw_in_polygon(greatLakesPoly,
+                            theta = c(0, 25),
+                            stepLen = 100,
+                            initHeading = 0,
+                            nsteps = 10, 
+                            cartesianCRS = 3175)
+
+mytrns_sp <- transmit_along_path(mypath_sp, 
+                                 vel = 0.5, 
+                                 delayRng = c(60, 180),
+                                 burstDur = 5.0)
+
+plot(sf::st_coordinates(sf::st_as_sf(mypath_sp)), type = "o")
+points(sf::st_coordinates(mytrns_sp), pch = 20, col = "red")
+
 
 }
 \author{

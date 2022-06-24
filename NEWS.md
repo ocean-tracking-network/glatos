@@ -1,6 +1,74 @@
 ----
+# glatos 0.6.0
 
-# glatos 0.5.x
+#### 2022-06-24
+
+### Breaking changes
+
+- crw_in_polygon
+    - replace input arg 'EPSG' with 'inputCRS' and 'cartesianCRS'
+    - unlike previous versions, input polygon ('polyg') must now be in 
+      Cartesian (projected) coordinate reference system or 'cartesianCRS' must 
+      be specified (there is no default).
+    - remove dependence on sp
+	  - improve speed
+	  - return sf object (default) or data.frame
+	  
+- transmit_along_path
+    - remove dependence on sp
+    - return sf object (default) or data.frame
+    - calculate distances along path using geodist::geodist for geographic and 
+      simple Euclidean for Cartesian coordinates. Cartesian input results in 
+      fastest computations.
+    - remove EPSG input (no longer requires transformation to Cartesian CRS for 
+      calculations); but non-Cartesian input will be slower than Cartesian.
+    - add pathCRS input arg for non-spatial inputs
+    - change name of column 'et' in output to 'time'.
+    - add input arg "colNames" for non-default coordinate column name 
+      specification.
+      
+- detect_transmissions
+    - remove dependence on sp
+    - return sf object (default) or data.frame
+    - calculate distances along path using geodist::geodist for geographic and 
+      simple Euclidean for Cartesian coordinates. Cartesian input results in 
+      fastest computations.
+    - remove EPSG input (no longer requires transformation to Cartesian CRS for 
+      calculations); but non-Cartesian input will be slower than Cartesian.
+    - add inputCRS input arg for non-spatial inputs
+    - change name of column 'et' in output to 'time'.
+    - add input arg "colNames" for non-default coordinate column name 
+      specification.    
+
+### Bug fixes and minor changes
+
+- remove dependence on PBSmapping
+    - replace calls to PBSmapping::convUL with local functions 
+      lonlat_to_utm and utm_to_lonlat
+
+- remove dependence on gdalUtils
+    - use gdalUtilities::gdal_rasterize instead of gdalUtils::gdal_rasterize
+    - fix [issue #174](https://github.com/ocean-tracking-network/glatos/issues/174#)
+    - removed gdalUtils dependency from DESCRIPTION and added gdalUtilities
+
+- removed rgdal dependency from DESCRIPTION 
+    - removed GDAL installation check from check_dependencies
+
+- changes to kml_to_csv
+    - read data from kml with sf::read_sf instead of rgdal::readOGR
+    - allow multiple feature types to be read from kml
+    - change export format from separate csv files to a single csv file
+    - add feature name and type to output file
+
+- fix 'greatLakesPoly' CRS to resolve warning: "CRS object has no comment"
+
+- added example data 'great_lakes_polygon'; an sf POLYGON version of 
+  'greatLakesPoly' (a SpatialPolygonsDataFrame)
+	  
+
+----
+
+# glatos 0.5.2
 
 #### 2021-12-10
 

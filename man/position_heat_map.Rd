@@ -22,23 +22,19 @@ position_heat_map(
 )
 }
 \arguments{
-\item{positions}{A dataframe containing detection data with at least the 
-following 4 columns:
- \describe{
- \item{\code{DETECTEDID}}{Individual animal identifier; character.}
-\item{\code{DATETIME}}{Date-time stamps for the positions (MUST be of 
-  class 'POSIXct')}
-\item{\code{LAT}}{Position latitude.}
-\item{\code{LON}}{Position longitude.}
-}}
+\item{positions}{A dataframe containing detection data with at least the
+following 4 columns: \describe{ \item{\code{DETECTEDID}}{Individual animal
+identifier; character.} \item{\code{DATETIME}}{Date-time stamps for the
+positions (MUST be of class 'POSIXct')} \item{\code{LAT}}{Position
+latitude.} \item{\code{LON}}{Position longitude.} }}
 
-\item{projection}{A character string indicating the projection of the
-positions in the 'positions' dataframe. Used in the call to
-\link[PBSmapping]{convUL}, which converts coordinates between
-latitude/longitude in decimal degrees ("LL"; e.g., 45.98753) and UTM. Valid
-arguments are "LL" (latitude/longitude) and "UTM". If projection=="UTM",
-then \code{utm_zone} and '\code{hemisphere} arguments must also be
-supplied.}
+\item{projection}{A character string indicating if the coordinates in the
+'positions' dataframe are geographic (\code{projection = "LL"}) or
+projected/Cartesian(\code{projection = "UTM"}). Used to convert coordinates
+between latitude/longitude in decimal degrees ("LL"; e.g., 45.98753) and
+UTM. Valid arguments are "LL" (latitude/longitude) and "UTM". If
+projection=="UTM", then \code{utm_zone} and '\code{hemisphere} arguments
+must also be supplied.}
 
 \item{fish_pos_int}{A character string indicating whether output will display
 number of fish or number of positions occuring in each cell of the grid.
@@ -52,97 +48,96 @@ intervals) or as relative number (relative to total number of fish
 detected). Valid arguments are c("absolute", "relative"). Default is
 "absolute".}
 
-\item{resolution}{A numeric value indicating the spatial resolution 
-(in meters) of the grid system used to make the heat maps. Default is 10 m.}
+\item{resolution}{A numeric value indicating the spatial resolution (in
+meters) of the grid system used to make the heat maps. Default is 10 m.}
 
 \item{interval}{A numeric value indicating the duration (in seconds) of time
 bin (in seconds) for use in calculating number of intervals fish were
 resident in a grid cell (i.e., a surrogate for amount of time spent in each
-cell of the grid). If interval==NULL (default), than raw number of
-positions is calculated. This value is only used when fish_pos_int ==
-"intervals'.}
+cell of the grid). If interval==NULL (default), than raw number of positions
+is calculated. This value is only used when fish_pos_int == "intervals'.}
 
 \item{x_limits}{An optional 2-element numeric containing limits of x axis. If
 x_limits == NULL (default), then it is determined from the extents of the
 data.}
 
-\item{y_limits}{An optional 2-element numeric containing limits of y axis. If 
- y_limits == NULL (default), then it is determined from the extents of the
- data.
+\item{y_limits}{An optional 2-element numeric containing limits of y axis. If
+y_limits == NULL (default), then it is determined from the extents of the
+data.}
 
- @param utm_zone An interger value between 1 and 60 (inclusive) indicating 
- the primary UTM zone of the detection data. Required and used only when 
- projection == "UTM". Default is NULL (i.e. assumes detection data are in 
- projection == LL by default).}
+\item{utm_zone}{An interger value between 1 and 60 (inclusive) indicating the
+primary UTM zone of the detection data. Required and used only when
+projection == "UTM". Default is NULL (i.e. assumes detection data are in
+projection == LL by default).}
 
-\item{hemisphere}{A character string indicating whether detection data are 
-in the northern or southern hemisphere. Required and used only when 
-projection == "UTM". Valid values are c("N", "S"). Default is "N".}
+\item{hemisphere}{A character string indicating whether detection data are in
+the northern or southern hemisphere. Required and used only when projection
+== "UTM". Valid values are c("N", "S"). Default is "N".}
 
 \item{legend_gradient}{A character string indicating the orientation of the
-color legend; "y" = vertical, "x" = horizontal, "n" indicates that no 
-legend should be drawn. Default is "y".}
+color legend; "y" = vertical, "x" = horizontal, "n" indicates that no legend
+should be drawn. Default is "y".}
 
-\item{legend_pos}{A numeric vector indicating the location of the color 
-legend as a portion of the total plot area (i.e., between 0 and 1). Only
-used if 'legend_gradient" in not "n". Default is c(0.99, 0.2, 1.0, 0.8),
-which puts the legend along the right hand side of the plot.}
+\item{legend_pos}{A numeric vector indicating the location of the color legend
+as a portion of the total plot area (i.e., between 0 and 1). Only used if
+'legend_gradient" in not "n". Default is c(0.99, 0.2, 1.0, 0.8), which puts
+the legend along the right hand side of the plot.}
 
-\item{output}{An optional character string indicating how results will 
-be displayed visually. Options include: 1) a plot in the R device window 
-("plot"), 2) a .png image file ("png"), or 3) a .kmz file ("kmz") for 
-viewing results as an overlay in Google Earth. Accepted values are 
-c("plot", "png", "kmz"). Default value is "plot".}
+\item{output}{An optional character string indicating how results will be
+displayed visually. Options include: 1) a plot in the R device window
+("plot"), 2) a .png image file ("png"), or 3) a .kmz file ("kmz") for
+viewing results as an overlay in Google Earth. Accepted values are c("plot",
+"png", "kmz"). Default value is "plot".}
 
-\item{folder}{A character string indicating the output folder. If path is 
-not specified then \code{folder} will be created in the working directory.
+\item{folder}{A character string indicating the output folder. If path is not
+specified then \code{folder} will be created in the working directory.
 Default is "position_heat_map".}
 }
 \value{
 A list object containing 1) a matrix of the calulated values (i.e.,
-fish, positions, intervals), with row and column names indicating location of
-each grid in UTM, 2) a character string specifying the UTM zone of the data
-in the matrix, 3) the bounding box of the data in UTM, 4) and the bounding
-box of the data in latitude (Y) and longitude (X), 5) a character string
-displaying the function call (i.e., a record of the arguments passed to the
-function).
+ fish, positions, intervals), with row and column names indicating location
+ of each grid in UTM, 2) a character string specifying the UTM zone of the
+ data in the matrix, 3) the bounding box of the data in UTM, 4) and the
+ bounding box of the data in latitude (Y) and longitude (X), 5) a character
+ string displaying the function call (i.e., a record of the arguments passed
+ to the function).
 
 In addition, the user specifies an image output for displaying the
-heat map. Options are a "plot" (displayed in R), "png" (png file saved to
-specified folder), and "kmz" for viewing the png image as an overlay in
-Google Earth (kmz file saved to specified folder).
+ heat map. Options are a "plot" (displayed in R), "png" (png file saved to
+ specified folder), and "kmz" for viewing the png image as an overlay in
+ Google Earth (kmz file saved to specified folder).
 }
 \description{
-Create heat maps to display the spatial distribution of 
- acoustic telemetry positions. Most useful when used on data with high spatial
- resultion, such as VPS positional telemetry data.
+Create heat maps to display the spatial distribution of acoustic telemetry
+positions. Most useful when used on data with high spatial resultion, such as
+VPS positional telemetry data.
 }
 \details{
-When and 'interval' argument is supplied, the number of unique fish
-  x interval combinations that occurred in each grid cell is calculated
-  instead of raw number of positions. For example, in 4 hours there are a
-  total of 4 1-h intervals. If fish 'A' was positioned in a single grid cell
-  during 3 of the 4 intervals, than the number of intervals for that fish and
-  grid combination is 3. Intervals are determined by applying the
-  \link[base]{findInterval} function (base R) to a sequence of timestamps
-  (class: POSIXct) created using seq(from = min(positions[, DATETIME]), to =
-  min(positions[, DATETIME]), by = interval), where interval is the
-  user-assigned interval duration in seconds. Number of intervals is a more
-  robust surrogate than number of positions for relative time spent in each
-  grid in cases where spatial or temporal variability in positioning
-  probability are likely to significantly bias the distribution of positions
-  in the array.
+When and 'interval' argument is supplied, the number of unique fish x
+ interval combinations that occurred in each grid cell is calculated instead
+ of raw number of positions. For example, in 4 hours there are a total of 4
+ 1-h intervals. If fish 'A' was positioned in a single grid cell during 3 of
+ the 4 intervals, than the number of intervals for that fish and grid
+ combination is 3. Intervals are determined by applying the
+ \link[base]{findInterval} function (base R) to a sequence of timestamps
+ (class: POSIXct) created using seq(from = min(positions[, DATETIME]), to =
+ min(positions[, DATETIME]), by = interval), where interval is the
+ user-assigned interval duration in seconds. Number of intervals is a more
+ robust surrogate than number of positions for relative time spent in each
+ grid in cases where spatial or temporal variability in positioning
+ probability are likely to significantly bias the distribution of positions
+ in the array.
 
 Calculated values (i.e., fish, positions, intervals) can be returned
-  as absolute or relative, which is specified using the abs_or_rel argument;
-  "absolute" is the actual value, "relative" is the absolute value divided by
-  the total number of fish appearing in the 'positions' dataframe. Units for
-  plots: fish = number of unique fish (absolute) or % of total fish in
-  'positions' dataframe (relative); positions = number of positions
-  (absolute) or mean number of positions per fish in 'positions' dataframe
-  (relative); intervasls = number of unique fish x interval combinations
-  (absolute) or mean number of unique fish x interval combinations per fish
-  in 'positions' dataframe (relative).
+ as absolute or relative, which is specified using the abs_or_rel argument;
+ "absolute" is the actual value, "relative" is the absolute value divided by
+ the total number of fish appearing in the 'positions' dataframe. Units for
+ plots: fish = number of unique fish (absolute) or % of total fish in
+ 'positions' dataframe (relative); positions = number of positions (absolute)
+ or mean number of positions per fish in 'positions' dataframe (relative);
+ intervasls = number of unique fish x interval combinations (absolute) or
+ mean number of unique fish x interval combinations per fish in 'positions'
+ dataframe (relative).
 }
 \examples{
 data(lamprey_tracks)

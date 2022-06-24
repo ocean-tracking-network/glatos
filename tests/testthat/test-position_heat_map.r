@@ -16,8 +16,14 @@ phm_reduced_input <- position_heat_map(lamprey_tracks[, c("DETECTEDID",
                          y_limits = c(46.45, 46.47),                         
                          resolution = 100)
 
+# Test data.table input
+phm_dt_input <- position_heat_map(data.table::setDT(lamprey_tracks), 
+                                    x_limits = c(-84.14, -84.12),
+                                    y_limits = c(46.45, 46.47),
+                                    resolution = 100)
+
 # Expected results
-phmv_shouldBe <- 
+phm_shouldBe <- 
   structure(c(43L, 20L, 23L, 19L, 21L, 19L, 25L, 
   17L, 21L, 19L, 12L, 16L, 13L, 8L, 8L, 9L, 3L, 2L, 3L, 2L, 1L, 
   4L, 2L, 35L, 19L, 20L, 18L, 22L, 20L, 21L, 14L, 15L, 18L, 14L, 
@@ -59,10 +65,15 @@ phmv_shouldBe <-
 # Testing output gives expected values
 test_that("full vps data set gives expected result", {
   # Check if expected and actual results are the same
-  expect_equal(phm_full_input$values, phm_shouldBe$values)
+  expect_equal(phm_full_input$values, phm_shouldBe)
 })
 
 test_that("data frame with min required columns gives expected result", {
   # Check if expected and actual results are the same
-  expect_equal(phm_reduced_input$values, phm_shouldBe$values)
+  expect_equal(phm_reduced_input$values, phm_shouldBe)
+})
+
+test_that("data.table input gives expected result", {
+  # Check if expected and actual results are the same
+  expect_equal(phm_dt_input$values, phm_shouldBe)
 })
