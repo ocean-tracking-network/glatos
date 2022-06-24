@@ -42,6 +42,12 @@
 
 ### Bug fixes and minor changes
 
+- position_heat_map
+    - fix [issue #159](https://github.com/ocean-tracking-network/glatos/issues/159)
+      where kmz output worked on mac but not windows
+    - fix [issue #123](https://github.com/ocean-tracking-network/glatos/issues/123)
+      when input positions object was data.table.
+
 - remove dependence on PBSmapping
     - replace calls to PBSmapping::convUL with local functions 
       lonlat_to_utm and utm_to_lonlat
@@ -50,9 +56,6 @@
     - use gdalUtilities::gdal_rasterize instead of gdalUtils::gdal_rasterize
     - fix [issue #174](https://github.com/ocean-tracking-network/glatos/issues/174#)
     - removed gdalUtils dependency from DESCRIPTION and added gdalUtilities
-
-- removed rgdal dependency from DESCRIPTION 
-    - removed GDAL installation check from check_dependencies
 
 - changes to kml_to_csv
     - read data from kml with sf::read_sf instead of rgdal::readOGR
