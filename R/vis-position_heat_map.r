@@ -267,7 +267,7 @@ position_heat_map <- function (positions,
 	# Convert b_box to LL for kmz output
 	attr(b_box_UTM, which="projection")<-"UTM"
 	attr(b_box_UTM, which="zone")<-ifelse(projection=="LL", attr(positions, which="zone"), utm_zone)
-	b_box_LL <- utm_to_lonlat(b_box_UTM)
+	b_box_LL <- utm_to_lonlat(b_box_UTM, hemisphere)
 	
   # Calculate the values to be displayed -------------------------------------
 	# Determines in which grid number each position resides.
@@ -518,7 +518,7 @@ lonlat_to_utm <- function(lonlat){
 }
 
 #' Convert UTM positions to lonlat
-utm_to_lonlat <- function(utm){
+utm_to_lonlat <- function(utm, hemisphere){
   
   # Define EPSG
   utm_epsg <- ifelse(hemisphere == "N", 
