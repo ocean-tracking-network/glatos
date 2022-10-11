@@ -4,10 +4,10 @@
 #' with turning angles drawn from a normal distribution inside a polygon.
 #'
 #' @param polyg A spatial polygon object of class \code{\link[sf]{sf}} or
-#'   \code{\link[sf]{sfc}} containing \code{POLYGON} features (but
-#'   \code{SpatialPolygonsDataFrame} and \code{SpatialPolygons} are also
-#'   accepted); \cr \emph{OR} \cr A polygon defined as data frame or matrix with
-#'   numeric columns x and y.
+#'   \code{\link[sf]{sfc}} containing \code{POLYGON} or \code{MULTIPOLYGON}
+#'   features (but \code{SpatialPolygonsDataFrame} and \code{SpatialPolygons}
+#'   are also accepted); \cr \emph{OR} \cr A polygon defined as data frame or
+#'   matrix with numeric columns x and y.
 #'   
 #' @param theta A 2-element numeric vector with turn angle parameters (theta[1]
 #'   = mean; theta[2] = sd), in degrees, from normal distribution.
@@ -157,8 +157,8 @@
 #'
 #' @export
 
-crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100, 
-                           initPos = c(NA,NA), initHeading = NA, nsteps = 30, 
+crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100, 
+                           initPos = c(NA, NA), initHeading = NA, nsteps = 30, 
                            inputCRS = NA, cartesianCRS = NA, sp_out = TRUE, 
                            show_progress = TRUE){          
   
@@ -193,8 +193,8 @@ crw_in_polygon <- function(polyg, theta = c(0,10), stepLen = 100,
   
   # Check that sf geometry is POLYGON
   if(inherits(polyg, c("sf", "sfc"))) {
-    if(!("POLYGON" %in% sf::st_geometry_type(polyg)))
-    stop("Input object 'polyg' must contain geometry of type 'POLYGON' when ",
+    if(!any(c("MULTIPOLYGON", "POLYGON") %in% sf::st_geometry_type(polyg)))
+      stop("Input object 'polyg' must contain geometry of type 'POLYGON' when ",
           "class is 'sf' or 'sfc'.")
     polyg_sf <- polyg
   } else if(inherits(polyg, c("data.frame", "matrix"))){

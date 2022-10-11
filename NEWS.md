@@ -1,4 +1,14 @@
 ----
+# glatos 0.6.1
+
+#### 2022-10-11
+
+# Minor changes
+
+- Allow `sf` `MUTLIPOLYGON` geometry type for input `polyg` to `crw_in_polygon()`.
+    
+
+----
 # glatos 0.6.0
 
 #### 2022-06-24

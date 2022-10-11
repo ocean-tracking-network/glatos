@@ -19,10 +19,10 @@ crw_in_polygon(
 }
 \arguments{
 \item{polyg}{A spatial polygon object of class \code{\link[sf]{sf}} or
-\code{\link[sf]{sfc}} containing \code{POLYGON} features (but
-\code{SpatialPolygonsDataFrame} and \code{SpatialPolygons} are also
-accepted); \cr \emph{OR} \cr A polygon defined as data frame or matrix with
-numeric columns x and y.}
+\code{\link[sf]{sfc}} containing \code{POLYGON} or \code{MULTIPOLYGON}
+features (but \code{SpatialPolygonsDataFrame} and \code{SpatialPolygons}
+are also accepted); \cr \emph{OR} \cr A polygon defined as data frame or
+matrix with numeric columns x and y.}
 
 \item{theta}{A 2-element numeric vector with turn angle parameters (theta[1]
 = mean; theta[2] = sd), in degrees, from normal distribution.}
