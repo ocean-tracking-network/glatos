@@ -18,7 +18,8 @@ position_heat_map(
   legend_gradient = "y",
   legend_pos = c(0.99, 0.2, 1, 0.8),
   output = "plot",
-  folder = "position_heat_map"
+  folder = "position_heat_map",
+  out_file = NULL
 )
 }
 \arguments{
@@ -92,6 +93,11 @@ viewing results as an overlay in Google Earth. Accepted values are c("plot",
 \item{folder}{A character string indicating the output folder. If path is not
 specified then \code{folder} will be created in the working directory.
 Default is "position_heat_map".}
+
+\item{out_file}{A character string indicating base name of output files (if
+\code{output = "png" or "kmz"}). If \code{out_file} is a path, all but last
+part is ignored (via \code{basename}). Any file extension is also ignored
+(via \code{tools::file_path_sans_ext}).}
 }
 \value{
 A list object containing 1) a matrix of the calulated values (i.e.,
@@ -113,7 +119,7 @@ positions. Most useful when used on data with high spatial resultion, such as
 VPS positional telemetry data.
 }
 \details{
-When and 'interval' argument is supplied, the number of unique fish x
+When an 'interval' argument is supplied, the number of unique fish x
  interval combinations that occurred in each grid cell is calculated instead
  of raw number of positions. For example, in 4 hours there are a total of 4
  1-h intervals. If fish 'A' was positioned in a single grid cell during 3 of
@@ -132,7 +138,7 @@ Calculated values (i.e., fish, positions, intervals) can be returned
  as absolute or relative, which is specified using the abs_or_rel argument;
  "absolute" is the actual value, "relative" is the absolute value divided by
  the total number of fish appearing in the 'positions' dataframe. Units for
- plots: fish = number of unique fish (absolute) or % of total fish in
+ plots: fish = number of unique fish (absolute) or \% of total fish in
  'positions' dataframe (relative); positions = number of positions (absolute)
  or mean number of positions per fish in 'positions' dataframe (relative);
  intervasls = number of unique fish x interval combinations (absolute) or

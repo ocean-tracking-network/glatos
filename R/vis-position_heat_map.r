@@ -75,7 +75,12 @@
 #'  specified then \code{folder} will be created in the working directory.
 #'  Default is "position_heat_map".
 #'
-#'@details When and 'interval' argument is supplied, the number of unique fish x
+#'@param out_file A character string indicating base name of output files (if
+#'  \code{output = "png" or "kmz"}). If \code{out_file} is a path, all but last
+#'  part is ignored (via \code{basename}). Any file extension is also ignored
+#'  (via \code{tools::file_path_sans_ext}).
+#'
+#'@details When an 'interval' argument is supplied, the number of unique fish x
 #'  interval combinations that occurred in each grid cell is calculated instead
 #'  of raw number of positions. For example, in 4 hours there are a total of 4
 #'  1-h intervals. If fish 'A' was positioned in a single grid cell during 3 of
@@ -89,12 +94,12 @@
 #'  grid in cases where spatial or temporal variability in positioning
 #'  probability are likely to significantly bias the distribution of positions
 #'  in the array.
-#'
+
 #'@details Calculated values (i.e., fish, positions, intervals) can be returned
 #'  as absolute or relative, which is specified using the abs_or_rel argument;
 #'  "absolute" is the actual value, "relative" is the absolute value divided by
 #'  the total number of fish appearing in the 'positions' dataframe. Units for
-#'  plots: fish = number of unique fish (absolute) or % of total fish in
+#'  plots: fish = number of unique fish (absolute) or \% of total fish in
 #'  'positions' dataframe (relative); positions = number of positions (absolute)
 #'  or mean number of positions per fish in 'positions' dataframe (relative);
 #'  intervasls = number of unique fish x interval combinations (absolute) or
@@ -135,7 +140,8 @@ position_heat_map <- function (positions,
                                legend_gradient = "y",
                                legend_pos = c(0.99, 0.2, 1.0, 0.8),
                                output = "plot",
-                               folder = "position_heat_map") {
+                               folder = "position_heat_map",
+                               out_file = NULL) {
 	
   # Perform checks on supplied data and arguiments ---------------------------
   
@@ -204,7 +210,7 @@ position_heat_map <- function (positions,
     y_limits <- range(range_xylim$Y)
   }
 
-  
+
   # Coerce positions to data.frame
   positions <- as.data.frame(positions)
   
@@ -239,7 +245,6 @@ position_heat_map <- function (positions,
       file_path <- normalizePath(folder)
       folder <- basename(folder)
   }
-  
   
   
   # Determine the total number of fish in the data set -----------------------
@@ -353,13 +358,28 @@ position_heat_map <- function (positions,
 
   # Output -------------------------------------------------------------------
 	if(output %in% c("png","kmz")){
-  		  png(file = file.path(paste0(folder, "/", fish_pos_int,"_",
-  		                              abs_or_rel,".png")),
-  		      bg = 'transparent',
-  		      height = 2000,
-  		      width = 2000*(ncol(results)/nrow(results)),
-  		      pointsize = 38)
+	  
+	  # make output file name (without extension)
+	  if(is.null(out_file)){ 
+	    out_file <- paste0(fish_pos_int, "_", abs_or_rel)
+	  } else {
+	    out_file <- tools::file_path_sans_ext(basename(out_file))
 	  }
+
+	  png_file <- file.path(file_path, paste0(out_file, ".png"))
+
+	  kml_file <- file.path(file_path, paste0(out_file, ".kml"))
+	  
+	  kmz_file <- file.path(file_path, paste0(out_file, ".kmz"))
+	  
+	  
+	  png(file = file.path(png_file),
+	      bg = 'transparent',
+	      height = 2000,
+	      width = 2000*(ncol(results)/nrow(results)),
+	      pointsize = 38)
+	}
+	
 	par(mar = c(0,0,0,0))
 	rast <- raster::raster(results) #coerce to raster
 	
@@ -375,7 +395,7 @@ position_heat_map <- function (positions,
   	             gradient = legend_gradient, font = 2, family = "sans", cex = 1)
 	}
 
-	if(output%in% c("png","kmz")){
+	if(output %in% c("png","kmz")){
 	  grDevices::dev.off(grDevices::dev.cur())
 	}
 
@@ -397,7 +417,7 @@ position_heat_map <- function (positions,
   	                    xmlns:kml="http://www.opengis.net/kml/2.2" 
   	                    xmlns:atom="http://www.w3.org/2005/Atom">',
     	                '<Folder>',
-                        '<name>',paste0(fish_pos_int,"_", abs_or_rel),'</name>',
+                        '<name>',out_file,'</name>',
                           '<open>',1,'</open>',
         	                '<LookAt>',
           	                  '<longitude>',
@@ -420,10 +440,9 @@ position_heat_map <- function (positions,
   	                          '</heading>',
         	                  '</LookAt>',
   	                        '<GroundOverlay>',
-                              paste0('<name>',fish_pos_int,'_',abs_or_rel,'</name>'),
+                              paste0('<name>',out_file,'</name>'),
                               '<Icon>',
-                                paste0('<href>',file.path(paste0(fish_pos_int,"_",
-                                                                 abs_or_rel,".png")),
+                                paste0('<href>',basename(png_file),
                                       '</href>'),
                                 '<viewBoundScale>0.75</viewBoundScale>',
                               '</Icon>',
@@ -442,29 +461,16 @@ position_heat_map <- function (positions,
   	# Write the kml object to kml text file and places it in the folder 
     # containing the three png files.
     
-    kmz_file <- file.path(folder, paste0(fish_pos_int, "",
-                                         abs_or_rel, ".kmz"))
-    
-    kml_file <- file.path(folder, paste0(fish_pos_int, "",
-                                         abs_or_rel, ".kml"))
-    
-    png_file <- file.path(folder, paste0(fish_pos_int, "",
-                                         abs_or_rel, ".png"))
-    
   	write.table(kml,
   	            file = kml_file,
   	            col.names = FALSE,
   	            row.names = FALSE, 
   	            quote = FALSE)
   	
-  	# OS-specific storage mode
-  	zip_mode <- ifelse(Sys.info()["sysname"] == "Darwin", 
-  	                   "cherry-pick", 
-  	                   "mirror")
-  	
-	  zip::zip(zipfile = kmz_file,
+	  zip::zip(zipfile = basename(kmz_file),
 	           files = c(kml_file, png_file),
-	           mode = zip_mode)
+	           mode = "cherry-pick", 
+	           root = dirname(kmz_file))
 
   	
   	# Delete the kml and png files.
@@ -472,7 +478,7 @@ position_heat_map <- function (positions,
   	file.remove(png_file)
   }
 	if(output %in% c("png", "kmz")){
-	    message(paste0("Output file are located in:", getwd(),"/", folder, "/"))
+	    message(paste0("Output file are located in: ", file_path))
 	}
 
 	

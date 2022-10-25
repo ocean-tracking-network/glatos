@@ -22,6 +22,58 @@ phm_dt_input <- position_heat_map(data.table::setDT(lamprey_tracks),
                                     y_limits = c(46.45, 46.47),
                                     resolution = 100)
 
+# Test kmz out
+phm_kmz_out <- suppressMessages(position_heat_map(lamprey_tracks, 
+                                                  x_limits = c(-84.14, -84.12),
+                                                  y_limits = c(46.45, 46.47),
+                                                  resolution = 100,
+                                                  output = "kmz",
+                                                  folder = temp_dir))
+
+phm_kmz_out_nameShouldBe <- normalizePath(file.path(temp_dir, 
+                                                    "fish_absolute.kmz"),
+                                          mustWork = FALSE)
+
+phm_kmz_out_named <- suppressMessages(position_heat_map(lamprey_tracks, 
+                                                        x_limits = c(-84.14, -84.12),
+                                                        y_limits = c(46.45, 46.47),
+                                                        resolution = 100,
+                                                        output = "kmz",
+                                                        folder = temp_dir,
+                                                        out_file = "mymap"))
+
+phm_kmz_out_named_nameShouldBe <- normalizePath(file.path(temp_dir, 
+                                                          "mymap.kmz"),
+                                                mustWork = FALSE)
+
+
+# Test png out
+temp_dir <- tempdir()
+phm_png_out <- suppressMessages(position_heat_map(lamprey_tracks, 
+                                    x_limits = c(-84.14, -84.12),
+                                    y_limits = c(46.45, 46.47),
+                                    resolution = 100,
+                                    output = "png",
+                                    folder = temp_dir))
+
+phm_png_out_nameShouldBe <- normalizePath(file.path(temp_dir, 
+                                                     "fish_absolute.png"),
+                                          mustWork = FALSE)
+
+phm_png_out_named <- suppressMessages(position_heat_map(lamprey_tracks, 
+                                                  x_limits = c(-84.14, -84.12),
+                                                  y_limits = c(46.45, 46.47),
+                                                  resolution = 100,
+                                                  output = "png",
+                                                  folder = temp_dir,
+                                                  out_file = "mymap"))
+
+phm_png_out_named_nameShouldBe <- normalizePath(file.path(temp_dir, 
+                                                      "mymap.png"),
+                                                mustWork = FALSE)
+
+
+
 # Expected results
 phm_shouldBe <- 
   structure(c(43L, 20L, 23L, 19L, 21L, 19L, 25L, 
@@ -77,3 +129,29 @@ test_that("data.table input gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(phm_dt_input$values, phm_shouldBe)
 })
+
+test_that("data.table input gives expected result", {
+  # Check if expected and actual results are the same
+  expect_equal(phm_dt_input$values, phm_shouldBe)
+})
+
+test_that("png output default name gives expected result", {
+  # Check if png file produced
+  expect_true(file.exists(phm_png_out_nameShouldBe))
+})
+
+test_that("png output custom name gives expected result", {
+  # Check if png file produced
+  expect_true(file.exists(phm_png_out_named_nameShouldBe))
+})
+
+test_that("kmz output default name gives expected result", {
+  # Check if png file produced
+  expect_true(file.exists(phm_kmz_out_nameShouldBe))
+})
+
+test_that("kmz output custom name gives expected result", {
+  # Check if png file produced
+  expect_true(file.exists(phm_kmz_out_named_nameShouldBe))
+})
+

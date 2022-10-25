@@ -1,4 +1,13 @@
 ----
+# glatos 0.6.2 (2022-10-25)
+
+# Bug fixes and minor changes
+
+- Fix error in `position_heat_map()` function resulting in `Error in 
+zip_internal... Some files do not exist`. Update documentation.
+
+
+----
 # glatos 0.6.1
 
 #### 2022-10-11
@@ -7,6 +16,7 @@
 
 - Allow `sf` `MUTLIPOLYGON` geometry type for input `polyg` to `crw_in_polygon()`.
     
+- Use new function `check_cross_boundary()` instead of `check_in_polygon` to prevent paths crossing land (e.g., over peninsulas) in `crw_in_polygon()`.
 
 ----
 # glatos 0.6.0

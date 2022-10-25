@@ -278,8 +278,18 @@ crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
                       initPos = as.vector(sf::st_coordinates(init_i)),
                       initHeading, nsteps = length(rows_i))
     
-    inPoly <- check_in_polygon(path_fwd_i, polyg_sf, 
-                               EPSG = crs_cartesian)
+    # replace check_in_polygon with check_cross_boundary
+    #  otherwise, paths can jump peninsulas etc
+    # inPoly <- check_in_polygon(path_fwd_i, polyg_sf,
+    #                            EPSG = crs_cartesian)
+    
+    # combine init and path_fwd_i
+    path_mat <- rbind(unname(sf::st_coordinates(init_i)),
+                      unname(as.matrix(path_fwd_i)))
+
+    inPoly <- check_cross_boundary(path = path_mat,
+                                   boundary = xl,
+                                   EPSG = crs_cartesian)
     
     if(all(!inPoly)) {
       k <- k + 1 #counter
@@ -353,3 +363,40 @@ check_in_polygon <- function(points, polygon, EPSG){
   return(inPoly)
 } 
  
+
+#' Check if track crosses polygon boundary
+check_cross_boundary <- function(path, boundary, EPSG){
+  
+  # Make line segment objects of sequential point-pairs in path
+  
+  segs_mat <- cbind(head(path, -1),
+                    tail(path, -1))
+  
+  in_poly <-
+    unname(
+      apply(segs_mat, 1,
+        function(x){
+          !any(sf::st_intersects(boundary,
+                         sf::st_linestring(rbind(x[1:2], x[3:4])),
+                         sparse = FALSE))
+        },
+        simplify = TRUE))
+
+        
+  # segs_list <- apply(segs_mat, 1,
+  #                function(x) sf::st_linestring(rbind(x[1:2], x[3:4])),
+  #                simplify = FALSE)
+  # 
+  # segs_sfc <- do.call(sf::st_sfc, segs_list)
+  # sf::st_crs(segs_sfc) <- EPSG
+  # 
+  # segs_sf <- sf::st_as_sf(segs_sfc)
+  # 
+  # #identify line segments that cross polygon boundary
+  # in_poly <- !apply(sf::st_crosses(boundary, segs_sf, sparse = FALSE), 2, any)
+  # #in_poly <- !colSums(sf::st_crosses(boundary, segs_sf, sparse = FALSE))
+  # 
+  return(in_poly)
+} 
+
+
