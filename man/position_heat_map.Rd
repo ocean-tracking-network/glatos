@@ -100,7 +100,7 @@ part is ignored (via \code{basename}). Any file extension is also ignored
 (via \code{tools::file_path_sans_ext}).}
 }
 \value{
-A list object containing 1) a matrix of the calulated values (i.e.,
+A list object containing 1) a matrix of the calculated values (i.e.,
  fish, positions, intervals), with row and column names indicating location
  of each grid in UTM, 2) a character string specifying the UTM zone of the
  data in the matrix, 3) the bounding box of the data in UTM, 4) and the
@@ -141,7 +141,7 @@ Calculated values (i.e., fish, positions, intervals) can be returned
  plots: fish = number of unique fish (absolute) or \% of total fish in
  'positions' dataframe (relative); positions = number of positions (absolute)
  or mean number of positions per fish in 'positions' dataframe (relative);
- intervasls = number of unique fish x interval combinations (absolute) or
+ intervals = number of unique fish x interval combinations (absolute) or
  mean number of unique fish x interval combinations per fish in 'positions'
  dataframe (relative).
 }

@@ -22,6 +22,8 @@ phm_dt_input <- position_heat_map(data.table::setDT(lamprey_tracks),
                                     y_limits = c(46.45, 46.47),
                                     resolution = 100)
 
+temp_dir <- tempdir()
+
 # Test kmz out
 phm_kmz_out <- suppressMessages(position_heat_map(lamprey_tracks, 
                                                   x_limits = c(-84.14, -84.12),
@@ -48,7 +50,6 @@ phm_kmz_out_named_nameShouldBe <- normalizePath(file.path(temp_dir,
 
 
 # Test png out
-temp_dir <- tempdir()
 phm_png_out <- suppressMessages(position_heat_map(lamprey_tracks, 
                                     x_limits = c(-84.14, -84.12),
                                     y_limits = c(46.45, 46.47),
