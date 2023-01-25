@@ -135,7 +135,7 @@
 #'
 #'#example with receiver locations
 #'# get example receiver location data
-#'rec_file <- system.file("extdata", "sample_receivers.csv",
+#'rec_file <- system.file("extdata", "sample_receivers2.csv",
 #'  package = "glatos")
 #'rec <- read_glatos_receivers(rec_file)
 #'

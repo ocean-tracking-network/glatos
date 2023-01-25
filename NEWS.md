@@ -1,4 +1,14 @@
 ----
+# glatos 0.6.3 (2023-01-25)
+
+# Bug fixes and minor changes
+
+- Add support for new GLATOS receiver_locations file format; with code_map and 
+code_map_comment columns.
+    - fix [issue #177](https://github.com/ocean-tracking-network/glatos/issues/159)
+
+
+----
 # glatos 0.6.2 (2022-10-25)
 
 # Bug fixes and minor changes

@@ -47,8 +47,10 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
   #Identify file version
   id_file_version <- function(rec_file){
     col_names <- names(data.table::fread(rec_file, nrows = 0))
-    if(all(glatos:::glatos_receivers_schema$v1.0$name %in% col_names)) { 
-      return("1.0") 
+    if(all(glatos:::glatos_receivers_schema$v1.1$name %in% col_names)) { 
+      return("1.1") 
+    } else if (all(glatos:::glatos_receivers_schema$v1.0$name %in% col_names)) {
+      return("1.0")
     } else {
       stop("Receiver location file version could not be identified.")
     }
@@ -62,10 +64,12 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
                 " is not supported."))
   }
  
-  #-v1.0----------------------------------------------------------------  
-  if (version == "1.0") {
+  #-v1.x----------------------------------------------------------------  
+  if (version %in% c("1.0", "1.1")) {
+    
+    ver_txt <- paste0("v", version)
 
-    col_classes <- glatos:::glatos_receivers_schema[["v1.0"]]$type
+    col_classes <- glatos:::glatos_receivers_schema[[ver_txt]]$type
     timestamp_cols <- which(col_classes == "POSIXct")
     date_cols <- which(col_classes == "Date")
     col_classes[c(timestamp_cols, date_cols)] <- "character"
@@ -77,21 +81,21 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
     #  timestamp must be in UTC; and tz argument sets the tzone attr only
     options(lubridate.fasttime = TRUE)
     for (j in timestamp_cols) data.table::set(rec, 
-                                j = glatos_receivers_schema[["v1.0"]]$name[j], 
+                                j = glatos_receivers_schema[[ver_txt]]$name[j], 
                       value = lubridate::parse_date_time(
-                        rec[[glatos_receivers_schema[["v1.0"]]$name[j]]], 
+                        rec[[glatos_receivers_schema[[ver_txt]]$name[j]]], 
                         orders="ymd HMS",
                         tz = "UTC"))
     #coerce dates to date
     for (j in date_cols) {
-      data.table::set(rec, j = glatos_receivers_schema[["v1.0"]]$name[j], 
-        value = ifelse(rec[[glatos_receivers_schema[["v1.0"]]$name[j]]] == "", 
-                       NA, rec[[glatos_receivers_schema[["v1.0"]]$name[j]]]))
-      data.table::set(rec, j = glatos_receivers_schema[["v1.0"]]$name[j], 
-        value = as.Date(rec[[glatos_receivers_schema[["v1.0"]]$name[j]]]))
+      data.table::set(rec, j = glatos_receivers_schema[[ver_txt]]$name[j], 
+        value = ifelse(rec[[glatos_receivers_schema[[ver_txt]]$name[j]]] == "", 
+                       NA, rec[[glatos_receivers_schema[[ver_txt]]$name[j]]]))
+      data.table::set(rec, j = glatos_receivers_schema[[ver_txt]]$name[j], 
+        value = as.Date(rec[[glatos_receivers_schema[[ver_txt]]$name[j]]]))
     }
   }
-  #-end v1.0----------------------------------------------------------------
+  #-end v1.x----------------------------------------------------------------
   
   #assign class 
   rec <- glatos:::glatos_receivers(rec)
