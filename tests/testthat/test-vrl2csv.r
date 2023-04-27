@@ -2,13 +2,14 @@ context("Check vrl2csv")
 
 
 ## Access internal VRL
-myVRL <- system.file("extdata", "VR2W_109924_20110718_1.vrl",
+myVRL <- system.file("extdata", "detection_files_raw",
+                     "VR2W_109924_20110718_1.vrl",
                      package = "glatos")
 
 ## Create temp_dir with spaces in the file path
-temp_dir <- tempdir()
-test_dir <- file.path(temp_dir, 'test dir')
-dir.create(test_dir)
+test_dir <- file.path(tempdir(), "test")
+if(!dir.exists(test_dir)) dir.create(test_dir)
+
 
 ## Copy internal VRL to test_dir
 good_vrl <- file.path(test_dir, basename(myVRL))
@@ -23,7 +24,7 @@ good_csv <- vrl2csv(good_vrl,
 csv_f10 <- readLines(good_csv, n = 10)
 
 csv_f10_shouldBe <- 
-  c("Date and Time (UTC),Receiver,Transmitter,Transmitter Name,Transmitter Serial,Sensor Value,Sensor Unit,Station Name,Latitude,Longitude", 
+  c("Date and Time (UTC),Receiver,Transmitter,Transmitter Name,Transmitter Serial,Sensor Value,Sensor Unit,Station Name,Latitude,Longitude,Transmitter Type,Sensor Precision", 
     "2011-04-11 20:17:49,VR2W-109924,A69-1303-63366,,,,,,+0,+0", 
     "2011-05-08 05:38:32,VR2W-109924,A69-9002-4043,,,5,ADC,,+0,+0", 
     "2011-05-08 05:41:09,VR2W-109924,A69-9002-4043,,,7,ADC,,+0,+0", 
@@ -65,7 +66,7 @@ csv2_f10 <- readLines(good_csv, n = 10)
 
 
 # Delete temp_dir
-unlink(temp_dir, recursive = TRUE)
+unlink(test_dir, recursive = TRUE)
 
 
 # Check csv from batch with corrupted VRL in dir with space in name

@@ -50,14 +50,16 @@
 #' When using versions of VUE before 2.3, VUE can return an error code or 
 #' warning message even if conversion was successful.
 #' 
-#' @author C. Holbrook (cholbrook@usgs.gov) 
+#' @author C. Holbrook (cholbrook@@usgs.gov) 
 #'
 #' @examples
 #' \dontrun{
 #' 
 #' #get path to example VRL in this package
-#' myVRL <- system.file("extdata", "VR2W_109924_20110718_1.vrl",
-#'  package="glatos")
+#' myVRL <- system.file("extdata", "detection_files_raw", 
+#'                      "VR2W_109924_20110718_1.vrl",
+#'                      package = "glatos")
+#'                      
 #' vrl2csv(dirname(myVRL)) #directory input
 #' vrl2csv(myVRL) #file name input
 #'

@@ -128,7 +128,7 @@ globalVariables(".") #to avoid R CMD check note
 #package startup message
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste0("version ",utils::packageVersion("glatos"), 
-    " ('maple-bacon-donut')"))
+    " ('very-refreshing-lemonade')"))
 }
 
 
