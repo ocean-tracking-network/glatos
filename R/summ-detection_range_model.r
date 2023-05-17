@@ -232,8 +232,10 @@ detection_range_model <- function(formula,
     # create summary which you are going to extract coefficients from -----
     summary <- summary(model)
     # poly looks like such ax^3 + bx^2 + cx + d = 0  therefore the following ----
+    # However because of naming conventions in R we will use the following letters
+    # ax^3 + bx^2 + dx + f = 0  
     
-    # Intercept (b0) or d set to 100 usually as at 0 m away from rec you would hear a tag 100 % 
+    # Intercept (b0) or f set to 100 usually as at 0 m away from rec you would hear a tag 100 % 
     
     y1 <- unique(model$offset)
     
@@ -258,13 +260,13 @@ detection_range_model <- function(formula,
     
     # this is c ------
     # but because of r using c, but it's bad practice to name obj c so not sure atm 
-    c <- summary$coefficients[3]
+    d <- summary$coefficients[3]
     
     # standard error of b 
-    c_se <- summary$coefficients[6]
+    d_se <- summary$coefficients[6]
     
     # p value of a 
-    c_sig <-  summary$coefficients[12]
+    d_sig <-  summary$coefficients[12]
     
     
     
@@ -385,9 +387,9 @@ detection_range_model <- function(formula,
                       b = b,
                       b_se = b_se,
                       b_sig = b_sig,
-                      c = c,
-                      c_se = c_se, 
-                      c_sig = c_sig,
+                      d = d,
+                      d_se = d_se, 
+                      d_sig = d_sig,
                       offset = y1,
                       resid_se,
                       r2 = r2,
