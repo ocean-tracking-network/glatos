@@ -5,7 +5,7 @@
 
 - Add support for new GLATOS receiver_locations file format; with code_map and 
 code_map_comment columns.
-    - fix [issue #177](https://github.com/ocean-tracking-network/glatos/issues/159)
+    - fix [issue #177](https://github.com/ocean-tracking-network/glatos/issues/177)
 
 
 ----
