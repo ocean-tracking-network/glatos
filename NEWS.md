@@ -1,3 +1,13 @@
+
+----
+# glatos 0.7.0 (2023-08-25)
+
+# Bug fixes and minor changes
+
+- Add support for new column named 'record_status' in GLATOS detection export CSV.
+
+
+
 ----
 # glatos 0.6.3 (2023-01-25)
 
