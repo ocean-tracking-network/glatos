@@ -1,12 +1,12 @@
 #' Simulate a correlated random walk inside a polygon
 #'
-#' Uses \code{\link{crw}} to simulate a random walk as series of equal-length steps
+#' Uses [crw()] to simulate a random walk as series of equal-length steps
 #' with turning angles drawn from a normal distribution inside a polygon.
 #'
-#' @param polyg A spatial polygon object of class \code{\link[sf]{sf}} or
-#'   \code{\link[sf]{sfc}} containing \code{POLYGON} or \code{MULTIPOLYGON}
-#'   features (but \code{SpatialPolygonsDataFrame} and \code{SpatialPolygons}
-#'   are also accepted); \cr \emph{OR} \cr A polygon defined as data frame or
+#' @param polyg A spatial polygon object of class [sf::sf()] or
+#'   [sf::sfc()] containing `POLYGON` or `MULTIPOLYGON`
+#'   features (but `SpatialPolygonsDataFrame` and `SpatialPolygons`
+#'   are also accepted); \cr *OR* \cr A polygon defined as data frame or
 #'   matrix with numeric columns x and y.
 #'   
 #' @param theta A 2-element numeric vector with turn angle parameters (theta[1]
@@ -17,61 +17,61 @@
 #'
 #' @param initPos A 2-element numeric vector with initial position
 #'   (initPos[1]=x, initPos[2]=y) in same coordinate reference system as
-#'   \code{polyg}.
+#'   `polyg`.
 #'
 #' @param initHeading A numeric scalar with initial heading in degrees. E.g., 0
 #'   = North; 90 = East, 180 = South, 270 = West; etc.
 #'
 #' @param nsteps A numeric scalar with number of steps to simulate.
 #'
-#' @param inputCRS A \code{crs} object or numeric EPSG code of coordinate system
-#'   of input \code{polyg}. Only used if \code{polyg} does not contain a
-#'   \code{crs}. If missing, then \code{polyg} is assumed in an arbitrary Cartesian
+#' @param inputCRS A `crs` object or numeric EPSG code of coordinate system
+#'   of input `polyg`. Only used if `polyg` does not contain a
+#'   `crs`. If missing, then `polyg` is assumed in an arbitrary Cartesian
 #'   (projected) system with base unit of one meter.
 #'   
 #' @param cartesianCRS Coordinate reference system used for simulations. Must be
 #'   a Cartesian (projected) coordinate system. Must be given when input CRS 
 #'   is non-Cartesian (e.g., long-lat); optional otherwise. See Note.
 #'
-#' @param sp_out Logical. If TRUE (default) then output is an \code{sf} object.
-#'   If FALSE, then output is a \code{data.frame}.
+#' @param sp_out Logical. If TRUE (default) then output is an `sf` object.
+#'   If FALSE, then output is a `data.frame`.
 #'
 #' @param show_progress Logical. Progress bar and status messages will be shown
 #'   if TRUE (default) and not shown if FALSE.
 #'   
 #' @details If initPos = NA, then a starting point is randomly selected within
-#'   the polygon boundary. A path is simulated forward using \code{\link{crw}}.
-#'   Initial heading is also randomly selected if \code{initHeading = NA}. When
+#'   the polygon boundary. A path is simulated forward using [crw()].
+#'   Initial heading is also randomly selected if `initHeading = NA`. When
 #'   a step crosses the polygon boundary, a new heading for that step is drawn
 #'   and the turn angle standard deviation is enlarged slightly for each
 #'   subsequent point that lands outside the polygon.
 #'
-#' @details If input \code{polyg} object is a data.frame with x and y columns and
-#'   \code{sp_out = TRUE}, then output object
-#'   coordinate system is defined by \code{inputCRS}. Coordinate system on output
-#'   will be same as input if \code{polyg} contains a valid CRS.
+#' @details If input `polyg` object is a data.frame with x and y columns and
+#'   `sp_out = TRUE`, then output object
+#'   coordinate system is defined by `inputCRS`. Coordinate system on output
+#'   will be same as input if `polyg` contains a valid CRS.
 #'
 #'
-#' @return When \code{sp_out = TRUE}, an \code{sf} object containing one
-#'   \code{POINT} feature for each vertex in the simulated path. \cr \emph{OR}
-#'   \cr When \code{sp_out = FALSE}, a two-column data frame containing:
+#' @return When `sp_out = TRUE`, an `sf` object containing one
+#'   `POINT` feature for each vertex in the simulated path. \cr *OR*
+#'   \cr When `sp_out = FALSE`, a two-column data frame containing:
 #'   \item{x}{x coordinates} \item{y}{y coordinates} in the same units as
-#'   \code{polyg}.
+#'   `polyg`.
 #'
 #' @author C. Holbrook \email{cholbrook@@usgs.gov}
 #'
-#' @seealso \link{crw}, \link{transmit_along_path}, \link{detect_transmissions}
+#' @seealso [crw], [transmit_along_path], [detect_transmissions]
 #'
 #' @note The path is constructed in segments based on the minimum distance
 #'   between the previous point and the closest polygon boundary.
 #'
 #'   Simulations are conducted within the coordinate system specified by
-#'   argument \code{cartesianCRS}. 
+#'   argument `cartesianCRS`. 
 #'   
-#' @note  EPSG 3175 (\code{cartesianCRS = 3175}) is recommended projected
+#' @note  EPSG 3175 (`cartesianCRS = 3175`) is recommended projected
 #'   coordinate system for the North American Great Lakes Basin and St. Lawrence
 #'   River system.
-#'   \url{https://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}.
+#'   <https://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/>.
 #'
 #' @examples
 #'

@@ -1,7 +1,7 @@
 #' Read data from a OTN deployment file
 #'
 #' Read data from a standard OTN deployment (csv) file and return
-#' a data.frame of class \code{glatos_receivers}.
+#' a data.frame of class `glatos_receivers`.
 #'
 #' @param deployment_file A character string with path and name of deployment
 #'   file in OTN deployment format (*.csv). If only file name is given, then the
@@ -17,15 +17,15 @@
 #'  name containing the last_download date. Defaults to "last_download."
 #'
 #' @details
-#' Data are loaded using \code{\link[data.table]{fread}} package and timestamps
-#' are coerced to POSIXct using the \code{\link[fasttime]{fastPOSIXct}}. All
+#' Data are loaded using [data.table::fread()] package and timestamps
+#' are coerced to POSIXct using the [fasttime::fastPOSIXct()]. All
 #' times must be in UTC timezone per GLATOS standard.
 #'
 #' @details
 #' Column names are changed to match GLATOS standard columns when possible.
 #' Otherwise, OTN columns and column names are retained.
 #'
-#' @return A data.frame of class \code{glatos_receivers} that includes OTN
+#' @return A data.frame of class `glatos_receivers` that includes OTN
 #' columns that do not map directly to GLATOS columns.
 #'
 #' @author A. Nunes, \email{anunes@dal.ca}

@@ -2,14 +2,14 @@
 #' 
 #' Get transmitter sensor (e.g., depth, temperature) conversion parameters
 #' (e.g., intercept, slope) from a Vemco transmitter specification object (e.g.,
-#' from \link{read_vemco_tag_specs}, calculate 'real'-scale values 
+#' from [read_vemco_tag_specs], calculate 'real'-scale values 
 #' (e.g., depth in meters), and add real values to detection data in a new 
 #' column.
 #'
-#' @param det A \code{glatos_detections} object (e.g., produced by
-#'   \link{read_glatos_detections}). 
+#' @param det A `glatos_detections` object (e.g., produced by
+#'   [read_glatos_detections]). 
 #'   
-#'   \emph{OR} A data frame containing detection
+#'   *OR* A data frame containing detection
 #'   data with the following columns: 
 #'   \describe{ 
 #'   \item{transmitter_codespace}{A character string with transmitter code space
@@ -18,13 +18,13 @@
 #'   "1363" for Vemco PPM coding").}
 #'   \item{sensor_value}{A numeric sensor measurement (e.g., an integer for
 #'   'raw' Vemco sensor tags).}
-#'   \item{sensor_unit}{A character string with \code{sensor_value} units
+#'   \item{sensor_unit}{A character string with `sensor_value` units
 #'   (e.g., "ADC" for 'raw' Vemco sensor tag detections). }
 #'   }
 #'
-#' @param tag_specs An object produced by \link{read_vemco_tag_specs}.
+#' @param tag_specs An object produced by [read_vemco_tag_specs].
 #'  
-#'   \emph{OR} A data frame containing transmitter specification data with the
+#'   *OR* A data frame containing transmitter specification data with the
 #'   following columns:
 #'   \describe{ 
 #'   \item{code_space}{A character string with transmitter code space (e.g.,
@@ -39,8 +39,8 @@
 #'   "Meters" for 'raw' Vemco pressure tags). }
 #'   }
 #'   
-#'   The following columns are also required for \strong{depth} and
-#'   \strong{temperature} sensors: 
+#'   The following columns are also required for **depth** and
+#'   **temperature** sensors: 
 #'   \describe{ 
 #'   \item{sensor_slope}{Slope parameter, for converting 'raw' (ADC) to 'real'
 #'   measurements. }
@@ -48,7 +48,7 @@
 #'   'real' measurements. }
 #'   }
 #'   
-#'   The following columns are also required for \strong{acceleration} sensors:
+#'   The following columns are also required for **acceleration** sensors:
 #'   \describe{
 #'   \item{accel_algorithm}{The algorithm used, accelerometers only. }   
 #'   \item{accel_sample_rate}{Sample rate used, accelerometers only. }  
@@ -61,11 +61,11 @@
 #'   sensor_intercept + (sensor_value * sensor_slope)}, where \eqn{sensor_value}
 #'   is in raw scale.
 #'   
-#' @details It is possible that \code{transmitter_codespace} and
-#'   \code{transmitter_id} are not unique among transmitters, so users must
+#' @details It is possible that `transmitter_codespace` and
+#'   `transmitter_id` are not unique among transmitters, so users must
 #'   ensure that the each combination of those columns occurs only once in
-#'   \code{tag_specs} and is the correct record for the corresponding tags in
-#'   \code{det}.
+#'   `tag_specs` and is the correct record for the corresponding tags in
+#'   `det`.
 #'   
 #' @return The input data frame, data.table, or tibble with the following
 #'   columns added (see column descriptions above):

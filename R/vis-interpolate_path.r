@@ -4,7 +4,7 @@
 #'   (e.g., detections of tagged fish) at regularly-spaced time intervals   
 #' 	 using linear or non-linear interpolation.
 #' 
-#' @param det An object of class \code{glatos_detections} or data frame
+#' @param det An object of class `glatos_detections` or data frame
 #'   containing spatiotemporal data with at least 4 columns containing
 #'   'animal_id', 'detection_timestamp_utc', 'deploy_long', and
 #'   'deploy_lat' columns.
@@ -23,8 +23,8 @@
 #'   
 #' @param trans An optional transition matrix with the "cost" of
 #'   moving across each cell within the map extent. Must be of class
-#'   \code{TransitionLayer}. A transition layer may be
-#'   created from a polygon shapefile using \link{make_transition}.
+#'   `TransitionLayer`. A transition layer may be
+#'   created from a polygon shapefile using [make_transition].
 #'   
 #' @param lnl_thresh A numeric threshold for determining if linear or
 #'   non-linear interpolation shortest path will be used.
@@ -32,40 +32,40 @@
 #' @param show_progress Logical. Progress bar and status messages will be 
 #'  shown if TRUE (default) and not shown if FALSE.
 #'
-#' @details Non-linear interpolation uses the \code{gdistance} package
+#' @details Non-linear interpolation uses the `gdistance` package
 #'   to find the shortest pathway between two locations (i.e.,
 #'   receivers) that avoid 'impossible' movements (e.g., over land for
 #'   fish). The shortest non-linear path between two locations is
 #'   calculated using a transition matrix layer that represents the
 #'   'cost' of an animal moving between adjacent grid cells.  The
-#'   transition matrix layer (see \link{gdistance}) is created from
-#'   a polygon shapefile using \link{make_transition} or from a
-#'   \code{RasterLayer} object using \link[gdistance]{transition}. In
-#'   \code{make_transition}, each cell in the output transition layer
+#'   transition matrix layer (see [gdistance]) is created from
+#'   a polygon shapefile using [make_transition] or from a
+#'   `RasterLayer` object using [transition][gdistance::transition]. In
+#'   `make_transition`, each cell in the output transition layer
 #'   is coded as water (1) or land (0) to represent possible (1) and
 #'   impossible (0) movement paths.
 #' 
 #' @details Linear interpolation is used for all points when
-#'   \code{trans} is not supplied.  When \code{trans} is supplied,
+#'   `trans` is not supplied.  When `trans` is supplied,
 #'   then interpolation method is determined for each pair of
 #'   sequential observed detections. For example, linear interpolation
 #'   will be used if the two geographical positions are exactly the
 #'   same and when the ratio (linear distance:non-linear distance)
-#'   between two positions is less than \code{lnl_thresh}.  Non-linear
+#'   between two positions is less than `lnl_thresh`.  Non-linear
 #'   interpolation will be used when ratio is greater than
-#'   \code{lnl_thresh}.  When the ratio of linear distance to
-#'   non-linear distance is greater than \code{lnl_thresh}, then the
+#'   `lnl_thresh`.  When the ratio of linear distance to
+#'   non-linear distance is greater than `lnl_thresh`, then the
 #'   distance of the non-linear path needed to avoid land is greater
-#'   than the linear path that crosses land.  \code{lnl_thresh} can be
+#'   than the linear path that crosses land.  `lnl_thresh` can be
 #'   used to control whether non-linear or linear interpolation is
 #'   used for all points. For example, non-linear interpolation will
-#'   be used for all points when \code{lnl_thresh} > 1 and linear
-#'   interpolation will be used for all points when \code{lnl_thresh}
+#'   be used for all points when `lnl_thresh` > 1 and linear
+#'   interpolation will be used for all points when `lnl_thresh`
 #'   = 0.
 #'   
 #' @details All linear interpolation is done by code{stats::approx} with
-#'   argument \code{ties = "ordered"} controlling how tied \code{x} values 
-#'   are handled. See \code{\link{approxfun}}.
+#'   argument `ties = "ordered"` controlling how tied `x` values 
+#'   are handled. See [approxfun()].
 #'
 #' @return A dataframe with animal_id, bin_timestamp,
 #'   latitude, longitude, and record_type.

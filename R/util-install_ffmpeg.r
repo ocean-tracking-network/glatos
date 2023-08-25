@@ -4,10 +4,10 @@
 ##' directory system to enable creation animated videos of fish
 ##' movements
 ##'
-##' @details \code{install_ffmpeg} determines operating system
+##' @details `install_ffmpeg` determines operating system
 ##'   (Windows or Mac) and downloads the latest stable version of
 ##'   FFmpeg software.  FFmpeg software is installed within glatos
-##'   package and may be accessed using \code{system.file}
+##'   package and may be accessed using `system.file`
 ##'
 ##' 
 ##' @return message is returned to console signalling successful installation

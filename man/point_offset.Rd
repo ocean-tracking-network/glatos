@@ -28,9 +28,9 @@ Options are NA,"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S",
 }
 \description{
 Calculates latitude and longitude for new point that is x meters
-  away at bearing y from a geographic location (Longitude, Latitude). uses
-  "destPoint" function from "geosphere" package and calculations are based on
-  great circle distances.
+away at bearing y from a geographic location (Longitude, Latitude). uses
+"destPoint" function from "geosphere" package and calculations are based on
+great circle distances.
 }
 \examples{
 lat <- rep(44.0, 17)

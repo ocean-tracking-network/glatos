@@ -15,7 +15,7 @@
 #'   
 #' @param recSpc A numeric vector with distances (in meters) between receivers. 
 #'   The length of vector is N-1, where N is number of receivers. One receiver
-#'   is simulated when \code{recSpc = NA} (default).
+#'   is simulated when `recSpc = NA` (default).
 #'   
 #' @param maxDist A numeric scalar with maximum distance between tagged fish 
 #'   and any receiver during simulation (i.e., sets spatial boundaries)
@@ -34,22 +34,22 @@
 #'   and fish paths?
 #'
 #' @details
-#' Virtual tagged fish (N=\code{nsim}) are "swum" through a virtual receiver 
-#' line. The first element of \code{recSpc} determines spacing between first 
-#' two receivers in the line, and each subsequent element of \code{recSpc} 
+#' Virtual tagged fish (N=`nsim`) are "swum" through a virtual receiver 
+#' line. The first element of `recSpc` determines spacing between first 
+#' two receivers in the line, and each subsequent element of `recSpc` 
 #' determine spacing of subsequent receivers along the line, such that the 
-#' number of receivers is equal to \code{length(recSpc) + 1}. Each fish moves 
-#' at constant velocity (\code{vel}) along a line perpendicular to the 
+#' number of receivers is equal to `length(recSpc) + 1`. Each fish moves 
+#' at constant velocity (`vel`) along a line perpendicular to the 
 #' receiver line. The location of each fish path along the receiver line is 
 #' random (drawn from uniform distribution), and fish can pass outside the 
 #' receiver line (to the left of the first receiver or right of last receiver) 
-#' if \code{outerLim[1]} or \code{outerLim[2]} are greater than 0 meters. 
-#' Each fish starts and ends about \code{maxDist} meters from the receiver 
+#' if `outerLim[1]` or `outerLim[2]` are greater than 0 meters. 
+#' Each fish starts and ends about `maxDist` meters from the receiver 
 #' line.  
 #'
 #' @details 
-#' A simulated tag signal is transmitted every \code{delayRng[1]} to 
-#' \code{delayRng[2]} seconds. At time of each transmission, the distance is 
+#' A simulated tag signal is transmitted every `delayRng[1]` to 
+#' `delayRng[2]` seconds. At time of each transmission, the distance is 
 #' calculated between the tag and each receiver, and rngFun is used to 
 #' calculate the probability (p) that the signal was detected on each receiver. 
 #' Detection or non-detection on each receiver is determined by a draw from a 
@@ -67,7 +67,7 @@
 #'   Vandergoot, C.S. and Krueger, C.C., 2016. Probability of acoustic 
 #'   transmitter detections by receiver lines in Lake Huron: results of 
 #'   multi-year field tests and simulations. Animal Biotelemetry, 4(1), p.19.
-#'   \cr \url{https://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-016-0112-9}
+#'   \cr <https://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-016-0112-9>
 #'
 #' @examples
 #' #EXAMPLE 1 - simulate detection on line of ten receivers

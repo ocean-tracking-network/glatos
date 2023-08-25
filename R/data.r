@@ -3,7 +3,7 @@
 #' 
 #' @description A SpatialPolygonDataFrame with Great Lakes coastline and some 
 #' major tributaries. This is used as a default map background in several 
-#' \link{glatos} functions.
+#' [glatos] functions.
 #'
 #' @author Todd Hayden
 "greatLakesPoly"
@@ -12,8 +12,8 @@
 #' @title An sf POLYGON object with Great Lakes coastline and some major 
 #' tributaries.
 #' 
-#' @description Created from \code{\link{greatLakesPoly}}. This is used as a
-#'   default map background in several \link{glatos} functions.
+#' @description Created from [greatLakesPoly()]. This is used as a
+#'   default map background in several [glatos] functions.
 #'
 #' @author Todd Hayden (coerced to sf by C. Holbrook)
 "great_lakes_polygon"
@@ -45,9 +45,9 @@
 #' @description A TransitionLayer object that only allows transitions to occur 
 #' within water (i.e., prohibits movement onto land). This dataset was 
 #' developed for non-linear interpolation of fish movement paths from telemetry 
-#' data and is used by default in \link{interpolate_path}.
+#' data and is used by default in [interpolate_path].
 #'
-#' @seealso \link{interpolate_path}, \link{gdistance}
+#' @seealso [interpolate_path], [gdistance]
 #' @author Todd Hayden 
 "greatLakesTrLayer"
 
@@ -58,7 +58,7 @@
 #' George, North Channel of the St. Marys River during the 2012 spawning year.
 #' 
 #' @details Data were collected as part of the GLATOS project SMRSL 
-#'   \url{http://glatos.glos.us/home/project/SMRSL}
+#'   <http://glatos.glos.us/home/project/SMRSL>
 #'   
 #' @details Positions were calculated using the Vemco Positioning System.
 #'   

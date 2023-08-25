@@ -10,20 +10,19 @@ kml_to_csv(filePath, type = c("points", "lines", "polygons"))
 \item{filePath}{The pathname for the kml file you wish to convert.}
 
 \item{type}{Optional character string indicating the type(s) of feature(s)
-to read from the kml file. Valid values are \code{c("points", "lines", and
-"polygons")}.}
+to read from the kml file. Valid values are \verb{c("points", "lines", and "polygons")}.}
 }
 \value{
-A csv file (same name as input \code{filePath} but with \code{csv} 
-  extension) is written to directory containing input \code{filePath} 
-  with five columns \describe{
-  \item{name}{Feature name}
-  \item{feature_type}{Feature type}
-  \item{seq}{Sequential position in feature}
-  \item{longitude}{Longitude}
-  \item{latitude}{Latitude}
-  \item{altitude}{Altitude}
-  }
+A csv file (same name as input \code{filePath} but with \code{csv}
+extension) is written to directory containing input \code{filePath}
+with five columns \describe{
+\item{name}{Feature name}
+\item{feature_type}{Feature type}
+\item{seq}{Sequential position in feature}
+\item{longitude}{Longitude}
+\item{latitude}{Latitude}
+\item{altitude}{Altitude}
+}
 }
 \description{
 Function for extracting features (points, lines, polygons) from kml files and
@@ -31,7 +30,7 @@ writing them to csv files.
 }
 \details{
 kmz files are not supported. Make sure exports from Google earth are
-  saved as kml. Or extract (unzip) kml from kmz.
+saved as kml. Or extract (unzip) kml from kmz.
 }
 \examples{
 

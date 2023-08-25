@@ -10,11 +10,11 @@
 #' @param file_format A character string with the tag spec file format
 #'  in quotes. If NULL (default value) then version will be
 #'  determined by evaluating file structure. The only allowed values 
-#'  are \code{NULL} and \code{"vemco_xls"}. Any other values will trigger an 
+#'  are `NULL` and `"vemco_xls"`. Any other values will trigger an 
 #'  error.
 #'
 #' @details
-#' The file format \code{vemco_xls} is a MS Excel file provided to tag 
+#' The file format `vemco_xls` is a MS Excel file provided to tag 
 #' purchasers by Vemco.
 #' 
 #' @details
@@ -23,7 +23,7 @@
 #' @return A list containing two data frames with tag specifications and 
 #' tag operating schedule.  
 #' 
-#' A list element called \code{specs} is a data frame contains tag specifications data in 
+#' A list element called `specs` is a data frame contains tag specifications data in 
 #' 17 columns:  
 #' \describe{
 #' \item{serial_number}{}        
@@ -45,7 +45,7 @@
 #' \item{battery_life_stat}{} 
 #' }
 #' 
-#' A list element called \code{schedule} is a data frame containing tag
+#' A list element called `schedule` is a data frame containing tag
 #' operating shedule data in 11 columns:
 #' 
 #' \describe{

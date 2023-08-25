@@ -8,7 +8,7 @@
 #' @param theta A numeric scalar with the angle of rotation in degrees; 
 #'   positive is clockwise.
 #' @param focus A numeric vector of x (first element) and y (second element) 
-#' coordinates for the point around which \code{x} and \code{y} will rotate.
+#' coordinates for the point around which `x` and `y` will rotate.
 #'
 #' @details
 #' Points are shifted to be centered at the focus, then rotated using a
@@ -19,7 +19,7 @@
 #' \item{y}{y coordinates}
 #'
 #' @note
-#' This function is called from \code{\link{crw_in_polygon}}
+#' This function is called from [crw_in_polygon()]
 #' 
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'

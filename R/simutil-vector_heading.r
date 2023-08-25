@@ -14,17 +14,17 @@
 #'
 #' @details
 #' Calculates direction (in degrees) for each of k-1 vectors, where 
-#' k = length(x) - 1. Lengths of \code{x} and \code{y} must be 
+#' k = length(x) - 1. Lengths of `x` and `y` must be 
 #' equal.
 #' 
 #' @return A numeric scalar with heading in degrees or a numeric vector of 
-#' headings if \code{length(x) > 2}. 
+#' headings if `length(x) > 2`. 
 #' 
-#' If units are decimal degrees (i.e., \code{coord_sys = "longlat"}) then 
+#' If units are decimal degrees (i.e., `coord_sys = "longlat"`) then 
 #' the angles returned will represent the heading at the start of each vector.
 #'
 #' @note
-#' This function is called from within \code{\link{crw_in_polygon}}
+#' This function is called from within [crw_in_polygon()]
 #' 
 #' @author C. Holbrook (cholbrook@usgs.gov) 
 #'

@@ -30,21 +30,21 @@ Defaults to TRUE, if not all receiver metadata is available, this should be set 
 }
 \value{
 a list of 3 tibble::tibbles containing tag dectections, tag metadata,
-  and station metadata, to be ingested by VTrack/ATT
+and station metadata, to be ingested by VTrack/ATT
 }
 \description{
 Convert \code{glatos_detections}, OTN tagging metadata and OTN deployment metadata
-to \code{ATT} format for use in the Animal Tracking Toolbox 
+to \code{ATT} format for use in the Animal Tracking Toolbox
 (\url{https://github.com/vinayudyawer/ATT}).
 }
 \details{
 This function takes 3 data frames containing detections, tagging metadata, and
- deployment metadata from either \code{read_otn_deployments} or \code{prepare_deploy_sheet} 
- and transforms them into 3 \code{tibble::tibble} objects inside of a list. The input that 
- AAT uses to get this data product is located here:
- https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
- are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
- in a comment by Ryan Gosse.
+deployment metadata from either \code{read_otn_deployments} or \code{prepare_deploy_sheet}
+and transforms them into 3 \code{tibble::tibble} objects inside of a list. The input that
+AAT uses to get this data product is located here:
+https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
+are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
+in a comment by Ryan Gosse.
 }
 \examples{
 

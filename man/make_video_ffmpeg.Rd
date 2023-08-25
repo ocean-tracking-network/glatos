@@ -41,8 +41,7 @@ in frames per second.}
 \item{start_frame}{integer, start frame. Defaults to
 \code{start=1}.}
 
-\item{end_frame}{integer, end frame.  Defaults to \code{end_frame
-= NULL}.}
+\item{end_frame}{integer, end frame.  Defaults to \code{end_frame = NULL}.}
 
 \item{size}{character, the dimensions of the video
 output. Defaults to \code{"source"}, which is equal to the
@@ -81,106 +80,104 @@ One video animation will be written to \code{output_dir}
 }
 \description{
 Stitch a sequence of images into a video animation using FFmpeg
-software. \strong{NOTE: This function is DEPRECATED and is being maintained 
+software. \strong{NOTE: This function is DEPRECATED and is being maintained
 temporarily for backward compatibility with glatos v. 0.4.0 and earlier.}
-\emph{Use \link[glatos]{make_video} instead.} See details.
+\emph{Use \link[=make_video]{make_video} instead.} See details.
 }
 \details{
 \strong{This function is DEPRECATED and is being maintained
-  temporarily for backward compatibility with glatos v. 0.4.0 and earlier.}
-  \emph{Use \link[glatos]{make_video} instead.} This function was previously
-  named \code{make_video}. Starting with glatos v. 0.4.1,
-  \link[glatos]{make_video} was changed to simplify inputs and to use the
-  \code{av} package function \link[=encoding]{av::av_encode_video} instead
-  of external program ffmpeg. For backward-compatibility, any calls to
-  \link[glatos]{make_video} with arguments from the earlier version of the
-  function will be redirected here (\code{make_video_ffmpeg}).
+temporarily for backward compatibility with glatos v. 0.4.0 and earlier.}
+\emph{Use \link[=make_video]{make_video} instead.} This function was previously
+named \code{make_video}. Starting with glatos v. 0.4.1,
+\link[=make_video]{make_video} was changed to simplify inputs and to use the
+\code{av} package function \link[=encoding]{av::av_encode_video} instead
+of external program ffmpeg. For backward-compatibility, any calls to
+\link[=make_video]{make_video} with arguments from the earlier version of the
+function will be redirected here (\code{make_video_ffmpeg}).
 
 \code{make_video_ffmpeg} is based on \code{mapmate::ffmpeg}.
-  More information about \code{mapmate} package is found at
-  \code{https://github.com/leonawicz/mapmate}.  This function
-  converts R syntax into command line call that is submitted to
-  \code{ffmpeg}.  \code{ffmpeg} must be installed and able to be
-  accessed by the system command line prior to running
-  \code{make_video_ffmpeg}.  See \code{https://www.ffmpeg.org} for
-  information on installing ffmpeg.
+More information about \code{mapmate} package is found at
+\verb{https://github.com/leonawicz/mapmate}.  This function
+converts R syntax into command line call that is submitted to
+\code{ffmpeg}.  \code{ffmpeg} must be installed and able to be
+accessed by the system command line prior to running
+\code{make_video_ffmpeg}.  See \verb{https://www.ffmpeg.org} for
+information on installing ffmpeg.
 
 The FFmpeg multimedia framework provides extensive
-  flexibility and options for converting and manipulating video
-  and audio content.  \code{make_video_ffmpeg} provides a small subset
-  of options useful for creating simple animated videos.  If
-  additional flexibility or options are needed, the user may need
-  to develop or modify \code{make_video_ffmpeg} or submit calls
-  directly to FFmpeg using the system command line.
+flexibility and options for converting and manipulating video
+and audio content.  \code{make_video_ffmpeg} provides a small subset
+of options useful for creating simple animated videos.  If
+additional flexibility or options are needed, the user may need
+to develop or modify \code{make_video_ffmpeg} or submit calls
+directly to FFmpeg using the system command line.
 
 Sequenced image files are input into FFmpeg using a file name
-  convention which requires specifying the entire, non-changing file name
-  with a consecutive integer numbering component.  The integer number
-  component indicates the maximum number of digits of all the images.  For
-  example, \code{\%04d.png} represents the file numbering \code{0000.png,
-  0001.png, 0002.png, ..., 9999.png} and \code{\%02d.png} represents images
-  numbered from \code{00.png, 01.png, 02.png, ..., 10.png}.  File names of
-  image sequences input to FFmpeg may have a prefix provided that all image
-  files have the sequence. For example an image sequence of
-  \code{myfile001.png, myfile002.png, myfile003.png, ..., myfile999.png} is
-  represented as \code{myfile\%03d.png}.  \code{pattern} only accepts this
-  pattern of image file names.
+convention which requires specifying the entire, non-changing file name
+with a consecutive integer numbering component.  The integer number
+component indicates the maximum number of digits of all the images.  For
+example, \verb{\\\%04d.png} represents the file numbering \verb{0000.png, 0001.png, 0002.png, ..., 9999.png} and \verb{\\\%02d.png} represents images
+numbered from \verb{00.png, 01.png, 02.png, ..., 10.png}.  File names of
+image sequences input to FFmpeg may have a prefix provided that all image
+files have the sequence. For example an image sequence of
+\verb{myfile001.png, myfile002.png, myfile003.png, ..., myfile999.png} is
+represented as \verb{myfile\\\%03d.png}.  \code{pattern} only accepts this
+pattern of image file names.
 
 Function can create .mp4, .mov, .mkv, .gif, .wmv, or
-  .mpeg animations.  Format of created animation is determined by
-  file extension of \code{output}.
+.mpeg animations.  Format of created animation is determined by
+file extension of \code{output}.
 
 \code{make_video_ffmpeg} allows
-  user to specify input framerate \code{fps_in} of image sequence
-  and output \code{fps_out} framerate of animation.
+user to specify input framerate \code{fps_in} of image sequence
+and output \code{fps_out} framerate of animation.
 
 \code{start_frame} specifies starting frame in animation
-  and \code{end_frame} specifies end frame in animation.  If
-  \code{start_frame} and \code{end_frame} are specified, only
-  images within range are used in animation.  Specifying
-  \code{start_frame} and \code{end_frame} allows user to skip
-  images.
+and \code{end_frame} specifies end frame in animation.  If
+\code{start_frame} and \code{end_frame} are specified, only
+images within range are used in animation.  Specifying
+\code{start_frame} and \code{end_frame} allows user to skip
+images.
 
 If \code{size} is not set to \code{"source"}, the output video is
-  scaled.  \code{size} can be a character string of dimensions in length by
-  height format such as \code{"720x480"} or an abbreviated standard such as
-  \code{"ntsc"}.  See
-  \href{http://ffmpeg.org/ffmpeg-utils.html#Video-size}{FFmpegstandard video
-  sizes} for common dimensions and available abbreviations.
+scaled.  \code{size} can be a character string of dimensions in length by
+height format such as \code{"720x480"} or an abbreviated standard such as
+\code{"ntsc"}.  See
+\href{http://ffmpeg.org/ffmpeg-utils.html#Video-size}{FFmpegstandard video sizes} for common dimensions and available abbreviations.
 
 Presets provide a certain encoding speed to compression
-  ratio.  Available presets include \code{ultrafast},
-  \code{superfast}, \code{veryfast}, \code{faster}, \code{fast},
-  \code{medium}, \code{slow}, \code{slower}, \code{veryslow}.
-  Faster preset i.e.(\code{ultrafast}) corresponds to greater file
-  size, lower animation quality, and faster computation
-  times. Slower speeds \code{veryslow} corresponds to smaller
-  file, higher quality animation and slower computation times.
-  See \url{http://trac.ffmpeg.org/wiki/Encode/H.264}
+ratio.  Available presets include \code{ultrafast},
+\code{superfast}, \code{veryfast}, \code{faster}, \code{fast},
+\code{medium}, \code{slow}, \code{slower}, \code{veryslow}.
+Faster preset i.e.(\code{ultrafast}) corresponds to greater file
+size, lower animation quality, and faster computation
+times. Slower speeds \code{veryslow} corresponds to smaller
+file, higher quality animation and slower computation times.
+See \url{http://trac.ffmpeg.org/wiki/Encode/H.264}
 
- @details \code{codec} is ignored if the file name in
-  \code{pattern} ends with \code{.gif}.  For other video output
-  file types a default codec is used depending on the file
-  extension of output animation.These
-  can be overridden with options like \code{codec="h264"},
-  \code{"libx264"}, \code{"libvpx"}, \code{"prores"},
-  \code{"qtrle"}, etc., but the user needs to be knowledgeable
-  regarding which codecs can be used for which output types or
-  errors will be thrown.
+@details \code{codec} is ignored if the file name in
+\code{pattern} ends with \code{.gif}.  For other video output
+file types a default codec is used depending on the file
+extension of output animation.These
+can be overridden with options like \code{codec="h264"},
+\code{"libx264"}, \code{"libvpx"}, \code{"prores"},
+\code{"qtrle"}, etc., but the user needs to be knowledgeable
+regarding which codecs can be used for which output types or
+errors will be thrown.
 
 \code{format} is ignored if the file name in
-  \code{pattern} ends with \code{.gif}.  The default is
-  \code{"yuv420p"}, which performs 4:2:0 chroma subsampling.  This
-  pixel format can reduce video quality, but it is the default
-  because it ensures compatibility with most media players. For
-  valid alternatives, run \code{system("ffmpeg -pix_fmts")}.
+\code{pattern} ends with \code{.gif}.  The default is
+\code{"yuv420p"}, which performs 4:2:0 chroma subsampling.  This
+pixel format can reduce video quality, but it is the default
+because it ensures compatibility with most media players. For
+valid alternatives, run \code{system("ffmpeg -pix_fmts")}.
 
 \code{lossless} is ignored except for relevant
-  \code{codec} settings, e.g., \code{h264} or \code{libx264}.  If
-  \code{TRUE}, recommended \code{preset} values are
-  \code{ultrafast} or \code{veryslow}. See
-  \url{https://trac.ffmpeg.org/wiki/Encode/H.264} for more
-  information.
+\code{codec} settings, e.g., \code{h264} or \code{libx264}.  If
+\code{TRUE}, recommended \code{preset} values are
+\code{ultrafast} or \code{veryslow}. See
+\url{https://trac.ffmpeg.org/wiki/Encode/H.264} for more
+information.
 }
 \examples{
 
@@ -190,7 +187,7 @@ Presets provide a certain encoding speed to compression
 frames <- system.file("extdata", "frames", package = "glatos")
 
 # make .mp4 video
-# make sure ffmpeg is on system path (see \code{make_frames} and details)
+# make sure ffmpeg is on system path (see `make_frames` and details)
 make_video_ffmpeg(dir = frames, pattern = "\%02d.png", output = "animation.mp4")
 
 # make .wmv video

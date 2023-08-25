@@ -4,18 +4,18 @@
 #' KML (or optionally KMZ) file (e.g., for viewing in Google Earth). 
 #' (NOTE: EARLY DEVELOPMENT VERSION).
 #'
-#' @param wb A \code{glatos_workbook} object created by 
-#' \link{read_glatos_workbook}.
+#' @param wb A `glatos_workbook` object created by 
+#' [read_glatos_workbook].
 #'   
 #' @param wb_file A character string with path and name of workbook in standard
 #'   GLATOS format (*.xlsm). If only file name is given, then the file must be
 #'   located in the working directory. File must be a standard GLATOS file
-#'   (e.g., \emph{xxxxx_GLATOS_YYYYMMDD.xlsm}) submitted via GLATOSWeb Data
-#'   Portal \url{http://glatos.glos.us}.
+#'   (e.g., *xxxxx_GLATOS_YYYYMMDD.xlsm*) submitted via GLATOSWeb Data
+#'   Portal <http://glatos.glos.us>.
 #'   
-#' @param receiver_locs \strong{not yet implemented}
+#' @param receiver_locs **not yet implemented**
 #' 
-#' @param animals \strong{not yet implemented}
+#' @param animals **not yet implemented**
 #'   
 #' @param kmz logical; If TRUE, a KMZ file (zipped KML file) will  
 #'   be created. Default value is FALSE.
@@ -28,20 +28,20 @@
 #'   
 #' @param out_file File name (path optional) of output file. If path not
 #'  specified then file will be written to working directory. Extension 
-#'  is not checked against \code{kmz}. Required if \code{wb_file} is NULL. 
-#'  If not specified and \code{wb_file} is given, then file will be written
-#'  to file with name matching \code{wb_file}.
+#'  is not checked against `kmz`. Required if `wb_file` is NULL. 
+#'  If not specified and `wb_file` is given, then file will be written
+#'  to file with name matching `wb_file`.
 #'  
 #' @param wb_version An optional character string with the workbook version
-#'   number. Passed to \link{read_glatos_workbook} when input is 
-#'   \code{wb_file}.
+#'   number. Passed to [read_glatos_workbook] when input is 
+#'   `wb_file`.
 #'   
 #' @param ... optional arguments that influence kml/kmz features. Curently 
 #' only two options:
 #' \describe{
-#'   \item{\code{labelSize}}{A numeric scalar with the size of placemark labels 
+#'   \item{`labelSize`}{A numeric scalar with the size of placemark labels 
 #'     (only shown when placemark is highlighted by user).}
-#'   \item{\code{iconSize}}{A numeric scalar with the size of placemark icons.}
+#'   \item{`iconSize`}{A numeric scalar with the size of placemark icons.}
 #' }
 #'
 #' @details
@@ -50,7 +50,7 @@
 #' display window includes the date of release.
 #' 
 #' @return A KML (and optionally, KMZ) file, written to the directory that 
-#'   contains the input GLATOS workbook, or \code{out_file} otherwise. 
+#'   contains the input GLATOS workbook, or `out_file` otherwise. 
 #'   Path to output file is returned.
 #'
 #' @author C. Holbrook \email{cholbrook@usgs.gov}

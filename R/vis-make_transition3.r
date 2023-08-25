@@ -1,10 +1,10 @@
 ##' Create transition layer from polygon shapefile
 ##'
-##' Create transition layer for \link{interpolate_path} from polygon shapefile.
+##' Create transition layer for [interpolate_path] from polygon shapefile.
 ##'
 ##' @param poly A spatial polygon object of class
-##'   \link[=SpatialPolygons]{SpatialPolygonsDataFrame} or a
-##'   \link[sf:sf]{sf::sf()} object with a geometry column of polygon
+##'   [SpatialPolygonsDataFrame][SpatialPolygons] or a
+##'   [sf::sf()][sf::sf] object with a geometry column of polygon
 ##'   and/or multipolygon objects.
 ##' 
 ##' @param res two element vector that specifies the x and y dimension
@@ -18,9 +18,9 @@
 ##'   used for map calculation and rasterization.  Defaults to
 ##'   NAD83/Great Lakes and St. Lawrence Albers.
 ##' 
-##' @details \code{make_transition} uses \link[fasterize]{fasterize}
+##' @details `make_transition` uses [fasterize][fasterize::fasterize]
 ##'   to convert a polygon shapefile into a raster layer and
-##'   geo-corrected transition layer \link{interpolate_path}.  Raster
+##'   geo-corrected transition layer [interpolate_path].  Raster
 ##'   cell values on land equal 1 cells in water equal 0. Output is a
 ##'   two-object list containing the raster layer and transition
 ##'   layer.  Both objects have the same extents and geographic
@@ -37,7 +37,7 @@
 ##'   (epsg- 4326).
 ##'  
 ##' @details output transition layer is corrected for projection
-##'   distortions using \code{gdistance::geoCorrection}.  Adjacent
+##'   distortions using `gdistance::geoCorrection`.  Adjacent
 ##'   cells are connected by 16 directions and transition function
 ##'   returns 0 (land) for movements between land and water and 1 for
 ##'   all over-water movements.
@@ -47,10 +47,10 @@
 ##' \describe{
 ##'    \item{transition}{a geo-corrected transition raster layer where land = 0
 ##'       and water=1
-##'   (see \code{gdistance})}
-##'    \item{rast}{rasterized input layer of class \code{raster}}}
+##'   (see `gdistance`)}
+##'    \item{rast}{rasterized input layer of class `raster`}}
 ##'   Additonally, rasterized version of input shapefile (*.tif extension) is written to computer
-##'   at \code{output_dir} 
+##'   at `output_dir` 
 ##' 
 ##'
 ##' @author Todd Hayden, Tom Binder, Chris Holbrook

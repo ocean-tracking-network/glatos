@@ -9,13 +9,13 @@
 #'   single directory containing VRL files. 
 #'   
 #' @param outDir A character string directory where CSV files will be written. 
-#'   If \code{NA} (default) then file(s) will be written to the current working 
-#'   directory (e.g., \code{getwd()}).
+#'   If `NA` (default) then file(s) will be written to the current working 
+#'   directory (e.g., `getwd()`).
 #'   
 #' @param overwrite Logical. If TRUE (default), output CSV file(s) will 
-#'   overwrite existing CSV file(s) with same name in \code{outDir}. When FALSE,
+#'   overwrite existing CSV file(s) with same name in `outDir`. When FALSE,
 #'   '_n' (i.e., _1, _2, etc.) will be appended to names of output files that
-#'   already exist in \code{outDir}.
+#'   already exist in `outDir`.
 #'   
 #' @param vueExePath An optional character string with directory containing
 #'   VUE.exe. If NA (default) then the path to VUE.exe must be added to the 
@@ -23,8 +23,8 @@
 #'   
 #'
 #' @details
-#' If \code{vrl} is a directory, then all VRL files in that directory will be 
-#' converted to CSV. Otherwise, only those files specified in \code{vrl} will 
+#' If `vrl` is a directory, then all VRL files in that directory will be 
+#' converted to CSV. Otherwise, only those files specified in `vrl` will 
 #' be converted. Each output CSV file will have same name as its source VRL 
 #' file. 
 #' 
@@ -35,7 +35,7 @@
 #' supported by the VUE system command at time of writing. 
 #' 
 #' @note
-#' The path to VUE.exe must either be specified by \code{vueExePath} or 
+#' The path to VUE.exe must either be specified by `vueExePath` or 
 #' added to the PATH environment variable of your system. To get the path to 
 #' VUE.exe in Windows, right click on the icon, select "Properties", and 
 #' then copy text in "Target" box. 
@@ -44,7 +44,7 @@
 #' To create a CSV for time-corrected VRL files, first time-correct each 
 #' file using the VRL editor in VUE (under Tools menu). To speed up that 
 #' process, uncheck the "Import" checkbox next to each filename, then run 
-#' \code{vrl2csv} to create a CSV for each edited (e.g. time-corrected) VRL.
+#' `vrl2csv` to create a CSV for each edited (e.g. time-corrected) VRL.
 #' 
 #' @note 
 #' When using versions of VUE before 2.3, VUE can return an error code or 

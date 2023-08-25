@@ -15,42 +15,42 @@ Checks to make sure external dependencies required by functions in
 }
 \details{
 \code{check_dependencies} checks that ffmpeg (cross platform software
-  for manipulating video content) software are installed on your
-  computer and accessible to R. FFmpeg is required to create or modify video
-  animations of fish movement using the \code{make_frames},
-  \code{make_video}, and \code{adjust_video_playback} functions.
+for manipulating video content) software are installed on your
+computer and accessible to R. FFmpeg is required to create or modify video
+animations of fish movement using the \code{make_frames},
+\code{make_video}, and \code{adjust_video_playback} functions.
 
 When \code{check_dependencies} is executed, R attempts to
-  sequentially access the external libraries.  If the libraries
-  are installed and accessible, a message is returned to the
-  terminal stating that the check was successful. Failed attempts
-  to access the external libraries are printed to the terminal.
+sequentially access the external libraries.  If the libraries
+are installed and accessible, a message is returned to the
+terminal stating that the check was successful. Failed attempts
+to access the external libraries are printed to the terminal.
 
 The simplest way to install FFMPEG for use by the 'glatos' package
-  functions is to use the \code{install_ffmpeg} function, which downloads
-  the excecutable from one of the websites listed below (depending on
-  operating system) and places it in the 'glatos' package directory.
-  \code{make_video} and other \code{glatos} functions that call ffmpeg will
-  from that location. The downside to this method is that
-  \code{install_ffmpeg} will need to be run each time the \code{glatos}
-  package is re-installed. For more permanent installations of FFMPEG, see
-  directions below, by operating system.
+functions is to use the \code{install_ffmpeg} function, which downloads
+the excecutable from one of the websites listed below (depending on
+operating system) and places it in the 'glatos' package directory.
+\code{make_video} and other \code{glatos} functions that call ffmpeg will
+from that location. The downside to this method is that
+\code{install_ffmpeg} will need to be run each time the \code{glatos}
+package is re-installed. For more permanent installations of FFMPEG, see
+directions below, by operating system.
 
 Full installation of the ffmpeg library on windows is
-  accomplished by downloading the recent 'static' build from
-  \url{http://ffmpeg.zeranoe.com/builds/}. After the download is
-  complete, use your favorite compression utility to extract the
-  downloaded folder. Decompress the package and store contents on
-  your computer.  Last, edit your system path variable to include
-  the path to the directory containing ffmpeg.exe
+accomplished by downloading the recent 'static' build from
+\url{http://ffmpeg.zeranoe.com/builds/}. After the download is
+complete, use your favorite compression utility to extract the
+downloaded folder. Decompress the package and store contents on
+your computer.  Last, edit your system path variable to include
+the path to the directory containing ffmpeg.exe
 
 Full installation of ffmpeg on Mac is similar to
-  windows. First, download most recent build from
-  \url{http://www.evermeet.cx/ffmpeg/}.  The binary files are
-  compressed with 7zip so may need toinstall an unarchiving
-  utility (\url{http://wakaba.c3.cx/s/apps/unarchiver.html}) to
-  extract the program folder. After the folder is extracted, copy
-  the ffmpeg folder to /usr/local/bin/ffmpeg on your machine.
+windows. First, download most recent build from
+\url{http://www.evermeet.cx/ffmpeg/}.  The binary files are
+compressed with 7zip so may need toinstall an unarchiving
+utility (\url{http://wakaba.c3.cx/s/apps/unarchiver.html}) to
+extract the program folder. After the folder is extracted, copy
+the ffmpeg folder to /usr/local/bin/ffmpeg on your machine.
 }
 \examples{
 \dontrun{

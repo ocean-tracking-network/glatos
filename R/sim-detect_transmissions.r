@@ -5,15 +5,15 @@
 #'   distance), location of transmitter, and location of receivers.
 #'
 #' @param trnsLoc A data frame with location (two numeric columns) and time
-#'   (numeric or POSIXct column) of signal transmissions.\cr \emph{OR} \cr An
-#'   object of class \code{\link[sf]{sf}} or \code{\link[sf]{sfc}} containing
-#'   \code{POINT} features (geometry column) and time (see \code{colNames}).
-#'   (\code{\link[sp]{SpatialPointsDataFrame}} is also allowed.)
+#'   (numeric or POSIXct column) of signal transmissions.\cr *OR* \cr An
+#'   object of class [sf::sf()] or [sf::sfc()] containing
+#'   `POINT` features (geometry column) and time (see `colNames`).
+#'   ([sp::SpatialPointsDataFrame()] is also allowed.)
 #'
 #' @param recLoc A data frame with coordinates (two numeric columns) of receiver
-#'   locations.\cr \emph{OR} \cr An object of class \code{\link[sf]{sf}} or
-#'   \code{\link[sf]{sfc}} containing a \code{POINT} feature (geometry column)
-#'   for each receiver. (\code{\link[sp]{SpatialPointsDataFrame}} is also
+#'   locations.\cr *OR* \cr An object of class [sf::sf()] or
+#'   [sf::sfc()] containing a `POINT` feature (geometry column)
+#'   for each receiver. ([sp::SpatialPointsDataFrame()] is also
 #'   allowed.)
 #'
 #' @param detRngFun A function that defines detection range curve; must accept a
@@ -21,31 +21,31 @@
 #'   detection probabilities at each distance.
 #'
 #' @param trnsColNames A named list containing the names of columns in
-#'   \code{trnsLoc} with timestamps (default is \code{"time"}) and coordinates
-#'   (defaults are \code{"x"} and \code{"y"}) of signal transmissions. Location
-#'   column names are ignored if \code{trnsLoc} is a spatial object with a
+#'   `trnsLoc` with timestamps (default is `"time"`) and coordinates
+#'   (defaults are `"x"` and `"y"`) of signal transmissions. Location
+#'   column names are ignored if `trnsLoc` is a spatial object with a
 #'   geometry column.
 #'
 #' @param recColNames A named list containing the names of columns in
-#'   \code{recLoc} with coordinates of receiver locations (defaults are
-#'   \code{"x"} and \code{"y"}). Location column names are ignored if
-#'   \code{recLoc} is a spatial object with a geometry column.
+#'   `recLoc` with coordinates of receiver locations (defaults are
+#'   `"x"` and `"y"`). Location column names are ignored if
+#'   `recLoc` is a spatial object with a geometry column.
 #' 
 #' @param inputCRS Defines the coordinate reference system (object of class
-#'   \code{crs} or numeric EPSG code) if crs is missing from inputs
-#'   \code{trnsLoc} or \code{recLoc}; ignored if input \code{trnsLoc} and
-#'   \code{recLoc} are of class \code{sf}, \code{sfc}, or
-#'   \code{SpatialPointsDataFrame}).
+#'   `crs` or numeric EPSG code) if crs is missing from inputs
+#'   `trnsLoc` or `recLoc`; ignored if input `trnsLoc` and
+#'   `recLoc` are of class `sf`, `sfc`, or
+#'   `SpatialPointsDataFrame`).
 #'
-#' @param sp_out Logical. If TRUE (default) then output is an \code{sf} object.
-#'   If FALSE, then output is a \code{data.frame}.
+#' @param sp_out Logical. If TRUE (default) then output is an `sf` object.
+#'   If FALSE, then output is a `data.frame`.
 #'
 #' @param show_progress Logical. Progress bar and status messages will be shown
 #'   if TRUE (default) and not shown if FALSE.
 #'
 #' @details Distances between each signal transmission and receiver are
-#'   calculated using \code{\link[geodist]{geodist}} (\code{measure =
-#'   "haversine"}) if input crs is geographic (i.e., longitude, latitude) and
+#'   calculated using [geodist::geodist()] (`measure =
+#'   "haversine"`) if input crs is geographic (i.e., longitude, latitude) and
 #'   using simple Euclidean distances if input crs is Cartesian (e.g., UTM). If
 #'   crs is missing, the an arbitrary Cartesian coordinate system with base unit
 #'   of 1 meter is assumed. Computation time is fastest if coordinates are are
@@ -58,19 +58,19 @@
 #'   distribution with probability p (detection prob.).
 #'
 #'   This function was written to be used along with
-#'   \code{\link{transmit_along_path}}.
+#'   [transmit_along_path()].
 #'
-#' @return When \code{sp_out = TRUE}, an \code{sf} object containing one
-#'   \code{POINT} feature with coordinates of each receiver and transmission
+#' @return When `sp_out = TRUE`, an `sf` object containing one
+#'   `POINT` feature with coordinates of each receiver and transmission
 #'   location of each simulated detection (i.e., two geography columns names
-#'   \code{rec_geometry} and \code{trns_geometry}) and the the following
+#'   `rec_geometry` and `trns_geometry`) and the the following
 #'   columns: \cr
 #'   
 #'   \item{trns_id}{Unique signal transmission ID.} 
 #'   \item{rec_id}{Unique receiver ID.} 
 #'   \item{time}{Elapsed time.}
 #'
-#'   When \code{sp_out = FALSE}, a data.frame with columns
+#'   When `sp_out = FALSE`, a data.frame with columns
 #'   containing coordinates of receiver locations of each simulation detection: 
 #'   \item{rec_x}{Receiver x coordinate.} 
 #'   \item{rec_y}{Receiver y coordinate.} 
@@ -78,8 +78,8 @@
 #'   \item{trns_y}{Transmitter y coordinate at time of transmission.} 
 #'   and the columns described above.
 #'
-#' @seealso \code{\link{transmit_along_path}} to simulate transmissions along a
-#'   path (i.e., create \code{trnsLoc}).
+#' @seealso [transmit_along_path()] to simulate transmissions along a
+#'   path (i.e., create `trnsLoc`).
 #'
 #' @author C. Holbrook (cholbrook@@usgs.gov)
 #'

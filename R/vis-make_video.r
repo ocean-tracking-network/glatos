@@ -14,11 +14,11 @@
 ##'   then this will be determined by the number of input frames and 
 ##'   the framerate (default is 24 frames per second). E.g., a video containing 
 ##'   240 frames at default 24 fps will be 10 seconds long. See details.
-##' @param start_frame integer, start frame. Defaults to \code{start=1}.
-##' @param end_frame integer, end frame.  Defaults to \code{end_frame
-##'   = NULL} (i.e., last frame).
+##' @param start_frame integer, start frame. Defaults to `start=1`.
+##' @param end_frame integer, end frame.  Defaults to `end_frame
+##'   = NULL` (i.e., last frame).
 ##' @param size integer vector with width and height of output video in pixels.
-##'   Ignored if \code{vfilter} is passed via \code{...}. 
+##'   Ignored if `vfilter` is passed via `...`. 
 ##' @param overwrite logical, overwrite existing output file? (default = FALSE)
 ##' @param verbose logical, show output from
 ##'   \link[=encoding]{av::av_encode_video}? Default = FALSE.
@@ -28,35 +28,35 @@
 ##' @details This function was overhauled in glatos v 0.4.1 to simplify inputs
 ##'   and to no longer require an external program (ffmpeg.exe). As a result
 ##'   input arguments have changed, as described above. Starting with glatos v
-##'   0.4.1, any calls to \code{make_video} using the arguments from glatos v
-##'   0.4.0 or earlier will be redirected to \link[glatos]{make_video_ffmpeg}.
+##'   0.4.1, any calls to `make_video` using the arguments from glatos v
+##'   0.4.0 or earlier will be redirected to [make_video_ffmpeg][glatos::make_video_ffmpeg].
 ##'   Such redirection provides backward-compatibility but may be removed in a
 ##'   future version.
 ##'   
-##' @details \code{make_video} is a simple wrapper of \code{av_encode_video}. It
+##' @details `make_video` is a simple wrapper of `av_encode_video`. It
 ##'   is intended to allow creation of videos from images (frames) created by
-##'   \link[glatos]{make_frames} as simple as possible. More advanced features
-##'   of \code{av}, can be used by including any argument of
-##'   \link[=encoding]{av::av_encode_video} in the call to \code{make_video}, or
+##'   [make_frames][glatos::make_frames] as simple as possible. More advanced features
+##'   of `av`, can be used by including any argument of
+##'   \link[=encoding]{av::av_encode_video} in the call to `make_video`, or
 ##'   by calling \link[=encoding]{av::av_encode_video} directly. More
-##'   information about the \code{av} package is available at
+##'   information about the `av` package is available at
 ##'   https://cran.r-project.org/web/packages/av/index.html and
 ##'   https://docs.ropensci.org/av/.
 ##'
 ##' @details A directory of sequenced image files (.png, .jpeg) are
-##'   passed to \code{input_dir} argument.  The \code{input_ext} argument
+##'   passed to `input_dir` argument.  The `input_ext` argument
 ##'   specifies the type of files to be stitched into a video.  The
 ##'   images passed to the function must all have the same size,
 ##'   height, and format.
 ##'
 ##' @details Function can create .mp4, .mov, .mkv, .flv .wmv, or
 ##'   .mpeg animations.  Format of created animation is determined by
-##'   file extension of \code{output}.
+##'   file extension of `output`.
 ##'   
-##' @details If \code{start_frame} or \code{end_frame} are specified, then only 
+##' @details If `start_frame` or `end_frame` are specified, then only 
 ##'   frames within the specified range will be included in the output video.
 ##'
-##' @details If \code{duration} is specified, then the output framerate will be
+##' @details If `duration` is specified, then the output framerate will be
 ##'   determined by the number of input frames and the framerate (default is 24
 ##'   frames per second). E.g., a video of 10 second duration containing 240
 ##'   frames will have an output frame rate of 24 fps. In some cases (when
@@ -65,8 +65,8 @@
 ##'   specified. If the output frame rate exceeds 30 fps, then a warning will
 ##'   alert the user that some individual frame content may not be visible to
 ##'   users. Video duration may also be controlled by setting the
-##'   \code{framerate} argument of \link[=encoding]{av::av_encode_video}. See
-##'   \code{...} above.
+##'   `framerate` argument of \link[=encoding]{av::av_encode_video}. See
+##'   `...` above.
 ##'
 ##' @return One video animation will be written disk and the path and file 
 ##'   name will be return.
@@ -219,9 +219,9 @@ make_video  <- function(input_dir = getwd(),
 ##' Create video from sequence of still images using ffmpeg.exe
 ##'
 ##' Stitch a sequence of images into a video animation using FFmpeg
-##' software. \strong{NOTE: This function is DEPRECATED and is being maintained 
-##' temporarily for backward compatibility with glatos v. 0.4.0 and earlier.}
-##' \emph{Use \link[glatos]{make_video} instead.} See details.
+##' software. **NOTE: This function is DEPRECATED and is being maintained 
+##' temporarily for backward compatibility with glatos v. 0.4.0 and earlier.**
+##' *Use [make_video][glatos::make_video] instead.* See details.
 ##' 
 ##' @param dir directory containing images, default is working
 ##'   directory.
@@ -233,19 +233,19 @@ make_video  <- function(input_dir = getwd(),
 ##' @param fps_in integer, intended framerate of input image sequence
 ##'   in frames per second.
 ##' @param start_frame integer, start frame. Defaults to
-##'   \code{start=1}.
-##' @param end_frame integer, end frame.  Defaults to \code{end_frame
-##'   = NULL}.
+##'   `start=1`.
+##' @param end_frame integer, end frame.  Defaults to `end_frame
+##'   = NULL`.
 ##' @param size character, the dimensions of the video
-##'   output. Defaults to \code{"source"}, which is equal to the
+##'   output. Defaults to `"source"`, which is equal to the
 ##'   dimensions of the input files. Otherwise scaling is performed on
 ##'   the output. See details.
 ##' @param preset character, encoding presets available in
-##'   FFmpeg. Defaults to \code{medium}. See details.
+##'   FFmpeg. Defaults to `medium`. See details.
 ##' @param codec character, video codec used.  See details.
 ##' @param format character, pixel format used. See details.
 ##' @param lossless logical, use lossless H.264 encoding if
-##'   applicable.  Defaults to \code{FALSE}. See details.
+##'   applicable.  Defaults to `FALSE`. See details.
 ##' @param fps_out integer, framerate of animation in frames per
 ##'   second.
 ##' @param overwrite logical, overwrite existing output file?
@@ -262,102 +262,102 @@ make_video  <- function(input_dir = getwd(),
 ##' @param diagnostic_mode Logical (default = FALSE). If true, return value
 ##'  is a character vector with FFMPEG output.
 ##' 
-##' @details \strong{This function is DEPRECATED and is being maintained
-##'   temporarily for backward compatibility with glatos v. 0.4.0 and earlier.}
-##'   \emph{Use \link[glatos]{make_video} instead.} This function was previously
-##'   named \code{make_video}. Starting with glatos v. 0.4.1,
-##'   \link[glatos]{make_video} was changed to simplify inputs and to use the
-##'   \code{av} package function \link[=encoding]{av::av_encode_video} instead
+##' @details **This function is DEPRECATED and is being maintained
+##'   temporarily for backward compatibility with glatos v. 0.4.0 and earlier.**
+##'   *Use [make_video][glatos::make_video] instead.* This function was previously
+##'   named `make_video`. Starting with glatos v. 0.4.1,
+##'   [make_video][glatos::make_video] was changed to simplify inputs and to use the
+##'   `av` package function \link[=encoding]{av::av_encode_video} instead
 ##'   of external program ffmpeg. For backward-compatibility, any calls to
-##'   \link[glatos]{make_video} with arguments from the earlier version of the
-##'   function will be redirected here (\code{make_video_ffmpeg}).
+##'   [make_video][glatos::make_video] with arguments from the earlier version of the
+##'   function will be redirected here (`make_video_ffmpeg`).
 ##' 
-##' @details \code{make_video_ffmpeg} is based on \code{mapmate::ffmpeg}.
-##'   More information about \code{mapmate} package is found at
-##'   \code{https://github.com/leonawicz/mapmate}.  This function
+##' @details `make_video_ffmpeg` is based on `mapmate::ffmpeg`.
+##'   More information about `mapmate` package is found at
+##'   `https://github.com/leonawicz/mapmate`.  This function
 ##'   converts R syntax into command line call that is submitted to
-##'   \code{ffmpeg}.  \code{ffmpeg} must be installed and able to be
+##'   `ffmpeg`.  `ffmpeg` must be installed and able to be
 ##'   accessed by the system command line prior to running
-##'   \code{make_video_ffmpeg}.  See \code{https://www.ffmpeg.org} for
+##'   `make_video_ffmpeg`.  See `https://www.ffmpeg.org` for
 ##'   information on installing ffmpeg.
 ##'
 ##' @details The FFmpeg multimedia framework provides extensive
 ##'   flexibility and options for converting and manipulating video
-##'   and audio content.  \code{make_video_ffmpeg} provides a small subset
+##'   and audio content.  `make_video_ffmpeg` provides a small subset
 ##'   of options useful for creating simple animated videos.  If
 ##'   additional flexibility or options are needed, the user may need
-##'   to develop or modify \code{make_video_ffmpeg} or submit calls
+##'   to develop or modify `make_video_ffmpeg` or submit calls
 ##'   directly to FFmpeg using the system command line.
 ##'
 ##' @details Sequenced image files are input into FFmpeg using a file name
 ##'   convention which requires specifying the entire, non-changing file name
 ##'   with a consecutive integer numbering component.  The integer number
 ##'   component indicates the maximum number of digits of all the images.  For
-##'   example, \code{\%04d.png} represents the file numbering \code{0000.png,
-##'   0001.png, 0002.png, ..., 9999.png} and \code{\%02d.png} represents images
-##'   numbered from \code{00.png, 01.png, 02.png, ..., 10.png}.  File names of
+##'   example, `\%04d.png` represents the file numbering `0000.png,
+##'   0001.png, 0002.png, ..., 9999.png` and `\%02d.png` represents images
+##'   numbered from `00.png, 01.png, 02.png, ..., 10.png`.  File names of
 ##'   image sequences input to FFmpeg may have a prefix provided that all image
 ##'   files have the sequence. For example an image sequence of
-##'   \code{myfile001.png, myfile002.png, myfile003.png, ..., myfile999.png} is
-##'   represented as \code{myfile\%03d.png}.  \code{pattern} only accepts this
+##'   `myfile001.png, myfile002.png, myfile003.png, ..., myfile999.png` is
+##'   represented as `myfile\%03d.png`.  `pattern` only accepts this
 ##'   pattern of image file names.
 ##'
 ##' @details Function can create .mp4, .mov, .mkv, .gif, .wmv, or
 ##'   .mpeg animations.  Format of created animation is determined by
-##'   file extension of \code{output}.
-##' @details \code{make_video_ffmpeg} allows
-##'   user to specify input framerate \code{fps_in} of image sequence
-##'   and output \code{fps_out} framerate of animation.
+##'   file extension of `output`.
+##' @details `make_video_ffmpeg` allows
+##'   user to specify input framerate `fps_in` of image sequence
+##'   and output `fps_out` framerate of animation.
 ##'
-##' @details \code{start_frame} specifies starting frame in animation
-##'   and \code{end_frame} specifies end frame in animation.  If
-##'   \code{start_frame} and \code{end_frame} are specified, only
+##' @details `start_frame` specifies starting frame in animation
+##'   and `end_frame` specifies end frame in animation.  If
+##'   `start_frame` and `end_frame` are specified, only
 ##'   images within range are used in animation.  Specifying
-##'   \code{start_frame} and \code{end_frame} allows user to skip
+##'   `start_frame` and `end_frame` allows user to skip
 ##'   images.
 ##'
-##' @details If \code{size} is not set to \code{"source"}, the output video is
-##'   scaled.  \code{size} can be a character string of dimensions in length by
-##'   height format such as \code{"720x480"} or an abbreviated standard such as
-##'   \code{"ntsc"}.  See
-##'   \href{http://ffmpeg.org/ffmpeg-utils.html#Video-size}{FFmpegstandard video
-##'   sizes} for common dimensions and available abbreviations.
+##' @details If `size` is not set to `"source"`, the output video is
+##'   scaled.  `size` can be a character string of dimensions in length by
+##'   height format such as `"720x480"` or an abbreviated standard such as
+##'   `"ntsc"`.  See
+##'   [FFmpegstandard video
+##'   sizes](http://ffmpeg.org/ffmpeg-utils.html#Video-size) for common dimensions and available abbreviations.
 ##' 
 ##' @details Presets provide a certain encoding speed to compression
-##'   ratio.  Available presets include \code{ultrafast},
-##'   \code{superfast}, \code{veryfast}, \code{faster}, \code{fast},
-##'   \code{medium}, \code{slow}, \code{slower}, \code{veryslow}.
-##'   Faster preset i.e.(\code{ultrafast}) corresponds to greater file
+##'   ratio.  Available presets include `ultrafast`,
+##'   `superfast`, `veryfast`, `faster`, `fast`,
+##'   `medium`, `slow`, `slower`, `veryslow`.
+##'   Faster preset i.e.(`ultrafast`) corresponds to greater file
 ##'   size, lower animation quality, and faster computation
-##'   times. Slower speeds \code{veryslow} corresponds to smaller
+##'   times. Slower speeds `veryslow` corresponds to smaller
 ##'   file, higher quality animation and slower computation times.
-##'   See \url{http://trac.ffmpeg.org/wiki/Encode/H.264}
+##'   See <http://trac.ffmpeg.org/wiki/Encode/H.264>
 ##'
-##'  @details \code{codec} is ignored if the file name in
-##'   \code{pattern} ends with \code{.gif}.  For other video output
+##'  @details `codec` is ignored if the file name in
+##'   `pattern` ends with `.gif`.  For other video output
 ##'   file types a default codec is used depending on the file
 ##'   extension of output animation.These
-##'   can be overridden with options like \code{codec="h264"},
-##'   \code{"libx264"}, \code{"libvpx"}, \code{"prores"},
-##'   \code{"qtrle"}, etc., but the user needs to be knowledgeable
+##'   can be overridden with options like `codec="h264"`,
+##'   `"libx264"`, `"libvpx"`, `"prores"`,
+##'   `"qtrle"`, etc., but the user needs to be knowledgeable
 ##'   regarding which codecs can be used for which output types or
 ##'   errors will be thrown.
 ##' 
-##' @details \code{format} is ignored if the file name in
-##'   \code{pattern} ends with \code{.gif}.  The default is
-##'   \code{"yuv420p"}, which performs 4:2:0 chroma subsampling.  This
+##' @details `format` is ignored if the file name in
+##'   `pattern` ends with `.gif`.  The default is
+##'   `"yuv420p"`, which performs 4:2:0 chroma subsampling.  This
 ##'   pixel format can reduce video quality, but it is the default
 ##'   because it ensures compatibility with most media players. For
-##'   valid alternatives, run \code{system("ffmpeg -pix_fmts")}.
+##'   valid alternatives, run `system("ffmpeg -pix_fmts")`.
 ##'
-##' @details \code{lossless} is ignored except for relevant
-##'   \code{codec} settings, e.g., \code{h264} or \code{libx264}.  If
-##'   \code{TRUE}, recommended \code{preset} values are
-##'   \code{ultrafast} or \code{veryslow}. See
-##'   \url{https://trac.ffmpeg.org/wiki/Encode/H.264} for more
+##' @details `lossless` is ignored except for relevant
+##'   `codec` settings, e.g., `h264` or `libx264`.  If
+##'   `TRUE`, recommended `preset` values are
+##'   `ultrafast` or `veryslow`. See
+##'   <https://trac.ffmpeg.org/wiki/Encode/H.264> for more
 ##'   information.
 ##'  
-##' @return One video animation will be written to \code{output_dir}
+##' @return One video animation will be written to `output_dir`
 ##' 
 ##' @author Todd Hayden, Tom Binder, Chris Holbrook
 ##'
@@ -369,7 +369,7 @@ make_video  <- function(input_dir = getwd(),
 ##' frames <- system.file("extdata", "frames", package = "glatos")
 ##'
 ##' # make .mp4 video
-##' # make sure ffmpeg is on system path (see \code{make_frames} and details)
+##' # make sure ffmpeg is on system path (see `make_frames` and details)
 ##' make_video_ffmpeg(dir = frames, pattern = "%02d.png", output = "animation.mp4")
 ##'
 ##' # make .wmv video

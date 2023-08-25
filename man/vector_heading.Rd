@@ -9,32 +9,32 @@ vector_heading(x, y = NULL, coord_sys = NA)
 \arguments{
 \item{x}{A numeric vector of x coordinates; minimum of 2.\cr
 OR \cr
-A two-column matrix or data frame with x coordinates in 
+A two-column matrix or data frame with x coordinates in
 column 1 and y coordinates in column 2.}
 
 \item{y}{A numeric vector of y coordinates; minimum of 2.}
 
-\item{coord_sys}{The type of geographical coordinate system used. Possible 
-values are `NA` (for any cartesian grid; e.g., UTM) or `longlat` (for 
+\item{coord_sys}{The type of geographical coordinate system used. Possible
+values are \code{NA} (for any cartesian grid; e.g., UTM) or \code{longlat} (for
 WGS84 in decimal degrees).}
 }
 \value{
-A numeric scalar with heading in degrees or a numeric vector of 
-headings if \code{length(x) > 2}. 
+A numeric scalar with heading in degrees or a numeric vector of
+headings if \code{length(x) > 2}.
 
-If units are decimal degrees (i.e., \code{coord_sys = "longlat"}) then 
+If units are decimal degrees (i.e., \code{coord_sys = "longlat"}) then
 the angles returned will represent the heading at the start of each vector.
 }
 \description{
 Calculate direction (heading) of each link of a vector (in degrees)
 }
 \details{
-Calculates direction (in degrees) for each of k-1 vectors, where 
-k = length(x) - 1. Lengths of \code{x} and \code{y} must be 
+Calculates direction (in degrees) for each of k-1 vectors, where
+k = length(x) - 1. Lengths of \code{x} and \code{y} must be
 equal.
 }
 \note{
-This function is called from within \code{\link{crw_in_polygon}}
+This function is called from within \code{\link[=crw_in_polygon]{crw_in_polygon()}}
 }
 \examples{
 

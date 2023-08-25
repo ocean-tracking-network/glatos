@@ -6,14 +6,14 @@
 #' @param filePath The pathname for the kml file you wish to convert.
 #' 
 #' @param type Optional character string indicating the type(s) of feature(s)
-#'   to read from the kml file. Valid values are \code{c("points", "lines", and
-#'   "polygons")}.
+#'   to read from the kml file. Valid values are `c("points", "lines", and
+#'   "polygons")`.
 #'
 #' @details kmz files are not supported. Make sure exports from Google earth are
 #'   saved as kml. Or extract (unzip) kml from kmz.
 #'
-#' @return A csv file (same name as input \code{filePath} but with \code{csv} 
-#'   extension) is written to directory containing input \code{filePath} 
+#' @return A csv file (same name as input `filePath` but with `csv` 
+#'   extension) is written to directory containing input `filePath` 
 #'   with five columns \describe{
 #'   \item{name}{Feature name}
 #'   \item{feature_type}{Feature type}

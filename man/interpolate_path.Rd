@@ -31,62 +31,62 @@ set.  Must be a character string that can be coerced to
 'POSIXct' or an object of class 'POSIXct'.  If character string
 is supplied, timezone is automatically set to UTC.}
 
-\item{int_time_stamp}{The time step size (in seconds) of interpolated 
+\item{int_time_stamp}{The time step size (in seconds) of interpolated
 positions. Default is 86400 (one day).}
 
 \item{lnl_thresh}{A numeric threshold for determining if linear or
 non-linear interpolation shortest path will be used.}
 
 \item{out_class}{Return results as a data.table or tibble.  Default
-returns results as data.frame.  Accepts `data.table` or `tibble`.}
+returns results as data.frame.  Accepts \code{data.table} or \code{tibble}.}
 
-\item{show_progress}{Logical. Progress bar and status messages will be 
+\item{show_progress}{Logical. Progress bar and status messages will be
 shown if TRUE (default) and not shown if FALSE.}
 }
 \value{
 A dataframe with animal_id, bin_timestamp,
-  latitude, longitude, and record_type.
+latitude, longitude, and record_type.
 }
 \description{
-Interpolate new positions within a spatiotemporal path data set 
-  (e.g., detections of tagged fish) at regularly-spaced time intervals   
-	 using linear or non-linear interpolation.
+Interpolate new positions within a spatiotemporal path data set
+(e.g., detections of tagged fish) at regularly-spaced time intervals
+using linear or non-linear interpolation.
 }
 \details{
 Non-linear interpolation uses the \code{gdistance} package
-  to find the shortest pathway between two locations (i.e.,
-  receivers) that avoid 'impossible' movements (e.g., over land for
-  fish). The shortest non-linear path between two locations is
-  calculated using a transition matrix layer that represents the
-  'cost' of an animal moving between adjacent grid cells.  The
-  transition matrix layer (see \link{gdistance}) is created from
-  a polygon shapefile using \link{make_transition} or from a
-  \code{RasterLayer} object using \link[gdistance]{transition}. In
-  \code{make_transition}, each cell in the output transition layer
-  is coded as water (1) or land (0) to represent possible (1) and
-  impossible (0) movement paths.
+to find the shortest pathway between two locations (i.e.,
+receivers) that avoid 'impossible' movements (e.g., over land for
+fish). The shortest non-linear path between two locations is
+calculated using a transition matrix layer that represents the
+'cost' of an animal moving between adjacent grid cells.  The
+transition matrix layer (see \link{gdistance}) is created from
+a polygon shapefile using \link{make_transition} or from a
+\code{RasterLayer} object using \link[gdistance:transition]{transition}. In
+\code{make_transition}, each cell in the output transition layer
+is coded as water (1) or land (0) to represent possible (1) and
+impossible (0) movement paths.
 
 Linear interpolation is used for all points when
-  \code{trans} is not supplied.  When \code{trans} is supplied,
-  then interpolation method is determined for each pair of
-  sequential observed detections. For example, linear interpolation
-  will be used if the two geographical positions are exactly the
-  same and when the ratio (linear distance:non-linear distance)
-  between two positions is less than \code{lnl_thresh}.  Non-linear
-  interpolation will be used when ratio is greater than
-  \code{lnl_thresh}.  When the ratio of linear distance to
-  non-linear distance is greater than \code{lnl_thresh}, then the
-  distance of the non-linear path needed to avoid land is greater
-  than the linear path that crosses land.  \code{lnl_thresh} can be
-  used to control whether non-linear or linear interpolation is
-  used for all points. For example, non-linear interpolation will
-  be used for all points when \code{lnl_thresh} > 1 and linear
-  interpolation will be used for all points when \code{lnl_thresh}
-  = 0.
+\code{trans} is not supplied.  When \code{trans} is supplied,
+then interpolation method is determined for each pair of
+sequential observed detections. For example, linear interpolation
+will be used if the two geographical positions are exactly the
+same and when the ratio (linear distance:non-linear distance)
+between two positions is less than \code{lnl_thresh}.  Non-linear
+interpolation will be used when ratio is greater than
+\code{lnl_thresh}.  When the ratio of linear distance to
+non-linear distance is greater than \code{lnl_thresh}, then the
+distance of the non-linear path needed to avoid land is greater
+than the linear path that crosses land.  \code{lnl_thresh} can be
+used to control whether non-linear or linear interpolation is
+used for all points. For example, non-linear interpolation will
+be used for all points when \code{lnl_thresh} > 1 and linear
+interpolation will be used for all points when \code{lnl_thresh}
+= 0.
 
 All linear interpolation is done by code{stats::approx} with
-  argument \code{ties = "ordered"} controlling how tied \code{x} values 
-  are handled. See \code{\link{approxfun}}.
+argument \code{ties = "ordered"} controlling how tied \code{x} values
+are handled. See \code{\link[=approxfun]{approxfun()}}.
 }
 \examples{
 

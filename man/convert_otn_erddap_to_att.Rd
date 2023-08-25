@@ -26,7 +26,7 @@ convert_otn_erddap_to_att(
 }
 \value{
 a list of 3 tibble::tibbles containing tag dectections, tag metadata,
-  and station metadata, to be ingested by VTrack/ATT
+and station metadata, to be ingested by VTrack/ATT
 }
 \description{
 Convert \code{glatos_detections} and transmitter, receiver, and animal
@@ -35,14 +35,14 @@ Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
 }
 \details{
 This function takes 4 data frames containing detection, and ERDDAP
-  data from the tags, receivers, and animals tables, and transforms them into
-  3 \code{tibble::tibble} objects inside of a list. The input that AAT uses
-  to get this data product is located here:
-  https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-  are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
-  in a comment by Ryan Gosse. The OTN ERDDAP instance is here:
-  https://members.oceantrack.org/erddap/tabledap/index.html but please note
-  that this only contains public data.
+data from the tags, receivers, and animals tables, and transforms them into
+3 \code{tibble::tibble} objects inside of a list. The input that AAT uses
+to get this data product is located here:
+https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
+are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
+in a comment by Ryan Gosse. The OTN ERDDAP instance is here:
+https://members.oceantrack.org/erddap/tabledap/index.html but please note
+that this only contains public data.
 }
 \examples{
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/load-prepare_tag_sheet.R
 \name{prepare_tag_sheet}
 \alias{prepare_tag_sheet}
-\title{Loads the OTN tagging metadata sheet to prepare it for use in 
+\title{Loads the OTN tagging metadata sheet to prepare it for use in
 \code{convert_otn_to_att}}
 \usage{
 prepare_tag_sheet(path, header_line = 5, sheet_name = 2)
@@ -18,7 +18,7 @@ prepare_tag_sheet(path, header_line = 5, sheet_name = 2)
 a data.frame created from the excel file.
 }
 \description{
-Loads the OTN tagging metadata sheet to prepare it for use in 
+Loads the OTN tagging metadata sheet to prepare it for use in
 \code{convert_otn_to_att}
 }
 \details{

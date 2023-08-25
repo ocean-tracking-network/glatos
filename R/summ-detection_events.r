@@ -5,38 +5,38 @@
 #' detections at the same location that are separated by a user-defined
 #' threshold period of time.
 #'
-#' @param det A \code{glatos_detections} object (e.g., produced by
-#'   \link{read_glatos_detections}).
+#' @param det A `glatos_detections` object (e.g., produced by
+#'   [read_glatos_detections]).
 #'   
-#'   \emph{OR} a data frame containing detection data with four columns
+#'   *OR* a data frame containing detection data with four columns
 #'   described below and one column containing a location grouping variable,
-#'   whose name is specified by \code{location_col} (see below).
+#'   whose name is specified by `location_col` (see below).
 #'   
-#'   The following four columns must appear in \code{det}: 
+#'   The following four columns must appear in `det`: 
 #'   \describe{
-#'   \item{\code{animal_id}}{Individual animal identifier; character.}
-#'	 \item{\code{detection_timestamp_utc}}{Detection timestamps; MUST be of class
+#'   \item{`animal_id`}{Individual animal identifier; character.}
+#'	 \item{`detection_timestamp_utc`}{Detection timestamps; MUST be of class
 #'   POSIXct.}
-#'	 \item{\code{deploy_lat}}{Latitude of receiver deployment in decimal 
+#'	 \item{`deploy_lat`}{Latitude of receiver deployment in decimal 
 #'      degrees, NAD83.}
-#'	 \item{\code{deploy_long}}{Longitude of receiver deployment in decimal 
+#'	 \item{`deploy_long`}{Longitude of receiver deployment in decimal 
 #'     degrees, NAD83.}
 #'   }
 #' 
 #' @param location_col A character string indicating the column name in
-#'   \code{det} that will be used as the location grouping variable (e.g.
+#'   `det` that will be used as the location grouping variable (e.g.
 #'   "glatos_array"), in quotes.
 #' 
 #' @param time_sep Amount of time (in seconds) that must pass between 
 #'   sequential detections on the same receiver (or group of receivers, 
 #'   depending on specified location) before that detection is considered to 
-#'   belong to a new detection event. The default value \code{Inf}, will not 
+#'   belong to a new detection event. The default value `Inf`, will not 
 #'   define events based on elapsed time (only when location changes).
 #'   
 #' @param condense A logical indicating if the result should be a condensed 
-#'   data frame (\code{condense = TRUE}; default value) with one event per row, 
+#'   data frame (`condense = TRUE`; default value) with one event per row, 
 #'   or the input data frame with new event data columns added 
-#'   \code{condense = TRUE}.
+#'   `condense = TRUE`.
 #'
 #' @details mean_latitude and mean_longitude columns in the output dataframe are 
 #'   the mean GPS locations for the detections comprising that detection event. 
@@ -48,9 +48,9 @@
 #'
 #' @return A data.table or tibble object (if input is either type; output 
 #' class to match input) or data.frame otherwise. Structure depends on 
-#' value of \code{condense} argument: \cr
+#' value of `condense` argument: \cr
 #' 
-#' If \code{condense = TRUE}, a data.frame, data.table, or tibble with the 
+#' If `condense = TRUE`, a data.frame, data.table, or tibble with the 
 #' following columns:
 #'  \item{event}{Unique event identifier.}
 #'  \item{individual}{Unique 'animal_id'.}
@@ -66,8 +66,8 @@
 #'  \item{res_time_sec}{The elapsed time in seconds between the first and last 
 #'		detection in a given event.}
 #'		
-#'	If \code{condense = FALSE}, a data.frame, data.table, or tibble matching the
-#'	input data frame \code{det} with the following columns added:
+#'	If `condense = FALSE`, a data.frame, data.table, or tibble matching the
+#'	input data frame `det` with the following columns added:
 #'  \item{time_diff}{Lagged time difference in seconds between successive 
 #'    detections of each animal_id.}
 #'  \item{arrive}{Flag (0 or 1) representing the first detection in each 

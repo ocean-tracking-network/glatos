@@ -6,7 +6,7 @@
 #' @param x A list containing data from a standard GLATOS data workbook 
 #' (*.xlsm) file.
 #' 
-#' @return A list of class \code{glatos_workbook} created from a standard GLATOS
+#' @return A list of class `glatos_workbook` created from a standard GLATOS
 #'   data workbook (*.xlsm) file with three elements:
 #' \describe{
 #'   \item{metadata}{A list with data about the project.}

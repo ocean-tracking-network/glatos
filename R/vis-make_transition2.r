@@ -1,32 +1,32 @@
 #' Create transition layer from a spatial polygon
 #'
-#' Create transition layer for \link{interpolate_path} from
-#' \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
+#' Create transition layer for [interpolate_path] from
+#' [SpatialPolygonsDataFrame][SpatialPolygons].
 #'
 #' @param poly A spatial polygon object of class
-#' \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
+#' [SpatialPolygonsDataFrame][SpatialPolygons].
 #'
 #' @param res two element vector that specifies the x and y dimension
 #'   of output raster cells.  Units of res are same as input
 #'   polygon.
 #'
-#' @param extent_out An optional \code{Extent} object
-#'   (see \link[raster]{extent}) that determines the extent of the
+#' @param extent_out An optional `Extent` object
+#'   (see [extent][raster::extent]) that determines the extent of the
 #'   output objects. Output extent will default to extent of input object
-#'   \code{poly} if \code{extent_out}, and \code{x_lim}/\code{y_lim}
+#'   `poly` if `extent_out`, and `x_lim`/`y_lim`
 #'   are NULL (default).
 #'
 #' @param x_lim An optional two-element vector with extents of x axis.
 #'
 #' @param y_lim An optional two-element vector with extents of x axis.
 #'
-#' @details \code{make_transition} uses \link[raster]{rasterize} to convert a
-#'   \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
-#'   geo-corrected transition layer \link[gdistance]{transition}.  Raster cell
+#' @details `make_transition` uses [rasterize][raster::rasterize] to convert a
+#'   [SpatialPolygonsDataFrame][SpatialPolygons] into a raster layer, and
+#'   geo-corrected transition layer [transition][gdistance::transition].  Raster cell
 #'   values on land = 0 and water = 1.
 #'
 #' @details output transition layer is corrected for projection
-#'   distortions using \link[gdistance]{geoCorrection}.  Adjacent
+#'   distortions using [geoCorrection][gdistance::geoCorrection].  Adjacent
 #'   cells are connected by 16 directions and transition function
 #'   returns 0 (land) for movements between land and water and 1 for
 #'   all over-water movements.
@@ -35,10 +35,10 @@
 #' \describe{
 #'    \item{transition}{a geo-corrected transition raster layer where land = 0
 #'       and water=1
-#'   (see \code{gdistance})}
-#'    \item{rast}{rasterized input layer of class \code{raster}}}
+#'   (see `gdistance`)}
+#'    \item{rast}{rasterized input layer of class `raster`}}
 #'
-#' @seealso \link{make_transition}
+#' @seealso [make_transition]
 #'
 #' @author Todd Hayden, Tom Binder, Chris Holbrook
 #'

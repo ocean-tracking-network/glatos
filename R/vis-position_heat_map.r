@@ -5,17 +5,17 @@
 #'VPS positional telemetry data.
 #'
 #'@param positions A dataframe containing detection data with at least the
-#'  following 4 columns: \describe{ \item{\code{DETECTEDID}}{Individual animal
-#'  identifier; character.} \item{\code{DATETIME}}{Date-time stamps for the
-#'  positions (MUST be of class 'POSIXct')} \item{\code{LAT}}{Position
-#'  latitude.} \item{\code{LON}}{Position longitude.} }
+#'  following 4 columns: \describe{ \item{`DETECTEDID`}{Individual animal
+#'  identifier; character.} \item{`DATETIME`}{Date-time stamps for the
+#'  positions (MUST be of class 'POSIXct')} \item{`LAT`}{Position
+#'  latitude.} \item{`LON`}{Position longitude.} }
 #'
 #'@param projection A character string indicating if the coordinates in the
-#'  'positions' dataframe are geographic (\code{projection = "LL"}) or
-#'  projected/Cartesian(\code{projection = "UTM"}). Used to convert coordinates
+#'  'positions' dataframe are geographic (`projection = "LL"`) or
+#'  projected/Cartesian(`projection = "UTM"`). Used to convert coordinates
 #'  between latitude/longitude in decimal degrees ("LL"; e.g., 45.98753) and
 #'  UTM. Valid arguments are "LL" (latitude/longitude) and "UTM". If
-#'  projection=="UTM", then \code{utm_zone} and '\code{hemisphere} arguments
+#'  projection=="UTM", then `utm_zone` and '`hemisphere` arguments
 #'  must also be supplied.
 #'
 #'@param fish_pos_int A character string indicating whether output will display
@@ -72,13 +72,13 @@
 #'  "png", "kmz"). Default value is "plot".
 #'
 #'@param folder A character string indicating the output folder. If path is not
-#'  specified then \code{folder} will be created in the working directory.
+#'  specified then `folder` will be created in the working directory.
 #'  Default is "position_heat_map".
 #'
 #'@param out_file A character string indicating base name of output files (if
-#'  \code{output = "png" or "kmz"}). If \code{out_file} is a path, all but last
-#'  part is ignored (via \code{basename}). Any file extension is also ignored
-#'  (via \code{tools::file_path_sans_ext}).
+#'  `output = "png" or "kmz"`). If `out_file` is a path, all but last
+#'  part is ignored (via `basename`). Any file extension is also ignored
+#'  (via `tools::file_path_sans_ext`).
 #'
 #'@details When an 'interval' argument is supplied, the number of unique fish x
 #'  interval combinations that occurred in each grid cell is calculated instead
@@ -86,7 +86,7 @@
 #'  1-h intervals. If fish 'A' was positioned in a single grid cell during 3 of
 #'  the 4 intervals, than the number of intervals for that fish and grid
 #'  combination is 3. Intervals are determined by applying the
-#'  \link[base]{findInterval} function (base R) to a sequence of timestamps
+#'  [findInterval][base::findInterval] function (base R) to a sequence of timestamps
 #'  (class: POSIXct) created using seq(from = min(positions[, DATETIME]), to =
 #'  min(positions[, DATETIME]), by = interval), where interval is the
 #'  user-assigned interval duration in seconds. Number of intervals is a more

@@ -18,7 +18,7 @@ Sample detection range data set from Lake Superior.
 }
 \details{
 Data from a stationary detection range test conducted in 2018. Data
-  are in standard GLATOS detection export format and are intened to 
-  accompany detecton range analysis vignette.
+are in standard GLATOS detection export format and are intened to
+accompany detecton range analysis vignette.
 }
 \keyword{datasets}

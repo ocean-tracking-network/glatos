@@ -18,14 +18,14 @@ detect_transmissions(
 \arguments{
 \item{trnsLoc}{A data frame with location (two numeric columns) and time
 (numeric or POSIXct column) of signal transmissions.\cr \emph{OR} \cr An
-object of class \code{\link[sf]{sf}} or \code{\link[sf]{sfc}} containing
+object of class \code{\link[sf:sf]{sf::sf()}} or \code{\link[sf:sfc]{sf::sfc()}} containing
 \code{POINT} features (geometry column) and time (see \code{colNames}).
-(\code{\link[sp]{SpatialPointsDataFrame}} is also allowed.)}
+(\code{\link[sp:SpatialPoints]{sp::SpatialPointsDataFrame()}} is also allowed.)}
 
 \item{recLoc}{A data frame with coordinates (two numeric columns) of receiver
-locations.\cr \emph{OR} \cr An object of class \code{\link[sf]{sf}} or
-\code{\link[sf]{sfc}} containing a \code{POINT} feature (geometry column)
-for each receiver. (\code{\link[sp]{SpatialPointsDataFrame}} is also
+locations.\cr \emph{OR} \cr An object of class \code{\link[sf:sf]{sf::sf()}} or
+\code{\link[sf:sfc]{sf::sfc()}} containing a \code{POINT} feature (geometry column)
+for each receiver. (\code{\link[sp:SpatialPoints]{sp::SpatialPointsDataFrame()}} is also
 allowed.)}
 
 \item{detRngFun}{A function that defines detection range curve; must accept a
@@ -57,45 +57,44 @@ if TRUE (default) and not shown if FALSE.}
 }
 \value{
 When \code{sp_out = TRUE}, an \code{sf} object containing one
-  \code{POINT} feature with coordinates of each receiver and transmission
-  location of each simulated detection (i.e., two geography columns names
-  \code{rec_geometry} and \code{trns_geometry}) and the the following
-  columns: \cr
-  
-  \item{trns_id}{Unique signal transmission ID.} 
-  \item{rec_id}{Unique receiver ID.} 
-  \item{time}{Elapsed time.}
+\code{POINT} feature with coordinates of each receiver and transmission
+location of each simulated detection (i.e., two geography columns names
+\code{rec_geometry} and \code{trns_geometry}) and the the following
+columns: \cr
 
-  When \code{sp_out = FALSE}, a data.frame with columns
-  containing coordinates of receiver locations of each simulation detection: 
-  \item{rec_x}{Receiver x coordinate.} 
-  \item{rec_y}{Receiver y coordinate.} 
-  \item{trns_x}{Transmitter x coordinate at time of transmission.} 
-  \item{trns_y}{Transmitter y coordinate at time of transmission.} 
-  and the columns described above.
+\item{trns_id}{Unique signal transmission ID.}
+\item{rec_id}{Unique receiver ID.}
+\item{time}{Elapsed time.}
+
+When \code{sp_out = FALSE}, a data.frame with columns
+containing coordinates of receiver locations of each simulation detection:
+\item{rec_x}{Receiver x coordinate.}
+\item{rec_y}{Receiver y coordinate.}
+\item{trns_x}{Transmitter x coordinate at time of transmission.}
+\item{trns_y}{Transmitter y coordinate at time of transmission.}
+and the columns described above.
 }
 \description{
 Simulates detection of transmitter signals in a receiver network
-  based on detection range curve (detection probability as a function of
-  distance), location of transmitter, and location of receivers.
+based on detection range curve (detection probability as a function of
+distance), location of transmitter, and location of receivers.
 }
 \details{
 Distances between each signal transmission and receiver are
-  calculated using \code{\link[geodist]{geodist}} (\code{measure =
-  "haversine"}) if input crs is geographic (i.e., longitude, latitude) and
-  using simple Euclidean distances if input crs is Cartesian (e.g., UTM). If
-  crs is missing, the an arbitrary Cartesian coordinate system with base unit
-  of 1 meter is assumed. Computation time is fastest if coordinates are are
-  in a Cartesian (projected) coordinate system and slowest if coordinates are
-  in a geographic (long lat) coordinate system.
+calculated using \code{\link[geodist:geodist]{geodist::geodist()}} (\code{measure = "haversine"}) if input crs is geographic (i.e., longitude, latitude) and
+using simple Euclidean distances if input crs is Cartesian (e.g., UTM). If
+crs is missing, the an arbitrary Cartesian coordinate system with base unit
+of 1 meter is assumed. Computation time is fastest if coordinates are are
+in a Cartesian (projected) coordinate system and slowest if coordinates are
+in a geographic (long lat) coordinate system.
 
 The probability of detecting each signal on each receiver is
-  determined from the detection range curve. Detection of each signal on each
-  receiver is determined stochastically by draws from a Bernoulli
-  distribution with probability p (detection prob.).
+determined from the detection range curve. Detection of each signal on each
+receiver is determined stochastically by draws from a Bernoulli
+distribution with probability p (detection prob.).
 
-  This function was written to be used along with
-  \code{\link{transmit_along_path}}.
+This function was written to be used along with
+\code{\link[=transmit_along_path]{transmit_along_path()}}.
 }
 \examples{
 
@@ -201,8 +200,8 @@ segments(x0 = sf::st_coordinates(mydtc$trns_geometry)[,"X"],
 
 }
 \seealso{
-\code{\link{transmit_along_path}} to simulate transmissions along a
-  path (i.e., create \code{trnsLoc}).
+\code{\link[=transmit_along_path]{transmit_along_path()}} to simulate transmissions along a
+path (i.e., create \code{trnsLoc}).
 }
 \author{
 C. Holbrook (cholbrook@usgs.gov)

@@ -6,14 +6,14 @@
 ##'   video playback. See details.
 ##'
 ##' @param input character, path to video file (any FFmpeg supported
-##'   file type- *.mp4, *.wmv, see \link{make_frames})
+##'   file type- *.mp4, *.wmv, see [make_frames])
 ##'
 ##' @param output_dir character, output directory, default is working
 ##'   directory
 ##'
 ##' @param output character, output file name
 ##' 
-##' @param overwrite logical, default is \code{overwrite = TRUE}
+##' @param overwrite logical, default is `overwrite = TRUE`
 ##'
 ##' @param ffmpeg A file path (characer) to FFmpeg executable. This
 ##'   argument is only needed if ffmpeg is not added to your system
@@ -22,22 +22,22 @@
 ##'   example on Windows machines,
 ##'   "C:\\Users\\Username\\Documents\\ffmpeg-3.4.1-win64-static\\bin\\ffmpeg.exe").
 ##'   On Mac, path must point to 'ffmpeg' within the 'bin'
-##'   subfolder "/home/directory/Documents/bin/ffmpeg".  see \link{make_video}
+##'   subfolder "/home/directory/Documents/bin/ffmpeg".  see [make_video]
 ##'
 ##' @param diagnostic_mode Logical (default = FALSE). If true, return value
 ##'  is a character vector with FFMPEG output.
 ##'  
-##' @details \code{adjust_playback_time} adjusts playback speed of
-##'   video.  \code{scale_factor} controls the magnitude of speed-up
+##' @details `adjust_playback_time` adjusts playback speed of
+##'   video.  `scale_factor` controls the magnitude of speed-up
 ##'   or slow-down by modifying the presentation timestamp of each
 ##'   video frame. For more information, see 
-##'   \href{https://trac.ffmpeg.org/wiki}{How to speed up/slow down a video}.  
-##'   Values of \code{scale_factor} < 1 speed up playback and >1 slow
+##'   [How to speed up/slow down a video](https://trac.ffmpeg.org/wiki).  
+##'   Values of `scale_factor` < 1 speed up playback and >1 slow
 ##'   down video. In addition to changing playback, function can
 ##'   change output format by specifying a different file extension in
-##'   \code{output}.
+##'   `output`.
 ##' 
-##' @return One video animation will be written to \code{output_dir}
+##' @return One video animation will be written to `output_dir`
 ##'
 ##' @author Todd Hayden, Tom Binder, Chris Holbrook
 ##'

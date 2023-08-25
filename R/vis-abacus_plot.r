@@ -2,82 +2,82 @@
 #'
 #'Plot detection locations of acoustic transmitters over time.
 #'
-#'@param det A \code{glatos_detections} object (e.g., produced by
-#'  \link{read_glatos_detections}) containing detections to be plotted.
+#'@param det A `glatos_detections` object (e.g., produced by
+#'  [read_glatos_detections]) containing detections to be plotted.
 #'
-#'  \emph{OR} A data frame containing detection data with at least two columns,
+#'  *OR* A data frame containing detection data with at least two columns,
 #'  one of which must be named 'detection_timestamp_utc', described below, and
 #'  another column containing a location grouping variable, whose name is
-#'  specified by \code{location_col} (see below).
+#'  specified by `location_col` (see below).
 #'
-#'  The following column must appear in \code{det}: \describe{
-#'  \item{\code{detection_timestamp_utc}}{Detection timestamps; MUST be of class
+#'  The following column must appear in `det`: \describe{
+#'  \item{`detection_timestamp_utc`}{Detection timestamps; MUST be of class
 #'  POSIXct.} }
 #'
 #'@param location_col A character string indicating the column name in
-#'  \code{det} that will be used as the location grouping variable (e.g.
+#'  `det` that will be used as the location grouping variable (e.g.
 #'  "glatos_array"), in quotes.
 #'
 #'@param locations An optional vector containing the locations
-#'  \code{location_col} to show in the plot. Plot order corresponds to order in
+#'  `location_col` to show in the plot. Plot order corresponds to order in
 #'  the vector (from bottom up). Should correspond to values in
-#'  \code{location_col}, but can contain values that are not in the det data
+#'  `location_col`, but can contain values that are not in the det data
 #'  frame (i.e., can use this option to plot locations fish were not detected).
 #'
-#'@param receiver_history An optional \code{glatos_receivers} object (e.g.,
-#'  produced by \link{read_glatos_receivers}) containing receiver history data
+#'@param receiver_history An optional `glatos_receivers` object (e.g.,
+#'  produced by [read_glatos_receivers]) containing receiver history data
 #'  for plotting receiver status behind the detection data when
-#'  \code{receiver_history} is not \code{NULL}.
+#'  `receiver_history` is not `NULL`.
 #'
-#'  \emph{OR} An optional data frame containing receiver history data for
+#'  *OR* An optional data frame containing receiver history data for
 #'  plotting receiver status behind the detection data.
 #'
 #'  The following column must be present: \describe{
-#'  \item{\code{deploy_date_time}}{Receiver deployment timestamps; MUST be of
-#'  class POSIXct.} \item{\code{recover_date_time}}{Receiver recovery
+#'  \item{`deploy_date_time`}{Receiver deployment timestamps; MUST be of
+#'  class POSIXct.} \item{`recover_date_time`}{Receiver recovery
 #'  timestamps; MUST be of class POSIXct.} \item{a grouping column whose name is
-#'  specified by \code{location_col}}{See above.} }
+#'  specified by `location_col`}{See above.} }
 #'
 #'@param out_file An optional character string with the name (including
 #'  extension) of output image file to be created. File extension will determine
-#'  type of file written. For example, \code{"abacus_plot.png"} will write a png
-#'  file to the working directory. If \code{NULL} (default) then the plot will
+#'  type of file written. For example, `"abacus_plot.png"` will write a png
+#'  file to the working directory. If `NULL` (default) then the plot will
 #'  be printed to the default plot device. Supported extensions: png, jpeg, bmp,
 #'  and tiff.
 #'
 #'@param x_res Resolution of x-axis major tick marks. If numeric (e.g., 5
 #'  (default value), then range of x-axis will be divided into that number of
-#'  equally-spaced bins; and will be passed to \code{length.out} argument of
-#'  \code{seq.Date}. If character, then value will be passed to \code{by}
-#'  argument of \link[base]{seq.Date}. In that case, a character string,
+#'  equally-spaced bins; and will be passed to `length.out` argument of
+#'  `seq.Date`. If character, then value will be passed to `by`
+#'  argument of [seq.Date][base::seq.Date]. In that case, a character string,
 #'  containing one of "day", "week", "month", "quarter" or "year". This can
 #'  optionally be preceded by a (positive or negative) integer and a space, or
 #'  followed by "s". E.g., "10 days", "weeks", "4 weeks", etc. See
-#'  \link[base]{seq.Date}.
+#'  [seq.Date][base::seq.Date].
 #'
 #'@param x_format Format of the x-axis tick mark labels (major ticks only; minor
 #'  ticks are not supported). Default is "%Y-%m-%d". Any valid
-#'  \link[base]{strptime} specification should work.
+#'  [strptime][base::strptime] specification should work.
 #'
-#'@param outFile Deprecated. Use \code{out_file} instead.
+#'@param outFile Deprecated. Use `out_file` instead.
 #'
-#'@param ... Other plotting arguments that pass to \link{plot}, \link{points}
-#'  (e.g., \code{col}, \code{lwd}, \code{type}). Use \code{cex.main} to set
-#'  title character size, and \code{col.main} to set title color. If \code{xlim}
+#'@param ... Other plotting arguments that pass to [plot], [points]
+#'  (e.g., `col`, `lwd`, `type`). Use `cex.main` to set
+#'  title character size, and `col.main` to set title color. If `xlim`
 #'  is specified, it must be a two-element vector of POSIXct.
 #'
 #'@param show_receiver_status DEPCRECATED. No longer used. A logical value
 #'  indicating whether or not to display receiver status behind detection data
 #'  (i.e., indicate when receivers were in the water). If
-#'  \code{show_receiver_status} == TRUE, then a receiver_history data frame
-#'  (\code{receiver_history}) must be supplied. Default is FALSE.
+#'  `show_receiver_status` == TRUE, then a receiver_history data frame
+#'  (`receiver_history`) must be supplied. Default is FALSE.
 #'
 #'@details NAs are not allowed in any of the two required columns.
 #'
 #'@details The locations vector is used to control which locations will appear
 #'  in the plot and in what order they will appear. If no locations vector is
 #'  supplied, the function will plot only those locations that appear in the
-#'  \code{det} data frame and the order of locations on the y-axis will be
+#'  `det` data frame and the order of locations on the y-axis will be
 #'  alphebetical from top to bottom.
 #'
 #'@details By default, the function does not distinguish detections from
@@ -89,11 +89,11 @@
 #'
 #'@details Plotting options (i.e., line width and color) can be changed using
 #'  optional graphical parameters
-#'  \url{http://www.statmethods.net/advgraphs/parameters.html} that are passed
+#'  <http://www.statmethods.net/advgraphs/parameters.html> that are passed
 #'  to "points" (see ?points).
 #'
 #'@return An image to the default plot device or a file containing the image if
-#'  \code{out_file} is specified.
+#'  `out_file` is specified.
 #'
 #'@author T. R. Binder, edited by A. Dini
 #'

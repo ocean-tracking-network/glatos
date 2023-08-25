@@ -13,63 +13,63 @@ telemetry applications.
 }
 \section{Package status}{
  \emph{This package is in early development and its
-  content is evolving.} To access the package or contribute code, join the
-  project at (\url{https://github.com/ocean-tracking-network/glatos}). If you
-  encounter problems or have questions or suggestions, please post a new
-  issue or email <cholbrook@usgs.gov> (maintainer: Chris Holbrook).
+content is evolving.} To access the package or contribute code, join the
+project at (\url{https://github.com/ocean-tracking-network/glatos}). If you
+encounter problems or have questions or suggestions, please post a new
+issue or email \href{mailto:cholbrook@usgs.gov}{cholbrook@usgs.gov} (maintainer: Chris Holbrook).
 }
 
 \section{Installation}{
  Installation instructions can be found at
-  \url{https://github.com/ocean-tracking-network/glatos/wiki/installation-instructions}.
+\url{https://github.com/ocean-tracking-network/glatos/wiki/installation-instructions}.
 }
 
 \section{Data loading and processing}{
  \describe{
 
-  \item{\link{read_glatos_detections} and \link{read_otn_detections}}{ Fast
-  data loading from standard GLATOS and OTN data files to a single structure
-  that is compatible with other glatos functions.}
+\item{\link{read_glatos_detections} and \link{read_otn_detections}}{ Fast
+data loading from standard GLATOS and OTN data files to a single structure
+that is compatible with other glatos functions.}
 
-  \item{\link{read_glatos_receivers} and \link{read_otn_deployments}}{
-  Reads receiver location histories from standard GLATOS and OTN data files
-  to a single structure that is compatible with other glatos functions.}
-  
-  \item{\link{read_glatos_workbook}}{ Reads project-specific receiver history
-  and fish taggging and release data from a standard glatos workbook file.}
+\item{\link{read_glatos_receivers} and \link{read_otn_deployments}}{
+Reads receiver location histories from standard GLATOS and OTN data files
+to a single structure that is compatible with other glatos functions.}
 
-  \item{\link{read_vemco_tag_specs}}{ Reads transmitter (tag) specifications
-  and operating schedule.}
+\item{\link{read_glatos_workbook}}{ Reads project-specific receiver history
+and fish taggging and release data from a standard glatos workbook file.}
 
-  \item{\link{real_sensor_values}}{ Converts 'raw' transmitter sensor (e.g.,
-  depth, temperature) to 'real'-scale values (e.g., depth in meters) using
-  transmitter specification data (e.g., from read\_vemco\_tag\_specs).} }
+\item{\link{read_vemco_tag_specs}}{ Reads transmitter (tag) specifications
+and operating schedule.}
+
+\item{\link{real_sensor_values}}{ Converts 'raw' transmitter sensor (e.g.,
+depth, temperature) to 'real'-scale values (e.g., depth in meters) using
+transmitter specification data (e.g., from read\_vemco\_tag\_specs).} }
 }
 
 \section{Filtering and summarizing}{
- \describe{ 
-  \item{\link{min_lag}}{
-  Facilitates identification and removal of false positive detections by
-  calculating the minimum time interval (min\_lag) between successive
-  detections.}
+ \describe{
+\item{\link{min_lag}}{
+Facilitates identification and removal of false positive detections by
+calculating the minimum time interval (min\_lag) between successive
+detections.}
 
- \item{\link{false_detections}}{ Removes potential false positive detections
- using "short interval" criteria (see \link{min_lag}).}
- 
- \item{\link{detection_events}}{ Distills detection data down to a much
- smaller number of discrete detection events, defined as a change in location
- or time gap that exceeds a threshold.}
+\item{\link{false_detections}}{ Removes potential false positive detections
+using "short interval" criteria (see \link{min_lag}).}
 
- \item{\link{summarize_detections}}{ Calculates number of fish detected,
- number of detections, first and last detection timestamps, and/or mean
- location of receivers or groups, depending on specific type of summary
- requested.}
+\item{\link{detection_events}}{ Distills detection data down to a much
+smaller number of discrete detection events, defined as a change in location
+or time gap that exceeds a threshold.}
 
- \item{\link{residence_index}}{ calculates the relative proportion of time
- spent at each location.}
+\item{\link{summarize_detections}}{ Calculates number of fish detected,
+number of detections, first and last detection timestamps, and/or mean
+location of receivers or groups, depending on specific type of summary
+requested.}
 
- \item{\link{REI}}{ calculates the relative activity at each receiver based 
- on number of unique species and individual animals.}
+\item{\link{residence_index}}{ calculates the relative proportion of time
+spent at each location.}
+
+\item{\link{REI}}{ calculates the relative activity at each receiver based
+on number of unique species and individual animals.}
 }
 }
 
@@ -118,13 +118,13 @@ and receiver network designs.}
 
 \section{Convert glatos data objects to other package classes}{
  \describe{
-\item{\link{convert_glatos_to_att}}{ Converts glatos_detections and 
-glatos_receiver objects to ATT for compatibility with the Animal Tracking 
+\item{\link{convert_glatos_to_att}}{ Converts glatos_detections and
+glatos_receiver objects to ATT for compatibility with the Animal Tracking
 Toolbox(https://github.com/vinayudyawer/ATT) and the VTrack package.}
 
-\item{\link{convert_otn_erddap_to_att}}{ Converts glatos_detections and 
-transmitter, receiver, and animal metadata from the OTN ERDDAP to ATT format 
-for compatibility with the Animal Tracking 
+\item{\link{convert_otn_erddap_to_att}}{ Converts glatos_detections and
+transmitter, receiver, and animal metadata from the OTN ERDDAP to ATT format
+for compatibility with the Animal Tracking
 Toolbox(https://github.com/vinayudyawer/ATT) and the VTrack package.}
 }
 }

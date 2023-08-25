@@ -6,14 +6,14 @@
 #' @inheritParams summarize_detections 
 #' 
 #' @param map An optional SpatialPolygonsDataFrame or other spatial object
-#'   that can by plotted with using \code{plot} to be included as the
+#'   that can by plotted with using `plot` to be included as the
 #'   background for the plot. If NULL, then the example Great Lakes polygon
-#'   object (\code{data(greatLakesPoly)}) will be used.
+#'   object (`data(greatLakesPoly)`) will be used.
 #' 
 #' @param out_file An optional character string with the name (including 
 #'   extension) of output file created. File extension will determine type of 
-#'   file written. For example, \code{"BubblePlot.png"} will write a png 
-#'   file to the working directory. If \code{NULL} (default) then the plot will 
+#'   file written. For example, `"BubblePlot.png"` will write a png 
+#'   file to the working directory. If `NULL` (default) then the plot will 
 #'   be printed to the default plot device. Supported extensions: 
 #'   png, jpeg, bmp, and tiff.
 #'   
@@ -33,36 +33,36 @@
 #'   
 #' @param scale_loc An optional 4-element numeric vector, to be passed to
 #'   plotrix::color.legend, indicating the plotting location of the legend in
-#'   the same units as \code{map}. Elements in the vector are the lower left
+#'   the same units as `map`. Elements in the vector are the lower left
 #'   and upper right coordinates of the rectangle of colors
-#'   (i.e., c(xleft, ybottom, xright, ytop)). If \code{scale_loc} = NULL
+#'   (i.e., c(xleft, ybottom, xright, ytop)). If `scale_loc` = NULL
 #'   (default), the legend is plotted along the left edge of the plot.
 #' 
-#' @details Data are summarized using \link{summarize_detections}.
+#' @details Data are summarized using [summarize_detections].
 #'   
-#' @details If \code{receiver_locs} is specified (not NULL) then the plot will
-#'   show all receivers in \code{receiver_locs} including any that detected
-#'   none of the transmitters in \code{det}. Although this is helpful to view
-#'   locations where fish were \emph{not} detected, the user will usually want 
+#' @details If `receiver_locs` is specified (not NULL) then the plot will
+#'   show all receivers in `receiver_locs` including any that detected
+#'   none of the transmitters in `det`. Although this is helpful to view
+#'   locations where fish were *not* detected, the user will usually want 
 #'   to take care to include only receivers that were in the water during the 
 #'   period of interest. If you are using a glatos receiver locations file to 
 #'   specify location for plotting, you will likely want to filter the receiver 
 #'   data by depoyment and receovery dates to exclude deployments that occured 
 #'   outside of the period of interest.
 #'   
-#' @details "col_grad" is used in a call to \link[=colorRamp]{colorRampPalette},
+#' @details "col_grad" is used in a call to [colorRampPalette][colorRamp],
 #'   which will accept a vector containing any two colors return by
-#'   \link[grDevices]{colors} as character strings.
+#'   [colors][grDevices::colors] as character strings.
 #' 
 #' @return A data frame produced by 
-#'   \code{glatos::summarize_detections(det, location_col = location_col, 
-#'   receiver_locs = receiver_locs, summ_type = "location")}
+#'   `glatos::summarize_detections(det, location_col = location_col, 
+#'   receiver_locs = receiver_locs, summ_type = "location")`
 #'
 #' @return If not out_file is specified, then an image is printed to the 
 #'   default plot device. If out_file is specified, then an image of 
-#'   specified type is written to \code{out_file}.
+#'   specified type is written to `out_file`.
 #'
-#' @seealso \code{\link{summarize_detections}}
+#' @seealso [summarize_detections()]
 #'
 #' @author T. R. Binder, edited by A. Dini
 #' 

@@ -1,11 +1,11 @@
 #' Convert detections, transmitter, receiver, and animal metadata to a format
 #' that ATT accepts.
 #'
-#' Convert \code{glatos_detections} and transmitter, receiver, and animal
-#' metadata from the OTN ERDDAP to \code{ATT} format for use in the Animal
-#' Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
+#' Convert `glatos_detections` and transmitter, receiver, and animal
+#' metadata from the OTN ERDDAP to `ATT` format for use in the Animal
+#' Tracking Toolbox (<https://github.com/vinayudyawer/ATT>).
 #' 
-#' @param detectionObj a data frame from \code{read_glatos_detections}
+#' @param detectionObj a data frame from `read_glatos_detections`
 #'
 #' @param erdTags a data frame with tag release data from the OTN ERDDAP
 #'
@@ -13,12 +13,12 @@
 #'
 #' @param erdAni a data frame with animal data from the OTN ERDDAP
 #' 
-#' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.
+#' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or `crs` is not recognized, defaults to WGS84.
 #'
 #'
 #' @details This function takes 4 data frames containing detection, and ERDDAP
 #'   data from the tags, receivers, and animals tables, and transforms them into
-#'   3 \code{tibble::tibble} objects inside of a list. The input that AAT uses
+#'   3 `tibble::tibble` objects inside of a list. The input that AAT uses
 #'   to get this data product is located here:
 #'   https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
 #'   are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83

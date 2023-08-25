@@ -1,7 +1,7 @@
 #' Generate the residence index from a set of detections
 #'
 #' This residence index tool will take condensed detection event data (from
-#' \code{\link{detection_events}} and caculate the residence index for each
+#' [detection_events()] and caculate the residence index for each
 #' location. The information passed to the function is
 #' what is used to calculate the residence index, make sure you are only passing
 #' the data you want taken into consideration for the residence index (i.e.
@@ -9,19 +9,19 @@
 #'
 #' @references 
 #' Kessel, S.T., Hussey, N.E., Crawford, R.E., Yurkowski, D.J., O'Neill, C.V.
-#' and Fisk, A.T., 2016. Distinct patterns of Arctic cod (\emph{Boreogadus
-#' saida}) presence and absence in a shallow high Arctic embayment, revealed
+#' and Fisk, A.T., 2016. Distinct patterns of Arctic cod (*Boreogadus
+#' saida*) presence and absence in a shallow high Arctic embayment, revealed
 #' across open-water and ice-covered periods through acoustic telemetry. Polar
 #' Biology, 39(6), pp.1057-1068.
-#' \url{https://www.researchgate.net/publication/279269147}
+#' <https://www.researchgate.net/publication/279269147>
 #'
-#' @param detections A data.frame from the \code{\link{detection_events}}
+#' @param detections A data.frame from the [detection_events()]
 #'   function.
 #'   
 #' @param calculation_method A character string with the calculation method
-#'   using one of the following: \code{kessel}, \code{time_interval}, 
-#'   \code{timedelta}, \code{aggregate_with_overlap}, or 
-#'   \code{aggregate_no_overlap}.
+#'   using one of the following: `kessel`, `time_interval`, 
+#'   `timedelta`, `aggregate_with_overlap`, or 
+#'   `aggregate_no_overlap`.
 #'   
 #' @param locations An optional data frame that identifies all unique 
 #' locations where RI will be calculated. Three columns required:
@@ -31,32 +31,32 @@
 #'   \item{mean_latitude}{Location latitude (for mapping).}
 #' }
 #' 
-#' If \code{locations = NULL} (default value) then RI will only be 
-#' calculated at locations present in \code{detections$location}.
+#' If `locations = NULL` (default value) then RI will only be 
+#' calculated at locations present in `detections$location`.
 #'   
 #' @param group_col Optional character string (can be multiple) that identifies 
 #' additional grouping variables for RI calculations. The default value 
-#' (\code{group_col = "animal_id"}) will calculate and return RI for each 
+#' (`group_col = "animal_id"`) will calculate and return RI for each 
 #'  animal at each location (i.e., for each unique combination of 
-#'  \code{location} and \code{animal_id}. If \code{group_col = NULL} then 
+#'  `location` and `animal_id`. If `group_col = NULL` then 
 #'  RI will be calculated by location only (will not account for animal or 
 #'  any other variable).
 #'   
 #' @param time_interval_size Character string with size of the time interval 
-#' used when \code{calculation_method = "time_interval"}. This is passed to 
-#' \link[base]{seq.Date}'s \code{by} argument, so must meet the requirements of 
+#' used when `calculation_method = "time_interval"`. This is passed to 
+#' [seq.Date][base::seq.Date]'s `by` argument, so must meet the requirements of 
 #' that argument for that function (e.g., "1 day", "4 hours", etc.). Default is 
-#' \code{"1 day"}.
+#' `"1 day"`.
 #' 
 #' @param groupwise_total Logical that determines how the denominator is 
 #' calculated in RI. If FALSE (default) then the denominator represents the 
 #' total number of time intervals or time (depending on calculation method) 
 #' among all records. Otherwise (if FALSE), the denominator 
 #' represents the total number of time intervals or time within each 
-#' group level (e.g., for each animal if \code{group_col = "animal_id"}.
+#' group level (e.g., for each animal if `group_col = "animal_id"`.
 #'
-#' @details The \strong{kessel} method converts both the \code{first_detection}
-#' and \code{last_detection} columns into a date with no hours, minutes, or
+#' @details The **kessel** method converts both the `first_detection`
+#' and `last_detection` columns into a date with no hours, minutes, or
 #' seconds. Next it creates a list of the unique days where a detection was
 #' seen. The size of the list is returned as the total number of days as an
 #' integer. This calculation is used to determine the total number of distinct
@@ -70,9 +70,9 @@
 #' \deqn{S = Distinct number of days detected at the location}
 #' \deqn{T = Distinct number of days detected at any location}
 #'
-#' @details The \strong{time_interval} calculation method determines the
-#'   number of time intervals (size determined by \code{time_interval_size}
-#'   argument) in which detections occurred at each \code{location} and as a 
+#' @details The **time_interval** calculation method determines the
+#'   number of time intervals (size determined by `time_interval_size`
+#'   argument) in which detections occurred at each `location` and as a 
 #'   fraction of the number of time intervals in which detections occurred 
 #'   among all sites. For each location, residency index (RI) is calculated:
 #'
@@ -83,12 +83,12 @@
 #' \deqn{T = Distinct number of time intervals in which detection observed at 
 #'           any location}
 #'           
-#'   For consistency with other \code{calculation_method}s, 
+#'   For consistency with other `calculation_method`s, 
 #'   the L and T are not reported, but are converted cumulative time covered in 
-#'   days and reported in columns \code{days_detected} and \code{total_days}.
+#'   days and reported in columns `days_detected` and `total_days`.
 #' 
 #'
-#' @details The \strong{timedelta} calculation method determines the first
+#' @details The **timedelta** calculation method determines the first
 #' detection and the last detection of all detections. The time difference is
 #' then taken as the values to be used in calculating the residence index. The
 #' timedelta for each station is divided by the timedelta of the array to
@@ -105,7 +105,7 @@
 #' 
 #'
 #' @details
-#' The \strong{aggregate_with_overlap} calculation method takes the length of time of each
+#' The **aggregate_with_overlap** calculation method takes the length of time of each
 #' detection and sums them together. A total is returned. The sum for each location
 #' is then divided by the sum among all locations to determine the residence index.
 #'
@@ -120,11 +120,11 @@
 #' 
 #'
 #' @details 
-#' The \strong{aggregate_no_overlap} calculation method takes the length of time of each
+#' The **aggregate_no_overlap** calculation method takes the length of time of each
 #' detection and sums them together. However, any overlap in time between one or
 #' more detections is excluded from the sum. For example, if the first detection
-#' is from \code{2016-01-01 01:02:43} to \code{2016-01-01 01:10:12} and the second
-#' detection is from \code{2016-01-01 01:09:01 }to \code{2016-01-01 01:12:43}, then the
+#' is from `2016-01-01 01:02:43` to `2016-01-01 01:10:12` and the second
+#' detection is from `2016-01-01 01:09:01 `to `2016-01-01 01:12:43`, then the
 #' sum of those two detections would be 10 minutes. A total is returned once all
 #' detections of been added without overlap. The sum for each location is then
 #' divided by the sum among all locations to determine the residence index.

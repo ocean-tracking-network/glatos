@@ -26,40 +26,40 @@ NAD83/Great Lakes and St. Lawrence Albers.}
 \value{
 A list with two elements:
 \describe{
-   \item{transition}{a geo-corrected transition raster layer where land = 0
-      and water=1
-  (see \code{gdistance})}
-   \item{rast}{rasterized input layer of class \code{raster}}}
-  Additonally, rasterized version of input shapefile (*.tif extension) is written to computer
-  at \code{output_dir}
+\item{transition}{a geo-corrected transition raster layer where land = 0
+and water=1
+(see \code{gdistance})}
+\item{rast}{rasterized input layer of class \code{raster}}}
+Additonally, rasterized version of input shapefile (*.tif extension) is written to computer
+at \code{output_dir}
 }
 \description{
 Create transition layer for \link{interpolate_path} from polygon shapefile.
 }
 \details{
-\code{make_transition} uses \link[fasterize]{fasterize}
-  to convert a polygon shapefile into a raster layer and
-  geo-corrected transition layer \link{interpolate_path}.  Raster
-  cell values on land equal 1 cells in water equal 0. Output is a
-  two-object list containing the raster layer and transition
-  layer.  Both objects have the same extents and geographic
-  projection as input shapefile.
+\code{make_transition} uses \link[fasterize:fasterize]{fasterize}
+to convert a polygon shapefile into a raster layer and
+geo-corrected transition layer \link{interpolate_path}.  Raster
+cell values on land equal 1 cells in water equal 0. Output is a
+two-object list containing the raster layer and transition
+layer.  Both objects have the same extents and geographic
+projection as input shapefile.
 
- @details If receiver\_points is provided, any receiver not in water
-  is buffered by the distance from the receiver to the nearest
-  water.  This allows all receivers to be coded as in water if the
-  receiver is on land.
+@details If receiver\_points is provided, any receiver not in water
+is buffered by the distance from the receiver to the nearest
+water.  This allows all receivers to be coded as in water if the
+receiver is on land.
 
 Poly object is transformed into planer map projection
-  specified by epsg argument for calculation of transition object
-  if receiver_points is provided.  Output is projected to WGS84
-  (epsg- 4326).
+specified by epsg argument for calculation of transition object
+if receiver_points is provided.  Output is projected to WGS84
+(epsg- 4326).
 
 output transition layer is corrected for projection
-  distortions using \code{gdistance::geoCorrection}.  Adjacent
-  cells are connected by 16 directions and transition function
-  returns 0 (land) for movements between land and water and 1 for
-  all over-water movements.
+distortions using \code{gdistance::geoCorrection}.  Adjacent
+cells are connected by 16 directions and transition function
+returns 0 (land) for movements between land and water and 1 for
+all over-water movements.
 }
 \examples{
 

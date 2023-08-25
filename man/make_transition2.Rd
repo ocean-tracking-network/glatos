@@ -21,7 +21,7 @@ of output raster cells.  Units of res are same as input
 polygon.}
 
 \item{extent_out}{An optional \code{Extent} object
-(see \link[raster]{extent}) that determines the extent of the
+(see \link[raster:extent]{extent}) that determines the extent of the
 output objects. Output extent will default to extent of input object
 \code{poly} if \code{extent_out}, and \code{x_lim}/\code{y_lim}
 are NULL (default).}
@@ -33,26 +33,26 @@ are NULL (default).}
 \value{
 A list with two elements:
 \describe{
-   \item{transition}{a geo-corrected transition raster layer where land = 0
-      and water=1
-  (see \code{gdistance})}
-   \item{rast}{rasterized input layer of class \code{raster}}}
+\item{transition}{a geo-corrected transition raster layer where land = 0
+and water=1
+(see \code{gdistance})}
+\item{rast}{rasterized input layer of class \code{raster}}}
 }
 \description{
 Create transition layer for \link{interpolate_path} from
 \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
 }
 \details{
-\code{make_transition} uses \link[raster]{rasterize} to convert a
-  \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
-  geo-corrected transition layer \link[gdistance]{transition}.  Raster cell
-  values on land = 0 and water = 1.
+\code{make_transition} uses \link[raster:rasterize]{rasterize} to convert a
+\link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
+geo-corrected transition layer \link[gdistance:transition]{transition}.  Raster cell
+values on land = 0 and water = 1.
 
 output transition layer is corrected for projection
-  distortions using \link[gdistance]{geoCorrection}.  Adjacent
-  cells are connected by 16 directions and transition function
-  returns 0 (land) for movements between land and water and 1 for
-  all over-water movements.
+distortions using \link[gdistance:geoCorrection]{geoCorrection}.  Adjacent
+cells are connected by 16 directions and transition function
+returns 0 (land) for movements between land and water and 1 for
+all over-water movements.
 }
 \examples{
 

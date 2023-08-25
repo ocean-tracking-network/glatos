@@ -13,8 +13,8 @@ read_otn_deployments(
 }
 \arguments{
 \item{deployment_file}{A character string with path and name of deployment
- file in OTN deployment format (*.csv). If only file name is given, then the
- file must be located in the working directory.
+file in OTN deployment format (*.csv). If only file name is given, then the
+file must be located in the working directory.
 
 @param deploy_date_col A character string representing the column
 name containing deploy_date data. Defaults to "deploy_date".
@@ -34,8 +34,8 @@ Read data from a standard OTN deployment (csv) file and return
 a data.frame of class \code{glatos_receivers}.
 }
 \details{
-Data are loaded using \code{\link[data.table]{fread}} package and timestamps
-are coerced to POSIXct using the \code{\link[fasttime]{fastPOSIXct}}. All
+Data are loaded using \code{\link[data.table:fread]{data.table::fread()}} package and timestamps
+are coerced to POSIXct using the \code{\link[fasttime:fastPOSIXct]{fasttime::fastPOSIXct()}}. All
 times must be in UTC timezone per GLATOS standard.
 
 Column names are changed to match GLATOS standard columns when possible.

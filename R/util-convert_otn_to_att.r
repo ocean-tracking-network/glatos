@@ -1,27 +1,27 @@
 #' Convert detections, tagging metadata, and deployment metadata to a format that ATT
 #' accepts.
 #' 
-#' Convert \code{glatos_detections}, OTN tagging metadata and OTN deployment metadata
-#' to \code{ATT} format for use in the Animal Tracking Toolbox 
-#' (\url{https://github.com/vinayudyawer/ATT}).
+#' Convert `glatos_detections`, OTN tagging metadata and OTN deployment metadata
+#' to `ATT` format for use in the Animal Tracking Toolbox 
+#' (<https://github.com/vinayudyawer/ATT>).
 #' 
-#' @param detectionObj a data frame from \code{read_otn_detections}
+#' @param detectionObj a data frame from `read_otn_detections`
 #' 
-#' @param taggingSheet a data frame from \code{prepare_tag_sheet}
+#' @param taggingSheet a data frame from `prepare_tag_sheet`
 #' 
-#' @param deploymentObj a data frame from \code{read_otn_deployments}
+#' @param deploymentObj a data frame from `read_otn_deployments`
 #' 
-#' @param deploymentSheet a data frame from \code{prepare_deploy_sheet}
+#' @param deploymentSheet a data frame from `prepare_deploy_sheet`
 #' 
 #' @param timeFilter Whether the data should be filtered using the deployment and recovery/last download times of receivers.
 #' Defaults to TRUE, if not all receiver metadata is available, this should be set to FALSE otherwise there will be data loss.
 #' 
-#' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.
+#' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or `crs` is not recognized, defaults to WGS84.
 #' 
 #' 
 #' @details This function takes 3 data frames containing detections, tagging metadata, and
-#'  deployment metadata from either \code{read_otn_deployments} or \code{prepare_deploy_sheet} 
-#'  and transforms them into 3 \code{tibble::tibble} objects inside of a list. The input that 
+#'  deployment metadata from either `read_otn_deployments` or `prepare_deploy_sheet` 
+#'  and transforms them into 3 `tibble::tibble` objects inside of a list. The input that 
 #'  AAT uses to get this data product is located here:
 #'  https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
 #'  are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83

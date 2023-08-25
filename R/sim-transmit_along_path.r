@@ -5,9 +5,9 @@
 #'   duration of signal.
 #'
 #' @param path A data frame or matrix with at least two rows and named columns
-#'   with coordinates that define path.\cr \emph{OR} \cr A object of class
-#'   \code{\link[sf]{sf}} or \code{\link[sf]{sfc}} containing \code{POINT}
-#'   features with a geometry column. (\code{\link[sp]{SpatialPointsDataFrame}}
+#'   with coordinates that define path.\cr *OR* \cr A object of class
+#'   [sf::sf()] or [sf::sfc()] containing `POINT`
+#'   features with a geometry column. ([sp::SpatialPointsDataFrame()]
 #'   is also allowed.)
 #'
 #' @param vel A numeric scalar with movement velocity along track; assumed
@@ -20,47 +20,47 @@
 #'   burst (i.e., pulse train).
 #'
 #' @param colNames A named list containing the names of columns with coordinates
-#'   (defaults are \code{x} and \code{y}) in \code{path}. Ignored if
-#'   \code{trnsLoc} is a spatial object with a geometry column.
+#'   (defaults are `x` and `y`) in `path`. Ignored if
+#'   `trnsLoc` is a spatial object with a geometry column.
 #'
 #' @param pathCRS Defines the coordinate reference system (object of class
-#'   \code{crs} or a numeric EPSG code) of coordinates in \code{path}, if missing; ignored otherwise.
-#'   If no valid \code{crs} is specified in \code{path} or via \code{pathCRS =
-#'   NA} (default value), then \code{path} coordinates are assumed to be in an
+#'   `crs` or a numeric EPSG code) of coordinates in `path`, if missing; ignored otherwise.
+#'   If no valid `crs` is specified in `path` or via `pathCRS =
+#'   NA` (default value), then `path` coordinates are assumed to be in an
 #'   arbitrary Cartesian coordinate system with base unit of 1 meter. See Note.
 #'   
-#' @param sp_out Logical. If TRUE (default) then output is an \code{sf} object.
-#'   If FALSE, then output is a \code{data.frame}.
+#' @param sp_out Logical. If TRUE (default) then output is an `sf` object.
+#'   If FALSE, then output is a `data.frame`.
 #'
 #' @details Delays are drawn from uniform distribution defined by delay range.
-#'   First, elapsed time in seconds at each vertex in \code{path} is calculated
+#'   First, elapsed time in seconds at each vertex in `path` is calculated
 #'   based on path length and velocity. Next, delays are simulated and burst
 #'   durations are added to each delay to determine the time of each signal
 #'   transmission. Location of each signal transmission along the path is
 #'   linearly interpolated.
 #'
-#' @details Computation time is fastest if coordinates in \code{path} are in a
+#' @details Computation time is fastest if coordinates in `path` are in a
 #'   Cartesian (projected) coordinate system and slowest if coordinates are in a
 #'   geographic coordinate system (e.g., longitude, latitude) because different
-#'   methods are used to calculate step lengths in each case. When \code{path}
+#'   methods are used to calculate step lengths in each case. When `path`
 #'   CRS is Cartesian (e.g., UTM), step lengths are calculated as simple
 #'   Euclidean distance. When CRS is geographic, step lengths are calculated as
-#'   Haversine distances using \code{\link[geodist]{geodist}} (with
-#'   \code{measure = "haversine"}).
+#'   Haversine distances using [geodist::geodist()] (with
+#'   `measure = "haversine"`).
 #'
-#' @return When \code{sp_out = TRUE}, an \code{sf} object containing one
-#'   \code{POINT} feature for each simulated transmission and a column named
-#'   \code{time} (defined below). 
+#' @return When `sp_out = TRUE`, an `sf` object containing one
+#'   `POINT` feature for each simulated transmission and a column named
+#'   `time` (defined below). 
 #'   
-#'   When \code{sp_out = FALSE}, a data.frame with the following columns:
+#'   When `sp_out = FALSE`, a data.frame with the following columns:
 #'   \item{x}{ x coordinates for start of each transmission. } \item{y}{ y
 #'   coordinates for start of each transmission. } \item{time}{ Elapsed time, in
-#'   seconds, from the start of input \code{path} to the start of each
+#'   seconds, from the start of input `path` to the start of each
 #'   transmission.}
 #'
 #' @note This function was written to be called after
-#'   \code{\link{crw_in_polygon}} and before \code{\link{detect_transmissions}},
-#'   which was designed to accept the result as input (\code{trnsLoc}).
+#'   [crw_in_polygon()] and before [detect_transmissions()],
+#'   which was designed to accept the result as input (`trnsLoc`).
 #'
 #' @author C. Holbrook \email{cholbrook@@usgs.gov}
 #'

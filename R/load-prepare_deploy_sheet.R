@@ -1,5 +1,5 @@
 #' Loads the OTN receiver deployment metadata sheet to prepare it for use in 
-#' \code{convert_otn_to_att}
+#' `convert_otn_to_att`
 #' 
 #' @param path the path to the deployment sheet
 #' 
@@ -12,7 +12,7 @@
 #' 
 #' @details The function takes the path to the deployment sheet, what line to start
 #' reading from, and what sheet in the excel file to use. It converts column names
-#' to be used by \code{convert_otn_to_att}.
+#' to be used by `convert_otn_to_att`.
 #' 
 #' @author Ryan Gosse
 #' 

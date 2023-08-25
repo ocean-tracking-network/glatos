@@ -3,7 +3,7 @@
 \docType{data}
 \name{greatLakesPoly}
 \alias{greatLakesPoly}
-\title{A SpatialPolygonDataFrame with Great Lakes coastline and some major 
+\title{A SpatialPolygonDataFrame with Great Lakes coastline and some major
 tributaries.}
 \format{
 An object of class \code{SpatialPolygonsDataFrame} with 4 rows and 8 columns.
@@ -12,8 +12,8 @@ An object of class \code{SpatialPolygonsDataFrame} with 4 rows and 8 columns.
 greatLakesPoly
 }
 \description{
-A SpatialPolygonDataFrame with Great Lakes coastline and some 
-major tributaries. This is used as a default map background in several 
+A SpatialPolygonDataFrame with Great Lakes coastline and some
+major tributaries. This is used as a default map background in several
 \link{glatos} functions.
 }
 \author{
