@@ -11,8 +11,9 @@
 #'
 #' @param version An optional character string with the glatos file version
 #'   number. If NULL (default value) then version will be determined by
-#'   evaluating file structure. The only allowed values currently are `NULL` and
-#'   `"1.3"`. Any other values will trigger an error.
+#'   evaluating file structure. The only allowed values currently are `NULL`,
+#'   `"1.3"`, and `"1.4"`. Any other values will trigger an error. Users should 
+#'   never need to set this argument (`NULL` should work).
 #'
 #' @details Data are loaded using [fread][data.table::fread] and timestamps are
 #' coerced to POSIXct using [fastPOSIXct][fasttime::fastPOSIXct]. All times must

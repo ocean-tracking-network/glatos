@@ -15,8 +15,9 @@ GLATOSWeb Data Portal \url{https://glatos.glos.us}.}
 
 \item{version}{An optional character string with the glatos file version
 number. If NULL (default value) then version will be determined by
-evaluating file structure. The only allowed values currently are \code{NULL} and
-\code{"1.3"}. Any other values will trigger an error.}
+evaluating file structure. The only allowed values currently are \code{NULL},
+\code{"1.3"}, and \code{"1.4"}. Any other values will trigger an error. Users should
+never need to set this argument (\code{NULL} should work).}
 }
 \value{
 A data.frame of class \code{glatos_detections}.

@@ -6,7 +6,8 @@
 
 ### Bug fixes and minor changes
 
-- Add support for new column named 'record_status' in GLATOS detection export CSV.
+- Add support for new column named 'record_status' in GLATOS detection export 
+  CSV. Add new glatos detection schema version 1.4.
 
 
 ### New features
