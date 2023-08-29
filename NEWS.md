@@ -1,17 +1,57 @@
-
 ----
-# glatos 0.7.0 (2023-08-25)
 
-# Bug fixes and minor changes
+# glatos 0.7.0 
+
+#### 2023-08-25
+
+### Bug fixes and minor changes
 
 - Add support for new column named 'record_status' in GLATOS detection export CSV.
 
 
+### New features
+
+- Add new functions to create, check, and validate `glatos_animals` objects:
+    - `glatos_animals()` to construct a `glatos_animals` object from
+      individual vectors (one for each column) and optionally check for required
+      column names and classes using `validate_glatos_animals()`. 
+    - `as_glatos_animals()` to coerce a data.frame, or object that
+      inherits from data.frame, to `glatos_animals` and optionally check for
+      required column names and classes using `validate_glatos_animals()`.
+    - `is_glatos_animals()` to check class attribute for `"glatos_animals"`.
+    - `validate_glatos_animals()` to check for existence of required column 
+      names and classes.
+      
+- Add new functions to create, check, and validate `glatos_detections` objects:
+    - `glatos_detections()` to construct a `glatos_detections` object from
+      individual vectors (one for each column) and optionally check for required
+      column names and classes using `validate_glatos_detections()`. 
+    - `as_glatos_detections()` to coerce a data.frame, or object that
+      inherits from data.frame, to `glatos_detections` and optionally check for
+      required column names and classes using `validate_glatos_detections()`.
+    - `is_glatos_detections()` to check class attribute for `"glatos_detections"`.
+    - `validate_glatos_detections()` to check for existence of required column 
+      names and classes.
+
+- Add new functions to create, check, and validate `glatos_recievers` objects:
+    - `glatos_receivers()` to construct a `glatos_receivers` object from
+      individual vectors (one for each column) and optionally check for required
+      column names and classes using `validate_glatos_receivers()`. 
+    - `as_glatos_receivers()` to coerce a data.frame, or object that
+      inherits from data.frame, to `glatos_receivers` and optionally check for
+      required column names and classes using `validate_glatos_receivers()`.
+    - `is_glatos_receivers()` to check class attribute for `"glatos_receivers"`.
+    - `validate_glatos_receivers()` to check for existence of required column 
+      names and classes.
+
 
 ----
-# glatos 0.6.3 (2023-01-25)
 
-# Bug fixes and minor changes
+# glatos 0.6.3 
+
+#### 2023-01-25
+
+### Bug fixes and minor changes
 
 - Add support for new GLATOS receiver_locations file format; with code_map and 
 code_map_comment columns.
@@ -19,26 +59,31 @@ code_map_comment columns.
 
 
 ----
-# glatos 0.6.2 (2022-10-25)
 
-# Bug fixes and minor changes
+# glatos 0.6.2 
+
+#### 2022-10-25
+
+### Bug fixes and minor changes
 
 - Fix error in `position_heat_map()` function resulting in `Error in 
 zip_internal... Some files do not exist`. Update documentation.
 
 
 ----
+
 # glatos 0.6.1
 
 #### 2022-10-11
 
-# Minor changes
+### Minor changes
 
 - Allow `sf` `MUTLIPOLYGON` geometry type for input `polyg` to `crw_in_polygon()`.
     
 - Use new function `check_cross_boundary()` instead of `check_in_polygon` to prevent paths crossing land (e.g., over peninsulas) in `crw_in_polygon()`.
 
 ----
+
 # glatos 0.6.0
 
 #### 2022-06-24
