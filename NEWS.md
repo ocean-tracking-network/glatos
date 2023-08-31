@@ -45,7 +45,7 @@
     - `validate_glatos_receivers()` to check for existence of required column 
       names and classes.
 
-- Add new function `convert_vue()` to convert VRL file to CSV file (detection
+- Add new function `vue_convert()` to convert VRL file to CSV file (detection
   records only; receiver event log records are not supported). 
     - replaces `vrl2csv()` (deprecated).
     
@@ -54,7 +54,7 @@
   
 - Add new functions for reading data exported from VRL with VUE software.
     - `read_vue_detection_csv()` to read data from detection file exported 
-    from VUE or created using `convert_vue()` or `vrl2csv()`.
+    from VUE or created using `vue_convert()` or `vrl2csv()`.
     - `read_vue_event_csv()` to read data from receiver event log file exported 
     from VUE.
   
