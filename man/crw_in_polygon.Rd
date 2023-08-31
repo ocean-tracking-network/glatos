@@ -167,8 +167,8 @@ points(sf::st_coordinates(sf::st_as_sf(path_sp)), type = "o", pch = 20,
 
 #zoom in
 plot(sf::st_as_sfc(greatLakesPoly), col = "lightgrey", border = "grey",
-  xlim = sp::bbox(sf::st_coordinates(sf::st_as_sf(path_sp)))[1,], 
-  ylim = sp::bbox(sf::st_coordinates(sf::st_as_sf(path_sp)))[2,])
+  xlim = sf::st_bbox(path_sp)[c("xmin", "xmax")], 
+  ylim = sf::st_bbox(path_sp)[c("ymin", "ymax")])
 points(sf::st_coordinates(sf::st_as_sf(path_sp)), type = "o", pch = 20, 
        col = "red")
 
