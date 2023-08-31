@@ -2,7 +2,7 @@
 
 # glatos 0.7.0 
 
-#### 2023-08-25
+#### 2023-08-30
 
 ### Bug fixes and minor changes
 
@@ -44,6 +44,22 @@
     - `is_glatos_receivers()` to check class attribute for `"glatos_receivers"`.
     - `validate_glatos_receivers()` to check for existence of required column 
       names and classes.
+
+- Add new function `convert_vue()` to convert VRL file to CSV file (detection
+  records only; receiver event log records are not supported). 
+    - replaces `vrl2csv()` (deprecated).
+    
+- Add new function `vdat_convert()` to convert VRL or VDAT files to 
+  Fathom/VDAT CSV. 
+  
+- Add new functions for reading data exported from VRL with VUE software.
+    - `read_vue_detection_csv()` to read data from detection file exported 
+    from VUE or created using `convert_vue()` or `vrl2csv()`.
+    - `read_vue_event_csv()` to read data from receiver event log file exported 
+    from VUE.
+  
+- Add new function `read_vdat_csv()` to read data exported from VRL or VDAT 
+  using VDAT.exe (e.g., using `vdat_convert()`).
 
 
 ----

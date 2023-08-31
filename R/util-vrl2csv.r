@@ -67,8 +67,20 @@
 #' vrl2csv(myVRL, overwrite=F)
 #' }
 #'
+#'
+#' @name vrl2csv-deprecated
+#' @seealso \code{\link{glatos-deprecated}}
+#' @keywords internal
+NULL
+#' @rdname glatos-deprecated
+#' @section \code{vrl2csv}:
+#' For \code{vrl2csv}, use \code{\link{vue_convert}}.
+#'
 #' @export
 vrl2csv <- function(vrl, outDir=NA, overwrite=TRUE, vueExePath=NA){
+  
+  .Deprecated("vue_convert")
+  
   #check path to VUE.exe if given
   if(!is.na(vueExePath)){
     if( !("VUE.exe" %in% list.files(vueExePath))) 
