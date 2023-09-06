@@ -1,3 +1,14 @@
+
+----
+# glatos 0.6.4 (2023-09-06)
+
+# Bug fixes and minor changes
+
+- Add support for new column named 'record_status' in GLATOS detection export CSV.
+    - fix [issue #179](https://github.com/ocean-tracking-network/glatos/issues/179)
+
+
+
 ----
 # glatos 0.6.3 (2023-01-25)
 
