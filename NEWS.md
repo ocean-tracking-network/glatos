@@ -1,14 +1,9 @@
+
 ----
 
 # glatos 0.7.0 
 
 #### 2023-08-30
-
-### Bug fixes and minor changes
-
-- Add support for new column named 'record_status' in GLATOS detection export 
-  CSV. Add new glatos detection schema version 1.4.
-
 
 ### New features
 
@@ -60,6 +55,18 @@
   
 - Add new function `read_vdat_csv()` to read data exported from VRL or VDAT 
   using VDAT.exe (e.g., using `vdat_convert()`).
+
+
+----
+# glatos 0.6.4 
+
+#### 2023-09-06
+
+### Bug fixes and minor changes
+
+- Add support for new column named 'record_status' in GLATOS detection export CSV.
+    - Add new glatos detection schema version 1.4 (developer use)
+    - fix [issue #179](https://github.com/ocean-tracking-network/glatos/issues/179)
 
 
 ----
