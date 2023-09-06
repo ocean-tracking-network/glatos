@@ -5,8 +5,11 @@
 #' major tributaries. This is used as a default map background in several 
 #' [glatos] functions.
 #'
+#' @details This dataset is deprecated and will be removed in a future version. Please use "great_lakes_polygon" in new code.
+#'
 #' @author Todd Hayden
 "greatLakesPoly"
+
 
 
 #' @title An sf POLYGON object with Great Lakes coastline and some major 

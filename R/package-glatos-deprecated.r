@@ -3,6 +3,9 @@
 #'   the near future. When possible, alternative functions with similar
 #'   functionality are also mentioned. Help pages for deprecated functions are
 #'   available at \code{help("<function>-deprecated")}.
+#'
+#' 
+#' 
 #' @name glatos-deprecated
 #' @keywords internal
 NULL

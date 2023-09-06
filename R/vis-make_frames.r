@@ -379,7 +379,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
 
   # Load background (use example Great Lakes if null)
   if(is.null(bg_map)){
-    background <- greatLakesPoly #example in glatos package
+    background <- great_lakes_polygon #example in glatos package
   } else { 
     background <- bg_map 
     #if not equal to default or NULL, then set to extent of bg_map
@@ -404,11 +404,15 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
 
     # Calculate great circle distance in meters of x and y limits.
     # needed to determine aspect ratio of the output
-    linear_x = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
-                                    c(.background_xlim[2], .background_ylim[1]))
-    linear_y = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
-                                    c(.background_xlim[1], .background_ylim[2]))
-    
+    # old version, new below, needs tested
+    #linear_x = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
+    #                                c(.background_xlim[2], .background_ylim[1]))
+    #linear_y = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
+    #                                c(.background_xlim[1], .background_ylim[2]))
+
+    linear_x = geodist::geodist_vec(x1 = .background_xlim[1], y1 = .background_ylim[1], x2 = .background_xlim[2], y2 = .background_ylim[1], measure = "haversine")
+    linear_y = geodist::geodist_vec(x1 = .background_xlim[1], y1 = .background_ylim[1], x2 = .background_xlim[1], y2 = .background_ylim[2], measure = "haversine")
+
     # aspect ratio of image
     figRatio <- linear_y / linear_x
 
@@ -430,8 +434,8 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     
     do.call(par, par_args)
 
-    # Note call to plot with sp
-    sp::plot(.background, ylim = c(.background_ylim), 
+    # Note call to plot with sp- this needs changed to sf?
+    plot(sf::st_geometry(.background), ylim = c(.background_ylim), 
              xlim = c(.background_xlim),
              axes = FALSE, lwd = 2*figRatio, col = "white", bg = "gray74")
 

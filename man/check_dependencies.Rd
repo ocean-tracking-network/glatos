@@ -4,7 +4,7 @@
 \alias{check_dependencies}
 \title{Check system dependencies necessary for package 'glatos'}
 \usage{
-check_dependencies()
+check_dependencies(...)
 }
 \value{
 A message is printed to the console.

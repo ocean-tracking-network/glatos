@@ -78,11 +78,9 @@
 #' #--------------------------------------------------
 #' # EXAMPLE #1 - simple interpolate among lakes
 #'   
-#' library(sp) #for loading greatLakesPoly because spatial object   
-#'   
 #' # get polygon of the Great Lakes 
-#' data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
-#' plot(greatLakesPoly, xlim = c(-92, -76))
+#' data(great_lakes_polygon) #glatos example data
+#' plot(st_geometry(great_lakes_polygon), xlim = c(-92, -76))
 #'   
 #' # make sample detections data frame
 #' pos <- data.frame(
@@ -127,8 +125,6 @@
 #' # EXAMPLE #2 - walleye in western Lake Erie
 #' \dontrun{
 #'
-#' library(sp) #for loading greatLakesPoly
-#' library(raster) #for raster manipulation (e.g., crop)
 #'
 #' # get example walleye detection data
 #' det_file <- system.file("extdata", "walleye_detections.csv",
@@ -144,25 +140,29 @@
 #'            det$detection_timestamp_utc < as.POSIXct("2013-04-15") , ]
 #' 
 #' # get polygon of the Great Lakes 
-#' data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+#' data(great_lakes_polygon) #glatos example data; an sf object
+#'
+#' # convert polygon to terra::spatVector
+#' great_lakes_polygon <- vect(great_lakes_polygon)
 #' 
 #' # crop polygon to western Lake Erie
-#' maumee <-  crop(greatLakesPoly, extent(-83.7, -82.5, 41.3, 42.4))
+#' maumee <-  terra::crop(great_lakes_polygon, y = ext(-83.7, -82.5, 41.3, 42.4))
+#'
+#'
 #' plot(maumee, col = "grey")
 #' points(deploy_lat ~ deploy_long, data = det, pch = 20, col = "red", 
 #'   xlim = c(-83.7, -80))
+#'
 #' 
-#' #make transition layer object
-#' # Note: using make_transition2 here for simplicity, but 
-#' #       make_transition is generally preferred for real application  
-#' #       if your system can run it see ?make_transition
-#' tran <- make_transition(maumee, res = c(0.1, 0.1))
-#' 
+#' make transition layer object
+#' tran <- make_transition3(sf::st_as_sf(maumee), res = c(0.1, 0.1))
+#'
+#' # plot to check output
 #' plot(tran$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
 #' plot(maumee, add = TRUE)
 #' 
 #' # not high enough resolution- bump up resolution
-#' tran1 <- make_transition(maumee, res = c(0.001, 0.001))
+#' tran1 <- make_transition(st_as_sf(maumee), res = c(0.001, 0.001))
 #' 
 #' # plot to check resolution- much better
 #' plot(tran1$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
@@ -183,8 +183,18 @@
 #' 
 #' } 
 #' 
+#'
+#'
+#'
 #' @export 
-                         
+
+
+
+
+
+
+
+
 interpolate_path <- function(det, trans = NULL, start_time = NULL,
                              int_time_stamp = 86400, lnl_thresh = 0.9,
                              out_class = NULL, show_progress = TRUE){
@@ -329,9 +339,12 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
               on = .(start_dtc >= start, start_dtc <= end)]
 
   # calculate great circle distance between coords
-  dtc[, gcd := geosphere::distHaversine(as.matrix(
-    .SD[1, c("deploy_long", "deploy_lat")]),
-    as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = i.start]
+  #dtc[, gcd := geosphere::distHaversine(as.matrix(
+  #  .SD[1, c("deploy_long", "deploy_lat")]),
+  #  as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = i.start]
+
+  # remove geosphere dependency and use geodist.  geosphere relies on sp and raster.
+  dtc[, gcd := geodist::geodist_vec(x1 = .SD[[1, "deploy_long"]], y1 = .SD[[1, "deploy_lat"]], x2 = .SD[[.N, "deploy_long"]], y2 = .SD[[.N, "deploy_lat"]], measure = "haversine"), by = i.start]
 
   # calculate least cost (non-linear) distance between points
   message("Calculating least-cost (non-linear) distances... (step 1 of 3)")
@@ -428,14 +441,28 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
     message("\nStarting non-linear interpolation... (step 3 of 3)")
     grpn <- nrow(lookup)
     if(show_progress) pb <- txtProgressBar(min = 0, max = grpn, style = 3)
-    # calculate non-linear interpolation for all unique movements in lookup
-    lookup[, coord := { if(show_progress) setTxtProgressBar(pb, value = .GRP);
-              sp::coordinates(
-              gdistance::shortestPath(trans, as.matrix(
-              .SD[1, c("deploy_long", "deploy_lat")]), as.matrix(
-                .SD[1, c("t_lon", "t_lat")]), output = "SpatialLines"))},
-      by = 1:nrow(lookup)]
+    # calculate non-linear interpolation for all unique movements in lookup (old version with sp::coordinates)
+    ## lookup[, coord := { if(show_progress) setTxtProgressBar(pb, value = .GRP);
+    ##   sp::coordinates(
+    ##           gdistance::shortestPath(trans, as.matrix(
+    ##           .SD[, c("deploy_long", "deploy_lat")]), as.matrix(
+    ##             .SD[, c("t_lon", "t_lat")]), output = "SpatialLines")
+    ##   )
+    ## },
+    ##   by = 1:nrow(lookup)]
 
+    # alternative using sf (needs tested!)
+    # st_as_sf(gdistance::shortestPath(trans, as.matrix(lookup[, c("deploy_long", "deploy_lat")]), as.matrix(lookup[, c("t_lon", "t_lat")]), output = "SpatialLines"), crs = 4326)
+
+    lookup[, coord := { if(show_progress) setTxtProgressBar(pb, value = .GRP);
+      sf::st_as_sf(
+        gdistance::shortestPath(trans, as.matrix(
+          .SD[, c("deploy_long", "deploy_lat")]), as.matrix(
+            .SD[, c("t_lon", "t_lat")]), output = "SpatialLines"), crs = 4326
+      )
+    },
+    by = 1:nrow(lookup)]
+    
     message("\nFinalizing results.")
     
     lookup[, grp := 1:.N]
@@ -467,8 +494,7 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
               i_time := detection_timestamp_utc]
     nln_small[nln_small[, .I[.N], by = i.start]$V1, i_time := t_timestamp]
 
-arch <- nln_small
-
+#arch <- nln_small
 # nln_small <- nln_small[i.start == 163]
 
       nln_small[, latitude_lead := data.table::shift(nln_latitude, type = "lag", fill = NA), by = i.start]

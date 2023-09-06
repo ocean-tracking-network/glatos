@@ -16,6 +16,9 @@ A SpatialPolygonDataFrame with Great Lakes coastline and some
 major tributaries. This is used as a default map background in several
 \link{glatos} functions.
 }
+\details{
+This dataset is deprecated and will be removed in a future version. Please use "great_lakes_polygon" in new code.
+}
 \author{
 Todd Hayden
 }

@@ -71,13 +71,26 @@
 #' plot(raster(tst1$transition))
 #' }
 #'
+#'
+#' @name make_transition2-deprecated
+#' @seealso \code{\link{glatos-deprecated}}
+#' @keywords internal
+NULL
+#' @rdname glatos-deprecated
+#' @section \code{make_transition2}:
+#' For \code{make_transition2}, use \code{\link{make_transition3}}.
+
+#' 
 #' @export
 
 make_transition2 <- function(poly, res = c(0.1, 0.1), extent_out = NULL,
                              x_lim = NULL, y_lim = NULL){
-  
+
+  # Function will be removed in next version
+  .Deprecated("make_transition2", msg = "This function is deprecated and will be removed in the next version")
+
   message("Making transition layer...")
-  
+
   if(sum(is.null(x_lim), is.null(y_lim)) == 1) stop(paste0("You must specify ",
     "'x_lim' and 'y_lim' or neither."))
   if(!is.null(x_lim) & length(x_lim) != 2) stop("'x_lim' must be a vector ",

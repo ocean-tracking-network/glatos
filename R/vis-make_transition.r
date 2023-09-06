@@ -130,6 +130,19 @@
 #' raster::plot(raster::raster(tst1$transition))
 #' }
 #'
+#'
+#'
+#' @name make_transition-deprecated
+#' @seealso \code{\link{glatos-deprecated}}
+#' @keywords internal
+NULL
+#' @rdname glatos-deprecated
+#' @section \code{make_transition}:
+#' For \code{make_transition}, use \code{\link{make_transition3}}.
+
+#'
+#'
+#'
 #' @export
 
 
@@ -139,7 +152,10 @@ make_transition <- function(in_file,
                             res = c(0.1, 0.1),
                             invert = FALSE,
                             all_touched = TRUE){
-
+  
+  # Function will be removed in next version
+  .Deprecated("make_transition3", msg = "This function is deprecated and will be removed in the next version")
+  
   #Check if in_file is file, directory, sf, or SpatialPolygonsDataFrame
   if(inherits(in_file, "character")){
 
