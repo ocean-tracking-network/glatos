@@ -81,8 +81,7 @@ One video animation will be written to \code{output_dir}
 }
 \description{
 Stitch a sequence of images into a video animation using FFmpeg
-software. \strong{NOTE: This function is DEPRECATED and is being maintained
-temporarily for backward compatibility with glatos v. 0.4.0 and earlier.}
+software. **NOTE: This function is DEFUNCT and removed from package
 \emph{Use \link[=make_video]{make_video} instead.} See details.
 }
 \details{
