@@ -45,9 +45,6 @@
 #'  and will result in error if the file exists. Passed to [make_video()] if
 #'  `animate = TRUE`.
 #'
-#'@param ffmpeg DEPRECATED. As of glatos v. 0.4.1, `make_frames` calls a version
-#'  of [make_video()] that does not use the external program ffmpeg.exe.
-#'
 #'@param tail_dur contains the duration (in same units as
 #'  `proc_obj$bin_timestamp`; see [interpolate_path()]) of trailing points in
 #'  each frame. Default value is 0 (no trailing points). A value of `Inf` will
@@ -56,7 +53,7 @@
 #'@param preview write first frame only.  Useful for checking output before
 #'  processing large number of frames.  Default `preview = FALSE`
 #'
-#'@param bg_map A spatial points, lines, or polygons object.
+#'@param bg_map A sf points, lines, or polygons object
 #'
 #'@param show_progress Logical. Progress bar and status messages will be shown
 #'  if TRUE (default) and not shown if FALSE.
@@ -207,19 +204,10 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         background_xlim = c(-92.45, -75.87),
                         show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
                         ani_name = "animation.mp4", frame_delete = FALSE,
-                        overwrite = FALSE, ffmpeg = NA, preview = FALSE, 
+                        overwrite = FALSE, preview = FALSE, 
                         bg_map = NULL, show_progress = TRUE, ...){
   
-  #handle deprecated ffmpeg path argument
-  if(!missing(ffmpeg)) warning("As of glatos v 0.4.1, make_frames() and ",
-                               "make_video() no longer use ",
-                               "the external program ffmpeg. See ?make_video ",
-                               " for details. ",
-                               "Input argument 'ffmpeg' has been ",
-                               "ignored in this call and will be removed ",
-                               "in a future version of make_frames().",
-                               call. = FALSE)
-
+  #NOTE: As of glatos v 0.4.1, the package no longer uses the external program ffmpeg.  Input argument 'ffmpeg' has been removed"
   
   #expand path to animation output file
   # - place in same file as images (out_dir) if none specified
@@ -384,9 +372,9 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     background <- bg_map 
     #if not equal to default or NULL, then set to extent of bg_map
     if(is.null(background_ylim) | all(background_ylim == c(41.3, 49.0))) background_ylim <- 
-                                              as.numeric(bbox(bg_map)[ "y", ])
-    if(is.null(background_xlim) | all(background_xlim == c(-92.45, -75.87))) background_xlim <- 
-        as.numeric(bbox(bg_map)[ "x", ])
+                                              as.numeric(st_bbox(bg_map)[c("xmin", "xmax")])
+    if(is.null(background_xlim) | all(background_xlim == c(-92.45, -75.87))) background_xlim <-
+                                                                               as.numeric(st_bbox(bg_map)[c("ymin", "ymax")])
   }
 
   # turn off interpolated points if show_interpolated = FALSE
@@ -434,7 +422,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     
     do.call(par, par_args)
 
-    # Note call to plot with sp- this needs changed to sf?
+    # Note this call was changed to sf?
     plot(sf::st_geometry(.background), ylim = c(.background_ylim), 
              xlim = c(.background_xlim),
              axes = FALSE, lwd = 2*figRatio, col = "white", bg = "gray74")

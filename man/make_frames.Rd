@@ -16,7 +16,6 @@ make_frames(
   ani_name = "animation.mp4",
   frame_delete = FALSE,
   overwrite = FALSE,
-  ffmpeg = NA,
   preview = FALSE,
   bg_map = NULL,
   show_progress = TRUE,
@@ -68,13 +67,10 @@ exists. Default (\code{overwrite = FALSE}) prevents file from being overwritten
 and will result in error if the file exists. Passed to \code{\link[=make_video]{make_video()}} if
 \code{animate = TRUE}.}
 
-\item{ffmpeg}{DEPRECATED. As of glatos v. 0.4.1, \code{make_frames} calls a version
-of \code{\link[=make_video]{make_video()}} that does not use the external program ffmpeg.exe.}
-
 \item{preview}{write first frame only.  Useful for checking output before
 processing large number of frames.  Default \code{preview = FALSE}}
 
-\item{bg_map}{A spatial points, lines, or polygons object.}
+\item{bg_map}{A sf points, lines, or polygons object}
 
 \item{show_progress}{Logical. Progress bar and status messages will be shown
 if TRUE (default) and not shown if FALSE.}
