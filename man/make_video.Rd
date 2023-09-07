@@ -111,8 +111,6 @@ frames <- system.file("extdata", "frames", package = "glatos")
 # make .mp4 video
 make_video(input_dir=frames, input_ext=".png", output="animation1.mp4")
 
-make_video(input_dir = "animation1.mp4", input_ext = ".mp4", output = "animation2.wmv")
-
 # set duration to 10 seconds
 make_video(input_dir=frames, input_ext=".png", output="animation2.mp4",
            duration = 10)

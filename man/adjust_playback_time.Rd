@@ -15,30 +15,19 @@ adjust_playback_time(
 )
 }
 \arguments{
-\item{scale_factor}{multiplicative factor changes duration of
-video playback. See details.}
+\item{scale_factor}{multiplicative factor changes duration of video playback. See details.}
 
-\item{input}{character, path to video file (any FFmpeg supported
-file type- *.mp4, *.wmv, see \link{make_frames})}
+\item{input}{character, path to video file (any FFmpeg supported file type- *.mp4, *.wmv, etc)}
 
-\item{output_dir}{character, output directory, default is working
-directory}
+\item{output_dir}{character, output directory, default is working directory}
 
 \item{output}{character, output file name}
 
 \item{overwrite}{logical, default is \code{overwrite = TRUE}}
 
-\item{ffmpeg}{A file path (characer) to FFmpeg executable. This
-argument is only needed if ffmpeg is not added to your system
-path. For Windows machines, path must point to 'ffmpeg.exe',
-located in the bin subfolder within the ffmpeg folder.  For
-example on Windows machines,
-"C:\\Users\\Username\\Documents\\ffmpeg-3.4.1-win64-static\\bin\\ffmpeg.exe").
-On Mac, path must point to 'ffmpeg' within the 'bin'
-subfolder "/home/directory/Documents/bin/ffmpeg".  see \link{make_video}}
+\item{ffmpeg}{NOTE: argument ignored. Not needed for package versions greater than 0.4.0.  Argument will be removed in a future version.}
 
-\item{diagnostic_mode}{Logical (default = FALSE). If true, return value
-is a character vector with FFMPEG output.}
+\item{diagnostic_mode}{Logical (default = FALSE). If true, returns FFMPEG output.}
 }
 \value{
 One video animation will be written to \code{output_dir}
@@ -65,18 +54,14 @@ Speed up or slow down playback of video
 frames <- system.file("extdata", "frames", package = "glatos")
 
 # make video animation
-
 make_video(input_dir = frames, pattern = "\%02d.png", output = "animation_av.mp4")
 
-
-
-
 # slow video down by a factor of 10 
-path <- file.path(getwd(), "animation.mp4")
-adjust_playback_time(scale_factor = 10, input = path)
+path <- file.path(getwd(), "animation_av.mp4")
+adjust_playback_time(scale_factor = 10, input = path, diagnostic = FALSE, overwrite = TRUE)
 
 # slow video down by a factor of 10 and change format of output video
-adjust_playback_time(scale_factor = 10, input = path, output = "slow.wmv")
+adjust_playback_time(scale_factor = 10, input = path, output = "slow.wmv", diagnostic = FALSE)
 
 # speed up video 
 adjust_playback_time(scale_factor=0.5, input = path, output = "faster.mp4")
