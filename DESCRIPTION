@@ -13,7 +13,6 @@ Imports:
 		gdalUtilities,
 		geodist,
 		gdistance,
-		geosphere,
 		jsonlite,
 		knitr,
 		lubridate,
@@ -27,7 +26,6 @@ Imports:
 		readxl,
 		rmarkdown,
 		sf,
-		sp,
 		tibble,
 		tidyr
 Suggests: 

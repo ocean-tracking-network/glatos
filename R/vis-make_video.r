@@ -82,7 +82,7 @@
 ##'
 ##' # make .mp4 video
 ##' make_video(input_dir=frames, input_ext=".png", output="animation1.mp4")
-##'
+##' 
 ##' # set duration to 10 seconds
 ##' make_video(input_dir=frames, input_ext=".png", output="animation2.mp4",
 ##'            duration = 10)
@@ -137,26 +137,6 @@ make_video  <- function(input_dir = getwd(),
   in_args <- list(...)
   #in_args <- list(pattern = "%02d.png")
   #in_args <- list(framerate = 30)
-
-  #Check for legacy version (make_video_ffmpeg) and redirect if needed
-  
-  #get legacy-version arguments from glatos v 0.4.0 or earlier...
-  mvf_args <- formals(make_video_ffmpeg)
-  mvf_args_in <- in_args[intersect(names(in_args), names(mvf_args))]
-  
-  if(length(mvf_args_in) > 0) {
-    #add formal make_video args also in make_video_ffmpeg
-    mv_args <- formals(make_video)
-    both_args <- intersect(names(mv_args), names(mvf_args))
-    #add non-missing legacy args to optional args
-    if(!missing(overwrite)) in_args <- c(list(overwrite = overwrite), in_args) 
-    if(!missing(size)) in_args <- c(list(size = size), in_args) 
-    if(!missing(end_frame)) in_args <- c(list(end_frame = end_frame), in_args) 
-    if(!missing(start_frame)) in_args <- c(list(start_frame = start_frame), in_args) 
-    if(!missing(output)) in_args <- c(list(output = output), in_args) 
-    
-    return(do.call(make_video_ffmpeg, in_args))
-  } 
 
   #check if input_dir exists
   if(!dir.exists(input_dir)) stop(paste0("Input dir '", input_dir , 
@@ -219,8 +199,7 @@ make_video  <- function(input_dir = getwd(),
 ##' Create video from sequence of still images using ffmpeg.exe
 ##'
 ##' Stitch a sequence of images into a video animation using FFmpeg
-##' software. **NOTE: This function is DEPRECATED and is being maintained 
-##' temporarily for backward compatibility with glatos v. 0.4.0 and earlier.**
+##' software. **NOTE: This function is DEFUNCT and removed from package
 ##' *Use [make_video][glatos::make_video] instead.* See details.
 ##' 
 ##' @param dir directory containing images, default is working
@@ -419,9 +398,11 @@ make_video_ffmpeg  <- function(
   fps_out = 30,
   overwrite = FALSE,
   ffmpeg = NA,
-  diagnostic_mode = FALSE){
+  diagnostic_mode = FALSE, ...){
   
-  
+  # FFmpeg is no longer needed.  Function is now deprecated
+  .Defunct(new = "make_frames", package = "glatos")
+
   # test ffmpeg and get path
   ffmpeg <- glatos:::get_ffmpeg_path(ffmpeg)
   

@@ -20,7 +20,8 @@ make_video_ffmpeg(
   fps_out = 30,
   overwrite = FALSE,
   ffmpeg = NA,
-  diagnostic_mode = FALSE
+  diagnostic_mode = FALSE,
+  ...
 )
 }
 \arguments{

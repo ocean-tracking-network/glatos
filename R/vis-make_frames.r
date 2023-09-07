@@ -179,8 +179,8 @@
 #' myDir <- paste0(getwd(),"/frames2")
 #' make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 #'
-#' # make sequential frames, and animate.  Make animation and frames.
-#' #change default color of fish markers to red and change marker and size.
+#' # make sequential frames, and animate.
+#' # change default color of fish markers to red and change marker and size.
 #' myDir <- paste0(getwd(), "/frames3")
 #' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE,
 #'             ani_name = "animation3.mp4", col="red", pch = 16, cex = 3)
