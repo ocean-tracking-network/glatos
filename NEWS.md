@@ -1,5 +1,14 @@
 
 ----
+# glatos 0.6.5 (2023-09-07)
+
+# Bug fixes 
+
+- Fix bug in summarize_detections() where setting 'location_col' triggers error.
+    - fixes [issue #180](https://github.com/ocean-tracking-network/glatos/issues/180)
+
+
+----
 # glatos 0.6.4 (2023-09-06)
 
 # Bug fixes and minor changes

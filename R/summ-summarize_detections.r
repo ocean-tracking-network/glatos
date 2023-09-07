@@ -142,6 +142,22 @@
 #'  ds <- summarize_detections(det, summ_type = "both")
 #'  
 #'  
+#'  #Include user-defined location_col
+#'  
+#'  # by animal
+#'  det$some_place <- ifelse(grepl("^S", det$glatos_array), "s", "not_s")
+#'  
+#'  ds <- summarize_detections(det, location_col = "some_place")
+#'  
+#'  # by location 
+#'  ds <- summarize_detections(det, location_col = "some_place", 
+#'                             summ_type = "location")
+#'  
+#'  # by animal and location
+#'  ds <- summarize_detections(det, location_col = "some_place", 
+#'                             summ_type = "both")  
+#'                             
+#'                             
 #'  #Include locations where no animals detected
 #'  
 #'  #get example receiver data
@@ -249,11 +265,11 @@ summarize_detections <- function(det, location_col = "glatos_array",
 
   if(summ_type == "animal"){
     #summarize fish detections
-    anim_summary <- dtc[ , list(num_locs = length(unique(.SD[[location_col]])), 
+    anim_summary <- dtc[ , list(num_locs = data.table::uniqueN(location_col), 
                                 num_dets = .N,
       first_det = min(detection_timestamp_utc),
       last_det = max(detection_timestamp_utc),
-      locations = paste(sort(unique(.SD[[location_col]])), collapse = " ")),
+      locations = paste(sort(unique(location_col)), collapse = " ")),
       by = animal_id]
     
     #add animals not detected

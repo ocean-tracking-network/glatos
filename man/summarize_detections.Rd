@@ -154,6 +154,22 @@ If \code{receiver_locs = NULL} (default), then mean latitude and
  ds <- summarize_detections(det, summ_type = "both")
  
  
+ #Include user-defined location_col
+ 
+ # by animal
+ det$some_place <- ifelse(grepl("^S", det$glatos_array), "s", "not_s")
+ 
+ ds <- summarize_detections(det, location_col = "some_place")
+ 
+ # by location 
+ ds <- summarize_detections(det, location_col = "some_place", 
+                            summ_type = "location")
+ 
+ # by animal and location
+ ds <- summarize_detections(det, location_col = "some_place", 
+                            summ_type = "both")  
+                            
+                            
  #Include locations where no animals detected
  
  #get example receiver data
