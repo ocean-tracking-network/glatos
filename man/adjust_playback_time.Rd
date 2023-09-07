@@ -44,7 +44,7 @@ is a character vector with FFMPEG output.}
 One video animation will be written to \code{output_dir}
 }
 \description{
-Speed up or slow down playback of video using FFmpeg software.
+Speed up or slow down playback of video
 }
 \details{
 \code{adjust_playback_time} adjusts playback speed of
@@ -64,8 +64,12 @@ Speed up or slow down playback of video using FFmpeg software.
 # load example frames 
 frames <- system.file("extdata", "frames", package = "glatos")
 
-# make video animation 
-make_video(dir = frames, pattern = "\%02d.png", output = "animation.mp4" )
+# make video animation
+
+make_video(input_dir = frames, pattern = "\%02d.png", output = "animation_av.mp4")
+
+
+
 
 # slow video down by a factor of 10 
 path <- file.path(getwd(), "animation.mp4")

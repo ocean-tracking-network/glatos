@@ -1,6 +1,6 @@
 ##' Modify playback time of video
 ##'
-##' Speed up or slow down playback of video using FFmpeg software.
+##' Speed up or slow down playback of video
 ##' 
 ##' @param scale_factor multiplicative factor changes duration of
 ##'   video playback. See details.
@@ -48,9 +48,13 @@
 ##' # load example frames 
 ##' frames <- system.file("extdata", "frames", package = "glatos")
 ##'
-##' # make video animation 
-##' make_video(dir = frames, pattern = "%02d.png", output = "animation.mp4" )
+##' # make video animation
 ##'
+##' make_video(input_dir = frames, pattern = "%02d.png", output = "animation_av.mp4")
+##'
+##'
+##'
+##' 
 ##' # slow video down by a factor of 10 
 ##' path <- file.path(getwd(), "animation.mp4")
 ##' adjust_playback_time(scale_factor = 10, input = path)
@@ -63,6 +67,12 @@
 ##' }
 ##' @export
 ##'
+
+
+
+#dir = frames
+#pattern = "%02d.png"
+#output = "~/Desktop/animation_av.mp4"
 
 
 adjust_playback_time <- function(scale_factor = 1,
@@ -93,6 +103,9 @@ adjust_playback_time <- function(scale_factor = 1,
   
   msg_i <-  system2(cmd, ffcall, stdout = TRUE)
 
+
+
+  
   if(diagnostic_mode) {
     message("[diagnostic mode]: See return object for ffmpeg output.")
     return(msg_i)
