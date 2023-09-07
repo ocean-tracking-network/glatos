@@ -1,6 +1,4 @@
 
-----
-
 # glatos 0.7.0 
 
 #### 2023-08-30
@@ -55,6 +53,18 @@
   
 - Add new function `read_vdat_csv()` to read data exported from VRL or VDAT 
   using VDAT.exe (e.g., using `vdat_convert()`).
+
+
+----
+
+# glatos 0.6.5 
+
+#### 2023-09-07
+
+### Bug fixes 
+
+- Fix bug in summarize_detections() where setting 'location_col' triggers error.
+    - fixes [issue #180](https://github.com/ocean-tracking-network/glatos/issues/180)
 
 
 ----
