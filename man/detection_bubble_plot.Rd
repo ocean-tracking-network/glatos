@@ -56,10 +56,10 @@ The following two columns must appear in \code{receiver_locs}:
    degrees, NAD83.
 }}
 
-\item{map}{An optional SpatialPolygonsDataFrame or other spatial object
+\item{map}{An optional sf spatial object
 that can by plotted with using \code{plot} to be included as the
 background for the plot. If NULL, then the example Great Lakes polygon
-object (\code{data(greatLakesPoly)}) will be used.}
+object (\code{data(great_lakes_polygon)}) will be used.}
 
 \item{out_file}{An optional character string with the name (including 
 extension) of output file created. File extension will determine type of 
@@ -161,7 +161,7 @@ plot_rec <- rec[rec$deploy_date_time < last &
                 !is.na(rec$recover_date_time),]
 
 detection_bubble_plot(det, receiver_locs = plot_rec)
-
+detection_bubble_plot(det, receiver_locs = rec)
 
 }
 \seealso{

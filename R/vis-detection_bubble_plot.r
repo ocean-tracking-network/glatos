@@ -4,16 +4,16 @@
 #' of receiver locations.
 #'
 #' @inheritParams summarize_detections 
-#'
-#' @param map An optional SpatialPolygonsDataFrame or sf spatial object
+#' 
+#' @param map An optional sf spatial object
 #'   that can by plotted with using `plot` to be included as the
 #'   background for the plot. If NULL, then the example Great Lakes polygon
 #'   object (`data(great_lakes_polygon)`) will be used.
 #' 
 #' @param out_file An optional character string with the name (including 
 #'   extension) of output file created. File extension will determine type of 
-#'   file written. For example, \code{"BubblePlot.png"} will write a png 
-#'   file to the working directory. If \code{NULL} (default) then the plot will 
+#'   file written. For example, `"BubblePlot.png"` will write a png 
+#'   file to the working directory. If `NULL` (default) then the plot will 
 #'   be printed to the default plot device. Supported extensions: 
 #'   png, jpeg, bmp, and tiff.
 #'   
@@ -33,36 +33,36 @@
 #'   
 #' @param scale_loc An optional 4-element numeric vector, to be passed to
 #'   plotrix::color.legend, indicating the plotting location of the legend in
-#'   the same units as \code{map}. Elements in the vector are the lower left
+#'   the same units as `map`. Elements in the vector are the lower left
 #'   and upper right coordinates of the rectangle of colors
-#'   (i.e., c(xleft, ybottom, xright, ytop)). If \code{scale_loc} = NULL
+#'   (i.e., c(xleft, ybottom, xright, ytop)). If `scale_loc` = NULL
 #'   (default), the legend is plotted along the left edge of the plot.
 #' 
-#' @details Data are summarized using \link{summarize_detections}.
+#' @details Data are summarized using [summarize_detections].
 #'   
-#' @details If \code{receiver_locs} is specified (not NULL) then the plot will
-#'   show all receivers in \code{receiver_locs} including any that detected
-#'   none of the transmitters in \code{det}. Although this is helpful to view
-#'   locations where fish were \emph{not} detected, the user will usually want 
+#' @details If `receiver_locs` is specified (not NULL) then the plot will
+#'   show all receivers in `receiver_locs` including any that detected
+#'   none of the transmitters in `det`. Although this is helpful to view
+#'   locations where fish were *not* detected, the user will usually want 
 #'   to take care to include only receivers that were in the water during the 
 #'   period of interest. If you are using a glatos receiver locations file to 
 #'   specify location for plotting, you will likely want to filter the receiver 
 #'   data by depoyment and receovery dates to exclude deployments that occured 
 #'   outside of the period of interest.
 #'   
-#' @details "col_grad" is used in a call to \link[=colorRamp]{colorRampPalette},
+#' @details "col_grad" is used in a call to [colorRampPalette][colorRamp],
 #'   which will accept a vector containing any two colors return by
-#'   \link[grDevices]{colors} as character strings.
+#'   [colors][grDevices::colors] as character strings.
 #' 
 #' @return A data frame produced by 
-#'   \code{glatos::summarize_detections(det, location_col = location_col, 
-#'   receiver_locs = receiver_locs, summ_type = "location")}
+#'   `glatos::summarize_detections(det, location_col = location_col, 
+#'   receiver_locs = receiver_locs, summ_type = "location")`
 #'
 #' @return If not out_file is specified, then an image is printed to the 
 #'   default plot device. If out_file is specified, then an image of 
-#'   specified type is written to \code{out_file}.
+#'   specified type is written to `out_file`.
 #'
-#' @seealso \code{\link{summarize_detections}}
+#' @seealso [summarize_detections()]
 #'
 #' @author T. R. Binder, edited by A. Dini
 #' 
@@ -108,9 +108,20 @@
 #'                 !is.na(rec$recover_date_time),]
 #' 
 #' detection_bubble_plot(det, receiver_locs = plot_rec)
-#' 
+#' detection_bubble_plot(det, receiver_locs = rec)
 #'
 #' @export
+
+## det = det
+## location_col = "glatos_array"
+## receiver_locs = rec
+## map = NULL
+## out_file = NULL
+## background_ylim = c(41.3, 49.0)
+## background_xlim = c(-92.45, -75.87)
+## symbol_radius = 1
+## col_grad = c("white", "red")
+## scale_loc = NULL
 
 detection_bubble_plot <- function(det, location_col = "glatos_array", 
                                   receiver_locs = NULL,
@@ -198,7 +209,7 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))	    
   
   # Plot background image
-  plot(st_geometry(map), xlim = background_xlim, ylim = background_ylim, axes = T, 
+  plot(sf::st_geometry(map), xlim = background_xlim, ylim = background_ylim, axes = T, 
     xaxs = "i", lwd = 1.5, xaxt = 'n', yaxt = 'n', col = "White", 
     bg="WhiteSmoke")
   
@@ -250,4 +261,4 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
       getwd(), "\n"))
   
   return(det_summ)
-}		
+}	
