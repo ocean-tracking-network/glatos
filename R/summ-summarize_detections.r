@@ -166,6 +166,7 @@
 #' 
 #' @export
 
+
 summarize_detections <- function(det, location_col = "glatos_array", 
                                  receiver_locs = NULL, animals = NULL, 
                                  summ_type = "animal"){
@@ -234,7 +235,11 @@ summarize_detections <- function(det, location_col = "glatos_array",
                                by = location_col]
     
     #add mean locations
+
     loc_summary <- merge(loc_summary, mean_locs, by = location_col, all.y = T)
+    loc_summary[ is.na(num_fish), `:=`(num_fish = 0, num_dets = 0)]
+    
+
     
     loc_summary[ is.na(num_fish), `:=`(num_fish = 0, num_dets = 0)]
     

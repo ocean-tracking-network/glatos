@@ -5,7 +5,7 @@
 #'
 #' @inheritParams summarize_detections 
 #' 
-#' @param map An optional SpatialPolygonsDataFrame or sf spatial object
+#' @param map An optional sf spatial object
 #'   that can by plotted with using `plot` to be included as the
 #'   background for the plot. If NULL, then the example Great Lakes polygon
 #'   object (`data(great_lakes_polygon)`) will be used.
@@ -108,9 +108,20 @@
 #'                 !is.na(rec$recover_date_time),]
 #' 
 #' detection_bubble_plot(det, receiver_locs = plot_rec)
-#' 
+#' detection_bubble_plot(det, receiver_locs = rec)
 #'
 #' @export
+
+## det = det
+## location_col = "glatos_array"
+## receiver_locs = rec
+## map = NULL
+## out_file = NULL
+## background_ylim = c(41.3, 49.0)
+## background_xlim = c(-92.45, -75.87)
+## symbol_radius = 1
+## col_grad = c("white", "red")
+## scale_loc = NULL
 
 detection_bubble_plot <- function(det, location_col = "glatos_array", 
                                   receiver_locs = NULL,
@@ -198,7 +209,7 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))	    
   
   # Plot background image
-  plot(st_geometry(map), xlim = background_xlim, ylim = background_ylim, axes = T, 
+  plot(sf::st_geometry(map), xlim = background_xlim, ylim = background_ylim, axes = T, 
     xaxs = "i", lwd = 1.5, xaxt = 'n', yaxt = 'n', col = "White", 
     bg="WhiteSmoke")
   
