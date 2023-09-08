@@ -5,7 +5,7 @@
 #'
 #' @inheritParams summarize_detections 
 #' 
-#' @param map An optional sf spatial object
+#' @param map An optional sp or sf spatial object
 #'   that can by plotted with using `plot` to be included as the
 #'   background for the plot. If NULL, then the example Great Lakes polygon
 #'   object (`data(great_lakes_polygon)`) will be used.
@@ -74,7 +74,7 @@
 #' det <- read_glatos_detections(det_file)
 #' 
 #' #call with defaults
-#' detection_bubble_plot(det)
+#' detection_bubble_plot(det, map = great_lakes_polygon)
 #' 
 #' #change symbol size and color
 #' detection_bubble_plot(det, symbol_radius = 2, col_grad = c("grey90", "grey10"))
@@ -108,20 +108,9 @@
 #'                 !is.na(rec$recover_date_time),]
 #' 
 #' detection_bubble_plot(det, receiver_locs = plot_rec)
-#' detection_bubble_plot(det, receiver_locs = rec)
 #'
 #' @export
 
-## det = det
-## location_col = "glatos_array"
-## receiver_locs = rec
-## map = NULL
-## out_file = NULL
-## background_ylim = c(41.3, 49.0)
-## background_xlim = c(-92.45, -75.87)
-## symbol_radius = 1
-## col_grad = c("white", "red")
-## scale_loc = NULL
 
 detection_bubble_plot <- function(det, location_col = "glatos_array", 
                                   receiver_locs = NULL,
@@ -143,6 +132,13 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
                                        collapse="\n")), 
          call. = FALSE)
   }
+
+  
+  # convert sp to sf
+  if(!is.null(map) & inherits(map, "Spatial")){
+    map <- sf::st_as_sf(map)
+    message("Converted sp object to sf")
+    }
     
   if(is.null(map)) map <- great_lakes_polygon #example in glatos package (sf object)
   
@@ -199,7 +195,6 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
     bmp(out_file, height = 1000 * figRatio, width = 1000, pointsize = 28)
   if(!is.na(file_type) & tolower(file_type) == 'tiff')
     tiff(out_file, height = 1000 * figRatio, width = 1000, pointsize = 28)  
-
   
   if(is.null(out_file)){
       dev.new(noRStudioGD = TRUE, height = 7 * figRatio, width = 7)
