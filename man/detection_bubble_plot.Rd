@@ -161,7 +161,6 @@ plot_rec <- rec[rec$deploy_date_time < last &
                 !is.na(rec$recover_date_time),]
 
 detection_bubble_plot(det, receiver_locs = plot_rec)
-detection_bubble_plot(det, receiver_locs = rec)
 
 }
 \seealso{
