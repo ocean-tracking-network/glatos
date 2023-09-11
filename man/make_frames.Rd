@@ -70,7 +70,7 @@ and will result in error if the file exists. Passed to \code{\link[=make_video]{
 \item{preview}{write first frame only.  Useful for checking output before
 processing large number of frames.  Default \code{preview = FALSE}}
 
-\item{bg_map}{A sf points, lines, or polygons object}
+\item{bg_map}{A sf points, lines, or polygons object.  Spatial \code{sp} objects will be converted to \code{sf}}
 
 \item{show_progress}{Logical. Progress bar and status messages will be shown
 if TRUE (default) and not shown if FALSE.}
