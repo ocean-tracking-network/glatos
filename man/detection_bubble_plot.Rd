@@ -56,7 +56,7 @@ degrees, NAD83.
 degrees, NAD83.
 }}
 
-\item{map}{An optional sf spatial object
+\item{map}{An optional sp or sf spatial object
 that can by plotted with using \code{plot} to be included as the
 background for the plot. If NULL, then the example Great Lakes polygon
 object (\code{data(great_lakes_polygon)}) will be used.}
@@ -126,7 +126,7 @@ det_file <- system.file("extdata", "walleye_detections.csv",
 det <- read_glatos_detections(det_file)
 
 #call with defaults
-detection_bubble_plot(det)
+detection_bubble_plot(det, map = great_lakes_polygon)
 
 #change symbol size and color
 detection_bubble_plot(det, symbol_radius = 2, col_grad = c("grey90", "grey10"))
