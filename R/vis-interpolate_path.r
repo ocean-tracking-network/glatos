@@ -184,7 +184,6 @@
 #' } 
 #' 
 #' @export 
-                         
 interpolate_path <- function(det, trans = NULL, start_time = NULL,
                              int_time_stamp = 86400, lnl_thresh = 0.9,
                              out_class = NULL, show_progress = TRUE){
