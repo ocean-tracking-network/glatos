@@ -53,7 +53,7 @@
 #'@param preview write first frame only.  Useful for checking output before
 #'  processing large number of frames.  Default `preview = FALSE`
 #'
-#'@param bg_map A sf points, lines, or polygons object
+#'@param bg_map A sf points, lines, or polygons object.  Spatial `sp` objects will be converted to `sf`
 #'
 #'@param show_progress Logical. Progress bar and status messages will be shown
 #'  if TRUE (default) and not shown if FALSE.
@@ -369,7 +369,13 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   if(is.null(bg_map)){
     background <- great_lakes_polygon #example in glatos package
   } else { 
-    background <- bg_map 
+    background <- bg_map
+
+    if(inherits(map, "Spatial")){
+      map <- sf::st_as_sf(map)
+      message("Converted sp object to sf")
+    }
+        
     #if not equal to default or NULL, then set to extent of bg_map
     if(is.null(background_ylim) | all(background_ylim == c(41.3, 49.0))) background_ylim <- 
                                               as.numeric(st_bbox(bg_map)[c("xmin", "xmax")])
