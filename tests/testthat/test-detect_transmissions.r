@@ -44,7 +44,7 @@ set.seed(33)
 dtc_dfin_spout <- detect_transmissions(trnsLoc = tr_df, 
                                        recLoc = recs_df, 
                                        detRngFun = function(x) 0.5, 
-                                       inputCRS = 4326,
+                                       inputCRS = sf::st_crs(tr_sf),
                                        show_progress = FALSE)
 
 # non-spatial detection output - 50% constant detection prob
@@ -59,7 +59,8 @@ dtc_dfin_dfout <- detect_transmissions(trnsLoc = tr_df,
 # Expected values
 dtc_dfout_shouldBe <- readRDS("../../inst/testdata/test-detect_transmissions-dtc_dfout.rds")
 dtc_spout_shouldBe <- readRDS("../../inst/testdata/test-detect_transmissions-dtc_spout.rds")
-
+attr(dtc_dfout_shouldBe, "row.names") <- as.integer(row.names(dtc_dfout_shouldBe))
+attr(dtc_spout_shouldBe, "row.names") <- as.integer(row.names(dtc_spout_shouldBe))
 
 # Testing output matches desired format for each input
 test_that("data.frame input, spatial output gives expected result", {
