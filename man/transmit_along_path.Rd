@@ -37,7 +37,7 @@ burst (i.e., pulse train).}
 \item{pathCRS}{Defines the coordinate reference system (object of class
 \code{crs} or a numeric EPSG code) of coordinates in \code{path}, if missing; ignored otherwise.
 If no valid \code{crs} is specified in \code{path} or via \code{pathCRS =
-NA} (default value), then \code{path} coordinates are assumed to be in an
+  NA} (default value), then \code{path} coordinates are assumed to be in an
 arbitrary Cartesian coordinate system with base unit of 1 meter. See Note.}
 
 \item{sp_out}{Logical. If TRUE (default) then output is an \code{sf} object.
@@ -45,41 +45,41 @@ If FALSE, then output is a \code{data.frame}.}
 }
 \value{
 When \code{sp_out = TRUE}, an \code{sf} object containing one
-  \code{POINT} feature for each simulated transmission and a column named
-  \code{time} (defined below). 
-  
-  When \code{sp_out = FALSE}, a data.frame with the following columns:
-  \item{x}{ x coordinates for start of each transmission. } \item{y}{ y
-  coordinates for start of each transmission. } \item{time}{ Elapsed time, in
-  seconds, from the start of input \code{path} to the start of each
-  transmission.}
+\code{POINT} feature for each simulated transmission and a column named
+\code{time} (defined below).
+
+When \code{sp_out = FALSE}, a data.frame with the following columns:
+\item{x}{ x coordinates for start of each transmission. } \item{y}{ y
+coordinates for start of each transmission. } \item{time}{ Elapsed time, in
+seconds, from the start of input \code{path} to the start of each
+transmission.}
 }
 \description{
 Simulate tag signal transmission along a pre-defined path (x, y
-  coords) based on constant movement velocity, transmitter delay range, and
-  duration of signal.
+coords) based on constant movement velocity, transmitter delay range, and
+duration of signal.
 }
 \details{
 Delays are drawn from uniform distribution defined by delay range.
-  First, elapsed time in seconds at each vertex in \code{path} is calculated
-  based on path length and velocity. Next, delays are simulated and burst
-  durations are added to each delay to determine the time of each signal
-  transmission. Location of each signal transmission along the path is
-  linearly interpolated.
+First, elapsed time in seconds at each vertex in \code{path} is calculated
+based on path length and velocity. Next, delays are simulated and burst
+durations are added to each delay to determine the time of each signal
+transmission. Location of each signal transmission along the path is
+linearly interpolated.
 
 Computation time is fastest if coordinates in \code{path} are in a
-  Cartesian (projected) coordinate system and slowest if coordinates are in a
-  geographic coordinate system (e.g., longitude, latitude) because different
-  methods are used to calculate step lengths in each case. When \code{path}
-  CRS is Cartesian (e.g., UTM), step lengths are calculated as simple
-  Euclidean distance. When CRS is geographic, step lengths are calculated as
-  Haversine distances using \code{\link[geodist]{geodist}} (with
-  \code{measure = "haversine"}).
+Cartesian (projected) coordinate system and slowest if coordinates are in a
+geographic coordinate system (e.g., longitude, latitude) because different
+methods are used to calculate step lengths in each case. When \code{path}
+CRS is Cartesian (e.g., UTM), step lengths are calculated as simple
+Euclidean distance. When CRS is geographic, step lengths are calculated as
+Haversine distances using \code{\link[geodist]{geodist}} (with
+\code{measure = "haversine"}).
 }
 \note{
 This function was written to be called after
-  \code{\link{crw_in_polygon}} and before \code{\link{detect_transmissions}},
-  which was designed to accept the result as input (\code{trnsLoc}).
+\code{\link{crw_in_polygon}} and before \code{\link{detect_transmissions}},
+which was designed to accept the result as input (\code{trnsLoc}).
 }
 \examples{
 

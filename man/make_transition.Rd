@@ -41,38 +41,38 @@ pixel must be at least 50\% covered by polygon to be coded as water.}
 \value{
 A list with two elements:
 \describe{
-   \item{transition}{a geo-corrected transition raster layer where land = 0
-      and water=1 (see \code{gdistance})}
-   \item{rast}{rasterized input layer of class \code{raster}}}
-  Additonally, rasterized version of input shapefile (*.tif extension) is
-  written to computer at \code{output_dir}
+\item{transition}{a geo-corrected transition raster layer where land = 0
+and water=1 (see \code{gdistance})}
+\item{rast}{rasterized input layer of class \code{raster}}}
+Additonally, rasterized version of input shapefile (*.tif extension) is
+written to computer at \code{output_dir}
 }
 \description{
 Create transition layer for \link{interpolate_path} from polygon shapefile.
 }
 \details{
 \code{make_transition} uses
-  \link[gdalUtilities]{gdal_rasterize} to convert a polygon shapefile
-  into a raster layer and geo-corrected transition layer
-  \link{interpolate_path}.  Raster cell values on land = 0 and
-  water = 1. Function also writes a geotiff file (*.tif) of the
-  input shapefile to the ouput directory. Both raster layer and
-  geotif output have the same extents and geographic projection as
-  input shapefile.  Function requires that gdal is working on
-  computer.  To determine if gdal is installed on your computer,
-  see \link[gdalUtilities]{gdal_rasterize}.
+\link[gdalUtilities]{gdal_rasterize} to convert a polygon shapefile
+into a raster layer and geo-corrected transition layer
+\link{interpolate_path}.  Raster cell values on land = 0 and
+water = 1. Function also writes a geotiff file (*.tif) of the
+input shapefile to the ouput directory. Both raster layer and
+geotif output have the same extents and geographic projection as
+input shapefile.  Function requires that gdal is working on
+computer.  To determine if gdal is installed on your computer,
+see \link[gdalUtilities]{gdal_rasterize}.
 
 Returned objects will be projected in longlat WGS84
-  (i.e., CRS("+init=epsg:4326"). If the input object is not recognizable in
-  epsg:4326 then transformation will be attempted and a
-  warning will tell the user this was done.  Input shapefile must
-  include an optional *.prj file that specifies the geographic projection.
+(i.e., CRS("+init=epsg:4326"). If the input object is not recognizable in
+epsg:4326 then transformation will be attempted and a
+warning will tell the user this was done.  Input shapefile must
+include an optional *.prj file that specifies the geographic projection.
 
 Output transition layer is corrected for projection
-  distortions using \code{gdistance::geoCorrection}.  Adjacent
-  cells are connected by 16 directions and transition function
-  returns 0 (land) for movements between land and water and 1 for
-  all over-water movements.
+distortions using \code{gdistance::geoCorrection}.  Adjacent
+cells are connected by 16 directions and transition function
+returns 0 (land) for movements between land and water and 1 for
+all over-water movements.
 }
 \examples{
 \dontrun{

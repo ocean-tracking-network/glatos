@@ -13,8 +13,8 @@ read_otn_deployments(
 }
 \arguments{
 \item{deployment_file}{A character string with path and name of deployment
- file in OTN deployment format (*.csv). If only file name is given, then the
- file must be located in the working directory.
+file in OTN deployment format (*.csv). If only file name is given, then the
+file must be located in the working directory.
 
 @param deploy_date_col A character string representing the column
 name containing deploy_date data. Defaults to "deploy_date".

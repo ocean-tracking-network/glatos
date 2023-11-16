@@ -22,15 +22,15 @@ make_video(
 directory.}
 
 \item{input_ext}{character, file extension of images to be stitched into
-a video. All images must have same extension, width, and height. Each 
-imaged will be positioned in the video in alaphabetical order by image 
+a video. All images must have same extension, width, and height. Each
+imaged will be positioned in the video in alaphabetical order by image
 file name.}
 
 \item{output}{character, output video file name.  See details.}
 
-\item{duration}{integer, output video duration in seconds. If NULL (default) 
-then this will be determined by the number of input frames and 
-the framerate (default is 24 frames per second). E.g., a video containing 
+\item{duration}{integer, output video duration in seconds. If NULL (default)
+then this will be determined by the number of input frames and
+the framerate (default is 24 frames per second). E.g., a video containing
 240 frames at default 24 fps will be 10 seconds long. See details.}
 
 \item{start_frame}{integer, start frame. Defaults to \code{start=1}.}
@@ -50,56 +50,56 @@ Ignored if \code{vfilter} is passed via \code{...}.}
 \link[=encoding]{av::av_encode_video}. Such as framerate, vfilter, codec.}
 }
 \value{
-One video animation will be written disk and the path and file 
-  name will be return.
+One video animation will be written disk and the path and file
+name will be return.
 }
 \description{
-Stitch a sequence of images into a video animation. A simple wrapper for 
+Stitch a sequence of images into a video animation. A simple wrapper for
 \link[=encoding]{av::av_encode_video}.
 }
 \details{
 This function was overhauled in glatos v 0.4.1 to simplify inputs
-  and to no longer require an external program (ffmpeg.exe). As a result
-  input arguments have changed, as described above. Starting with glatos v
-  0.4.1, any calls to \code{make_video} using the arguments from glatos v
-  0.4.0 or earlier will be redirected to \link[glatos]{make_video_ffmpeg}.
-  Such redirection provides backward-compatibility but may be removed in a
-  future version.
+and to no longer require an external program (ffmpeg.exe). As a result
+input arguments have changed, as described above. Starting with glatos v
+0.4.1, any calls to \code{make_video} using the arguments from glatos v
+0.4.0 or earlier will be redirected to \link[glatos]{make_video_ffmpeg}.
+Such redirection provides backward-compatibility but may be removed in a
+future version.
 
 \code{make_video} is a simple wrapper of \code{av_encode_video}. It
-  is intended to allow creation of videos from images (frames) created by
-  \link[glatos]{make_frames} as simple as possible. More advanced features
-  of \code{av}, can be used by including any argument of
-  \link[=encoding]{av::av_encode_video} in the call to \code{make_video}, or
-  by calling \link[=encoding]{av::av_encode_video} directly. More
-  information about the \code{av} package is available at
-  https://cran.r-project.org/web/packages/av/index.html and
-  https://docs.ropensci.org/av/.
+is intended to allow creation of videos from images (frames) created by
+\link[glatos]{make_frames} as simple as possible. More advanced features
+of \code{av}, can be used by including any argument of
+\link[=encoding]{av::av_encode_video} in the call to \code{make_video}, or
+by calling \link[=encoding]{av::av_encode_video} directly. More
+information about the \code{av} package is available at
+https://cran.r-project.org/web/packages/av/index.html and
+https://docs.ropensci.org/av/.
 
 A directory of sequenced image files (.png, .jpeg) are
-  passed to \code{input_dir} argument.  The \code{input_ext} argument
-  specifies the type of files to be stitched into a video.  The
-  images passed to the function must all have the same size,
-  height, and format.
+passed to \code{input_dir} argument.  The \code{input_ext} argument
+specifies the type of files to be stitched into a video.  The
+images passed to the function must all have the same size,
+height, and format.
 
 Function can create .mp4, .mov, .mkv, .flv .wmv, or
-  .mpeg animations.  Format of created animation is determined by
-  file extension of \code{output}.
+.mpeg animations.  Format of created animation is determined by
+file extension of \code{output}.
 
-If \code{start_frame} or \code{end_frame} are specified, then only 
-  frames within the specified range will be included in the output video.
+If \code{start_frame} or \code{end_frame} are specified, then only
+frames within the specified range will be included in the output video.
 
 If \code{duration} is specified, then the output framerate will be
-  determined by the number of input frames and the framerate (default is 24
-  frames per second). E.g., a video of 10 second duration containing 240
-  frames will have an output frame rate of 24 fps. In some cases (when
-  number of frames is small) the number of frames may not divide evently
-  into the specified duration, so the output duration may differ from that
-  specified. If the output frame rate exceeds 30 fps, then a warning will
-  alert the user that some individual frame content may not be visible to
-  users. Video duration may also be controlled by setting the
-  \code{framerate} argument of \link[=encoding]{av::av_encode_video}. See
-  \code{...} above.
+determined by the number of input frames and the framerate (default is 24
+frames per second). E.g., a video of 10 second duration containing 240
+frames will have an output frame rate of 24 fps. In some cases (when
+number of frames is small) the number of frames may not divide evently
+into the specified duration, so the output duration may differ from that
+specified. If the output frame rate exceeds 30 fps, then a warning will
+alert the user that some individual frame content may not be visible to
+users. Video duration may also be controlled by setting the
+\code{framerate} argument of \link[=encoding]{av::av_encode_video}. See
+\code{...} above.
 }
 \examples{
 

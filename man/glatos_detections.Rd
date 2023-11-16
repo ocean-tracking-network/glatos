@@ -7,17 +7,17 @@
 glatos_detections(x)
 }
 \arguments{
-\item{x}{A data.frame or data.table created from a standard glatos 
+\item{x}{A data.frame or data.table created from a standard glatos
 detection file.}
 }
 \value{
 A data.frame of class \code{glatos_detections}:
 }
 \description{
-Constructor function for the class glatos_detections. Currently barebones 
+Constructor function for the class glatos_detections. Currently barebones
 and only used inside read_glatos_detections and read_otn_detections.
 }
 \note{
-This function may be developed in the future to dictate conversion 
+This function may be developed in the future to dictate conversion
 constuction from a data frame.
 }

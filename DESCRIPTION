@@ -52,3 +52,4 @@ LazyData: true
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/util-install_ffmpeg.r
 \name{install_ffmpeg}
 \alias{install_ffmpeg}
-\title{Install external FFmpeg software into `glatos` package}
+\title{Install external FFmpeg software into \code{glatos} package}
 \usage{
 install_ffmpeg()
 }
@@ -10,15 +10,15 @@ install_ffmpeg()
 message is returned to console signalling successful installation
 }
 \description{
-Downloads and installs external ffmpeg into `glatos` package
+Downloads and installs external ffmpeg into \code{glatos} package
 directory system to enable creation animated videos of fish
 movements
 }
 \details{
 \code{install_ffmpeg} determines operating system
-  (Windows or Mac) and downloads the latest stable version of
-  FFmpeg software.  FFmpeg software is installed within glatos
-  package and may be accessed using \code{system.file}
+(Windows or Mac) and downloads the latest stable version of
+FFmpeg software.  FFmpeg software is installed within glatos
+package and may be accessed using \code{system.file}
 }
 \examples{
 

@@ -81,6 +81,7 @@
 #' \item{`recs.pch:`}{ symbol type; default = 16}
 #' }
 #'
+
 #' ***To customize timeline:*** Add add prefix `timeline.` to any
 #'  argument of [axis][graphics::axis].  Note all elements of the timeline
 #'  except the sliding symbol (see 'slider' below) are created by a call to
@@ -122,7 +123,6 @@
 #' \item{`par.oma`}{ plot outer margins; default = c(0,0,0,0)}
 #' \item{`par.mar`}{ plot inner margins; default = c(6,0,0,0)}
 #' }
-#'
 #'
 #'@details If `animate = TRUE` then the animation output file name (`ani_name`
 #'  argument) will be passed to the `output` argument in [make_video()]. Default

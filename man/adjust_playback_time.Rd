@@ -15,9 +15,12 @@ adjust_playback_time(
 )
 }
 \arguments{
-\item{scale_factor}{multiplicative factor changes duration of video playback. See details.}
+\item{scale_factor}{multiplicative factor changes duration of video
+playback. See details.}
 
-\item{input}{character, path to video file (any FFmpeg supported file type- *.mp4, *.wmv, etc)}
+\item{input}{character, path
+to video file (any FFmpeg supported file type-
+*.mp4, *.wmv, etc)}
 
 \item{output_dir}{character, output directory, default is working directory}
 
@@ -25,9 +28,11 @@ adjust_playback_time(
 
 \item{overwrite}{logical, default is \code{overwrite = TRUE}}
 
-\item{ffmpeg}{NOTE: argument ignored. Not needed for package versions greater than 0.4.0.  Argument will be removed in a future version.}
+\item{ffmpeg}{NOTE: argument ignored. Not needed for package versions
+greater than 0.4.0.  Argument will be removed in a future version.}
 
-\item{diagnostic_mode}{Logical (default = FALSE). If true, returns FFMPEG output.}
+\item{diagnostic_mode}{Logical (default = FALSE). If true, returns FFMPEG
+output.}
 }
 \value{
 One video animation will be written to \code{output_dir}
@@ -37,14 +42,14 @@ Speed up or slow down playback of video
 }
 \details{
 \code{adjust_playback_time} adjusts playback speed of
-  video.  \code{scale_factor} controls the magnitude of speed-up
-  or slow-down by modifying the presentation timestamp of each
-  video frame. For more information, see 
-  \href{https://trac.ffmpeg.org/wiki}{How to speed up/slow down a video}.  
-  Values of \code{scale_factor} < 1 speed up playback and >1 slow
-  down video. In addition to changing playback, function can
-  change output format by specifying a different file extension in
-  \code{output}.
+video.  \code{scale_factor} controls the magnitude of speed-up
+or slow-down by modifying the presentation timestamp of each
+video frame. For more information, see
+\href{https://trac.ffmpeg.org/wiki}{How to speed up/slow down a video}.
+Values of \code{scale_factor} < 1 speed up playback and >1 slow
+down video. In addition to changing playback, function can
+change output format by specifying a different file extension in
+\code{output}.
 }
 \examples{
 

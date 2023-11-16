@@ -2,7 +2,7 @@
 % Please edit documentation in R/load-prepare_deploy_sheet.R
 \name{prepare_deploy_sheet}
 \alias{prepare_deploy_sheet}
-\title{Loads the OTN receiver deployment metadata sheet to prepare it for use in 
+\title{Loads the OTN receiver deployment metadata sheet to prepare it for use in
 \code{convert_otn_to_att}}
 \usage{
 prepare_deploy_sheet(
@@ -25,7 +25,7 @@ prepare_deploy_sheet(
 a data.frame created from the excel file.
 }
 \description{
-Loads the OTN receiver deployment metadata sheet to prepare it for use in 
+Loads the OTN receiver deployment metadata sheet to prepare it for use in
 \code{convert_otn_to_att}
 }
 \details{

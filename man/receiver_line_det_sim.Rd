@@ -19,36 +19,36 @@ receiver_line_det_sim(
 \arguments{
 \item{vel}{A numeric scalar with fish velocity in meters per second.}
 
-\item{delayRng}{A 2-element numeric vector with minimum and maximum delay 
+\item{delayRng}{A 2-element numeric vector with minimum and maximum delay
 (time in seconds from end of one coded burst to beginning of next)}
 
-\item{burstDur}{A numeric scalar with duration (in seconds) of each coded 
+\item{burstDur}{A numeric scalar with duration (in seconds) of each coded
 burst (i.e., pulse train).}
 
-\item{recSpc}{A numeric vector with distances (in meters) between receivers. 
+\item{recSpc}{A numeric vector with distances (in meters) between receivers.
 The length of vector is N-1, where N is number of receivers. One receiver
 is simulated when \code{recSpc = NA} (default).}
 
-\item{maxDist}{A numeric scalar with maximum distance between tagged fish 
+\item{maxDist}{A numeric scalar with maximum distance between tagged fish
 and any receiver during simulation (i.e., sets spatial boundaries)}
 
-\item{rngFun}{A function that defines detection range curve; must accept a 
-numeric vector of distances and return a numeric vector of detection 
+\item{rngFun}{A function that defines detection range curve; must accept a
+numeric vector of distances and return a numeric vector of detection
 probabilities at each distance.}
 
-\item{outerLim}{A two-element numeric vector with space (in meters) in which 
-simulated fish are allowed to pass to left (first element) and right 
+\item{outerLim}{A two-element numeric vector with space (in meters) in which
+simulated fish are allowed to pass to left (first element) and right
 (second element) of the receiver line.}
 
 \item{nsim}{Integer scalar with the number of crossings (fish) to simulate}
 
-\item{showPlot}{A logical scalar. Should a plot be drawn showing receivers 
+\item{showPlot}{A logical scalar. Should a plot be drawn showing receivers
 and fish paths?}
 }
 \value{
 A data frame with one column:
-  \item{detProb}{The proportion of simulated fish that were detected more  
-  than once on any single receiver.}
+\item{detProb}{The proportion of simulated fish that were detected more
+than once on any single receiver.}
 }
 \description{
 Estimate, by simulation, the probability of detecting an acoustic-tagged
@@ -56,24 +56,24 @@ fish on a receiver line, given constant fish velocity (ground speed),
 receiver spacing, number of receivers, and detection range curve.
 }
 \details{
-Virtual tagged fish (N=\code{nsim}) are "swum" through a virtual receiver 
-line. The first element of \code{recSpc} determines spacing between first 
-two receivers in the line, and each subsequent element of \code{recSpc} 
-determine spacing of subsequent receivers along the line, such that the 
-number of receivers is equal to \code{length(recSpc) + 1}. Each fish moves 
-at constant velocity (\code{vel}) along a line perpendicular to the 
-receiver line. The location of each fish path along the receiver line is 
-random (drawn from uniform distribution), and fish can pass outside the 
-receiver line (to the left of the first receiver or right of last receiver) 
-if \code{outerLim[1]} or \code{outerLim[2]} are greater than 0 meters. 
-Each fish starts and ends about \code{maxDist} meters from the receiver 
+Virtual tagged fish (N=\code{nsim}) are "swum" through a virtual receiver
+line. The first element of \code{recSpc} determines spacing between first
+two receivers in the line, and each subsequent element of \code{recSpc}
+determine spacing of subsequent receivers along the line, such that the
+number of receivers is equal to \code{length(recSpc) + 1}. Each fish moves
+at constant velocity (\code{vel}) along a line perpendicular to the
+receiver line. The location of each fish path along the receiver line is
+random (drawn from uniform distribution), and fish can pass outside the
+receiver line (to the left of the first receiver or right of last receiver)
+if \code{outerLim[1]} or \code{outerLim[2]} are greater than 0 meters.
+Each fish starts and ends about \code{maxDist} meters from the receiver
 line.
 
-A simulated tag signal is transmitted every \code{delayRng[1]} to 
-\code{delayRng[2]} seconds. At time of each transmission, the distance is 
-calculated between the tag and each receiver, and rngFun is used to 
-calculate the probability (p) that the signal was detected on each receiver. 
-Detection or non-detection on each receiver is determined by a draw from a 
+A simulated tag signal is transmitted every \code{delayRng[1]} to
+\code{delayRng[2]} seconds. At time of each transmission, the distance is
+calculated between the tag and each receiver, and rngFun is used to
+calculate the probability (p) that the signal was detected on each receiver.
+Detection or non-detection on each receiver is determined by a draw from a
 Bernoulli distribution with probability p.
 }
 \examples{
@@ -173,11 +173,11 @@ xlab="Distance between receiver and transmitter")
 }
 \references{
 For application example, see:  \cr\cr
-  Hayden, T.A., Holbrook, C.M., Binder, T.R., Dettmers, J.M., Cooke, S.J., 
-  Vandergoot, C.S. and Krueger, C.C., 2016. Probability of acoustic 
-  transmitter detections by receiver lines in Lake Huron: results of 
-  multi-year field tests and simulations. Animal Biotelemetry, 4(1), p.19.
-  \cr \url{https://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-016-0112-9}
+Hayden, T.A., Holbrook, C.M., Binder, T.R., Dettmers, J.M., Cooke, S.J.,
+Vandergoot, C.S. and Krueger, C.C., 2016. Probability of acoustic
+transmitter detections by receiver lines in Lake Huron: results of
+multi-year field tests and simulations. Animal Biotelemetry, 4(1), p.19.
+\cr \url{https://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-016-0112-9}
 }
 \author{
 C. Holbrook \email{cholbrook@usgs.gov}

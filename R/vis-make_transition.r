@@ -19,7 +19,7 @@
 #'
 #' @param all_touched logical. If TRUE (default) then any pixel touched by
 #'   polygon 'in_file' will be coded as water in the output. Alternatively,
-#'   pixel must be at least 50\% covered by polygon to be coded as water.
+#'   pixel must be at least 50% covered by polygon to be coded as water.
 #'
 #' @param invert logical. Passes into \link[gdalUtilities]{gdal_rasterize}. If
 #'   true, it will return the inverse of the raster object it would normally

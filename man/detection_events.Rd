@@ -13,68 +13,68 @@ detection_events(
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by
- \link{read_glatos_detections}).
- 
- \emph{OR} a data frame containing detection data with four columns
- described below and one column containing a location grouping variable,
- whose name is specified by \code{location_col} (see below).
- 
- The following four columns must appear in \code{det}: 
- \describe{
- \item{\code{animal_id}}{Individual animal identifier; character.}
+\link{read_glatos_detections}).
+
+\emph{OR} a data frame containing detection data with four columns
+described below and one column containing a location grouping variable,
+whose name is specified by \code{location_col} (see below).
+
+The following four columns must appear in \code{det}:
+\describe{
+\item{\code{animal_id}}{Individual animal identifier; character.}
 \item{\code{detection_timestamp_utc}}{Detection timestamps; MUST be of class
- POSIXct.}
-\item{\code{deploy_lat}}{Latitude of receiver deployment in decimal 
-    degrees, NAD83.}
-\item{\code{deploy_long}}{Longitude of receiver deployment in decimal 
-   degrees, NAD83.}
- }}
+POSIXct.}
+\item{\code{deploy_lat}}{Latitude of receiver deployment in decimal
+degrees, NAD83.}
+\item{\code{deploy_long}}{Longitude of receiver deployment in decimal
+degrees, NAD83.}
+}}
 
 \item{location_col}{A character string indicating the column name in
 \code{det} that will be used as the location grouping variable (e.g.
 "glatos_array"), in quotes.}
 
-\item{time_sep}{Amount of time (in seconds) that must pass between 
-sequential detections on the same receiver (or group of receivers, 
-depending on specified location) before that detection is considered to 
-belong to a new detection event. The default value \code{Inf}, will not 
+\item{time_sep}{Amount of time (in seconds) that must pass between
+sequential detections on the same receiver (or group of receivers,
+depending on specified location) before that detection is considered to
+belong to a new detection event. The default value \code{Inf}, will not
 define events based on elapsed time (only when location changes).}
 
-\item{condense}{A logical indicating if the result should be a condensed 
-data frame (\code{condense = TRUE}; default value) with one event per row, 
-or the input data frame with new event data columns added 
+\item{condense}{A logical indicating if the result should be a condensed
+data frame (\code{condense = TRUE}; default value) with one event per row,
+or the input data frame with new event data columns added
 \code{condense = TRUE}.}
 }
 \value{
-A data.table or tibble object (if input is either type; output 
-class to match input) or data.frame otherwise. Structure depends on 
+A data.table or tibble object (if input is either type; output
+class to match input) or data.frame otherwise. Structure depends on
 value of \code{condense} argument: \cr
 
-If \code{condense = TRUE}, a data.frame, data.table, or tibble with the 
+If \code{condense = TRUE}, a data.frame, data.table, or tibble with the
 following columns:
- \item{event}{Unique event identifier.}
- \item{individual}{Unique 'animal_id'.}
- \item{location}{Unique 'location'.}
+\item{event}{Unique event identifier.}
+\item{individual}{Unique 'animal_id'.}
+\item{location}{Unique 'location'.}
 \item{mean_latitude}{Mean latitude of detections comprising each event.}
-	\item{mean_longitude}{Mean longitude of detections comprising each event.}
- \item{first_detection}{The time of the first detection in a given detection 
-   event.} 
- \item{last_detection}{The time of the last detection in a given detection 
-   event.}  
- \item{num_detections}{The total number of detection that comprised a given
-	  detection event.}
- \item{res_time_sec}{The elapsed time in seconds between the first and last 
-	detection in a given event.}
-	
+\item{mean_longitude}{Mean longitude of detections comprising each event.}
+\item{first_detection}{The time of the first detection in a given detection
+event.}
+\item{last_detection}{The time of the last detection in a given detection
+event.}
+\item{num_detections}{The total number of detection that comprised a given
+detection event.}
+\item{res_time_sec}{The elapsed time in seconds between the first and last
+detection in a given event.}
+
 If \code{condense = FALSE}, a data.frame, data.table, or tibble matching the
 input data frame \code{det} with the following columns added:
- \item{time_diff}{Lagged time difference in seconds between successive 
-   detections of each animal_id.}
- \item{arrive}{Flag (0 or 1) representing the first detection in each 
-   event.} 
- \item{depart}{Flag (0 or 1) representing the last detection in each 
-   event.} 
- \item{event}{Integer representing the event number.}
+\item{time_diff}{Lagged time difference in seconds between successive
+detections of each animal_id.}
+\item{arrive}{Flag (0 or 1) representing the first detection in each
+event.}
+\item{depart}{Flag (0 or 1) representing the last detection in each
+event.}
+\item{event}{Integer representing the event number.}
 }
 \description{
 Reduce detection data into discrete detection events, defined by movement
@@ -83,13 +83,13 @@ detections at the same location that are separated by a user-defined
 threshold period of time.
 }
 \details{
-mean_latitude and mean_longitude columns in the output dataframe are 
-  the mean GPS locations for the detections comprising that detection event. 
-  For example, if the a fish was detected at 3 receiver stations in a 
-  glatos_array and glatos_array was selected as the location, then GPS 
-  location for that event will be the mean of the latitude and longitude 
-  for those three receiver stations (weighted based on the number of 
-  detections that occurred on each station).
+mean_latitude and mean_longitude columns in the output dataframe are
+the mean GPS locations for the detections comprising that detection event.
+For example, if the a fish was detected at 3 receiver stations in a
+glatos_array and glatos_array was selected as the location, then GPS
+location for that event will be the mean of the latitude and longitude
+for those three receiver stations (weighted based on the number of
+detections that occurred on each station).
 }
 \examples{
 
