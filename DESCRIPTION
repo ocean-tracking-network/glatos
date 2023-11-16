@@ -32,7 +32,7 @@ Imports:
 		tidyr
 Suggests: 
 		gganimate,
-		gifsky,
+		gifski,
 		GISTools,
 		png,
 		tint
