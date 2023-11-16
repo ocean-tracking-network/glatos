@@ -1,9 +1,16 @@
 
-# glatos 0.7.0 
+# glatos 0.7.0 (dev)
 
-#### 2023-08-30
+
+### Bug fixes
+
+- Fix typo in Description to Suggest 'gifski' (not 'gifsky'). 
+    - fixes [issue #185](https://github.com/ocean-tracking-network/glatos/issues/185)
+
 
 ### New features
+
+#### 2023-08-30
 
 - Add new functions to create, check, and validate `glatos_animals` objects:
     - `glatos_animals()` to construct a `glatos_animals` object from
