@@ -8,11 +8,12 @@ These functions are gone, no longer available.
 }
 \details{
 \itemize{
-\item \code{\link{check_dependencies}}:  This function is unneeded and defunct.
+\item \code{\link{check_dependencies}}: Removed in glatos 0.7.0.
 
-\item \code{\link{make_video_ffmpeg}}: This function has been replaced by \code{\link{make_video}}.
+\item \code{\link{make_video_ffmpeg}}: Removed in glatos 0.7.0.
+Use \code{\link{make_video}} instead.
 
-\item \code{\link{install_ffmpeg}}: This function is unneeded and defunct.
+\item \code{\link{install_ffmpeg}}: Removed in glatos 0.7.0.
 
 }
 }
