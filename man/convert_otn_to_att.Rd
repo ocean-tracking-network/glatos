@@ -85,7 +85,7 @@ tag_path <- system.file("extdata", "otn_nsbs_tag_metadata.xls",
 
 dets <- read_otn_detections(dets_path)
 tags <- prepare_tag_sheet(tag_path, 5, 2)
-deploy <- prepare_deploy_sheet(deploy_path)
+deploy <- prepare_deploy_sheet(deploy_path, 1, 1)
 
 ATTdata <- convert_otn_to_att(dets, tags, deploymentSheet = deploy)
 
