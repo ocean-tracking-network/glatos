@@ -10,7 +10,7 @@
       when skip is set).
     - Fix non-working example code.
 
-- `convert_otn_to_att`:
+- `convert_otn_to_att` and `convert_otn_erddap_to_att`:
     - Replaced `sp::CRS` with `sf::st_crs`
     - Changed link (URL) to relevant issue from GitLab to GitHub repo.
 
