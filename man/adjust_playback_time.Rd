@@ -10,17 +10,15 @@ adjust_playback_time(
   output_dir = getwd(),
   output = "new.mp4",
   overwrite = FALSE,
-  ffmpeg = NA,
   diagnostic_mode = FALSE
 )
 }
 \arguments{
-\item{scale_factor}{multiplicative factor changes duration of video
-playback. See details.}
+\item{scale_factor}{multiplicative factor changes duration of video playback.
+See details.}
 
-\item{input}{character, path
-to video file (any FFmpeg supported file type-
-*.mp4, *.wmv, etc)}
+\item{input}{character, path to video file (any file type supported by
+\link[=av_encode_video]{av::av_encode_video}; e.g., *.mp4, *.wmv, etc)}
 
 \item{output_dir}{character, output directory, default is working directory}
 
@@ -28,49 +26,68 @@ to video file (any FFmpeg supported file type-
 
 \item{overwrite}{logical, default is \code{overwrite = TRUE}}
 
-\item{ffmpeg}{NOTE: argument ignored. Not needed for package versions
-greater than 0.4.0.  Argument will be removed in a future version.}
-
 \item{diagnostic_mode}{Logical (default = FALSE). If true, returns FFMPEG
 output.}
 }
 \value{
-One video animation will be written to \code{output_dir}
+One video animation will be written to \code{output_dir} and the
+path and name of output file with be returned.
 }
 \description{
 Speed up or slow down playback of video
 }
 \details{
-\code{adjust_playback_time} adjusts playback speed of
-video.  \code{scale_factor} controls the magnitude of speed-up
-or slow-down by modifying the presentation timestamp of each
-video frame. For more information, see
-\href{https://trac.ffmpeg.org/wiki}{How to speed up/slow down a video}.
-Values of \code{scale_factor} < 1 speed up playback and >1 slow
-down video. In addition to changing playback, function can
-change output format by specifying a different file extension in
-\code{output}.
+A simple wrapper for \link[=av_encode_video]{av::av_encode_video}.
+
+\code{adjust_playback_time} adjusts playback speed of video.
+\code{scale_factor} controls the magnitude of speed-up or slow-down by
+modifying the presentation timestamp of each video frame. Values of
+\code{scale_factor} < 1 speed up playback and > 1 slow down playback. In
+addition to changing playback, function can change output format by
+specifying a different file extension in \code{output}.
+}
+\note{
+Input argument 'ffmpeg' was removed in glatos version 0.7.0.
 }
 \examples{
 
 \dontrun{
 
-# load example frames 
+# load example frames
 frames <- system.file("extdata", "frames", package = "glatos")
 
 # make video animation
-make_video(input_dir = frames, pattern = "\%02d.png", output = "animation_av.mp4")
+out_file <- file.path(tempdir(), "animation_av.mp4")
+make_video(input_dir = frames, 
+           input_ext = ".png", 
+           output = out_file)
 
-# slow video down by a factor of 10 
-path <- file.path(getwd(), "animation_av.mp4")
-adjust_playback_time(scale_factor = 10, input = path, diagnostic = FALSE, overwrite = TRUE)
+# slow video down by a factor of 10
+path <- file.path(tempdir(), "animation_av.mp4")
+adjust_playback_time(scale_factor = 10, 
+                    input = path, 
+                    output_dir = tempdir(),
+                    output = "animation_av_slow.mp4",
+                    diagnostic_mode = FALSE, 
+                    overwrite = TRUE)
 
 # slow video down by a factor of 10 and change format of output video
-adjust_playback_time(scale_factor = 10, input = path, output = "slow.wmv", diagnostic = FALSE)
+adjust_playback_time(scale_factor = 10, 
+                     input = path, 
+                     output_dir = tempdir(),
+                     output = "animation_av_slow.wmv", 
+                     diagnostic_mode = FALSE,
+                     overwrite = TRUE)
 
-# speed up video 
-adjust_playback_time(scale_factor=0.5, input = path, output = "faster.mp4")
+# speed up video
+adjust_playback_time(scale_factor = 0.5, 
+                     input = path, 
+                     output_dir = tempdir(),
+                     output = "animation_av_fast.mp4", 
+                     diagnostic_mode = FALSE,
+                     overwrite = TRUE)
 }
+
 }
 \author{
 Todd Hayden, Tom Binder, Chris Holbrook

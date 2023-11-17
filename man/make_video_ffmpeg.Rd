@@ -197,28 +197,28 @@ make_video_ffmpeg(dir = frames, pattern = "\%02d.png", output = "animation.mp4")
 make_video(dir=frames, pattern = "\%02d.png", output = "animation.wmv")
 
 # start animation on frame 10, end on frame 20
-make_video_ffmpeg(dir=frames, pattern = "\%02d.png", start_frame = 10, 
+make_video_ffmpeg(dir=frames, pattern = "\%02d.png", start_frame = 10,
            end_frame = 20, output = "animation_2.mp4")
 
 # resize output video to 720x480
-make_video_ffmpeg(dir=frames, pattern = "\%02d.png", size = "720x480", 
+make_video_ffmpeg(dir=frames, pattern = "\%02d.png", size = "720x480",
            output = "animation_3.mp4" )
 
 # change ffmpeg preset
-make_video(dir=frames, pattern = "\%02d.png", preset = "ultrafast", 
+make_video(dir=frames, pattern = "\%02d.png", preset = "ultrafast",
            output = "animation_4.mp4")
 
 # change input framerate
-make_video_ffmpeg(dir=frames, fps_in = 1, pattern = "\%02d.png", 
+make_video_ffmpeg(dir=frames, fps_in = 1, pattern = "\%02d.png",
            preset = "ultrafast", output = "animation_5.mp4")
 
 
 # add path to ffmpeg (windows)
-make_video_ffmpeg(dir = frames, pattern = "\%02d.png", output = "animation.mp4", 
+make_video_ffmpeg(dir = frames, pattern = "\%02d.png", output = "animation.mp4",
            ffmpeg = "c://path//to//windows//ffmpeg.exe")
 
 # add path to ffmpeg (mac)
-make_video_ffmpeg(dir = frames, pattern = "\%02d.png", output = "animation.mp4", 
+make_video_ffmpeg(dir = frames, pattern = "\%02d.png", output = "animation.mp4",
            ffmpeg = "/path/to/ffmpeg")
 }
 
