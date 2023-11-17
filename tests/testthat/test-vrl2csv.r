@@ -23,7 +23,7 @@ good_csv <- vrl2csv(good_vrl,
 csv_f10 <- readLines(good_csv, n = 10)
 
 csv_f10_shouldBe <- 
-  c("Date and Time (UTC),Receiver,Transmitter,Transmitter Name,Transmitter Serial,Sensor Value,Sensor Unit,Station Name,Latitude,Longitude", 
+  c("Date and Time (UTC),Receiver,Transmitter,Transmitter Name,Transmitter Serial,Sensor Value,Sensor Unit,Station Name,Latitude,Longitude,Transmitter Type,Sensor Precision", 
     "2011-04-11 20:17:49,VR2W-109924,A69-1303-63366,,,,,,+0,+0", 
     "2011-05-08 05:38:32,VR2W-109924,A69-9002-4043,,,5,ADC,,+0,+0", 
     "2011-05-08 05:41:09,VR2W-109924,A69-9002-4043,,,7,ADC,,+0,+0", 

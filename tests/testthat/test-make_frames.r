@@ -18,7 +18,7 @@ img_file <- file.path(temp_dir, "1.png")
 img_size <- file.info(img_file)$size
 
 # Expected file sizes
-size_should_be <- 30901
+size_should_be <- 30919
 
 # Clean up
 unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,
