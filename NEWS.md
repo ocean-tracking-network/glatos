@@ -1,5 +1,30 @@
 
 ----
+# glatos 0.7.0 (2023-11-17)
+
+# Bug fixes and minor changes
+
+- `prepare_deploy_sheet`: 
+    - Set 'skip = header_line - 1' and 'col_names = TRUE' to retain first 
+      record and column names (read_excel ignores column names, unless set, 
+      when skip is set).
+    - Fix non-working example code.
+
+
+- `convert_otn_to_att`:
+    - Replaced `sp::CRS` with `sf::st_crs`
+    - Changed link (URL) to relevant issue from GitLab to GitHub repo.
+
+- Remove ffmpeg functions.
+
+- Fix issues with several tests caused by changes to CRS/WKT and row.names 
+  attributes.
+    
+
+
+
+
+----
 # glatos 0.6.5 (2023-09-07)
 
 # Bug fixes 
