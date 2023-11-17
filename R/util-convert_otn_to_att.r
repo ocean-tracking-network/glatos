@@ -1,45 +1,50 @@
-#' Convert detections, tagging metadata, and deployment metadata to a format that ATT
-#' accepts.
-#' 
-#' Convert \code{glatos_detections}, OTN tagging metadata and OTN deployment metadata
-#' to \code{ATT} format for use in the Animal Tracking Toolbox 
+#' Convert detections, tagging metadata, and deployment metadata to a format
+#' that ATT accepts.
+#'
+#' Convert \code{glatos_detections}, OTN tagging metadata and OTN deployment
+#' metadata to \code{ATT} format for use in the Animal Tracking Toolbox
 #' (\url{https://github.com/vinayudyawer/ATT}).
-#' 
+#'
 #' @param detectionObj a data frame from \code{read_otn_detections}
-#' 
+#'
 #' @param taggingSheet a data frame from \code{prepare_tag_sheet}
-#' 
+#'
 #' @param deploymentObj a data frame from \code{read_otn_deployments}
-#' 
+#'
 #' @param deploymentSheet a data frame from \code{prepare_deploy_sheet}
-#' 
-#' @param timeFilter Whether the data should be filtered using the deployment and recovery/last download times of receivers.
-#' Defaults to TRUE, if not all receiver metadata is available, this should be set to FALSE otherwise there will be data loss.
-#' 
-#' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.
-#' 
-#' 
-#' @details This function takes 3 data frames containing detections, tagging metadata, and
-#'  deployment metadata from either \code{read_otn_deployments} or \code{prepare_deploy_sheet} 
-#'  and transforms them into 3 \code{tibble::tibble} objects inside of a list. The input that 
-#'  AAT uses to get this data product is located here:
-#'  https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-#'  are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
-#'  in a comment by Ryan Gosse.
-#' 
+#'
+#' @param timeFilter Whether the data should be filtered using the deployment
+#'   and recovery/last download times of receivers. Defaults to TRUE, if not all
+#'   receiver metadata is available, this should be set to FALSE otherwise there
+#'   will be data loss.
+#'
+#' @param crs a object of class `crs` (see [sf::st_crs][st_crs] with geographic
+#'   coordinate system for all spatial information (latitude/longitude). If none
+#'   provided or `crs` is not recognized, defaults to WGS84 (EPSG:4326).
+#'
+#'
+#' @details This function takes 3 data frames containing detections, tagging
+#'   metadata, and deployment metadata from either \code{read_otn_deployments}
+#'   or \code{prepare_deploy_sheet} and transforms them into 3
+#'   \code{tibble::tibble} objects inside of a list. The input that AAT uses to
+#'   get this data product is located here:
+#'   https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
+#'   are found here: https://github.com/ocean-tracking-network/glatos/issues/75
+#'   in a comment by Ryan Gosse.
+#'
 #' @author Ryan Gosse
-#' 
+#'
 #' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata,
 #'   and station metadata, to be ingested by VTrack/ATT
-#' 
+#'
 #' @examples
-#' 
+#'
 #' #--------------------------------------------------
 #' # EXAMPLE #1 - loading from Deployment Object
-#' 
+#'
 #' library(glatos)
-#' 
-#' dets_path <- system.file("extdata", "blue_shark_detections.csv", 
+#'
+#' dets_path <- system.file("extdata", "blue_shark_detections.csv",
 #'                          package = "glatos")
 #' deploy_path <- system.file("extdata", "hfx_deployments.csv",
 #'                            package = "glatos")
@@ -49,15 +54,15 @@
 #' dets <- read_otn_detections(dets_path)
 #' tags <- prepare_tag_sheet(tag_path, 5, 2)
 #' deploy <- read_otn_deployments(deploy_path)
-#' 
+#'
 #' ATTdata <- convert_otn_to_att(dets, tags, deploymentObj = deploy)
-#' 
+#'
 #' #--------------------------------------------------
 #' # EXAMPLE #2 - loading from Deployment Sheet
-#' 
+#'
 #' library(glatos)
-#' 
-#' dets_path <- system.file("extdata", "blue_shark_detections.csv", 
+#'
+#' dets_path <- system.file("extdata", "blue_shark_detections.csv",
 #'                          package = "glatos")
 #' deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
 #'                            package = "glatos")
@@ -67,12 +72,17 @@
 #' dets <- read_otn_detections(dets_path)
 #' tags <- prepare_tag_sheet(tag_path, 5, 2)
 #' deploy <- prepare_deploy_sheet(deploy_path)
-#' 
+#'
 #' ATTdata <- convert_otn_to_att(dets, tags, deploymentSheet = deploy)
-#' 
+#'
 #' @export
 
-convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL, deploymentSheet = NULL, timeFilter = TRUE, crs = sp::CRS("+init=epsg:4326")) {
+convert_otn_to_att <- function(detectionObj, 
+                               taggingSheet, 
+                               deploymentObj = NULL, 
+                               deploymentSheet = NULL, 
+                               timeFilter = TRUE, 
+                               crs = sf::st_crs(3426)) {
     
     if (is.null(deploymentObj) && is.null(deploymentSheet)) {
         stop("Deployment data must be supplied by either 'deploymentObj' or 'deploymentSheet'")
