@@ -90,7 +90,6 @@ receiver line."
 
 library(sf)
 library(glatos)
-library(GISTools)
 library(data.table)
 library(ggplot2)
 
@@ -114,10 +113,6 @@ plot(st_geometry(tags), axes = FALSE, col = "black", pch = 21, bg = "red",
 plot(st_geometry(recs), axes = FALSE, col = "black", add = TRUE, pch = 21,
      bg = "black", cex = 2)
 box()
-GISTools::map.scale(xc = 684579.8, yc = 5144600, len = 200, units = "meters",
-                    ndivs = 2, subdiv = 100)
-north.arrow(xb = 684120, yb = 5144600, len = 10, lab = "N", col = "black",
-            cex.lab = 1.5)
 legend(x = "topleft", legend = c("Tag/receiver", "Receiver"), col = "black",
        pch = 21, cex = 1.5, pt.bg = c("red", "black"), bty = "n")
 

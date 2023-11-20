@@ -33,7 +33,6 @@ Imports:
 Suggests: 
 		gganimate,
 		gifski,
-		GISTools,
 		png,
 		tint
 URL: https://github.com/ocean-tracking-network/glatos
