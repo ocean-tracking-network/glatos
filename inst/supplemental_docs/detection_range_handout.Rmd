@@ -165,7 +165,7 @@ note that this data object was created using the GLATOS `read_glatos_detections`
 function to load data from the original GLATOS detection export CSV file (e.g.,
 named *WBCCM_detectionsWithLocs_20181115_162626.csv*).  The most recent version
 of the GLATOS package and installation instructions can be obtained at
-https://gitlab.oceantrack.org/GreatLakes/glatos.
+https://github.com/ocean-tracking-network/glatos.
 
 ```{r, echo = TRUE, warning = FALSE}
 
