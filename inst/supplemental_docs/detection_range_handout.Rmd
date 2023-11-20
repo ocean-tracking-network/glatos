@@ -984,7 +984,7 @@ every 10 km.  We calculate positions for our virtual fish for 30 steps.
 ```{R, echo = TRUE}
 
 # do random walk in LH polygon starting in Saginaw Bay
-path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30, initPos = c(-83.6, 43.8), show_progress = FALSE)
+path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30, initPos = c(-83.6, 43.8), show_progress = FALSE, cartesianCRS = st_crs(LH))
 
 ```
 
@@ -1000,7 +1000,7 @@ fig_cap_grid <- "Plot of receiver network grid (black circles) and movement trac
 
 # plot path, grid and points
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
-points(path, type = "o", pch = 20, col = "red")
+points(st_coordinates(path), type = "o", pch = 20, col = "red")
 plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
 
 ```
