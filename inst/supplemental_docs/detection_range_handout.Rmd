@@ -1000,7 +1000,7 @@ fig_cap_grid <- "Plot of receiver network grid (black circles) and movement trac
 
 # plot path, grid and points
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
-points(st_coordinates(path), type = "o", pch = 20, col = "red")
+plot(st_geometry(path), type = "o", pch = 20, col = "red", add = TRUE)
 plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
 
 ```
@@ -1034,11 +1034,11 @@ mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_10km_sp,
 
 # calculate the mean elapsed time (seconds) between detections
 sim <- as.data.table(mydtc)
-detinterval <- round(mean(diff(sim$etime))/60,0)
+detinterval <- round(mean(diff(sim$time))/60,0)
 
 # calculate mean elapsed time difference between first detections on successive receivers
-foo <- sim[, .SD[1,"etime"],  by = recv_id]
-f_int <- mean(diff(foo$etime))
+foo <- sim[, .SD[1,"time"],  by = rec_id]
+f_int <- mean(diff(foo$time))
 
 ```
 
@@ -1063,9 +1063,9 @@ fig_cap_sim <- "Plot of receiver network grid (black circles), movement track of
 ```{R, echo = TRUE, fig.height=8,fig.width=8,fig.cap=fig_cap_sim}
 
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
-points(path, type = "o", pch = 20, col = "red")
+plot(st_geometry(path), type = "o", pch = 20, col = "red", add = TRUE)
 plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
-points(mydtc, col = "blue", cex = 2, pch=20)
+plot(st_geometry(mydtc), col = "blue", cex = 2, pch=20, add = TRUE)
 
 ```
 
