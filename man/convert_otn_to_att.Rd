@@ -43,7 +43,7 @@ deployment metadata from either \code{read_otn_deployments} or \code{prepare_dep
 and transforms them into 3 \code{tibble::tibble} objects inside of a list. The input that
 AAT uses to get this data product is located here:
 https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
+are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
 in a comment by Ryan Gosse.
 }
 \examples{
@@ -53,7 +53,7 @@ in a comment by Ryan Gosse.
 
 library(glatos)
 
-dets_path <- system.file("extdata", "blue_shark_detections.csv", 
+dets_path <- system.file("extdata", "blue_shark_detections.csv",
                          package = "glatos")
 deploy_path <- system.file("extdata", "hfx_deployments.csv",
                            package = "glatos")
@@ -71,7 +71,7 @@ ATTdata <- convert_otn_to_att(dets, tags, deploymentObj = deploy)
 
 library(glatos)
 
-dets_path <- system.file("extdata", "blue_shark_detections.csv", 
+dets_path <- system.file("extdata", "blue_shark_detections.csv",
                          package = "glatos")
 deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
                            package = "glatos")

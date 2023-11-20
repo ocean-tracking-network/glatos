@@ -1,45 +1,45 @@
 #' Convert detections, tagging metadata, and deployment metadata to a format that ATT
 #' accepts.
-#' 
+#'
 #' Convert `glatos_detections`, OTN tagging metadata and OTN deployment metadata
-#' to `ATT` format for use in the Animal Tracking Toolbox 
+#' to `ATT` format for use in the Animal Tracking Toolbox
 #' (<https://github.com/vinayudyawer/ATT>).
-#' 
+#'
 #' @param detectionObj a data frame from `read_otn_detections`
-#' 
+#'
 #' @param taggingSheet a data frame from `prepare_tag_sheet`
-#' 
+#'
 #' @param deploymentObj a data frame from `read_otn_deployments`
-#' 
+#'
 #' @param deploymentSheet a data frame from `prepare_deploy_sheet`
-#' 
+#'
 #' @param timeFilter Whether the data should be filtered using the deployment and recovery/last download times of receivers.
 #' Defaults to TRUE, if not all receiver metadata is available, this should be set to FALSE otherwise there will be data loss.
-#' 
+#'
 #' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or `crs` is not recognized, defaults to WGS84.
-#' 
-#' 
+#'
+#'
 #' @details This function takes 3 data frames containing detections, tagging metadata, and
-#'  deployment metadata from either `read_otn_deployments` or `prepare_deploy_sheet` 
-#'  and transforms them into 3 `tibble::tibble` objects inside of a list. The input that 
+#'  deployment metadata from either `read_otn_deployments` or `prepare_deploy_sheet`
+#'  and transforms them into 3 `tibble::tibble` objects inside of a list. The input that
 #'  AAT uses to get this data product is located here:
 #'  https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-#'  are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
+#'  are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
 #'  in a comment by Ryan Gosse.
-#' 
+#'
 #' @author Ryan Gosse
-#' 
+#'
 #' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata,
 #'   and station metadata, to be ingested by VTrack/ATT
-#' 
+#'
 #' @examples
-#' 
+#'
 #' #--------------------------------------------------
 #' # EXAMPLE #1 - loading from Deployment Object
-#' 
+#'
 #' library(glatos)
-#' 
-#' dets_path <- system.file("extdata", "blue_shark_detections.csv", 
+#'
+#' dets_path <- system.file("extdata", "blue_shark_detections.csv",
 #'                          package = "glatos")
 #' deploy_path <- system.file("extdata", "hfx_deployments.csv",
 #'                            package = "glatos")
@@ -49,15 +49,15 @@
 #' dets <- read_otn_detections(dets_path)
 #' tags <- prepare_tag_sheet(tag_path, 5, 2)
 #' deploy <- read_otn_deployments(deploy_path)
-#' 
+#'
 #' ATTdata <- convert_otn_to_att(dets, tags, deploymentObj = deploy)
-#' 
+#'
 #' #--------------------------------------------------
 #' # EXAMPLE #2 - loading from Deployment Sheet
-#' 
+#'
 #' library(glatos)
-#' 
-#' dets_path <- system.file("extdata", "blue_shark_detections.csv", 
+#'
+#' dets_path <- system.file("extdata", "blue_shark_detections.csv",
 #'                          package = "glatos")
 #' deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
 #'                            package = "glatos")
@@ -67,13 +67,13 @@
 #' dets <- read_otn_detections(dets_path)
 #' tags <- prepare_tag_sheet(tag_path, 5, 2)
 #' deploy <- prepare_deploy_sheet(deploy_path)
-#' 
+#'
 #' ATTdata <- convert_otn_to_att(dets, tags, deploymentSheet = deploy)
-#' 
+#'
 #' @export
 
 convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL, deploymentSheet = NULL, timeFilter = TRUE, crs = sp::CRS("+init=epsg:4326")) {
-    
+
     if (is.null(deploymentObj) && is.null(deploymentSheet)) {
         stop("Deployment data must be supplied by either 'deploymentObj' or 'deploymentSheet'")
     }
@@ -87,26 +87,26 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
        dplyr::mutate(
             station = gsub("\\(lost\\/found\\)", '', station),
             receiver_sn = gsub("\\(lost\\/found\\)", '', receiver_sn)
-        ) 
+        )
 
-    transmitters <- 
+    transmitters <-
     if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))){
       detectionObj$transmitter_id
-    } else { 
+    } else {
       concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
     }
 
     tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
         Tag.ID = detectionObj$animal_id,
         Transmitter = as.factor(transmitters),
-        Common.Name = as.factor(detectionObj$common_name_e), 
+        Common.Name = as.factor(detectionObj$common_name_e),
         Sci.Name = as.factor(detectionObj$scientificname)
     ))
 
     tagMetadata <- unique(tagMetadata) # Cut out dupes
 
     detectionObj <- dplyr::left_join(detectionObj, taggingSheet %>% dplyr::select(-c('animal_id')), by="transmitter_id")
-    
+
     detectionObj <- dplyr::left_join(detectionObj %>% dplyr::select(-deploy_lat, -deploy_long), deploymentObj, by = "station")
     if (timeFilter) {
       if (is.null(deploymentSheet)) {
@@ -119,36 +119,36 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
         detectionObj <- detectionObj %>% dplyr::filter(
           detection_timestamp_utc >= deploy_date_time,
           detection_timestamp_utc <= recover_date_time | recover_date_time %in% c(NA)
-          
+
         )
       }
     }
-    
-    
-    detectionObj <- detectionObj %>% 
+
+
+    detectionObj <- detectionObj %>%
        dplyr::mutate(
             ReceiverFull = paste(ins_model_no, receiver_sn, sep = "-")
         )
-        
+
     detectionObj$est_tag_life[detectionObj$est_tag_life == "NULL"] <- NA
 
     releaseData <- tibble::tibble( # Get the rest from detectionObj
-        Tag.ID = detectionObj$animal_id, 
-        Tag.Project = as.factor(detectionObj$collectioncode), 
-        Release.Latitude = as.double(detectionObj$latitude), 
-        Release.Longitude = as.double(detectionObj$longitude), 
+        Tag.ID = detectionObj$animal_id,
+        Tag.Project = as.factor(detectionObj$collectioncode),
+        Release.Latitude = as.double(detectionObj$latitude),
+        Release.Longitude = as.double(detectionObj$longitude),
         Release.Date = as.Date(detectionObj$time),
         Sex = as.factor(detectionObj$sex),
         Tag.Life = as.integer(detectionObj$est_tag_life)
     ) %>% dplyr::filter(!Tag.ID %in% NA)
 
-    releaseData <- dplyr::mutate(releaseData, 
+    releaseData <- dplyr::mutate(releaseData,
         # Convert sex text and null missing columns
         Sex = purrr::map(Sex, convert_sex),
         Tag.Status = as.factor(NA),
         Bio = as.factor(NA)
     ) %>% unique()
-    
+
     detections <- tibble::tibble(
         Date.Time = detectionObj$detection_timestamp_utc,
         Transmitter = as.factor(detectionObj$transmitter_id),
@@ -160,7 +160,7 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
         Sensor.Unit = as.factor(detectionObj$sensorunit)
     )
 
-    tagMetadata <- dplyr::left_join(tagMetadata, releaseData, by = "Tag.ID") 
+    tagMetadata <- dplyr::left_join(tagMetadata, releaseData, by = "Tag.ID")
 
     animal_sex <- tagMetadata$Sex
     animal_sex[animal_sex == "NULL"] = NA
@@ -190,7 +190,7 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
 
     if (inherits(crs, "CRS")) {
       attr(att_obj, "CRS") <- crs
-    } 
+    }
     else {
       message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
       attr(att_obj, "CRS") <- eval(formals()$crs)
@@ -198,27 +198,27 @@ convert_otn_to_att <- function(detectionObj, taggingSheet, deploymentObj = NULL,
 
     return(att_obj)
 
-    
+
 }
 
 
 # Simple query to WoRMS based on the common name and returns the sci name
 query_worms_common <- function(commonName) {
-  
+
   url <- utils::URLencode(
-    sprintf("https://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", 
+    sprintf("https://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s",
             commonName))
-  
+
   sciname <- tryCatch({
     print(url)
     payload <- jsonlite::fromJSON(url)
     sciname <- payload$scientificname
   }, error = function(e){
     print(geterrmessage())
-    stop(sprintf('Error in querying WoRMS, %s was probably not found.', 
+    stop(sprintf('Error in querying WoRMS, %s was probably not found.',
                  commonName))
   })
-  
+
   return(sciname)
 }
 
