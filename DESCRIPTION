@@ -31,10 +31,11 @@ Imports:
 		tibble,
 		tidyr
 Suggests: 
-		gganimate,
-		gifski,
-		png,
-		tint
+    gganimate,
+    gifski,
+    png,
+    testthat (>= 3.0.0),
+    tint
 URL: https://github.com/ocean-tracking-network/glatos
 BugReports: https://github.com/ocean-tracking-network/glatos/issues
 Authors@R: c(
@@ -53,3 +54,4 @@ RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
