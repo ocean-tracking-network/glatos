@@ -1115,7 +1115,9 @@ for(i in 1:100){
 # do random walk in LH polygon of virtual fish starting in Saginaw Bay
   paths[[i]] <- crw_in_polygon(LH_latlon, theta = c(0,25),
                              stepLen= 10000, initHeading = 0,
-                             nsteps = 30, initPos = c(-83.6, 43.8), sp_out = TRUE,
+                             nsteps = 30, initPos = c(-83.6, 43.8),
+                             cartesianCRS = st_crs(LH),
+                             sp_out = TRUE,
                              show_progress = FALSE)
 }
 
