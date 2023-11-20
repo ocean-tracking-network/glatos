@@ -7,7 +7,8 @@ Date: 2023-09-07
 Depends: R (>= 3.2.0)
 Imports:
 		av,
-		data.table,		
+		data.table,
+		dplyr,
 		fasterize,
 		fasttime,
 		gdalUtilities,
@@ -21,7 +22,6 @@ Imports:
 		methods,
 		plotrix,
 		plotly,
-		plyr,
 		purrr,
 		raster,
 		readxl,
