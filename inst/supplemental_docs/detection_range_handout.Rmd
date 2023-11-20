@@ -1027,7 +1027,7 @@ Recall that the `edrf` object in the previous line detection range
 simulation described the detection range curve.  We will leave it up
 to the reader to review how this object was created.
 
-```{R, echo = TRUE}
+```{R, echo = TRUE, warning=FALSE}
 
 mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_10km_sp, 
                                 detRngFun = edrf, show_progress = FALSE )
@@ -1126,7 +1126,7 @@ for(i in 1:100){
 Now we are going to collapse the list into a single data.table and add
 a ID column for each fish.
 
-```{r, echo = TRUE}
+```{r, echo = TRUE, warning=FALSE}
 
 # make empty list to hold results
 trans <- vector("list", length = 100)
@@ -1153,12 +1153,12 @@ sim <- lapply(sim, as.data.frame)
 sim <- rbindlist(sim, fill = TRUE, idcol = "virt_fish")
 
 # calculate the mean elapsed time (seconds) between detections
-det_interval_sim1 <- mean(diff(sim$etime))
+det_interval_sim1 <- mean(diff(sim$time))
 
 # calculate mean elapsed time difference between
 # first detections on successive receivers by fish
-out <- sim[, .SD[1,"etime"],  by = c("recv_id", "virt_fish")]
-out[, t_diff := etime - data.table::shift(etime), by = virt_fish]
+out <- sim[, .SD[1,"time"],  by = c("rec_id", "virt_fish")]
+out[, t_diff := time - data.table::shift(time), by = virt_fish]
 rec_by_dtc_sim1 <- mean(out$t_diff, na.rm = TRUE)
 
 ```
@@ -1168,7 +1168,7 @@ first detections on successive receivers for all simulated fish on a
 10 km grid (`r#round(rec_by_dtc_sim1/60,0)`), we are going to
 repeat the simulation with a 5 km grid in the next chunk.
 
-```{R}
+```{r, warning=FALSE}
 
 # make empty list to hold results
 sim2 <- vector("list", length = 100)
@@ -1187,12 +1187,12 @@ sim2 <- lapply(sim2, as.data.frame)
 sim2 <- rbindlist(sim2, fill = TRUE, idcol = "virt_fish")
 
 # calculate the mean elapsed time (seconds) between detections
-det_interval_sim2 <- mean(diff(sim2$etime))
+det_interval_sim2 <- mean(diff(sim2$time))
 
 # calculate mean elapsed time difference between
 # first detections on successive receivers by fish
-sim2_out <- sim2[, .SD[1,"etime"],  by = c("recv_id", "virt_fish")]
-sim2_out[, t_diff := etime - data.table::shift(etime), by = virt_fish]
+sim2_out <- sim2[, .SD[1,"time"],  by = c("rec_id", "virt_fish")]
+sim2_out[, t_diff := time - data.table::shift(time), by = virt_fish]
 rec_by_dtc_sim2 <- mean(sim2_out$t_diff, na.rm = TRUE)
 
 ```
