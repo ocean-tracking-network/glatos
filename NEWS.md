@@ -1,8 +1,11 @@
 
 ----
-# glatos 0.7.0 (2023-11-17)
 
-# Bug fixes and minor changes
+# glatos 0.7.0 (2024-01-04)
+
+
+### Bug fixes and minor changes
+
 
 - `prepare_deploy_sheet`: 
     - Set 'skip = header_line - 1' and 'col_names = TRUE' to retain first 
@@ -15,6 +18,10 @@
     - Changed link (URL) to relevant issue from GitLab to GitHub repo.
 
 - Remove ffmpeg functions.
+    - make defunct: 
+        - `check_dependencies`
+        - `install_ffmpeg`
+        - `make_video_ffmpeg`
 
 - Fix issues with several tests caused by changes to CRS/WKT and row.names 
   attributes.
@@ -24,18 +31,20 @@
 
 
 ----
+
 # glatos 0.6.5 (2023-09-07)
 
-# Bug fixes 
+### Bug fixes 
 
 - Fix bug in summarize_detections() where setting 'location_col' triggers error.
     - fixes [issue #180](https://github.com/ocean-tracking-network/glatos/issues/180)
 
 
 ----
+
 # glatos 0.6.4 (2023-09-06)
 
-# Bug fixes and minor changes
+### Bug fixes and minor changes
 
 - Add support for new column named 'record_status' in GLATOS detection export CSV.
     - fix [issue #179](https://github.com/ocean-tracking-network/glatos/issues/179)
@@ -43,9 +52,10 @@
 
 
 ----
+
 # glatos 0.6.3 (2023-01-25)
 
-# Bug fixes and minor changes
+### Bug fixes and minor changes
 
 - Add support for new GLATOS receiver_locations file format; with code_map and 
 code_map_comment columns.
@@ -53,26 +63,29 @@ code_map_comment columns.
 
 
 ----
+
 # glatos 0.6.2 (2022-10-25)
 
-# Bug fixes and minor changes
+### Bug fixes and minor changes
 
 - Fix error in `position_heat_map()` function resulting in `Error in 
 zip_internal... Some files do not exist`. Update documentation.
 
 
 ----
+
 # glatos 0.6.1
 
 #### 2022-10-11
 
-# Minor changes
+### Minor changes
 
 - Allow `sf` `MUTLIPOLYGON` geometry type for input `polyg` to `crw_in_polygon()`.
     
 - Use new function `check_cross_boundary()` instead of `check_in_polygon` to prevent paths crossing land (e.g., over peninsulas) in `crw_in_polygon()`.
 
 ----
+
 # glatos 0.6.0
 
 #### 2022-06-24
