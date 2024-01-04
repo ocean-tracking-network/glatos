@@ -14,5 +14,6 @@
 #'
 #'
 #'
-#' @name glatos-defunct
+#' @name glatos-defunct 
+#' @aliases check_dependencies make_video_ffmpeg install_ffmpeg
 NULL
