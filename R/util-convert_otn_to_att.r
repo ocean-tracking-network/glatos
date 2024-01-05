@@ -29,7 +29,7 @@
 #'   \code{tibble::tibble} objects inside of a list. The input that AAT uses to
 #'   get this data product is located here:
 #'   https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-#'   are found here: https://github.com/ocean-tracking-network/glatos/issues/75
+#'   are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
 #'   in a comment by Ryan Gosse.
 #'
 #' @author Ryan Gosse
@@ -97,26 +97,26 @@ convert_otn_to_att <- function(detectionObj,
        dplyr::mutate(
             station = gsub("\\(lost\\/found\\)", '', station),
             receiver_sn = gsub("\\(lost\\/found\\)", '', receiver_sn)
-        ) 
+        )
 
-    transmitters <- 
+    transmitters <-
     if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))){
       detectionObj$transmitter_id
-    } else { 
+    } else {
       concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
     }
 
     tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
         Tag.ID = detectionObj$animal_id,
         Transmitter = as.factor(transmitters),
-        Common.Name = as.factor(detectionObj$common_name_e), 
+        Common.Name = as.factor(detectionObj$common_name_e),
         Sci.Name = as.factor(detectionObj$scientificname)
     ))
 
     tagMetadata <- unique(tagMetadata) # Cut out dupes
 
     detectionObj <- dplyr::left_join(detectionObj, taggingSheet %>% dplyr::select(-c('animal_id')), by="transmitter_id")
-    
+
     detectionObj <- dplyr::left_join(detectionObj %>% dplyr::select(-deploy_lat, -deploy_long), deploymentObj, by = "station")
     if (timeFilter) {
       if (is.null(deploymentSheet)) {
@@ -129,36 +129,36 @@ convert_otn_to_att <- function(detectionObj,
         detectionObj <- detectionObj %>% dplyr::filter(
           detection_timestamp_utc >= deploy_date_time,
           detection_timestamp_utc <= recover_date_time | recover_date_time %in% c(NA)
-          
+
         )
       }
     }
-    
-    
-    detectionObj <- detectionObj %>% 
+
+
+    detectionObj <- detectionObj %>%
        dplyr::mutate(
             ReceiverFull = paste(ins_model_no, receiver_sn, sep = "-")
         )
-        
+
     detectionObj$est_tag_life[detectionObj$est_tag_life == "NULL"] <- NA
 
     releaseData <- tibble::tibble( # Get the rest from detectionObj
-        Tag.ID = detectionObj$animal_id, 
-        Tag.Project = as.factor(detectionObj$collectioncode), 
-        Release.Latitude = as.double(detectionObj$latitude), 
-        Release.Longitude = as.double(detectionObj$longitude), 
+        Tag.ID = detectionObj$animal_id,
+        Tag.Project = as.factor(detectionObj$collectioncode),
+        Release.Latitude = as.double(detectionObj$latitude),
+        Release.Longitude = as.double(detectionObj$longitude),
         Release.Date = as.Date(detectionObj$time),
         Sex = as.factor(detectionObj$sex),
         Tag.Life = as.integer(detectionObj$est_tag_life)
     ) %>% dplyr::filter(!Tag.ID %in% NA)
 
-    releaseData <- dplyr::mutate(releaseData, 
+    releaseData <- dplyr::mutate(releaseData,
         # Convert sex text and null missing columns
         Sex = purrr::map(Sex, convert_sex),
         Tag.Status = as.factor(NA),
         Bio = as.factor(NA)
     ) %>% unique()
-    
+
     detections <- tibble::tibble(
         Date.Time = detectionObj$detection_timestamp_utc,
         Transmitter = as.factor(detectionObj$transmitter_id),
@@ -170,7 +170,7 @@ convert_otn_to_att <- function(detectionObj,
         Sensor.Unit = as.factor(detectionObj$sensorunit)
     )
 
-    tagMetadata <- dplyr::left_join(tagMetadata, releaseData, by = "Tag.ID") 
+    tagMetadata <- dplyr::left_join(tagMetadata, releaseData, by = "Tag.ID")
 
     animal_sex <- tagMetadata$Sex
     animal_sex[animal_sex == "NULL"] = NA
@@ -200,7 +200,7 @@ convert_otn_to_att <- function(detectionObj,
 
     if (inherits(crs, "CRS")) {
       attr(att_obj, "CRS") <- crs
-    } 
+    }
     else {
       message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
       attr(att_obj, "CRS") <- eval(formals()$crs)
@@ -208,27 +208,27 @@ convert_otn_to_att <- function(detectionObj,
 
     return(att_obj)
 
-    
+
 }
 
 
 # Simple query to WoRMS based on the common name and returns the sci name
 query_worms_common <- function(commonName) {
-  
+
   url <- utils::URLencode(
-    sprintf("https://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s", 
+    sprintf("https://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s",
             commonName))
-  
+
   sciname <- tryCatch({
     print(url)
     payload <- jsonlite::fromJSON(url)
     sciname <- payload$scientificname
   }, error = function(e){
     print(geterrmessage())
-    stop(sprintf('Error in querying WoRMS, %s was probably not found.', 
+    stop(sprintf('Error in querying WoRMS, %s was probably not found.',
                  commonName))
   })
-  
+
   return(sciname)
 }
 
