@@ -93,86 +93,90 @@ same (except for extension) as the source file (e.g.,
 }
 
 \examples{
-
 \dontrun{
 
 # Check vue.exe
 check_vue()
 
-#all examples below assume path to VUE.exe is in system PATH environment
+# all examples below assume path to VUE.exe is in system PATH environment
 # variable. If not (you get an error), add input argument 'vue_exe_path'
 # with path directory with VUE.exe.
 # e.g.,
-#vue_convert(vrl_files,
+# vue_convert(vrl_files,
 #            vue_exe_path = "C:/Program Files (x86)/Vemco/VUE")
 
-#get path to example VRL files in glatos
+# get path to example VRL files in glatos
 vrl_files <- system.file("extdata", "detection_files_raw",
-                        c("VR2W_109924_20110718_1.vrl",
-                          "VR2W180_302187_20180629_1.vrl",
-                          "VR2AR_546310_20190613_1.vrl",
-                          "VR2Tx_480022_20190613_1.vrl"),
-                        package = "glatos")
+  c(
+    "VR2W_109924_20110718_1.vrl",
+    "VR2W180_302187_20180629_1.vrl",
+    "VR2AR_546310_20190613_1.vrl",
+    "VR2Tx_480022_20190613_1.vrl"
+  ),
+  package = "glatos"
+)
 
-#copy to temp_dir
+# copy to temp_dir
 temp_dir <- tempdir()
 vrl_files2 <- file.path(temp_dir, basename(vrl_files))
 file.copy(vrl_files, vrl_files2)
 
-#uncomment to open in file browser
-#utils::browseURL(temp_dir)
+# uncomment to open in file browser
+# utils::browseURL(temp_dir)
 
-#call VUE.exe; default args
+# call VUE.exe; default args
 vue_convert(vrl_files2)
 
-#run again and overwrite
+# run again and overwrite
 vue_convert(vrl_files2, overwrite = TRUE)
 
-#run again without progress bars
+# run again without progress bars
 vue_convert(vrl_files2, overwrite = TRUE, show_progress = FALSE)
 
 
-#change output directory
+# change output directory
 new_dir <- file.path(temp_dir, "testdir")
-if(!dir.exists(new_dir)) dir.create(new_dir)
+if (!dir.exists(new_dir)) dir.create(new_dir)
 
-#write to new directory
+# write to new directory
 vue_convert(vrl_files2, out_dir = new_dir)
 
 
-#multiple source folders
-#make new folder for each vrl file inside temp directory
-new_dir2 <- file.path(temp_dir, 
-                     "testdir2", 
-                      seq_along(vrl_files2))
-for(i in 1:length(new_dir2)){
-  if(!dir.exists(new_dir2[i])) dir.create(new_dir2[i], recursive = TRUE)
+# multiple source folders
+# make new folder for each vrl file inside temp directory
+new_dir2 <- file.path(
+  temp_dir,
+  "testdir2",
+  seq_along(vrl_files2)
+)
+for (i in 1:length(new_dir2)) {
+  if (!dir.exists(new_dir2[i])) dir.create(new_dir2[i], recursive = TRUE)
 }
 
-#redistribute files
+# redistribute files
 vrl_files3 <- file.path(new_dir2, basename(vrl_files2))
 file.copy(vrl_files2, vrl_files3)
 
-#write each CSV file to same location as corresponding VRL (full path input)
+# write each CSV file to same location as corresponding VRL (full path input)
 vue_convert(vrl_files3)
 
-#same but use input dir only and overwrite = TRUE
+# same but use input dir only and overwrite = TRUE
 vue_convert(dirname(vrl_files3), overwrite = TRUE)
 
-#same but write all CSV files to new location
+# same but write all CSV files to new location
 new_dir3 <- file.path(temp_dir, "testdir3")
-if(!dir.exists(new_dir3)) dir.create(new_dir3)
+if (!dir.exists(new_dir3)) dir.create(new_dir3)
 
 vue_convert(vrl_files3, out_dir = new_dir3)
 
-#same but use input dir only and recursive = TRUE
-vue_convert(src = file.path(temp_dir, "testdir2"), 
-             out_dir = new_dir3,
-             overwrite = TRUE,
-             recursive = TRUE)
-
+# same but use input dir only and recursive = TRUE
+vue_convert(
+  src = file.path(temp_dir, "testdir2"),
+  out_dir = new_dir3,
+  overwrite = TRUE,
+  recursive = TRUE
+)
 }
-
 
 }
 \author{

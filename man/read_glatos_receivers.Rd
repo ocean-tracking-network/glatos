@@ -32,13 +32,15 @@ timestamps must be 'YYYY-MM-DD HH:MM' format and in UTC timezone per GLATOS
 standard.
 }
 \examples{
-#get path to example receiver_locations file
+# get path to example receiver_locations file
 rec_file <- system.file("extdata",
-  "sample_receivers.csv", package = "glatos")
+  "sample_receivers.csv",
+  package = "glatos"
+)
 
-#note that code above is needed to find the example file
-#for real glatos data, use something like below
-#rec_file <- "c:/path_to_file/GLATOS_receiverLocations_20150321_132242.csv"
+# note that code above is needed to find the example file
+# for real glatos data, use something like below
+# rec_file <- "c:/path_to_file/GLATOS_receiverLocations_20150321_132242.csv"
 
 rcv <- read_glatos_receivers(rec_file)
 

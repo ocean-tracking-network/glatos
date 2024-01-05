@@ -61,20 +61,28 @@ required column names and classes using \code{validate_glatos_animals()}.
 \examples{
 
 #  glatos_animals
-x = data.frame(animal_id = c("120", "107", "109"),
-              tag_id_code = c("32024", "32012", "32014"),
-              tag_code_space = c("A69-9001", "A69-9001", "A69-9001"),
-              utc_release_date_time = as.POSIXct(c("2011-03-28 00:00:00",
-                                                   "2011-03-28 00:01:00",
-                                                   "2011-03-28 00:05:00"),
-                                                 tz = "UTC"),
-              release_latitude = c(41.56093, 41.56093, 41.56093),
-              release_longitude = c(-83.645, -83.645, -83.645))
+x <- data.frame(
+  animal_id = c("120", "107", "109"),
+  tag_id_code = c("32024", "32012", "32014"),
+  tag_code_space = c("A69-9001", "A69-9001", "A69-9001"),
+  utc_release_date_time = as.POSIXct(
+    c(
+      "2011-03-28 00:00:00",
+      "2011-03-28 00:01:00",
+      "2011-03-28 00:05:00"
+    ),
+    tz = "UTC"
+  ),
+  release_latitude = c(41.56093, 41.56093, 41.56093),
+  release_longitude = c(-83.645, -83.645, -83.645)
+)
 
-ga_df1 <- glatos_animals(animal_id = x$animal_id,
-                      tag_id_code = x$tag_id_code,
-                      tag_code_space = x$tag_code_space,
-                      utc_release_date_time = x$utc_release_date_time)
+ga_df1 <- glatos_animals(
+  animal_id = x$animal_id,
+  tag_id_code = x$tag_id_code,
+  tag_code_space = x$tag_code_space,
+  utc_release_date_time = x$utc_release_date_time
+)
 
 
 # as_glatos_animals
@@ -86,7 +94,8 @@ ga_df2 <- as_glatos_animals(x)
 library(sf)
 
 x_sf <- sf::st_as_sf(x,
-                     coords = c("release_longitude", "release_latitude"))
+  coords = c("release_longitude", "release_latitude")
+)
 
 ga_sf <- as_glatos_animals(x_sf)
 
@@ -100,17 +109,20 @@ ga_tbl <- as_glatos_animals(x_tbl)
 
 
 # data.frame input; missing column name
-library(dplyr) #for rename
+library(dplyr) # for rename
 x2 <- rename(x,
-             fish_name = animal_id,
-             release_timestamp = utc_release_date_time)
+  fish_name = animal_id,
+  release_timestamp = utc_release_date_time
+)
 
 ga2 <- as_glatos_animals(x2)
 
 
 # data.grame input; wrong column class
-x3 <- mutate(x, animal_id = as.integer(animal_id),
-             utc_release_date_time = as.character(utc_release_date_time))
+x3 <- mutate(x,
+  animal_id = as.integer(animal_id),
+  utc_release_date_time = as.character(utc_release_date_time)
+)
 
 ga3 <- as_glatos_animals(x3)
 
@@ -119,7 +131,7 @@ ga3 <- as_glatos_animals(x3)
 
 validate_glatos_animals(x)
 
-is_glatos_animals(x) #FALSE
+is_glatos_animals(x) # FALSE
 
-is_glatos_animals(ga_df1) #TRUE
+is_glatos_animals(ga_df1) # TRUE
 }

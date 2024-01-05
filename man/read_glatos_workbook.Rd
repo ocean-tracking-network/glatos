@@ -85,13 +85,15 @@ that need reformatting, (2) select 'Text-to-columns' in the 'Data' menu,
 (5) choose 'Date: YMD' in the 'Column data format' box, and (6) 'Finish'.
 }
 \examples{
-#get path to example GLATOS Data Workbook
+# get path to example GLATOS Data Workbook
 wb_file <- system.file("extdata",
-  "walleye_workbook.xlsm", package = "glatos")
+  "walleye_workbook.xlsm",
+  package = "glatos"
+)
 
-#note that code above is needed to find the example file
-#for real glatos data, use something like below
-#wb_file <- "c:/path_to_file/HECWL_GLATOS_20150321.csv"
+# note that code above is needed to find the example file
+# for real glatos data, use something like below
+# wb_file <- "c:/path_to_file/HECWL_GLATOS_20150321.csv"
 
 wb <- read_glatos_workbook(wb_file)
 

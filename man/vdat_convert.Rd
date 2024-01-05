@@ -104,86 +104,91 @@ extension) as the source file (e.g.,
 }
 
 \examples{
-
 \dontrun{
 
 # Check vdat.exe
 check_vdat()
 
-#all examples below assume path to VDAT.exe is in system PATH environment
+# all examples below assume path to VDAT.exe is in system PATH environment
 # variable. If not (you get an error), add input argument 'vdat_exe_path'
 # with path directory with VDAT.exe.
 # e.g.,
-#vdat_convert(vrl_files,
+# vdat_convert(vrl_files,
 #             vdat_exe_path = "C:/Program Files/Innovasea/Fathom")
 
-#get path to example VRL files in glatos
+# get path to example VRL files in glatos
 vrl_files <- system.file("extdata", "detection_files_raw",
-                        c("VR2W_109924_20110718_1.vrl",
-                          "VR2W180_302187_20180629_1.vrl",
-                          "VR2AR_546310_20190613_1.vrl",
-                          "VR2Tx_480022_20190613_1.vrl"),
-                        package = "glatos")
+  c(
+    "VR2W_109924_20110718_1.vrl",
+    "VR2W180_302187_20180629_1.vrl",
+    "VR2AR_546310_20190613_1.vrl",
+    "VR2Tx_480022_20190613_1.vrl"
+  ),
+  package = "glatos"
+)
 
-#copy to temp_dir
+# copy to temp_dir
 temp_dir <- tempdir()
 vrl_files2 <- file.path(temp_dir, basename(vrl_files))
 file.copy(vrl_files, vrl_files2)
 
-#uncomment to open in file browser
-#utils::browseURL(temp_dir)
+# uncomment to open in file browser
+# utils::browseURL(temp_dir)
 
-#call VDAT.exe; default args
+# call VDAT.exe; default args
 vdat_convert(vrl_files2)
 
-#run again and overwrite
+# run again and overwrite
 vdat_convert(vrl_files2, overwrite = TRUE)
 
-#run again without progress bars
+# run again without progress bars
 vdat_convert(vrl_files2, overwrite = TRUE, show_progress = FALSE)
 
-#use split output format
+# use split output format
 vdat_convert(vrl_files2, output_format = "csv.fathom.split")
 
-#change output directory
+# change output directory
 new_dir <- file.path(temp_dir, "testdir")
-if(!dir.exists(new_dir)) dir.create(new_dir)
+if (!dir.exists(new_dir)) dir.create(new_dir)
 
-#write to new directory
+# write to new directory
 vdat_convert(vrl_files2, out_dir = new_dir)
 
 
-#multiple source folders
-#make new folder for each vrl file inside temp directory
-new_dir2 <- file.path(temp_dir, 
-                     "testdir2", 
-                      seq_along(vrl_files2))
-for(i in 1:length(new_dir2)){
-  if(!dir.exists(new_dir2[i])) dir.create(new_dir2[i], recursive = TRUE)
+# multiple source folders
+# make new folder for each vrl file inside temp directory
+new_dir2 <- file.path(
+  temp_dir,
+  "testdir2",
+  seq_along(vrl_files2)
+)
+for (i in 1:length(new_dir2)) {
+  if (!dir.exists(new_dir2[i])) dir.create(new_dir2[i], recursive = TRUE)
 }
 
-#redistribute files
+# redistribute files
 vrl_files3 <- file.path(new_dir2, basename(vrl_files2))
 file.copy(vrl_files2, vrl_files3)
 
-#write each CSV file to same location as corresponding VRL (full path input)
+# write each CSV file to same location as corresponding VRL (full path input)
 vdat_convert(vrl_files3)
 
-#same but use input dir only and overwrite = TRUE
+# same but use input dir only and overwrite = TRUE
 vdat_convert(dirname(vrl_files3), overwrite = TRUE)
 
-#same but write all CSV files to new location
+# same but write all CSV files to new location
 new_dir3 <- file.path(temp_dir, "testdir3")
-if(!dir.exists(new_dir3)) dir.create(new_dir3)
+if (!dir.exists(new_dir3)) dir.create(new_dir3)
 
 vdat_convert(vrl_files3, out_dir = new_dir3)
 
-#same but use input dir only and recursive = TRUE
-vdat_convert(src = file.path(temp_dir, "testdir2"), 
-             out_dir = new_dir3,
-             overwrite = TRUE,
-             recursive = TRUE)
-
+# same but use input dir only and recursive = TRUE
+vdat_convert(
+  src = file.path(temp_dir, "testdir2"),
+  out_dir = new_dir3,
+  overwrite = TRUE,
+  recursive = TRUE
+)
 }
 
 }
