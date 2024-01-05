@@ -10,7 +10,7 @@ convert_otn_erddap_to_att(
   erdTags,
   erdRcv,
   erdAni,
-  crs = sp::CRS("+init=epsg:4326")
+  crs = sf::st_crs(4326)
 )
 }
 \arguments{
@@ -22,7 +22,10 @@ convert_otn_erddap_to_att(
 
 \item{erdAni}{a data frame with animal data from the OTN ERDDAP}
 
-\item{crs}{a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.}
+\item{crs}{an object of class \code{crs} (see \link[=st_crs]{sf::st_crs}) with
+geographic coordinate system for all spatial information
+(latitude/longitude). If none provided or \code{crs} is not recognized,
+defaults to WGS84.}
 }
 \value{
 a list of 3 tibble::tibbles containing tag dectections, tag metadata,

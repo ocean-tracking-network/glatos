@@ -2,7 +2,7 @@
 % Please edit documentation in R/vis-make_transition.r
 \name{make_transition}
 \alias{make_transition}
-\title{Create transition layer from polygon shapefile}
+\title{\link{Deprecated} Create transition layer from polygon shapefile}
 \usage{
 make_transition(
   in_file,
@@ -74,6 +74,10 @@ cells are connected by 16 directions and transition function
 returns 0 (land) for movements between land and water and 1 for
 all over-water movements.
 }
+\note{
+This function has been deprecated and will be removed from the
+next version of \code{glatos}. Use \code{\link{make_transition3}} instead.
+}
 \examples{
 \dontrun{
 
@@ -100,7 +104,6 @@ plot(sf::st_geometry(great_lakes_polygon), add = TRUE)
 #Example 2 - read from SpatialPolygonsDataFrame
 # use example polygon for Great lakes
 
-library(sp) #for loading greatLakesPoly
 library(raster) # for plotting rasters
 
 #get polygon of the Great Lakes

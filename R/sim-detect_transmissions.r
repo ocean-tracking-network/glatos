@@ -338,10 +338,10 @@ detect_transmissions <- function(trnsLoc = NA ,
   		  dtc.g <- data.frame(
   			  trns_id = which(succ.g),
   			  rec_id = g,
-  			  rec_x = sf::st_coordinates(recLoc_sf)[g, "X"],
-  			  rec_y = sf::st_coordinates(recLoc_sf)[g, "Y"],
-  			  trns_x = sf::st_coordinates(trnsLoc_sf)[succ.g, "X"],
-  			  trns_y = sf::st_coordinates(trnsLoc_sf)[succ.g, "Y"],
+  			  rec_x = sf::st_coordinates(recLoc_sf)[, "X"][g],
+  			  rec_y = sf::st_coordinates(recLoc_sf)[, "Y"][g],
+  			  trns_x = sf::st_coordinates(trnsLoc_sf)[, "X"][succ.g],
+  			  trns_y = sf::st_coordinates(trnsLoc_sf)[, "Y"][succ.g],
   			  time = trnsLoc_sf$time[succ.g])
   		 
   		  dtc <- rbind(dtc, dtc.g) #append

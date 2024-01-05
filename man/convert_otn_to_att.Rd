@@ -2,8 +2,8 @@
 % Please edit documentation in R/util-convert_otn_to_att.r
 \name{convert_otn_to_att}
 \alias{convert_otn_to_att}
-\title{Convert detections, tagging metadata, and deployment metadata to a format that ATT
-accepts.}
+\title{Convert detections, tagging metadata, and deployment metadata to a format
+that ATT accepts.}
 \usage{
 convert_otn_to_att(
   detectionObj,
@@ -11,7 +11,7 @@ convert_otn_to_att(
   deploymentObj = NULL,
   deploymentSheet = NULL,
   timeFilter = TRUE,
-  crs = sp::CRS("+init=epsg:4326")
+  crs = sf::st_crs(3426)
 )
 }
 \arguments{
@@ -23,25 +23,30 @@ convert_otn_to_att(
 
 \item{deploymentSheet}{a data frame from \code{prepare_deploy_sheet}}
 
-\item{timeFilter}{Whether the data should be filtered using the deployment and recovery/last download times of receivers.
-Defaults to TRUE, if not all receiver metadata is available, this should be set to FALSE otherwise there will be data loss.}
+\item{timeFilter}{Whether the data should be filtered using the deployment
+and recovery/last download times of receivers. Defaults to TRUE, if not all
+receiver metadata is available, this should be set to FALSE otherwise there
+will be data loss.}
 
-\item{crs}{a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.}
+\item{crs}{a object of class \code{crs} (see \link[=st_crs]{sf::st_crs} with geographic
+coordinate system for all spatial information (latitude/longitude). If none
+provided or \code{crs} is not recognized, defaults to WGS84 (EPSG:4326).}
 }
 \value{
 a list of 3 tibble::tibbles containing tag dectections, tag metadata,
 and station metadata, to be ingested by VTrack/ATT
 }
 \description{
-Convert \code{glatos_detections}, OTN tagging metadata and OTN deployment metadata
-to \code{ATT} format for use in the Animal Tracking Toolbox
+Convert \code{glatos_detections}, OTN tagging metadata and OTN deployment
+metadata to \code{ATT} format for use in the Animal Tracking Toolbox
 (\url{https://github.com/vinayudyawer/ATT}).
 }
 \details{
-This function takes 3 data frames containing detections, tagging metadata, and
-deployment metadata from either \code{read_otn_deployments} or \code{prepare_deploy_sheet}
-and transforms them into 3 \code{tibble::tibble} objects inside of a list. The input that
-AAT uses to get this data product is located here:
+This function takes 3 data frames containing detections, tagging
+metadata, and deployment metadata from either \code{read_otn_deployments}
+or \code{prepare_deploy_sheet} and transforms them into 3
+\code{tibble::tibble} objects inside of a list. The input that AAT uses to
+get this data product is located here:
 https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
 are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
 in a comment by Ryan Gosse.
@@ -80,7 +85,7 @@ tag_path <- system.file("extdata", "otn_nsbs_tag_metadata.xls",
 
 dets <- read_otn_detections(dets_path)
 tags <- prepare_tag_sheet(tag_path, 5, 2)
-deploy <- prepare_deploy_sheet(deploy_path)
+deploy <- prepare_deploy_sheet(deploy_path, 1, 1)
 
 ATTdata <- convert_otn_to_att(dets, tags, deploymentSheet = deploy)
 
