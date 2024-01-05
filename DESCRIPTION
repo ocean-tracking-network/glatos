@@ -32,7 +32,6 @@ Suggests:
 		gganimate,
 		gifski,
 		png,
-		sp,
     testthat (>= 3.0.0),
 		tint
 URL: https://github.com/ocean-tracking-network/glatos
