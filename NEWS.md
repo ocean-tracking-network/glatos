@@ -6,7 +6,11 @@
 
 ### Bug fixes and minor changes
 
-- Deprecate `make_transition` and `make_transition2`; suggest `make_transition3`
+- Deprecate `make_transition` and `make_transition2`; suggest `make_transition3` 
+  instead.
+
+- Deprecate data object `greatLakesPoly`; suggest `great_lakes_polygon` 
+  instead.
 
 - `prepare_deploy_sheet`: 
     - Set 'skip = header_line - 1' and 'col_names = TRUE' to retain first 
@@ -23,9 +27,6 @@
         - `check_dependencies`
         - `install_ffmpeg`
         - `make_video_ffmpeg`
-        
-- Deprecate data object `greatLakesPoly`; suggest `great_lakes_polygon` 
-  instead.
 
 - Fix issues with several tests caused by changes to CRS/WKT and row.names 
   attributes.
