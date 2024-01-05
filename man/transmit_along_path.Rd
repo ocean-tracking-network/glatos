@@ -82,88 +82,107 @@ which was designed to accept the result as input (\code{trnsLoc}).
 }
 \examples{
 
-#Example 1 - data.frame input (default column names)
+# Example 1 - data.frame input (default column names)
 
-mypath <- data.frame(x = seq(0, 1000, 100), 
-                     y = seq(0, 1000, 100))
-                     
-mytrns <- transmit_along_path(mypath, vel = 0.5, 
-                              delayRng = c(60, 180),
-                              burstDur = 5.0, 
-                              sp_out = FALSE)
+mypath <- data.frame(
+  x = seq(0, 1000, 100),
+  y = seq(0, 1000, 100)
+)
+
+mytrns <- transmit_along_path(mypath,
+  vel = 0.5,
+  delayRng = c(60, 180),
+  burstDur = 5.0,
+  sp_out = FALSE
+)
 plot(mypath, type = "o")
 points(mytrns, pch = 20, col = "red")
 
 
-#Example 2 - data.frame input (non-default column names)
+# Example 2 - data.frame input (non-default column names)
 
-mypath <- data.frame(Easting = seq(0, 1000, 100), 
-                     Northing = seq(0, 1000, 100))
-                     
-mytrns <- transmit_along_path(mypath, vel = 0.5, delayRng = c(60, 180),
-                              burstDur = 5.0, 
-                              colNames = list(x = "Easting", 
-                                              y = "Northing"),
-                              sp_out = FALSE)
+mypath <- data.frame(
+  Easting = seq(0, 1000, 100),
+  Northing = seq(0, 1000, 100)
+)
+
+mytrns <- transmit_along_path(mypath,
+  vel = 0.5, delayRng = c(60, 180),
+  burstDur = 5.0,
+  colNames = list(
+    x = "Easting",
+    y = "Northing"
+  ),
+  sp_out = FALSE
+)
 plot(mypath, type = "o")
 points(mytrns, pch = 20, col = "red")
 
 
-#Example 3 - data.frame input using pathCRS arg
+# Example 3 - data.frame input using pathCRS arg
 
-mypath <- data.frame(deploy_long = c(-87, -87.1, -87),
-                     deploy_lat = c(44, 44.1, 44.2))
+mypath <- data.frame(
+  deploy_long = c(-87, -87.1, -87),
+  deploy_lat = c(44, 44.1, 44.2)
+)
 
-mytrns <- transmit_along_path(mypath, vel = 0.5, delayRng = c(600, 1800),
-                              burstDur = 5.0, 
-                              colNames = list(x = "deploy_long", 
-                                              y = "deploy_lat"),
-                              pathCRS = 4326,
-                              sp_out = FALSE)
+mytrns <- transmit_along_path(mypath,
+  vel = 0.5, delayRng = c(600, 1800),
+  burstDur = 5.0,
+  colNames = list(
+    x = "deploy_long",
+    y = "deploy_lat"
+  ),
+  pathCRS = 4326,
+  sp_out = FALSE
+)
 plot(mypath, type = "o")
 points(mytrns, pch = 20, col = "red")
 
 
-#Example 4 - sf POINT input
+# Example 4 - sf POINT input
 
-#simulate in great lakes polygon
+# simulate in great lakes polygon
 data(great_lakes_polygon)
 
 mypath_sf <- crw_in_polygon(great_lakes_polygon,
-                            theta = c(0, 25),
-                            stepLen = 100,
-                            initHeading = 0,
-                            nsteps = 10,
-                            cartesianCRS = 3175)
+  theta = c(0, 25),
+  stepLen = 100,
+  initHeading = 0,
+  nsteps = 10,
+  cartesianCRS = 3175
+)
 
-mytrns_sf <- transmit_along_path(mypath_sf, 
-                                 vel = 0.5, 
-                                 delayRng = c(60, 180),
-                                 burstDur = 5.0)
+mytrns_sf <- transmit_along_path(mypath_sf,
+  vel = 0.5,
+  delayRng = c(60, 180),
+  burstDur = 5.0
+)
 plot(mypath_sf, type = "o")
 points(sf::st_coordinates(mytrns_sf), pch = 20, col = "red")
 
 
-#Example 5 - SpatialPointsDataFrame input
+# Example 5 - SpatialPointsDataFrame input
 
-#simulate in great lakes polygon
+# simulate in great lakes polygon
 data(greatLakesPoly)
 
 mypath_sp <- crw_in_polygon(greatLakesPoly,
-                            theta = c(0, 25),
-                            stepLen = 100,
-                            initHeading = 0,
-                            nsteps = 10, 
-                            cartesianCRS = 3175)
+  theta = c(0, 25),
+  stepLen = 100,
+  initHeading = 0,
+  nsteps = 10,
+  cartesianCRS = 3175
+)
 
-mytrns_sp <- transmit_along_path(mypath_sp, 
-                                 vel = 0.5, 
-                                 delayRng = c(60, 180),
-                                 burstDur = 5.0)
+mytrns_sp <- transmit_along_path(mypath_sp,
+  vel = 0.5,
+  delayRng = c(60, 180),
+  burstDur = 5.0
+)
 
 plot(sf::st_coordinates(sf::st_as_sf(mypath_sp)), type = "o")
 points(sf::st_coordinates(mytrns_sp), pch = 20, col = "red")
-
 
 }
 \author{

@@ -19,16 +19,16 @@ string returned by VUE.exe).
 Get version of local installation of Innovasea program VUE.exe
 }
 \examples{
-
 \dontrun{
 
-#use if VUE.exe in Windows system PATH variable
+# use if VUE.exe in Windows system PATH variable
 get_local_vue_version()
 
-#or specify path to VUE.exe
-get_local_vue_version(vue_exe_path = 
-                        "C:/Program Files (x86)/Vemco/VUE")
-                        
+# or specify path to VUE.exe
+get_local_vue_version(
+  vue_exe_path =
+    "C:/Program Files (x86)/Vemco/VUE"
+)
 }
 
 }

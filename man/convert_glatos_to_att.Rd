@@ -40,11 +40,13 @@ in a comment by Ryan Gosse.
 
 library(glatos)
 wal_det_file <- system.file("extdata", "walleye_detections.csv",
-     package = "glatos")
+  package = "glatos"
+)
 walleye_detections <- read_glatos_detections(wal_det_file) # load walleye data
 
 rec_file <- system.file("extdata", "sample_receivers.csv",
-     package = "glatos")
+  package = "glatos"
+)
 rcv <- read_glatos_receivers(rec_file) # load receiver data
 
 ATTdata <- convert_glatos_to_att(walleye_detections, rcv)

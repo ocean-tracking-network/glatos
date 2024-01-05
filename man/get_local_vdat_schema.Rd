@@ -20,13 +20,14 @@ Get schema from local installation of Innovsea program VDAT.exe
 \examples{
 \dontrun{
 
-#use if VDAT.exe in Windows system PATH variable
+# use if VDAT.exe in Windows system PATH variable
 get_local_vdat_schema()
 
-#or specify path to VDAT.exe
-get_local_vdat_schema(vdat_exe_path = 
-                     "C:/Program Files/Innovasea/Fathom/VDAT.exe")
-
+# or specify path to VDAT.exe
+get_local_vdat_schema(
+  vdat_exe_path =
+    "C:/Program Files/Innovasea/Fathom/VDAT.exe"
+)
 }
 
 }

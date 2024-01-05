@@ -33,11 +33,11 @@ rotation matrix, then shifted back to original focus.
 This function is called from \code{\link[=crw_in_polygon]{crw_in_polygon()}}
 }
 \examples{
-x <- runif(10,0,10)
-y <- runif(10,0,10)
-plot(x,y,type="b",pch=20)
+x <- runif(10, 0, 10)
+y <- runif(10, 0, 10)
+plot(x, y, type = "b", pch = 20)
 foo <- rotate_points(x, y, 20, c(5, 5))
-points(foo$x,foo$y,type="b",pch=20,col="red")
+points(foo$x, foo$y, type = "b", pch = 20, col = "red")
 
 }
 \author{

@@ -81,14 +81,14 @@ next version of \code{glatos}. Use \code{\link{make_transition3}} instead.
 \examples{
 \dontrun{
 
-#Example 1 - read from sf polygon
+# Example 1 - read from sf polygon
 # use example polygon for Great lakes
 
-library(sf) #for loading great_lakes_polygon
+library(sf) # for loading great_lakes_polygon
 library(raster) # for plotting rasters
 
 # Get polygon of the Great Lakes
-data(great_lakes_polygon) #glatos example data; an sf polygons object
+data(great_lakes_polygon) # glatos example data; an sf polygons object
 
 # Make transition layer
 tst <- make_transition(great_lakes_polygon, res = c(0.1, 0.1))
@@ -97,17 +97,17 @@ tst <- make_transition(great_lakes_polygon, res = c(0.1, 0.1))
 # notice land = 1, water = 0
 plot(tst$rast)
 
-#compare to polygon
+# compare to polygon
 plot(sf::st_geometry(great_lakes_polygon), add = TRUE)
 
 
-#Example 2 - read from SpatialPolygonsDataFrame
+# Example 2 - read from SpatialPolygonsDataFrame
 # use example polygon for Great lakes
 
 library(raster) # for plotting rasters
 
-#get polygon of the Great Lakes
-data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+# get polygon of the Great Lakes
+data(greatLakesPoly) # glatos example data; a SpatialPolygonsDataFrame
 
 # make_transition layer
 tst <- make_transition(greatLakesPoly, res = c(0.1, 0.1))
@@ -116,13 +116,13 @@ tst <- make_transition(greatLakesPoly, res = c(0.1, 0.1))
 # notice land = 1, water = 0
 plot(tst$rast)
 
-#compare to polygon
+# compare to polygon
 plot(greatLakesPoly, add = TRUE)
 
 # increase resolution and repeat if needed
 
 #------------------------------------------
-#Example 3 - read from ESRI Shapefile
+# Example 3 - read from ESRI Shapefile
 # path to polygon shapefile
 poly <- system.file("extdata", "shoreline.zip", package = "glatos")
 poly <- unzip(poly, exdir = tempdir())

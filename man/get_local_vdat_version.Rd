@@ -19,15 +19,16 @@ string returned by VDAT.exe).
 Get version of local installation of Innovasea program VDAT.exe
 }
 \examples{
-
 \dontrun{
 
-#use if VDAT.exe in Windows system PATH variable
+# use if VDAT.exe in Windows system PATH variable
 get_local_vdat_version()
 
-#or specify path to VDAT.exe
-get_local_vdat_version(vdat_exe_path = 
-                        "C:/Program Files/Innovasea/Fathom/VDAT.exe")
+# or specify path to VDAT.exe
+get_local_vdat_version(
+  vdat_exe_path =
+    "C:/Program Files/Innovasea/Fathom/VDAT.exe"
+)
 }
 
 }

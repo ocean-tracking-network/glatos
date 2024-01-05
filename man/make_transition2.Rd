@@ -63,7 +63,7 @@ next version of \code{glatos}. Use \code{\link{make_transition3}} instead.
 library(raster) # for plotting rasters
 
 # get polygon of the Great Lakes
-data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+data(greatLakesPoly) # glatos example data; a SpatialPolygonsDataFrame
 
 # make_transition layer
 tst <- make_transition2(greatLakesPoly, res = c(0.1, 0.1))
@@ -85,7 +85,6 @@ plot(tst1$rast)
 # plot transition layer
 plot(raster(tst1$transition))
 }
-
 
 }
 \seealso{

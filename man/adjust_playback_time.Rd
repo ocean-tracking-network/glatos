@@ -50,7 +50,6 @@ specifying a different file extension in \code{output}.
 Input argument 'ffmpeg' was removed in glatos version 0.7.0.
 }
 \examples{
-
 \dontrun{
 
 # load example frames
@@ -58,34 +57,42 @@ frames <- system.file("extdata", "frames", package = "glatos")
 
 # make video animation
 out_file <- file.path(tempdir(), "animation_av.mp4")
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = out_file)
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = out_file
+)
 
 # slow video down by a factor of 10
 path <- file.path(tempdir(), "animation_av.mp4")
-adjust_playback_time(scale_factor = 10, 
-                    input = path, 
-                    output_dir = tempdir(),
-                    output = "animation_av_slow.mp4",
-                    diagnostic_mode = FALSE, 
-                    overwrite = TRUE)
+adjust_playback_time(
+  scale_factor = 10,
+  input = path,
+  output_dir = tempdir(),
+  output = "animation_av_slow.mp4",
+  diagnostic_mode = FALSE,
+  overwrite = TRUE
+)
 
 # slow video down by a factor of 10 and change format of output video
-adjust_playback_time(scale_factor = 10, 
-                     input = path, 
-                     output_dir = tempdir(),
-                     output = "animation_av_slow.wmv", 
-                     diagnostic_mode = FALSE,
-                     overwrite = TRUE)
+adjust_playback_time(
+  scale_factor = 10,
+  input = path,
+  output_dir = tempdir(),
+  output = "animation_av_slow.wmv",
+  diagnostic_mode = FALSE,
+  overwrite = TRUE
+)
 
 # speed up video
-adjust_playback_time(scale_factor = 0.5, 
-                     input = path, 
-                     output_dir = tempdir(),
-                     output = "animation_av_fast.mp4", 
-                     diagnostic_mode = FALSE,
-                     overwrite = TRUE)
+adjust_playback_time(
+  scale_factor = 0.5,
+  input = path,
+  output_dir = tempdir(),
+  output = "animation_av_fast.mp4",
+  diagnostic_mode = FALSE,
+  overwrite = TRUE
+)
 }
 
 }

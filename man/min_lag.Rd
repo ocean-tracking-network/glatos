@@ -49,7 +49,8 @@ standard glatos export.
 
 # load example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 det <- read_glatos_detections(det_file)
 
 # rename existing min_lag column
