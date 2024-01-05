@@ -2,7 +2,7 @@
 % Please edit documentation in R/vis-make_transition2.r
 \name{make_transition2}
 \alias{make_transition2}
-\title{Create transition layer from a spatial polygon}
+\title{\link{Deprecated} Create transition layer from a spatial polygon}
 \usage{
 make_transition2(
   poly,
@@ -54,9 +54,12 @@ cells are connected by 16 directions and transition function
 returns 0 (land) for movements between land and water and 1 for
 all over-water movements.
 }
+\note{
+This function has been deprecated and will be removed from the
+next version of \code{glatos}. Use \code{\link{make_transition3}} instead.
+}
 \examples{
 
-library(sp) #for loading greatLakesPoly
 library(raster) # for plotting rasters
 
 # get polygon of the Great Lakes
@@ -82,6 +85,7 @@ plot(tst1$rast)
 # plot transition layer
 plot(raster(tst1$transition))
 }
+
 
 }
 \seealso{

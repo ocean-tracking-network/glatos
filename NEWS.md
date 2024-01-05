@@ -6,6 +6,7 @@
 
 ### Bug fixes and minor changes
 
+- Deprecate `make_transition` and `make_transition2`; suggest `make_transition3`
 
 - `prepare_deploy_sheet`: 
     - Set 'skip = header_line - 1' and 'col_names = TRUE' to retain first 

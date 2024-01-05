@@ -1,4 +1,4 @@
-#' Create transition layer from polygon shapefile
+#' [Deprecated] Create transition layer from polygon shapefile
 #'
 #' Create transition layer for \link{interpolate_path} from polygon shapefile.
 #'
@@ -86,7 +86,6 @@
 #' #Example 2 - read from SpatialPolygonsDataFrame
 #' # use example polygon for Great lakes
 #'
-#' library(sp) #for loading greatLakesPoly
 #' library(raster) # for plotting rasters
 #'
 #' #get polygon of the Great Lakes
@@ -130,8 +129,10 @@
 #' raster::plot(raster::raster(tst1$transition))
 #' }
 #'
+#' @note This function has been deprecated and will be removed from the 
+#' next version of \code{glatos}. Use \code{\link{make_transition3}} instead.
+#'
 #' @export
-
 
 make_transition <- function(in_file, 
                             output = "out.tif",
@@ -140,6 +141,11 @@ make_transition <- function(in_file,
                             invert = FALSE,
                             all_touched = TRUE){
 
+  # Function will be removed in next version
+  .Deprecated("make_transition3", 
+              msg = paste0("This function is deprecated and will be removed ",
+              "in the next version"))  
+  
   #Check if in_file is file, directory, sf, or SpatialPolygonsDataFrame
   if(inherits(in_file, "character")){
 
