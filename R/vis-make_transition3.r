@@ -59,17 +59,17 @@
 ##'
 ##' #Example 1 - read from SpatialPolygonsDataFrame
 ##' # use example polygon for Great lakes
-##'  
+##'
 ##' #get polygon of the Great Lakes
 ##' data(great_lakes_polygon) #glatos example data; a sf polygon object
-##' 
+##'
 ##' # make_transition layer
 ##' tst <- make_transition3(great_lakes_polygon, res = c(0.1, 0.1))
-##' 
+##'
 ##' # plot raster layer
 ##' # notice land = 1, water = 0
 ##' plot(terra::rast(tst$rast))
-##' 
+##'
 ##' #compare to polygon
 ##' plot(st_geometry(great_lakes_polygon), add = TRUE, fill = NA)
 ##'
@@ -101,10 +101,10 @@
 ##' plot(raster::raster(tst$transition))
 ##'
 ##' Example 3- transition layer of Lake Huron only with receivers
-##' 
+##'
 ##' # read polygon layer of Great Lakes
 ##' data(great_lakes_polygon)
-##' 
+##'
 ##' # transform to great lakes projection
 ##' poly <- sf::st_transform(great_lakes_polygon, crs = 3175)
 ##'
