@@ -72,15 +72,16 @@ sensitivity of the proportion of detections removed to the choice of
 \code{tf}.
 }
 \examples{
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 det <- read_glatos_detections(det_file)
 
 det <- false_detections(det, 3600)
 head(det)
 
-#plot sensitivity to tf
+# plot sensitivity to tf
 det <- false_detections(det, 3600, show_plot = TRUE)
 
 }

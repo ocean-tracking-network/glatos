@@ -62,23 +62,24 @@ Writing is done via \code{\link[data.table]{fwrite}}.
 # Example 1. Read and write a single file
 
 vrl_file <- system.file("extdata", "detection_files_raw",
-  "VR2W_109924_20110718_1.vrl", package="glatos")
+  "VR2W_109924_20110718_1.vrl",
+  package = "glatos"
+)
 
 temp_dir <- tempdir()
 
 csv_file <- vdat_convert(vrl_file, out_dir = temp_dir)
 
-#utils::browseURL(temp_dir)
+# utils::browseURL(temp_dir)
 
-#read all record types
+# read all record types
 vdat <- read_vdat_csv(csv_file)
 
-#write to single file (output_format = "csv.fathom")
+# write to single file (output_format = "csv.fathom")
 write_vdat_csv(vdat)
 
-#write to multiple files 
+# write to multiple files
 write_vdat_csv(vdat, output_format = "csv.fathom.split")
-
 
 }
 \author{

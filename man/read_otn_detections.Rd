@@ -28,9 +28,10 @@ Column names are changed to match GLATOS standard columns when possible.
 Otherwise, OTN columns and column names are retained.
 }
 \examples{
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "blue_shark_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 det <- read_otn_detections(det_file)
 
 }

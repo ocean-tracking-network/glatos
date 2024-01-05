@@ -38,31 +38,37 @@ This function is called from within \code{\link[=crw_in_polygon]{crw_in_polygon(
 }
 \examples{
 
-#example using generic cartesian (regular grid) coordinates
-x=c(2,4)
-y=c(2,4)
+# example using generic cartesian (regular grid) coordinates
+x <- c(2, 4)
+y <- c(2, 4)
 vector_heading(x, y)
 
-x2=c(2,4,2)
-y2=c(2,4,2)
+x2 <- c(2, 4, 2)
+y2 <- c(2, 4, 2)
 vector_heading(x2, y2)
 
 
-#example using WGS84 lat-lon
-#e.g., from Duluth to Toronto to Detroit 
+# example using WGS84 lat-lon
+# e.g., from Duluth to Toronto to Detroit
 
-path1 <- data.frame(city = c("Duluth", "Toronoto", "Detroit"),
-                    longitude = c(-92.1005, -79.3832, -83.0458),
-                    latitude = c(46.7867, 43.6532, 42.3314))
+path1 <- data.frame(
+  city = c("Duluth", "Toronoto", "Detroit"),
+  longitude = c(-92.1005, -79.3832, -83.0458),
+  latitude = c(46.7867, 43.6532, 42.3314)
+)
 
-#example using the x, y input method way
-vector_heading(x = c(-92.1005, -79.3832, -83.0458), 
-               y = c(46.7867, 43.6532, 42.3314), 
-               coord_sys = "longlat")
-               
-#example using the x-only input method
-vector_heading(x = path1[ , c("longitude", "latitude")], 
-               coord_sys = "longlat")
+# example using the x, y input method way
+vector_heading(
+  x = c(-92.1005, -79.3832, -83.0458),
+  y = c(46.7867, 43.6532, 42.3314),
+  coord_sys = "longlat"
+)
+
+# example using the x-only input method
+vector_heading(
+  x = path1[, c("longitude", "latitude")],
+  coord_sys = "longlat"
+)
 
 }
 \author{

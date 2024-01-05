@@ -19,20 +19,18 @@ Character string with command for calling VUE.exe via
 Check path to Innovasea program VUE.exe
 }
 \examples{
-
 \dontrun{
 
-#use Windows system PATH variable
+# use Windows system PATH variable
 check_vue()
 
 
-#use path to directory containing VUE.exe
+# use path to directory containing VUE.exe
 check_vue(vue_exe_path = "C:/Program Files (x86)/VEMCO/VUE")
 
 
-#use full path to VUE.exe
+# use full path to VUE.exe
 check_vue(vue_exe_path = "C:/Program Files (x86)/VEMCO/VUE/VUE.exe")
-
 }
 
 }
