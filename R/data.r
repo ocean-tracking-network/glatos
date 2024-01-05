@@ -1,9 +1,12 @@
-#' @title A SpatialPolygonDataFrame with Great Lakes coastline and some major 
-#' tributaries.
-#' 
-#' @description A SpatialPolygonDataFrame with Great Lakes coastline and some 
-#' major tributaries. This is used as a default map background in several 
-#' \link{glatos} functions.
+#' @title [Deprecated] A SpatialPolygonDataFrame with Great Lakes coastline and some major
+#'   tributaries.
+#'
+#' @description A SpatialPolygonDataFrame with Great Lakes coastline and some
+#'   major tributaries. This is used as a default map background in several
+#'   \link{glatos} functions.
+#'
+#' @details This dataset is deprecated and will be removed in a future version.
+#'   Use \code{\link{great_lakes_polygon}} instead.
 #'
 #' @author Todd Hayden
 "greatLakesPoly"
