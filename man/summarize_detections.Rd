@@ -137,60 +137,69 @@ the output summary.
 }
 \examples{
 
-#get path to example detection file
- det_file <- system.file("extdata", "walleye_detections.csv",
-   package = "glatos")
- det <- read_glatos_detections(det_file)
- 
- #Basic summaries
- 
- # by animal
- ds <- summarize_detections(det)
- 
- # by location 
- ds <- summarize_detections(det, summ_type = "location")
- 
- # by animal and location
- ds <- summarize_detections(det, summ_type = "both")
- 
- 
- #Include user-defined location_col
- 
- # by animal
- det$some_place <- ifelse(grepl("^S", det$glatos_array), "s", "not_s")
- 
- ds <- summarize_detections(det, location_col = "some_place")
- 
- # by location 
- ds <- summarize_detections(det, location_col = "some_place", 
-                            summ_type = "location")
- 
- # by animal and location
- ds <- summarize_detections(det, location_col = "some_place", 
-                            summ_type = "both")  
-                            
-                            
- #Include locations where no animals detected
- 
- #get example receiver data
- rec_file <- system.file("extdata", "sample_receivers.csv",
-   package = "glatos")
- rec <- read_glatos_receivers(rec_file) 
- 
- ds <- summarize_detections(det, receiver_locs = rec, summ_type = "location")
- 
- 
- #Include animals that were not detected
- #get example animal data from walleye workbook
- wb_file <- system.file("extdata", "walleye_workbook.xlsm",
-   package = "glatos")
- wb <- read_glatos_workbook(wb_file) 
- 
- ds <- summarize_detections(det, animals = wb$animals, summ_type = "animal")
- 
- #Include by animals and locations that were not detected
- ds <- summarize_detections(det, receiver_locs = rec, animals = wb$animals, 
-   summ_type = "both")
+# get path to example detection file
+det_file <- system.file("extdata", "walleye_detections.csv",
+  package = "glatos"
+)
+det <- read_glatos_detections(det_file)
+
+# Basic summaries
+
+# by animal
+ds <- summarize_detections(det)
+
+# by location
+ds <- summarize_detections(det, summ_type = "location")
+
+# by animal and location
+ds <- summarize_detections(det, summ_type = "both")
+
+
+# Include user-defined location_col
+
+# by animal
+det$some_place <- ifelse(grepl("^S", det$glatos_array), "s", "not_s")
+
+ds <- summarize_detections(det, location_col = "some_place")
+
+# by location
+ds <- summarize_detections(det,
+  location_col = "some_place",
+  summ_type = "location"
+)
+
+# by animal and location
+ds <- summarize_detections(det,
+  location_col = "some_place",
+  summ_type = "both"
+)
+
+
+# Include locations where no animals detected
+
+# get example receiver data
+rec_file <- system.file("extdata", "sample_receivers.csv",
+  package = "glatos"
+)
+rec <- read_glatos_receivers(rec_file)
+
+ds <- summarize_detections(det, receiver_locs = rec, summ_type = "location")
+
+
+# Include animals that were not detected
+# get example animal data from walleye workbook
+wb_file <- system.file("extdata", "walleye_workbook.xlsm",
+  package = "glatos"
+)
+wb <- read_glatos_workbook(wb_file)
+
+ds <- summarize_detections(det, animals = wb$animals, summ_type = "animal")
+
+# Include by animals and locations that were not detected
+ds <- summarize_detections(det,
+  receiver_locs = rec, animals = wb$animals,
+  summ_type = "both"
+)
 
 }
 \author{

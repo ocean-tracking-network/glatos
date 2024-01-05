@@ -170,12 +170,12 @@ input argument \code{preview = TRUE} will be useful while exploring optional plo
 arguments.
 }
 \examples{
-
 \dontrun{
 
 # load detection data
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 dtc <- read_glatos_detections(det_file)
 
 # take a look
@@ -183,37 +183,44 @@ head(dtc)
 
 # load receiver location data
 rec_file <- system.file("extdata",
-  "sample_receivers.csv", package = "glatos")
+  "sample_receivers.csv",
+  package = "glatos"
+)
 recs <- read_glatos_receivers(rec_file)
 
 # call with defaults; linear interpolation
 pos1 <- interpolate_path(dtc)
 
 # make frames, preview the first frame
-myDir <- paste0(getwd(),"/frames1")
-make_frames(pos1, recs=recs, out_dir=myDir, preview = TRUE)
+myDir <- paste0(getwd(), "/frames1")
+make_frames(pos1, recs = recs, out_dir = myDir, preview = TRUE)
 
 # make frames but not animation
-myDir <- paste0(getwd(),"/frames2")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
+myDir <- paste0(getwd(), "/frames2")
+make_frames(pos1, recs = recs, out_dir = myDir, animate = FALSE)
 
 # make sequential frames, and animate.  Make animation and frames.
-#change default color of fish markers to red and change marker and size.
+# change default color of fish markers to red and change marker and size.
 
 myDir <- paste0(getwd(), "/frames3")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE,
-            ani_name = "animation3.mp4", col="red", pch = 16, cex = 3)
+make_frames(pos1,
+  recs = recs, out_dir = myDir, animate = TRUE,
+  ani_name = "animation3.mp4", col = "red", pch = 16, cex = 3
+)
 
 # make sequential frames, animate, add 5-day tail
 myDir <- paste0(getwd(), "/frames4")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE,
-            ani_name = "animation4.mp4", tail_dur=5)
+make_frames(pos1,
+  recs = recs, out_dir = myDir, animate = TRUE,
+  ani_name = "animation4.mp4", tail_dur = 5
+)
 
 # make animation, remove frames.
 myDir <- paste0(getwd(), "/frames5")
-make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE,
-            ani_name = "animation5.mp4", frame_delete = TRUE)
-
+make_frames(pos1,
+  recs = recs, out_dir = myDir, animate = TRUE,
+  ani_name = "animation5.mp4", frame_delete = TRUE
+)
 }
 
 }

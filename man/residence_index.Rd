@@ -90,9 +90,9 @@ among all sites. For each location, residency index (RI) is calculated:
 
 \deqn{ RI = L/T}
 \deqn{ RI = Residence Index}
-\deqn{L = Distinct number of time intervals in which detection observed at 
+\deqn{L = Distinct number of time intervals in which detection observed at
           this location}
-\deqn{T = Distinct number of time intervals in which detection observed at 
+\deqn{T = Distinct number of time intervals in which detection observed at
           any location}
 
 For consistency with other \code{calculation_method}s,
@@ -146,21 +146,27 @@ RI = AnOS/AnOT}
 \deqn{AnOT = Sum of length of time of each detection among all locations, excluding any overlap}
 }
 \examples{
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 det <- read_glatos_detections(det_file)
 detection_events <- glatos::detection_events(det)
-rik_data <- glatos::residence_index(detection_events, 
-                                    calculation_method = 'kessel')
-rit_data <- glatos::residence_index(detection_events, 
-                                    calculation_method = 'time_interval')
-rit_data <- glatos::residence_index(detection_events, 
-                                    calculation_method = 'timedelta')
-riawo_data <- glatos::residence_index(detection_events, 
-                             calculation_method = 'aggregate_with_overlap')
-riano_data <- glatos::residence_index(detection_events, 
-                             calculation_method = 'aggregate_no_overlap')
+rik_data <- glatos::residence_index(detection_events,
+  calculation_method = "kessel"
+)
+rit_data <- glatos::residence_index(detection_events,
+  calculation_method = "time_interval"
+)
+rit_data <- glatos::residence_index(detection_events,
+  calculation_method = "timedelta"
+)
+riawo_data <- glatos::residence_index(detection_events,
+  calculation_method = "aggregate_with_overlap"
+)
+riano_data <- glatos::residence_index(detection_events,
+  calculation_method = "aggregate_no_overlap"
+)
 
 }
 \references{

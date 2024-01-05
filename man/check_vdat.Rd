@@ -19,21 +19,18 @@ Character string with command for calling VDAT.exe via
 Check path to Innovasea program VDAT.exe
 }
 \examples{
-
 \dontrun{
 
-#use Windows system PATH variable
+# use Windows system PATH variable
 check_vdat()
 
 
-#use path to directory containing VDAT.exe
+# use path to directory containing VDAT.exe
 check_vdat(vdat_exe_path = "C:/Program Files/Innovasea/Fathom")
 
 
-#use full path to VDAT.exe
+# use full path to VDAT.exe
 check_vdat(vdat_exe_path = "C:/Program Files/Innovasea/Fathom/VDAT.exe")
-
-
 }
 
 }

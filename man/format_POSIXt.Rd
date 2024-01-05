@@ -43,10 +43,14 @@ format(t2, digits = 6)
 t3 <- format_POSIXt(t1, digits = 5)
 format(t3, digits = 6)
 
-#Example 2
-t1 <- as.POSIXct(c("2011-03-08 23:59:58",
-                   "2011-03-08 23:59:58.828867"),
-                 tz = "UTC")
+# Example 2
+t1 <- as.POSIXct(
+  c(
+    "2011-03-08 23:59:58",
+    "2011-03-08 23:59:58.828867"
+  ),
+  tz = "UTC"
+)
 format_POSIXt(t1, digits = 5, drop0trailing = FALSE)
 format_POSIXt(t1, digits = 5, drop0trailing = TRUE)
 

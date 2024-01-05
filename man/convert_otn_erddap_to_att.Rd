@@ -54,31 +54,37 @@ that this only contains public data.
 
 library(glatos)
 
-#get path to example files from OTN ERDDAP
+# get path to example files from OTN ERDDAP
 ani_erd_file <- system.file("extdata", "otn_aat_animals.csv",
-                            package = "glatos")
+  package = "glatos"
+)
 animals <- read.csv(ani_erd_file) # load the CSVs from ERDDAP
 
 tags_erd_file <- system.file("extdata", "otn_aat_tag_releases.csv",
-                            package = "glatos")
+  package = "glatos"
+)
 tags <- read.csv(tags_erd_file)
 
 rcv_erd_file <- system.file("extdata", "otn_aat_receivers.csv",
-                            package = "glatos")
+  package = "glatos"
+)
 stations <- read.csv(rcv_erd_file)
 
-#Remove first row; (blank or metadata about the column)
-animals <- animals[-1,]
-tags <- tags[-1,]
-stations <- stations[-1,]
+# Remove first row; (blank or metadata about the column)
+animals <- animals[-1, ]
+tags <- tags[-1, ]
+stations <- stations[-1, ]
 
-#get blue shark example data
+# get blue shark example data
 shrk_det_file <- system.file("extdata", "blue_shark_detections.csv",
-     package = "glatos")
+  package = "glatos"
+)
 blue_shark_detections <- read_otn_detections(shrk_det_file) # load shark data
 
-ATTdata <- convert_otn_erddap_to_att(blue_shark_detections,
-                                     tags, stations, animals)
+ATTdata <- convert_otn_erddap_to_att(
+  blue_shark_detections,
+  tags, stations, animals
+)
 }
 \author{
 Ryan Gosse

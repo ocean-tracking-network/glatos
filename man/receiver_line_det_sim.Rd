@@ -77,98 +77,111 @@ Detection or non-detection on each receiver is determined by a draw from a
 Bernoulli distribution with probability p.
 }
 \examples{
-#EXAMPLE 1 - simulate detection on line of ten receivers
-  
- #Define detection range function (to pass as rngFun) 
- # that returns detection probability for given distance
-  # assume logistic form of detection range curve where 
-  #   dm = distance in meters
-  #   b = intercept and slope
- pdrf <- function(dm, b=c(5.5, -1/120)){
-    p <- 1/(1+exp(-(b[1]+b[2]*dm)))
-    return(p)
- }
+# EXAMPLE 1 - simulate detection on line of ten receivers
 
- #preview detection range curve
- plot(pdrf(0:2000),type="l",ylab="Probability of detecting each coded burst", 
-xlab="Distance between receiver and transmitter")
+# Define detection range function (to pass as rngFun)
+# that returns detection probability for given distance
+# assume logistic form of detection range curve where
+#   dm = distance in meters
+#   b = intercept and slope
+pdrf <- function(dm, b = c(5.5, -1 / 120)) {
+  p <- 1 / (1 + exp(-(b[1] + b[2] * dm)))
+  return(p)
+}
 
- #Simulate detection using pdrf; default values otherwise
- dp <- receiver_line_det_sim(rngFun=pdrf)
- dp
+# preview detection range curve
+plot(pdrf(0:2000),
+  type = "l", ylab = "Probability of detecting each coded burst",
+  xlab = "Distance between receiver and transmitter"
+)
 
- #Again with only 10 virtual fish and optional plot to see simulated data
- dp <- receiver_line_det_sim(rngFun=pdrf, nsim=10, showPlot=T) #w/ optional plot
- dp
+# Simulate detection using pdrf; default values otherwise
+dp <- receiver_line_det_sim(rngFun = pdrf)
+dp
 
- #Again but six receivers and allow fish to pass to left and right of line
- dp <- receiver_line_det_sim(rngFun=pdrf, recSpc=rep(1000,5),
-	outerLim=c(1000, 1000), nsim=10, showPlot=T)
- dp
+# Again with only 10 virtual fish and optional plot to see simulated data
+dp <- receiver_line_det_sim(rngFun = pdrf, nsim = 10, showPlot = T) # w/ optional plot
+dp
 
- #Again but four receivers with irregular spacing
- dp <- receiver_line_det_sim(rngFun=pdrf, recSpc=c(2000,4000,2000),
- 	outerLim=c(1000, 1000), nsim=10, showPlot=T)
- dp
+# Again but six receivers and allow fish to pass to left and right of line
+dp <- receiver_line_det_sim(
+  rngFun = pdrf, recSpc = rep(1000, 5),
+  outerLim = c(1000, 1000), nsim = 10, showPlot = T
+)
+dp
 
-
-#EXAMPLE 2 - summarize detection probability vs. receiver spacing
- 
- #two receivers only, spaced 'spc' m apart
- #define scenarios where two receiver are spaced 
- spc <- seq(100,5000, 100) #two receivers spaced 100, 200, ... 5000 m
- #loop through scenarios, estimate detection probability for each
- for(i in 1:length(spc)){
-   if(i==1) dp <- numeric(length(spc)) #pre-allocate
-   dp[i] <- receiver_line_det_sim(recSpc=spc[i], rngFun=pdrf)
- }
- cbind(spc,dp) #view results  
- #plot results
- plot(spc, dp, type="o",ylim=c(0,1), 
-   xlab="distance between receivers in meters",
-  ylab="proportion of virtual fish detected") 
- # e.g., >95\% virtual fish detected up to 1400 m spacing in this example
+# Again but four receivers with irregular spacing
+dp <- receiver_line_det_sim(
+  rngFun = pdrf, recSpc = c(2000, 4000, 2000),
+  outerLim = c(1000, 1000), nsim = 10, showPlot = T
+)
+dp
 
 
-#EXAMPLE 3 - summarize detection probability vs. fish swim speed
- 
- #define scenarios of fish movement rate
- swim <- seq(0.1, 5.0, 0.1) #constant velocity
- for(i in 1:length(swim)){
-   if(i==1) dp <- numeric(length(swim)) #pre-allocate
-   dp[i] <- receiver_line_det_sim(vel=swim[i], rngFun=pdrf)
- }
- cbind(swim,dp) #view results
- #plot results
- plot(swim, dp, type="o", ylim=c(0,1), xlab="fish movement rate, m/s",
-  ylab="proportion of virtual fish detected")
- # e.g., >95\% virtual fish detected up to 1.7 m/s rate in this example
- # e.g., declines linearly above 1.7 m/s
+# EXAMPLE 2 - summarize detection probability vs. receiver spacing
+
+# two receivers only, spaced 'spc' m apart
+# define scenarios where two receiver are spaced
+spc <- seq(100, 5000, 100) # two receivers spaced 100, 200, ... 5000 m
+# loop through scenarios, estimate detection probability for each
+for (i in 1:length(spc)) {
+  if (i == 1) dp <- numeric(length(spc)) # pre-allocate
+  dp[i] <- receiver_line_det_sim(recSpc = spc[i], rngFun = pdrf)
+}
+cbind(spc, dp) # view results
+# plot results
+plot(spc, dp,
+  type = "o", ylim = c(0, 1),
+  xlab = "distance between receivers in meters",
+  ylab = "proportion of virtual fish detected"
+)
+# e.g., >95\% virtual fish detected up to 1400 m spacing in this example
 
 
-#EXAMPLE 4 - empirical detection range curve instead of logistic
- 
- #create data frame with observed det. efficiency (p) at each distance (x)
- edr <- data.frame(
-   x=c(0,363,444,530,636,714,794,889,920), #tag-receiver distance
-   p=c(1,1,0.96,0.71,0.67,0.75,0.88,0.21,0)) # detection prob
+# EXAMPLE 3 - summarize detection probability vs. fish swim speed
 
- #now create a function to return the detection probability
- # based on distance and linear interpolation within edr
- # i.e., estimate p at given x by "connecting the dots" 
- edrf <- function(dm, my.edr=edr) {
-   p <- approx(x=my.edr$x,y=my.edr$p,xout=dm, rule=2)$y
-   return(p)
- }
+# define scenarios of fish movement rate
+swim <- seq(0.1, 5.0, 0.1) # constant velocity
+for (i in 1:length(swim)) {
+  if (i == 1) dp <- numeric(length(swim)) # pre-allocate
+  dp[i] <- receiver_line_det_sim(vel = swim[i], rngFun = pdrf)
+}
+cbind(swim, dp) # view results
+# plot results
+plot(swim, dp,
+  type = "o", ylim = c(0, 1), xlab = "fish movement rate, m/s",
+  ylab = "proportion of virtual fish detected"
+)
+# e.g., >95\% virtual fish detected up to 1.7 m/s rate in this example
+# e.g., declines linearly above 1.7 m/s
 
- #preview empirical detection range curve
- plot(edrf(0:2000),type="l",
-   ylab="probability of detecting each coded burst", 
-  xlab="distance between receiver and transmitter, meters")
 
- #use empirical curve (edrf) in simulation
- dp <- receiver_line_det_sim(rngFun=edrf, nsim=10, showPlot=T) #w/ optional plot
- dp
+# EXAMPLE 4 - empirical detection range curve instead of logistic
+
+# create data frame with observed det. efficiency (p) at each distance (x)
+edr <- data.frame(
+  x = c(0, 363, 444, 530, 636, 714, 794, 889, 920), # tag-receiver distance
+  p = c(1, 1, 0.96, 0.71, 0.67, 0.75, 0.88, 0.21, 0)
+) # detection prob
+
+# now create a function to return the detection probability
+# based on distance and linear interpolation within edr
+# i.e., estimate p at given x by "connecting the dots"
+edrf <- function(dm, my.edr = edr) {
+  p <- approx(x = my.edr$x, y = my.edr$p, xout = dm, rule = 2)$y
+  return(p)
+}
+
+# preview empirical detection range curve
+plot(edrf(0:2000),
+  type = "l",
+  ylab = "probability of detecting each coded burst",
+  xlab = "distance between receiver and transmitter, meters"
+)
+
+# use empirical curve (edrf) in simulation
+dp <- receiver_line_det_sim(rngFun = edrf, nsim = 10, showPlot = T) # w/ optional plot
+dp
 
 }
 \references{

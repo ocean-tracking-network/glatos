@@ -54,18 +54,18 @@ warning message even if conversion was successful.
 \examples{
 \dontrun{
 
-#get path to example VRL in this package
-myVRL <- system.file("extdata", "detection_files_raw", 
-                     "VR2W_109924_20110718_1.vrl",
-                     package = "glatos")
-                     
-vrl2csv(dirname(myVRL)) #directory input
-vrl2csv(myVRL) #file name input
+# get path to example VRL in this package
+myVRL <- system.file("extdata", "detection_files_raw",
+  "VR2W_109924_20110718_1.vrl",
+  package = "glatos"
+)
 
-#setting 'overwrite=FALSE' will make new file with '_n'added to name
-vrl2csv(myVRL, overwrite=F)
+vrl2csv(dirname(myVRL)) # directory input
+vrl2csv(myVRL) # file name input
+
+# setting 'overwrite=FALSE' will make new file with '_n'added to name
+vrl2csv(myVRL, overwrite = F)
 }
-
 
 }
 \seealso{

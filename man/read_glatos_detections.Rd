@@ -37,13 +37,14 @@ When created, it will be constructed from \code{transmitter_codespace} and
 \code{transmitter_id}, separated by '-'.
 }
 \examples{
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 
-#note that code above is needed to find the example file
-#for real glatos data, use something like below
-#det_file <- "c:/path_to_file/HECWL_detectionsWithLocs_20150321_132242.csv"
+# note that code above is needed to find the example file
+# for real glatos data, use something like below
+# det_file <- "c:/path_to_file/HECWL_detectionsWithLocs_20150321_132242.csv"
 
 det <- read_glatos_detections(det_file)
 

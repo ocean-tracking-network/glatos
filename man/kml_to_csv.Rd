@@ -34,10 +34,11 @@ saved as kml. Or extract (unzip) kml from kmz.
 }
 \examples{
 
-#Get example kml with two polygons
+# Get example kml with two polygons
 kml_file <- system.file("inst/extdata", "example_polygons.kml",
-                        package = "glatos")
-                        
+  package = "glatos"
+)
+
 kml_to_csv(kml_file)
 
 }

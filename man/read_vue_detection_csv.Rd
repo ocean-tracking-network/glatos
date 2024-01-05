@@ -27,7 +27,9 @@ All timestamp columns are assumed to be in UTC.
 }
 \examples{
 csv_file <- system.file("extdata",
-  "VR2W_109924_20110718_1.csv", package="glatos")
+  "VR2W_109924_20110718_1.csv",
+  package = "glatos"
+)
 
 vue_det <- read_vue_detection_csv(csv_file)
 
