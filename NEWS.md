@@ -22,6 +22,9 @@
         - `check_dependencies`
         - `install_ffmpeg`
         - `make_video_ffmpeg`
+        
+- Deprecate data object `greatLakesPoly`; suggest `great_lakes_polygon` 
+  instead.
 
 - Fix issues with several tests caused by changes to CRS/WKT and row.names 
   attributes.
