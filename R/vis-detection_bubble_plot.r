@@ -3,12 +3,12 @@
 #' Make bubble plots showing the number of fish detected across a defined set
 #' of receiver locations.
 #'
-#' @inheritParams summarize_detections 
-#' 
-#' @param map An optional sp or sf spatial object
-#'   that can by plotted with using `plot` to be included as the
-#'   background for the plot. If NULL, then the example Great Lakes polygon
-#'   object (`data(great_lakes_polygon)`) will be used.
+#' @inheritParams summarize_detections
+#' @param map An optional sp, sf, or terra::SpatVect spatial object that
+#'  can by plotted with using `plot` to be included as the background for the
+#'  plot. If NULL, then the example Great Lakes polygon
+#'  object (`data(great_lakes_polygon)`) will be used.  Map CRS must be in
+#'  EPSG:4326 or conversion will be attempted. 
 #' 
 #' @param out_file An optional character string with the name (including 
 #'   extension) of output file created. File extension will determine type of 
@@ -138,7 +138,19 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   if(!is.null(map) & inherits(map, "Spatial")){
     map <- sf::st_as_sf(map)
     message("Converted sp object to sf")
-    }
+  }
+
+  # convert terra::SpatVector to sf
+  if(!is.null(map) & inherits(map, "SpatVector")){
+    map <- sf::st_as_sf(map)
+    message("Converted terra SpatVector to sf")
+  }
+
+  # Check CRS == 4326 and attempt conversion if not
+  if(!is.null(map) & sf::st_crs(map)$input != "EPSG:4326"){
+    map <- sf::st_transform(map, 4326)
+    message("Converted map to EPSG:4326")
+  }
     
   if(is.null(map)) map <- great_lakes_polygon #example in glatos package (sf object)
   
@@ -257,3 +269,6 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   
   return(det_summ)
 }		
+
+
+
