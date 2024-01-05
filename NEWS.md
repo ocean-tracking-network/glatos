@@ -8,6 +8,14 @@
 
 - Remove dependence on `rgeos` and `rgdal`.
 
+- This package now requires R >= 3.5.0 because serialized objects in
+     serialize/load version 3 cannot be read in older versions of R.
+     File(s) containing such objects:
+       'glatos/inst/testdata/flynn_island_transition.rds'
+       'glatos/inst/testdata/higgins_lake_transition.rds'
+       'glatos/inst/testdata/test-detect_transmissions-dtc_spout.rds'
+       'glatos/inst/testdata/test-transmit_along_path-tr_dfin_spout.rds'
+       
 - Deprecate `make_transition` and `make_transition2`; suggest `make_transition3` 
   instead.
 
