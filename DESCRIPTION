@@ -26,6 +26,7 @@ Imports:
 		readxl,
 		rmarkdown,
 		sf,
+		sp,
 		tibble,
 		tidyr
 Suggests: 
