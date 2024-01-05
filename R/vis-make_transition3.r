@@ -59,22 +59,19 @@
 ##' 
 ##' #Example 1 - read from SpatialPolygonsDataFrame
 ##' # use example polygon for Great lakes
-##' 
-##' library(sp) #for loading greatLakesPoly
-##' library(raster) # for plotting rasters
-##' 
+##'  
 ##' #get polygon of the Great Lakes
-##' data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+##' data(great_lakes_polygon) #glatos example data; a sf polygon object
 ##' 
 ##' # make_transition layer
-##' tst <- make_transition3(greatLakesPoly, res = c(0.1, 0.1))
+##' tst <- make_transition3(great_lakes_polygon, res = c(0.1, 0.1))
 ##' 
 ##' # plot raster layer
 ##' # notice land = 1, water = 0
-##' plot(tst$rast)
+##' plot(terra::rast(tst$rast))
 ##' 
 ##' #compare to polygon
-##' plot(greatLakesPoly, add = TRUE)
+##' plot(st_geometry(great_lakes_polygon), add = TRUE, fill = NA)
 ##'
 ##' #Example 2 - read from ESRI Shapefile and include receiver file
 ##' # to account for any receivers outside of great lakes polygon
@@ -97,22 +94,19 @@
 ##' # plot raster layer
 ##' # notice the huge circle rasterized as "water"  north of Lake Superior.
 ##' # This occurred because we had a "receiver" deployed at that locations
-##' raster::plot(tst$rast)
+##' plot(terra::rast(tst$rast))
 ##' points(recs$deploy_long, recs$deploy_lat, col = "red", pch = 20)
 ##' 
 ##' # plot transition layer
-##' raster::plot(raster::raster(tst$transition))
+##' plot(raster::raster(tst$transition))
 ##'
 ##' Example 3- transition layer of Lake Huron only with receivers
 ##' 
-##' # read polygon shapefile
-##' poly <- system.file("extdata", "shoreline.zip", package = "glatos")
-##' poly <- unzip(poly, exdir = tempdir())
-##' poly <- sf::st_read(poly[grepl("*.shp", poly)])
-##' 
+##' # read polygon layer of Great Lakes
+##' data(great_lakes_polygon)
 ##' 
 ##' # transform to great lakes projection
-##' poly <- sf::st_transform(poly, crs = 3175)
+##' poly <- sf::st_transform(great_lakes_polygon, crs = 3175)
 ##'
 ##' # set attribute-geometry relationship to constant.
 ##' # this avoids error when cropping
@@ -136,7 +130,7 @@
 ##' # convert recs to simple feature  object (sf)
 ##' recs <- sf::st_as_sf(recs, coords = c("deploy_long", "deploy_lat"), crs = 4326 )
 ##'
-##' # transform to great lakes projection
+##' # transform receivers to same projection as great lakes polygon
 ##' recs <- sf::st_transform(recs, crs = 3175)
 ##'
 ##' # check by plotting
@@ -147,8 +141,8 @@
 ##' tst1 <- make_transition3(poly, res = c(0.01, 0.01), receiver_points = recs)
 ##'
 ##' # plot raster layer
-##' raster::plot(tst1$rast)
-##'  plot(sf::st_transform(sf::st_geometry(recs), crs = 4326), add = TRUE, col = "red", pch = 20)
+##' plot(terra::rast(tst1$rast))
+##' plot(sf::st_transform(sf::st_geometry(recs), crs = 4326), add = TRUE, col = "red", pch = 20)
 ##'
 ##' # plot transition layer
 ##' raster::plot(raster::raster(tst1$transition))
