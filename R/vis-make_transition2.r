@@ -47,7 +47,7 @@
 #' library(raster) # for plotting rasters
 #'
 #' # get polygon of the Great Lakes
-#' data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+#' data(greatLakesPoly) # glatos example data; a SpatialPolygonsDataFrame
 #'
 #' # make_transition layer
 #' tst <- make_transition2(greatLakesPoly, res = c(0.1, 0.1))
@@ -58,7 +58,7 @@
 #'
 #' # plot transition layer
 #' plot(raster(tst$transition))
-#' 
+#'
 #' \dontrun{
 #' # increase resolution- this may take some time...
 #' tst1 <- make_transition2(greatLakesPoly, res = c(0.01, 0.01))
@@ -70,44 +70,69 @@
 #' plot(raster(tst1$transition))
 #' }
 #'
-#'
-#' @note This function has been deprecated and will be removed from the 
+#' @note This function has been deprecated and will be removed from the
 #' next version of \code{glatos}. Use \code{\link{make_transition3}} instead.
-#' 
+#'
 #' @export
 
 make_transition2 <- function(poly, res = c(0.1, 0.1), extent_out = NULL,
-                             x_lim = NULL, y_lim = NULL){
-  
+                             x_lim = NULL, y_lim = NULL) {
   # Function will be removed in next version
-  .Deprecated("make_transition3", 
-              msg = paste0("This function is deprecated and will be removed ",
-                           "in the next version"))  
-  
-  message("Making transition layer...")
-  
-  if(sum(is.null(x_lim), is.null(y_lim)) == 1) stop(paste0("You must specify ",
-    "'x_lim' and 'y_lim' or neither."))
-  if(!is.null(x_lim) & length(x_lim) != 2) stop("'x_lim' must be a vector ",
-    "with exactly two elements.")
-  if(!is.null(y_lim) & length(y_lim) != 2) stop("'y_lim' must be a vector ",
-    "with exactly two elements.")
+  .Deprecated("make_transition3",
+    msg = paste0(
+      "This function is deprecated and will be removed ",
+      "in the next version"
+    )
+  )
 
-  if(is.null(x_lim) & is.null(extent_out)){ 
-    extent_out <- raster::extent(poly) 
-    } else if (!is.null(x_lim)) { 
-      extent_out <- raster::extent(c(x_lim[1], x_lim[2],
-                                      y_lim[1], y_lim[2]))
+  message("Making transition layer...")
+
+  if (sum(is.null(x_lim), is.null(y_lim)) == 1) {
+    stop(paste0(
+      "You must specify ",
+      "'x_lim' and 'y_lim' or neither."
+    ))
   }
-    
-  burned = raster::rasterize(poly, y = raster::raster(res = res, ext = extent_out), 
-    field = 1, background = 0)
-  
-  tran <- function(x) if(x[1] * x[2] == 0){ return(0) } else { return(1) }
-  tr1 <- gdistance::transition(burned, transitionFunction = tran, 
-    directions = 16)
-  tr1 <- gdistance::geoCorrection(tr1, type="c")
-  
+  if (!is.null(x_lim) & length(x_lim) != 2) {
+    stop(
+      "'x_lim' must be a vector ",
+      "with exactly two elements."
+    )
+  }
+  if (!is.null(y_lim) & length(y_lim) != 2) {
+    stop(
+      "'y_lim' must be a vector ",
+      "with exactly two elements."
+    )
+  }
+
+  if (is.null(x_lim) & is.null(extent_out)) {
+    extent_out <- raster::extent(poly)
+  } else if (!is.null(x_lim)) {
+    extent_out <- raster::extent(c(
+      x_lim[1], x_lim[2],
+      y_lim[1], y_lim[2]
+    ))
+  }
+
+  burned <- raster::rasterize(poly,
+    y = raster::raster(res = res, ext = extent_out),
+    field = 1, background = 0
+  )
+
+  tran <- function(x) {
+    if (x[1] * x[2] == 0) {
+      return(0)
+    } else {
+      return(1)
+    }
+  }
+  tr1 <- gdistance::transition(burned,
+    transitionFunction = tran,
+    directions = 16
+  )
+  tr1 <- gdistance::geoCorrection(tr1, type = "c")
+
   message("Done.")
   return(list(transition = tr1, rast = burned))
-  }
+}

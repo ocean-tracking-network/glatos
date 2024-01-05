@@ -56,21 +56,21 @@
 #'    \item{`rast:`}{ rasterized input layer of class `raster`}}
 #'   Additionally, rasterized version of input shapefile (*.tif extension) is
 #'   written to computer at `output_dir`
-#' 
+#'
 #'
 #' @author Todd Hayden, Tom Binder, Chris Holbrook
 #'
 #' @examples
 #' \dontrun{
-#' 
-#' #Example 1 - read from sf polygon
+#'
+#' # Example 1 - read from sf polygon
 #' # use example polygon for Great lakes
 #'
-#' library(sf) #for loading great_lakes_polygon
+#' library(sf) # for loading great_lakes_polygon
 #' library(raster) # for plotting rasters
 #'
 #' # Get polygon of the Great Lakes
-#' data(great_lakes_polygon) #glatos example data; an sf polygons object
+#' data(great_lakes_polygon) # glatos example data; an sf polygons object
 #'
 #' # Make transition layer
 #' tst <- make_transition(great_lakes_polygon, res = c(0.1, 0.1))
@@ -79,17 +79,17 @@
 #' # notice land = 1, water = 0
 #' plot(tst$rast)
 #'
-#' #compare to polygon
+#' # compare to polygon
 #' plot(sf::st_geometry(great_lakes_polygon), add = TRUE)
-#' 
-#' 
-#' #Example 2 - read from SpatialPolygonsDataFrame
+#'
+#'
+#' # Example 2 - read from SpatialPolygonsDataFrame
 #' # use example polygon for Great lakes
 #'
 #' library(raster) # for plotting rasters
 #'
-#' #get polygon of the Great Lakes
-#' data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+#' # get polygon of the Great Lakes
+#' data(greatLakesPoly) # glatos example data; a SpatialPolygonsDataFrame
 #'
 #' # make_transition layer
 #' tst <- make_transition(greatLakesPoly, res = c(0.1, 0.1))
@@ -98,13 +98,13 @@
 #' # notice land = 1, water = 0
 #' plot(tst$rast)
 #'
-#' #compare to polygon
+#' # compare to polygon
 #' plot(greatLakesPoly, add = TRUE)
 #'
 #' # increase resolution and repeat if needed
 #'
 #' #------------------------------------------
-#' #Example 3 - read from ESRI Shapefile
+#' # Example 3 - read from ESRI Shapefile
 #' # path to polygon shapefile
 #' poly <- system.file("extdata", "shoreline.zip", package = "glatos")
 #' poly <- unzip(poly, exdir = tempdir())
@@ -129,117 +129,129 @@
 #' raster::plot(raster::raster(tst1$transition))
 #' }
 #'
-#' @note This function has been deprecated and will be removed from the 
+#' @note This function has been deprecated and will be removed from the
 #' next version of \code{glatos}. Use \code{\link{make_transition3}} instead.
 #'
 #' @export
 
-make_transition <- function(in_file, 
+make_transition <- function(in_file,
                             output = "out.tif",
-                            output_dir = NULL, 
+                            output_dir = NULL,
                             res = c(0.1, 0.1),
                             invert = FALSE,
-                            all_touched = TRUE){
-
+                            all_touched = TRUE) {
   # Function will be removed in next version
-  .Deprecated("make_transition3", 
-              msg = paste0("This function is deprecated and will be removed ",
-              "in the next version"))  
-  
-  #Check if in_file is file, directory, sf, or SpatialPolygonsDataFrame
-  if(inherits(in_file, "character")){
+  .Deprecated("make_transition3",
+    msg = paste0(
+      "This function is deprecated and will be removed ",
+      "in the next version"
+    )
+  )
 
-    #check if in_file exists
-    if(!file.exists(in_file)) stop("Input file or folder '", 
-                                   in_file, "' not found.")
-
-    #check if file or directory and set layer name accordingly
-    if(grepl("\\.shp$", in_file)){
-
-      in_dir <- dirname(in_file)
-
-      if(!file.exists(in_dir)) stop("'in_file' directory '", in_dir, 
-                                    "' not found.")
-
-      #get layer name from file name
-      in_layer <- basename(tools::file_path_sans_ext(basename(in_file)))
-
-    } else {
-
-      in_dir <- in_file
-
-      #use layer name as file name
-      in_layer <- sf::st_layers(in_dir)$name
-
+  # Check if in_file is file, directory, sf, or SpatialPolygonsDataFrame
+  if (inherits(in_file, "character")) {
+    # check if in_file exists
+    if (!file.exists(in_file)) {
+      stop(
+        "Input file or folder '",
+        in_file, "' not found."
+      )
     }
 
-    #read shape file
+    # check if file or directory and set layer name accordingly
+    if (grepl("\\.shp$", in_file)) {
+      in_dir <- dirname(in_file)
+
+      if (!file.exists(in_dir)) {
+        stop(
+          "'in_file' directory '", in_dir,
+          "' not found."
+        )
+      }
+
+      # get layer name from file name
+      in_layer <- basename(tools::file_path_sans_ext(basename(in_file)))
+    } else {
+      in_dir <- in_file
+
+      # use layer name as file name
+      in_layer <- sf::st_layers(in_dir)$name
+    }
+
+    # read shape file
     in_shp <- sf::read_sf(in_dir, layer = in_layer)
-
   } else if (inherits(in_file, "SpatialPolygonsDataFrame")) {
-
-    #convert to sf
+    # convert to sf
     in_shp <- sf::st_as_sf(in_file)
 
-    #use incoming object name as layer
+    # use incoming object name as layer
     in_layer <- deparse(substitute(in_file))
-
-  } else if (inherits(in_file, "sf")){
-   
+  } else if (inherits(in_file, "sf")) {
     in_shp <- in_file
-    
-    #use incoming object name as layer
-    in_layer <- deparse(substitute(in_file))    
-    
+
+    # use incoming object name as layer
+    in_layer <- deparse(substitute(in_file))
   } else {
-
-    stop("'in_file' must be either an object of class 'sf', ",
-         "'SpatialPolygonsDataFrame', or\n",
-         " path to an ESRI Shapefile.")
-
+    stop(
+      "'in_file' must be either an object of class 'sf', ",
+      "'SpatialPolygonsDataFrame', or\n",
+      " path to an ESRI Shapefile."
+    )
   }
 
-  #check if POLYGON object
-  if (!all(sf::st_geometry_type(in_shp) == "POLYGON")){
+  # check if POLYGON object
+  if (!all(sf::st_geometry_type(in_shp) == "POLYGON")) {
     stop(paste0("Input can only contain polygon data."))
   }
 
-  #check projection and change if needed
+  # check projection and change if needed
   default_crs <- 4326
-  
+
   crs_in <- sf::st_crs(in_shp)$epsg
-  
-  if(is.na(crs_in) | (crs_in  != default_crs)){
+
+  if (is.na(crs_in) | (crs_in != default_crs)) {
     warning("CRS of input was not EPSG:4326, so conversion was attempted.",
-            call. = FALSE)
+      call. = FALSE
+    )
     in_shp <- sf::st_transform(in_shp, default_crs)
   }
 
-  #write to temp dir and call gdal_rasterize
+  # write to temp dir and call gdal_rasterize
   temp_dir <- path.expand(file.path(tempdir(), in_layer))
 
-  sf::st_write(in_shp, dsn = temp_dir, 
-               layer = in_layer,
-               driver = "ESRI Shapefile",
-               append = FALSE,
-               quiet = TRUE)
+  sf::st_write(in_shp,
+    dsn = temp_dir,
+    layer = in_layer,
+    driver = "ESRI Shapefile",
+    append = FALSE,
+    quiet = TRUE
+  )
 
-  if(is.null(output_dir)) output_dir <- temp_dir
+  if (is.null(output_dir)) output_dir <- temp_dir
 
   burned <- gdalUtilities::gdal_rasterize(temp_dir,
-                      dst_filename = path.expand(file.path(output_dir, output)),
-                      burn = 1,
-                      tr = res,
-                      i = invert,
-                      at = all_touched)
-      
-  burned <- raster::raster(burned, layer = 1)
-  
+    dst_filename = path.expand(file.path(output_dir, output)),
+    burn = 1,
+    tr = res,
+    i = invert,
+    at = all_touched
+  )
 
-  tran <- function(x){if(x[1] * x[2] == 0){return(0)} else {return(1)}}
-  tr1 <- gdistance::transition(burned, transitionFunction = tran, 
-                               directions = 16)
-  tr1 <- gdistance::geoCorrection(tr1, type="c")
+  burned <- raster::raster(burned, layer = 1)
+
+
+  tran <- function(x) {
+    if (x[1] * x[2] == 0) {
+      return(0)
+    } else {
+      return(1)
+    }
+  }
+  tr1 <- gdistance::transition(burned,
+    transitionFunction = tran,
+    directions = 16
+  )
+  tr1 <- gdistance::geoCorrection(tr1, type = "c")
   out <- list(transition = tr1, rast = burned)
   return(out)
 }

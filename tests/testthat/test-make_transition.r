@@ -1,47 +1,53 @@
 context("Check make_transition")
 
-#example 1 water polygon (Higgins Lake)
+# example 1 water polygon (Higgins Lake)
 data(higgins_lake_polygon)
 poly1 <- higgins_lake_polygon
 
 trl1 <- make_transition(poly1, res = c(0.01, 0.01))
 
-#raster::plot(trl1$rast)
-#raster::plot(raster::raster(trl1$transition))
+# raster::plot(trl1$rast)
+# raster::plot(raster::raster(trl1$transition))
 
-#higgins_lake_transition <- trl1
-#saveRDS(higgins_lake_transition, file = "./inst/testdata/higgins_lake_transition.rds")
+# higgins_lake_transition <- trl1
+# saveRDS(higgins_lake_transition, file = "./inst/testdata/higgins_lake_transition.rds")
 
 
-#example 2 land polygon (Flynn Island, Higgins Lake)
+# example 2 land polygon (Flynn Island, Higgins Lake)
 data(flynn_island_polygon)
 poly2 <- flynn_island_polygon
 
-trl2 <- make_transition(poly2, res = c(0.001, 0.001), 
-                        all_touched = FALSE, 
-                        invert = TRUE)
+trl2 <- make_transition(poly2,
+  res = c(0.001, 0.001),
+  all_touched = FALSE,
+  invert = TRUE
+)
 
-#raster::plot(trl2$rast)
-#raster::plot(raster::raster(trl2$transition))
+# raster::plot(trl2$rast)
+# raster::plot(raster::raster(trl2$transition))
 
-#flynn_island_transition <- trl2
-#saveRDS(flynn_island_transition, file = "./inst/testdata/flynn_island_transition.rds")
+# flynn_island_transition <- trl2
+# saveRDS(flynn_island_transition, file = "./inst/testdata/flynn_island_transition.rds")
 
 
 
 # Expected results
 # when called from devtools::test, working dir test
 #  so need to handle that case vs package root
-if(grepl("^glatos$", basename(getwd()))) testdata_dir <- normalizePath("./inst/testdata")
-if(grepl("^testthat$", basename(getwd()))) testdata_dir <- normalizePath("../../inst/testdata")
+if (grepl("^glatos$", basename(getwd()))) testdata_dir <- normalizePath("./inst/testdata")
+if (grepl("^testthat$", basename(getwd()))) testdata_dir <- normalizePath("../../inst/testdata")
 
-trl1_trns_shouldBe <- readRDS(file.path(testdata_dir, 
-                                        "higgins_lake_transition.rds"))
+trl1_trns_shouldBe <- readRDS(file.path(
+  testdata_dir,
+  "higgins_lake_transition.rds"
+))
 
-trl2_trns_shouldBe <- readRDS(file.path(testdata_dir, 
-                                        "flynn_island_transition.rds"))
+trl2_trns_shouldBe <- readRDS(file.path(
+  testdata_dir,
+  "flynn_island_transition.rds"
+))
 
-#raster::plot(trl2$rast)
+# raster::plot(trl2$rast)
 
 # Drop names from rasters (to omit from comparisons)
 trl1$rast@file@name <- NA_character_

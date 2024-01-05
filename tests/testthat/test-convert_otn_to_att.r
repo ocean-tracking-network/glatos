@@ -1,11 +1,14 @@
 context("Check convert_otn_to_att")
 
-dets_path <- system.file("extdata", "blue_shark_detections.csv", 
-                         package = "glatos")
+dets_path <- system.file("extdata", "blue_shark_detections.csv",
+  package = "glatos"
+)
 deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
-                           package = "glatos")
+  package = "glatos"
+)
 tag_path <- system.file("extdata", "otn_nsbs_tag_metadata.xls",
-                        package = "glatos")
+  package = "glatos"
+)
 
 dets <- read_otn_detections(dets_path)
 tags <- prepare_tag_sheet(tag_path, 5, 2)

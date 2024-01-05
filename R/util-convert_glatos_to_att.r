@@ -28,11 +28,13 @@
 #'
 #' library(glatos)
 #' wal_det_file <- system.file("extdata", "walleye_detections.csv",
-#'      package = "glatos")
+#'   package = "glatos"
+#' )
 #' walleye_detections <- read_glatos_detections(wal_det_file) # load walleye data
 #'
 #' rec_file <- system.file("extdata", "sample_receivers.csv",
-#'      package = "glatos")
+#'   package = "glatos"
+#' )
 #' rcv <- read_glatos_receivers(rec_file) # load receiver data
 #'
 #' ATTdata <- convert_glatos_to_att(walleye_detections, rcv)
@@ -40,13 +42,14 @@
 
 convert_glatos_to_att <- function(detectionObj, receiverObj,
                                   crs = sp::CRS("+init=epsg:4326")) {
-
   transmitters <-
-    if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))) {
-        detectionObj$transmitter_id
+    if (all(grepl("-", detectionObj$transmitter_id, fixed = TRUE))) {
+      detectionObj$transmitter_id
     } else {
-      concat_list_strings(detectionObj$transmitter_codespace,
-                          detectionObj$transmitter_id)
+      concat_list_strings(
+        detectionObj$transmitter_codespace,
+        detectionObj$transmitter_id
+      )
     }
 
   tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
@@ -88,24 +91,37 @@ convert_glatos_to_att <- function(detectionObj, receiverObj,
 
   detectionObj <- detectionObj %>%
     dplyr::mutate(dummy = TRUE) %>%
-    dplyr::left_join(dplyr::select(receiverObj %>%
-                     dplyr::mutate(dummy=TRUE),
-                      glatos_array, station_no, deploy_lat, deploy_long,
-                      station, dummy, ins_model_no, ins_serial_no,
-                      deploy_date_time, recover_date_time),
-                      by = c("glatos_array", "station_no", "deploy_lat",
-                             "deploy_long", "station", "dummy")) %>%
-    dplyr::filter(detection_timestamp_utc >= deploy_date_time,
-                  detection_timestamp_utc <= recover_date_time) %>%
-    dplyr::mutate(ReceiverFull = concat_list_strings(ins_model_no,
-                                                     ins_serial_no)) %>%
+    dplyr::left_join(
+      dplyr::select(
+        receiverObj %>%
+          dplyr::mutate(dummy = TRUE),
+        glatos_array, station_no, deploy_lat, deploy_long,
+        station, dummy, ins_model_no, ins_serial_no,
+        deploy_date_time, recover_date_time
+      ),
+      by = c(
+        "glatos_array", "station_no", "deploy_lat",
+        "deploy_long", "station", "dummy"
+      )
+    ) %>%
+    dplyr::filter(
+      detection_timestamp_utc >= deploy_date_time,
+      detection_timestamp_utc <= recover_date_time
+    ) %>%
+    dplyr::mutate(ReceiverFull = concat_list_strings(
+      ins_model_no,
+      ins_serial_no
+    )) %>%
     dplyr::select(-dummy)
 
   detections <- unique(tibble::tibble(
     Date.Time = detectionObj$detection_timestamp_utc,
     Transmitter = as.factor(
-      concat_list_strings(detectionObj$transmitter_codespace,
-                          detectionObj$transmitter_id)),
+      concat_list_strings(
+        detectionObj$transmitter_codespace,
+        detectionObj$transmitter_id
+      )
+    ),
     Station.Name = as.factor(detectionObj$station),
     Receiver = as.factor(detectionObj$ReceiverFull),
     Latitude = detectionObj$deploy_lat,
@@ -114,10 +130,12 @@ convert_glatos_to_att <- function(detectionObj, receiverObj,
     Sensor.Unit = as.factor(detectionObj$sensor_unit)
   ))
 
-stations <- unique(tibble::tibble(
+  stations <- unique(tibble::tibble(
     Station.Name = as.factor(receiverObj$station),
-    Receiver = as.factor(concat_list_strings(receiverObj$ins_model_no,
-                         receiverObj$ins_serial_no)),
+    Receiver = as.factor(concat_list_strings(
+      receiverObj$ins_model_no,
+      receiverObj$ins_serial_no
+    )),
     Installation = as.factor(NA),
     Receiver.Project = as.factor(receiverObj$glatos_project),
     Deployment.Date = receiverObj$deploy_date_time,
@@ -138,8 +156,7 @@ stations <- unique(tibble::tibble(
 
   if (inherits(crs, "CRS")) {
     attr(att_obj, "CRS") <- crs
-  }
-  else {
+  } else {
     message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
     attr(att_obj, "CRS") <- eval(formals()$crs)
   }
@@ -152,11 +169,10 @@ stations <- unique(tibble::tibble(
 # columns, row by row.
 concat_list_strings <- function(list1, list2, sep = "-") {
   if (length(list1) != length(list2)) {
-      stop(sprintf("Lists are not the same size. %d != %d.",
-                   length(list1), length(list2)))
+    stop(sprintf(
+      "Lists are not the same size. %d != %d.",
+      length(list1), length(list2)
+    ))
   }
-  return (paste(list1, list2, sep = sep))
+  return(paste(list1, list2, sep = sep))
 }
-
-
-

@@ -1,9 +1,11 @@
 context("Check read_otn_deployments")
 
 # Actual result
-#get path to example deployment file
+# get path to example deployment file
 dep_file <- system.file("extdata",
-                        "hfx_deployments.csv", package = "glatos")
+  "hfx_deployments.csv",
+  package = "glatos"
+)
 
 deps <- read_otn_deployments(dep_file)
 
