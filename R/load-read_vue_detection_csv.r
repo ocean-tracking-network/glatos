@@ -20,60 +20,69 @@
 #'
 #' @examples
 #' csv_file <- system.file("extdata",
-#'   "VR2W_109924_20110718_1.csv", package="glatos")
+#'   "VR2W_109924_20110718_1.csv",
+#'   package = "glatos"
+#' )
 #'
 #' vue_det <- read_vue_detection_csv(csv_file)
 #'
 #' @export
-read_vue_detection_csv <- function(src, 
-                          show_progress = FALSE){
-  
-  #Check if exists
-  if(!file.exists(src)){
+read_vue_detection_csv <- function(src,
+                                   show_progress = FALSE) {
+  # Check if exists
+  if (!file.exists(src)) {
     warning("File not found: ", src)
     return()
   }
-  
-  #Check if looks like VUE export format
-  src_header <- data.table::fread(file = src, nrows = 1L, header = FALSE)
-  
-  vue_detection_cols <- c(
-      `Date and Time (UTC)` = "POSIXct",
-      Receiver = "character", 
-      Transmitter = "character", 
-      `Transmitter Name` = "character", 
-      `Transmitter Serial` = "character", 
-      `Sensor Value` = "numeric", 
-      `Sensor Unit` = "character", 
-      `Station Name` = "character", 
-      Latitude = "numeric", 
-      Longitude = "numeric")
-  
-  missing_cols <- setdiff(names(vue_detection_cols), 
-                          src_header[1, ])
-  
-  if(length(missing_cols) > 0) {
-    stop("Input file does not appear to be in VUE Export format.\n\ ",
-         "The following columns are missing: \n  ",
-         paste(missing_cols, collapse = "\n  "))
-  }
-  
 
-  #Read each list element separately
+  # Check if looks like VUE export format
+  src_header <- data.table::fread(file = src, nrows = 1L, header = FALSE)
+
+  vue_detection_cols <- c(
+    `Date and Time (UTC)` = "POSIXct",
+    Receiver = "character",
+    Transmitter = "character",
+    `Transmitter Name` = "character",
+    `Transmitter Serial` = "character",
+    `Sensor Value` = "numeric",
+    `Sensor Unit` = "character",
+    `Station Name` = "character",
+    Latitude = "numeric",
+    Longitude = "numeric"
+  )
+
+  missing_cols <- setdiff(
+    names(vue_detection_cols),
+    src_header[1, ]
+  )
+
+  if (length(missing_cols) > 0) {
+    stop(
+      "Input file does not appear to be in VUE Export format.\n\ ",
+      "The following columns are missing: \n  ",
+      paste(missing_cols, collapse = "\n  ")
+    )
+  }
+
+
+  # Read each list element separately
   vue_detections <- data.table::fread(
-                  file = src, 
-                  sep = ",", 
-                  na.strings = "",
-                  colClasses = vue_detection_cols,
-                  header = TRUE,
-                  fill = TRUE,
-                  showProgress = show_progress)
-  
-  #Assign class
-  vue_detections <- structure(vue_detections, 
-                    class = c("vue_detections", 
-                              class(vue_detections)))
-  
+    file = src,
+    sep = ",",
+    na.strings = "",
+    colClasses = vue_detection_cols,
+    header = TRUE,
+    fill = TRUE,
+    showProgress = show_progress
+  )
+
+  # Assign class
+  vue_detections <- structure(vue_detections,
+    class = c(
+      "vue_detections",
+      class(vue_detections)
+    )
+  )
+
   return(vue_detections)
-}  
-  
+}

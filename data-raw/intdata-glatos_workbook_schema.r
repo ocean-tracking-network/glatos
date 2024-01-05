@@ -1,54 +1,60 @@
-#Make glatos_workbook_schema (internal data object for read_glatos_workbook)
-#Specify column names and data types for each sheet in each workbook version
+# Make glatos_workbook_schema (internal data object for read_glatos_workbook)
+# Specify column names and data types for each sheet in each workbook version
 
 
-#Make list element for each workbook version
-#pre-allocate sheet-level structure within each version
+# Make list element for each workbook version
+# pre-allocate sheet-level structure within each version
 glatos_workbook_schema <- list(
   "v1.3" = list(
     project = NA,
-    locations = NA, 
+    locations = NA,
     proposed = NA,
-    deployment = NA, 
-    recovery = NA, 
-    tagging = NA)
+    deployment = NA,
+    recovery = NA,
+    tagging = NA
+  )
 )
 
 
 #----------------------------------------------------
-#Version 1.3
+# Version 1.3
 
 glatos_workbook_schema$v1.3$project <- NA
 
-glatos_workbook_schema$v1.3$locations <- read.table(text = "
+glatos_workbook_schema$v1.3$locations <- read.table(
+  text = "
   name                 type       args
   glatos_array         character  NA
   location_description character  NA
   water_body           character  NA
   glatos_region        character  NA",
   header = TRUE,
-  stringsAsFactors = FALSE)
+  stringsAsFactors = FALSE
+)
 
-glatos_workbook_schema$v1.3$proposed <- read.table(text = "
+glatos_workbook_schema$v1.3$proposed <- read.table(
+  text = "
   name                 type       args
-  otn_region           character  NA           
-  glatos_array         character  NA 
-  otn_array            character  NA 
-  station_no           character  NA 
-  bottom_depth         numeric    NA 
-  proposed_lat         numeric    NA 
-  proposed_long        numeric    NA 
-  proposed_start_date  Date       NA 
-  proposed_end_date    Date       NA 
-  glatos_ins_frequency numeric    NA 
-  glatos_funded        character  NA 
-  glatos_seasonal      character  NA 
-  glatos_project       character  NA 
+  otn_region           character  NA
+  glatos_array         character  NA
+  otn_array            character  NA
+  station_no           character  NA
+  bottom_depth         numeric    NA
+  proposed_lat         numeric    NA
+  proposed_long        numeric    NA
+  proposed_start_date  Date       NA
+  proposed_end_date    Date       NA
+  glatos_ins_frequency numeric    NA
+  glatos_funded        character  NA
+  glatos_seasonal      character  NA
+  glatos_project       character  NA
   glatos_vps           character  NA",
   header = TRUE,
-  stringsAsFactors = FALSE)
+  stringsAsFactors = FALSE
+)
 
-glatos_workbook_schema$v1.3$deployment <- read.table(text = "
+glatos_workbook_schema$v1.3$deployment <- read.table(
+  text = "
   name                      type       args
   glatos_array              character  NA
   otn_array                 character  NA
@@ -82,11 +88,13 @@ glatos_workbook_schema$v1.3$deployment <- read.table(text = "
   comments                  character  NA
   glatos_seasonal           character  NA
   glatos_project            character  NA
-  glatos_vps                character  NA",    
+  glatos_vps                character  NA",
   header = TRUE,
-  stringsAsFactors = FALSE)
+  stringsAsFactors = FALSE
+)
 
-glatos_workbook_schema$v1.3$recovery <- read.table(text= "
+glatos_workbook_schema$v1.3$recovery <- read.table(
+  text = "
   name                      type       args
   glatos_array              character  NA
   otn_array                 character  NA
@@ -106,15 +114,17 @@ glatos_workbook_schema$v1.3$recovery <- read.table(text= "
   glatos_project            character  NA
   glatos_vps                character  NA",
   header = TRUE,
-  stringsAsFactors = FALSE)
+  stringsAsFactors = FALSE
+)
 
-glatos_workbook_schema$v1.3$tagging <- read.table(text="
+glatos_workbook_schema$v1.3$tagging <- read.table(
+  text = "
   name                                      type       args
   animal_id                                 character  NA
   tag_type                                  character  NA
   tag_manufacturer                          character  NA
   tag_model                                 character  NA
-  tag_serial_number                         character  NA    
+  tag_serial_number                         character  NA
   tag_id_code                               character  NA
   tag_code_space                            character  NA
   tag_implant_type                          character  NA
@@ -169,15 +179,15 @@ glatos_workbook_schema$v1.3$tagging <- read.table(text="
   glatos_reward                             character  NA
 ",
   header = TRUE,
-  stringsAsFactors = FALSE)
+  stringsAsFactors = FALSE
+)
 
-#\Version 1.3
+# \Version 1.3
 #----------------------------------------------------
 
-#add to sysdata.rda
+# add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(glatos_workbook_schema, rda_file)
 
-#for exported ('public') data
-#devtools::use_data(glatos_workbook_schema, pkg = "..", overwrite = TRUE)
-
+# for exported ('public') data
+# devtools::use_data(glatos_workbook_schema, pkg = "..", overwrite = TRUE)

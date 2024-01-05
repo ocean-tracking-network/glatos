@@ -26,7 +26,7 @@
 #'   \item{[read_glatos_receivers] and [read_otn_deployments]}{
 #'   Reads receiver location histories from standard GLATOS and OTN data files
 #'   to a single structure that is compatible with other glatos functions.}
-#'   
+#'
 #'   \item{[read_glatos_workbook]}{ Reads project-specific receiver history
 #'   and fish taggging and release data from a standard glatos workbook file.}
 #'
@@ -37,7 +37,7 @@
 #'   depth, temperature) to 'real'-scale values (e.g., depth in meters) using
 #'   transmitter specification data (e.g., from read\_vemco\_tag\_specs).} }
 #'
-#' @section Filtering and summarizing: \describe{ 
+#' @section Filtering and summarizing: \describe{
 #'   \item{[min_lag]}{
 #'   Facilitates identification and removal of false positive detections by
 #'   calculating the minimum time interval (min\_lag) between successive
@@ -45,7 +45,7 @@
 #'
 #'  \item{[false_detections]}{ Removes potential false positive detections
 #'  using "short interval" criteria (see [min_lag]).}
-#'  
+#'
 #'  \item{[detection_events]}{ Distills detection data down to a much
 #'  smaller number of discrete detection events, defined as a change in location
 #'  or time gap that exceeds a threshold.}
@@ -54,26 +54,26 @@
 #'  number of detections, first and last detection timestamps, and/or mean
 #'  location of receivers or groups, depending on specific type of summary
 #'  requested.}
-#' 
+#'
 #'  \item{[residence_index]}{ calculates the relative proportion of time
 #'  spent at each location.}
-#' 
-#'  \item{[REI]}{ calculates the relative activity at each receiver based 
+#'
+#'  \item{[REI]}{ calculates the relative activity at each receiver based
 #'  on number of unique species and individual animals.}
 #' }
-#' 
+#'
 #' @section Visualization and data exploration: \describe{
 #' \item{[abacus_plot]}{ Useful for exploring movement patterns of
 #' individual tagged animals through time.}
-#' 
+#'
 #' \item{[detection_bubble_plot]}{ Useful for exploring distribution of
 #' tagged individuals among receivers.}
-#' 
+#'
 #' \item{[interpolate_path], [make_frames], and [make_video]}{
 #' Interpolate spatio-temporal movements, between detections, create video
 #' frames, and stitch frames together to create animated video file using FFmpeg
 #' software.}
-#' 
+#'
 #' \item{[adjust_playback_time]}{ Modify playback speed of videos and
 #' optionally convert between video file formats. Requires FFmpeg.}
 #' }
@@ -102,13 +102,13 @@
 #' }
 #'
 #' @section Convert glatos data objects to other package classes: \describe{
-#' \item{[convert_glatos_to_att]}{ Converts glatos_detections and 
-#' glatos_receiver objects to ATT for compatibility with the Animal Tracking 
+#' \item{[convert_glatos_to_att]}{ Converts glatos_detections and
+#' glatos_receiver objects to ATT for compatibility with the Animal Tracking
 #' Toolbox(https://github.com/vinayudyawer/ATT) and the VTrack package.}
 #'
-#' \item{[convert_otn_erddap_to_att]}{ Converts glatos_detections and 
-#' transmitter, receiver, and animal metadata from the OTN ERDDAP to ATT format 
-#' for compatibility with the Animal Tracking 
+#' \item{[convert_otn_erddap_to_att]}{ Converts glatos_detections and
+#' transmitter, receiver, and animal metadata from the OTN ERDDAP to ATT format
+#' for compatibility with the Animal Tracking
 #' Toolbox(https://github.com/vinayudyawer/ATT) and the VTrack package.}
 #' }
 
@@ -119,17 +119,16 @@
 #'   text
 #' @importFrom stats approx dnorm ecdf end fivenum median na.omit rbinom rnorm
 #'   runif start step
-#' @importFrom utils capture.output read.csv packageVersion setTxtProgressBar 
+#' @importFrom utils capture.output read.csv packageVersion setTxtProgressBar
 #'   txtProgressBar unzip write.csv write.table zip
 #' @importFrom grDevices bmp colorRampPalette dev.new dev.off jpeg png rainbow
 #'   tiff
-globalVariables(".") #to avoid R CMD check note
+globalVariables(".") # to avoid R CMD check note
 
-#package startup message
+# package startup message
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage(paste0("version ",utils::packageVersion("glatos"), 
-    " ('very-refreshing-lemonade')"))
+  packageStartupMessage(paste0(
+    "version ", utils::packageVersion("glatos"),
+    " ('very-refreshing-lemonade')"
+  ))
 }
-
-
-

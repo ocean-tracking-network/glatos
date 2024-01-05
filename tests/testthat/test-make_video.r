@@ -1,26 +1,34 @@
 context("Check make_video")
 
-# load example frames 
+# load example frames
 frames <- system.file("extdata", "frames", package = "glatos")
 
-# make video animation 
+# make video animation
 temp_dir <- tempdir()
 temp_file_1 <- tempfile(fileext = ".mp4")
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = temp_file_1)
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = temp_file_1
+)
 
 # call from input path and name containing spaces and parentheses
 temp_dir_2 <- file.path(temp_dir, "path with ( spaces)", "frames")
 dir.create(temp_dir_2, recursive = TRUE)
-file.copy(list.files(frames, full.names = TRUE), 
-          file.path(temp_dir_2, list.files(frames)))
-temp_file_2 <- tempfile(pattern = "fname with ( special)", 
-                        tmpdir = temp_dir_2, 
-                        fileext = ".mp4")
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = temp_file_2)
+file.copy(
+  list.files(frames, full.names = TRUE),
+  file.path(temp_dir_2, list.files(frames))
+)
+temp_file_2 <- tempfile(
+  pattern = "fname with ( special)",
+  tmpdir = temp_dir_2,
+  fileext = ".mp4"
+)
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = temp_file_2
+)
 
 # Actual file sizes
 vid_size <- file.info(c(temp_file_1, temp_file_2))$size
@@ -32,8 +40,10 @@ size_should_be <- round(c(72024, 72024) * 0.001)
 
 
 # Clean up
-unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,
-                  include.dirs = TRUE), recursive = TRUE)
+unlink(list.files(temp_dir,
+  full.names = TRUE, recursive = TRUE,
+  include.dirs = TRUE
+), recursive = TRUE)
 
 # Testing file size results
 test_that("making video expected result", {

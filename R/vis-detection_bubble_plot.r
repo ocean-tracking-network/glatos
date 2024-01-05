@@ -269,6 +269,3 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   
   return(det_summ)
 }		
-
-
-

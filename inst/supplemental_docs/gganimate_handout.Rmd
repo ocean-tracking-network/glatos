@@ -58,7 +58,7 @@ arguments and outputs of `make_frames`, `make_transition`, and `interpolate_path
 of fish movements using the `glatos` package is found in the workshop
 manual "A guide to R for analyzing Acoustic Telemetry Data V2.0".  A
 pdf of manual can be downloaded here
-https://gitlab.oceantrack.org/GreatLakes/glatos/wikis/Past%20r%20workshops%20and%20manuals].Finally,
+https://github.com/ocean-tracking-network/glatos/wiki/Past-R-workshops-and-manuals].Finally,
 we end the vignette with a demonstration of code to create an
 animation of fish movements using `ggplot2` and `gganimate`.
 

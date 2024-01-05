@@ -21,56 +21,65 @@
 #'
 #' @examples
 #' csv_file <- system.file("extdata",
-#'   "VR2W_receiverEvents_109924_20110718_1.csv", package="glatosDS")
+#'   "VR2W_receiverEvents_109924_20110718_1.csv",
+#'   package = "glatosDS"
+#' )
 #'
 #' vue_evn <- read_vue_event_csv(csv_file)
 #'
 #' @export
-read_vue_event_csv <- function(src, 
-                               show_progress = FALSE){
-  
-  #Check if exists
-  if(!file.exists(src)){
+read_vue_event_csv <- function(src,
+                               show_progress = FALSE) {
+  # Check if exists
+  if (!file.exists(src)) {
     warning("File not found: ", src)
     return()
   }
-  
-  #Check if looks like VUE export format
-  src_header <- data.table::fread(file = src, nrows = 1L, header = FALSE)
-  
-  vue_event_cols <- c(
-      `Date and Time (UTC)` = "POSIXct",
-      Receiver = "character", 
-      Description = "character", 
-      Data = "character", 
-      Units = "character")
-  
-  missing_cols <- setdiff(names(vue_event_cols), 
-                          src_header[1, ])
-  
-  if(length(missing_cols) > 0) {
-    stop("Input file does not appear to be in VUE Export format.\n\ ",
-         "The following columns are missing: \n  ",
-         paste(missing_cols, collapse = "\n  "))
-  }
-  
 
-  #Read each list element separately
+  # Check if looks like VUE export format
+  src_header <- data.table::fread(file = src, nrows = 1L, header = FALSE)
+
+  vue_event_cols <- c(
+    `Date and Time (UTC)` = "POSIXct",
+    Receiver = "character",
+    Description = "character",
+    Data = "character",
+    Units = "character"
+  )
+
+  missing_cols <- setdiff(
+    names(vue_event_cols),
+    src_header[1, ]
+  )
+
+  if (length(missing_cols) > 0) {
+    stop(
+      "Input file does not appear to be in VUE Export format.\n\ ",
+      "The following columns are missing: \n  ",
+      paste(missing_cols, collapse = "\n  ")
+    )
+  }
+
+
+  # Read each list element separately
   vue_events <- data.table::fread(
-                  file = src, 
-                  sep = ",", 
-                  na.strings = "",
-                  colClasses = vue_event_cols,
-                  header = TRUE,
-                  encoding = "Latin-1",
-                  fill = TRUE,
-                  showProgress = show_progress)
-  
-  #Assign class
-  vue_events <- structure(vue_events, 
-                    class = c("vue_receiver_events", 
-                              class(vue_events)))
-  
+    file = src,
+    sep = ",",
+    na.strings = "",
+    colClasses = vue_event_cols,
+    header = TRUE,
+    encoding = "Latin-1",
+    fill = TRUE,
+    showProgress = show_progress
+  )
+
+  # Assign class
+  vue_events <- structure(vue_events,
+    class = c(
+      "vue_receiver_events",
+      class(vue_events)
+    )
+  )
+
   return(vue_events)
-}  
-  
+}

@@ -1,9 +1,11 @@
 context("Check read_vemco_tag_specs")
 
 # Actual result
-#get path to example tag spec file
-tag_file <- system.file("extdata", 
-  "lamprey_tag_specs.xls", package = "glatos")
+# get path to example tag spec file
+tag_file <- system.file("extdata",
+  "lamprey_tag_specs.xls",
+  package = "glatos"
+)
 tag_specs <- read_vemco_tag_specs(tag_file, file_format = "vemco_xls")
 
 

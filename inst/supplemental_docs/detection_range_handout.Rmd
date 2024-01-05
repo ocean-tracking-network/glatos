@@ -90,7 +90,6 @@ receiver line."
 
 library(sf)
 library(glatos)
-library(GISTools)
 library(data.table)
 library(ggplot2)
 
@@ -114,10 +113,6 @@ plot(st_geometry(tags), axes = FALSE, col = "black", pch = 21, bg = "red",
 plot(st_geometry(recs), axes = FALSE, col = "black", add = TRUE, pch = 21,
      bg = "black", cex = 2)
 box()
-GISTools::map.scale(xc = 684579.8, yc = 5144600, len = 200, units = "meters",
-                    ndivs = 2, subdiv = 100)
-north.arrow(xb = 684120, yb = 5144600, len = 10, lab = "N", col = "black",
-            cex.lab = 1.5)
 legend(x = "topleft", legend = c("Tag/receiver", "Receiver"), col = "black",
        pch = 21, cex = 1.5, pt.bg = c("red", "black"), bty = "n")
 
@@ -165,7 +160,7 @@ note that this data object was created using the GLATOS `read_glatos_detections`
 function to load data from the original GLATOS detection export CSV file (e.g.,
 named *WBCCM_detectionsWithLocs_20181115_162626.csv*).  The most recent version
 of the GLATOS package and installation instructions can be obtained at
-https://gitlab.oceantrack.org/GreatLakes/glatos.
+https://github.com/ocean-tracking-network/glatos.
 
 ```{r, echo = TRUE, warning = FALSE}
 
@@ -174,7 +169,6 @@ library(glatos)
 library(data.table)
 library(geosphere)
 library(ggplot2)
-library(reshape2)
 
 # load detection data from glatos package
 data(range_detection)
@@ -216,13 +210,13 @@ colnames(dist_matrix) <- rec_dist[,get("receiver_sn")]
 rownames(dist_matrix) <- paste0("6", substr(rec_dist[,get("receiver_sn")], 3,6))
 
 # convert matrix into 3-column data using data.table::melt
-dist_matrix <- as.data.table(reshape2::melt(dist_matrix, 
-                                            id.vars = c("columns", "rows"),
-                                            value.name = "dist_m"))
-
-# change names
-setnames(dist_matrix, c("Var1", "Var2"),
-         c("transmitter_id", "receiver_sn"))
+dist_matrix <- melt(
+  data.table(transmitter_id = row.names(dist_matrix),
+             dist_matrix),
+  id.vars = 'transmitter_id',
+  variable.name = 'receiver_sn',
+  value.name = 'dist_m'
+)
 
 # "Transmitter_id" and "receiver_sn" columns are integer type but we need character.
 # Next line of code converts both to character
@@ -989,7 +983,7 @@ every 10 km.  We calculate positions for our virtual fish for 30 steps.
 ```{R, echo = TRUE}
 
 # do random walk in LH polygon starting in Saginaw Bay
-path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30, initPos = c(-83.6, 43.8), show_progress = FALSE)
+path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30, initPos = c(-83.6, 43.8), show_progress = FALSE, cartesianCRS = st_crs(LH))
 
 ```
 
@@ -1005,7 +999,7 @@ fig_cap_grid <- "Plot of receiver network grid (black circles) and movement trac
 
 # plot path, grid and points
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
-points(path, type = "o", pch = 20, col = "red")
+plot(st_geometry(path), type = "o", pch = 20, col = "red", add = TRUE)
 plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
 
 ```
@@ -1032,18 +1026,18 @@ Recall that the `edrf` object in the previous line detection range
 simulation described the detection range curve.  We will leave it up
 to the reader to review how this object was created.
 
-```{R, echo = TRUE}
+```{R, echo = TRUE, warning=FALSE}
 
 mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_10km_sp, 
                                 detRngFun = edrf, show_progress = FALSE )
 
 # calculate the mean elapsed time (seconds) between detections
 sim <- as.data.table(mydtc)
-detinterval <- round(mean(diff(sim$etime))/60,0)
+detinterval <- round(mean(diff(sim$time))/60,0)
 
 # calculate mean elapsed time difference between first detections on successive receivers
-foo <- sim[, .SD[1,"etime"],  by = recv_id]
-f_int <- mean(diff(foo$etime))
+foo <- sim[, .SD[1,"time"],  by = rec_id]
+f_int <- mean(diff(foo$time))
 
 ```
 
@@ -1068,9 +1062,9 @@ fig_cap_sim <- "Plot of receiver network grid (black circles), movement track of
 ```{R, echo = TRUE, fig.height=8,fig.width=8,fig.cap=fig_cap_sim}
 
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
-points(path, type = "o", pch = 20, col = "red")
+plot(st_geometry(path), type = "o", pch = 20, col = "red", add = TRUE)
 plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
-points(mydtc, col = "blue", cex = 2, pch=20)
+plot(st_geometry(mydtc), col = "blue", cex = 2, pch=20, add = TRUE)
 
 ```
 
@@ -1120,7 +1114,9 @@ for(i in 1:100){
 # do random walk in LH polygon of virtual fish starting in Saginaw Bay
   paths[[i]] <- crw_in_polygon(LH_latlon, theta = c(0,25),
                              stepLen= 10000, initHeading = 0,
-                             nsteps = 30, initPos = c(-83.6, 43.8), sp_out = TRUE,
+                             nsteps = 30, initPos = c(-83.6, 43.8),
+                             cartesianCRS = st_crs(LH),
+                             sp_out = TRUE,
                              show_progress = FALSE)
 }
 
@@ -1129,7 +1125,7 @@ for(i in 1:100){
 Now we are going to collapse the list into a single data.table and add
 a ID column for each fish.
 
-```{r, echo = TRUE}
+```{r, echo = TRUE, warning=FALSE}
 
 # make empty list to hold results
 trans <- vector("list", length = 100)
@@ -1156,12 +1152,12 @@ sim <- lapply(sim, as.data.frame)
 sim <- rbindlist(sim, fill = TRUE, idcol = "virt_fish")
 
 # calculate the mean elapsed time (seconds) between detections
-det_interval_sim1 <- mean(diff(sim$etime))
+det_interval_sim1 <- mean(diff(sim$time))
 
 # calculate mean elapsed time difference between
 # first detections on successive receivers by fish
-out <- sim[, .SD[1,"etime"],  by = c("recv_id", "virt_fish")]
-out[, t_diff := etime - data.table::shift(etime), by = virt_fish]
+out <- sim[, .SD[1,"time"],  by = c("rec_id", "virt_fish")]
+out[, t_diff := time - data.table::shift(time), by = virt_fish]
 rec_by_dtc_sim1 <- mean(out$t_diff, na.rm = TRUE)
 
 ```
@@ -1171,7 +1167,7 @@ first detections on successive receivers for all simulated fish on a
 10 km grid (`r#round(rec_by_dtc_sim1/60,0)`), we are going to
 repeat the simulation with a 5 km grid in the next chunk.
 
-```{R}
+```{r, warning=FALSE}
 
 # make empty list to hold results
 sim2 <- vector("list", length = 100)
@@ -1190,12 +1186,12 @@ sim2 <- lapply(sim2, as.data.frame)
 sim2 <- rbindlist(sim2, fill = TRUE, idcol = "virt_fish")
 
 # calculate the mean elapsed time (seconds) between detections
-det_interval_sim2 <- mean(diff(sim2$etime))
+det_interval_sim2 <- mean(diff(sim2$time))
 
 # calculate mean elapsed time difference between
 # first detections on successive receivers by fish
-sim2_out <- sim2[, .SD[1,"etime"],  by = c("recv_id", "virt_fish")]
-sim2_out[, t_diff := etime - data.table::shift(etime), by = virt_fish]
+sim2_out <- sim2[, .SD[1,"time"],  by = c("rec_id", "virt_fish")]
+sim2_out[, t_diff := time - data.table::shift(time), by = virt_fish]
 rec_by_dtc_sim2 <- mean(sim2_out$t_diff, na.rm = TRUE)
 
 ```

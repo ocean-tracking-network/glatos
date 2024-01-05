@@ -1,12 +1,13 @@
-#Make glatos_otn_schema 
+# Make glatos_otn_schema
 # (internal data object for read_otn_deployments)
-#Specify column names and data types for each receiver locations file version
+# Specify column names and data types for each receiver locations file version
 
 
 #----------------------------------------------------
-#Version 1.0
+# Version 1.0
 
-otn_deployments_schema <- read.table(text = "
+otn_deployments_schema <- read.table(
+  text = "
   name                  type          mapping
   collectioncode   character          glatos_project
   station_name     character          station
@@ -18,15 +19,15 @@ otn_deployments_schema <- read.table(text = "
   last_download      POSIXct          last_download
   ",
   header = TRUE,
-  stringsAsFactors = FALSE)
+  stringsAsFactors = FALSE
+)
 
-#\Version 1.0
+# \Version 1.0
 #----------------------------------------------------
 
-#add to sysdata.rda
+# add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(otn_deployments_schema, rda_file)
 
-#for exported ('public') data
-#devtools::use_data(otn_deployments_schema, pkg = "..", overwrite = TRUE)
-
+# for exported ('public') data
+# devtools::use_data(otn_deployments_schema, pkg = "..", overwrite = TRUE)

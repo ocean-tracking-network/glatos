@@ -48,7 +48,7 @@ or \code{prepare_deploy_sheet} and transforms them into 3
 \code{tibble::tibble} objects inside of a list. The input that AAT uses to
 get this data product is located here:
 https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-are found here: https://github.com/ocean-tracking-network/glatos/issues/75
+are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
 in a comment by Ryan Gosse.
 }
 \examples{
