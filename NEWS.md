@@ -6,6 +6,8 @@
 
 ### Bug fixes and minor changes
 
+- Remove dependence on `rgeos` and `rgdal`.
+
 - Deprecate `make_transition` and `make_transition2`; suggest `make_transition3` 
   instead.
 
