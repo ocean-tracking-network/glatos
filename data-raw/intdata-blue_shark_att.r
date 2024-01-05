@@ -10,7 +10,7 @@ tag_path <- system.file("extdata", "otn_nsbs_tag_metadata.xls",
 
 dets <- glatos::read_otn_detections(dets_path)
 tags <- glatos::prepare_tag_sheet(tag_path, 5, 2)
-deploy <- glatos::prepare_deploy_sheet(deploy_path, 0)
+deploy <- glatos::prepare_deploy_sheet(deploy_path, 1)
 
 blue_shark_att <- glatos::convert_otn_to_att(dets, tags, deploymentSheet = deploy)
 

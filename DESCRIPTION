@@ -2,13 +2,12 @@ Package: glatos
 Type: Package
 Title: A package for the Great Lakes Acoustic Telemetry Observation System
 Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System https://glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
-Version: 0.7.0.9000
-Date: 2023-09-07
-Depends: R (>= 3.2.0)
+Version: 0.8.0.9000
+Date: 2024-01-04
+Depends: R (>= 3.5.0)
 Imports:
 		av,
-		data.table,
-		dplyr,
+		data.table,		
 		fasterize,
 		fasttime,
 		gdalUtilities,
@@ -21,21 +20,20 @@ Imports:
 		magrittr,
 		methods,
 		plotrix,
-		plotly,
+		plyr,
 		purrr,
 		raster,
 		readxl,
 		rmarkdown,
 		sf,
-		sp,
 		tibble,
 		tidyr
 Suggests: 
-    gganimate,
-    gifski,
-    png,
+		gganimate,
+		gifski,
+		png,
     testthat (>= 3.0.0),
-    tint
+		tint
 URL: https://github.com/ocean-tracking-network/glatos
 BugReports: https://github.com/ocean-tracking-network/glatos/issues
 Authors@R: c(

@@ -1,19 +1,22 @@
 #' Convert detections, transmitter, receiver, and animal metadata to a format
 #' that ATT accepts.
 #'
-#' Convert `glatos_detections` and transmitter, receiver, and animal
-#' metadata from the OTN ERDDAP to `ATT` format for use in the Animal
-#' Tracking Toolbox (<https://github.com/vinayudyawer/ATT>).
-#' 
-#' @param detectionObj a data frame from `read_glatos_detections`
+#' Convert \code{glatos_detections} and transmitter, receiver, and animal
+#' metadata from the OTN ERDDAP to \code{ATT} format for use in the Animal
+#' Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
+#'
+#' @param detectionObj a data frame from \code{read_glatos_detections}
 #'
 #' @param erdTags a data frame with tag release data from the OTN ERDDAP
 #'
-#' @param erdRcv a data frame with receiver station data from the OTN ERDDAP 
+#' @param erdRcv a data frame with receiver station data from the OTN ERDDAP
 #'
 #' @param erdAni a data frame with animal data from the OTN ERDDAP
 #' 
-#' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or `crs` is not recognized, defaults to WGS84.
+#' @param crs an object of class `crs` (see [sf::st_crs][st_crs]) with
+#'   geographic coordinate system for all spatial information
+#'   (latitude/longitude). If none provided or \code{crs} is not recognized,
+#'   defaults to WGS84.
 #'
 #'
 #' @details This function takes 4 data frames containing detection, and ERDDAP
@@ -21,11 +24,11 @@
 #'   3 `tibble::tibble` objects inside of a list. The input that AAT uses
 #'   to get this data product is located here:
 #'   https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-#'   are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
+#'   are found here: https://github.com/ocean-tracking-network/glatos/issues/75
 #'   in a comment by Ryan Gosse. The OTN ERDDAP instance is here:
 #'   https://members.oceantrack.org/erddap/tabledap/index.html but please note
 #'   that this only contains public data.
-#'   
+#'
 #' @author Ryan Gosse
 #'
 #' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata,
@@ -37,22 +40,22 @@
 #' # EXAMPLE #1 - loading from the OTN ERDDAP + vignettes
 #'
 #' library(glatos)
-#' 
+#'
 #' #get path to example files from OTN ERDDAP
 #' ani_erd_file <- system.file("extdata", "otn_aat_animals.csv",
-#'                             package = "glatos") 
+#'                             package = "glatos")
 #' animals <- read.csv(ani_erd_file) # load the CSVs from ERDDAP
-#' 
+#'
 #' tags_erd_file <- system.file("extdata", "otn_aat_tag_releases.csv",
-#'                             package = "glatos") 
+#'                             package = "glatos")
 #' tags <- read.csv(tags_erd_file)
-#' 
+#'
 #' rcv_erd_file <- system.file("extdata", "otn_aat_receivers.csv",
-#'                             package = "glatos") 
+#'                             package = "glatos")
 #' stations <- read.csv(rcv_erd_file)
 #'
-#' #Remove first row; (blank or metadata about the column) 
-#' animals <- animals[-1,] 
+#' #Remove first row; (blank or metadata about the column)
+#' animals <- animals[-1,]
 #' tags <- tags[-1,]
 #' stations <- stations[-1,]
 #'
@@ -61,12 +64,12 @@
 #'      package = "glatos")
 #' blue_shark_detections <- read_otn_detections(shrk_det_file) # load shark data
 #'
-#' ATTdata <- convert_otn_erddap_to_att(blue_shark_detections, 
+#' ATTdata <- convert_otn_erddap_to_att(blue_shark_detections,
 #'                                      tags, stations, animals)
 #' @export
 
 convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni, 
-                                      crs = sp::CRS("+init=epsg:4326")) {
+                                      crs = sf::st_crs(4326)) {
 
   transmitters <- 
     if(all(grepl("-", detectionObj$transmitter_id, fixed=TRUE))){

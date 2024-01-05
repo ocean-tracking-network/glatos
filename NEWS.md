@@ -1,5 +1,5 @@
 
-# glatos 0.7.0 (dev)
+# glatos 0.8.0 (dev)
 
 
 ### Bug fixes
@@ -64,9 +64,50 @@
 
 ----
 
-# glatos 0.6.5 
+# glatos 0.7.0 (2024-01-04)
 
-#### 2023-09-07
+
+### Bug fixes and minor changes
+
+- Remove dependence on `rgeos` and `rgdal`.
+
+- This package now requires R >= 3.5.0 because serialized objects in
+     serialize/load version 3 cannot be read in older versions of R.
+     File(s) containing such objects:
+       'glatos/inst/testdata/flynn_island_transition.rds'
+       'glatos/inst/testdata/higgins_lake_transition.rds'
+       'glatos/inst/testdata/test-detect_transmissions-dtc_spout.rds'
+       'glatos/inst/testdata/test-transmit_along_path-tr_dfin_spout.rds'
+       
+- Deprecate `make_transition` and `make_transition2`; suggest `make_transition3` 
+  instead.
+
+- Deprecate data object `greatLakesPoly`; suggest `great_lakes_polygon` 
+  instead.
+
+- `prepare_deploy_sheet`: 
+    - Set 'skip = header_line - 1' and 'col_names = TRUE' to retain first 
+      record and column names (read_excel ignores column names, unless set, 
+      when skip is set).
+    - Fix non-working example code.
+
+- `convert_otn_to_att` and `convert_otn_erddap_to_att`:
+    - Replaced `sp::CRS` with `sf::st_crs`
+    - Changed link (URL) to relevant issue from GitLab to GitHub repo.
+
+- Remove ffmpeg functions.
+    - make defunct: 
+        - `check_dependencies`
+        - `install_ffmpeg`
+        - `make_video_ffmpeg`
+
+- Fix issues with several tests caused by changes to CRS/WKT and row.names 
+  attributes.
+    
+
+----
+
+# glatos 0.6.5 (2023-09-07)
 
 ### Bug fixes 
 
@@ -75,9 +116,8 @@
 
 
 ----
-# glatos 0.6.4 
 
-#### 2023-09-06
+# glatos 0.6.4 (2023-09-06)
 
 ### Bug fixes and minor changes
 
@@ -88,9 +128,7 @@
 
 ----
 
-# glatos 0.6.3 
-
-#### 2023-01-25
+# glatos 0.6.3 (2023-01-25)
 
 ### Bug fixes and minor changes
 
@@ -101,9 +139,7 @@ code_map_comment columns.
 
 ----
 
-# glatos 0.6.2 
-
-#### 2022-10-25
+# glatos 0.6.2 (2022-10-25)
 
 ### Bug fixes and minor changes
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/vis-make_transition2.r
 \name{make_transition2}
 \alias{make_transition2}
-\title{Create transition layer from a spatial polygon}
+\title{\link{Deprecated} Create transition layer from a spatial polygon}
 \usage{
 make_transition2(
   poly,
@@ -21,7 +21,7 @@ of output raster cells.  Units of res are same as input
 polygon.}
 
 \item{extent_out}{An optional \code{Extent} object
-(see \link[raster:extent]{extent}) that determines the extent of the
+(see \link[raster]{extent}) that determines the extent of the
 output objects. Output extent will default to extent of input object
 \code{poly} if \code{extent_out}, and \code{x_lim}/\code{y_lim}
 are NULL (default).}
@@ -43,20 +43,23 @@ Create transition layer for \link{interpolate_path} from
 \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
 }
 \details{
-\code{make_transition} uses \link[raster:rasterize]{rasterize} to convert a
+\code{make_transition} uses \link[raster]{rasterize} to convert a
 \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
-geo-corrected transition layer \link[gdistance:transition]{transition}.  Raster cell
+geo-corrected transition layer \link[gdistance]{transition}.  Raster cell
 values on land = 0 and water = 1.
 
 output transition layer is corrected for projection
-distortions using \link[gdistance:geoCorrection]{geoCorrection}.  Adjacent
+distortions using \link[gdistance]{geoCorrection}.  Adjacent
 cells are connected by 16 directions and transition function
 returns 0 (land) for movements between land and water and 1 for
 all over-water movements.
 }
+\note{
+This function has been deprecated and will be removed from the
+next version of \code{glatos}. Use \code{\link{make_transition3}} instead.
+}
 \examples{
 
-library(sp) #for loading greatLakesPoly
 library(raster) # for plotting rasters
 
 # get polygon of the Great Lakes
@@ -82,6 +85,7 @@ plot(tst1$rast)
 # plot transition layer
 plot(raster(tst1$transition))
 }
+
 
 }
 \seealso{

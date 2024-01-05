@@ -1,32 +1,32 @@
-#' Create transition layer from a spatial polygon
+#' [Deprecated] Create transition layer from a spatial polygon
 #'
-#' Create transition layer for [interpolate_path] from
-#' [SpatialPolygonsDataFrame][SpatialPolygons].
+#' Create transition layer for \link{interpolate_path} from
+#' \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
 #'
 #' @param poly A spatial polygon object of class
-#' [SpatialPolygonsDataFrame][SpatialPolygons].
+#' \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
 #'
 #' @param res two element vector that specifies the x and y dimension
 #'   of output raster cells.  Units of res are same as input
 #'   polygon.
 #'
-#' @param extent_out An optional `Extent` object
-#'   (see [extent][raster::extent]) that determines the extent of the
+#' @param extent_out An optional \code{Extent} object
+#'   (see \link[raster]{extent}) that determines the extent of the
 #'   output objects. Output extent will default to extent of input object
-#'   `poly` if `extent_out`, and `x_lim`/`y_lim`
+#'   \code{poly} if \code{extent_out}, and \code{x_lim}/\code{y_lim}
 #'   are NULL (default).
 #'
 #' @param x_lim An optional two-element vector with extents of x axis.
 #'
 #' @param y_lim An optional two-element vector with extents of x axis.
 #'
-#' @details `make_transition` uses [rasterize][raster::rasterize] to convert a
-#'   [SpatialPolygonsDataFrame][SpatialPolygons] into a raster layer, and
-#'   geo-corrected transition layer [transition][gdistance::transition].  Raster cell
+#' @details \code{make_transition} uses \link[raster]{rasterize} to convert a
+#'   \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
+#'   geo-corrected transition layer \link[gdistance]{transition}.  Raster cell
 #'   values on land = 0 and water = 1.
 #'
 #' @details output transition layer is corrected for projection
-#'   distortions using [geoCorrection][gdistance::geoCorrection].  Adjacent
+#'   distortions using \link[gdistance]{geoCorrection}.  Adjacent
 #'   cells are connected by 16 directions and transition function
 #'   returns 0 (land) for movements between land and water and 1 for
 #'   all over-water movements.
@@ -35,16 +35,15 @@
 #' \describe{
 #'    \item{transition}{a geo-corrected transition raster layer where land = 0
 #'       and water=1
-#'   (see `gdistance`)}
-#'    \item{rast}{rasterized input layer of class `raster`}}
+#'   (see \code{gdistance})}
+#'    \item{rast}{rasterized input layer of class \code{raster}}}
 #'
-#' @seealso [make_transition]
+#' @seealso \link{make_transition}
 #'
 #' @author Todd Hayden, Tom Binder, Chris Holbrook
 #'
 #' @examples
 #'
-#' library(sp) #for loading greatLakesPoly
 #' library(raster) # for plotting rasters
 #'
 #' # get polygon of the Great Lakes
@@ -71,10 +70,19 @@
 #' plot(raster(tst1$transition))
 #' }
 #'
+#'
+#' @note This function has been deprecated and will be removed from the 
+#' next version of \code{glatos}. Use \code{\link{make_transition3}} instead.
+#' 
 #' @export
 
 make_transition2 <- function(poly, res = c(0.1, 0.1), extent_out = NULL,
                              x_lim = NULL, y_lim = NULL){
+  
+  # Function will be removed in next version
+  .Deprecated("make_transition3", 
+              msg = paste0("This function is deprecated and will be removed ",
+                           "in the next version"))  
   
   message("Making transition layer...")
   
@@ -103,4 +111,3 @@ make_transition2 <- function(poly, res = c(0.1, 0.1), extent_out = NULL,
   message("Done.")
   return(list(transition = tr1, rast = burned))
   }
-    
