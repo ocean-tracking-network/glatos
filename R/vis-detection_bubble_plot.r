@@ -5,10 +5,10 @@
 #'
 #' @inheritParams summarize_detections 
 #' 
-#' @param map An optional SpatialPolygonsDataFrame or other spatial object
+#' @param map An optional sp or sf spatial object
 #'   that can by plotted with using `plot` to be included as the
 #'   background for the plot. If NULL, then the example Great Lakes polygon
-#'   object (`data(greatLakesPoly)`) will be used.
+#'   object (`data(great_lakes_polygon)`) will be used.
 #' 
 #' @param out_file An optional character string with the name (including 
 #'   extension) of output file created. File extension will determine type of 
@@ -74,7 +74,7 @@
 #' det <- read_glatos_detections(det_file)
 #' 
 #' #call with defaults
-#' detection_bubble_plot(det)
+#' detection_bubble_plot(det, map = great_lakes_polygon)
 #' 
 #' #change symbol size and color
 #' detection_bubble_plot(det, symbol_radius = 2, col_grad = c("grey90", "grey10"))
@@ -108,9 +108,9 @@
 #'                 !is.na(rec$recover_date_time),]
 #' 
 #' detection_bubble_plot(det, receiver_locs = plot_rec)
-#' 
 #'
 #' @export
+
 
 detection_bubble_plot <- function(det, location_col = "glatos_array", 
                                   receiver_locs = NULL,
@@ -132,8 +132,15 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
                                        collapse="\n")), 
          call. = FALSE)
   }
+
+  
+  # convert sp to sf
+  if(!is.null(map) & inherits(map, "Spatial")){
+    map <- sf::st_as_sf(map)
+    message("Converted sp object to sf")
+    }
     
-  if(is.null(map)) map <- greatLakesPoly #example in glatos package
+  if(is.null(map)) map <- great_lakes_polygon #example in glatos package (sf object)
   
   # Check that timestamp is of class 'POSIXct'
   if(!('POSIXct' %in% class(det$detection_timestamp_utc))){
@@ -163,10 +170,10 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   
   # Calculate great circle distance in meters of x and y limits.
   # needed to determine aspect ratio of the output
-  linear_x = geosphere::distMeeus(c(background_xlim[1],background_ylim[1]),
-                                  c(background_xlim[2],background_ylim[1]))
-  linear_y = geosphere::distMeeus(c(background_xlim[1],background_ylim[1]),
-                                  c(background_xlim[1],background_ylim[2]))
+  linear_x = geodist::geodist_vec(x1 = background_xlim[1], y1 = background_ylim[1],
+                                  x2 = background_xlim[2], y2 = background_ylim[1], measure = "haversine")
+  linear_y = geodist::geodist_vec(x1 = background_xlim[1], y1 = background_ylim[1],
+                                  x2 = background_xlim[1], y2 = background_ylim[2], measure = "haversine")
   
   # aspect ratio of image
   figRatio <- linear_y/linear_x
@@ -188,7 +195,6 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
     bmp(out_file, height = 1000 * figRatio, width = 1000, pointsize = 28)
   if(!is.na(file_type) & tolower(file_type) == 'tiff')
     tiff(out_file, height = 1000 * figRatio, width = 1000, pointsize = 28)  
-
   
   if(is.null(out_file)){
       dev.new(noRStudioGD = TRUE, height = 7 * figRatio, width = 7)
@@ -198,7 +204,7 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))	    
   
   # Plot background image
-  plot(map, xlim = background_xlim, ylim = background_ylim, axes = T, 
+  plot(sf::st_geometry(map), xlim = background_xlim, ylim = background_ylim, axes = T, 
     xaxs = "i", lwd = 1.5, xaxt = 'n', yaxt = 'n', col = "White", 
     bg="WhiteSmoke")
   
@@ -227,6 +233,7 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
     par("usr")[4] - ((par("usr")[4] - par("usr")[3])* 0.25))
   }
   # Add color legend
+  # explore options for doing this without an extra plotrix package https://stackoverflow.com/questions/13355176/gradient-legend-in-base
   plotrix::color.legend(scale_loc[1], scale_loc[2], scale_loc[3], scale_loc[4], 
     paste0(" ", round(seq(from = 1, to = max(det_summ$num_fish), length.out = 6), 
       0)), color, gradient="y", family = "sans", cex = 0.75, align = 'rb')

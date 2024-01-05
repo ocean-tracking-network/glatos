@@ -11,7 +11,7 @@ wald <- read_glatos_detections(wd_file)
 
 #get path to example receiver file
 rec_file <- system.file("extdata", "sample_receivers.csv", 
-  package = "glatos")
+                        package = "glatos")
 recd <- read_glatos_receivers(rec_file) # load receiver data
 
 watt <- convert_glatos_to_att(wald, recd)

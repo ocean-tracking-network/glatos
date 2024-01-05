@@ -1,5 +1,5 @@
 #' Loads the OTN receiver deployment metadata sheet to prepare it for use in 
-#' `convert_otn_to_att`
+#' \code{convert_otn_to_att}
 #' 
 #' @param path the path to the deployment sheet
 #' 
@@ -12,7 +12,7 @@
 #' 
 #' @details The function takes the path to the deployment sheet, what line to start
 #' reading from, and what sheet in the excel file to use. It converts column names
-#' to be used by `convert_otn_to_att`.
+#' to be used by \code{convert_otn_to_att}.
 #' 
 #' @author Ryan Gosse
 #' 
@@ -27,12 +27,18 @@
 #' deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
 #'                         package = "glatos")
 #'
-#' deploy <- prepare_deploy_sheet(header_line, 5, 1)
+#' deploy <- prepare_deploy_sheet(deploy_path, 
+#'                                header_line = 1, 
+#'                                sheet_name = 1)
 #' 
 #' @export
 
 prepare_deploy_sheet <- function(path, header_line = 5, sheet_name = 1, combine_arr_stn = TRUE) {
-    deploy_sheet <- readxl::read_excel(path, sheet = sheet_name, skip = header_line)
+    deploy_sheet <- readxl::read_excel(path, 
+                                       sheet = sheet_name, 
+                                       skip = header_line - 1, 
+                                       col_names = TRUE)
+    
     deploy_sheet <- deploy_sheet %>% dplyr::rename(
         deploy_lat = DEPLOY_LAT,
         deploy_long = DEPLOY_LONG,

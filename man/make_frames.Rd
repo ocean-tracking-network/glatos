@@ -16,7 +16,6 @@ make_frames(
   ani_name = "animation.mp4",
   frame_delete = FALSE,
   overwrite = FALSE,
-  ffmpeg = NA,
   preview = FALSE,
   bg_map = NULL,
   show_progress = TRUE,
@@ -68,13 +67,11 @@ exists. Default (\code{overwrite = FALSE}) prevents file from being overwritten
 and will result in error if the file exists. Passed to \code{\link[=make_video]{make_video()}} if
 \code{animate = TRUE}.}
 
-\item{ffmpeg}{DEPRECATED. As of glatos v. 0.4.1, \code{make_frames} calls a version
-of \code{\link[=make_video]{make_video()}} that does not use the external program ffmpeg.exe.}
-
 \item{preview}{write first frame only.  Useful for checking output before
 processing large number of frames.  Default \code{preview = FALSE}}
 
-\item{bg_map}{A spatial points, lines, or polygons object.}
+\item{bg_map}{A sf points, lines, or polygons object.  Spatial \code{sp} objects
+will be converted to \code{sf}}
 
 \item{show_progress}{Logical. Progress bar and status messages will be shown
 if TRUE (default) and not shown if FALSE.}
@@ -95,8 +92,8 @@ a video animation (mp4 file).
 }
 \details{
 \emph{\strong{To customize fish location points (from \code{proc_obj}):}} Add any argument
-that can be passed to \link[graphics:points]{points}.
-The following values will create the default plot:
+that can be passed to \link[graphics:points]{points}. The following values will
+create the default plot:
 \itemize{
 \item{\verb{cex:}}{ symbol size; default = 2}
 \item{\verb{col:}}{ symbol color; default = "blue"}
@@ -104,17 +101,17 @@ The following values will create the default plot:
 }
 
 \emph{\strong{To customize receiver location points (from \code{recs}):}} Add prefix
-\code{recs.} to any argument that can be passed to \link[graphics:points]{points}.
-The following values will create the default plot:
+\code{recs.} to any argument that can be passed to \link[graphics:points]{points}. The
+following values will create the default plot:
 \itemize{
 \item{\verb{recs.cex:}}{ symbol size; default = 1.5}
 \item{\verb{recs.pch:}}{ symbol type; default = 16}
 }
 
 \emph{\strong{To customize timeline:}} Add add prefix \code{timeline.} to any
-argument of \link[graphics:axis]{axis}.  Note all elements of the timeline
-except the sliding symbol (see 'slider' below) are created by a call to
-\code{axis}. The following values will create the default plot:
+argument of \link[graphics:axis]{axis}.  Note all elements of the timeline except
+the sliding symbol (see 'slider' below) are created by a call to \code{axis}. The
+following values will create the default plot:
 \itemize{
 \item{\verb{timeline.at:}}{ a sequence with locations of labels (with first
 and last being start and end) along x-axis; in units of longitude; by default
@@ -132,9 +129,8 @@ ratio of the plot device}
 }
 
 \emph{\strong{To customize time slider (symbol that slides):}} Add prefix
-\code{timeline.} to any argument that can be passed to
-\link[graphics:points]{points}. The following values will create the default
-plot:
+\code{timeline.} to any argument that can be passed to \link[graphics:points]{points}.
+The following values will create the default plot:
 \itemize{
 \item{\verb{timeslider.bg:}}{ a single value with symbol bg color; default =
 "grey40"}
@@ -146,8 +142,8 @@ plot:
 
 \emph{\strong{To customize parameters controlled by \code{par}:}} Add prefix
 \code{par.} to any argument that can be passed to \link[graphics:par]{par}. Note that
-\code{par.mar} controls whitespace behind default timeslider. The following
-values will create the default plot:
+\code{par.mar} controls whitespace behind default timeslider. The following values
+will create the default plot:
 \itemize{
 \item{\code{par.oma}}{ plot outer margins; default = c(0,0,0,0)}
 \item{\code{par.mar}}{ plot inner margins; default = c(6,0,0,0)}
@@ -203,6 +199,7 @@ make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
 
 # make sequential frames, and animate.  Make animation and frames.
 #change default color of fish markers to red and change marker and size.
+
 myDir <- paste0(getwd(), "/frames3")
 make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE,
             ani_name = "animation3.mp4", col="red", pch = 16, cex = 3)
