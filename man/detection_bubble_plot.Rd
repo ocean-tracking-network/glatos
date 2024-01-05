@@ -56,10 +56,11 @@ degrees, NAD83.
 degrees, NAD83.
 }}
 
-\item{map}{An optional sp or sf spatial object
-that can by plotted with using \code{plot} to be included as the
-background for the plot. If NULL, then the example Great Lakes polygon
-object (\code{data(great_lakes_polygon)}) will be used.}
+\item{map}{An optional sp, sf, or terra::SpatVect spatial object that
+can by plotted with using \code{plot} to be included as the background for the
+plot. If NULL, then the example Great Lakes polygon
+object (\code{data(great_lakes_polygon)}) will be used.  Map CRS must be in
+EPSG:4326 or conversion will be attempted.}
 
 \item{out_file}{An optional character string with the name (including
 extension) of output file created. File extension will determine type of
