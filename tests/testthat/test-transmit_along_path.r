@@ -1,114 +1,65 @@
 context("Check transmit_along_path")
 
-# non-spatial input
-mypath <- data.frame(x=seq(0,1000,100),y=seq(0,1000,100))
 
-#   spatial output
-set.seed(30)
-tr_dfin_spout <- transmit_along_path(mypath,vel=0.5,delayRng=c(60,180),
-                                       burstDur=5.0)
-#   non-spatial output
-set.seed(30)
-tr_dfin_dfout <- transmit_along_path(mypath,vel=0.5,delayRng=c(60,180),
-                                       burstDur=5.0, sp_out = FALSE)
-
-
-# great lakes longlat WGS84
-data(greatLakesPoly)
-
-# spatial input
-set.seed(30)
-path_spin_spout <- crw_in_polygon(greatLakesPoly, theta=c(0,25), stepLen=10000,
-    initPos = c(-87.49017, 48.42314), initHeading=0, nsteps=5)
+# Spatial input
+path_sf <- readRDS("../../inst/testdata/test-crw_in_polygon-path_spin_spout.RDS")
 
 # spatial output
 set.seed(30)
-tr_spin_spout <- transmit_along_path(path_spin_spout, vel=5.0,
-                      delayRng=c(600,1800), burstDur=5.0)
+tr_spin_spout <- transmit_along_path(path_sf,
+  vel = 5.0,
+  delayRng = c(600, 1800),
+  burstDur = 5.0
+)
 
 # non-spatial output
 set.seed(30)
-tr_spin_dfout <- transmit_along_path(path_spin_spout, vel=5.0,
-                      delayRng=c(600,1800), burstDur=5.0, sp_out = FALSE)
+tr_spin_dfout <- transmit_along_path(path_sf,
+  vel = 5.0,
+  delayRng = c(600, 1800),
+  burstDur = 5.0,
+  sp_out = FALSE
+)
 
+
+# Non-spatial input
+path_df <- as.data.frame(sf::st_coordinates(path_sf))
+
+
+# spatial output
+set.seed(30)
+tr_dfin_spout <- transmit_along_path(path_df,
+  vel = 5.0,
+  delayRng = c(600, 1800),
+  burstDur = 5.0,
+  colNames = list(x = "X", y = "Y"),
+  pathCRS = sf::st_crs(path_sf)
+)
+
+# non-spatial output
+set.seed(30)
+tr_dfin_dfout <- transmit_along_path(path_df,
+  vel = 5.0,
+  delayRng = c(600, 1800),
+  burstDur = 5.0,
+  colNames = list(x = "X", y = "Y"),
+  pathCRS = 4326,
+  sp_out = FALSE
+)
 
 
 # Expected results
-tr_dfin_spout_shouldBe <- 
-  new("SpatialPointsDataFrame", data = structure(list(et = c(37.2838388492104, 
-    160.871653092721, 269.55606038838, 385.030356395685, 486.146082656154, 
-    568.862298421257, 741.691287189418, 833.51806857779, 1014.4336643365, 
-    1096.36170873574, 1169.20430977985, 1281.87487485043, 1412.15448590151, 
-    1582.71022156037, 1674.51694812781, 1850.03024901419, 1945.2056555093, 
-    2109.86131395369, 2247.84019785158, 2364.60230192325, 2447.97305712632, 
-    2583.24061202041, 2652.37165655165, 2756.95844941928)), row.names = c(NA, 
-      24L), class = "data.frame"), coords.nrs = numeric(0), coords = structure(c(13.1818276389968, 
-        56.8767184012104, 95.3024591051508, 136.128787984722, 171.878595847054, 
-        201.123194387415, 262.227469359408, 294.693139266688, 358.656461557839, 
-        387.622399439919, 413.376148018637, 453.211208320106, 499.272006531944, 
-        559.572565160459, 592.031144616776, 654.084467239561, 687.734054906759, 
-        745.948621229734, 794.731523462804, 836.013161249459, 865.489174427581, 
-        913.313477097312, 937.754992288304, 974.732007517247, 13.1818276392296, 
-        56.8767184013268, 95.3024591031717, 136.128787984606, 171.87859585078, 
-        201.123194389394, 262.22746935545, 294.69313926599, 358.656461557839, 
-        387.622399437707, 413.376148019102, 453.211208321038, 499.272006532294, 
-        559.572565161507, 592.031144615728, 654.084467240493, 687.734054906061, 
-        745.948621230782, 794.731523467344, 836.013161250623, 865.489174428163, 
-        913.3134770951, 937.754992288304, 974.732007516897), .Dim = c(24L, 
-          2L), .Dimnames = list(NULL, c("x", "y"))), bbox = structure(c(13.1818276389968, 
-            13.1818276392296, 974.732007517247, 974.732007516897), .Dim = c(2L, 
-              2L), .Dimnames = list(c("x", "y"), c("min", "max"))), proj4string = new("CRS", 
-                projargs = "+init=epsg:3175 +proj=aea +lat_1=42.122774 +lat_2=49.01518 +lat_0=45.568977 +lon_0=-83.248627 +x_0=1000000 +y_0=1000000 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"))
 
-tr_dfin_dfout_shouldBe <- 
-  structure(list(x = c(13.1818276389968, 56.8767184012104, 95.3024591051508, 
-    136.128787984722, 171.878595847054, 201.123194387415, 262.227469359408, 
-    294.693139266688, 358.656461557839, 387.622399439919, 413.376148018637, 
-    453.211208320106, 499.272006531944, 559.572565160459, 592.031144616776, 
-    654.084467239561, 687.734054906759, 745.948621229734, 794.731523462804, 
-    836.013161249459, 865.489174427581, 913.313477097312, 937.754992288304, 
-    974.732007517247), y = c(13.1818276392296, 56.8767184013268, 
-      95.3024591031717, 136.128787984606, 171.87859585078, 201.123194389394, 
-      262.22746935545, 294.69313926599, 358.656461557839, 387.622399437707, 
-      413.376148019102, 453.211208321038, 499.272006532294, 559.572565161507, 
-      592.031144615728, 654.084467240493, 687.734054906061, 745.948621230782, 
-      794.731523467344, 836.013161250623, 865.489174428163, 913.3134770951, 
-      937.754992288304, 974.732007516897), et = c(37.2838388492104, 
-        160.871653092721, 269.55606038838, 385.030356395685, 486.146082656154, 
-        568.862298421257, 741.691287189418, 833.51806857779, 1014.4336643365, 
-        1096.36170873574, 1169.20430977985, 1281.87487485043, 1412.15448590151, 
-        1582.71022156037, 1674.51694812781, 1850.03024901419, 1945.2056555093, 
-        2109.86131395369, 2247.84019785158, 2364.60230192325, 2447.97305712632, 
-        2583.24061202041, 2652.37165655165, 2756.95844941928)), class = "data.frame", row.names = c(NA, 
-          -24L))
-  
+tr_spin_spout_shouldBe <- readRDS("../../inst/testdata/test-transmit_along_path-tr_spin_spout.rds")
 
-tr_spin_spout_shouldBe <- 
-  new("SpatialPointsDataFrame", data = structure(list(et = c(181.942458118751, 
-    1372.82060055385, 2414.66467351045, 3524.4076335835, 4490.56489618818, 
-    5272.72705383922, 6956.01694152082, 7829.28475540455, 9593.44071299161
-  )), row.names = c(NA, 9L), class = "data.frame"), coords.nrs = numeric(0), 
-    coords = structure(c(-87.4972665665151, -87.5437599535884, 
-      -87.5877736201026, -87.6400010222863, -87.6903230129937, 
-      -87.7348615118266, -87.8040746356014, -87.8294778253424, 
-      -87.9341027434096, 48.4298178635461, 48.47351737135, 48.5099322535212, 
-      48.5457979250189, 48.5731368087317, 48.5922165808782, 48.6487747669093, 
-      48.6842409312903, 48.7191878784282), .Dim = c(9L, 2L), .Dimnames = list(
-        NULL, c("x", "y"))), bbox = structure(c(-87.9341027434096, 
-          48.4298178635461, -87.4972665665151, 48.7191878784282), .Dim = c(2L, 
-            2L), .Dimnames = list(c("x", "y"), c("min", "max"))), proj4string = new("CRS", 
-              projargs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+tr_dfin_spout_shouldBe <- readRDS("../../inst/testdata/test-transmit_along_path-tr_dfin_spout.rds")
 
-tr_spin_dfout_shouldBe <- 
-  structure(list(x = c(-87.4972665665151, -87.5437599535884, -87.5877736201026, 
-    -87.6400010222863, -87.6903230129937, -87.7348615118266, -87.8040746356014, 
-    -87.8294778253424, -87.9341027434096), y = c(48.4298178635461, 
-      48.47351737135, 48.5099322535212, 48.5457979250189, 48.5731368087317, 
-      48.5922165808782, 48.6487747669093, 48.6842409312903, 48.7191878784282
-    ), et = c(181.942458118751, 1372.82060055385, 2414.66467351045, 
-      3524.4076335835, 4490.56489618818, 5272.72705383922, 6956.01694152082, 
-      7829.28475540455, 9593.44071299161)), class = "data.frame", row.names = c(NA, 
-        -9L))
+tr_dfout_shouldBe <- data.frame(
+  x = sf::st_coordinates(tr_spin_spout_shouldBe)[, "X"],
+  y = sf::st_coordinates(tr_spin_spout_shouldBe)[, "Y"],
+  time = tr_spin_spout_shouldBe$time,
+  row.names = NULL
+)
 
 # Testing output matches desired format for each input
 test_that("data.frame input, spatial output gives expected result", {
@@ -117,11 +68,11 @@ test_that("data.frame input, spatial output gives expected result", {
 })
 test_that("data.frame input, data.frame output gives expected result", {
   # Check if expected and actual results are the same
-  expect_equal(tr_dfin_dfout, tr_dfin_dfout_shouldBe)
+  expect_equal(tr_dfin_dfout, tr_dfout_shouldBe)
 })
 test_that("spatial input, data.frame output gives expected result", {
   # Check if expected and actual results are the same
-  expect_equal(tr_spin_dfout, tr_spin_dfout_shouldBe)
+  expect_equal(tr_spin_dfout, tr_dfout_shouldBe)
 })
 test_that("spatial input, spatial output gives expected result", {
   # Check if expected and actual results are the same

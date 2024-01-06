@@ -31,73 +31,71 @@ set.  Must be a character string that can be coerced to
 'POSIXct' or an object of class 'POSIXct'.  If character string
 is supplied, timezone is automatically set to UTC.}
 
-\item{int_time_stamp}{The time step size (in seconds) of interpolated 
+\item{int_time_stamp}{The time step size (in seconds) of interpolated
 positions. Default is 86400 (one day).}
 
 \item{lnl_thresh}{A numeric threshold for determining if linear or
 non-linear interpolation shortest path will be used.}
 
 \item{out_class}{Return results as a data.table or tibble.  Default
-returns results as data.frame.  Accepts `data.table` or `tibble`.}
+returns results as data.frame.  Accepts \code{data.table} or \code{tibble}.}
 
-\item{show_progress}{Logical. Progress bar and status messages will be 
+\item{show_progress}{Logical. Progress bar and status messages will be
 shown if TRUE (default) and not shown if FALSE.}
 }
 \value{
 A dataframe with animal_id, bin_timestamp,
-  latitude, longitude, and record_type.
+latitude, longitude, and record_type.
 }
 \description{
-Interpolate new positions within a spatiotemporal path data set 
-  (e.g., detections of tagged fish) at regularly-spaced time intervals   
-	 using linear or non-linear interpolation.
+Interpolate new positions within a spatiotemporal path data set
+(e.g., detections of tagged fish) at regularly-spaced time intervals
+using linear or non-linear interpolation.
 }
 \details{
 Non-linear interpolation uses the \code{gdistance} package
-  to find the shortest pathway between two locations (i.e.,
-  receivers) that avoid 'impossible' movements (e.g., over land for
-  fish). The shortest non-linear path between two locations is
-  calculated using a transition matrix layer that represents the
-  'cost' of an animal moving between adjacent grid cells.  The
-  transition matrix layer (see \link{gdistance}) is created from
-  a polygon shapefile using \link{make_transition} or from a
-  \code{RasterLayer} object using \link[gdistance]{transition}. In
-  \code{make_transition}, each cell in the output transition layer
-  is coded as water (1) or land (0) to represent possible (1) and
-  impossible (0) movement paths.
+to find the shortest pathway between two locations (i.e.,
+receivers) that avoid 'impossible' movements (e.g., over land for
+fish). The shortest non-linear path between two locations is
+calculated using a transition matrix layer that represents the
+'cost' of an animal moving between adjacent grid cells.  The
+transition matrix layer (see \link{gdistance}) is created from
+a polygon shapefile using \link{make_transition} or from a
+\code{RasterLayer} object using \link[gdistance:transition]{transition}. In
+\code{make_transition}, each cell in the output transition layer
+is coded as water (1) or land (0) to represent possible (1) and
+impossible (0) movement paths.
 
 Linear interpolation is used for all points when
-  \code{trans} is not supplied.  When \code{trans} is supplied,
-  then interpolation method is determined for each pair of
-  sequential observed detections. For example, linear interpolation
-  will be used if the two geographical positions are exactly the
-  same and when the ratio (linear distance:non-linear distance)
-  between two positions is less than \code{lnl_thresh}.  Non-linear
-  interpolation will be used when ratio is greater than
-  \code{lnl_thresh}.  When the ratio of linear distance to
-  non-linear distance is greater than \code{lnl_thresh}, then the
-  distance of the non-linear path needed to avoid land is greater
-  than the linear path that crosses land.  \code{lnl_thresh} can be
-  used to control whether non-linear or linear interpolation is
-  used for all points. For example, non-linear interpolation will
-  be used for all points when \code{lnl_thresh} > 1 and linear
-  interpolation will be used for all points when \code{lnl_thresh}
-  = 0.
+\code{trans} is not supplied.  When \code{trans} is supplied,
+then interpolation method is determined for each pair of
+sequential observed detections. For example, linear interpolation
+will be used if the two geographical positions are exactly the
+same and when the ratio (linear distance:non-linear distance)
+between two positions is less than \code{lnl_thresh}.  Non-linear
+interpolation will be used when ratio is greater than
+\code{lnl_thresh}.  When the ratio of linear distance to
+non-linear distance is greater than \code{lnl_thresh}, then the
+distance of the non-linear path needed to avoid land is greater
+than the linear path that crosses land.  \code{lnl_thresh} can be
+used to control whether non-linear or linear interpolation is
+used for all points. For example, non-linear interpolation will
+be used for all points when \code{lnl_thresh} > 1 and linear
+interpolation will be used for all points when \code{lnl_thresh}
+= 0.
 
 All linear interpolation is done by code{stats::approx} with
-  argument \code{ties = "ordered"} controlling how tied \code{x} values 
-  are handled. See \code{\link{approxfun}}.
+argument \code{ties = "ordered"} controlling how tied \code{x} values
+are handled. See \code{\link[=approxfun]{approxfun()}}.
 }
 \examples{
 
 #--------------------------------------------------
 # EXAMPLE #1 - simple interpolate among lakes
   
-library(sp) #for loading greatLakesPoly because spatial object   
-  
 # get polygon of the Great Lakes 
-data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
-plot(greatLakesPoly, xlim = c(-92, -76))
+data(great_lakes_polygon) #glatos example data
+plot(sf::st_geometry(great_lakes_polygon), xlim = c(-92, -76))
   
 # make sample detections data frame
 pos <- data.frame(
@@ -142,8 +140,6 @@ points(latitude ~ longitude, data = path3, pch = 20, cex = 1,
 # EXAMPLE #2 - walleye in western Lake Erie
 \dontrun{
 
-library(sp) #for loading greatLakesPoly
-library(raster) #for raster manipulation (e.g., crop)
 
 # get example walleye detection data
 det_file <- system.file("extdata", "walleye_detections.csv",
@@ -159,25 +155,30 @@ det <- det[det$animal_id == 22 &
            det$detection_timestamp_utc < as.POSIXct("2013-04-15") , ]
 
 # get polygon of the Great Lakes 
-data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+data(great_lakes_polygon) #glatos example data; an sf object
+
+# convert polygon to terra::spatVector
+great_lakes_polygon <- terra::vect(great_lakes_polygon)
 
 # crop polygon to western Lake Erie
-maumee <-  crop(greatLakesPoly, extent(-83.7, -82.5, 41.3, 42.4))
+maumee <-  terra::crop(great_lakes_polygon, 
+                       y = terra::ext(-83.7, -82.5, 41.3, 42.4))
+
+
 plot(maumee, col = "grey")
 points(deploy_lat ~ deploy_long, data = det, pch = 20, col = "red", 
   xlim = c(-83.7, -80))
 
-#make transition layer object
-# Note: using make_transition2 here for simplicity, but 
-#       make_transition is generally preferred for real application  
-#       if your system can run it see ?make_transition
-tran <- make_transition(maumee, res = c(0.1, 0.1))
 
+make transition layer object
+tran <- make_transition3(sf::st_as_sf(maumee), res = c(0.1, 0.1))
+
+# plot to check output
 plot(tran$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
 plot(maumee, add = TRUE)
 
-# not high enough resolution- bump up resolution
-tran1 <- make_transition(maumee, res = c(0.001, 0.001))
+# not high enough resolution- bump up resolution, will take some time
+tran1 <- make_transition3(sf::st_as_sf(maumee), res = c(0.001, 0.001))
 
 # plot to check resolution- much better
 plot(tran1$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
@@ -190,13 +191,18 @@ foo <- unique(det[, c("deploy_lat", "deploy_long")])
 points(foo$deploy_long, foo$deploy_lat, pch = 20, col = "red")
 
 # call with "transition matrix" (non-linear interpolation), other options
-# note that it is quite a bit slower due than linear interpolation
-pos2 <- interpolate_path(det, trans = tran1$transition, out_class = "data.table")
+# note that it is quite a bit slower than linear interpolation
+pos2 <- interpolate_path(det, 
+                         trans = tran1$transition, 
+                         out_class = "data.table")
 
 plot(maumee, col = "grey")
 points(latitude ~ longitude, data = pos2, pch=20, col='red', cex=0.5)
 
 } 
+
+
+
 
 }
 \author{

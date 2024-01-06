@@ -7,40 +7,40 @@
 read_vemco_tag_specs(tag_file, file_format = NULL)
 }
 \arguments{
-\item{tag_file}{A character string with path and name of file in 
-a supported standard format in quotes. If only file name is given, then the 
+\item{tag_file}{A character string with path and name of file in
+a supported standard format in quotes. If only file name is given, then the
 file must be located in the working directory.}
 
 \item{file_format}{A character string with the tag spec file format
 in quotes. If NULL (default value) then version will be
-determined by evaluating file structure. The only allowed values 
-are \code{NULL} and \code{"vemco_xls"}. Any other values will trigger an 
+determined by evaluating file structure. The only allowed values
+are \code{NULL} and \code{"vemco_xls"}. Any other values will trigger an
 error.}
 }
 \value{
-A list containing two data frames with tag specifications and 
-tag operating schedule.  
+A list containing two data frames with tag specifications and
+tag operating schedule.
 
-A list element called \code{specs} is a data frame contains tag specifications data in 
-17 columns:  
+A list element called \code{specs} is a data frame contains tag specifications data in
+17 columns:
 \describe{
-\item{serial_number}{}        
-\item{manufacturer}{}         
-\item{model}{}             
-\item{id_count}{}             
-\item{code_space}{}           
-\item{id_code}{}              
-\item{n_steps}{}              
-\item{sensor_type}{}          
-\item{sensor_range}{}         
-\item{sensor_units}{}         
-\item{sensor_slope}{}       
-\item{sensor_intercept}{}     
-\item{accel_algorithm}{}      
-\item{accel_sample_rate}{}    
+\item{serial_number}{}
+\item{manufacturer}{}
+\item{model}{}
+\item{id_count}{}
+\item{code_space}{}
+\item{id_code}{}
+\item{n_steps}{}
+\item{sensor_type}{}
+\item{sensor_range}{}
+\item{sensor_units}{}
+\item{sensor_slope}{}
+\item{sensor_intercept}{}
+\item{accel_algorithm}{}
+\item{accel_sample_rate}{}
 \item{sensor_transmit_ratio}{}
 \item{est_battery_life_days}{}
-\item{battery_life_stat}{} 
+\item{battery_life_stat}{}
 }
 
 A list element called \code{schedule} is a data frame containing tag
@@ -48,33 +48,35 @@ operating shedule data in 11 columns:
 
 \describe{
 \item{serial_number}{}
-\item{code_space}{}    
-\item{id_code}{}           
-\item{step}{}         
-\item{next_step}{}         
-\item{status}{}            
-\item{duration_days}{}     
-\item{power}{}             
-\item{min_delay_secs}{}    
-\item{max_delay_secs}{}    
+\item{code_space}{}
+\item{id_code}{}
+\item{step}{}
+\item{next_step}{}
+\item{status}{}
+\item{duration_days}{}
+\item{power}{}
+\item{min_delay_secs}{}
+\item{max_delay_secs}{}
 \item{accel_on_time_secs}{}
 
 }
 }
 \description{
-Read telemetry transmitter (tag) specification data from a file and 
+Read telemetry transmitter (tag) specification data from a file and
 return a list with tag specifications and tag operating schedule.
 }
 \details{
-The file format \code{vemco_xls} is a MS Excel file provided to tag 
+The file format \code{vemco_xls} is a MS Excel file provided to tag
 purchasers by Vemco.
 
 This function is not endorsed or supported by any transmitter manufacturer.
 }
 \examples{
-#get path to example Vemco tag spec file
-spec_file <- system.file("extdata", 
-  "lamprey_tag_specs.xls", package = "glatos")
+# get path to example Vemco tag spec file
+spec_file <- system.file("extdata",
+  "lamprey_tag_specs.xls",
+  package = "glatos"
+)
 my_tags <- read_vemco_tag_specs(spec_file, file_format = "vemco_xls")
 
 }

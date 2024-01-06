@@ -20,17 +20,18 @@ Read data from a standard OTN detection (csv) file and return
 a data.frame of class \code{glatos_detections}.
 }
 \details{
-Data are loaded using \code{\link[data.table]{fread}} package and timestamps
-are coerced to POSIXct using the \code{\link[fasttime]{fastPOSIXct}}. All
+Data are loaded using \code{\link[data.table:fread]{data.table::fread()}} package and timestamps
+are coerced to POSIXct using the \code{\link[fasttime:fastPOSIXct]{fasttime::fastPOSIXct()}}. All
 times must be in UTC timezone per GLATOS standard.
 
 Column names are changed to match GLATOS standard columns when possible.
 Otherwise, OTN columns and column names are retained.
 }
 \examples{
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "blue_shark_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 det <- read_otn_detections(det_file)
 
 }

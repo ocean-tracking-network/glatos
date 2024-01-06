@@ -1,243 +1,417 @@
 #' @title Simulate detection of transmitter signals in a receiver network
-#' 
-#' @description
-#' Simulates detection of transmitter signals in a receiver network based on
-#'   detection range curve (detection probability as a function of distance),
-#'   location of transmitter, and location of receivers.
 #'
-#' @param trnsLoc A three-column data frame with locations (numeric columns 
-#'   named 'x' and 'y') and timestamps (numeric or POSIXct column named 'et')
-#'   where signals were transmitted.
-#'   
-#' @param recLoc A two-column data frame with receiver locations (numeric 
-#'   columns named 'x' and 'y')
-#'   
-#' @param detRngFun A function that defines detection range curve;
-#'   must accept a numeric vector of distances and return a numeric vector of 
+#' @description Simulates detection of transmitter signals in a receiver network
+#'   based on detection range curve (detection probability as a function of
+#'   distance), location of transmitter, and location of receivers.
+#'
+#' @param trnsLoc A data frame with location (two numeric columns) and time
+#'   (numeric or POSIXct column) of signal transmissions.\cr *OR* \cr An
+#'   object of class [sf::sf()] or [sf::sfc()] containing
+#'   `POINT` features (geometry column) and time (see `colNames`).
+#'   ([sp::SpatialPointsDataFrame()] is also allowed.)
+#'
+#' @param recLoc A data frame with coordinates (two numeric columns) of receiver
+#'   locations.\cr *OR* \cr An object of class [sf::sf()] or
+#'   [sf::sfc()] containing a `POINT` feature (geometry column)
+#'   for each receiver. ([sp::SpatialPointsDataFrame()] is also
+#'   allowed.)
+#'
+#' @param detRngFun A function that defines detection range curve; must accept a
+#'   numeric vector of distances (in meters) and return a numeric vector of
 #'   detection probabilities at each distance.
-#'   
-#' @param EPSG Numeric EPSG code of the coordinate system used for simulations. 
-#'   Default is 3175, a projected coordinate system for the North American 
-#'   Great Lakes Basin and St. Lawrence River system. 
-#'   \url{http://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/} 
-#' 
-#' @param sp_out Logical. If TRUE (default) then output is a 
-#'  SpatialPointsDataFrame object. If FALSE, then output is a 
-#'  data.frame.
-#'  
-#' @param show_progress Logical. Progress bar and status messages will be 
-#'  shown if TRUE (default) and not shown if FALSE.
 #'
-#' @details
-#' Distances between each signal transmission location and receiver are
-#' calculated using pythagorean theorem in CRS specified by \code{EPSG}. The
-#' probability of detecting each signal on each receiver is determined from the
-#' detection range curve. Detection of each signal on each receiver is
-#' determined stochastically by draws from a Bernoulli distribution with
-#' probability p (detection prob).
-#'  
-#' This function was written to be used along with 
-#'   \code{\link{transmit_along_path}}.
-#' 
-#' @return A SpatialPointsDataFrame comprised of (1) a spatial component with  
-#' the coordinates of receivers that recorded each detection and (2) a data 
-#' frame component with the following columns: \cr 
-#' 
-#' \item{trns_id}{Unique signal transmission ID}
-#' \item{recv_id}{Unique receiver ID}
-#' \item{recv_x}{Receiver x coordinate}
-#' \item{recv_y}{Receiver y coordinate}
-#' \item{trns_x}{Transmitter x coordinate at time of transmission}
-#' \item{trns_y}{Transmitter y coordinate at time of transmission}
-#' \item{etime}{Elapsed time}
-#' 
-#' Only the data frame component is returned when \code{sp_out = FALSE}.
+#' @param trnsColNames A named list containing the names of columns in
+#'   `trnsLoc` with timestamps (default is `"time"`) and coordinates
+#'   (defaults are `"x"` and `"y"`) of signal transmissions. Location
+#'   column names are ignored if `trnsLoc` is a spatial object with a
+#'   geometry column.
 #'
-#' @seealso \code{\link{transmit_along_path}} to simulate transmissions along a 
-#' path (i.e., create \code{trnsLoc}).
+#' @param recColNames A named list containing the names of columns in
+#'   `recLoc` with coordinates of receiver locations (defaults are
+#'   `"x"` and `"y"`). Location column names are ignored if
+#'   `recLoc` is a spatial object with a geometry column.
 #'
-#' @author C. Holbrook (cholbrook@usgs.gov) 
+#' @param inputCRS Defines the coordinate reference system (object of class
+#'   `crs` or numeric EPSG code) if crs is missing from inputs
+#'   `trnsLoc` or `recLoc`; ignored if input `trnsLoc` and
+#'   `recLoc` are of class `sf`, `sfc`, or
+#'   `SpatialPointsDataFrame`).
+#'
+#' @param sp_out Logical. If TRUE (default) then output is an `sf` object.
+#'   If FALSE, then output is a `data.frame`.
+#'
+#' @param show_progress Logical. Progress bar and status messages will be shown
+#'   if TRUE (default) and not shown if FALSE.
+#'
+#' @details Distances between each signal transmission and receiver are
+#'   calculated using [geodist::geodist()] (`measure =
+#'   "haversine"`) if input crs is geographic (i.e., longitude, latitude) and
+#'   using simple Euclidean distances if input crs is Cartesian (e.g., UTM). If
+#'   crs is missing, the an arbitrary Cartesian coordinate system with base unit
+#'   of 1 meter is assumed. Computation time is fastest if coordinates are are
+#'   in a Cartesian (projected) coordinate system and slowest if coordinates are
+#'   in a geographic (long lat) coordinate system.
+#'
+#' @details The probability of detecting each signal on each receiver is
+#'   determined from the detection range curve. Detection of each signal on each
+#'   receiver is determined stochastically by draws from a Bernoulli
+#'   distribution with probability p (detection prob.).
+#'
+#'   This function was written to be used along with
+#'   [transmit_along_path()].
+#'
+#' @return When `sp_out = TRUE`, an `sf` object containing one
+#'   `POINT` feature with coordinates of each receiver and transmission
+#'   location of each simulated detection (i.e., two geography columns names
+#'   `rec_geometry` and `trns_geometry`) and the the following
+#'   columns: \cr
+#'
+#'   \item{trns_id}{Unique signal transmission ID.}
+#'   \item{rec_id}{Unique receiver ID.}
+#'   \item{time}{Elapsed time.}
+#'
+#'   When `sp_out = FALSE`, a data.frame with columns
+#'   containing coordinates of receiver locations of each simulation detection:
+#'   \item{rec_x}{Receiver x coordinate.}
+#'   \item{rec_y}{Receiver y coordinate.}
+#'   \item{trns_x}{Transmitter x coordinate at time of transmission.}
+#'   \item{trns_y}{Transmitter y coordinate at time of transmission.}
+#'   and the columns described above.
+#'
+#' @seealso [transmit_along_path()] to simulate transmissions along a
+#'   path (i.e., create `trnsLoc`).
+#'
+#' @author C. Holbrook (cholbrook@@usgs.gov)
 #'
 #' @examples
-#' 
-#' library(sp) #for plot methods for spatial objects
-#' 
-#' #make a simple path in polygon
-#' mypath <- crw_in_polygon(data.frame(x = c(0, 0, 1000, 1000), 
-#'   y = c(0, 1000, 1000, 0)), stepLen=100, nsteps=50)
-#' plot(mypath,type='l',xlim=c(0,1000),ylim=c(0,1000)) #view path
-#' 
-#' #add receivers
-#' recs <- expand.grid(c(250,750),c(250,750))
-#' names(recs) <- c("x","y") #needed by detect_transmissions
-#' points(recs, pch=15, col="blue")
-#' 
-#' #simulate tag transmissions
-#' mytrns <- transmit_along_path(mypath,vel=2.0,delayRng=c(60,180),burstDur=5.0)
-#' points(mytrns,pch=21) #add to plot
-#' 
-#' #Define detection range function (to pass as detRngFun) 
+#'
+#' # Example 1 - data.frame input (make a simple path in polygon)
+#'
+#' mypoly <- data.frame(
+#'   x = c(0, 0, 1000, 1000),
+#'   y = c(0, 1000, 1000, 0)
+#' )
+#'
+#' mypath <- crw_in_polygon(mypoly,
+#'   stepLen = 100,
+#'   nsteps = 50,
+#'   sp_out = FALSE
+#' )
+#'
+#' plot(mypath, type = "l", xlim = c(0, 1000), ylim = c(0, 1000))
+#'
+#' # add receivers
+#' recs <- expand.grid(x = c(250, 750), y = c(250, 750))
+#' points(recs, pch = 15, col = "blue")
+#'
+#' # simulate tag transmissions
+#' mytrns <- transmit_along_path(mypath,
+#'   vel = 2.0, delayRng = c(60, 180),
+#'   burstDur = 5.0, sp_out = FALSE
+#' )
+#' points(mytrns, pch = 21) # add to plot
+#'
+#' # Define detection range function (to pass as detRngFun)
 #' # that returns detection probability for given distance
-#' # assume logistic form of detection range curve where 
+#' # assume logistic form of detection range curve where
 #' #   dm = distance in meters
 #' #   b = intercept and slope
-#' pdrf <- function(dm, b=c(0.5, -1/120)){
-#'   p <- 1/(1+exp(-(b[1]+b[2]*dm)))
+#' pdrf <- function(dm, b = c(0.5, -1 / 120)) {
+#'   p <- 1 / (1 + exp(-(b[1] + b[2] * dm)))
 #'   return(p)
 #' }
-#' pdrf(c(100,200,300,400,500)) #view detection probs. at some distances
-#' 
-#' #simulate detection
-#' mydtc <- detect_transmissions(trnsLoc=mytrns, recLoc=recs, detRngFun=pdrf)
-#' #view transmissions that were detected
-#' points(trns_y~trns_x, data=mydtc,pch=21, bg="red")
-#' 
-#' #link transmitter and receiver locations for each detection
-#' with(mydtc@data, segments(x0 = trns_x, y0 = trns_y, 
-#'                           x1 = recv_x, y1 = recv_y, 
-#'                           col = "red")) 
+#' pdrf(c(100, 200, 300, 400, 500)) # view detection probs. at some distances
+#'
+#' # simulate detection
+#' mydtc <- detect_transmissions(
+#'   trnsLoc = mytrns,
+#'   recLoc = recs,
+#'   detRngFun = pdrf,
+#'   sp_out = FALSE
+#' )
+#'
+#' points(mydtc[, c("trns_x", "trns_y")], pch = 21, bg = "red")
+#'
+#' # link transmitter and receiver locations for each detection\
+#' with(mydtc, segments(
+#'   x0 = trns_x,
+#'   y0 = trns_y,
+#'   x1 = rec_x,
+#'   y1 = rec_y,
+#'   col = "red"
+#' ))
+#'
+#'
+#' # Example 2 - spatial (sf) input
+#'
+#' data(great_lakes_polygon)
+#'
+#' set.seed(610)
+#' mypath <- crw_in_polygon(great_lakes_polygon,
+#'   stepLen = 100,
+#'   initPos = c(-83.7, 43.8),
+#'   initHeading = 0,
+#'   nsteps = 50,
+#'   cartesianCRS = 3175
+#' )
+#'
+#' plot(sf::st_geometry(mypath), type = "l")
+#'
+#' # add receivers
+#' recs <- expand.grid(
+#'   x = c(-83.705, -83.70),
+#'   y = c(43.810, 43.815)
+#' )
+#' points(recs, pch = 15, col = "blue")
+#'
+#' # simulate tag transmissions
+#' mytrns <- transmit_along_path(mypath,
+#'   vel = 2.0, delayRng = c(60, 180),
+#'   burstDur = 5.0
+#' )
+#' points(sf::st_coordinates(mytrns), pch = 21) # add to plot
+#'
+#' # Define detection range function (to pass as detRngFun)
+#' # that returns detection probability for given distance
+#' # assume logistic form of detection range curve where
+#' #   dm = distance in meters
+#' #   b = intercept and slope
+#' pdrf <- function(dm, b = c(2, -1 / 120)) {
+#'   p <- 1 / (1 + exp(-(b[1] + b[2] * dm)))
+#'   return(p)
+#' }
+#' pdrf(c(100, 200, 300, 400, 500)) # view detection probs. at some distances
+#'
+#' # simulate detection
+#' mydtc <- detect_transmissions(
+#'   trnsLoc = mytrns,
+#'   recLoc = recs,
+#'   detRngFun = pdrf
+#' )
+#'
+#' # view transmissions that were detected
+#' sf::st_geometry(mydtc) <- "trns_geometry"
+#'
+#' points(sf::st_coordinates(mydtc$trns_geometry), pch = 21, bg = "red")
+#'
+#' # link transmitter and receiver locations for each detection
+#' segments(
+#'   x0 = sf::st_coordinates(mydtc$trns_geometry)[, "X"],
+#'   y0 = sf::st_coordinates(mydtc$trns_geometry)[, "Y"],
+#'   x1 = sf::st_coordinates(mydtc$rec_geometry)[, "X"],
+#'   y1 = sf::st_coordinates(mydtc$rec_geometry)[, "Y"],
+#'   col = "red"
+#' )
 #'
 #' @export
-detect_transmissions <- function(trnsLoc = NA , recLoc = NA, detRngFun = NA,
-  EPSG = 3175, sp_out = TRUE, show_progress = TRUE){
-	 
-  if(inherits(trnsLoc, "data.frame")){
-    #check names of trnsLoc columns
-    missingCols <- setdiff(c("x","y","et"), names(trnsLoc))
-    if(length(missingCols) > 0) stop(paste0("'trnsLoc' must contain the ",
-      "following columns: \n",paste(missingCols,collapse="\n")))
-  } 
-  
-  if(inherits(recLoc, "data.frame")){
-    #check names of recLoc columns
-    missingCols <- setdiff(c("x","y"),names(recLoc))
-    if(length(missingCols) > 0) stop(paste0("'recLoc' must contain the ",
-      "following columns: \n",paste(missingCols,collapse="\n")))
-  } 
-  
-  
-  #CRS
-  projargs <- paste0("+init=epsg:", EPSG)
-  
-  
-  #convert trnsLoc to SpatialPoints if not already
-  if(!inherits(trnsLoc, c("SpatialPointsDataFrame", "SpatialPoints"))){ 
-    trnsLoc <- sp::SpatialPointsDataFrame(trnsLoc[, c("x", "y")], 
-                                          data = trnsLoc, 
-                                          proj4string = sp::CRS(projargs))
-    projargs_in <- projargs
-  } else { 
-    projargs_in <- sp::proj4string(trnsLoc) #get crs to assign output
+detect_transmissions <- function(trnsLoc = NA,
+                                 recLoc = NA,
+                                 detRngFun = NA,
+                                 trnsColNames = list(
+                                   time = "time",
+                                   x = "x",
+                                   y = "y"
+                                 ),
+                                 recColNames = list(
+                                   x = "x",
+                                   y = "y"
+                                 ),
+                                 inputCRS = NA,
+                                 sp_out = TRUE,
+                                 show_progress = TRUE) {
+  # Check input class - trnsLoc
+  if (!inherits(trnsLoc, c("data.frame", "sf", "sfc", "SpatialPointsDataFrame"))) {
+    stop(
+      "Input 'trnsLoc' must be of class 'data.frame', 'sf', 'sfc', ",
+      " or 'SpatialPointsDataFrame'."
+    )
   }
-  
-  #convert trnsLoc CRS to EPSG if not needed
-  if(!identical(sp::proj4string(trnsLoc), rgdal::CRSargs(sp::CRS(projargs)))){
-    trnsLoc <- sp::spTransform(trnsLoc, sp::CRS(projargs))
+
+  # Check input class - recLoc
+  if (!inherits(recLoc, c("data.frame", "sf", "sfc", "SpatialPointsDataFrame"))) {
+    stop(
+      "Input 'recLoc' must be of class 'data.frame', 'sf', 'sfc', ",
+      " or 'SpatialPointsDataFrame'."
+    )
   }
-  
-  #if vector convert to data frame
-  if(!inherits(recLoc, "data.frame") & all(is.numeric(recLoc))){
-    if(length(recLoc) != 2) 
-      stop(paste("recLoc must be data.frame or 2-column vector (x,y)")) 
-    recLoc <- data.frame(x=recLoc[1], y=recLoc[2])
-  }
-  
-  #convert recLoc to SpatialPoints if not already
-  if(!inherits(recLoc, c("SpatialPointsDataFrame", "SpatialPoints"))){ 
-    recLoc <- sp::SpatialPoints(recLoc, proj4string = sp::CRS(projargs))
-    rec_projargs_in <- projargs
-  } else { 
-    rec_projargs_in <- sp::proj4string(recLoc) #get crs to assign output
-  }
-  
-  #convert recLoc CRS to EPSG if not needed
-  if(!identical(sp::proj4string(recLoc), rgdal::CRSargs(sp::CRS(projargs)))){
-    recLoc <- sp::spTransform(recLoc, sp::CRS(projargs))
-  }  
-  
-  #convert to data.frame (now in EPSG)
-  recLoc <- as.data.frame(sp::coordinates(recLoc))
-  trnsLoc <- as.data.frame(cbind(sp::coordinates(trnsLoc), et = trnsLoc$et))
-  
-  #rename columns
-  names(recLoc)[1:2] <- c("x", "y")
-  names(trnsLoc)[1:2] <- c("x", "y")
-  
-  #preallocate detection data frame
-  dtc <- data.frame(
-        trns_id = NA,
-        recv_id = NA,
-        recv_x = NA,
-        recv_y = NA,
-        trns_x = NA,
-        trns_y = NA,
-        etime = NA,
-    stringsAsFactors= FALSE)[0,]
-	 
-	 #loop through receivers (because should be much smaller than transmissions)
-	 for(g in 1:nrow(recLoc)){
-		#initialize progress bar
-	     if(g==1 & show_progress){
-	        pb <- txtProgressBar(min=0,max=nrow(recLoc),style=3)
-	     }
-	  
-	    #distance between gth receiver and each transmission
-	    distM.g <- sqrt((trnsLoc$x-recLoc$x[g])^2 +
-                    (trnsLoc$y-recLoc$y[g])^2)
-        detP.g <- detRngFun(distM.g) #calculate probability of detection
-        #simulate detection
-        succ.g <- as.logical(rbinom(length(detP.g), 1, detP.g)) 
-	 
-	    #output detection data
-      if(sum(succ.g) > 0){
-		  dtc.g <- data.frame(
-			  trns_id = which(succ.g),
-			  recv_id = g,
-			  recv_x = recLoc$x[g],
-			  recv_y = recLoc$y[g],
-			  trns_x = trnsLoc$x[succ.g],
-			  trns_y = trnsLoc$y[succ.g],
-			  etime = trnsLoc$et[succ.g])
-		 
-		  dtc <- rbind(dtc,dtc.g) #append
-	  } # end if
-	 
-		#update progress bar
-    if(show_progress){
-  		info <- sprintf("%d%% done", round(g/nrow(recLoc)*100))
-  		setTxtProgressBar(pb, g)
-  		if(g==nrow(recLoc)) close(pb)
+
+  # Get input CRS and use CRS arg if missing
+  crs_in <- sf::st_crs(trnsLoc)
+  if (is.na(crs_in)) crs_in <- sf::st_crs(inputCRS)
+
+
+  # Check that sf geometry is POINT - trnsLoc
+  if (inherits(trnsLoc, c("sf", "sfc"))) {
+    if (!("POINT" %in% sf::st_geometry_type(trnsLoc))) {
+      stop(
+        "Input object 'trnsLoc' must contain geometry of type 'POINT' when ",
+        "class is 'sf' or 'sfc'."
+      )
     }
-	 } #end g
-  
-  dtc <- dtc[order(dtc$etime),]#sort by time	 
-  
-  if(nrow(dtc) > 0){
+    trnsLoc_sf <- trnsLoc
+  } else if (inherits(trnsLoc, "data.frame")) {
+    # check for names
+    xy_trns_col_names <- unname(unlist(trnsColNames[c("x", "y")]))
+    if (!all(xy_trns_col_names %in% names(trnsLoc))) {
+      stop(
+        "Input data.frame 'trnsLoc' must have columns named ",
+        "in input 'trnsColNames'."
+      )
+    }
 
-    
-    #convert transmission locations of detections to input crs
-    dtc_recv <- sp::SpatialPoints(dtc[, c("recv_x", "recv_y")], 
-                                 proj4string = sp::CRS(projargs))
-    dtc_recv <- sp::spTransform(dtc_recv, CRSobj = projargs_in)
-    
-    
-    #convert transmission locations of detections to input crs
-    dtc_trns <- sp::SpatialPoints(dtc[, c("trns_x", "trns_y")], 
-                                  proj4string = sp::CRS(projargs))
-    dtc_trns <- sp::spTransform(dtc_trns, CRSobj = projargs_in)
-    
-    #combine to data frame
-    dtc <- as.data.frame(cbind(dtc[, c("trns_id", "recv_id")], 
-                               sp::coordinates(dtc_recv), 
-                               sp::coordinates(dtc_trns), 
-                               etime = dtc$etime))  
-    
-    if(sp_out) {
-      #export spatial object where locations are receiver locations of detection
-      dtc <- sp::SpatialPointsDataFrame(dtc_recv, data = dtc)
-    }  
+    # rename cols x and y
+    names(trnsLoc)[which(names(trnsLoc) %in% xy_trns_col_names)] <- c("x", "y")
 
+    # Coerce to sf
+    trnsLoc_sf <- sf::st_as_sf(trnsLoc, coords = c("x", "y"), crs = crs_in)
   }
-             
+
+  # Check that sf geometry is POINT - recLoc
+  if (inherits(recLoc, c("sf", "sfc"))) {
+    if (!("POINT" %in% sf::st_geometry_type(recLoc))) {
+      stop(
+        "Input object 'recLoc' must contain geometry of type 'POINT' when ",
+        "class is 'sf' or 'sfc'."
+      )
+    }
+    recLoc_sf <- recLoc
+  } else if (inherits(recLoc, "data.frame")) {
+    # check for names
+    xy_rec_col_names <- unname(unlist(recColNames[c("x", "y")]))
+    if (!all(xy_rec_col_names %in% names(recLoc))) {
+      stop(
+        "Input data.frame 'recLoc' must have columns named ",
+        "in input 'recColNames'."
+      )
+    }
+
+    # rename cols x and y
+    names(recLoc)[which(names(recLoc) %in% xy_rec_col_names)] <- c("x", "y")
+
+    # Coerce to sf
+    recLoc_sf <- sf::st_as_sf(recLoc, coords = c("x", "y"), crs = crs_in)
+  }
+
+
+  # Convert to sf_point if polyg is SpatialPointsDataFrame
+  if (inherits(trnsLoc, "SpatialPointsDataFrame")) {
+    trnsLoc_sf <- sf::st_as_sf(trnsLoc, crs = crs_in)
+  }
+
+  # Convert to sf_point if polyg is SpatialPointsDataFrame
+  if (inherits(recLoc, "SpatialPointsDataFrame")) {
+    recLoc_sf <- sf::st_as_sf(recLoc, crs = crs_in)
+  }
+
+  # Check time column names
+  time_trns_col_names <- unname(unlist(trnsColNames[c("time")]))
+  if (!all(time_trns_col_names %in% names(trnsLoc))) {
+    stop(
+      "Input data.frame 'trnsLoc' must have columns named ",
+      "in input 'trnsColNames'."
+    )
+  }
+
+  # Rename time col
+  names(trnsLoc)[which(names(trnsLoc) %in% time_trns_col_names)] <- "time"
+
+
+  # Set CRS of recLoc to match trnsLoc
+  rec_crs_in <- sf::st_crs(recLoc_sf)
+
+  if (rec_crs_in != crs_in) recLoc_sf <- sf::st_transform(recLoc_sf, crs_in)
+
+
+  # preallocate detection data frame
+  dtc <- data.frame(
+    trns_id = NA_character_,
+    rec_id = NA_character_,
+    rec_x = NA_real_,
+    rec_y = NA_real_,
+    trns_x = NA_real_,
+    trns_y = NA_real_,
+    time = NA_real_,
+    stringsAsFactors = FALSE
+  )[0, ]
+
+  # loop through receivers (because should be much smaller than transmissions)
+  for (g in 1:nrow(recLoc_sf)) {
+    # initialize progress bar
+    if (g == 1 & show_progress) {
+      pb <- txtProgressBar(min = 0, max = nrow(recLoc_sf), style = 3)
+    }
+
+    # distance between gth receiver and each transmission
+
+    distM.g <- sqrt((trnsLoc$x - recLoc$x[g])^2 +
+      (trnsLoc$y - recLoc$y[g])^2)
+
+    if (isTRUE(sf::st_crs(trnsLoc_sf)$IsGeographic)) {
+      distM.g <- geodist::geodist(sf::st_coordinates(trnsLoc_sf),
+        sf::st_coordinates(recLoc_sf[g, ]),
+        measure = "haversine"
+      )
+    } else {
+      # Euclidean distance if Cartesian
+      distM.g <- sqrt((sf::st_coordinates(trnsLoc_sf)[, "X"] -
+        sf::st_coordinates(recLoc_sf)[g, "X"])^2 +
+        (sf::st_coordinates(trnsLoc_sf)[, "Y"] -
+          sf::st_coordinates(recLoc_sf)[g, "Y"])^2)
+    }
+
+    # Probability of detection
+    detP.g <- detRngFun(distM.g)
+
+    # Simulate detection
+    succ.g <- as.logical(rbinom(length(detP.g), 1, detP.g))
+
+    # Output detection data
+    if (sum(succ.g) > 0) {
+      dtc.g <- data.frame(
+        trns_id = which(succ.g),
+        rec_id = g,
+        rec_x = sf::st_coordinates(recLoc_sf)[, "X"][g],
+        rec_y = sf::st_coordinates(recLoc_sf)[, "Y"][g],
+        trns_x = sf::st_coordinates(trnsLoc_sf)[, "X"][succ.g],
+        trns_y = sf::st_coordinates(trnsLoc_sf)[, "Y"][succ.g],
+        time = trnsLoc_sf$time[succ.g]
+      )
+
+      dtc <- rbind(dtc, dtc.g) # append
+    } # end if
+
+    # update progress bar
+    if (show_progress) {
+      info <- sprintf("%d%% done", round(g / nrow(recLoc_sf) * 100))
+      setTxtProgressBar(pb, g)
+      if (g == nrow(recLoc_sf)) close(pb)
+    }
+  } # end g
+
+  dtc <- dtc[order(dtc$time), ]
+
+  # Convert to sf with receiver locations
+  dtc_sf <- sf::st_as_sf(dtc,
+    coords = c("rec_x", "rec_y"),
+    crs = crs_in
+  )
+
+  # Rename geometry column
+  dtc_sf <- dplyr::rename(dtc_sf, rec_geometry = geometry)
+
+  # Add transmission locations
+  trns_geo <- sf::st_as_sf(dtc,
+    coords = c("trns_x", "trns_y"),
+    crs = crs_in
+  )$geometry
+
+  dtc_sf$trns_geometry <- trns_geo
+
+  dtc_sf <- dplyr::select(dtc_sf, -c(trns_x, trns_y))
+
+  if (sp_out) {
+    return(dtc_sf)
+  }
+
   return(dtc)
 }

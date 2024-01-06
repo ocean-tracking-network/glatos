@@ -1,9 +1,11 @@
 context("Check read_glatos_workbook")
 
 # Actual result
-#get path to example receiver location file
-wb_file <- system.file("extdata", 
-  "walleye_workbook.xlsm", package="glatos")
+# get path to example receiver location file
+wb_file <- system.file("extdata",
+  "walleye_workbook.xlsm",
+  package = "glatos"
+)
 wb <- read_glatos_workbook(wb_file)
 
 # Test using testthat library

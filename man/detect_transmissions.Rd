@@ -8,108 +8,217 @@ detect_transmissions(
   trnsLoc = NA,
   recLoc = NA,
   detRngFun = NA,
-  EPSG = 3175,
+  trnsColNames = list(time = "time", x = "x", y = "y"),
+  recColNames = list(x = "x", y = "y"),
+  inputCRS = NA,
   sp_out = TRUE,
   show_progress = TRUE
 )
 }
 \arguments{
-\item{trnsLoc}{A three-column data frame with locations (numeric columns 
-named 'x' and 'y') and timestamps (numeric or POSIXct column named 'et')
-where signals were transmitted.}
+\item{trnsLoc}{A data frame with location (two numeric columns) and time
+(numeric or POSIXct column) of signal transmissions.\cr \emph{OR} \cr An
+object of class \code{\link[sf:sf]{sf::sf()}} or \code{\link[sf:sfc]{sf::sfc()}} containing
+\code{POINT} features (geometry column) and time (see \code{colNames}).
+(\code{\link[sp:SpatialPoints]{sp::SpatialPointsDataFrame()}} is also allowed.)}
 
-\item{recLoc}{A two-column data frame with receiver locations (numeric 
-columns named 'x' and 'y')}
+\item{recLoc}{A data frame with coordinates (two numeric columns) of receiver
+locations.\cr \emph{OR} \cr An object of class \code{\link[sf:sf]{sf::sf()}} or
+\code{\link[sf:sfc]{sf::sfc()}} containing a \code{POINT} feature (geometry column)
+for each receiver. (\code{\link[sp:SpatialPoints]{sp::SpatialPointsDataFrame()}} is also
+allowed.)}
 
-\item{detRngFun}{A function that defines detection range curve;
-must accept a numeric vector of distances and return a numeric vector of 
+\item{detRngFun}{A function that defines detection range curve; must accept a
+numeric vector of distances (in meters) and return a numeric vector of
 detection probabilities at each distance.}
 
-\item{EPSG}{Numeric EPSG code of the coordinate system used for simulations. 
-Default is 3175, a projected coordinate system for the North American 
-Great Lakes Basin and St. Lawrence River system. 
-\url{http://spatialreference.org/ref/epsg/nad83-great-lakes-and-st-lawrence-albers/}}
+\item{trnsColNames}{A named list containing the names of columns in
+\code{trnsLoc} with timestamps (default is \code{"time"}) and coordinates
+(defaults are \code{"x"} and \code{"y"}) of signal transmissions. Location
+column names are ignored if \code{trnsLoc} is a spatial object with a
+geometry column.}
 
-\item{sp_out}{Logical. If TRUE (default) then output is a 
-SpatialPointsDataFrame object. If FALSE, then output is a 
-data.frame.}
+\item{recColNames}{A named list containing the names of columns in
+\code{recLoc} with coordinates of receiver locations (defaults are
+\code{"x"} and \code{"y"}). Location column names are ignored if
+\code{recLoc} is a spatial object with a geometry column.}
 
-\item{show_progress}{Logical. Progress bar and status messages will be 
-shown if TRUE (default) and not shown if FALSE.}
+\item{inputCRS}{Defines the coordinate reference system (object of class
+\code{crs} or numeric EPSG code) if crs is missing from inputs
+\code{trnsLoc} or \code{recLoc}; ignored if input \code{trnsLoc} and
+\code{recLoc} are of class \code{sf}, \code{sfc}, or
+\code{SpatialPointsDataFrame}).}
+
+\item{sp_out}{Logical. If TRUE (default) then output is an \code{sf} object.
+If FALSE, then output is a \code{data.frame}.}
+
+\item{show_progress}{Logical. Progress bar and status messages will be shown
+if TRUE (default) and not shown if FALSE.}
 }
 \value{
-A SpatialPointsDataFrame comprised of (1) a spatial component with  
-the coordinates of receivers that recorded each detection and (2) a data 
-frame component with the following columns: \cr 
+When \code{sp_out = TRUE}, an \code{sf} object containing one
+\code{POINT} feature with coordinates of each receiver and transmission
+location of each simulated detection (i.e., two geography columns names
+\code{rec_geometry} and \code{trns_geometry}) and the the following
+columns: \cr
 
-\item{trns_id}{Unique signal transmission ID}
-\item{recv_id}{Unique receiver ID}
-\item{recv_x}{Receiver x coordinate}
-\item{recv_y}{Receiver y coordinate}
-\item{trns_x}{Transmitter x coordinate at time of transmission}
-\item{trns_y}{Transmitter y coordinate at time of transmission}
-\item{etime}{Elapsed time}
+\item{trns_id}{Unique signal transmission ID.}
+\item{rec_id}{Unique receiver ID.}
+\item{time}{Elapsed time.}
 
-Only the data frame component is returned when \code{sp_out = FALSE}.
+When \code{sp_out = FALSE}, a data.frame with columns
+containing coordinates of receiver locations of each simulation detection:
+\item{rec_x}{Receiver x coordinate.}
+\item{rec_y}{Receiver y coordinate.}
+\item{trns_x}{Transmitter x coordinate at time of transmission.}
+\item{trns_y}{Transmitter y coordinate at time of transmission.}
+and the columns described above.
 }
 \description{
-Simulates detection of transmitter signals in a receiver network based on
-  detection range curve (detection probability as a function of distance),
-  location of transmitter, and location of receivers.
+Simulates detection of transmitter signals in a receiver network
+based on detection range curve (detection probability as a function of
+distance), location of transmitter, and location of receivers.
 }
 \details{
-Distances between each signal transmission location and receiver are
-calculated using pythagorean theorem in CRS specified by \code{EPSG}. The
-probability of detecting each signal on each receiver is determined from the
-detection range curve. Detection of each signal on each receiver is
-determined stochastically by draws from a Bernoulli distribution with
-probability p (detection prob).
- 
-This function was written to be used along with 
-  \code{\link{transmit_along_path}}.
+Distances between each signal transmission and receiver are
+calculated using \code{\link[geodist:geodist]{geodist::geodist()}} (\code{measure = "haversine"}) if input crs is geographic (i.e., longitude, latitude) and
+using simple Euclidean distances if input crs is Cartesian (e.g., UTM). If
+crs is missing, the an arbitrary Cartesian coordinate system with base unit
+of 1 meter is assumed. Computation time is fastest if coordinates are are
+in a Cartesian (projected) coordinate system and slowest if coordinates are
+in a geographic (long lat) coordinate system.
+
+The probability of detecting each signal on each receiver is
+determined from the detection range curve. Detection of each signal on each
+receiver is determined stochastically by draws from a Bernoulli
+distribution with probability p (detection prob.).
+
+This function was written to be used along with
+\code{\link[=transmit_along_path]{transmit_along_path()}}.
 }
 \examples{
 
-library(sp) #for plot methods for spatial objects
+# Example 1 - data.frame input (make a simple path in polygon)
 
-#make a simple path in polygon
-mypath <- crw_in_polygon(data.frame(x = c(0, 0, 1000, 1000), 
-  y = c(0, 1000, 1000, 0)), stepLen=100, nsteps=50)
-plot(mypath,type='l',xlim=c(0,1000),ylim=c(0,1000)) #view path
+mypoly <- data.frame(
+  x = c(0, 0, 1000, 1000),
+  y = c(0, 1000, 1000, 0)
+)
 
-#add receivers
-recs <- expand.grid(c(250,750),c(250,750))
-names(recs) <- c("x","y") #needed by detect_transmissions
-points(recs, pch=15, col="blue")
+mypath <- crw_in_polygon(mypoly,
+  stepLen = 100,
+  nsteps = 50,
+  sp_out = FALSE
+)
 
-#simulate tag transmissions
-mytrns <- transmit_along_path(mypath,vel=2.0,delayRng=c(60,180),burstDur=5.0)
-points(mytrns,pch=21) #add to plot
+plot(mypath, type = "l", xlim = c(0, 1000), ylim = c(0, 1000))
 
-#Define detection range function (to pass as detRngFun) 
+# add receivers
+recs <- expand.grid(x = c(250, 750), y = c(250, 750))
+points(recs, pch = 15, col = "blue")
+
+# simulate tag transmissions
+mytrns <- transmit_along_path(mypath,
+  vel = 2.0, delayRng = c(60, 180),
+  burstDur = 5.0, sp_out = FALSE
+)
+points(mytrns, pch = 21) # add to plot
+
+# Define detection range function (to pass as detRngFun)
 # that returns detection probability for given distance
-# assume logistic form of detection range curve where 
+# assume logistic form of detection range curve where
 #   dm = distance in meters
 #   b = intercept and slope
-pdrf <- function(dm, b=c(0.5, -1/120)){
-  p <- 1/(1+exp(-(b[1]+b[2]*dm)))
+pdrf <- function(dm, b = c(0.5, -1 / 120)) {
+  p <- 1 / (1 + exp(-(b[1] + b[2] * dm)))
   return(p)
 }
-pdrf(c(100,200,300,400,500)) #view detection probs. at some distances
+pdrf(c(100, 200, 300, 400, 500)) # view detection probs. at some distances
 
-#simulate detection
-mydtc <- detect_transmissions(trnsLoc=mytrns, recLoc=recs, detRngFun=pdrf)
-#view transmissions that were detected
-points(trns_y~trns_x, data=mydtc,pch=21, bg="red")
+# simulate detection
+mydtc <- detect_transmissions(
+  trnsLoc = mytrns,
+  recLoc = recs,
+  detRngFun = pdrf,
+  sp_out = FALSE
+)
 
-#link transmitter and receiver locations for each detection
-with(mydtc@data, segments(x0 = trns_x, y0 = trns_y, 
-                          x1 = recv_x, y1 = recv_y, 
-                          col = "red")) 
+points(mydtc[, c("trns_x", "trns_y")], pch = 21, bg = "red")
+
+# link transmitter and receiver locations for each detection\
+with(mydtc, segments(
+  x0 = trns_x,
+  y0 = trns_y,
+  x1 = rec_x,
+  y1 = rec_y,
+  col = "red"
+))
+
+
+# Example 2 - spatial (sf) input
+
+data(great_lakes_polygon)
+
+set.seed(610)
+mypath <- crw_in_polygon(great_lakes_polygon,
+  stepLen = 100,
+  initPos = c(-83.7, 43.8),
+  initHeading = 0,
+  nsteps = 50,
+  cartesianCRS = 3175
+)
+
+plot(sf::st_geometry(mypath), type = "l")
+
+# add receivers
+recs <- expand.grid(
+  x = c(-83.705, -83.70),
+  y = c(43.810, 43.815)
+)
+points(recs, pch = 15, col = "blue")
+
+# simulate tag transmissions
+mytrns <- transmit_along_path(mypath,
+  vel = 2.0, delayRng = c(60, 180),
+  burstDur = 5.0
+)
+points(sf::st_coordinates(mytrns), pch = 21) # add to plot
+
+# Define detection range function (to pass as detRngFun)
+# that returns detection probability for given distance
+# assume logistic form of detection range curve where
+#   dm = distance in meters
+#   b = intercept and slope
+pdrf <- function(dm, b = c(2, -1 / 120)) {
+  p <- 1 / (1 + exp(-(b[1] + b[2] * dm)))
+  return(p)
+}
+pdrf(c(100, 200, 300, 400, 500)) # view detection probs. at some distances
+
+# simulate detection
+mydtc <- detect_transmissions(
+  trnsLoc = mytrns,
+  recLoc = recs,
+  detRngFun = pdrf
+)
+
+# view transmissions that were detected
+sf::st_geometry(mydtc) <- "trns_geometry"
+
+points(sf::st_coordinates(mydtc$trns_geometry), pch = 21, bg = "red")
+
+# link transmitter and receiver locations for each detection
+segments(
+  x0 = sf::st_coordinates(mydtc$trns_geometry)[, "X"],
+  y0 = sf::st_coordinates(mydtc$trns_geometry)[, "Y"],
+  x1 = sf::st_coordinates(mydtc$rec_geometry)[, "X"],
+  y1 = sf::st_coordinates(mydtc$rec_geometry)[, "Y"],
+  col = "red"
+)
 
 }
 \seealso{
-\code{\link{transmit_along_path}} to simulate transmissions along a 
+\code{\link[=transmit_along_path]{transmit_along_path()}} to simulate transmissions along a
 path (i.e., create \code{trnsLoc}).
 }
 \author{

@@ -10,73 +10,91 @@ adjust_playback_time(
   output_dir = getwd(),
   output = "new.mp4",
   overwrite = FALSE,
-  ffmpeg = NA,
   diagnostic_mode = FALSE
 )
 }
 \arguments{
-\item{scale_factor}{multiplicative factor changes duration of
-video playback. See details.}
+\item{scale_factor}{multiplicative factor changes duration of video playback.
+See details.}
 
-\item{input}{character, path to video file (any FFmpeg supported
-file type- *.mp4, *.wmv, see \link{make_frames})}
+\item{input}{character, path to video file (any file type supported by
+\link[=av_encode_video]{av::av_encode_video}; e.g., *.mp4, *.wmv, etc)}
 
-\item{output_dir}{character, output directory, default is working
-directory}
+\item{output_dir}{character, output directory, default is working directory}
 
 \item{output}{character, output file name}
 
 \item{overwrite}{logical, default is \code{overwrite = TRUE}}
 
-\item{ffmpeg}{A file path (characer) to FFmpeg executable. This
-argument is only needed if ffmpeg is not added to your system
-path. For Windows machines, path must point to 'ffmpeg.exe',
-located in the bin subfolder within the ffmpeg folder.  For
-example on Windows machines,
-"C:\\Users\\Username\\Documents\\ffmpeg-3.4.1-win64-static\\bin\\ffmpeg.exe").
-On Mac, path must point to 'ffmpeg' within the 'bin'
-subfolder "/home/directory/Documents/bin/ffmpeg".  see \link{make_video}}
-
-\item{diagnostic_mode}{Logical (default = FALSE). If true, return value
-is a character vector with FFMPEG output.}
+\item{diagnostic_mode}{Logical (default = FALSE). If true, returns FFMPEG
+output.}
 }
 \value{
-One video animation will be written to \code{output_dir}
+One video animation will be written to \code{output_dir} and the
+path and name of output file with be returned.
 }
 \description{
-Speed up or slow down playback of video using FFmpeg software.
+Speed up or slow down playback of video
 }
 \details{
-\code{adjust_playback_time} adjusts playback speed of
-  video.  \code{scale_factor} controls the magnitude of speed-up
-  or slow-down by modifying the presentation timestamp of each
-  video frame. For more information, see 
-  \href{https://trac.ffmpeg.org/wiki}{How to speed up/slow down a video}.  
-  Values of \code{scale_factor} < 1 speed up playback and >1 slow
-  down video. In addition to changing playback, function can
-  change output format by specifying a different file extension in
-  \code{output}.
+A simple wrapper for \link[=av_encode_video]{av::av_encode_video}.
+
+\code{adjust_playback_time} adjusts playback speed of video.
+\code{scale_factor} controls the magnitude of speed-up or slow-down by
+modifying the presentation timestamp of each video frame. Values of
+\code{scale_factor} < 1 speed up playback and > 1 slow down playback. In
+addition to changing playback, function can change output format by
+specifying a different file extension in \code{output}.
+}
+\note{
+Input argument 'ffmpeg' was removed in glatos version 0.7.0.
 }
 \examples{
-
 \dontrun{
 
-# load example frames 
+# load example frames
 frames <- system.file("extdata", "frames", package = "glatos")
 
-# make video animation 
-make_video(dir = frames, pattern = "\%02d.png", output = "animation.mp4" )
+# make video animation
+out_file <- file.path(tempdir(), "animation_av.mp4")
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = out_file
+)
 
-# slow video down by a factor of 10 
-path <- file.path(getwd(), "animation.mp4")
-adjust_playback_time(scale_factor = 10, input = path)
+# slow video down by a factor of 10
+path <- file.path(tempdir(), "animation_av.mp4")
+adjust_playback_time(
+  scale_factor = 10,
+  input = path,
+  output_dir = tempdir(),
+  output = "animation_av_slow.mp4",
+  diagnostic_mode = FALSE,
+  overwrite = TRUE
+)
 
 # slow video down by a factor of 10 and change format of output video
-adjust_playback_time(scale_factor = 10, input = path, output = "slow.wmv")
+adjust_playback_time(
+  scale_factor = 10,
+  input = path,
+  output_dir = tempdir(),
+  output = "animation_av_slow.wmv",
+  diagnostic_mode = FALSE,
+  overwrite = TRUE
+)
 
-# speed up video 
-adjust_playback_time(scale_factor=0.5, input = path, output = "faster.mp4")
+# speed up video
+adjust_playback_time(
+  scale_factor = 0.5,
+  input = path,
+  output_dir = tempdir(),
+  output = "animation_av_fast.mp4",
+  diagnostic_mode = FALSE,
+  overwrite = TRUE
+)
 }
+
 }
 \author{
 Todd Hayden, Tom Binder, Chris Holbrook

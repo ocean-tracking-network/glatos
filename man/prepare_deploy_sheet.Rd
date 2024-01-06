@@ -2,10 +2,15 @@
 % Please edit documentation in R/load-prepare_deploy_sheet.R
 \name{prepare_deploy_sheet}
 \alias{prepare_deploy_sheet}
-\title{Loads the OTN receiver deployment metadata sheet to prepare it for use in 
+\title{Loads the OTN receiver deployment metadata sheet to prepare it for use in
 \code{convert_otn_to_att}}
 \usage{
-prepare_deploy_sheet(path, header_line = 5, sheet_name = 1)
+prepare_deploy_sheet(
+  path,
+  header_line = 5,
+  sheet_name = 1,
+  combine_arr_stn = TRUE
+)
 }
 \arguments{
 \item{path}{the path to the deployment sheet}
@@ -13,12 +18,14 @@ prepare_deploy_sheet(path, header_line = 5, sheet_name = 1)
 \item{header_line}{what line the headers are on}
 
 \item{sheet_name}{the sheet name or number containing the metadata}
+
+\item{combine_arr_stn}{whether or not to to join the station and array columns. Format depends on OTN node}
 }
 \value{
 a data.frame created from the excel file.
 }
 \description{
-Loads the OTN receiver deployment metadata sheet to prepare it for use in 
+Loads the OTN receiver deployment metadata sheet to prepare it for use in
 \code{convert_otn_to_att}
 }
 \details{
@@ -33,9 +40,13 @@ to be used by \code{convert_otn_to_att}.
 
 library(glatos)
 deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
-                        package = "glatos")
+  package = "glatos"
+)
 
-deploy <- prepare_deploy_sheet(header_line, 5, 1)
+deploy <- prepare_deploy_sheet(deploy_path,
+  header_line = 1,
+  sheet_name = 1
+)
 
 }
 \author{

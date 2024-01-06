@@ -11,8 +11,8 @@ min_lag(det)
 \link{read_glatos_detections}).
 
 \emph{OR} a data frame containing detection
-data with the following columns: 
-\describe{ 
+data with the following columns:
+\describe{
 \item{detection_timestamp_utc}{Detection timestamps; MUST be of class
 POSIXct.}
 \item{transmitter_codespace}{A character string with transmitter code space
@@ -26,30 +26,31 @@ POSIXct.}
 A column \code{min_lag} (defined above) is added to input object.
 }
 \description{
-Calculate minimum time interval (min_lag) between successive detections and 
+Calculate minimum time interval (min_lag) between successive detections and
 add to detection data set for identifying potential false detections.
 }
 \details{
 \code{min_lag} is loosely based on the the "short interval"
-  described by Pincock (2012) and replicates the \code{min_lag} column in the
-  standard glatos detection export file. In this case (GLATOS),
-  \code{min_lag} is defined for each detection as the shortest interval (in
-  seconds) between either the previous or next detection (whichever is
-  closest) of the same transmitter code (defined here as combination of
-  transmitter_codespace and transmitter_id) on the same receiver.
+described by Pincock (2012) and replicates the \code{min_lag} column in the
+standard glatos detection export file. In this case (GLATOS),
+\code{min_lag} is defined for each detection as the shortest interval (in
+seconds) between either the previous or next detection (whichever is
+closest) of the same transmitter code (defined here as combination of
+transmitter_codespace and transmitter_id) on the same receiver.
 
 A new column (\code{min_lag}) is added to the input
-    dataframe that represents the time (in seconds) between the
-    current detection and the next detection (either before or
-    after) of the same transmitter on the same receiver. This
-    function replicates the 'min_lag' column included in the
-    standard glatos export.
+dataframe that represents the time (in seconds) between the
+current detection and the next detection (either before or
+after) of the same transmitter on the same receiver. This
+function replicates the 'min_lag' column included in the
+standard glatos export.
 }
 \examples{
 
 # load example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 det <- read_glatos_detections(det_file)
 
 # rename existing min_lag column
@@ -63,12 +64,12 @@ head(det)
 }
 \references{
 Pincock, D.G., 2012. False detections: what they are and how to remove them
-    from detection data. Vemco Division, Amirix Systems Inc., Halifax,
-    Nova Scotia.
-    \cr \url{http://www.vemco.com/pdf/false_detections.pdf}
+from detection data. Vemco Division, Amirix Systems Inc., Halifax,
+Nova Scotia.
+\cr \url{http://www.vemco.com/pdf/false_detections.pdf}
 }
 \seealso{
-\code{\link{false_detections}}
+\code{\link[=false_detections]{false_detections()}}
 }
 \author{
 Chris Holbrook, Todd Hayden, Angela Dini

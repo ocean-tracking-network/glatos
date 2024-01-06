@@ -12,7 +12,7 @@ You may have a feature or function that you'd like to contribute to the package.
 Clone the `glatos` repository onto your local machine. On the command line, you would CD to a working directory, then do:
 
 ```
-git clone git@gitlab.oceantrack.org:GreatLakes/glatos.git
+git clone git@github.com:ocean-tracking-network/glatos.git
 cd glatos
 git fetch
 git checkout -b dev origin/dev
@@ -36,17 +36,17 @@ git push -u origin myfeature
 
 You can push to your feature branch as many times as you like, this way you and another developer can collaborate on the feature, or just when you've reached a point that you feel you're ready to come back into the main package.
 
-Finally, alert the package maintainers (@chrisholbrook , @trbinder , @thayden , @frank.smith , @jdpye) that your feature's ready for integration with `dev` by issuing a [Merge Request](https://gitlab.oceantrack.org/GreatLakes/glatos/merge_requests) for `myfeature` into `dev`. GitLab will run the reports on what you've changed and how it affects the current state of the `dev` branch, even if the `dev` branch has changed since you last checked!
+Finally, alert the package maintainers (@chrisholbrook , @trbinder , @thayden , @frank.smith , @jdpye) that your feature's ready for integration with `dev` by issuing a [Pull Request](https://github.com/ocean-tracking-network/glatos/pulls) for `myfeature` into `dev`. GitHub will run the reports on what you've changed and how it affects the current state of the `dev` branch, even if the `dev` branch has changed since you last checked!
 
- Responsibility for making sure your branch won't break everything now falls to the package maintainers. They'll merge in your feature if it's in good working order and it will be further tested and then eventually merged into the `master` branch, from which all the end-users of the `glatos` package run code.
+Responsibility for making sure your branch won't break everything now falls to the package maintainers. They'll merge in your feature if it's in good working order and it will be further tested and then eventually merged into the `master` branch, from which all the end-users of the `glatos` package run code.
 
- In the near future, testing will be an important part of contributing code to the package. Any tests that you can write to verify the integrity of your feature will be included as part of the build procedure for releasing official versions of `glatos`. Add them in a subfolder called `tests\myfeature` where myfeature is the name of your feature. For testing, the R package [testthat](https://cran.r-project.org/web/packages/testthat/testthat.pdf) is a good starting point.
+In the near future, testing will be an important part of contributing code to the package. Any tests that you can write to verify the integrity of your feature will be included as part of the build procedure for releasing official versions of `glatos`. Add them in a subfolder called `tests\myfeature` where myfeature is the name of your feature. For testing, the R package [testthat](https://cran.r-project.org/web/packages/testthat/testthat.pdf) is a good starting point.
 
  Documentation is done using the [roxygen](https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html) package and associated notation, so annotating your feature's functions in that way will be most helpful for integration purposes.
 
 ## Method 2: The 'Wishing Well' Method
 
-If all that sounded quite complicated, and you'd like to see a feature added to the package, but can only describe it in plain English and not in a sweet, sweet .R file full of declarative statements and function calls, then create an [Issue](https://gitlab.oceantrack.org/GreatLakes/glatos/issues), describe what you'd like to see in the new feature, and assign it the Feature Request label. From there, any member of the community could pounce on your idea, assign it to themselves, write and commit it and claim ~~all~~ an appropriate amount of the credit. 
+If all that sounded quite complicated, and you'd like to see a feature added to the package, but can only describe it in plain English and not in a sweet, sweet .R file full of declarative statements and function calls, then create an [Issue](https://github.com/ocean-tracking-network/glatos/issues), describe what you'd like to see in the new feature, and assign it the Feature Request label. From there, any member of the community could pounce on your idea, assign it to themselves, write and commit it and claim ~~all~~ an appropriate amount of the credit. 
 
 
 In either contribution paradigm, providing supporting literature for the analysis methods you propose should be prioritized. Everyone likes to see their name in a references list, and collaborative analysis packages can be a great way to get some sunshine on that analysis method you really like.

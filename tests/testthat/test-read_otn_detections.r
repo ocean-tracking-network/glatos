@@ -1,9 +1,11 @@
 context("Check read_otn_detections")
 
 # Actual result
-#get path to example detection file
+# get path to example detection file
 bsd_file <- system.file("extdata",
-  "blue_shark_detections.csv", package = "glatos")
+  "blue_shark_detections.csv",
+  package = "glatos"
+)
 
 bsd <- read_otn_detections(bsd_file)
 

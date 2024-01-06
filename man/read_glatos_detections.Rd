@@ -10,13 +10,14 @@ read_glatos_detections(det_file, version = NULL)
 \item{det_file}{A character string with path and name of detection file in
 standard GLATOS format (*.csv). If only file name is given, then the file
 must be located in the working directory. File must be a standard GLATOS
-file (e.g., \emph{xxxxx_detectionsWithLocs_yyyymmdd_hhmmss.csv}) submitted
-via GLATOSWeb Data Portal \url{http://glatos.glos.us}.}
+file (e.g., \emph{xxxxx_detectionsWithLocs_yyyymmdd_hhmmss.csv}) submitted via
+GLATOSWeb Data Portal \url{https://glatos.glos.us}.}
 
 \item{version}{An optional character string with the glatos file version
 number. If NULL (default value) then version will be determined by
-evaluating file structure. The only allowed values currently are
-\code{NULL} and \code{"1.3"}. Any other values will trigger an error.}
+evaluating file structure. The only allowed values currently are \code{NULL},
+\code{"1.3"}, and \code{"1.4"}. Any other values will trigger an error. Users should
+never need to set this argument (\code{NULL} should work).}
 }
 \value{
 A data.frame of class \code{glatos_detections}.
@@ -26,24 +27,25 @@ Read data from a standard GLATOS detection (csv) file and return
 a data.frame of class \code{glatos_detections}.
 }
 \details{
-Data are loaded using \link[data.table]{fread} and timestamps are coerced to
-POSIXct using \link[fasttime]{fastPOSIXct}. All times must be in UTC timezone
-per GLATOS standard.
+Data are loaded using \link[data.table:fread]{fread} and timestamps are
+coerced to POSIXct using \link[fasttime:fastPOSIXct]{fastPOSIXct}. All times must
+be in UTC timezone per GLATOS standard.
 
-Column \code{animal_id} is considered a required column by many
-  other functions in this package, so it will be created if any records are
-  \code{NULL}. When created, it will be constructed from
-  \code{transmitter_codespace} and \code{transmitter_id}, separated by '-'.
+Column \code{animal_id} is considered a required column by many other
+functions in this package, so it will be created if any records are \code{NULL}.
+When created, it will be constructed from \code{transmitter_codespace} and
+\code{transmitter_id}, separated by '-'.
 }
 \examples{
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
-                         
-#note that code above is needed to find the example file
-#for real glatos data, use something like below
-#det_file <- "c:/path_to_file/HECWL_detectionsWithLocs_20150321_132242.csv"           
-                         
+  package = "glatos"
+)
+
+# note that code above is needed to find the example file
+# for real glatos data, use something like below
+# det_file <- "c:/path_to_file/HECWL_detectionsWithLocs_20150321_132242.csv"
+
 det <- read_glatos_detections(det_file)
 
 }

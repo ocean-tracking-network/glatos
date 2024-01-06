@@ -18,7 +18,7 @@ kml_workbook(
 )
 }
 \arguments{
-\item{wb}{A \code{glatos_workbook} object created by 
+\item{wb}{A \code{glatos_workbook} object created by
 \link{read_glatos_workbook}.}
 
 \item{wb_file}{A character string with path and name of workbook in standard
@@ -34,63 +34,66 @@ Portal \url{http://glatos.glos.us}.}
 \item{kmz}{logical; If TRUE, a KMZ file (zipped KML file) will
 be created. Default value is FALSE.}
 
-\item{show_ongoing_recs}{Indicates if ongoing stations 
+\item{show_ongoing_recs}{Indicates if ongoing stations
 (missing recovery timestamp) should be included in result.}
 
-\item{end_date}{End date (e.g. "YYYY-MM-DD") to be used for any ongoing 
+\item{end_date}{End date (e.g. "YYYY-MM-DD") to be used for any ongoing
 stations (if showOngoing == T). Defaults to current system time.}
 
 \item{out_file}{File name (path optional) of output file. If path not
-specified then file will be written to working directory. Extension 
-is not checked against \code{kmz}. Required if \code{wb_file} is NULL. 
+specified then file will be written to working directory. Extension
+is not checked against \code{kmz}. Required if \code{wb_file} is NULL.
 If not specified and \code{wb_file} is given, then file will be written
 to file with name matching \code{wb_file}.}
 
 \item{wb_version}{An optional character string with the workbook version
-number. Passed to \link{read_glatos_workbook} when input is 
+number. Passed to \link{read_glatos_workbook} when input is
 \code{wb_file}.}
 
-\item{...}{optional arguments that influence kml/kmz features. Curently 
+\item{...}{optional arguments that influence kml/kmz features. Curently
 only two options:
 \describe{
-  \item{\code{labelSize}}{A numeric scalar with the size of placemark labels 
-    (only shown when placemark is highlighted by user).}
-  \item{\code{iconSize}}{A numeric scalar with the size of placemark icons.}
+\item{\code{labelSize}}{A numeric scalar with the size of placemark labels
+(only shown when placemark is highlighted by user).}
+\item{\code{iconSize}}{A numeric scalar with the size of placemark icons.}
 }}
 }
 \value{
-A KML (and optionally, KMZ) file, written to the directory that 
-  contains the input GLATOS workbook, or \code{out_file} otherwise. 
-  Path to output file is returned.
+A KML (and optionally, KMZ) file, written to the directory that
+contains the input GLATOS workbook, or \code{out_file} otherwise.
+Path to output file is returned.
 }
 \description{
-Convert standard GLATOS receiver location and animal release data to a 
-KML (or optionally KMZ) file (e.g., for viewing in Google Earth). 
+Convert standard GLATOS receiver location and animal release data to a
+KML (or optionally KMZ) file (e.g., for viewing in Google Earth).
 (NOTE: EARLY DEVELOPMENT VERSION).
 }
 \details{
-Receiver locations will be visible between deployment and recovery 
-timestamps at each location. Release locations will be displayed when the 
+Receiver locations will be visible between deployment and recovery
+timestamps at each location. Release locations will be displayed when the
 display window includes the date of release.
 }
 \examples{
-
 \dontrun{
-#get path to example GLATOS Data Workbook
-wb_file <- system.file("extdata", 
-"walleye_workbook.xlsm", package = "glatos")
+# get path to example GLATOS Data Workbook
+wb_file <- system.file("extdata",
+  "walleye_workbook.xlsm",
+  package = "glatos"
+)
 
-#read workbook directly
+# read workbook directly
 kml_workbook(wb_file = wb_file)
 
-#now with bigger label and point and out_file
-kml_workbook(wb_file = wb_file, labelSize = 20, iconSize = 1, 
-  out_file = "bigger.kml")
+# now with bigger label and point and out_file
+kml_workbook(
+  wb_file = wb_file, labelSize = 20, iconSize = 1,
+  out_file = "bigger.kml"
+)
 
-#read workbook directly; output kmz
+# read workbook directly; output kmz
 kml_workbook(wb_file = wb_file, kmz = TRUE)
 
-#get path to example GLATOS Data Workbook
+# get path to example GLATOS Data Workbook
 wb <- read_glatos_workbook(wb_file)
 kml_workbook(wb = wb, kmz = TRUE, out_file = "bigger.kmz")
 }

@@ -10,8 +10,8 @@ read_glatos_workbook(wb_file, read_all = FALSE, wb_version = NULL)
 \item{wb_file}{A character string with path and name of workbook in standard
 GLATOS format (*.xlsm). If only file name is given, then the file must be
 located in the working directory. File must be a standard GLATOS file
-(e.g., \emph{xxxxx_GLATOS_YYYYMMDD.xlsm}) submitted via GLATOSWeb Data
-Portal \url{http://glatos.glos.us}.}
+(e.g., \emph{xxxxx_GLATOS_YYYYMMDD.xlsm}) submitted via GLATOSWeb Data Portal
+\url{http://glatos.glos.us}.}
 
 \item{read_all}{If TRUE, then all columns and sheets (e.g., user-created
 "project-specific" columns or sheets) in the workbook will be imported. If
@@ -25,87 +25,81 @@ evaluating workbook structure. Currently, the only allowed values are
 }
 \value{
 A list of class \code{glatos_workbook} with three elements (described
-  below) containing data from the standard GLATOS Workbook sheets. If
-  \code{read_all = TRUE}, then additional elements will be added with names
-  corresponding to non-standard sheet names. 
+below) containing data from the standard GLATOS Workbook sheets. If
+\code{read_all = TRUE}, then additional elements will be added with names
+corresponding to non-standard sheet names.
 \describe{
-  \item{metadata}{A list with data about the project and workbook.}
-  \item{animals}{A data frame of class \code{glatos_animals} with data about
-  tagged animals.} 
-  \item{receivers}{A data frame of class \code{glatos_receivers} with data
-  about telemetry receivers.}
+\item{metadata}{A list with data about the project and workbook.}
+\item{animals}{A data frame of class \code{glatos_animals} with data about
+tagged animals.}
+\item{receivers}{A data frame of class \code{glatos_receivers} with data
+about telemetry receivers.}
 }
 }
 \description{
-Read data from a GLATOS project workbook (xlsm file) and return a list of
-class \code{glatos_workbook}.
+Read data from a GLATOS project workbook (xlsm or xlsx file) and return a
+list of class \code{glatos_workbook}.
 }
 \details{
 In the standard glatos workbook (v1.3), data in workbook sheets
-  'Deployment', 'Recovery', and 'Location' are merged on columns
-  'GLATOS_PROJECT', 'GLATOS_ARRAY', 'STATION_NO', 'CONSECUTIVE_DEPLOY_NO',
-  AND 'INS_SERIAL_NO' to produce the output data frame \code{receivers}. Data
-  in workbook sheets 'Project' and 'Tagging' are passed through to new data
-  frames named 'project' and 'animals', respectively, and data from workbook
-  sheet 'Proposed' is not included in result. If \code{read_all = TRUE} then
-  each sheet in workbook will be included in result.
+'Deployment', 'Recovery', and 'Location' are merged on columns
+'GLATOS_PROJECT', 'GLATOS_ARRAY', 'STATION_NO', 'CONSECUTIVE_DEPLOY_NO',
+AND 'INS_SERIAL_NO' to produce the output data frame \code{receivers}. Data in
+workbook sheets 'Project' and 'Tagging' are passed through to new data
+frames named 'project' and 'animals', respectively, and data from workbook
+sheet 'Proposed' is not included in result. If \code{read_all = TRUE} then each
+sheet in workbook will be included in result.
 
 Data are read from the input file using
-  \link[openxlsx]{readWorkbook} in the package 'openxlsx' package. If
-  \code{read_all = TRUE} then the type of data in each user-defined column
-  (and sheet) will be 'guessed' by \link[openxlsx]{readWorkbook}. Therefore,
-  if \code{read_all = TRUE} then the structure of those columnns should be
-  carefully reviewed in the result. See \link[openxlsx]{readWorkbook} for
-  details.
+\link[readxl:read_excel]{read_excel} in the 'readxl' package. If \code{read_all = TRUE} then the type of data in each user-defined column (and sheet) will be
+'guessed' by \link[readxl:read_excel]{read_excel}. Therefore, if \code{read_all = TRUE} then the structure of those columnns should be carefully reviewed in
+the result. See \link[readxl:read_excel]{read_excel} for details.
 
-Column \code{animal_id} is considered a required column by many
-  other functions in this package, so it will be created if any records are
-  \code{NULL}. When created, it will be constructed from \code{tag_code_space}
-  and \code{tag_id_code}, separated by '-'.
+Column \code{animal_id} is considered a required column by many other
+functions in this package, so it will be created if any records are \code{NULL}.
+When created, it will be constructed from \code{tag_code_space} and
+\code{tag_id_code}, separated by '-'.
 
-Timezone attribute of all timestamp columns (class \code{POSIXct})
-  in output will be "UTC" and all 'glatos-specific' timestamp and timezone
-  columns will be omitted from result.
+Timezone attribute of all timestamp columns (class \code{POSIXct}) in
+output will be "UTC" and all 'glatos-specific' timestamp and timezone
+columns will be omitted from result.
 }
 \note{
-\strong{\emph{On warnings and errors about date and timestamp
-  formats.}} Date and time columns are sometimes stored as text in Excel.
-  When those records are loaded by this function, there are two possible
-  outcomes. \cr
-  \cr
-  1. If the records are formatted according to the GLATOS Data Dictionary
-  specification (e.g., "YYYY-MM-DD" for dates and "YYYY-MM-DD HH:MM" for
-  timestamps; see \url{https:\\glatos.glos.us}) those records should be
-  properly loaded into R, but the user is encouraged to verify that they were
-  loaded correctly, so a warning points the user to those records in the
-  workbook. Users may want to format as custom date in the workbook to avoid
-  warnings in the future. \cr
-  \cr
-  2. If the format of a date-as-text column is not consistent with GLATOS
-  specification, then no data will be loaded and an error will alert the user
-  to this condition. \cr
-  \cr
-  \strong{\emph{On cells with locked formatting in Excel:}} Occasionally the
-  format of a cell in Excel will be locked. In those cases, it is sometimes
-  possible to force date formatting in Excel by (1) highlighting the columns
-  that need reformatting, (2) select 'Text-to-columns' in the 'Data' menu,
-  (3) select 'Delimited' and 'next', (4) uncheck all delimiters and 'next',
-  (5) choose 'Date: YMD' in the 'Column data format' box, and (6) 'Finish'.
+\emph{\strong{On warnings and errors about date and timestamp formats.}} Date and
+time columns are sometimes stored as text in Excel. When those records are
+loaded by this function, there are two possible outcomes. \cr \cr 1. If the
+records are formatted according to the GLATOS Data Dictionary specification
+(e.g., "YYYY-MM-DD" for dates and "YYYY-MM-DD HH:MM" for timestamps; see
+\url{https:\\\\glatos.glos.us}) those records should be properly loaded into R,
+but the user is encouraged to verify that they were loaded correctly, so a
+warning points the user to those records in the workbook. Users may want to
+format as custom date in the workbook to avoid warnings in the future. \cr
+\cr 2. If the format of a date-as-text column is not consistent with GLATOS
+specification, then no data will be loaded and an error will alert the user
+to this condition. \cr \cr
+\emph{\strong{On cells with locked formatting in Excel:}} Occasionally the
+format of a cell in Excel will be locked. In those cases, it is sometimes
+possible to force date formatting in Excel by (1) highlighting the columns
+that need reformatting, (2) select 'Text-to-columns' in the 'Data' menu,
+(3) select 'Delimited' and 'next', (4) uncheck all delimiters and 'next',
+(5) choose 'Date: YMD' in the 'Column data format' box, and (6) 'Finish'.
 }
 \examples{
-#get path to example GLATOS Data Workbook
-wb_file <- system.file("extdata", 
-  "walleye_workbook.xlsm", package = "glatos")
-  
-#note that code above is needed to find the example file
-#for real glatos data, use something like below
-#wb_file <- "c:/path_to_file/HECWL_GLATOS_20150321.csv"
-  
+# get path to example GLATOS Data Workbook
+wb_file <- system.file("extdata",
+  "walleye_workbook.xlsm",
+  package = "glatos"
+)
+
+# note that code above is needed to find the example file
+# for real glatos data, use something like below
+# wb_file <- "c:/path_to_file/HECWL_GLATOS_20150321.csv"
+
 wb <- read_glatos_workbook(wb_file)
 
 }
 \seealso{
-\link[openxlsx]{readWorkbook}
+\link[readxl:read_excel]{read_excel}
 }
 \author{
 C. Holbrook \email{cholbrook@usgs.gov}

@@ -7,16 +7,16 @@
 glatos_workbook(x)
 }
 \arguments{
-\item{x}{A list containing data from a standard GLATOS data workbook 
+\item{x}{A list containing data from a standard GLATOS data workbook
 (*.xlsm) file.}
 }
 \value{
 A list of class \code{glatos_workbook} created from a standard GLATOS
-  data workbook (*.xlsm) file with three elements:
+data workbook (*.xlsm) file with three elements:
 \describe{
-  \item{metadata}{A list with data about the project.}
-  \item{animals}{A data frame with data about tagged animals.}
-  \item{receivers}{A data frame with data about receivers.}
+\item{metadata}{A list with data about the project.}
+\item{animals}{A data frame with data about tagged animals.}
+\item{receivers}{A data frame with data about receivers.}
 }
 }
 \description{
@@ -24,7 +24,7 @@ Constructor function for the class glatos_workbook.
 Currently barebones and only used inside read_glatos_workbook.
 }
 \note{
-This function may be developed in the future to dictate conversion 
+This function may be developed in the future to dictate conversion
 constuction from a data frame.
 }
 \keyword{internal}

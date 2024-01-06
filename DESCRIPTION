@@ -1,17 +1,18 @@
 Package: glatos
 Type: Package
 Title: A package for the Great Lakes Acoustic Telemetry Observation System
-Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System www.glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
-Version: 0.5.1
-Date: 2021-11-09
-Depends: R (>= 3.2.0)
+Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System https://glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
+Version: 0.8.0.9000
+Date: 2024-01-04
+Depends: R (>= 3.5.0)
 Imports:
 		av,
-		cellranger,
-		data.table,		
+		data.table,
+		dplyr,
 		fasterize,
 		fasttime,
-		gdalUtils,
+		gdalUtilities,
+		geodist,
 		gdistance,
 		geosphere,
 		jsonlite,
@@ -19,29 +20,23 @@ Imports:
 		lubridate,
 		magrittr,
 		methods,
-		openxlsx (>= 4.0.0),
-		PBSmapping,
 		plotrix,
-		plotly,
-		plyr,
 		purrr,
 		raster,
 		readxl,
-		rgdal,
-		rgeos,
+		rmarkdown,
 		sf,
 		sp,
 		tibble,
 		tidyr
 Suggests: 
 		gganimate,
-		gifsky,
-		GISTools,
+		gifski,
 		png,
-    rmarkdown,
+    testthat (>= 3.0.0),
 		tint
-URL: https://gitlab.oceantrack.org/GreatLakes/glatos
-BugReports: https://gitlab.oceantrack.org/GreatLakes/glatos/issues
+URL: https://github.com/ocean-tracking-network/glatos
+BugReports: https://github.com/ocean-tracking-network/glatos/issues
 Authors@R: c(
     person("Christopher", "Holbrook", email = "cholbrook@usgs.gov",
 			role = c("cre", "aut")),
@@ -54,6 +49,8 @@ Authors@R: c(
 License: GPL-2
 LazyLoad: yes
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3

@@ -1,3 +1,254 @@
+
+# glatos 0.8.0 (dev)
+
+
+### Bug fixes
+
+- Fix typo in Description to Suggest 'gifski' (not 'gifsky'). 
+    - fixes [issue #185](https://github.com/ocean-tracking-network/glatos/issues/185)
+
+
+### New features
+
+#### 2023-08-30
+
+- Add new functions to create, check, and validate `glatos_animals` objects:
+    - `glatos_animals()` to construct a `glatos_animals` object from
+      individual vectors (one for each column) and optionally check for required
+      column names and classes using `validate_glatos_animals()`. 
+    - `as_glatos_animals()` to coerce a data.frame, or object that
+      inherits from data.frame, to `glatos_animals` and optionally check for
+      required column names and classes using `validate_glatos_animals()`.
+    - `is_glatos_animals()` to check class attribute for `"glatos_animals"`.
+    - `validate_glatos_animals()` to check for existence of required column 
+      names and classes.
+      
+- Add new functions to create, check, and validate `glatos_detections` objects:
+    - `glatos_detections()` to construct a `glatos_detections` object from
+      individual vectors (one for each column) and optionally check for required
+      column names and classes using `validate_glatos_detections()`. 
+    - `as_glatos_detections()` to coerce a data.frame, or object that
+      inherits from data.frame, to `glatos_detections` and optionally check for
+      required column names and classes using `validate_glatos_detections()`.
+    - `is_glatos_detections()` to check class attribute for `"glatos_detections"`.
+    - `validate_glatos_detections()` to check for existence of required column 
+      names and classes.
+
+- Add new functions to create, check, and validate `glatos_recievers` objects:
+    - `glatos_receivers()` to construct a `glatos_receivers` object from
+      individual vectors (one for each column) and optionally check for required
+      column names and classes using `validate_glatos_receivers()`. 
+    - `as_glatos_receivers()` to coerce a data.frame, or object that
+      inherits from data.frame, to `glatos_receivers` and optionally check for
+      required column names and classes using `validate_glatos_receivers()`.
+    - `is_glatos_receivers()` to check class attribute for `"glatos_receivers"`.
+    - `validate_glatos_receivers()` to check for existence of required column 
+      names and classes.
+
+- Add new function `vue_convert()` to convert VRL file to CSV file (detection
+  records only; receiver event log records are not supported). 
+    - replaces `vrl2csv()` (deprecated).
+    
+- Add new function `vdat_convert()` to convert VRL or VDAT files to 
+  Fathom/VDAT CSV. 
+  
+- Add new functions for reading data exported from VRL with VUE software.
+    - `read_vue_detection_csv()` to read data from detection file exported 
+    from VUE or created using `vue_convert()` or `vrl2csv()`.
+    - `read_vue_event_csv()` to read data from receiver event log file exported 
+    from VUE.
+  
+- Add new function `read_vdat_csv()` to read data exported from VRL or VDAT 
+  using VDAT.exe (e.g., using `vdat_convert()`).
+
+
+----
+
+# glatos 0.7.0 (2024-01-04)
+
+
+### Bug fixes and minor changes
+
+- Remove dependence on `rgeos` and `rgdal`.
+
+- This package now requires R >= 3.5.0 because serialized objects in
+     serialize/load version 3 cannot be read in older versions of R.
+     File(s) containing such objects:
+       'glatos/inst/testdata/flynn_island_transition.rds'
+       'glatos/inst/testdata/higgins_lake_transition.rds'
+       'glatos/inst/testdata/test-detect_transmissions-dtc_spout.rds'
+       'glatos/inst/testdata/test-transmit_along_path-tr_dfin_spout.rds'
+       
+- Deprecate `make_transition` and `make_transition2`; suggest `make_transition3` 
+  instead.
+
+- Deprecate data object `greatLakesPoly`; suggest `great_lakes_polygon` 
+  instead.
+
+- `prepare_deploy_sheet`: 
+    - Set 'skip = header_line - 1' and 'col_names = TRUE' to retain first 
+      record and column names (read_excel ignores column names, unless set, 
+      when skip is set).
+    - Fix non-working example code.
+
+- `convert_otn_to_att` and `convert_otn_erddap_to_att`:
+    - Replaced `sp::CRS` with `sf::st_crs`
+    - Changed link (URL) to relevant issue from GitLab to GitHub repo.
+
+- Remove ffmpeg functions.
+    - make defunct: 
+        - `check_dependencies`
+        - `install_ffmpeg`
+        - `make_video_ffmpeg`
+
+- Fix issues with several tests caused by changes to CRS/WKT and row.names 
+  attributes.
+    
+
+----
+
+# glatos 0.6.5 (2023-09-07)
+
+### Bug fixes 
+
+- Fix bug in summarize_detections() where setting 'location_col' triggers error.
+    - fixes [issue #180](https://github.com/ocean-tracking-network/glatos/issues/180)
+
+
+----
+
+# glatos 0.6.4 (2023-09-06)
+
+### Bug fixes and minor changes
+
+- Add support for new column named 'record_status' in GLATOS detection export CSV.
+    - Add new glatos detection schema version 1.4 (developer use)
+    - fix [issue #179](https://github.com/ocean-tracking-network/glatos/issues/179)
+
+
+----
+
+# glatos 0.6.3 (2023-01-25)
+
+### Bug fixes and minor changes
+
+- Add support for new GLATOS receiver_locations file format; with code_map and 
+code_map_comment columns.
+    - fix [issue #177](https://github.com/ocean-tracking-network/glatos/issues/177)
+
+
+----
+
+# glatos 0.6.2 (2022-10-25)
+
+### Bug fixes and minor changes
+
+- Fix error in `position_heat_map()` function resulting in `Error in 
+zip_internal... Some files do not exist`. Update documentation.
+
+
+----
+
+# glatos 0.6.1
+
+#### 2022-10-11
+
+### Minor changes
+
+- Allow `sf` `MUTLIPOLYGON` geometry type for input `polyg` to `crw_in_polygon()`.
+    
+- Use new function `check_cross_boundary()` instead of `check_in_polygon` to prevent paths crossing land (e.g., over peninsulas) in `crw_in_polygon()`.
+
+----
+
+# glatos 0.6.0
+
+#### 2022-06-24
+
+### Breaking changes
+
+- crw_in_polygon
+    - replace input arg 'EPSG' with 'inputCRS' and 'cartesianCRS'
+    - unlike previous versions, input polygon ('polyg') must now be in 
+      Cartesian (projected) coordinate reference system or 'cartesianCRS' must 
+      be specified (there is no default).
+    - remove dependence on sp
+	  - improve speed
+	  - return sf object (default) or data.frame
+	  
+- transmit_along_path
+    - remove dependence on sp
+    - return sf object (default) or data.frame
+    - calculate distances along path using geodist::geodist for geographic and 
+      simple Euclidean for Cartesian coordinates. Cartesian input results in 
+      fastest computations.
+    - remove EPSG input (no longer requires transformation to Cartesian CRS for 
+      calculations); but non-Cartesian input will be slower than Cartesian.
+    - add pathCRS input arg for non-spatial inputs
+    - change name of column 'et' in output to 'time'.
+    - add input arg "colNames" for non-default coordinate column name 
+      specification.
+      
+- detect_transmissions
+    - remove dependence on sp
+    - return sf object (default) or data.frame
+    - calculate distances along path using geodist::geodist for geographic and 
+      simple Euclidean for Cartesian coordinates. Cartesian input results in 
+      fastest computations.
+    - remove EPSG input (no longer requires transformation to Cartesian CRS for 
+      calculations); but non-Cartesian input will be slower than Cartesian.
+    - add inputCRS input arg for non-spatial inputs
+    - change name of column 'et' in output to 'time'.
+    - add input arg "colNames" for non-default coordinate column name 
+      specification.    
+
+### Bug fixes and minor changes
+
+- position_heat_map
+    - fix [issue #159](https://github.com/ocean-tracking-network/glatos/issues/159)
+      where kmz output worked on mac but not windows
+    - fix [issue #123](https://github.com/ocean-tracking-network/glatos/issues/123)
+      when input positions object was data.table.
+
+- remove dependence on PBSmapping
+    - replace calls to PBSmapping::convUL with local functions 
+      lonlat_to_utm and utm_to_lonlat
+
+- remove dependence on gdalUtils
+    - use gdalUtilities::gdal_rasterize instead of gdalUtils::gdal_rasterize
+    - fix [issue #174](https://github.com/ocean-tracking-network/glatos/issues/174#)
+    - removed gdalUtils dependency from DESCRIPTION and added gdalUtilities
+
+- changes to kml_to_csv
+    - read data from kml with sf::read_sf instead of rgdal::readOGR
+    - allow multiple feature types to be read from kml
+    - change export format from separate csv files to a single csv file
+    - add feature name and type to output file
+
+- fix 'greatLakesPoly' CRS to resolve warning: "CRS object has no comment"
+
+- added example data 'great_lakes_polygon'; an sf POLYGON version of 
+  'greatLakesPoly' (a SpatialPolygonsDataFrame)
+	  
+
+----
+
+# glatos 0.5.2
+
+#### 2021-12-10
+
+### Bug fixes and minor changes
+
+- read_glatos_workbook
+    - use readr::readexcel instead of openxlsx to read xlsm file
+    - fix [issue #138](https://github.com/ocean-tracking-network/glatos/issues/138#)
+
+- removed openxlsx and cellranger dependencies from DESCRIPTION
+
+- fix issue preventing vignettes from building when installed (missing space in data_loading_vignette.Rmd).
+
+
+
 ----
 
 # glatos 0.5.1
