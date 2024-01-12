@@ -1,5 +1,3 @@
-context("Check make_frames")
-
 # make example records
 pos1 <- structure(list(
   animal_id = c("153", "153", "153", "153"),
@@ -18,25 +16,33 @@ pos1 <- structure(list(
   )
 ), row.names = 4:7, class = "data.frame")
 
-# make preview image
 temp_dir <- tempdir()
-make_frames(pos1, out_dir = temp_dir, preview = TRUE)
-
-# Actual file sizes
-img_file <- file.path(temp_dir, "1.png")
-img_size <- file.info(img_file)$size
-
-# Expected file sizes
-size_should_be <- 30919
-
-# Clean up
-unlink(list.files(temp_dir,
-  full.names = TRUE, recursive = TRUE,
-  include.dirs = TRUE
-), recursive = TRUE)
 
 # Testing file size results
 test_that("making preview image expected result", {
+  # make preview image
+  expect_message(
+    make_frames(pos1, out_dir = temp_dir, preview = TRUE),
+    'Preview frames written to'
+  )
+
   # Check if expected and actual file sizes
-  expect_equal(img_size, size_should_be)
+  expect_equal(
+    file.size(
+      file.path(temp_dir, "1.png")
+    ),
+    30919
+  )
 })
+
+# Clean up
+unlink(
+  list.files(
+    temp_dir,
+    full.names = TRUE,
+    recursive = TRUE,
+    include.dirs = TRUE
+  ), recursive = TRUE
+)
+
+
