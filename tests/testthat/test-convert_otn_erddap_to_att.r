@@ -66,42 +66,46 @@ test_that("matches internal data: blue_shark_erddap_att", {
 })
 
 
-test_that('matches type/class of internal data: blue_shark_erddap_att', {
+test_that("matches type/class of internal data: blue_shark_erddap_att", {
   bs_att <- convert_otn_erddap_to_att(
     blue_shark_detections,
     tags, stations, animals
   )
 
-  expect_s3_class(bs_att, 'ATT')
-  expect_type(bs_att, 'list')
+  expect_s3_class(bs_att, "ATT")
+  expect_type(bs_att, "list")
 })
 
 
 
 # Test non-exported concat_list_strings function
-test_that('internal function concat_list_strings works',{
+test_that("internal function concat_list_strings works", {
   expect_no_error(
-    concat_list_strings(blue_shark_detections$transmitter_codespace,
-                        blue_shark_detections$transmitter_id)
+    concat_list_strings(
+      blue_shark_detections$transmitter_codespace,
+      blue_shark_detections$transmitter_id
+    )
   )
 })
 
-test_that('internal function concat_list_strings errors with unequal length',{
+test_that("internal function concat_list_strings errors with unequal length", {
   expect_error(
-    concat_list_strings(blue_shark_detections$transmitter_codespace[1:10],
-                        blue_shark_detections$transmitter_id),
-    'Lists are not the same size.'
+    concat_list_strings(
+      blue_shark_detections$transmitter_codespace[1:10],
+      blue_shark_detections$transmitter_id
+    ),
+    "Lists are not the same size."
   )
 })
 
 
 
 # Test non-exported extract_station function
-test_that('internal function extract_station works', {
+test_that("internal function extract_station works", {
   expect_no_error(
     station_extracted <- extract_station(stations$receiver_reference_id[1])
   )
 
   expect_length(station_extracted, 1)
-  expect_type(station_extracted, 'character')
+  expect_type(station_extracted, "character")
 })

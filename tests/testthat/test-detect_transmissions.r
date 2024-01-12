@@ -1,7 +1,7 @@
 # spatial transmission output
 tr_sf <- readRDS(
   test_path(
-    'testdata',
+    "testdata",
     "transmit_along_path-tr_dfin_spout.rds"
   )
 )
@@ -76,7 +76,8 @@ test_that("spatial input, data.frame output gives expected result", {
       recLoc = recs_sf,
       detRngFun = function(x) 0.5,
       sp_out = FALSE,
-      show_progress = FALSE)
+      show_progress = FALSE
+    )
   )
 })
 
@@ -97,4 +98,3 @@ test_that("spatial input, spatial output gives expected result", {
     )
   )
 })
-

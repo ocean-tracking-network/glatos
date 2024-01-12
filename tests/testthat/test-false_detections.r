@@ -1,7 +1,6 @@
-
 # Testing column that data.frame input returns expected
 test_that("data.frame input gives expected result", {
-  df_test <- walleye_detections[129:138,]
+  df_test <- walleye_detections[129:138, ]
 
   # Check if expected and actual results are the same
   expect_snapshot(
@@ -14,7 +13,7 @@ test_that("data.frame input gives expected result", {
 
 # Testing column that data.frame input returns expected
 test_that("data.table input gives expected result", {
-  dt_test <- data.table::as.data.table(walleye_detections[129:138,])
+  dt_test <- data.table::as.data.table(walleye_detections[129:138, ])
 
   # Check if expected and actual results are the same
   expect_snapshot(
@@ -27,7 +26,7 @@ test_that("data.table input gives expected result", {
 
 # Testing column that tibble input returns expected
 test_that("tibble input gives expected result", {
-  tbl_test <- tibble::as_tibble(walleye_detections[129:138,])
+  tbl_test <- tibble::as_tibble(walleye_detections[129:138, ])
 
   # Check if expected and actual results are the same
   expect_snapshot(

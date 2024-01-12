@@ -87,10 +87,9 @@ test_that("input/output with space/parenth gives expected result", {
 # Clean up
 unlink(
   list.files(temp_dir,
-             full.names = TRUE,
-             recursive = TRUE,
-             include.dirs = TRUE
+    full.names = TRUE,
+    recursive = TRUE,
+    include.dirs = TRUE
   ),
   recursive = TRUE
 )
-
