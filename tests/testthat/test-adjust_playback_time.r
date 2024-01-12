@@ -1,5 +1,3 @@
-context("Check adjust_playback_time")
-
 # load example frames
 frames <- system.file("extdata", "frames", package = "glatos")
 
