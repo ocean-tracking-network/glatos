@@ -1,5 +1,3 @@
-context("Check convert_otn_erddap_to_att")
-
 # check against internal data object 'blue_shark_att' in R/sysdata.r
 
 # Actual result
@@ -35,16 +33,38 @@ animals <- animals[-1, ]
 tags <- tags[-1, ]
 stations <- stations[-1, ]
 
-# create ATT object
-bs_att <- convert_otn_erddap_to_att(
-  blue_shark_detections,
-  tags, stations, animals
-)
+
 
 
 
 # Test using testthat library
-test_that("blue_shark_erddap_att gives expected result", {
+test_that("matches internal data: blue_shark_erddap_att", {
+  # create ATT object
+  expect_no_error(
+    bs_att <- convert_otn_erddap_to_att(
+      blue_shark_detections,
+      tags, stations, animals
+    )
+  )
+
+  expect_output(
+    convert_otn_erddap_to_att(
+      blue_shark_detections,
+      tags, stations, animals
+    )
+  )
+
   # Check if expected and actual results are the same
-  expect_equal(bs_att, blue_shark_erddap_att)
+  expect_identical(bs_att, blue_shark_erddap_att)
+})
+
+
+test_that('matches type/class of internal data: blue_shark_erddap_att', {
+  bs_att <- convert_otn_erddap_to_att(
+    blue_shark_detections,
+    tags, stations, animals
+  )
+
+  expect_s3_class(bs_att, 'ATT')
+  expect_type(bs_att, 'list')
 })
