@@ -1,6 +1,4 @@
-context("Check read_glatos_workbook")
 
-# Actual result
 test_that("metadata element gives expected result", {
   wb_file <- system.file("extdata",
     "walleye_workbook.xlsm",
