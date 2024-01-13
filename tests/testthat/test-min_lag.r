@@ -28,40 +28,42 @@ test_that("min_lag column gives expected result", {
   expect_equal(minLagData$min_lag, minLagShouldBe)
 
   # Check that original data is untouched
-  expect_equal(minLagData[, 1:(ncol(minLagData) - 1)],
-               sampleMinLag)
+  expect_equal(
+    minLagData[, 1:(ncol(minLagData) - 1)],
+    sampleMinLag
+  )
 })
 
 
 # Test that min_lag returns input S3 class
-test_that('data.frame returns correct classes and types',{
+test_that("data.frame returns correct classes and types", {
   minLag_df <- min_lag(sampleMinLag)
   # Expected classes
-  expect_s3_class(minLag_df, 'data.frame')
-  expect_type(minLag_df$min_lag, 'double')
+  expect_s3_class(minLag_df, "data.frame")
+  expect_type(minLag_df$min_lag, "double")
 })
 
 
-test_that('data.table returns correct classes and types',{
+test_that("data.table returns correct classes and types", {
   minLag_dt <- min_lag(
     data.table::as.data.table(sampleMinLag)
   )
 
   # Expected classes
-  expect_s3_class(minLag_dt, 'data.table')
-  expect_s3_class(minLag_dt, 'data.frame')
-  expect_type(minLag_dt$min_lag, 'double')
+  expect_s3_class(minLag_dt, "data.table")
+  expect_s3_class(minLag_dt, "data.frame")
+  expect_type(minLag_dt$min_lag, "double")
 })
 
 
-test_that('tibble returns correct classes and types',{
+test_that("tibble returns correct classes and types", {
   minLag_tbl <- min_lag(
     tibble::as_tibble(sampleMinLag)
   )
 
   # Expected classes
-  expect_s3_class(minLag_tbl, 'tbl_df')
-  expect_s3_class(minLag_tbl, 'tbl')
-  expect_s3_class(minLag_tbl, 'data.frame')
-  expect_type(minLag_tbl$min_lag, 'double')
+  expect_s3_class(minLag_tbl, "tbl_df")
+  expect_s3_class(minLag_tbl, "tbl")
+  expect_s3_class(minLag_tbl, "data.frame")
+  expect_type(minLag_tbl$min_lag, "double")
 })
