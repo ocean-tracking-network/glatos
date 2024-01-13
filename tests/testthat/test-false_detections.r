@@ -1,4 +1,3 @@
-
 # Testing column that data.frame input returns expected
 test_that("data.frame input gives expected result", {
   df_in <- walleye_detections[129:138,]
@@ -31,6 +30,7 @@ test_that("data.frame input gives expected result", {
 
 # Testing column that data.frame input returns expected
 test_that("data.table input gives expected result", {
+
   dt_in <- data.table::as.data.table(walleye_detections[129:138,])
 
   expect_message(

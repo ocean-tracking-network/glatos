@@ -1,7 +1,7 @@
 # spatial transmission output
 tr_sf <- readRDS(
   test_path(
-    'testdata',
+    "testdata",
     "transmit_along_path-tr_dfin_spout.rds"
   )
 )
@@ -125,4 +125,3 @@ test_that("spatial input, spatial output gives expected result", {
     spin_spout
   )
 })
-

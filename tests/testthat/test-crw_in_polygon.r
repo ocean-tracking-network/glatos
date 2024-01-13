@@ -96,10 +96,10 @@ test_that("spatial input, spatial output gives expected result", {
 
 ##### TBD: TEST NON-EXPORTED FUNCTIONS ####
 # Test non-exported query_worms_common function
-test_that('internal function check_in_polygon', {
-  skip('Test needs to be created.')
+test_that("internal function check_in_polygon", {
+  skip("Test needs to be created.")
 })
 
-test_that('internal function check_cross_boundary', {
-  skip('Test needs to be created.')
+test_that("internal function check_cross_boundary", {
+  skip("Test needs to be created.")
 })
