@@ -18,13 +18,15 @@ test_that("full vps data set gives expected result", {
 
 
   # Check classes and names
-  expect_named(phm_full_input,
-               c("values", "utm_zone", "bbox_UTM", "bbox_LL", "function_call"))
-  expect_type(phm_full_input, 'list')
-  expect_type(phm_full_input$utm_zone, 'character')
-  expect_s3_class(phm_full_input$bbox_UTM, 'data.frame')
-  expect_s3_class(phm_full_input$bbox_LL, 'data.frame')
-  expect_type(phm_full_input$function_call, 'language')
+  expect_named(
+    phm_full_input,
+    c("values", "utm_zone", "bbox_UTM", "bbox_LL", "function_call")
+  )
+  expect_type(phm_full_input, "list")
+  expect_type(phm_full_input$utm_zone, "character")
+  expect_s3_class(phm_full_input$bbox_UTM, "data.frame")
+  expect_s3_class(phm_full_input$bbox_LL, "data.frame")
+  expect_type(phm_full_input$function_call, "language")
 })
 
 
@@ -50,13 +52,15 @@ test_that("data frame with min required columns gives expected result", {
   expect_equal(phm_reduced_input$values, phm_shouldBe)
 
   # Check classes and names
-  expect_named(phm_reduced_input,
-               c("values", "utm_zone", "bbox_UTM", "bbox_LL", "function_call"))
-  expect_type(phm_reduced_input, 'list')
-  expect_type(phm_reduced_input$utm_zone, 'character')
-  expect_s3_class(phm_reduced_input$bbox_UTM, 'data.frame')
-  expect_s3_class(phm_reduced_input$bbox_LL, 'data.frame')
-  expect_type(phm_reduced_input$function_call, 'language')
+  expect_named(
+    phm_reduced_input,
+    c("values", "utm_zone", "bbox_UTM", "bbox_LL", "function_call")
+  )
+  expect_type(phm_reduced_input, "list")
+  expect_type(phm_reduced_input$utm_zone, "character")
+  expect_s3_class(phm_reduced_input$bbox_UTM, "data.frame")
+  expect_s3_class(phm_reduced_input$bbox_LL, "data.frame")
+  expect_type(phm_reduced_input$function_call, "language")
 })
 
 
@@ -77,13 +81,15 @@ test_that("data.table input gives expected result", {
   expect_equal(phm_dt_input$values, phm_shouldBe)
 
   # Check classes and names
-  expect_named(phm_dt_input,
-               c("values", "utm_zone", "bbox_UTM", "bbox_LL", "function_call"))
-  expect_type(phm_dt_input, 'list')
-  expect_type(phm_dt_input$utm_zone, 'character')
-  expect_s3_class(phm_dt_input$bbox_UTM, 'data.frame')
-  expect_s3_class(phm_dt_input$bbox_LL, 'data.frame')
-  expect_type(phm_dt_input$function_call, 'language')
+  expect_named(
+    phm_dt_input,
+    c("values", "utm_zone", "bbox_UTM", "bbox_LL", "function_call")
+  )
+  expect_type(phm_dt_input, "list")
+  expect_type(phm_dt_input$utm_zone, "character")
+  expect_s3_class(phm_dt_input$bbox_UTM, "data.frame")
+  expect_s3_class(phm_dt_input$bbox_LL, "data.frame")
+  expect_type(phm_dt_input$function_call, "language")
 })
 
 
@@ -102,7 +108,7 @@ test_that("png output default name gives expected result", {
       output = "png",
       folder = temp_dir
     ),
-    'Output file is located in'
+    "Output file is located in"
   )
 
   expect_invisible(
@@ -154,7 +160,7 @@ test_that("png output custom name gives expected result", {
       folder = temp_dir,
       out_file = "mymap"
     ),
-    'Output file is located in'
+    "Output file is located in"
   )
 
   expect_invisible(
@@ -206,7 +212,7 @@ test_that("kmz output default name gives expected result", {
       output = "kmz",
       folder = temp_dir
     ),
-    'Output file is located in'
+    "Output file is located in"
   )
 
   expect_invisible(
@@ -260,7 +266,7 @@ test_that("kmz output custom name gives expected result", {
       folder = temp_dir,
       out_file = "mymap"
     ),
-    'Output file is located in'
+    "Output file is located in"
   )
 
   expect_invisible(

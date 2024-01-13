@@ -1,5 +1,5 @@
 # For test-position_head_map.r
-phm_values_known <- function(){
+phm_values_known <- function() {
   structure(c(
     43L, 20L, 23L, 19L, 21L, 19L, 25L,
     17L, 21L, 19L, 12L, 16L, 13L, 8L, 8L, 9L, 3L, 2L, 3L, 2L, 1L,
