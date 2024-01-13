@@ -1,8 +1,7 @@
 # data.frame input, spatial output gives expected result
 
     Code
-      detect_transmissions(trnsLoc = tr_df, recLoc = recs_df, detRngFun = function(x)
-        0.5, inputCRS = sf::st_crs(tr_sf), show_progress = FALSE)
+      dfin_spout
     Output
       Simple feature collection with 8 features and 3 fields
       Active geometry column: rec_geometry
@@ -23,8 +22,7 @@
 # data.frame input, data.frame output gives expected result
 
     Code
-      detect_transmissions(trnsLoc = tr_df, recLoc = recs_df, detRngFun = function(x)
-        0.5, inputCRS = 4326, sp_out = FALSE, show_progress = FALSE)
+      dfin_dfout
     Output
         trns_id rec_id  rec_x rec_y    trns_x   trns_y      time
       1       1      4 -87.65  48.6 -87.51364 48.44519  600.8733
@@ -39,8 +37,7 @@
 # spatial input, data.frame output gives expected result
 
     Code
-      detect_transmissions(trnsLoc = tr_sf, recLoc = recs_sf, detRngFun = function(x)
-        0.5, sp_out = FALSE, show_progress = FALSE)
+      spin_dfout
     Output
         trns_id rec_id  rec_x rec_y    trns_x   trns_y      time
       1       1      4 -87.65  48.6 -87.51364 48.44519  600.8733
@@ -55,8 +52,7 @@
 # spatial input, spatial output gives expected result
 
     Code
-      detect_transmissions(trnsLoc = tr_sf, recLoc = recs_sf, detRngFun = function(x)
-        0.5, show_progress = FALSE)
+      spin_spout
     Output
       Simple feature collection with 8 features and 3 fields
       Active geometry column: rec_geometry

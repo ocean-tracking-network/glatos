@@ -1,9 +1,7 @@
 # data.frame input gives expected result
 
     Code
-      false_detections(df_test, 3600)
-    Message
-      The filter identified 2 (20%) of 10 detections as potentially false.
+      df_result
     Output
           animal_id detection_timestamp_utc glatos_array station_no
       129       153     2012-05-23 02:54:19          SBI          1
@@ -86,9 +84,7 @@
 # data.table input gives expected result
 
     Code
-      false_detections(dt_test, 3600)
-    Message
-      The filter identified 2 (20%) of 10 detections as potentially false.
+      dt_result
     Output
           animal_id detection_timestamp_utc glatos_array station_no
              <char>                  <POSc>       <char>     <char>
@@ -178,9 +174,7 @@
 # tibble input gives expected result
 
     Code
-      false_detections(tbl_test, 3600)
-    Message
-      The filter identified 2 (20%) of 10 detections as potentially false.
+      tbl_result
     Output
       # A tibble: 10 x 31
          animal_id detection_timestamp_utc glatos_array station_no

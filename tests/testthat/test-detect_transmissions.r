@@ -33,15 +33,22 @@ test_that("data.frame input, spatial output gives expected result", {
 
   set.seed(33)
 
-  # Check if expected and actual results are the same
-  expect_snapshot(
-    detect_transmissions(
+  expect_s3_class(
+    dfin_spout <- detect_transmissions(
       trnsLoc = tr_df,
       recLoc = recs_df,
       detRngFun = function(x) 0.5,
       inputCRS = sf::st_crs(tr_sf),
       show_progress = FALSE
-    )
+    ),
+    'sf'
+  )
+
+  expect_equal(dim(dfin_spout), c(8, 5))
+
+  # Check if expected and actual results are the same
+  expect_snapshot(
+    dfin_spout
   )
 })
 
@@ -51,16 +58,23 @@ test_that("data.frame input, data.frame output gives expected result", {
 
   set.seed(33)
 
-  # Check if expected and actual results are the same
-  expect_snapshot(
-    detect_transmissions(
+  expect_s3_class(
+    dfin_dfout <- detect_transmissions(
       trnsLoc = tr_df,
       recLoc = recs_df,
       detRngFun = function(x) 0.5,
       inputCRS = 4326,
       sp_out = FALSE,
       show_progress = FALSE
-    )
+    ),
+    'data.frame'
+  )
+
+  expect_equal(dim(dfin_dfout), c(8, 7))
+
+  # Check if expected and actual results are the same
+  expect_snapshot(
+    dfin_dfout
   )
 })
 
@@ -69,14 +83,21 @@ test_that("spatial input, data.frame output gives expected result", {
 
   set.seed(33)
 
-  # Check if expected and actual results are the same
-  expect_snapshot(
-    detect_transmissions(
+  expect_s3_class(
+    spin_dfout <- detect_transmissions(
       trnsLoc = tr_sf,
       recLoc = recs_sf,
       detRngFun = function(x) 0.5,
       sp_out = FALSE,
-      show_progress = FALSE)
+      show_progress = FALSE),
+    'data.frame'
+  )
+
+  expect_equal(dim(spin_dfout), c(8, 7))
+
+  # Check if expected and actual results are the same
+  expect_snapshot(
+    spin_dfout
   )
 })
 
@@ -87,14 +108,21 @@ test_that("spatial input, spatial output gives expected result", {
 
   set.seed(33)
 
-  # Check if expected and actual results are the same
-  expect_snapshot(
-    detect_transmissions(
+  expect_s3_class(
+    spin_spout <- detect_transmissions(
       trnsLoc = tr_sf,
       recLoc = recs_sf,
       detRngFun = function(x) 0.5,
       show_progress = FALSE
-    )
+    ),
+    'sf'
+  )
+
+  expect_equal(dim(spin_spout), c(8, 5))
+
+  # Check if expected and actual results are the same
+  expect_snapshot(
+    spin_spout
   )
 })
 
