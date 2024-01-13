@@ -13,7 +13,7 @@ test_that("data.frame input, sf output gives expected result", {
       sp_out = TRUE,
       show_progress = FALSE
     ),
-    'sf'
+    "sf"
   )
 
   expect_equal(dim(dfin_sfout), c(6, 1))
@@ -37,7 +37,7 @@ test_that("data.frame input, data.frame output gives expected result", {
       sp_out = FALSE,
       show_progress = FALSE
     ),
-    'data.frame'
+    "data.frame"
   )
 
   expect_equal(dim(dfin_dfout), c(6, 2))
@@ -60,7 +60,7 @@ test_that("SpatialPolygonsDataFrame input, data.frame output gives expected resu
       sp_out = FALSE,
       cartesianCRS = 3175, show_progress = FALSE
     ),
-    'data.frame'
+    "data.frame"
   )
 
   expect_equal(dim(spin_dfout), c(6, 2))
@@ -83,7 +83,7 @@ test_that("SpatialPolygonsDataFrame input, sf output gives expected result", {
       sp_out = TRUE,
       cartesianCRS = 3175, show_progress = FALSE
     ),
-    'sf'
+    "sf"
   )
 
   expect_equal(dim(spin_sfout), c(6, 1))

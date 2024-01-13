@@ -11,18 +11,18 @@
 ### make_transition
 # Testing water polygon transition matrix
 test_that("make_transition: Transition matrix for Higgins Lake water polygon as expected", {
-
   expect_warning(
     water <- make_transition(
-      higgins_lake_polygon, res = c(0.01, 0.01)
+      higgins_lake_polygon,
+      res = c(0.01, 0.01)
     )$transition,
-    'This function is deprecated and will be removed in the next version'
+    "This function is deprecated and will be removed in the next version"
   )
 
 
   expect_s4_class(
     water,
-    'TransitionLayer'
+    "TransitionLayer"
   )
   expect_s3_class(water, NA)
 
@@ -31,7 +31,7 @@ test_that("make_transition: Transition matrix for Higgins Lake water polygon as 
 
   expect_s4_class(
     water@transitionMatrix,
-    'dsCMatrix'
+    "dsCMatrix"
   )
   expect_length(water@transitionMatrix, 14400)
 
@@ -45,14 +45,15 @@ test_that("make_transition: Transition matrix for Higgins Lake water polygon as 
 test_that("make_transition: Raster values for Higgins Lake water polygon as expected", {
   expect_warning(
     water <- make_transition(
-      higgins_lake_polygon, res = c(0.01, 0.01)
+      higgins_lake_polygon,
+      res = c(0.01, 0.01)
     )$rast,
-    'This function is deprecated and will be removed in the next version'
+    "This function is deprecated and will be removed in the next version"
   )
 
   expect_s4_class(
     water,
-    'RasterLayer'
+    "RasterLayer"
   )
   expect_s3_class(water, NA)
 
@@ -61,7 +62,6 @@ test_that("make_transition: Raster values for Higgins Lake water polygon as expe
   expect_snapshot(
     water
   )
-
 })
 
 
@@ -75,12 +75,12 @@ test_that("make_transition: Transition matrix for Flynn Island land polygon as e
       all_touched = FALSE,
       invert = TRUE
     )$transition,
-    'This function is deprecated and will be removed in the next version'
+    "This function is deprecated and will be removed in the next version"
   )
 
   expect_s4_class(
     land,
-    'TransitionLayer'
+    "TransitionLayer"
   )
   expect_s3_class(land, NA)
 
@@ -89,7 +89,7 @@ test_that("make_transition: Transition matrix for Flynn Island land polygon as e
 
   expect_s4_class(
     land@transitionMatrix,
-    'dsCMatrix'
+    "dsCMatrix"
   )
   expect_length(land@transitionMatrix, 3969)
 
@@ -108,12 +108,12 @@ test_that("make_transition: Raster values for Flynn Island polygon as expected",
       all_touched = FALSE,
       invert = TRUE
     )$rast,
-    'This function is deprecated and will be removed in the next version'
+    "This function is deprecated and will be removed in the next version"
   )
 
   expect_s4_class(
     land,
-    'RasterLayer'
+    "RasterLayer"
   )
   expect_s3_class(land, NA)
 
