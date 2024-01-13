@@ -1,4 +1,3 @@
-
 test_that("metadata element gives expected result", {
   wb_file <- system.file("extdata",
     "walleye_workbook.xlsm",
