@@ -128,7 +128,9 @@ read_glatos_detections <- function(det_file, version = NULL) {
     ))
   }
 
-  # assign class
+  # strip data.table and assign glatos_detections class
+  data.table::setDF(dtc)
+
   dtc <- as_glatos_detections(dtc)
 
   return(dtc)
