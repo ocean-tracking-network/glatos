@@ -109,7 +109,9 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
   }
   #-end v1.x----------------------------------------------------------------
 
-  # assign class
+  # strip data.table and assign glatos_receivers class
+  data.table::setDF(rec)
+
   rec <- as_glatos_receivers(rec)
 
   return(rec)

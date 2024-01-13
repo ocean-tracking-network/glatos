@@ -4,6 +4,10 @@
 
 ### Bug fixes
 
+- Omit data.table from class of object returned by `read_glatos_detections()`  
+  and `read_glatos_receivers()`. 
+    - fixes [issue #200](https://github.com/ocean-tracking-network/glatos/issues/200)
+
 - Fix typo in Description to Suggest 'gifski' (not 'gifsky'). 
     - fixes [issue #185](https://github.com/ocean-tracking-network/glatos/issues/185)
 
