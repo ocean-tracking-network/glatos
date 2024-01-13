@@ -41,7 +41,7 @@ test_that("data.frame input, spatial output gives expected result", {
       inputCRS = sf::st_crs(tr_sf),
       show_progress = FALSE
     ),
-    'sf'
+    "sf"
   )
 
   expect_equal(dim(dfin_spout), c(8, 5))
@@ -67,7 +67,7 @@ test_that("data.frame input, data.frame output gives expected result", {
       sp_out = FALSE,
       show_progress = FALSE
     ),
-    'data.frame'
+    "data.frame"
   )
 
   expect_equal(dim(dfin_dfout), c(8, 7))
@@ -89,8 +89,9 @@ test_that("spatial input, data.frame output gives expected result", {
       recLoc = recs_sf,
       detRngFun = function(x) 0.5,
       sp_out = FALSE,
-      show_progress = FALSE),
-    'data.frame'
+      show_progress = FALSE
+    ),
+    "data.frame"
   )
 
   expect_equal(dim(spin_dfout), c(8, 7))
@@ -115,7 +116,7 @@ test_that("spatial input, spatial output gives expected result", {
       detRngFun = function(x) 0.5,
       show_progress = FALSE
     ),
-    'sf'
+    "sf"
   )
 
   expect_equal(dim(spin_spout), c(8, 5))

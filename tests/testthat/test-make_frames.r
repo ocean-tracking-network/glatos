@@ -1,7 +1,8 @@
 pos <- interpolate_path(
-  walleye_detections[walleye_detections$animal_id == 153,][
-    1:125,]
-  )[3:6,]
+  walleye_detections[walleye_detections$animal_id == 153, ][
+    1:125,
+  ]
+)[3:6, ]
 
 temp_dir <- tempdir()
 
@@ -10,7 +11,7 @@ test_that("making preview image expected result", {
   # make preview image
   expect_message(
     make_frames(pos, out_dir = temp_dir, preview = TRUE),
-    'Preview frames written to'
+    "Preview frames written to"
   )
 
   # Check if expected and actual file sizes
@@ -29,5 +30,6 @@ unlink(
     full.names = TRUE,
     recursive = TRUE,
     include.dirs = TRUE
-  ), recursive = TRUE
+  ),
+  recursive = TRUE
 )

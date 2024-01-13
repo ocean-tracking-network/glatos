@@ -7,7 +7,6 @@ frames <- system.file("extdata", "frames", package = "glatos")
 
 
 test_that("makes videos with expected size", {
-
   temp_dir <- tempdir()
   temp_file_1 <- tempfile(fileext = ".mp4")
   make_video(
@@ -19,9 +18,9 @@ test_that("makes videos with expected size", {
   # Check if expected and actual file sizes
   expect_equal(
     file.size(temp_file_1),
-               72024,
-               tolerance = 0.005
-    )
+    72024,
+    tolerance = 0.005
+  )
 })
 
 # call from input path and name containing spaces and parentheses
