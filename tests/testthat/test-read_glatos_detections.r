@@ -79,7 +79,7 @@ test_that("lamprey_detections with some missing animal_id expected result", {
 
   # make two animal_id missing
   ld_missing$animal_id[ld_missing$animal_id %in%
-                         c("A69-1601-1363", "A69-9002-7189")] <- NA
+    c("A69-1601-1363", "A69-9002-7189")] <- NA
   write.csv(ld_missing, temp_file, row.names = FALSE)
 
   expect_warning(
