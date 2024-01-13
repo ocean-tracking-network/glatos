@@ -1,8 +1,7 @@
-# data.frame input, spatial output gives expected result
+# data.frame input, sf output gives expected result
 
     Code
-      crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10, initPos = c(0, 0),
-      initHeading = 0, nsteps = 5, sp_out = TRUE, show_progress = FALSE)
+      dfin_sfout
     Output
       Simple feature collection with 6 features and 0 fields
       Geometry type: POINT
@@ -20,8 +19,7 @@
 # data.frame input, data.frame output gives expected result
 
     Code
-      crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10, initPos = c(0, 0),
-      initHeading = 0, nsteps = 5, sp_out = FALSE, show_progress = FALSE)
+      dfin_dfout
     Output
                  x         y
       1   0.000000  0.000000
@@ -31,12 +29,10 @@
       5 -19.631781 34.240412
       6 -16.408604 43.706727
 
-# spatial input, data.frame output gives expected result
+# SpatialPolygonsDataFrame input, data.frame output gives expected result
 
     Code
-      crw_in_polygon(greatLakesPoly, theta = c(0, 25), stepLen = 10000, initPos = c(
-        -87.49017, 48.42314), initHeading = 0, nsteps = 5, sp_out = FALSE,
-      cartesianCRS = 3175, show_progress = FALSE)
+      spin_dfout
     Output
                 x        y
       1 -87.49017 48.42314
@@ -46,18 +42,47 @@
       5 -87.83445 48.69117
       6 -87.95955 48.72632
 
-# spatial input, spatial output gives expected result
+# SpatialPolygonsDataFrame input, sf output gives expected result
 
     Code
-      crw_in_polygon(greatLakesPoly, theta = c(0, 25), stepLen = 10000, initPos = c(
-        -87.49017, 48.42314), initHeading = 0, nsteps = 5, sp_out = TRUE,
-      cartesianCRS = 3175, show_progress = FALSE)
+      spin_sfout
     Output
       Simple feature collection with 6 features and 0 fields
       Geometry type: POINT
       Dimension:     XY
       Bounding box:  xmin: -87.95955 ymin: 48.42314 xmax: -87.49017 ymax: 48.72632
       Geodetic CRS:  WGS 84 (with axis order normalized for visualization)
+                          geometry
+      1 POINT (-87.49017 48.42314)
+      2 POINT (-87.56828 48.49653)
+      3 POINT (-87.66241 48.56116)
+      4  POINT (-87.7763 48.60994)
+      5 POINT (-87.83445 48.69117)
+      6 POINT (-87.95955 48.72632)
+
+# sf input, data.frame output gives expected result
+
+    Code
+      sfin_dfout
+    Output
+                x        y
+      1 -87.49017 48.42314
+      2 -87.56828 48.49653
+      3 -87.66241 48.56116
+      4 -87.77630 48.60994
+      5 -87.83445 48.69117
+      6 -87.95955 48.72632
+
+# sf input, sf output gives expected result
+
+    Code
+      sfin_sfout
+    Output
+      Simple feature collection with 6 features and 0 fields
+      Geometry type: POINT
+      Dimension:     XY
+      Bounding box:  xmin: -87.95955 ymin: 48.42314 xmax: -87.49017 ymax: 48.72632
+      Geodetic CRS:  WGS 84
                           geometry
       1 POINT (-87.49017 48.42314)
       2 POINT (-87.56828 48.49653)
