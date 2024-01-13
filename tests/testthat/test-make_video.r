@@ -76,7 +76,6 @@ test_that("input/output with space/parenth gives expected result", {
     dirname(output),
     dirname(temp_file_2)
   )
-
 })
 
 # Clean up

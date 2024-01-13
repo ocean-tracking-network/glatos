@@ -106,7 +106,7 @@ test_that("sf input, data.frame output gives expected result", {
       sp_out = FALSE,
       cartesianCRS = 3175, show_progress = FALSE
     ),
-    'data.frame'
+    "data.frame"
   )
 
   expect_equal(dim(sfin_dfout), c(6, 2))
@@ -129,7 +129,7 @@ test_that("sf input, sf output gives expected result", {
       sp_out = TRUE,
       cartesianCRS = 3175, show_progress = FALSE
     ),
-    'sf'
+    "sf"
   )
 
   expect_equal(dim(sfin_sfout), c(6, 1))
