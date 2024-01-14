@@ -11,6 +11,6 @@ test_that("blue_shark_detections gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(bsd, blue_shark_detections)
 
-  expect_s3_class(bsd, 'glatos_detections')
-  expect_s3_class(bsd, 'data.frame')
+  expect_s3_class(bsd, "glatos_detections")
+  expect_s3_class(bsd, "data.frame")
 })
