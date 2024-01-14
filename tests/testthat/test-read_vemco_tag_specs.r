@@ -24,7 +24,7 @@ test_that("'specs' element gives expected result", {
 
   # Check if expected and actual results are the same
   expect_equal(tag_specs[["specs"]], lamprey_tag_specs[["specs"]])
-  expect_s3_class(tag_specs[["specs"]], 'data.frame')
+  expect_s3_class(tag_specs[["specs"]], "data.frame")
 })
 
 
@@ -41,5 +41,5 @@ test_that("'schedule' element gives expected result", {
 
   # Check if expected and actual results are the same
   expect_equal(tag_specs[["schedule"]], lamprey_tag_specs[["schedule"]])
-  expect_s3_class(tag_specs[["schedule"]], 'data.frame')
+  expect_s3_class(tag_specs[["schedule"]], "data.frame")
 })
