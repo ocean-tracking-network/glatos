@@ -50,7 +50,7 @@ phm_values_known <- function() {
 
 
 # For test-receiver_efficiency.r
-hfx_receiver_efficiency_index <- function(){
+hfx_receiver_efficiency_index <- function() {
   structure(
     list(station = c(
       "HFX001", "HFX002", "HFX003", "HFX004",
@@ -288,7 +288,7 @@ hfx_receiver_efficiency_index <- function(){
   )
 }
 
-glatos_receiver_efficiency_index <- function(){
+glatos_receiver_efficiency_index <- function() {
   structure(
     list(station = c(
       "DRF-004", "DRL-004", "DRL-010", "DRL-011",
@@ -373,7 +373,7 @@ glatos_receiver_efficiency_index <- function(){
 
 
 # For test-residence_index.r
-blueshark_ri_kessel_data <- function(){
+blueshark_ri_kessel_data <- function() {
   structure(list(
     days_detected = c(
       9, 9, 7, 8, 9, 3, 2, 10, 10,
@@ -422,7 +422,7 @@ blueshark_ri_kessel_data <- function(){
 }
 
 
-blueshark_ri_td_data <- function(){
+blueshark_ri_td_data <- function() {
   structure(list(days_detected = c(
     0, 0.0119907407407407, 0.229189814814815,
     0.236770833333333, 0, 0.0171296296296296, 5.30424768518519, 4.31056712962963,
@@ -487,7 +487,7 @@ blueshark_ri_td_data <- function(){
   )), class = "data.frame", row.names = c(NA, -40L))
 }
 
-blueshark_ri_awo_data <- function(){
+blueshark_ri_awo_data <- function() {
   structure(list(
     days_detected = c(
       1.15740740740741e-05, 0.0119907407407407,
@@ -561,7 +561,7 @@ blueshark_ri_awo_data <- function(){
 }
 
 
-blueshark_ri_ano_data <- function(){
+blueshark_ri_ano_data <- function() {
   structure(list(days_detected = c(
     0, 0.0119907407407407, 0.0194328703703704,
     0.0267708333333333, 0, 0.00405092592592593, 0.0283449074074074,

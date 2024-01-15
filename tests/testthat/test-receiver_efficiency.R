@@ -53,7 +53,7 @@ test_that("REI gives expected results for the GLATOS samples", {
   # Check if expected and actual results are the same
   expect_equal(glatos_rei, glatos_efficiency_index)
 
-  expect_s3_class(glatos_rei, 'data.frame')
+  expect_s3_class(glatos_rei, "data.frame")
   expect_identical(dim(glatos_rei), c(82L, 4L))
   expect_named(glatos_rei, c("station", "latitude", "longitude", "rei"))
 })

@@ -29,10 +29,12 @@ test_that("data.frame input, spatial output gives expected result", {
     )
   }
 
-  expect_s3_class(tr_dfin_spout, c('sf', 'data.frame'), exact = T)
+  expect_s3_class(tr_dfin_spout, c("sf", "data.frame"), exact = T)
 
-  expect_equal(sf::st_crs(tr_dfin_spout)$proj4string,
-               '+proj=longlat +datum=WGS84 +no_defs')
+  expect_equal(
+    sf::st_crs(tr_dfin_spout)$proj4string,
+    "+proj=longlat +datum=WGS84 +no_defs"
+  )
 
   expect_snapshot(
     tr_dfin_spout
@@ -72,7 +74,7 @@ test_that("data.frame input, data.frame output gives expected result", {
     )
   }
 
-  expect_s3_class(tr_dfin_dfout, 'data.frame', exact = T)
+  expect_s3_class(tr_dfin_dfout, "data.frame", exact = T)
 
   # Check if expected and actual results are the same
   expect_snapshot(
@@ -109,7 +111,7 @@ test_that("spatial input, data.frame output gives expected result", {
     )
   }
   # Check if expected and actual results are the same
-  expect_s3_class(tr_spin_dfout, 'data.frame', exact = T)
+  expect_s3_class(tr_spin_dfout, "data.frame", exact = T)
 
   expect_snapshot(
     tr_spin_dfout
@@ -120,7 +122,6 @@ test_that("spatial input, data.frame output gives expected result", {
 
 
 test_that("spatial input, spatial output gives expected result", {
-
   path_sp <- {
     set.seed(30)
 
@@ -146,10 +147,12 @@ test_that("spatial input, spatial output gives expected result", {
   }
 
 
-  expect_s3_class(tr_spin_spout, c('sf', 'data.frame'), exact = T)
+  expect_s3_class(tr_spin_spout, c("sf", "data.frame"), exact = T)
 
-  expect_equal(sf::st_crs(tr_spin_spout)$proj4string,
-               '+proj=longlat +datum=WGS84 +no_defs')
+  expect_equal(
+    sf::st_crs(tr_spin_spout)$proj4string,
+    "+proj=longlat +datum=WGS84 +no_defs"
+  )
 
   # Check if expected and actual results are the same
   expect_snapshot(

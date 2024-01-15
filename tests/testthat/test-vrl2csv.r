@@ -1,4 +1,4 @@
-vrl_to_tempdir <- function(test_dir){
+vrl_to_tempdir <- function(test_dir) {
   ## Access internal VRL
   myVRL <- system.file(
     "extdata",
@@ -27,7 +27,7 @@ vrl_to_tempdir <- function(test_dir){
 test_that("one vrl gives expected result", {
   skip_on_ci()
 
-  vrl_loc <- vrl_to_tempdir('test')
+  vrl_loc <- vrl_to_tempdir("test")
 
   # Warns re: deprecation
   expect_warning(
@@ -49,12 +49,14 @@ test_that("one vrl gives expected result", {
       )
     )
   )
-  expect_equal(normalizePath(dirname(good_csv)),
-               normalizePath(vrl_loc$test_dir))
+  expect_equal(
+    normalizePath(dirname(good_csv)),
+    normalizePath(vrl_loc$test_dir)
+  )
   expect_equal(
     basename(good_csv),
     gsub(
-      '\\.vrl', '\\.csv',
+      "\\.vrl", "\\.csv",
       basename(vrl_loc$vrl)
     )
   )
@@ -101,7 +103,7 @@ test_that("one vrl gives expected result", {
 test_that("one vrl in dir with space in name gives expected result", {
   skip_on_ci()
 
-  vrl_loc <- vrl_to_tempdir('test path with spaces')
+  vrl_loc <- vrl_to_tempdir("test path with spaces")
 
   # Warns re: deprecation. Deprecation warnings are suppressed after this
   expect_warning(
@@ -122,12 +124,14 @@ test_that("one vrl in dir with space in name gives expected result", {
       )
     )
   )
-  expect_equal(normalizePath(dirname(good_csv)),
-               normalizePath(vrl_loc$test_dir))
+  expect_equal(
+    normalizePath(dirname(good_csv)),
+    normalizePath(vrl_loc$test_dir)
+  )
   expect_equal(
     basename(good_csv),
     gsub(
-      '\\.vrl', '\\.csv',
+      "\\.vrl", "\\.csv",
       basename(vrl_loc$vrl)
     )
   )
@@ -176,19 +180,19 @@ test_that("one good vrl in dir with corrupt vrl gives expected result", {
   skip_on_ci()
 
   ## Create corrupt VRL
-  vrl_loc <- vrl_to_tempdir('test')
+  vrl_loc <- vrl_to_tempdir("test")
 
   renamed <- file.rename(
     vrl_loc$vrl,
-    file.path(vrl_loc$test_dir, 'corrupt.vrl')
+    file.path(vrl_loc$test_dir, "corrupt.vrl")
   )
 
   write(
     c("SOMEgibberish"),
-    file.path(vrl_loc$test_dir, 'corrupt.vrl')
+    file.path(vrl_loc$test_dir, "corrupt.vrl")
   )
 
-  vrl_loc <- vrl_to_tempdir('test')
+  vrl_loc <- vrl_to_tempdir("test")
 
 
   expect_warning(
@@ -197,9 +201,9 @@ test_that("one good vrl in dir with corrupt vrl gives expected result", {
       outDir = vrl_loc$test_dir,
       vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
     ),
-    'deprecated'
+    "deprecated"
   ) |>
-    expect_warning('corrupt\\.csv was not created')
+    expect_warning("corrupt\\.csv was not created")
 
   # Check if expected and actual results are the same
   expect_snapshot(
