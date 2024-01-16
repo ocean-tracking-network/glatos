@@ -5,6 +5,8 @@
 #' metadata from the OTN ERDDAP to \code{ATT} format for use in the Animal
 #' Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
 #'
+#' @importFrom rlang .data
+#'
 #' @param detectionObj a data frame from \code{read_glatos_detections}
 #'
 #' @param erdTags a data frame with tag release data from the OTN ERDDAP
@@ -74,6 +76,8 @@
 #' )
 #' @export
 
+#' @importFrom rlang .data
+#'
 convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
                                       crs = sf::st_crs(4326)) {
   transmitters <-
@@ -137,32 +141,32 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
   detectionObj <- detectionObj %>%
     dplyr::mutate(dummy = TRUE) %>%
     dplyr::left_join(dplyr::select(erdRcv %>% dplyr::mutate(dummy = TRUE),
-      rcv_latitude = latitude,
-      rcv_longitude = longitude,
-      station,
-      receiver_model,
-      receiver_serial_number,
-      dummy,
-      deploy_datetime_utc = time,
-      recovery_datetime_utc
+      rcv_latitude = .$latitude,
+      rcv_longitude = .$longitude,
+      .$station,
+      .$receiver_model,
+      .$receiver_serial_number,
+      .$dummy,
+      deploy_datetime_utc = .$time,
+      .$recovery_datetime_utc
     )) %>%
     dplyr::mutate(
-      deploy_datetime_utc = as.POSIXct(deploy_datetime_utc,
+      deploy_datetime_utc = as.POSIXct(.$deploy_datetime_utc,
         format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
       ),
-      recovery_datetime_utc = as.POSIXct(recovery_datetime_utc,
+      recovery_datetime_utc = as.POSIXct(.$recovery_datetime_utc,
         format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
       )
     ) %>%
     dplyr::filter(
-      detection_timestamp_utc >= deploy_datetime_utc,
-      detection_timestamp_utc <= recovery_datetime_utc
+      .$detection_timestamp_utc >= .$deploy_datetime_utc,
+      .$detection_timestamp_utc <= .$recovery_datetime_utc
     ) %>%
     dplyr::mutate(ReceiverFull = concat_list_strings(
-      receiver_model,
-      receiver_serial_number
+      .$receiver_model,
+      .$receiver_serial_number
     )) %>%
-    dplyr::select(-dummy)
+    dplyr::select(-.$dummy)
 
   detections <- tibble::tibble(
     Date.Time = detectionObj$detection_timestamp_utc,
