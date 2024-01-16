@@ -88,7 +88,7 @@ convert_otn_to_att <- function(detectionObj,
                                deploymentObj = NULL,
                                deploymentSheet = NULL,
                                timeFilter = TRUE,
-                               crs = sf::st_crs(3426)) {
+                               crs = sf::st_crs(4326)) {
   if (is.null(deploymentObj) && is.null(deploymentSheet)) {
     stop("Deployment data must be supplied by either 'deploymentObj' or 'deploymentSheet'")
   } else if ((!is.null(deploymentObj)) && (!is.null(deploymentSheet))) {
