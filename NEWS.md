@@ -15,6 +15,12 @@
 
 ### New features
 
+#### 2024-01-19
+
+- In `make_frames()`, allow `terra::SpatVector` input for background map 
+  (`bg_map` arg).
+
+
 #### 2023-08-30
 
 - Add new functions to create, check, and validate `glatos_animals` objects:

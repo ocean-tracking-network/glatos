@@ -67,6 +67,29 @@ img_size3 <- file.info(img_file3)$size
 unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,
                   include.dirs = TRUE), recursive = TRUE)
 
+# Check output with default background_ylim, background_xlim, but not bg_map
+# bg_map input class = terra::spatVector
+# make a preview image
+
+sv_poly <- terra::vect(great_lakes_polygon)
+
+temp_dir <- tempdir()
+make_frames(pos1, 
+            out_dir = temp_dir, 
+            preview = TRUE, 
+            bg_map = sv_poly)
+
+# Expected file size
+size_should_be4 <- 99999
+
+# Actual file sizes
+img_file4 <- file.path(temp_dir, "1.png")
+img_size4 <- file.info(img_file4)$size
+
+# Clean up
+unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,
+                  include.dirs = TRUE), recursive = TRUE)
+
 
 # Testing file size results
 test_that("Expected result when background lims and map not supplied", {
@@ -82,4 +105,9 @@ test_that("Expected result when map but not background lims supplied", {
 test_that("Expected result when map and background lims supplied", {
   # Check if expected and actual file sizes
   expect_equal(img_size3, size_should_be3)
+})
+
+test_that("Expected result when map is spatVector, bg lims not supplied", {
+  # Check if expected and actual file sizes
+  expect_equal(img_size4, size_should_be4)
 })
