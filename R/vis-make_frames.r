@@ -371,18 +371,17 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   } else { 
     background <- bg_map
 
-    if(inherits(map, "Spatial")){
-      map <- sf::st_as_sf(map)
+    if(inherits(background, "Spatial")){
+      background <- sf::st_as_sf(background)
       message("Converted sp object to sf")
     }
-        
-    #if not equal to default or NULL, then set to extent of bg_map
-    if(is.null(background_ylim) | all(background_ylim == c(41.3, 49.0))) background_ylim <- 
-                                              as.numeric(st_bbox(bg_map)[c("xmin", "xmax")])
-    if(is.null(background_xlim) | all(background_xlim == c(-92.45, -75.87))) background_xlim <-
-                                                                               as.numeric(st_bbox(bg_map)[c("ymin", "ymax")])
-  }
 
+    # if x and y limits are equal to default, then set limits to extent of bg_map
+    # if x and y limits are not equal to default, then leave as specified in input arguments.
+    if(missing(background_ylim) | all(background_ylim == c(41.3, 49.0))) background_ylim <- as.numeric(st_bbox(bg_map)[c("ymin", "ymax")])
+    if(missing(background_xlim) | all(background_xlim == c(-92.45, -75.87))) background_xlim <- as.numeric(st_bbox(bg_map)[c("xmin", "xmax")])
+  }
+    
   # turn off interpolated points if show_interpolated = FALSE
   if(!show_interpolated){
     work_proc_obj[record_type == "interpolated", latitude := NA]
@@ -553,3 +552,4 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
       }      
   }
 }
+
