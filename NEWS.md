@@ -1,3 +1,4 @@
+----
 
 # glatos 0.8.0 (dev)
 
@@ -65,6 +66,20 @@
 - Add new function `read_vdat_csv()` to read data exported from VRL or VDAT 
   using VDAT.exe (e.g., using `vdat_convert()`).
 
+
+----
+
+# glatos 0.7.1 (2024-01-19)
+
+
+### Bug fixes and minor changes
+
+
+- Fix bug introduced in glatos 0.7.0 where x and y limits were switched 
+  when `bg_map` was supplied.
+    - Add test for various inputs of `background_xlim`, `background_ylim`, and 
+      `bg_map` to function `make_frames`.
+  
 
 ----
 
