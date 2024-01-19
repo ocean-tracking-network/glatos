@@ -54,7 +54,7 @@
 #'  processing large number of frames.  Default `preview = FALSE`
 #'
 #' @param bg_map A sf points, lines, or polygons object.  Spatial `sp` or `terra` objects
-#'  will be converted to `sf`.  Coordinate system of map must be latitude/longitude (WGS 84). 
+#'  will be converted to `sf`.  Coordinate system of map must be latitude/longitude (WGS 84).
 #'
 #' @param show_progress Logical. Progress bar and status messages will be shown
 #'  if TRUE (default) and not shown if FALSE.
@@ -404,21 +404,21 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     }
 
     # convert to sf if map is terra::SpatVector object
-    if(inherits(background, "SpatVector")){
+    if (inherits(background, "SpatVector")) {
       background <- sf::st_as_sf(background)
       message("Converted terra object to sf")
     }
-    
+
     # convert to WGS 84 (EPSG 4326)
-    if(st_crs(background)$epsg != 4326){
+    if (st_crs(background)$epsg != 4326) {
       background <- sf::st_transform(background, 4326)
       message("Converted background to long/lat (epsg: 4326) CRS")
     }
-            
+
     # if x and y limits are equal to default, then set limits to extent of bg_map
     # if x and y limits are not equal to default, then leave as specified in input arguments.
-    if(missing(background_ylim) | all(background_ylim == c(41.3, 49.0))) background_ylim <- as.numeric(st_bbox(bg_map)[c("ymin", "ymax")])
-    if(missing(background_xlim) | all(background_xlim == c(-92.45, -75.87))) background_xlim <- as.numeric(st_bbox(bg_map)[c("xmin", "xmax")])
+    if (missing(background_ylim) | all(background_ylim == c(41.3, 49.0))) background_ylim <- as.numeric(st_bbox(bg_map)[c("ymin", "ymax")])
+    if (missing(background_xlim) | all(background_xlim == c(-92.45, -75.87))) background_xlim <- as.numeric(st_bbox(bg_map)[c("xmin", "xmax")])
   }
 
   # turn off interpolated points if show_interpolated = FALSE
