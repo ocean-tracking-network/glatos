@@ -417,11 +417,13 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
 
     # if x and y limits are equal to default, then set limits to extent of bg_map
     # if x and y limits are not equal to default, then leave as specified in input arguments.
-    if (missing(background_ylim) | all(background_ylim == c(41.3, 49.0))) 
+    if (missing(background_ylim) | all(background_ylim == c(41.3, 49.0))) {
       background_ylim <- as.numeric(sf::st_bbox(bg_map)[c("ymin", "ymax")])
-    
-    if (missing(background_xlim) | all(background_xlim == c(-92.45, -75.87))) 
+    }
+
+    if (missing(background_xlim) | all(background_xlim == c(-92.45, -75.87))) {
       background_xlim <- as.numeric(sf::st_bbox(bg_map)[c("xmin", "xmax")])
+    }
   }
 
   # turn off interpolated points if show_interpolated = FALSE
