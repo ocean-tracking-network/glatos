@@ -5,9 +5,11 @@
 
 ### Bug fixes and minor changes
 
-- Add test for various inputs of `background_xlim`, `background_ylim`, and 
-  `bg_map` to function `make_frames`.
 
+- Fix bug introduced in glatos 0.7.0 where x and y limits were switched 
+  when `bg_map` was supplied.
+    - Add test for various inputs of `background_xlim`, `background_ylim`, and 
+      `bg_map` to function `make_frames`.
   
     
 ----

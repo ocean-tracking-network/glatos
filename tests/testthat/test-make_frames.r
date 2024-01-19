@@ -9,14 +9,13 @@ pos1 <- structure(list(animal_id = c("153", "153", "153", "153"),
       -83.8442607462938), record_type = c("detection", "detection", 
         "interpolated", "interpolated")), row.names = 4:7, class = "data.frame")
 
-
-# Expected file size
-size_should_be <- 30919
-
 # Check output with default background_ylim, background_xlim, and bg_map
 # make a preview image
 temp_dir <- tempdir()
 make_frames(pos1, out_dir=temp_dir, preview = TRUE)
+
+# Expected file size
+size_should_be1 <- 30919
 
 # Actual file sizes
 img_file1 <- file.path(temp_dir, "1.png")
@@ -33,6 +32,9 @@ data(great_lakes_polygon)
 temp_dir <- tempdir()
 make_frames(pos1, out_dir=temp_dir, preview = TRUE, 
             bg_map = great_lakes_polygon)
+
+# Expected file size
+size_should_be2 <- 23832
 
 # Actual file sizes
 img_file2 <- file.path(temp_dir, "1.png")
@@ -54,6 +56,9 @@ make_frames(pos1,
             preview = TRUE, 
             bg_map = great_lakes_polygon)
 
+# Expected file size
+size_should_be3 <- 32220
+
 # Actual file sizes
 img_file3 <- file.path(temp_dir, "1.png")
 img_size3 <- file.info(img_file3)$size
@@ -66,16 +71,16 @@ unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,
 # Testing file size results
 test_that("Expected result when background lims and map not supplied", {
   # Check if expected and actual file sizes
-  expect_equal(img_size1, size_should_be)
+  expect_equal(img_size1, size_should_be1)
 })
 
 test_that("Expected result when map but not background lims supplied", {
   # Check if expected and actual file sizes
-  expect_equal(img_size2, size_should_be)
+  expect_equal(img_size2, size_should_be2)
 })
 
 test_that("Expected result when map and background lims supplied", {
   # Check if expected and actual file sizes
-  expect_equal(img_size3, size_should_be)
+  expect_equal(img_size3, size_should_be3)
 })
 
