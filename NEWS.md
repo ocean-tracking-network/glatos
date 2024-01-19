@@ -1,4 +1,15 @@
+----
 
+# glatos 0.7.1 (2024-01-19)
+
+
+### Bug fixes and minor changes
+
+- Add test for various inputs of `background_xlim`, `background_ylim`, and 
+  `bg_map` to function `make_frames`.
+
+  
+    
 ----
 
 # glatos 0.7.0 (2024-01-04)

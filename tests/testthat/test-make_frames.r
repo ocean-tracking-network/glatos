@@ -9,24 +9,73 @@ pos1 <- structure(list(animal_id = c("153", "153", "153", "153"),
       -83.8442607462938), record_type = c("detection", "detection", 
         "interpolated", "interpolated")), row.names = 4:7, class = "data.frame")
 
-# make preview image 
+
+# Expected file size
+size_should_be <- 30919
+
+# Check output with default background_ylim, background_xlim, and bg_map
+# make a preview image
 temp_dir <- tempdir()
 make_frames(pos1, out_dir=temp_dir, preview = TRUE)
 
 # Actual file sizes
-img_file <- file.path(temp_dir, "1.png")
-img_size <- file.info(img_file)$size
-
-# Expected file sizes
-size_should_be <- 30919
+img_file1 <- file.path(temp_dir, "1.png")
+img_size1 <- file.info(img_file1)$size
 
 # Clean up
 unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,
                   include.dirs = TRUE), recursive = TRUE)
 
+# Check output with default background_ylim, background_xlim, but not bg_map
+# make a preview image
+data(great_lakes_polygon)
+
+temp_dir <- tempdir()
+make_frames(pos1, out_dir=temp_dir, preview = TRUE, 
+            bg_map = great_lakes_polygon)
+
+# Actual file sizes
+img_file2 <- file.path(temp_dir, "1.png")
+img_size2 <- file.info(img_file2)$size
+
+# Clean up
+unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,
+                  include.dirs = TRUE), recursive = TRUE)
+
+# Check output with specified background_ylim, background_xlim, and bg_map
+# make a preview image
+data(great_lakes_polygon)
+
+temp_dir <- tempdir()
+make_frames(pos1, 
+            out_dir = temp_dir, 
+            background_ylim = c(42, 47),
+            background_xlim = c(-90, -78),
+            preview = TRUE, 
+            bg_map = great_lakes_polygon)
+
+# Actual file sizes
+img_file3 <- file.path(temp_dir, "1.png")
+img_size3 <- file.info(img_file3)$size
+
+# Clean up
+unlink(list.files(temp_dir, full.names = TRUE, recursive = TRUE,
+                  include.dirs = TRUE), recursive = TRUE)
+
+
 # Testing file size results
-test_that("making preview image expected result", {
+test_that("Expected result when background lims and map not supplied", {
   # Check if expected and actual file sizes
-  expect_equal(img_size, size_should_be)
+  expect_equal(img_size1, size_should_be)
+})
+
+test_that("Expected result when map but not background lims supplied", {
+  # Check if expected and actual file sizes
+  expect_equal(img_size2, size_should_be)
+})
+
+test_that("Expected result when map and background lims supplied", {
+  # Check if expected and actual file sizes
+  expect_equal(img_size3, size_should_be)
 })
 
