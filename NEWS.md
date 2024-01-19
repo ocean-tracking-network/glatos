@@ -19,6 +19,7 @@
 
 - In `make_frames()`, allow `terra::SpatVector` input for background map 
   (`bg_map` arg).
+    - add test for `terra::SpatVector` input
 
 
 #### 2023-08-30

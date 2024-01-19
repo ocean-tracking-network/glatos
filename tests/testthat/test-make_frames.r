@@ -80,7 +80,7 @@ make_frames(pos1,
             bg_map = sv_poly)
 
 # Expected file size
-size_should_be4 <- 99999
+size_should_be4 <- 23832
 
 # Actual file sizes
 img_file4 <- file.path(temp_dir, "1.png")
