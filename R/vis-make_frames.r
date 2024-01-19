@@ -415,7 +415,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     # plot GL outline and movement points
     png(file.path(.out_dir, x$f_name[1]), width = 2000,
         height = ifelse(height%%2==0, height, height + 1), units = 'px',
-        pointsize = 22*figRatio, type = "cairo")
+        pointsize = 22*figRatio)
 
     # Plot background image
     # Set bottom margin to plot timeline outside of plot window
