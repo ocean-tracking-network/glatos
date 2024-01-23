@@ -95,11 +95,12 @@
 #' @export
 
 wb_file <- system.file("extdata",
-                       "walleye_workbook.xlsm",
-                       package = "glatos")
+  "walleye_workbook.xlsm",
+  package = "glatos"
+)
 
-read_all = FALSE
-wb_version = NULL
+read_all <- FALSE
+wb_version <- NULL
 
 read_glatos_workbook <- function(
     wb_file, read_all = FALSE,
@@ -336,9 +337,10 @@ read_glatos_workbook <- function(
                 format(
                   round(
                     posix_as_num[rows_k],
-                    "mins"),
-                  "%Y-%m-%d %H:%M",
+                    "mins"
                   ),
+                  "%Y-%m-%d %H:%M",
+                ),
                 tz = tz_cmd[k]
               )
 
