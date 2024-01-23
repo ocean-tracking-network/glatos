@@ -93,6 +93,14 @@
 #' wb <- read_glatos_workbook(wb_file)
 #'
 #' @export
+
+wb_file <- system.file("extdata",
+                       "walleye_workbook.xlsm",
+                       package = "glatos")
+
+read_all = FALSE
+wb_version = NULL
+
 read_glatos_workbook <- function(
     wb_file, read_all = FALSE,
     wb_version = NULL) {
@@ -325,9 +333,9 @@ read_glatos_workbook <- function(
               rows_k <- tzone_j %in% tz_cmd[k] # get rows with kth tz
               # round to nearest minute and force to correct timezone
               posix_as_num[rows_k] <- as.POSIXct(
-                round(
+                format(
                   posix_as_num[rows_k],
-                  "mins"
+                  "%Y-%m-%d %H:%M",
                 ),
                 tz = tz_cmd[k]
               )
