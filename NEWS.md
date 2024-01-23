@@ -5,6 +5,11 @@
 
 ### Bug fixes
 
+- Fix bug in `read_glatos_workbook()` where timestamps during daylight savings 
+  were shifted one hour on linux operating system (not an issue on windows or 
+  mac).
+    - fixes [issue #208](https://github.com/ocean-tracking-network/glatos/issues/208)
+
 - Omit data.table from class of object returned by `read_glatos_detections()`  
   and `read_glatos_receivers()`. 
     - fixes [issue #200](https://github.com/ocean-tracking-network/glatos/issues/200)
