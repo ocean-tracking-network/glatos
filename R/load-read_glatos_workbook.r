@@ -334,9 +334,11 @@ read_glatos_workbook <- function(
               # round to nearest minute and force to correct timezone
               posix_as_num[rows_k] <- as.POSIXct(
                 format(
-                  posix_as_num[rows_k],
+                  round(
+                    posix_as_num[rows_k],
+                    "mins"),
                   "%Y-%m-%d %H:%M",
-                ),
+                  ),
                 tz = tz_cmd[k]
               )
 
