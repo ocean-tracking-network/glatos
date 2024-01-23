@@ -94,12 +94,6 @@
 #'
 #' @export
 
-wb_file <- system.file("extdata",
-                       "walleye_workbook.xlsm",
-                       package = "glatos")
-
-read_all = FALSE
-wb_version = NULL
 
 read_glatos_workbook <- function(
     wb_file, read_all = FALSE,
