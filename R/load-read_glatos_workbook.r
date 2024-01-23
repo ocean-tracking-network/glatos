@@ -330,9 +330,10 @@ read_glatos_workbook <- function(
                 format(
                   round(
                     posix_as_num[rows_k],
-                    "mins"),
-                  "%Y-%m-%d %H:%M",
+                    "mins"
                   ),
+                  "%Y-%m-%d %H:%M",
+                ),
                 tz = tz_cmd[k]
               )
 
