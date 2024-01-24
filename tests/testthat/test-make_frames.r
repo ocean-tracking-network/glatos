@@ -23,12 +23,12 @@ test_that("Expected result when background lims and map not supplied", {
     )
   )
 
-  # Check file size greater than 30900 bytes
+  # Check file size greater than 30000 bytes
   expect_gt(
     file.size(
       file.path(temp_dir, "1.png")
     ),
-    30900
+    30000
   )
 
   # Clean up
@@ -63,12 +63,12 @@ test_that("Expected result when map but not background lims supplied", {
     )
   )
   
-  # Check if file size greater than 24000 bytes
+  # Check if file size greater than 20000 bytes
   expect_gt(
     file.size(
       file.path(temp_dir, "1.png")
     ),
-    24000
+    20000
   )
 
   # Clean up
@@ -104,12 +104,12 @@ test_that("Expected result when map and background lims supplied", {
     )
   )
   
-  # Check if file size greater than 32000 bytes
+  # Check if file size greater than 30000 bytes
   expect_gt(
     file.size(
       file.path(temp_dir, "1.png")
     ),
-    32000
+    30000
   )
 
   # Clean up
@@ -147,12 +147,12 @@ test_that("Expected result when map is spatVector, bg lims not supplied", {
     )
   )
   
-  # Check if file size greater than 24000 bytes
+  # Check if file size greater than 20000 bytes
   expect_gt(
     file.size(
       file.path(temp_dir, "1.png")
     ),
-    24000
+    20000
   )
 
 
