@@ -10,7 +10,6 @@ Imports:
 		data.table,
 		dplyr,
 		fasterize,
-		fasttime,
 		gdalUtilities,
 		geodist,
 		gdistance,
