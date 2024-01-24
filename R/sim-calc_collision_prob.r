@@ -50,15 +50,15 @@
 #' @author C. Holbrook (cholbrook@usgs.gov) and T. Binder
 #'
 #' @examples
-#' #parameters analagous to Vemco tag, global coding, 45 s nominal delay
+#' # parameters analagous to Vemco tag, global coding, 45 s nominal delay
 #' foo <- calc_collision_prob(delayRng = c(45, 90), burstDur = 5.12, maxTags = 50,
 #'     nTrans = 10000)
 #'     
-#' #plot probabilities of detection
+#' # plot probabilities of detection
 #' plot(med~nTags, data=foo, type='p', pch=20, ylim=c(0,1),
-#'   b
+#'     xlab="# of transmitters within range", ylab="Probability of detection")
 #'   
-#' #plot probability of collision by subtracting detection probability from 1
+#' # plot probability of collision by subtracting detection probability from 1
 #' plot((1 - med)~nTags, data=foo, type='p', pch=20, ylim=c(0,1),
 #'   xlab="# of transmitters within range", ylab="Probability of collision")
 #'
