@@ -5,7 +5,6 @@
 #' metadata from the OTN ERDDAP to \code{ATT} format for use in the Animal
 #' Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
 #'
-#' @importFrom rlang .data
 #'
 #' @param detectionObj a data frame from \code{read_glatos_detections}
 #'
@@ -75,8 +74,6 @@
 #'   tags, stations, animals
 #' )
 #' @export
-
-#' @importFrom rlang .data
 #'
 convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
                                       crs = sf::st_crs(4326)) {
