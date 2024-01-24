@@ -28,7 +28,8 @@ Imports:
 		sf,
 		sp,
 		tibble,
-		tidyr
+		tidyr,
+		units
 Suggests: 
 		gganimate,
 		gifski,
