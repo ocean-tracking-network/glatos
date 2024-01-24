@@ -16,7 +16,6 @@ Imports:
 		gdistance,
 		geosphere,
 		jsonlite,
-		knitr,
 		lubridate,
 		magrittr,
 		methods,
@@ -24,7 +23,6 @@ Imports:
 		purrr,
 		raster,
 		readxl,
-		rmarkdown,
 		sf,
 		sp,
 		tibble,
@@ -33,7 +31,9 @@ Imports:
 Suggests: 
 		gganimate,
 		gifski,
+		knitr,
 		png,
+		rmarkdown,
     testthat (>= 3.0.0),
 		tint
 URL: https://github.com/ocean-tracking-network/glatos
