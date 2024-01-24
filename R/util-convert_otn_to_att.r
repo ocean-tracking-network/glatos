@@ -201,11 +201,11 @@ convert_otn_to_att <- function(detectionObj,
 
   class(att_obj) <- "ATT"
 
-  if (inherits(crs, "CRS")) {
-    attr(att_obj, "CRS") <- crs
+  if (inherits(crs, "crs")) {
+    attr(att_obj, "crs") <- crs
   } else {
     message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
-    attr(att_obj, "CRS") <- eval(formals()$crs)
+    attr(att_obj, "crs") <- eval(formals()$crs)
   }
 
   return(att_obj)

@@ -141,32 +141,32 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
   detectionObj <- detectionObj %>%
     dplyr::mutate(dummy = TRUE) %>%
     dplyr::left_join(dplyr::select(erdRcv %>% dplyr::mutate(dummy = TRUE),
-      rcv_latitude = .$latitude,
-      rcv_longitude = .$longitude,
-      .$station,
-      .$receiver_model,
-      .$receiver_serial_number,
-      .$dummy,
-      deploy_datetime_utc = .$time,
-      .$recovery_datetime_utc
+      rcv_latitude = latitude,
+      rcv_longitude = longitude,
+      station,
+      receiver_model,
+      receiver_serial_number,
+      dummy,
+      deploy_datetime_utc = time,
+      recovery_datetime_utc
     )) %>%
     dplyr::mutate(
-      deploy_datetime_utc = as.POSIXct(.$deploy_datetime_utc,
+      deploy_datetime_utc = as.POSIXct(deploy_datetime_utc,
         format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
       ),
-      recovery_datetime_utc = as.POSIXct(.$recovery_datetime_utc,
+      recovery_datetime_utc = as.POSIXct(recovery_datetime_utc,
         format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
       )
     ) %>%
     dplyr::filter(
-      .$detection_timestamp_utc >= .$deploy_datetime_utc,
-      .$detection_timestamp_utc <= .$recovery_datetime_utc
+      detection_timestamp_utc >= deploy_datetime_utc,
+      detection_timestamp_utc <= recovery_datetime_utc
     ) %>%
     dplyr::mutate(ReceiverFull = concat_list_strings(
-      .$receiver_model,
-      .$receiver_serial_number
+      receiver_model,
+      receiver_serial_number
     )) %>%
-    dplyr::select(-.$dummy)
+    dplyr::select(-dummy)
 
   detections <- tibble::tibble(
     Date.Time = detectionObj$detection_timestamp_utc,
@@ -198,11 +198,11 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
 
   class(att_obj) <- "ATT"
 
-  if (inherits(crs, "CRS")) {
-    attr(att_obj, "CRS") <- crs
+  if (inherits(crs, "crs")) {
+    attr(att_obj, "crs") <- crs
   } else {
     message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
-    attr(att_obj, "CRS") <- eval(formals()$crs)
+    attr(att_obj, "crs") <- eval(formals()$crs)
   }
 
   return(att_obj)
