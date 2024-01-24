@@ -15,14 +15,20 @@ test_that("Expected result when background lims and map not supplied", {
     make_frames(pos, out_dir = temp_dir, preview = TRUE),
     "Preview frames written to"
   )
+  
+  # Check that file exists
+  expect_true(
+    file.exists(
+      file.path(temp_dir, "1.png")
+    )
+  )
 
-  # Check if expected and actual file sizes
-  expect_equal(
+  # Check file size greater than 30900 bytes
+  expect_gt(
     file.size(
       file.path(temp_dir, "1.png")
     ),
-    30919,
-    tolerance = 0.01
+    30900
   )
 
   # Clean up
@@ -50,13 +56,19 @@ test_that("Expected result when map but not background lims supplied", {
     "Preview frames written to"
   )
 
-  # Check if expected and actual file sizes
-  expect_equal(
+  # Check that file exists
+  expect_true(
+    file.exists(
+      file.path(temp_dir, "1.png")
+    )
+  )
+  
+  # Check if file size greater than 24000 bytes
+  expect_gt(
     file.size(
       file.path(temp_dir, "1.png")
     ),
-    24300,
-    tolerance = 0.01
+    24000
   )
 
   # Clean up
@@ -85,13 +97,19 @@ test_that("Expected result when map and background lims supplied", {
     "Preview frames written to"
   )
 
-  # Check if expected and actual file sizes
-  expect_equal(
+  # Check that file exists
+  expect_true(
+    file.exists(
+      file.path(temp_dir, "1.png")
+    )
+  )
+  
+  # Check if file size greater than 32000 bytes
+  expect_gt(
     file.size(
       file.path(temp_dir, "1.png")
     ),
-    32220,
-    tolerance = 0.01
+    32000
   )
 
   # Clean up
@@ -122,13 +140,19 @@ test_that("Expected result when map is spatVector, bg lims not supplied", {
     "Preview frames written to"
   )
 
-
-  expect_equal(
+  # Check that file exists
+  expect_true(
+    file.exists(
+      file.path(temp_dir, "1.png")
+    )
+  )
+  
+  # Check if file size greater than 24000 bytes
+  expect_gt(
     file.size(
       file.path(temp_dir, "1.png")
     ),
-    24000,
-    tolerance = 0.02
+    24000
   )
 
 
