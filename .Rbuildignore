@@ -9,3 +9,4 @@ glatos.pdf
 ^README\.Rmd$
 ^README-.*\.png$
 ^\.github$
+^R/util-intern_pkg_man\.r$

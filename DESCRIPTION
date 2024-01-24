@@ -27,8 +27,7 @@ Imports:
 		sp,
 		tibble,
 		tidyr,
-		units,
-		usethis
+		units
 Suggests: 
 		gganimate,
 		gifski,
