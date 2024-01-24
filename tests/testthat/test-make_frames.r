@@ -146,8 +146,8 @@ test_that("Expected result when map is spatVector, bg lims not supplied", {
       file.path(temp_dir, "1.png")
     )
   )
-  
-  
+
+
   # Check if file size greater than 20000 bytes
   expect_gt(
     file.size(
