@@ -15,7 +15,7 @@ test_that("Expected result when background lims and map not supplied", {
     make_frames(pos, out_dir = temp_dir, preview = TRUE),
     "Preview frames written to"
   )
-  
+
   # Check that file exists
   expect_true(
     file.exists(
@@ -62,7 +62,7 @@ test_that("Expected result when map but not background lims supplied", {
       file.path(temp_dir, "1.png")
     )
   )
-  
+
   # Check if file size greater than 24000 bytes
   expect_gt(
     file.size(
@@ -103,7 +103,7 @@ test_that("Expected result when map and background lims supplied", {
       file.path(temp_dir, "1.png")
     )
   )
-  
+
   # Check if file size greater than 32000 bytes
   expect_gt(
     file.size(
@@ -146,7 +146,7 @@ test_that("Expected result when map is spatVector, bg lims not supplied", {
       file.path(temp_dir, "1.png")
     )
   )
-  
+
   # Check if file size greater than 24000 bytes
   expect_gt(
     file.size(
