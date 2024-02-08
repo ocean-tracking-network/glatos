@@ -87,6 +87,7 @@
       dt_result
     Output
           animal_id detection_timestamp_utc glatos_array station_no
+             <char>                  <POSc>       <char>     <char>
        1:       153     2012-05-23 02:54:19          SBI          1
        2:       153     2012-05-23 03:17:13          SBI          1
        3:       153     2012-05-23 03:21:18          SBI          3
@@ -98,6 +99,7 @@
        9:       153     2012-05-23 03:44:46          SBI          1
       10:       153     2012-05-23 03:57:01          SBI          1
           transmitter_codespace transmitter_id sensor_value sensor_unit deploy_lat
+                         <char>         <char>        <num>      <char>      <num>
        1:              A69-9001          32054           NA        <NA>   44.17873
        2:              A69-9001          32054           NA        <NA>   44.17873
        3:              A69-9001          32054           NA        <NA>   44.17255
@@ -109,6 +111,7 @@
        9:              A69-9001          32054           NA        <NA>   44.17873
       10:              A69-9001          32054           NA        <NA>   44.17873
           deploy_long receiver_sn tag_type tag_model tag_serial_number common_name_e
+                <num>      <char>   <char>    <char>            <char>        <char>
        1:   -83.54767      109991     <NA>      <NA>              <NA>       walleye
        2:   -83.54767      109991     <NA>      <NA>              <NA>       walleye
        3:   -83.53090      109999     <NA>      <NA>              <NA>       walleye
@@ -119,18 +122,20 @@
        8:   -83.54169      109956     <NA>      <NA>              <NA>       walleye
        9:   -83.54767      109991     <NA>      <NA>              <NA>       walleye
       10:   -83.54767      109991     <NA>      <NA>              <NA>       walleye
-             capture_location length weight sex release_group release_location
-       1: Tittabawassee River  0.565     NA   F          <NA>    Tittabawassee
-       2: Tittabawassee River  0.565     NA   F          <NA>    Tittabawassee
-       3: Tittabawassee River  0.565     NA   F          <NA>    Tittabawassee
-       4: Tittabawassee River  0.565     NA   F          <NA>    Tittabawassee
-       5: Tittabawassee River  0.565     NA   F          <NA>    Tittabawassee
-       6: Tittabawassee River  0.565     NA   F          <NA>    Tittabawassee
-       7: Tittabawassee River  0.565     NA   F          <NA>    Tittabawassee
-       8: Tittabawassee River  0.565     NA   F          <NA>    Tittabawassee
-       9: Tittabawassee River  0.565     NA   F          <NA>    Tittabawassee
-      10: Tittabawassee River  0.565     NA   F          <NA>    Tittabawassee
+             capture_location length weight    sex release_group release_location
+                       <char>  <num>  <num> <char>        <char>           <char>
+       1: Tittabawassee River  0.565     NA      F          <NA>    Tittabawassee
+       2: Tittabawassee River  0.565     NA      F          <NA>    Tittabawassee
+       3: Tittabawassee River  0.565     NA      F          <NA>    Tittabawassee
+       4: Tittabawassee River  0.565     NA      F          <NA>    Tittabawassee
+       5: Tittabawassee River  0.565     NA      F          <NA>    Tittabawassee
+       6: Tittabawassee River  0.565     NA      F          <NA>    Tittabawassee
+       7: Tittabawassee River  0.565     NA      F          <NA>    Tittabawassee
+       8: Tittabawassee River  0.565     NA      F          <NA>    Tittabawassee
+       9: Tittabawassee River  0.565     NA      F          <NA>    Tittabawassee
+      10: Tittabawassee River  0.565     NA      F          <NA>    Tittabawassee
           release_latitude release_longitude utc_release_date_time
+                     <num>             <num>                <POSc>
        1:               NA                NA   2012-03-20 20:00:00
        2:               NA                NA   2012-03-20 20:00:00
        3:               NA                NA   2012-03-20 20:00:00
@@ -142,6 +147,7 @@
        9:               NA                NA   2012-03-20 20:00:00
       10:               NA                NA   2012-03-20 20:00:00
           glatos_project_transmitter glatos_project_receiver glatos_tag_recovered
+                              <char>                  <char>               <char>
        1:                      HECWL                   HECWL                   NO
        2:                      HECWL                   HECWL                   NO
        3:                      HECWL                   HECWL                   NO
@@ -153,6 +159,7 @@
        9:                      HECWL                   HECWL                   NO
       10:                      HECWL                   HECWL                   NO
           glatos_caught_date station min_lag passed_filter
+                      <Date>  <char>   <num>         <num>
        1:               <NA> SBI-001    1374             1
        2:               <NA> SBI-001     363             1
        3:               <NA> SBI-003    4180             0
