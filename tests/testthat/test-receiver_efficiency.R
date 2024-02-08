@@ -1,6 +1,6 @@
 test_that("REI gives expected results for the halifax line", {
   skip("Skipping until issue #202 is resolved.")
-  
+
   det_file <- system.file(
     "extdata",
     "hfx_detections.csv",
