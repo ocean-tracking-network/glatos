@@ -512,7 +512,7 @@ position_heat_map <- function(positions,
     file.remove(png_file)
   }
   if (output %in% c("png", "kmz")) {
-    message(paste0("Output file are located in: ", file_path))
+    message(paste0("Output file is located in: ", file_path))
   }
 
 

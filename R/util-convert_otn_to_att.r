@@ -88,7 +88,7 @@ convert_otn_to_att <- function(detectionObj,
                                deploymentObj = NULL,
                                deploymentSheet = NULL,
                                timeFilter = TRUE,
-                               crs = sf::st_crs(3426)) {
+                               crs = sf::st_crs(4326)) {
   if (is.null(deploymentObj) && is.null(deploymentSheet)) {
     stop("Deployment data must be supplied by either 'deploymentObj' or 'deploymentSheet'")
   } else if ((!is.null(deploymentObj)) && (!is.null(deploymentSheet))) {
@@ -201,11 +201,11 @@ convert_otn_to_att <- function(detectionObj,
 
   class(att_obj) <- "ATT"
 
-  if (inherits(crs, "CRS")) {
-    attr(att_obj, "CRS") <- crs
+  if (inherits(crs, "crs")) {
+    attr(att_obj, "crs") <- crs
   } else {
     message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
-    attr(att_obj, "CRS") <- eval(formals()$crs)
+    attr(att_obj, "crs") <- eval(formals()$crs)
   }
 
   return(att_obj)
