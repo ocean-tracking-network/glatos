@@ -25,7 +25,8 @@ Imports:
 		sp,
 		tibble,
 		tidyr,
-		units
+		units,
+		zip
 Suggests: 
 		gganimate,
 		gifski,
