@@ -26,6 +26,7 @@ vrl_to_tempdir <- function(test_dir) {
 # Check csv from one VRL in dir with space in name
 test_that("one vrl gives expected result", {
   skip_on_ci()
+  skip_on_cran()
 
   vrl_loc <- vrl_to_tempdir("test")
 
@@ -102,6 +103,7 @@ test_that("one vrl gives expected result", {
 
 test_that("one vrl in dir with space in name gives expected result", {
   skip_on_ci()
+  skip_on_cran()
 
   vrl_loc <- vrl_to_tempdir("test path with spaces")
 
