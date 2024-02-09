@@ -180,6 +180,7 @@ test_that("one vrl in dir with space in name gives expected result", {
 
 test_that("one good vrl in dir with corrupt vrl gives expected result", {
   skip_on_ci()
+  skip_on_cran()
 
   ## Create corrupt VRL
   vrl_loc <- vrl_to_tempdir("test")
