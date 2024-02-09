@@ -5,6 +5,7 @@
 #' metadata from the OTN ERDDAP to \code{ATT} format for use in the Animal
 #' Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
 #'
+#'
 #' @param detectionObj a data frame from \code{read_glatos_detections}
 #'
 #' @param erdTags a data frame with tag release data from the OTN ERDDAP
@@ -73,7 +74,7 @@
 #'   tags, stations, animals
 #' )
 #' @export
-
+#'
 convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
                                       crs = sf::st_crs(4326)) {
   transmitters <-
@@ -194,11 +195,11 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
 
   class(att_obj) <- "ATT"
 
-  if (inherits(crs, "CRS")) {
-    attr(att_obj, "CRS") <- crs
+  if (inherits(crs, "crs")) {
+    attr(att_obj, "crs") <- crs
   } else {
     message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
-    attr(att_obj, "CRS") <- eval(formals()$crs)
+    attr(att_obj, "crs") <- eval(formals()$crs)
   }
 
   return(att_obj)
