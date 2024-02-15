@@ -121,7 +121,7 @@ try(
   ga2 <- as_glatos_animals(x2)
 )
 
-data.frame input; wrong column class
+# data.frame input; wrong column class
 x3 <- mutate(x,
 animal_id = as.integer(animal_id),
 utc_release_date_time = as.character(utc_release_date_time)
