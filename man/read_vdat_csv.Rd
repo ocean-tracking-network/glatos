@@ -75,7 +75,7 @@ csv_files <- vdat_convert(vrl_files, out_dir = temp_dir)
 library(dplyr)
 
 # basic steps: import each to list element, subset DET records, 
-               add column with source file name, combine.
+#              add column with source file name, combine.
                
 det2_tbl <- csv_files \%>\% 
              lapply(
