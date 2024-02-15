@@ -113,8 +113,8 @@ ga_tbl <- as_glatos_animals(x_tbl)
 # data.frame input; missing column name
 library(dplyr) # for rename
 x2 <- rename(x,
-fish_name = animal_id,
-release_timestamp = utc_release_date_time
+  fish_name = animal_id,
+  release_timestamp = utc_release_date_time
 )
 
 try(
@@ -123,8 +123,8 @@ try(
 
 # data.frame input; wrong column class
 x3 <- mutate(x,
-animal_id = as.integer(animal_id),
-utc_release_date_time = as.character(utc_release_date_time)
+  animal_id = as.integer(animal_id),
+  utc_release_date_time = as.character(utc_release_date_time)
 )
 
 try(
