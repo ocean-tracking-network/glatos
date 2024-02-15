@@ -11,7 +11,7 @@ convert_otn_to_att(
   deploymentObj = NULL,
   deploymentSheet = NULL,
   timeFilter = TRUE,
-  crs = sf::st_crs(3426)
+  crs = sf::st_crs(4326)
 )
 }
 \arguments{
