@@ -38,7 +38,7 @@
 #' )
 #' dep <- read_otn_deployments(deployment_file)
 #' }
-#' 
+#'
 #' @importFrom lubridate parse_date_time
 #' @importFrom tidyr extract
 #' @importFrom dplyr mutate
