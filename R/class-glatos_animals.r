@@ -90,7 +90,7 @@
 #' # )
 #'
 #' # ga3 <- as_glatos_animals(x3)
-#' 
+#'
 #'
 #' # Validation and checking
 #'
