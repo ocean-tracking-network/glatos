@@ -100,7 +100,7 @@
 ##' # plot transition layer
 ##' plot(raster::raster(tst$transition))
 ##'
-##' Example 3- transition layer of Lake Huron only with receivers
+##' # Example 3- transition layer of Lake Huron only with receivers
 ##'
 ##' # read polygon layer of Great Lakes
 ##' data(great_lakes_polygon)
