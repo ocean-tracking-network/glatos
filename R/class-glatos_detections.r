@@ -74,14 +74,14 @@
 #'
 #'
 #' # All below will error as invalid
-#' 
+#'
 #' # data.frame input; missing column name
 #' library(dplyr) # for rename
 #' x2 <- rename(x,
 #'   fish_id = animal_id,
 #'   det_date_time = detection_timestamp_utc
 #' )
-#' 
+#'
 #' try(
 #'   gd2 <- as_glatos_detections(x2)
 #' )
@@ -91,7 +91,7 @@
 #'   animal_id = as.integer(animal_id),
 #'   detection_timestamp_utc = as.character(detection_timestamp_utc)
 #' )
-#' 
+#'
 #' try(
 #'   gr3 <- as_glatos_detections(x3)
 #' )

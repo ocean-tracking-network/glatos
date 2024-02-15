@@ -87,7 +87,7 @@
 #' gr_tbl <- as_glatos_receivers(x_tbl)
 #'
 #' # All below will error as invalid
-#' 
+#'
 #' # data.frame input; missing column name
 #' library(dplyr) # for rename
 #' x2 <- rename(x,
@@ -104,7 +104,7 @@
 #'   ins_serial_no = as.integer(ins_serial_no),
 #'   deploy_date_time = as.character(deploy_date_time)
 #' )
-#' 
+#'
 #' try(
 #'   gr3 <- as_glatos_receivers(x3)
 #' )
