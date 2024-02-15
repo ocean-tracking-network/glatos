@@ -108,26 +108,27 @@ x_tbl <- as_tibble(x)
 ga_tbl <- as_glatos_animals(x_tbl)
 
 
-# All below would error as invalid
+# All below will error as invalid
 
+\dontrun{
 # data.frame input; missing column name
-# library(dplyr) # for rename
-# x2 <- rename(x,
-#    fish_name = animal_id,
-#    release_timestamp = utc_release_date_time
-# )
+library(dplyr) # for rename
+x2 <- rename(x,
+fish_name = animal_id,
+release_timestamp = utc_release_date_time
+)
 
-# ga2 <- as_glatos_animals(x2)
+ga2 <- as_glatos_animals(x2)
 
 
-# data.frame input; wrong column class
-# x3 <- mutate(x,
-# animal_id = as.integer(animal_id),
-# utc_release_date_time = as.character(utc_release_date_time)
-# )
+data.frame input; wrong column class
+x3 <- mutate(x,
+animal_id = as.integer(animal_id),
+utc_release_date_time = as.character(utc_release_date_time)
+)
 
-# ga3 <- as_glatos_animals(x3)
-
+ga3 <- as_glatos_animals(x3)
+}
 
 # Validation and checking
 

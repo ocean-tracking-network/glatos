@@ -86,7 +86,9 @@
 #'
 #' gr_tbl <- as_glatos_receivers(x_tbl)
 #'
-#'
+#' # All below will error as invalid
+#' 
+#' \dontrun{
 #' # data.frame input; missing column name
 #' library(dplyr) # for rename
 #' x2 <- rename(x,
@@ -104,7 +106,7 @@
 #' )
 #'
 #' gr3 <- as_glatos_receivers(x3)
-#'
+#' }
 #'
 #' # Validation and checking
 #'
