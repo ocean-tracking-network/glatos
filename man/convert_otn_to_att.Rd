@@ -52,7 +52,7 @@ are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issue
 in a comment by Ryan Gosse.
 }
 \examples{
-
+\dontrun{
 #--------------------------------------------------
 # EXAMPLE #1 - loading from Deployment Object
 
@@ -73,7 +73,7 @@ tags <- prepare_tag_sheet(tag_path, 5, 2)
 deploy <- read_otn_deployments(deploy_path)
 
 ATTdata <- convert_otn_to_att(dets, tags, deploymentObj = deploy)
-
+}
 #--------------------------------------------------
 # EXAMPLE #2 - loading from Deployment Sheet
 

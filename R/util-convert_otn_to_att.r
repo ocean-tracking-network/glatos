@@ -38,7 +38,7 @@
 #'   and station metadata, to be ingested by VTrack/ATT
 #'
 #' @examples
-#'
+#' \dontrun{
 #' #--------------------------------------------------
 #' # EXAMPLE #1 - loading from Deployment Object
 #'
@@ -59,7 +59,7 @@
 #' deploy <- read_otn_deployments(deploy_path)
 #'
 #' ATTdata <- convert_otn_to_att(dets, tags, deploymentObj = deploy)
-#'
+#' }
 #' #--------------------------------------------------
 #' # EXAMPLE #2 - loading from Deployment Sheet
 #'

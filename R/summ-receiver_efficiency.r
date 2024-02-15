@@ -35,6 +35,7 @@
 #' @author Alex Nunes  \email{anunes@dal.ca}
 #'
 #' @examples
+#' \dontrun{
 #' det_file <- system.file("extdata", "hfx_detections.csv",
 #'   package = "glatos"
 #' )
@@ -47,7 +48,7 @@
 #' dets <- glatos::read_otn_detections(det_file)
 #'
 #' hfx_receiver_efficiency_index <- glatos::REI(dets, hfx_deployments)
-#'
+#' }
 #' @importFrom dplyr group_by mutate coalesce filter summarise
 #' @importFrom magrittr "%>%"
 #'
