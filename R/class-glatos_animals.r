@@ -72,12 +72,12 @@
 #'
 #'
 #' # All below will error as invalid
-#' 
+#'
 #' # data.frame input; missing column name
 #' library(dplyr) # for rename
 #' x2 <- rename(x,
-#' fish_name = animal_id,
-#' release_timestamp = utc_release_date_time
+#'   fish_name = animal_id,
+#'   release_timestamp = utc_release_date_time
 #' )
 #'
 #' try(
@@ -86,10 +86,10 @@
 #'
 #' # data.frame input; wrong column class
 #' x3 <- mutate(x,
-#' animal_id = as.integer(animal_id),
-#' utc_release_date_time = as.character(utc_release_date_time)
+#'   animal_id = as.integer(animal_id),
+#'   utc_release_date_time = as.character(utc_release_date_time)
 #' )
-#' 
+#'
 #' try(
 #'   ga3 <- as_glatos_animals(x3)
 #' )
@@ -108,11 +108,11 @@
 #' @export
 glatos_animals <- function(..., validate = TRUE) {
   inargs <- list(...)
-  
+
   x <- as.data.frame(inargs)
-  
+
   x <- as_glatos_animals(x, validate = validate)
-  
+
   return(x)
 }
 
@@ -124,12 +124,12 @@ glatos_animals <- function(..., validate = TRUE) {
 as_glatos_animals <- function(x, validate = TRUE) {
   # Input must inherit from data frame
   if (!inherits(x, "data.frame")) stop("Input x must inherit from data.frame.")
-  
+
   # add new class as first but keep existing (e.g., data.frame)
   class(x) <- c("glatos_animals", class(x))
-  
+
   if (validate) validate_glatos_animals(x)
-  
+
   return(x)
 }
 
@@ -151,13 +151,13 @@ validate_glatos_animals <- function(x) {
     tag_code_space = "character",
     utc_release_date_time = "POSIXct"
   )
-  
+
   glatos_check_col_names(x, req_cols)
-  
+
   # Check column classes
-  
+
   glatos_check_col_classes(x, req_cols)
-  
+
   return(TRUE)
 }
 
@@ -172,15 +172,15 @@ validate_glatos_animals <- function(x) {
 glatos_check_col_names <- function(x, req_cols) {
   # Check column names
   missing_cols <- setdiff(names(req_cols), names(x))
-  
+
   if (length(missing_cols) > 0) {
     stop("Required column(s) missing from ",
-         "input x:\n ",
-         paste0(missing_cols, collapse = "\n "),
-         call. = FALSE
+      "input x:\n ",
+      paste0(missing_cols, collapse = "\n "),
+      call. = FALSE
     )
   }
-  
+
   return(TRUE)
 }
 
@@ -200,24 +200,24 @@ glatos_check_col_classes <- function(x, req_cols) {
       )
     }
   )
-  
+
   wrong_class <- names(req_cols)[wrong_class]
-  
+
   if (length(wrong_class) > 0) {
     stop("The following column(s) have wrong class: ",
-         "\n ",
-         paste0(
-           paste0(
-             wrong_class,
-             " (must be '",
-             req_cols[wrong_class],
-             "')"
-           ),
-           collapse = "\n "
-         ),
-         call. = FALSE
+      "\n ",
+      paste0(
+        paste0(
+          wrong_class,
+          " (must be '",
+          req_cols[wrong_class],
+          "')"
+        ),
+        collapse = "\n "
+      ),
+      call. = FALSE
     )
   }
-  
+
   return(TRUE)
 }
