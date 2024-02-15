@@ -34,7 +34,8 @@ Suggests:
 		methods,
 		png,
 		rmarkdown,
-    testthat (>= 3.0.0),
+		terra,
+		testthat (>= 3.0.0),
 		tint
 URL: https://github.com/ocean-tracking-network/glatos
 BugReports: https://github.com/ocean-tracking-network/glatos/issues
