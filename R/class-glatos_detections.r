@@ -74,7 +74,7 @@
 #'
 #'
 #' # All below will error as invalid
-#' 
+#'
 #' \dontrun{
 #' # data.frame input; missing column name
 #' library(dplyr) # for rename
