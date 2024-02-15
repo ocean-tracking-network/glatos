@@ -72,7 +72,7 @@
 #'
 #' \dontrun{
 #' # All below would error as invalid
-#' 
+#'
 #' # data.frame input; missing column name
 #' library(dplyr) # for rename
 #' x2 <- rename(x,
