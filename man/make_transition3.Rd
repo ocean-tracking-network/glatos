@@ -77,7 +77,7 @@ tst <- make_transition3(great_lakes_polygon, res = c(0.1, 0.1))
 plot(terra::rast(tst$rast))
 
 #compare to polygon
-plot(st_geometry(great_lakes_polygon), add = TRUE, fill = NA)
+plot(sf::st_geometry(great_lakes_polygon), add = TRUE, fill = NA)
 
 #Example 2 - read from ESRI Shapefile and include receiver file
 # to account for any receivers outside of great lakes polygon
@@ -148,7 +148,8 @@ tst1 <- make_transition3(poly, res = c(0.01, 0.01), receiver_points = recs)
 
 # plot raster layer
 plot(terra::rast(tst1$rast))
-plot(sf::st_transform(sf::st_geometry(recs), crs = 4326), add = TRUE, col = "red", pch = 20)
+plot(sf::st_transform(sf::st_geometry(recs), crs = 4326),
+     add = TRUE, col = "red", pch = 20)
 
 # plot transition layer
 raster::plot(raster::raster(tst1$transition))
