@@ -43,29 +43,34 @@ present in the input Fathom CSV file, set \code{options(digits.secs = 6)}.
 
 # Example 1. Read a single file
 
-vrl_file <- system.file("extdata", "detection_files_raw", 
-  "VR2W_109924_20110718_1.vrl", package="glatos")
+vrl_file <- system.file("extdata", "detection_files_raw",
+  "VR2W_109924_20110718_1.vrl",
+  package = "glatos"
+)
 
 temp_dir <- tempdir()
 
 csv_file <- vdat_convert(vrl_file, out_dir = temp_dir)
 
-#utils::browseURL(temp_dir)
+# utils::browseURL(temp_dir)
 
-#read all record types
+# read all record types
 vdat <- read_vdat_csv(csv_file)
 
-#read only one record type
+# read only one record type
 vdat <- read_vdat_csv(csv_file, record_types = c("DET"))
- 
+
 
 # Example 2. Read and combine detection records from multiple files
 
 # get two example files
 vrl_files <- system.file("extdata", "detection_files_raw",
-  c("VR2W_109924_20110718_1.vrl", 
-    "HR2-180 461396 2021-04-20 173145.vdat"), 
-  package="glatos")
+  c(
+    "VR2W_109924_20110718_1.vrl",
+    "HR2-180 461396 2021-04-20 173145.vdat"
+  ),
+  package = "glatos"
+)
 
 csv_files <- vdat_convert(vrl_files, out_dir = temp_dir)
 
@@ -74,35 +79,41 @@ csv_files <- vdat_convert(vrl_files, out_dir = temp_dir)
 
 library(dplyr)
 
-# basic steps: import each to list element, subset DET records, 
+# basic steps: import each to list element, subset DET records,
 #              add column with source file name, combine.
-               
-det2_tbl <- csv_files \%>\% 
-             lapply(
-               function(x) {
-                 read_vdat_csv(x, record_types = "DET")$DET \%>\% 
-                 as_tibble \%>\%
-                 mutate(source_file = basename(x))
-               }) \%>\% 
-             bind_rows
+
+det2_tbl <- csv_files \%>\%
+  lapply(
+    function(x) {
+      read_vdat_csv(x, record_types = "DET")$DET \%>\%
+        as_tibble() \%>\%
+        mutate(source_file = basename(x))
+    }
+  ) \%>\%
+  bind_rows()
 
 
-#using data.table
+# using data.table
 
 library(data.table)
 
 det2_dt <- rbindlist(
-             lapply(csv_files, 
-               function(x) {
-                read_vdat_csv(x, record_types = "DET")$DET[, 
-                  source_file := basename(x)]
-             }))
-             
+  lapply(
+    csv_files,
+    function(x) {
+      read_vdat_csv(x, record_types = "DET")$DET[
+        ,
+        source_file := basename(x)
+      ]
+    }
+  )
+)
+
 \dontrun{
 
 # get current version of digits.secs
 op_digits.secs <- options()$digits.secs
-  
+
 # set digits.secs = NULL (default, truncates to nearest second)
 options(digits.secs = NULL)
 
@@ -121,7 +132,6 @@ options(digits.secs = op_digits.secs)
 # or specify via format \%OSn e.g., when writing to disk or external database
 # see ?strptime
 format(vdat$DET$Time[2], format = "\%Y-\%m-\%d \%H:\%M:\%OS6")
-
 }
 
 }
