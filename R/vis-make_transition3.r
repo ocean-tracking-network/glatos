@@ -68,7 +68,7 @@
 #'
 #' # plot raster layer
 #' # notice land = 1, water = 0
-#' plot(terra::rast(tst$rast))
+#' raster::plot(tst$rast)
 #'
 #' # compare to polygon
 #' plot(sf::st_geometry(great_lakes_polygon), add = TRUE, fill = NA)
@@ -78,8 +78,7 @@
 #'
 #' # path to polygon shapefile
 #' poly <- system.file("extdata", "shoreline.zip", package = "glatos")
-#' poly <- unzip(poly, exdir = tempdir())
-#' poly <- sf::st_read(poly[grepl("*.shp", poly)])
+#' poly <- sf::st_read(paste0('/vsizip/', poly))
 #'
 #' # read in glatos receivers object
 #' rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
@@ -94,11 +93,11 @@
 #' # plot raster layer
 #' # notice the huge circle rasterized as "water"  north of Lake Superior.
 #' # This occurred because we had a "receiver" deployed at that locations
-#' plot(terra::rast(tst$rast))
+#' raster::plot(tst$rast)
 #' points(recs$deploy_long, recs$deploy_lat, col = "red", pch = 20)
 #'
 #' # plot transition layer
-#' plot(raster::raster(tst$transition))
+#' raster::plot(raster::raster(tst$transition))
 #'
 #' # Example 3- transition layer of Lake Huron only with receivers
 #'
@@ -143,7 +142,7 @@
 #' tst1 <- make_transition3(poly, res = c(0.01, 0.01), receiver_points = recs)
 #'
 #' # plot raster layer
-#' plot(terra::rast(tst1$rast))
+#' raster::plot(tst1$rast)
 #' plot(sf::st_transform(sf::st_geometry(recs), crs = 4326),
 #'   add = TRUE, col = "red", pch = 20
 #' )
