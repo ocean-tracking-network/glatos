@@ -3,7 +3,11 @@
 # glatos 0.8.0 (dev)
 
 
-### Bug fixes
+### Bug fixes and minor changes
+
+- Add `@srs` slot to `greatLakesTrLayer` data object and rename file 
+  'data/greatLakesTrLayer.rda'.
+    - fixes [issue #213](https://github.com/ocean-tracking-network/glatos/issues/213)
 
 - Fix bug in `read_glatos_workbook()` where timestamps during daylight savings 
   were shifted one hour on linux operating system (not an issue on windows or 

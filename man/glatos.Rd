@@ -2,6 +2,7 @@
 % Please edit documentation in R/package-glatos.r
 \docType{package}
 \name{glatos}
+\alias{-package}
 \alias{glatos}
 \title{An R package for the Great Lakes Acoustic Telemetry Observation System}
 \description{
