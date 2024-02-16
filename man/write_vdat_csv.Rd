@@ -58,6 +58,7 @@ Write a vdat_list object to disk in Innovasea Fathom VDAT CSV format
 Writing is done via \code{\link[data.table]{fwrite}}.
 }
 \examples{
+\dontrun{
 
 # Example 1. Read and write a single file
 
@@ -80,7 +81,7 @@ write_vdat_csv(vdat)
 
 # write to multiple files
 write_vdat_csv(vdat, output_format = "csv.fathom.split")
-
+}
 }
 \author{
 C. Holbrook (cholbrook@usgs.gov)

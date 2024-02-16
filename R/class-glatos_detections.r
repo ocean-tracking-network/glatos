@@ -73,6 +73,8 @@
 #' gd_tbl <- as_glatos_detections(x_tbl)
 #'
 #'
+#' # All below will error as invalid
+#'
 #' # data.frame input; missing column name
 #' library(dplyr) # for rename
 #' x2 <- rename(x,
@@ -80,8 +82,9 @@
 #'   det_date_time = detection_timestamp_utc
 #' )
 #'
-#' gd2 <- as_glatos_detections(x2)
-#'
+#' try(
+#'   gd2 <- as_glatos_detections(x2)
+#' )
 #'
 #' # data.frame input; wrong column class
 #' x3 <- mutate(x,
@@ -89,8 +92,9 @@
 #'   detection_timestamp_utc = as.character(detection_timestamp_utc)
 #' )
 #'
-#' gr3 <- as_glatos_detections(x3)
-#'
+#' try(
+#'   gr3 <- as_glatos_detections(x3)
+#' )
 #'
 #' # Validation and checking
 #'

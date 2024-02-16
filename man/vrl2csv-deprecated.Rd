@@ -64,7 +64,7 @@ vrl2csv(dirname(myVRL)) # directory input
 vrl2csv(myVRL) # file name input
 
 # setting 'overwrite=FALSE' will make new file with '_n'added to name
-vrl2csv(myVRL, overwrite = F)
+vrl2csv(myVRL, overwrite = FALSE)
 }
 
 }

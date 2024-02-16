@@ -31,11 +31,13 @@
 #' @author A. Nunes, \email{anunes@dal.ca}
 #'
 #' @examples
+#' \dontrun{
 #' # get path to example deployments file
 #' deployment_file <- system.file("extdata", "hfx_deployments.csv",
 #'   package = "glatos"
 #' )
 #' dep <- read_otn_deployments(deployment_file)
+#' }
 #'
 #' @importFrom lubridate parse_date_time
 #' @importFrom tidyr extract
