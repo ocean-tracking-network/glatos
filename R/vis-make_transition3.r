@@ -78,7 +78,7 @@
 #'
 #' # path to polygon shapefile
 #' poly <- system.file("extdata", "shoreline.zip", package = "glatos")
-#' poly <- sf::st_read(paste0('/vsizip/', poly))
+#' poly <- sf::st_read(paste0("/vsizip/", poly))
 #'
 #' # read in glatos receivers object
 #' rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
