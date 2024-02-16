@@ -173,7 +173,7 @@
 #' )
 #'
 #' # use empirical curve (edrf) in simulation
-#' dp <- receiver_line_det_sim(rngFun = edrf, nsim = 10, showPlot = T) # w/ optional plot
+#' dp <- receiver_line_det_sim(rngFun = edrf, nsim = 10, showPlot = TRUE) # w/ optional plot
 #' dp
 #'
 #' @export

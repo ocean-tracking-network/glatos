@@ -40,7 +40,6 @@ rounded down) to the nearest second. To maintain the full resolution
 present in the input Fathom CSV file, set \code{options(digits.secs = 6)}.
 }
 \examples{
-
 \dontrun{
 # Example 1. Read a single file
 
