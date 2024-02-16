@@ -41,6 +41,7 @@ present in the input Fathom CSV file, set \code{options(digits.secs = 6)}.
 }
 \examples{
 
+\dontrun{
 # Example 1. Read a single file
 
 vrl_file <- system.file("extdata", "detection_files_raw",
@@ -109,7 +110,6 @@ det2_dt <- rbindlist(
   )
 )
 
-\dontrun{
 
 # get current version of digits.secs
 op_digits.secs <- options()$digits.secs

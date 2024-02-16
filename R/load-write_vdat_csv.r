@@ -44,6 +44,7 @@
 #' @author C. Holbrook (cholbrook@@usgs.gov)
 #'
 #' @examples
+#' \dontrun{
 #'
 #' # Example 1. Read and write a single file
 #'
@@ -66,7 +67,7 @@
 #'
 #' # write to multiple files
 #' write_vdat_csv(vdat, output_format = "csv.fathom.split")
-#'
+#' }
 #' @export
 write_vdat_csv <- function(vdat,
                            record_types = NULL,

@@ -1,5 +1,5 @@
 #' Read data from an Innovasea Fathom VDAT CSV file
-#'
+#' 
 #' Read data from an Innovasea Fathom VDAT CSV file
 #'
 #' @param src A character string with path and name of an Innovasea VDAT CSV
@@ -34,8 +34,9 @@
 #'
 #' @examples
 #'
+#' \dontrun{
 #' # Example 1. Read a single file
-#'
+#' 
 #' vrl_file <- system.file("extdata", "detection_files_raw",
 #'   "VR2W_109924_20110718_1.vrl",
 #'   package = "glatos"
@@ -102,7 +103,6 @@
 #'   )
 #' )
 #'
-#' \dontrun{
 #'
 #' # get current version of digits.secs
 #' op_digits.secs <- options()$digits.secs
