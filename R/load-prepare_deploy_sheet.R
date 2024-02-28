@@ -27,12 +27,18 @@
 #' deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
 #'                         package = "glatos")
 #'
-#' deploy <- prepare_deploy_sheet(header_line, 5, 1)
+#' deploy <- prepare_deploy_sheet(deploy_path, 
+#'                                header_line = 1, 
+#'                                sheet_name = 1)
 #' 
 #' @export
 
 prepare_deploy_sheet <- function(path, header_line = 5, sheet_name = 1, combine_arr_stn = TRUE) {
-    deploy_sheet <- readxl::read_excel(path, sheet = sheet_name, skip = header_line)
+    deploy_sheet <- readxl::read_excel(path, 
+                                       sheet = sheet_name, 
+                                       skip = header_line - 1, 
+                                       col_names = TRUE)
+    
     deploy_sheet <- deploy_sheet %>% dplyr::rename(
         deploy_lat = DEPLOY_LAT,
         deploy_long = DEPLOY_LONG,

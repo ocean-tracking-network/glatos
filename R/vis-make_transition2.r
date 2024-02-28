@@ -1,4 +1,4 @@
-#' Create transition layer from a spatial polygon
+#' [Deprecated] Create transition layer from a spatial polygon
 #'
 #' Create transition layer for \link{interpolate_path} from
 #' \link[=SpatialPolygons]{SpatialPolygonsDataFrame}.
@@ -44,7 +44,6 @@
 #'
 #' @examples
 #'
-#' library(sp) #for loading greatLakesPoly
 #' library(raster) # for plotting rasters
 #'
 #' # get polygon of the Great Lakes
@@ -71,10 +70,19 @@
 #' plot(raster(tst1$transition))
 #' }
 #'
+#'
+#' @note This function has been deprecated and will be removed from the 
+#' next version of \code{glatos}. Use \code{\link{make_transition3}} instead.
+#' 
 #' @export
 
 make_transition2 <- function(poly, res = c(0.1, 0.1), extent_out = NULL,
                              x_lim = NULL, y_lim = NULL){
+  
+  # Function will be removed in next version
+  .Deprecated("make_transition3", 
+              msg = paste0("This function is deprecated and will be removed ",
+                           "in the next version"))  
   
   message("Making transition layer...")
   

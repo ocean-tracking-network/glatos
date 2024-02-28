@@ -5,7 +5,8 @@
 #Make list element for each version
 #pre-allocate table-level structure within each version
 glatos_detection_schema <- list(
-  "v1.3" = NA
+  "v1.3" = NA,
+  "v1.4" = NA
 )
 
 
@@ -51,6 +52,19 @@ glatos_detection_schema$v1.3 <- read.table(text = "
 #\Version 1.3
 #----------------------------------------------------
 
+#----------------------------------------------------
+#Version 1.4
+
+glatos_detection_schema$v1.4 <- rbind(glatos_detection_schema$v1.3,
+read.table(text = "
+  name                       type
+  record_status              character
+  ",
+ header = TRUE,
+ stringsAsFactors = FALSE))
+
+#\Version 1.4
+#-------------
 
 #add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")

@@ -14,8 +14,8 @@ system.file("extdata", "shoreline.zip", package="glatos")
 }
 \description{
 Polygon coastline of Great Lakes in WGS84
-  projection.  Includes outlines of Tittabawassee River (Lake
-  Huron), Maumee River (Lake Erie), and Sandusky River (Lake Erie)
+projection.  Includes outlines of Tittabawassee River (Lake
+Huron), Maumee River (Lake Erie), and Sandusky River (Lake Erie)
 }
 \section{Filename}{
  shoreline.zip

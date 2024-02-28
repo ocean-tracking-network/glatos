@@ -11,7 +11,7 @@ An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 2
 higgins_lake_polygon
 }
 \description{
-An sf POLYGON object with coastline of Higgins Lake, Michigan. 
+An sf POLYGON object with coastline of Higgins Lake, Michigan.
 Used as an example of a polygon representing a water body.
 }
 \author{

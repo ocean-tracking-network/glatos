@@ -12,46 +12,46 @@ calc_collision_prob(
 )
 }
 \arguments{
-\item{delayRng}{A 2-element numeric vector with minimum and maximum delay 
+\item{delayRng}{A 2-element numeric vector with minimum and maximum delay
 (time in seconds from end of one coded burst to beginning of next).}
 
-\item{burstDur}{A numeric scalar with duration (in seconds) of each coded 
+\item{burstDur}{A numeric scalar with duration (in seconds) of each coded
 burst (i.e., pulse train).}
 
 \item{maxTags}{A numeric scalar with maximum number of co-located
 transmitters (within detection range at same time).}
 
-\item{nTrans}{A numeric scalar with the number of transmissions to simulate 
+\item{nTrans}{A numeric scalar with the number of transmissions to simulate
 for each co-located transmitter.}
 }
 \value{
 A data frame containing summary statistics:
-  \item{nTags}{Number of tags within detection range at one time}
-  \item{min}{Minimum detection probability among simulated tags}
-  \item{q1}{First quartile of detection probabilities among simulated tags}
-  \item{median}{Median detection probability among simulated tags}
-  \item{q3}{Third quartile of detection probabilities among simulated tags}
-  \item{max}{Maximum detection probability among simulated tags}
-  \item{mean}{Mean detection probability among simulated tags}
-  \item{expDetsPerHr}{Expected number of detections per hour assuming 
-     perfect detection probability, given the number of tags within 
-     detection range}
-  \item{totDetsPerHr}{Observed number of detections per hour for a given 
-     number of tags}
-  \item{effDelay}{Eeffective delay of the transmitter after incorporating 
-     collisions}
-  \item{detsPerTagPerHr}{Mean number of detections per hour per tag}
+\item{nTags}{Number of tags within detection range at one time}
+\item{min}{Minimum detection probability among simulated tags}
+\item{q1}{First quartile of detection probabilities among simulated tags}
+\item{median}{Median detection probability among simulated tags}
+\item{q3}{Third quartile of detection probabilities among simulated tags}
+\item{max}{Maximum detection probability among simulated tags}
+\item{mean}{Mean detection probability among simulated tags}
+\item{expDetsPerHr}{Expected number of detections per hour assuming
+perfect detection probability, given the number of tags within
+detection range}
+\item{totDetsPerHr}{Observed number of detections per hour for a given
+number of tags}
+\item{effDelay}{Eeffective delay of the transmitter after incorporating
+collisions}
+\item{detsPerTagPerHr}{Mean number of detections per hour per tag}
 }
 \description{
-Estimate (by simulation) probability of collision for co-located telemetry 
-  transmitters with pulse-period-modulation type encoding
+Estimate (by simulation) probability of collision for co-located telemetry
+transmitters with pulse-period-modulation type encoding
 }
 \details{
 Calculates the detection probability associated with collision, given delay
-range (delayRng), burst duration (burstDur), maximum number of co-located 
+range (delayRng), burst duration (burstDur), maximum number of co-located
 tags (maxTags), and number of simulated transmission per tag (nTrans). The
 simulation estimates detection probability due only to collisions (i.e., when
-no other variables influence detection probability) and assuming that all 
+no other variables influence detection probability) and assuming that all
 tags are co-located at a receiver for the duration of the simulation.
 }
 \examples{
@@ -71,9 +71,9 @@ plot((1 - med)~nTags, data=foo, type='p', pch=20, ylim=c(0,1),
 \references{
 For application example, see: \cr\cr
 Binder, T.R., Holbrook, C.M., Hayden, T.A. and Krueger, C.C., 2016. Spatial and
-  temporal variation in positioning probability of acoustic telemetry arrays:
-  fine-scale variability and complex interactions. Animal Biotelemetry, 4(1):1.
-  \cr \url{http://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-016-0097-4}
+temporal variation in positioning probability of acoustic telemetry arrays:
+fine-scale variability and complex interactions. Animal Biotelemetry, 4(1):1.
+\cr \url{http://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-016-0097-4}
 }
 \author{
 C. Holbrook (cholbrook@usgs.gov) and T. Binder

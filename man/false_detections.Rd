@@ -8,7 +8,7 @@ false_detections(det, tf, min_lag_col = "min_lag", show_plot = FALSE, ...)
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by
-\link{read_glatos_detections}). 
+\link{read_glatos_detections}).
 
 \emph{OR:} A data frame with one column containing 'min_lag' which for each
 detection record, is the smallest time (in seconds) to the next closest
@@ -19,7 +19,7 @@ via \code{min_lag_col}; see below).
 \emph{OR} (\emph{if \code{min_lag} is missing}) A data farme containing
 detection data with the four columns described below. In that case,
 \code{min_lag} will be calculated using \link{min_lag}).
-\describe{ 
+\describe{
 \item{detection_timestamp_utc}{Detection timestamps; MUST be of class
 POSIXct.}
 \item{transmitter_codespace}{A character string with transmitter code space
@@ -29,47 +29,47 @@ POSIXct.}
 \item{receiver_sn}{A character vector with unique receiver serial number.}
 }}
 
-\item{tf}{A number indicating the time threshold (in seconds; e.g., 
-Pincock's (2012) "short interval") for identifying possible false 
+\item{tf}{A number indicating the time threshold (in seconds; e.g.,
+Pincock's (2012) "short interval") for identifying possible false
 detections.}
 
-\item{min_lag_col}{A character string containing the name of the column 
+\item{min_lag_col}{A character string containing the name of the column
 in \code{det} that contains 'min_lag'.}
 
-\item{show_plot}{Indicates if a plot should be displayed showing the 
-proportion of detections that exceed min_lag from min_lag = 1 to 
+\item{show_plot}{Indicates if a plot should be displayed showing the
+proportion of detections that exceed min_lag from min_lag = 1 to
 min_lag = 5 * tf.}
 
 \item{...}{Additional arguments passed to \link{plot}.}
 }
 \value{
-A data frame consisting of \code{det} with an additional 
-  column 'passed_filter' indicating if each detection did (1) or did not (0) 
-  pass the criteria.
+A data frame consisting of \code{det} with an additional
+column 'passed_filter' indicating if each detection did (1) or did not (0)
+pass the criteria.
 }
 \description{
 Identify possible false detections based on "short interval" criteria (e.g.,
 GLATOS 'min_lag') .
 }
 \details{
-Detections are identified as potentially false when 
-  \code{min_lag > tf}.
+Detections are identified as potentially false when
+\code{min_lag > tf}.
 
 A new column (\code{passed_filter}), indicating if each record (row)
 passed the filter, is added to the input data frame.
 
 This function was written specifically with GLATOS standard
-  detection export in mind, but if \code{min_lag} is absent and
-  \code{min_lag_col} is not specified, then \code{min_lag} will be calculated
-  using \link{min_lag}.
+detection export in mind, but if \code{min_lag} is absent and
+\code{min_lag_col} is not specified, then \code{min_lag} will be calculated
+using \link{min_lag}.
 
 A common rule of thumb for choosing \code{tf} for VEMCO PPM encoded
 transmitters is 30 times the nominal delay (e.g., 3600 s for a transmitter
 with a 120 s nominal delay) - see Pincock (2012).
 
 When \code{show_plot = TRUE} then the plot may be used to assess
-  sensitivity of the proportion of detections removed to the choice of
-  \code{tf}.
+sensitivity of the proportion of detections removed to the choice of
+\code{tf}.
 }
 \examples{
 #get path to example detection file
@@ -85,16 +85,16 @@ det <- false_detections(det, 3600, show_plot = TRUE)
 
 }
 \references{
-Pincock, D.G., 2012. False detections: what they are and how to remove them 
-    from detection data. Vemco Division, Amirix Systems Inc., Halifax, 
-    Nova Scotia.
-    \cr \url{http://www.vemco.com/pdf/false_detections.pdf}
+Pincock, D.G., 2012. False detections: what they are and how to remove them
+from detection data. Vemco Division, Amirix Systems Inc., Halifax,
+Nova Scotia.
+\cr \url{http://www.vemco.com/pdf/false_detections.pdf}
 
-Simpfendorfer, C.A., Huveneers, C., Steckenreuter, A., Tattersall, K., 
-    Hoenner, X., Harcourt, R. and Heupel, M.R., 2015. Ghosts in the data: 
-    false detections in VEMCO pulse position modulation acoustic telemetry 
-    monitoring equipment. Animal Biotelemetry, 3(1), p.55.
-    \cr \url{https://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-015-0094-z}
+Simpfendorfer, C.A., Huveneers, C., Steckenreuter, A., Tattersall, K.,
+Hoenner, X., Harcourt, R. and Heupel, M.R., 2015. Ghosts in the data:
+false detections in VEMCO pulse position modulation acoustic telemetry
+monitoring equipment. Animal Biotelemetry, 3(1), p.55.
+\cr \url{https://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-015-0094-z}
 }
 \seealso{
 \code{\link{min_lag}}

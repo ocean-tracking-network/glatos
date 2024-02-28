@@ -1,162 +1,155 @@
-#' Create an animated video of spatiotemporal path data
-#' 
-#' Create a set of frames (png image files) showing geographic location data
-#' (e.g., detections of tagged fish or interpolated path data) at discrete 
-#' points in time on top of a Great Lakes shapefile and optionally stitches
-#' frames into a video animation (mp4 file).    
+#'Create an animated video of spatiotemporal path data
+#'
+#'Create a set of frames (png image files) showing geographic location data
+#'(e.g., detections of tagged fish or interpolated path data) at discrete points
+#'in time on top of a Great Lakes shapefile and optionally stitches frames into
+#'a video animation (mp4 file).
 #'
 #'
-#' @param proc_obj A data frame created by
-#'   \code{\link{interpolate_path}} function or a data frame containing
-#'   'animal_id', 'bin_timestamp', 'latitude', 'longitude', and
-#'   'record_type'
-#'   
-#' @param recs An optional data frame containing at least four columns with
-#'   receiver 'deploy_lat', 'deploy_long', 'deploy_date_time', and
-#'   'recover_date_time'. Other columns in object will be ignored.
-#'   Default column names match GLATOS standard receiver location file
-#'   \cr(e.g., 'GLATOS_receiverLocations_yyyymmdd.csv').
+#'@param proc_obj A data frame created by [interpolate_path()] function or a
+#'  data frame containing 'animal_id', 'bin_timestamp', 'latitude', 'longitude',
+#'  and 'record_type'
 #'
-#' @param out_dir A character string with file path to directory where 
-#'   individual frames for animations will be written. Default is working
-#'   directory.
-#'   
-#' @param background_ylim Vector of two values specifying the min/max values 
-#' 	 for y-scale of plot. Units are degrees.
-#' 	 
-#' @param background_xlim Vector of two values specifying the min/max values 
-#'   for x-scale of plot. Units are degrees.
-#'   
-#' @param show_interpolated Boolean. Default (TRUE) include interpolated points.
-#'   
-#' @param animate Boolean. Default (TRUE) creates video animation by calling 
-#'   \code{\link{make_video}} with \code{output = ani_name}. Default values 
-#'   are used for all other arguments. See Details below.
-#' 
-#' @param ani_name Character string with name and extension of animation output
-#'   video file. Full path is optional. If file name only (no path), then the
-#'   output video is written to 'out_dir' (same as images). To write to working
-#'   directory, use "./" prefix (e.g., \code{ani_name = "./animation.mp4"}. If
-#'   \code{animate = TRUE}, the path and filename are passed to
-#'   \code{\link{make_video}}.
-#'   
-#' @param frame_delete Boolean.  Default (\code{frame_delete = TRUE}) delete
-#'   individual image frames after animation is created
-#'   
-#' @param overwrite Overwite the animation (output video) file if it already
-#'   exists. Default (\code{overwrite = FALSE}) prevents file from being
-#'   overwritten and will result in error if the file exists. Passed to
-#'   \code{\link{make_video}} if \code{animate = TRUE}.
-#'   
-#' @param ffmpeg DEPRECATED. As of glatos v. 0.4.1, \code{make_frames} calls 
-#'   a version of \code{\link{make_video}} that does not use the external 
-#'   program ffmpeg.exe.  
+#'@param recs An optional data frame containing at least four columns with
+#'  receiver 'deploy_lat', 'deploy_long', 'deploy_date_time', and
+#'  'recover_date_time'. Other columns in object will be ignored. Default column
+#'  names match GLATOS standard receiver location file (e.g.,
+#'  'GLATOS_receiverLocations_yyyymmdd.csv').
 #'
-#' @param tail_dur contains the duration (in same units as
-#'   \code{proc_obj$bin_timestamp}; see \code{\link{interpolate_path}}) of
-#'   trailing points in each frame. Default value is 0 (no trailing points). A
-#'   value of \code{Inf} will show all points from start.
+#'@param out_dir A character string with file path to directory where individual
+#'  frames for animations will be written. Default is working directory.
 #'
-#' @param preview write first frame only.  Useful for checking output before
-#'   processing large number of frames.  Default \code{preview = FALSE}
-#'   
-#' @param bg_map A spatial points, lines, or polygons object.
-#' 
-#' @param show_progress Logical. Progress bar and status messages will be 
-#'  shown if TRUE (default) and not shown if FALSE.
+#'@param background_ylim Vector of two values specifying the min/max values for
+#'  y-scale of plot. Units are degrees.
 #'
-#' @param ... Optional graphing parameters for customizing elments of 
-#'  fish location points, receiver location points, timeline, and 
-#'  slider (moves along the timeline). See also \strong{Note} section.
-#' 
-#' \strong{\emph{To customize fish location points (from
-#' \code{proc_obj}):}} Add any argument that can be passed to
-#' \link[graphics]{points}. The following values will create the default plot:
-#' \itemize{
-#' \item{\code{cex:}}{ symbol size; default = 2}
-#' \item{\code{col:}}{ symbol color; default = "blue"}
-#' \item{\code{pch:}}{ symbol type; default = 16}
-#' }
-#' 
-#' \strong{\emph{To customize receiver location points (from
-#' \code{recs}):}} Add add prefix
-#' \code{recs.} to any argument that can be passed to \link[graphics]{points}.
+#'@param background_xlim Vector of two values specifying the min/max values for
+#'  x-scale of plot. Units are degrees.
+#'
+#'@param show_interpolated Boolean. Default (TRUE) include interpolated points.
+#'
+#'@param animate Boolean. Default (TRUE) creates video animation by calling
+#'  [make_video()] with `output = ani_name`. Default values are used for all
+#'  other arguments. See Details below.
+#'
+#'@param ani_name Character string with name and extension of animation output
+#'  video file. Full path is optional. If file name only (no path), then the
+#'  output video is written to 'out_dir' (same as images). To write to working
+#'  directory, use "./" prefix (e.g., `ani_name = "./animation.mp4"`. If
+#'  `animate = TRUE`, the path and filename are passed to [make_video()].
+#'
+#'@param frame_delete Boolean.  Default (`frame_delete = TRUE`) delete
+#'  individual image frames after animation is created
+#'
+#'@param overwrite Overwite the animation (output video) file if it already
+#'  exists. Default (`overwrite = FALSE`) prevents file from being overwritten
+#'  and will result in error if the file exists. Passed to [make_video()] if
+#'  `animate = TRUE`.
+#'
+#'@param tail_dur contains the duration (in same units as
+#'  `proc_obj$bin_timestamp`; see [interpolate_path()]) of trailing points in
+#'  each frame. Default value is 0 (no trailing points). A value of `Inf` will
+#'  show all points from start.
+#'
+#'@param preview write first frame only.  Useful for checking output before
+#'  processing large number of frames.  Default `preview = FALSE`
+#'
+#'@param bg_map A sf points, lines, or polygons object.  Spatial `sp` objects will be converted to `sf`
+#'
+#'@param show_progress Logical. Progress bar and status messages will be shown
+#'  if TRUE (default) and not shown if FALSE.
+#'
+#'@param ... Optional graphing parameters for customizing elements of fish
+#'  location points, receiver location points, timeline, and slider (moves along
+#'  the timeline). See also **Details** and **Note** sections.
+#'
+#'@details
+#'
+#' ***To customize fish location points (from `proc_obj`):*** Add any argument 
+#' that can be passed to [points][graphics::points]. 
 #' The following values will create the default plot:
 #' \itemize{
-#' \item{\code{recs.cex:}}{ symbol size; default = 1.5}
-#' \item{\code{recs.pch:}}{ symbol type; default = 16}
+#' \item{`cex:`}{ symbol size; default = 2}
+#' \item{`col:`}{ symbol color; default = "blue"}
+#' \item{`pch:`}{ symbol type; default = 16}
 #' }
-#'  
-#' \strong{\emph{To customize timeline:}} Add add prefix \code{timeline.} to any
-#' argument of \link[graphics]{axis}.  Note all elements of the timeline except
-#' the sliding symbol (see 'slider' below) are created by a call to \code{axis}.
-#' The following values will create the default plot:
+#'
+#' ***To customize receiver location points (from `recs`):*** Add prefix
+#'  `recs.` to any argument that can be passed to [points][graphics::points].
+#'  The following values will create the default plot:
 #' \itemize{
-#' \item{\code{timeline.at:}}{ a sequence with locations of labels (with first
+#' \item{`recs.cex:`}{ symbol size; default = 1.5}
+#' \item{`recs.pch:`}{ symbol type; default = 16}
+#' }
+#'
+
+#' ***To customize timeline:*** Add add prefix `timeline.` to any
+#'  argument of [axis][graphics::axis].  Note all elements of the timeline
+#'  except the sliding symbol (see 'slider' below) are created by a call to
+#'  `axis`. The following values will create the default plot:
+#' \itemize{
+#' \item{`timeline.at:`}{ a sequence with locations of labels (with first
 #' and last being start and end) along x-axis; in units of longitude; by default
 #' this will center the timeline with five equally-spaced labels in the middle
-#' 80\% of background_xlim.}
-#' \item{\code{timeline.pos:}}{ location along the y-axis; in units of latitude;
-#' by default this will place the timeline up from the bottom 6\% of the range
-#' of \code{background_ylim}}
-#' \item{\code{timeline.labels:}}{ text used for labels; default =
-#' format(labels, "\%Y-\%m-\%d"), where labels are values of proc_obj$bin_timestamp}
-#' \item{\code{timeline.col:}}{ color of line; default = "grey70"} 
-#' \item{\code{timeline.lwd:}}{ width of line; default = 20 times the aspect
+#' 80% of background_xlim.}
+#' \item{`timeline.pos:`}{ location along the y-axis; in units of latitude;
+#' by default this will place the timeline up from the bottom 6% of the range
+#' of `background_ylim`}
+#' \item{`timeline.labels:`}{ text used for labels; default =
+#' `format(labels, "\%Y-\%m-\%d")`, where labels are values of proc_obj$bin_timestamp}
+#' \item{`timeline.col:`}{ color of line; default = "grey70"}
+#' \item{`timeline.lwd:`}{ width of line; default = 20 times the aspect
 #' ratio of the plot device}
-#' \item{\code{timeline.cex.axis:}}{size of labels; default = 2}
+#' \item{`timeline.cex.axis:`}{size of labels; default = 2}
 #' }
-#'  
-#' \strong{\emph{To customize time slider (symbol that slides):}} Add prefix
-#' \code{timeline.} to any argument that can be passed to
-#' \link[graphics]{points}. The following values will create the default plot:
-#' \itemize{
-#' \item{\code{timeslider.bg:}}{ a single value with symbol bg color; default =
-#' "grey40"} 
-#' \item{\code{timeslider.cex:}}{ a single value with symbol size; default = 2}
-#' \item{\code{timeslider.col:}}{ a single value with symbol type; default =
-#' "grey20"}
-#' \item{\code{timeslider.pch:}}{ a single value with symbol type; default = 21}
-#' }
-#' 
-#' \strong{\emph{To customize parameters controlled by \code{par}:}} Add prefix
-#' \code{par.} to any argument that can be passed to \link[graphics]{par}. Note
-#' that \code{par.mar} controls whitespace behind default timeslider. The
-#' following values will create the default plot:
-#' \itemize{
-#' \item{\code{par.oma}}{ plot outer margins; default = c(0,0,0,0)}
-#' \item{\code{par.mar}}{ plot inner margins; default = c(6,0,0,0)}
-#' }
-#' 
-#' 
-#' @details If \code{animate = TRUE} then the animation output file name
-#'   (\code{ani_name} argument) will be passed to the \code{output} argument in
-#'   \code{\link{make_video}}. Default values for all other
-#'   \code{\link{make_video}} arguments will be used. Note that the default
-#'   frame rate is 24 frames per second (\code{framerate} argument in
-#'   \code{\link{make_video}}), which will determine the total length (duration)
-#'   of the output video. For example, a video containing 240 images (frames)
-#'   will run for 10 seconds at these default parameters. Note that output video
-#'   duration, dimensions (size), and other ouput video characteristics can be
-#'   modified by calling \code{\link{make_video}} directly. To do this, set
-#'   \code{animate = FALSE} and then use \code{\link{make_video}} to create a
-#'   video from the resulting set of images.
-#'    
-#' 
-#' @return Sequentially-numbered png files (one for each frame) and 
-#'   one mp4 file will be written to \code{out_dir}.
-#' 
-#' @author Todd Hayden, Tom Binder, Chris Holbrook
 #'
-#' @note
-#' \emph{Customizing plot elements with input argument `\code{...}`}\cr
-#' The option to allow customization of plot elements with input argument 
-#' \code{...} provides a great deal of flexibility, but users will need to 
-#' be familiar with each associated graphics functions (e.g., 
-#' \link[graphics]{axis} for timeline arguments). We expect that this will 
-#' require some trial and error and that input argument \code{preview = TRUE} 
-#' will be useful while exploring optional plot arguments. 
-#' 
+#' ***To customize time slider (symbol that slides):*** Add prefix
+#'  `timeline.` to any argument that can be passed to
+#'  [points][graphics::points]. The following values will create the default
+#'  plot:
+#' \itemize{
+#' \item{`timeslider.bg:`}{ a single value with symbol bg color; default =
+#' "grey40"}
+#' \item{`timeslider.cex:`}{ a single value with symbol size; default = 2}
+#' \item{`timeslider.col:`}{ a single value with symbol type; default =
+#' "grey20"}
+#' \item{`timeslider.pch:`}{ a single value with symbol type; default = 21}
+#' }
+#'
+#' ***To customize parameters controlled by `par`:*** Add prefix
+#'  `par.` to any argument that can be passed to [par][graphics::par]. Note that
+#'  `par.mar` controls whitespace behind default timeslider. The following
+#'  values will create the default plot:
+#' \itemize{
+#' \item{`par.oma`}{ plot outer margins; default = c(0,0,0,0)}
+#' \item{`par.mar`}{ plot inner margins; default = c(6,0,0,0)}
+#' }
+#'
+#'@details If `animate = TRUE` then the animation output file name (`ani_name`
+#'  argument) will be passed to the `output` argument in [make_video()]. Default
+#'  values for all other [make_video()] arguments will be used. Note that the
+#'  default frame rate is 24 frames per second (`framerate` argument in
+#'  [make_video()]), which will determine the total length (duration) of the
+#'  output video. For example, a video containing 240 images (frames) will run
+#'  for 10 seconds at these default parameters. Note that output video duration,
+#'  dimensions (size), and other ouput video characteristics can be modified by
+#'  calling [make_video()] directly. To do this, set `animate = FALSE` and then
+#'  use [make_video()] to create a video from the resulting set of images.
+#'
+#'
+#'@return Sequentially-numbered png files (one for each frame) and one mp4 file
+#'  will be written to `out_dir`.
+#'
+#'@author Todd Hayden, Tom Binder, Chris Holbrook
+#'
+#'@note
+#' *Customizing plot elements with input argument ``...``*
+#'The option to allow customization of plot elements with input argument `...`
+#'provides a great deal of flexibility, but users will need to be familiar with
+#'each associated graphics functions (e.g., [axis][graphics::axis] for timeline
+#'arguments). We expect that this will require some trial and error and that
+#'input argument `preview = TRUE` will be useful while exploring optional plot
+#'arguments.
+#'
 #'
 #' @examples
 #'
@@ -166,15 +159,15 @@
 #' det_file <- system.file("extdata", "walleye_detections.csv",
 #'                          package = "glatos")
 #' dtc <- read_glatos_detections(det_file)
-#' 
+#'
 #' # take a look
 #' head(dtc)
-#'  
+#'
 #' # load receiver location data
-#' rec_file <- system.file("extdata", 
+#' rec_file <- system.file("extdata",
 #'   "sample_receivers.csv", package = "glatos")
 #' recs <- read_glatos_receivers(rec_file)
-#' 
+#'
 #' # call with defaults; linear interpolation
 #' pos1 <- interpolate_path(dtc)
 #'
@@ -182,48 +175,39 @@
 #' myDir <- paste0(getwd(),"/frames1")
 #' make_frames(pos1, recs=recs, out_dir=myDir, preview = TRUE)
 #'
-#' # make frames but not animation 
+#' # make frames but not animation
 #' myDir <- paste0(getwd(),"/frames2")
 #' make_frames(pos1, recs=recs, out_dir=myDir, animate = FALSE)
-#' 
-#' # make sequential frames, and animate.  Make animation and frames.
-#' #change default color of fish markers to red and change marker and size.
+#'
+#' # make sequential frames, and animate.
+#' # change default color of fish markers to red and change marker and size.
 #' myDir <- paste0(getwd(), "/frames3")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, 
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE,
 #'             ani_name = "animation3.mp4", col="red", pch = 16, cex = 3)
 #'
 #' # make sequential frames, animate, add 5-day tail
 #' myDir <- paste0(getwd(), "/frames4")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, 
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE,
 #'             ani_name = "animation4.mp4", tail_dur=5)
-#' 
+#'
 #' # make animation, remove frames.
 #' myDir <- paste0(getwd(), "/frames5")
-#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE, 
+#' make_frames(pos1, recs=recs, out_dir=myDir, animate = TRUE,
 #'             ani_name = "animation5.mp4", frame_delete = TRUE)
 #'
 #'}
 #'
-#' @export
+#'@export
 
 make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         background_ylim = c(41.3, 49.0),
                         background_xlim = c(-92.45, -75.87),
                         show_interpolated = TRUE, tail_dur = 0, animate = TRUE,
                         ani_name = "animation.mp4", frame_delete = FALSE,
-                        overwrite = FALSE, ffmpeg = NA, preview = FALSE, 
+                        overwrite = FALSE, preview = FALSE, 
                         bg_map = NULL, show_progress = TRUE, ...){
   
-  #handle deprecated ffmpeg path argument
-  if(!missing(ffmpeg)) warning("As of glatos v 0.4.1, make_frames() and ",
-                               "make_video() no longer use ",
-                               "the external program ffmpeg. See ?make_video ",
-                               " for details. ",
-                               "Input argument 'ffmpeg' has been ",
-                               "ignored in this call and will be removed ",
-                               "in a future version of make_frames().",
-                               call. = FALSE)
-
+  #NOTE: As of glatos v 0.4.1, the package no longer uses the external program ffmpeg.  Input argument 'ffmpeg' has been removed"
   
   #expand path to animation output file
   # - place in same file as images (out_dir) if none specified
@@ -383,16 +367,24 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
 
   # Load background (use example Great Lakes if null)
   if(is.null(bg_map)){
-    background <- greatLakesPoly #example in glatos package
+    background <- great_lakes_polygon #example in glatos package
   } else { 
-    background <- bg_map 
-    #if not equal to default or NULL, then set to extent of bg_map
-    if(is.null(background_ylim) | all(background_ylim == c(41.3, 49.0))) background_ylim <- 
-                                              as.numeric(bbox(bg_map)[ "y", ])
-    if(is.null(background_xlim) | all(background_xlim == c(-92.45, -75.87))) background_xlim <- 
-        as.numeric(bbox(bg_map)[ "x", ])
-  }
+    background <- bg_map
 
+    if(inherits(background, "Spatial")){
+      background <- sf::st_as_sf(background)
+      message("Converted sp object to sf")
+    }
+
+    # if x and y limits are equal to default, then set limits to extent of bg_map
+    # if x and y limits are not equal to default, then leave as specified in input arguments.
+    if(missing(background_ylim) | all(background_ylim == c(41.3, 49.0))) 
+      background_ylim <- as.numeric(sf::st_bbox(bg_map)[c("ymin", "ymax")])
+    
+    if(missing(background_xlim) | all(background_xlim == c(-92.45, -75.87))) 
+      background_xlim <- as.numeric(sf::st_bbox(bg_map)[c("xmin", "xmax")])
+  }
+    
   # turn off interpolated points if show_interpolated = FALSE
   if(!show_interpolated){
     work_proc_obj[record_type == "interpolated", latitude := NA]
@@ -408,11 +400,15 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
 
     # Calculate great circle distance in meters of x and y limits.
     # needed to determine aspect ratio of the output
-    linear_x = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
-                                    c(.background_xlim[2], .background_ylim[1]))
-    linear_y = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
-                                    c(.background_xlim[1], .background_ylim[2]))
-    
+    # old version, new below, needs tested
+    #linear_x = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
+    #                                c(.background_xlim[2], .background_ylim[1]))
+    #linear_y = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
+    #                                c(.background_xlim[1], .background_ylim[2]))
+
+    linear_x = geodist::geodist_vec(x1 = .background_xlim[1], y1 = .background_ylim[1], x2 = .background_xlim[2], y2 = .background_ylim[1], measure = "haversine")
+    linear_y = geodist::geodist_vec(x1 = .background_xlim[1], y1 = .background_ylim[1], x2 = .background_xlim[1], y2 = .background_ylim[2], measure = "haversine")
+
     # aspect ratio of image
     figRatio <- linear_y / linear_x
 
@@ -434,8 +430,8 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     
     do.call(par, par_args)
 
-    # Note call to plot with sp
-    sp::plot(.background, ylim = c(.background_ylim), 
+    # Note this call was changed to sf?
+    plot(sf::st_geometry(.background), ylim = c(.background_ylim), 
              xlim = c(.background_xlim),
              axes = FALSE, lwd = 2*figRatio, col = "white", bg = "gray74")
 

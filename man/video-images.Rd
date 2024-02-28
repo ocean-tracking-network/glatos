@@ -14,7 +14,7 @@ system.file("extdata", "frames", package="glatos")
 }
 \description{
 Sequential images of walleye movements in Lake Huron
-  for testing functionality of ffmpeg function.
+for testing functionality of ffmpeg function.
 }
 \section{Filename}{
  frames
