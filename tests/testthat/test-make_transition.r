@@ -41,6 +41,7 @@ trl1_trns_shouldBe <- readRDS(file.path(testdata_dir,
 trl2_trns_shouldBe <- readRDS(file.path(testdata_dir, 
                                         "flynn_island_transition.rds"))
 
+#raster::plot(trl2$rast)
 
 # Drop names from rasters (to omit from comparisons)
 trl1$rast@file@name <- NA_character_

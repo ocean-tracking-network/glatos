@@ -19,16 +19,16 @@ abacus_plot(
 }
 \arguments{
 \item{det}{A \code{glatos_detections} object (e.g., produced by
- \link{read_glatos_detections}) containing detections to be plotted.
+\link{read_glatos_detections}) containing detections to be plotted.
 
- \emph{OR} A data frame containing detection data with at least two columns,
- one of which must be named 'detection_timestamp_utc', described below, and
- another column containing a location grouping variable, whose name is
- specified by \code{location_col} (see below).
+\emph{OR} A data frame containing detection data with at least two columns,
+one of which must be named 'detection_timestamp_utc', described below, and
+another column containing a location grouping variable, whose name is
+specified by \code{location_col} (see below).
 
- The following column must appear in \code{det}: \describe{
- \item{\code{detection_timestamp_utc}}{Detection timestamps; MUST be of class
- POSIXct.} }}
+The following column must appear in \code{det}: \describe{
+\item{\code{detection_timestamp_utc}}{Detection timestamps; MUST be of class
+POSIXct.} }}
 
 \item{location_col}{A character string indicating the column name in
 \code{det} that will be used as the location grouping variable (e.g.
@@ -47,18 +47,18 @@ indicating whether or not to display receiver status behind detection data
 (\code{receiver_history}) must be supplied. Default is FALSE.}
 
 \item{receiver_history}{An optional \code{glatos_receivers} object (e.g.,
- produced by \link{read_glatos_receivers}) containing receiver history data
- for plotting receiver status behind the detection data when
- \code{receiver_history} is not \code{NULL}.
+produced by \link{read_glatos_receivers}) containing receiver history data
+for plotting receiver status behind the detection data when
+\code{receiver_history} is not \code{NULL}.
 
- \emph{OR} An optional data frame containing receiver history data for
- plotting receiver status behind the detection data.
+\emph{OR} An optional data frame containing receiver history data for
+plotting receiver status behind the detection data.
 
- The following column must be present: \describe{
- \item{\code{deploy_date_time}}{Receiver deployment timestamps; MUST be of
- class POSIXct.} \item{\code{recover_date_time}}{Receiver recovery
- timestamps; MUST be of class POSIXct.} \item{a grouping column whose name is
- specified by \code{location_col}}{See above.} }}
+The following column must be present: \describe{
+\item{\code{deploy_date_time}}{Receiver deployment timestamps; MUST be of
+class POSIXct.} \item{\code{recover_date_time}}{Receiver recovery
+timestamps; MUST be of class POSIXct.} \item{a grouping column whose name is
+specified by \code{location_col}}{See above.} }}
 
 \item{out_file}{An optional character string with the name (including
 extension) of output image file to be created. File extension will determine
@@ -78,7 +78,7 @@ followed by "s". E.g., "10 days", "weeks", "4 weeks", etc. See
 \link[base]{seq.Date}.}
 
 \item{x_format}{Format of the x-axis tick mark labels (major ticks only; minor
-ticks are not supported). Default is "%Y-%m-%d". Any valid
+ticks are not supported). Default is "\%Y-\%m-\%d". Any valid
 \link[base]{strptime} specification should work.}
 
 \item{outFile}{Deprecated. Use \code{out_file} instead.}
@@ -90,7 +90,7 @@ is specified, it must be a two-element vector of POSIXct.}
 }
 \value{
 An image to the default plot device or a file containing the image if
- \code{out_file} is specified.
+\code{out_file} is specified.
 }
 \description{
 Plot detection locations of acoustic transmitters over time.
@@ -99,22 +99,22 @@ Plot detection locations of acoustic transmitters over time.
 NAs are not allowed in any of the two required columns.
 
 The locations vector is used to control which locations will appear
- in the plot and in what order they will appear. If no locations vector is
- supplied, the function will plot only those locations that appear in the
- \code{det} data frame and the order of locations on the y-axis will be
- alphebetical from top to bottom.
+in the plot and in what order they will appear. If no locations vector is
+supplied, the function will plot only those locations that appear in the
+\code{det} data frame and the order of locations on the y-axis will be
+alphebetical from top to bottom.
 
 By default, the function does not distinguish detections from
- different transmitters and will therefore plot all transmitters the same
- color. If more than one fish is desired in a single plot, a vector of colors
- must be passed to the function using the 'col =' argument. The color vector
- must be the same length as the number of rows in the detections data frame
- or the colors will be recycled.
+different transmitters and will therefore plot all transmitters the same
+color. If more than one fish is desired in a single plot, a vector of colors
+must be passed to the function using the 'col =' argument. The color vector
+must be the same length as the number of rows in the detections data frame
+or the colors will be recycled.
 
 Plotting options (i.e., line width and color) can be changed using
- optional graphical parameters
- \url{http://www.statmethods.net/advgraphs/parameters.html} that are passed
- to "points" (see ?points).
+optional graphical parameters
+\url{http://www.statmethods.net/advgraphs/parameters.html} that are passed
+to "points" (see ?points).
 }
 \examples{
 #get path to example detection file

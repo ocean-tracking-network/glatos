@@ -7,7 +7,7 @@
 glatos_receivers(x)
 }
 \arguments{
-\item{x}{A data.frame or data.table created from a standard glatos 
+\item{x}{A data.frame or data.table created from a standard glatos
 receiver_location file.}
 }
 \value{
@@ -18,6 +18,6 @@ Constructor function for the class glatos_receivers.
 Currently barebones and only used inside read_glatos_receivers.
 }
 \note{
-This function may be developed in the future to dictate conversion 
+This function may be developed in the future to dictate conversion
 constuction from a data frame.
 }

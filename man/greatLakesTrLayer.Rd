@@ -3,7 +3,7 @@
 \docType{data}
 \name{greatLakesTrLayer}
 \alias{greatLakesTrLayer}
-\title{A TransitionLayer object that only allows transitions to occur within 
+\title{A TransitionLayer object that only allows transitions to occur within
 water of the Great Lakes Basin.}
 \format{
 An object of class \code{TransitionLayer} of dimension 692 x 504 x 1.
@@ -12,9 +12,9 @@ An object of class \code{TransitionLayer} of dimension 692 x 504 x 1.
 greatLakesTrLayer
 }
 \description{
-A TransitionLayer object that only allows transitions to occur 
-within water (i.e., prohibits movement onto land). This dataset was 
-developed for non-linear interpolation of fish movement paths from telemetry 
+A TransitionLayer object that only allows transitions to occur
+within water (i.e., prohibits movement onto land). This dataset was
+developed for non-linear interpolation of fish movement paths from telemetry
 data and is used by default in \link{interpolate_path}.
 }
 \seealso{

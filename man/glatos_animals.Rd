@@ -7,17 +7,17 @@
 glatos_animals(x)
 }
 \arguments{
-\item{x}{A data.frame or data.table created from a standard GLATOS 
+\item{x}{A data.frame or data.table created from a standard GLATOS
 workbook file.}
 }
 \value{
 A data.frame of class \code{glatos_animals}:
 }
 \description{
-Constructor function for the class glatos_animals. Currently barebones 
+Constructor function for the class glatos_animals. Currently barebones
 and only used inside read_glatos_workbook.
 }
 \note{
-This function may be developed in the future to dictate conversion 
+This function may be developed in the future to dictate conversion
 constuction from a data frame.
 }

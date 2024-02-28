@@ -1,7 +1,105 @@
 ----
+
+# glatos 0.7.2 (2024-02-25)
+
+
+### Bug fixes
+
+
+- Fixed bug in `summarize_detections()` where value in `locations` output 
+  column was name of input column (e.g. "glatos_array"), rather than values 
+  from that column (e.g., "AGR", "BBI").
+    - fixed [issue #182](https://github.com/ocean-tracking-network/glatos/issues/182)
+    - cherry-picked from [commit 182]( https://github.com/ocean-tracking-network/glatos/commit/db9d69a3d08a97e7b8f86e0d4977aa0909776ddd)
+      which was merged with dev but not main.
+  
+
+----
+
+# glatos 0.7.1 (2024-01-19)
+
+
+### Bug fixes and minor changes
+
+
+- Fix bug introduced in glatos 0.7.0 where x and y limits were switched 
+  when `bg_map` was supplied.
+    - Add test for various inputs of `background_xlim`, `background_ylim`, and 
+      `bg_map` to function `make_frames`.
+  
+    
+----
+
+# glatos 0.7.0 (2024-01-04)
+
+
+### Bug fixes and minor changes
+
+- Remove dependence on `rgeos` and `rgdal`.
+
+- This package now requires R >= 3.5.0 because serialized objects in
+     serialize/load version 3 cannot be read in older versions of R.
+     File(s) containing such objects:
+       'glatos/inst/testdata/flynn_island_transition.rds'
+       'glatos/inst/testdata/higgins_lake_transition.rds'
+       'glatos/inst/testdata/test-detect_transmissions-dtc_spout.rds'
+       'glatos/inst/testdata/test-transmit_along_path-tr_dfin_spout.rds'
+       
+- Deprecate `make_transition` and `make_transition2`; suggest `make_transition3` 
+  instead.
+
+- Deprecate data object `greatLakesPoly`; suggest `great_lakes_polygon` 
+  instead.
+
+- `prepare_deploy_sheet`: 
+    - Set 'skip = header_line - 1' and 'col_names = TRUE' to retain first 
+      record and column names (read_excel ignores column names, unless set, 
+      when skip is set).
+    - Fix non-working example code.
+
+- `convert_otn_to_att` and `convert_otn_erddap_to_att`:
+    - Replaced `sp::CRS` with `sf::st_crs`
+    - Changed link (URL) to relevant issue from GitLab to GitHub repo.
+
+- Remove ffmpeg functions.
+    - make defunct: 
+        - `check_dependencies`
+        - `install_ffmpeg`
+        - `make_video_ffmpeg`
+
+- Fix issues with several tests caused by changes to CRS/WKT and row.names 
+  attributes.
+    
+
+
+
+
+----
+
+# glatos 0.6.5 (2023-09-07)
+
+### Bug fixes 
+
+- Fix bug in summarize_detections() where setting 'location_col' triggers error.
+    - fixes [issue #180](https://github.com/ocean-tracking-network/glatos/issues/180)
+
+
+----
+
+# glatos 0.6.4 (2023-09-06)
+
+### Bug fixes and minor changes
+
+- Add support for new column named 'record_status' in GLATOS detection export CSV.
+    - fix [issue #179](https://github.com/ocean-tracking-network/glatos/issues/179)
+
+
+
+----
+
 # glatos 0.6.3 (2023-01-25)
 
-# Bug fixes and minor changes
+### Bug fixes and minor changes
 
 - Add support for new GLATOS receiver_locations file format; with code_map and 
 code_map_comment columns.
@@ -9,26 +107,29 @@ code_map_comment columns.
 
 
 ----
+
 # glatos 0.6.2 (2022-10-25)
 
-# Bug fixes and minor changes
+### Bug fixes and minor changes
 
 - Fix error in `position_heat_map()` function resulting in `Error in 
 zip_internal... Some files do not exist`. Update documentation.
 
 
 ----
+
 # glatos 0.6.1
 
 #### 2022-10-11
 
-# Minor changes
+### Minor changes
 
 - Allow `sf` `MUTLIPOLYGON` geometry type for input `polyg` to `crw_in_polygon()`.
     
 - Use new function `check_cross_boundary()` instead of `check_in_polygon` to prevent paths crossing land (e.g., over peninsulas) in `crw_in_polygon()`.
 
 ----
+
 # glatos 0.6.0
 
 #### 2022-06-24

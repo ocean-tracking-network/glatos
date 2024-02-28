@@ -3,7 +3,7 @@
 \docType{data}
 \name{great_lakes_polygon}
 \alias{great_lakes_polygon}
-\title{An sf POLYGON object with Great Lakes coastline and some major 
+\title{An sf POLYGON object with Great Lakes coastline and some major
 tributaries.}
 \format{
 An object of class \code{sf} (inherits from \code{data.frame}) with 4 rows and 9 columns.
@@ -13,7 +13,7 @@ great_lakes_polygon
 }
 \description{
 Created from \code{\link{greatLakesPoly}}. This is used as a
-  default map background in several \link{glatos} functions.
+default map background in several \link{glatos} functions.
 }
 \author{
 Todd Hayden (coerced to sf by C. Holbrook)

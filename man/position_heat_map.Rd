@@ -101,17 +101,17 @@ part is ignored (via \code{basename}). Any file extension is also ignored
 }
 \value{
 A list object containing 1) a matrix of the calculated values (i.e.,
- fish, positions, intervals), with row and column names indicating location
- of each grid in UTM, 2) a character string specifying the UTM zone of the
- data in the matrix, 3) the bounding box of the data in UTM, 4) and the
- bounding box of the data in latitude (Y) and longitude (X), 5) a character
- string displaying the function call (i.e., a record of the arguments passed
- to the function).
+fish, positions, intervals), with row and column names indicating location
+of each grid in UTM, 2) a character string specifying the UTM zone of the
+data in the matrix, 3) the bounding box of the data in UTM, 4) and the
+bounding box of the data in latitude (Y) and longitude (X), 5) a character
+string displaying the function call (i.e., a record of the arguments passed
+to the function).
 
 In addition, the user specifies an image output for displaying the
- heat map. Options are a "plot" (displayed in R), "png" (png file saved to
- specified folder), and "kmz" for viewing the png image as an overlay in
- Google Earth (kmz file saved to specified folder).
+heat map. Options are a "plot" (displayed in R), "png" (png file saved to
+specified folder), and "kmz" for viewing the png image as an overlay in
+Google Earth (kmz file saved to specified folder).
 }
 \description{
 Create heat maps to display the spatial distribution of acoustic telemetry
@@ -120,30 +120,30 @@ VPS positional telemetry data.
 }
 \details{
 When an 'interval' argument is supplied, the number of unique fish x
- interval combinations that occurred in each grid cell is calculated instead
- of raw number of positions. For example, in 4 hours there are a total of 4
- 1-h intervals. If fish 'A' was positioned in a single grid cell during 3 of
- the 4 intervals, than the number of intervals for that fish and grid
- combination is 3. Intervals are determined by applying the
- \link[base]{findInterval} function (base R) to a sequence of timestamps
- (class: POSIXct) created using seq(from = min(positions[, DATETIME]), to =
- min(positions[, DATETIME]), by = interval), where interval is the
- user-assigned interval duration in seconds. Number of intervals is a more
- robust surrogate than number of positions for relative time spent in each
- grid in cases where spatial or temporal variability in positioning
- probability are likely to significantly bias the distribution of positions
- in the array.
+interval combinations that occurred in each grid cell is calculated instead
+of raw number of positions. For example, in 4 hours there are a total of 4
+1-h intervals. If fish 'A' was positioned in a single grid cell during 3 of
+the 4 intervals, than the number of intervals for that fish and grid
+combination is 3. Intervals are determined by applying the
+\link[base]{findInterval} function (base R) to a sequence of timestamps
+(class: POSIXct) created using seq(from = min(positions\link{, DATETIME}), to =
+min(positions\link{, DATETIME}), by = interval), where interval is the
+user-assigned interval duration in seconds. Number of intervals is a more
+robust surrogate than number of positions for relative time spent in each
+grid in cases where spatial or temporal variability in positioning
+probability are likely to significantly bias the distribution of positions
+in the array.
 
 Calculated values (i.e., fish, positions, intervals) can be returned
- as absolute or relative, which is specified using the abs_or_rel argument;
- "absolute" is the actual value, "relative" is the absolute value divided by
- the total number of fish appearing in the 'positions' dataframe. Units for
- plots: fish = number of unique fish (absolute) or \% of total fish in
- 'positions' dataframe (relative); positions = number of positions (absolute)
- or mean number of positions per fish in 'positions' dataframe (relative);
- intervals = number of unique fish x interval combinations (absolute) or
- mean number of unique fish x interval combinations per fish in 'positions'
- dataframe (relative).
+as absolute or relative, which is specified using the abs_or_rel argument;
+"absolute" is the actual value, "relative" is the absolute value divided by
+the total number of fish appearing in the 'positions' dataframe. Units for
+plots: fish = number of unique fish (absolute) or \\% of total fish in
+'positions' dataframe (relative); positions = number of positions (absolute)
+or mean number of positions per fish in 'positions' dataframe (relative);
+intervals = number of unique fish x interval combinations (absolute) or
+mean number of unique fish x interval combinations per fish in 'positions'
+dataframe (relative).
 }
 \examples{
 data(lamprey_tracks)

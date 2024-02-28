@@ -7,12 +7,18 @@
 get_days(dets, calculation_method = "kessel", time_interval_size = "1 day")
 }
 \arguments{
-\item{dets}{- data frame pulled from the detection events}
+\item{dets}{\itemize{
+\item data frame pulled from the detection events
+}}
 
-\item{calculation_method}{- determines which method above will be used to
-count total time and location time}
+\item{calculation_method}{\itemize{
+\item determines which method above will be used to
+count total time and location time
+}}
 
-\item{time_interval_size}{- size of time interval}
+\item{time_interval_size}{\itemize{
+\item size of time interval
+}}
 }
 \description{
 Wrapper method for the calulation methods above.

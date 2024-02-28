@@ -11,9 +11,9 @@ An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 2
 flynn_island_polygon
 }
 \description{
-An sf POLYGON object with coastline of Flynn Island; and 
-island within Higgins Lake, Michigan. 
-Used as an example of a polygon representing a body of land (as opposed to 
+An sf POLYGON object with coastline of Flynn Island; and
+island within Higgins Lake, Michigan.
+Used as an example of a polygon representing a body of land (as opposed to
 water body).
 }
 \author{

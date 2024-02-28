@@ -2,7 +2,7 @@
 % Please edit documentation in R/vis-make_transition2.r
 \name{make_transition2}
 \alias{make_transition2}
-\title{Create transition layer from a spatial polygon}
+\title{\link{Deprecated} Create transition layer from a spatial polygon}
 \usage{
 make_transition2(
   poly,
@@ -33,10 +33,10 @@ are NULL (default).}
 \value{
 A list with two elements:
 \describe{
-   \item{transition}{a geo-corrected transition raster layer where land = 0
-      and water=1
-  (see \code{gdistance})}
-   \item{rast}{rasterized input layer of class \code{raster}}}
+\item{transition}{a geo-corrected transition raster layer where land = 0
+and water=1
+(see \code{gdistance})}
+\item{rast}{rasterized input layer of class \code{raster}}}
 }
 \description{
 Create transition layer for \link{interpolate_path} from
@@ -44,19 +44,22 @@ Create transition layer for \link{interpolate_path} from
 }
 \details{
 \code{make_transition} uses \link[raster]{rasterize} to convert a
-  \link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
-  geo-corrected transition layer \link[gdistance]{transition}.  Raster cell
-  values on land = 0 and water = 1.
+\link[=SpatialPolygons]{SpatialPolygonsDataFrame} into a raster layer, and
+geo-corrected transition layer \link[gdistance]{transition}.  Raster cell
+values on land = 0 and water = 1.
 
 output transition layer is corrected for projection
-  distortions using \link[gdistance]{geoCorrection}.  Adjacent
-  cells are connected by 16 directions and transition function
-  returns 0 (land) for movements between land and water and 1 for
-  all over-water movements.
+distortions using \link[gdistance]{geoCorrection}.  Adjacent
+cells are connected by 16 directions and transition function
+returns 0 (land) for movements between land and water and 1 for
+all over-water movements.
+}
+\note{
+This function has been deprecated and will be removed from the
+next version of \code{glatos}. Use \code{\link{make_transition3}} instead.
 }
 \examples{
 
-library(sp) #for loading greatLakesPoly
 library(raster) # for plotting rasters
 
 # get polygon of the Great Lakes
@@ -82,6 +85,7 @@ plot(tst1$rast)
 # plot transition layer
 plot(raster(tst1$transition))
 }
+
 
 }
 \seealso{
