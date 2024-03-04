@@ -1,0 +1,185 @@
+---
+title: "Estimate Detection Range for 
+                      Acoustic Telemetry Receivers"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimate Detection Range for 
+                      Acoustic Telemetry Receivers}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+#set 'str' options to desired output format
+str_opts <- getOption("str") #get list of options
+str_opts$strict.width = "wrap"
+str_opts$vec.len = 1
+options(str = str_opts)
+
+#set 'width'
+options(width = 85)
+```
+
+\pagebreak
+# Objectives 
+
+This vignette describes methods to quickly and easily calculate the distance 
+that a given percentage (e.g., 50%) of detections are heard by a receiver to 
+estimate detection range. 
+
+The preliminary study design/protocol is the following:
+
+1) Deploy range tags (e.g., min delay 840, max delay 960; continuous tags or tags with other delays work as well) at set distances (e.g., 100, 250, 500, and 750 m) from the receiver you are wanting to range test for 24 hr. 
+
+2) After 24 hr retrieve transmitters and receivers. 
+
+3) Import vrl files, receiver locations, and tag location data into [Fathom Central](https://fathomcentral.com/signin). Unfortunately you will need internet to do this. If you are unable to use internet you can download an older version of the detection efficiency software produced by Innovasea and import the vrl and receiver and tag location data. The manual for this software is quite good and will walk you through how to get your data into the detection efficiency tool. You can download the older version at the following [Innovasea website](https://support.vemco.com/s/downloads). 
+
+4) Calculate the detection efficiency for each distance over the 24 hr using detection range calculator either linked above or in fathom central and export the csv. 
+
+5) Use the exported csv to estimate the detection efficiency at a given distance using using `detection_range_model()` from `{glatos}`. The function, `detection_range_model()`, will return an estimate of distance for a given  detection effiency (e.g., 50%). 
+
+6) We can use R, Python, or GIS to create deployment latitude and longitude for range tags to be deployed at the distance the model estimates will produce the desired detection efficiency (e.g., 50%). 
+
+7) We can easily redeploy our range tags at the distances the model estimates will produce the desired detection efficiency for a  duration (e.g., 6 month, 1 year), to determine changes in detection efficiency over the study period.  
+
+The code below will walk through how to use the detection efficiency data produced by Innovasea software to estimate the distance and create the redeployment location. 
+
+# Code procedues
+
+### Load packages and data 
+We will first load the desired packages in R. We will load [{dplyr}]() for data manipulation processes,[{ggplot2}]() to plot our models, [{glatos}]() to use multiple functions associated with acoustic telemetry, and [{sf}]() to work with spatial data including creating the redeployment locations. 
+```{r load packages, message = FALSE}
+# ---- Bring in R packages ---- 
+{
+  library(dplyr)
+  library(ggplot2)
+  library(glatos)
+  library(sf)
+}
+```
+
+Next we will bring in our example data which is loaded with `{glatos}` but you will need to replace `sample_detection_efficiency` with your data frame either by loading the csv produced by Innovasea software. You can do this multiple ways, I prefer using readr::read_csv() but base R works perfectly fine.  
+
+```{r, results='hide'}
+#| title: evaluate data 
+
+# uncomment the lines below to bring in your data and replace with 
+# the file path and name of detection efficiency 
+# file (replace "YOUR_DET_EFF.csv")
+# 
+# det_eff <- readr::read_csv("YOUR_DET_EFF.csv")
+#
+# glimpse(det_eff)
+
+# view sample detection efficiency data 
+
+sample_detection_efficiency
+
+glimpse(sample_detection_efficiency)
+```
+
+### Get distances for a given detection efficency
+
+Next we will use `detection_range_model()` to produce estimated distances for particular percentage (e.g., 50%). You will want to look through the help page for the function to make sure you're setting upe the model correctly. 
+
+Few additional tips: 
+
+1) With fewer data points a third order polynomial often fits the data better, however, this does not mean that neither a logit or probit model should not be assessed as well.
+
+2) If a third order polynomial model is selected, the formula call 
+can be in two different formats. The preferred and default format is
+`y ~ -1 + x + I(x ^ 2) + I(x ^ 3) + offset(y-intercept)`, therefore, `model_frame` argument needs to be set `"data_frame"` to properly extract
+parameters and determine distances from a receiver for the percentage 
+of interest. If using the `base::poly()` in the formula such as, 
+`y ~ -1 + poly(x, 3, raw = TRUE) + offset(y-intercept)`, then, `model_frame` argument needs to be set to `"matrix"`.
+Both formula formats have `offset()` which sets the  y-intercept. 
+The y-intercept needs to be set to 100, as x needs to equal 0 m from a receiver 
+because you expect to hear a tag 100% of the time.
+
+3) A third order polynomial will handle preliminary detection efficiency 
+percentages (y variable) as whole numbers as the model is not bound by 
+0 and 1. While both logit and probit models have to use percentages as 
+decimals as the models are bound by 0 and 1. 
+
+First a third order polynominal 
+```{r}
+#| title: use detection_range_model
+
+# third order polynomial: # ave_percent is a whole number
+m <- detection_range_model(avg_percent ~ -1 + distance_m + I(distance_m ^ 2) + 
+                             I(distance_m ^ 3) + offset(intercept), 
+                           data = sample_detection_efficiency, 
+                           percentage = c(10, 50, 90), 
+                           link = "polynomial", 
+                           model_frame = "data_frame")
+```
+
+Second, a logit and probit model 
+```{r, warning=FALSE}
+# logit model: aver percent is in decimal form
+
+m1 <- detection_range_model(avg_percent_d ~ distance_m, 
+                            data = sample_detection_efficiency, 
+                            percentage = c(10, 50, 90), 
+                            link = "logit",
+                            summary_stats = TRUE)
+
+# probit model: aver percent is in decimal form
+
+m2 <- detection_range_model(avg_percent_d ~ distance_m, 
+                            data = sample_detection_efficiency, 
+                            percentage = c(10, 50, 90), 
+                            link = "probit",
+                            summary_stats = TRUE)
+```
+
+We can then view each of the results with the first being the third order polynomial 
+```{r}
+m
+```
+
+Then logit
+```{r}
+m1
+```
+
+Then probit
+```{r}
+m2
+```
+
+### Plot all three models 
+
+```{r, warning = FALSE, message = FALSE}
+#| fig-height: 5
+#| fig-width: 7
+ggplot() +
+  geom_point(data = sample_detection_efficiency,
+             aes(x = distance_m, y = avg_percent_d)) +
+  geom_smooth(data = sample_detection_efficiency,
+              aes(x = distance_m, y = avg_percent_d), 
+              method = "glm",
+              method.args = list(family = binomial(link = "logit")),
+              colour = "#FF0000", se = FALSE) + 
+  geom_smooth(data = sample_detection_efficiency,
+              aes(x = distance_m, y = avg_percent_d), 
+              method = "glm",
+              method.args = list(family = binomial(link = "probit")),
+              colour = "blue", se = FALSE) + 
+  theme_bw(base_size = 15) + 
+  theme(
+    panel.grid = element_blank()
+  ) + 
+  labs(
+    x = "Distance (m)", 
+    y = "Detection efficency (%)"
+  )
+
+```
+
