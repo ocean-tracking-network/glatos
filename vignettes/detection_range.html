@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Estimate Detection Range for Acoustic Telemetry Receivers</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Estimate Detection Range for Acoustic
+Telemetry Receivers</h1>
+
+
+
+<div style="page-break-after: always;"></div>
+<div id="objectives" class="section level1">
+<h1>Objectives</h1>
+<p>This vignette describes methods to quickly and easily calculate the
+distance that a given percentage (e.g., 50%) of detections are heard by
+a receiver to estimate detection range.</p>
+<p>The preliminary study design/protocol is the following:</p>
+<ol style="list-style-type: decimal">
+<li><p>Deploy range tags (e.g., min delay 840, max delay 960; continuous
+tags or tags with other delays work as well) at set distances (e.g.,
+100, 250, 500, and 750 m) from the receiver you are wanting to range
+test for 24 hr.</p></li>
+<li><p>After 24 hr retrieve transmitters and receivers.</p></li>
+<li><p>Import vrl files, receiver locations, and tag location data into
+<a href="https://fathomcentral.com/signin">Fathom Central</a>.
+Unfortunately you will need internet to do this. If you are unable to
+use internet you can download an older version of the detection
+efficiency software produced by Innovasea and import the vrl and
+receiver and tag location data. The manual for this software is quite
+good and will walk you through how to get your data into the detection
+efficiency tool. You can download the older version at the following <a href="https://support.vemco.com/s/downloads">Innovasea
+website</a>.</p></li>
+<li><p>Calculate the detection efficiency for each distance over the 24
+hr using detection range calculator either linked above or in fathom
+central and export the csv.</p></li>
+<li><p>Use the exported csv to estimate the detection efficiency at a
+given distance using using <code>detection_range_model()</code> from
+<code>{glatos}</code>. The function,
+<code>detection_range_model()</code>, will return an estimate of
+distance for a given detection effiency (e.g., 50%).</p></li>
+<li><p>We can use R, Python, or GIS to create deployment latitude and
+longitude for range tags to be deployed at the distance the model
+estimates will produce the desired detection efficiency (e.g.,
+50%).</p></li>
+<li><p>We can easily redeploy our range tags at the distances the model
+estimates will produce the desired detection efficiency for a duration
+(e.g., 6 month, 1 year), to determine changes in detection efficiency
+over the study period.</p></li>
+</ol>
+<p>The code below will walk through how to use the detection efficiency
+data produced by Innovasea software to estimate the distance and create
+the redeployment location.</p>
+</div>
+<div id="code-procedues" class="section level1">
+<h1>Code procedues</h1>
+<div id="load-packages-and-data" class="section level3">
+<h3>Load packages and data</h3>
+<p>We will first load the desired packages in R. We will load <a href>{dplyr}</a> for data manipulation processes,<a href>{ggplot2}</a> to plot our models, <a href>{glatos}</a> to use
+multiple functions associated with acoustic telemetry, and <a href>{sf}</a> to work with spatial data including creating the
+redeployment locations.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># ---- Bring in R packages ---- </span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>{</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="fu">library</span>(glatos)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="fu">library</span>(sf)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>}</span></code></pre></div>
+<p>Next we will bring in our example data which is loaded with
+<code>{glatos}</code> but you will need to replace
+<code>sample_detection_efficiency</code> with your data frame either by
+loading the csv produced by Innovasea software. You can do this multiple
+ways, I prefer using readr::read_csv() but base R works perfectly
+fine.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># uncomment the lines below to bring in your data and replace with </span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># the file path and name of detection efficiency </span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># file (replace &quot;YOUR_DET_EFF.csv&quot;)</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># det_eff &lt;- readr::read_csv(&quot;YOUR_DET_EFF.csv&quot;)</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># glimpse(det_eff)</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co"># view sample detection efficiency data </span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>sample_detection_efficiency</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="fu">glimpse</span>(sample_detection_efficiency)</span></code></pre></div>
+</div>
+<div id="get-distances-for-a-given-detection-efficency" class="section level3">
+<h3>Get distances for a given detection efficency</h3>
+<p>Next we will use <code>detection_range_model()</code> to produce
+estimated distances for particular percentage (e.g., 50%). You will want
+to look through the help page for the function to make sure you’re
+setting upe the model correctly.</p>
+<p>Few additional tips:</p>
+<ol style="list-style-type: decimal">
+<li><p>With fewer data points a third order polynomial often fits the
+data better, however, this does not mean that neither a logit or probit
+model should not be assessed as well.</p></li>
+<li><p>If a third order polynomial model is selected, the formula call
+can be in two different formats. The preferred and default format is
+<code>y ~ -1 + x + I(x ^ 2) + I(x ^ 3) + offset(y-intercept)</code>,
+therefore, <code>model_frame</code> argument needs to be set
+<code>&quot;data_frame&quot;</code> to properly extract parameters and determine
+distances from a receiver for the percentage of interest. If using the
+<code>base::poly()</code> in the formula such as,
+<code>y ~ -1 + poly(x, 3, raw = TRUE) + offset(y-intercept)</code>,
+then, <code>model_frame</code> argument needs to be set to
+<code>&quot;matrix&quot;</code>. Both formula formats have <code>offset()</code>
+which sets the y-intercept. The y-intercept needs to be set to 100, as x
+needs to equal 0 m from a receiver because you expect to hear a tag 100%
+of the time.</p></li>
+<li><p>A third order polynomial will handle preliminary detection
+efficiency percentages (y variable) as whole numbers as the model is not
+bound by 0 and 1. While both logit and probit models have to use
+percentages as decimals as the models are bound by 0 and 1.</p></li>
+</ol>
+<p>First a third order polynominal</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># third order polynomial: # ave_percent is a whole number</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">detection_range_model</span>(avg_percent <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> distance_m <span class="sc">+</span> <span class="fu">I</span>(distance_m <span class="sc">^</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                             <span class="fu">I</span>(distance_m <span class="sc">^</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">offset</span>(intercept), </span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>                           <span class="at">data =</span> sample_detection_efficiency, </span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>                           <span class="at">percentage =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">90</span>), </span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>                           <span class="at">link =</span> <span class="st">&quot;polynomial&quot;</span>, </span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>                           <span class="at">model_frame =</span> <span class="st">&quot;data_frame&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; Warning: Check if your formula is correct for the model_frame argument</span></span></code></pre></div>
+<p>Second, a logit and probit model</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># logit model: aver percent is in decimal form</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">detection_range_model</span>(avg_percent_d <span class="sc">~</span> distance_m, </span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>                            <span class="at">data =</span> sample_detection_efficiency, </span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>                            <span class="at">percentage =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">90</span>), </span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>                            <span class="at">link =</span> <span class="st">&quot;logit&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>                            <span class="at">summary_stats =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># probit model: aver percent is in decimal form</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">detection_range_model</span>(avg_percent_d <span class="sc">~</span> distance_m, </span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>                            <span class="at">data =</span> sample_detection_efficiency, </span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>                            <span class="at">percentage =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">90</span>), </span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>                            <span class="at">link =</span> <span class="st">&quot;probit&quot;</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>                            <span class="at">summary_stats =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>We can then view each of the results with the first being the third
+order polynomial</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>m</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 19</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;       p distance    df chi_square      pgof     a  a_se a_sig        b     b_se b_sig</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; 1    10      634     4      1304. 4.20e-281 0.202 0.183 0.332 -0.00136 0.000753 0.145</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; 2    50      371     4      1304. 4.20e-281 0.202 0.183 0.332 -0.00136 0.000753 0.145</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; 3    90      217     4      1304. 4.20e-281 0.202 0.183 0.332 -0.00136 0.000753 0.145</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; # ℹ 8 more variables: d &lt;dbl&gt;, d_se &lt;dbl&gt;, d_sig &lt;dbl&gt;, offset &lt;dbl&gt;,</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; #   resid_se &lt;dbl&gt;, r2 &lt;dbl&gt;, adj_r2 &lt;dbl&gt;, aic &lt;dbl&gt;</span></span></code></pre></div>
+<p>Then logit</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>m1</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 14</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;       p distance    df chi_square  pgof   slope slope_se slope_sig intercept</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; 1    10     503.     5      0.751 0.980 -0.0165   0.0155     0.287      6.08</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; 2    50     369.     5      0.751 0.980 -0.0165   0.0155     0.287      6.08</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; 3    90     236.     5      0.751 0.980 -0.0165   0.0155     0.287      6.08</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; # ℹ 5 more variables: intercept_se &lt;dbl&gt;, intercept_sig &lt;dbl&gt;, z_value &lt;dbl&gt;,</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; #   null_deviance &lt;dbl&gt;, aic &lt;dbl&gt;</span></span></code></pre></div>
+<p>Then probit</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>m2</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 14</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt;       p distance    df chi_square  pgof    slope slope_se slope_sig intercept</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; 1    10     521.     5      0.864 0.973 -0.00815  0.00664     0.220      2.97</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; 2    50     364.     5      0.864 0.973 -0.00815  0.00664     0.220      2.97</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; 3    90     207.     5      0.864 0.973 -0.00815  0.00664     0.220      2.97</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; # ℹ 5 more variables: intercept_se &lt;dbl&gt;, intercept_sig &lt;dbl&gt;, z_value &lt;dbl&gt;,</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; #   null_deviance &lt;dbl&gt;, aic &lt;dbl&gt;</span></span></code></pre></div>
+</div>
+<div id="plot-all-three-models" class="section level3">
+<h3>Plot all three models</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> sample_detection_efficiency,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> distance_m, <span class="at">y =</span> avg_percent_d)) <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">data =</span> sample_detection_efficiency,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">x =</span> distance_m, <span class="at">y =</span> avg_percent_d), </span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>              <span class="at">method =</span> <span class="st">&quot;glm&quot;</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>              <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;logit&quot;</span>)),</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>              <span class="at">colour =</span> <span class="st">&quot;#FF0000&quot;</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">data =</span> sample_detection_efficiency,</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">x =</span> distance_m, <span class="at">y =</span> avg_percent_d), </span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>              <span class="at">method =</span> <span class="st">&quot;glm&quot;</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>              <span class="at">method.args =</span> <span class="fu">list</span>(<span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>)),</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>              <span class="at">colour =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>    <span class="at">panel.grid =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Distance (m)&quot;</span>, </span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Detection efficency (%)&quot;</span></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAHgCAMAAABNUi8GAAABKVBMVEUAAAAAADoAAGYAAP8AOjoAOmYAOpAAZrYzMzM6AAA6OgA6Ojo6OmY6Zjo6ZmY6ZpA6ZrY6kLY6kNtNTU1NTW5NTY5NbqtNjshmAABmAGZmOgBmOjpmOmZmZgBmZjpmZmZmZpBmkJBmkLZmkNtmtttmtv9uTU1uTW5uTY5ubm5uq+SOTU2OyP+QOgCQZjqQZmaQZpCQZraQkJCQtraQttuQ2/+rbk2rjk2r5P+2ZgC2Zjq2ZpC2kDq2kGa2kJC2kLa2tpC2tra2ttu227a229u22/+2/9u2///Ijk3I/8jI///bkDrbkGbbtmbbtpDbtrbb25Db27bb29vb2//b///kq27k////AAD/tmb/yI7/25D/27b/29v/5Kv//7b//8j//9v//+T///9TSdyVAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAXSElEQVR4nO2dCVsUSZqAs1rRrsFpHEuFxd7WdTy2QXR3Wllx7ZlmVkdWR3ulrS4KBIr8/z9iM/Koyrvyzjje99EiK4Ew4Hn9vrgywrIBJMbquwIAeSAoSA2CgtQgKEgNgoLUIChIDYKC1CAoSE2Dgn4L0BStCNpcUWA4CApSg6AgNQgKUoOgIDUIClKDoCA1CApSg6AgNQgKUoOgIDWlBT399/fB5XQ0uvkycpEoFKAeZQU9374VCDp1pBR/FxfJQgHqUVJQJ1YGgl7sbjmvB+uLi5RCAepRTtDpaGsaCHr66InzOr71fn6RUihAPUq3QReCPn7pvZ1fpBQKUI/qgnqtTud1fuGWF11kClCPpgWNFZpg4lG+omAmXaf4Sx6TMOVrDcZQQ9BKnaRLKeApZFJd0FrDTDmeoiuEqC5ocwP1OZ6WKwj0o5qgF7siXo6DGc5xI1OdIUnteW8KTw1HvsUiC0ftmKZ4aiDyCSoIh1IBkhqLnILa4YS/uIej5iGtoB4JR21CqVlILqggK5AiqQkoIKidFkjJ94aghqACJDUSdQS1Fx2n8D0c1ZuOBbWsuv8MgdQsuhXUsuobmusokuqGioLagaOxmziqIYoKauOoISjXBg2RqqiNolqhVC8+SaqiOKoRigtKGNUd5QXNUtRGUS3QQFA7L9N3XRNoGD0E9RRN3kVR5dFF0AxFyfOqo4+geT36HmoDzaCRoHl5HkdVRStBUVQ/NBM0w1C6S8qim6Aoqhn6CZrRWcJQNdFQUIKoTmgpaKaiGKocmgpKntcFXQUliGqCvoKiqBboLCiGaoA+gqY+TZKtaOv1gUbQRtCM5/EIooqju6Cuoil3MVQR9BeUIKo02gia80QzhiqMPoLmQV9JWcwQFEOVxRBBc/pKndcEymCMoPTm1cQcQXkyWUkMEpSGqIqYJCgNUQUxS1AMVQ7DBMVQ1TBN0ExDO68IFMI4QTM7893XBApgnqCZu4z1UBVYioGCpqd5DJUTIwXFUHUwU1AMVQZDBcVQVTBVUAxVBGMFxVA1MFdQDFUCgwXFUBUwWVAMVQCjBcVQ+TFbUAyVHsMFzTC0h4pAOqYLiqGSY7ygaYaS5OUBQTFUahAUQ6UGQe0MQ/uoCCRAUAGGSguCutCVlxUE9cBQSUFQj9Th0B7qATEQ1IdmqJwgaACGSgmCzsFQGUHQBRgqIQgago6SfCBoGEKodCBoGJK8dCBoBAyVDQSNkmZoH/UAHwSNkTSUENonCBoHQ6UiR9BPz1aH1mD13psahapIRUOzD7OFGmQJOns1FOdbr4qXwf0vVQtVkkodpezjwKEOGYJ+HFprz39zL7/+cscaPPDvT0ejmy/nly5P7PNt8XE9rVA1qdJRQtB2SBV0thMNmrOfh1fc91PHzmlgqOB82/Hy9HHoTrRQNamS5BG0HVIFPfvPeE6f/fc75/Vid8t5PQjFyvGt94624iW9UEVJMXTp9+BnK5TqxZ8+emL7UgY3hLHj9djXKS9o0lB68j1RTlA3l4cC5oF7efCj0wTdSi1UWRhrkoR8QWefnt17vkj3XvNz0Qg9395yX2//7ljqGfqtS2vV7Y4KSR5aIFfQY3eoafAieB8XNNxfCjdEdRA0YSghtBfyBJ3trB0eHn5+eiWIofEUfyBCZ/A5t30aL1RlEob2Uw3DSR9m8kZAz/7lXeiDnegkeRk++FxorEkPQW1CqASkDzNtXHtriwj6Jyd2zl7PI2hsmMkPmt4H7VI8SV4K0lP8yR1rzVH0yB19th7O70cH6oMr19iDUDTVRFCSvARktUFPNoWiJ89WV++9Dd0ee1OdF7vCyXmuP3BnPNMKVZyYoYTQ7snuJH3etK7/VrdQ1cHQvsnrxX9yFC25jileqPKQ5HsmM8Xv778Vig6qKKqToITQfkkX9GxTdI5W3tn2xz+UXg2qlaAJQ3uqhrGkC7q38tPh4S+bV8X1x+E37+LfVbhQDYgaSgjtmPRx0MgI/exvZUOoVoLaJPk+yRiod1fQf7xSqYuknaAk+R5JT/EfLGt11bJu1C5UC0jyPZLRi/90Z3X12vP6heoBhvYHz8UXIWZoxlfx0EcLIGghioRQHptrg/RO0vdvY1928n2ZoSYNBS1gKIK2QVYnaS2s6Mkd63q1QrWhQJJH0DbISPHHm9bg3t8PbXt2+OvTobXyIvGNxQrVh2IhtJu6mERmG/TTphWwUrY7r6WghfpJ0DQ5naTZL3fvrF6791P50XodBY0aylBTV9CLLwyDoX2AoIUhyfcBghaHJN8DCFoCknz3IGgJSPLdg6BlIMl3DoKWghDaNZmCnv1HfD6+SqG6QQjtmmxBN6zBWkVH9RUUQ7smO8V//XkoDviosneDxoLGDO2tGsaQ2wat6qjOgtqE0E5Z1kn6+vMfLOvyg9TPFShUQwihnbJEUNdP589Kqdao1oJGDCWEtk2eoG6GX3n+xZ69sko9gay3oCT5LskUdOa1Pz0vzzZK7S6iu6Ak+e7IGWYKjTKd3Vkjgi4gyXdHdgQ9bKJQTSGEdgZTnVUghHZGnqAnf/niJPfyuy/qL2jU0P6qYQDZgs52LKdndLbhbhNatVBtCRlKCG2TbEH3rJU3zofZnnW1eqH6Qgjthrxe/Av/wuwNbDMghHZDjqC+lwiaTtjQHquhO3kpXpwzZ89ek+LTQdAuyBb0eGgNvrv7wzB02nH5QnVmEULJ8e2RM8x08tTd+KbCqmUzBA0b2mc19CZ/oP7rYaWz5gwR1CaEtg8zSTUghLZPjqCfn616XKMXn8HcUEJoW2QLejTffpFhpkwWhvZaDY3JXs20Y12teNixQYLahNCWWT5QX6tQ7SGEtgyC1iQwlBDaDnkzSQ/rF2oAhNBWyRb0ZGNw/9CF5+LzIIS2St7WN/TiC0EIbZPsXvyzuwH3zD6OexmE0DZhJqk+DDW1yBJBq42EmiYoSb498s5J+nnoND/Pvi+92s40QUnyLZL70NxlIegG60GXQghtjWxBP1g33MH6I1bUL4UQ2ho5c/GDF66gPJNUAEJoW+ROdSJoUQihbbE8gh4PS229GC3UGAihLZE3F++2QcWyu+qFGgMhtCWyBT3btC4PB38clp/pNFHQhaH9VkM78sZBX3lPdbJ5WCEIoa2w7KnOSruEmikoIbQNmItvDN9QQmijsD9oc2BoC7A/aIOQ5JuH/UEbhBDaPOwP2iSBoT1XQyfYH7RRCKFNw/6gjUIIbRr2B20Wz1BCaGOwP2jDEEKbhf1BG4YQ2izpgn79zZ3mPGTjhvIQQhslVVBvsTIbN1SCENooqYLOnt37wsYNVfEN7bsampCe4n8t3zFKL9RICKENkpniRRStX6iREEIbJKcNyv6gVXENJYQ2QnobdMca/DAcfEcbtCKE0MZIb4MeD60QoVA6HY1uvvSvz7dHDuuxu9FCDYUQ2hhZA/WzzxvfvEmMg04dD6eBi6ePX6bcjRZqKp6hfddCBzJ78WmdpIvdLef1YN17N731PuVutFBjIYQ2RKle/OmjJ87r2BdzvJ52N1qosRBCG6JUL95L6kHkPPjRaYJuxe5+69JunZVAGEoIrU+pXrzX0PSbm+fbt393LN2K3o0VajCuoX1XQn1K9eKTKorAiaDpEEKboFQvPprivVuPniTvIqiAENoEOad8LOskebcev6STlIFjKCG0LqUOUYgMKHleOoGTYaYsCKH1KXeIQmRI3lXS6SQxUJ+FCKF910F1Sh6iMPYmNS92XTlHo9GT0N2UQg2HHF8bDlFoE0JobThEoVUIoXXhEIVWIYTWhUMU2uXSJUJoLThEoWUIofXgEIWWIYTWg0MU2oYQWgsOUWgbQmgtOEShdQihdUDQ1iGE1gFB28cxtO8qqAuCdgAhtDoI2gGE0OogaBdgaGUQtBOCgzyhLDmCfn626nGNxSK1IYRWJFvQI3ZYbhBCaEVyVjNZVyudoGAjaBoYWo3lJ83VKhTmIGglELQrCKGVyFsP+rB+obAAQ6uQLejJxuA+5yQ1yARBK5CT4unFNwwhtAI5W99wTlLDEEIrwExShxBCy5Mr6Oxw/7DKYUkIms4EQ0uz/DjuFY7jbgySfGlynurcsAZOA5SnOpuEEFqWvHHQqyK9z/Z4Lr45SPJlyRlm8ne1Y2eRJiHJl2T5VCd7MzUJIbQkuXszuRdE0EbB0HLk7Q/qisneTM0yIcmXIndvJuva3TuWtUIvvkkIoaVYvjfTdfZmapQJhpZh2d5MlRbVI2geGFqGdEG//uZuHJY4jrt0oZDChNX1xck5TJbldi1BCC1B+mGyz+59Yblde0yY8iwMy+16YEKSL0y2oF+Dpues9Ca2CLoEknxhmOrsBUJoUdIFPdnf/2U4+Glf8JpOUvMQQouSLmioC+/AVGfz0E8qSEaK/7yIoPusqG8B+kkFyXmqs/ToUkqhkAUhtBgMM/UEIbQYeYKe/OWLfXbnPotFWoEQWohsQWc7lnvWMcvt2mGCoUXIe2hu5Y3NQ3PtMWFLxgIsf2iOgfqWmPAUcgGYSeqNCYYWIC/F/8l9Juk1Kb4lxLkKCLqEbEGPh9bgu7s/OK8vqhcKORBCC7B8b6Y1ZpLawg2hGJoLzyT1yARDl7JkJqnaQTQIWhD3dC8EzSPvseOfxc52Z9+XboIiaFEIoUvJnUm6LATdoJPUHhi6jLytb264Q6BHDDO1CEl+Cbmbh7mCMlDfJoTQJeTOJCFo+3ghFEOzWB5B2X6xVSYYmkveVKfbBmX7xZaZ0AzNI3f7xcvDwR85RKFtCKF5LN9+cY0V9e1Cks9j2VRn6V1FooVCATA0B7a+kQBXUAxNhQXLEjDxDe25GlLC1jcyQJLPhK1vpIAknwVb30jBBEMzYOsbOfAEpRmagAXLckAIzYAFy5KAoemwYFkWgiSPoRFYsCwLEwxNgwXL0jCho5QCC5blgRCaAguW5YEknwILliWCJJ+EBcsyQQhNUHLB8nQ0uvnSv77YHY1GW87F+bZzMVpPKxRKQZJPUG7B8tSxc+oberHrXIyFl6ePX0a/DUGr4gtKkp+TM1D/eX9//03k1sWuCJgHXqw8ffTEeR3fem9Pnb8ZhUI5CKFxsgQ92fTX2oV3X1w4OUfE0/G6HQVBK4OhMTIE/WhZl//NiaDPhtbg4fyul8sjAfPAeXPwo98YFeW5tFplvZkneQx1SRf0eGg98C8/hnZY9pqf05uLJufUEfN8+/bvjqlbaYVCWRYhFEMF6YLuWTfm1x8W46AJQaeLvns4riJoDTA0QqqgYhZp/iY0kxRP8dPRImx67dN4oVAeknyYVEEj0++hN7FO0jjkZ2SsCUHrMMHQEKUEjQwzOX56MdPTlhTfGCT5EKUEjQzUnz4K4qdrLJ2k5liEUAwtJ6gTNd2pzovddXEpEG8PnI+LFiiC1mWCoXMyBA0eOd4XOziwHrRrMHROhqDhfRvYWaR7AkExNH2Y6df9MH9nwXLXTDDUZ8lz8XULhYqEDe2zHr2DoJIyF9RwQxFUUkjyHggqKxjqgqDSgqECBJWXcDPUWEMRVF4mGIqgUoOhCCo3EwabEFRqMBRB5cb4rjyCys3EdEMRVHJMNxRBZcfwrjyCSo/ZhiKo9EyMNhRB5Wdi8mATgiqAyYYiqAoY3JVHUCUw11AEVQNjDUVQRTDVUARVBUMNRVBliBpqiqIIqg5GGoqgCmHinBKCqoSBhiKoUphnKIKqRUhQMwxFUMWIGaq9ogiqGBPDDEVQ1YgYqn+aR1DlMMtQBFUPowxFUAUxyVAEVZGJOV0lBFUScwxFUEUxJc0jqKoYYiiCKksizfdXlRZBUHUxoiGKoCozia1u0tBQBFUa/dM8giqO7oYiqOponuYRVHn0NhRBNUBnRRFUBzQ2FEH1QNshUQTVBF2DKILqgqbzSgiqD4kgqoOiCKoREw0VRVCt0C/PI6hm6KYoguqGZnkeQfVDK0URVEeSeV5ZRRFUT7RRFEE1ZaKJogiqLWmKqucogmrMJKW7pJqiCKo1E+UzPYLqjuJhFEH1ZxJ1VC1FEdQI0hztsz7FQVBTiDqqTBhFUJMIS6qIoghqGKo5iqAGspD0kvSOIqiZTOaSSu4ogpqLEo4iqNEkkr10niKo6UzmXJJRUgSFkKMhT/uulA+CQkBSUgk8RVCIkUz4fWqKoJCOJJ6WFHQ6Gt18mXgTuWsjqE6kaNqpp+UEnToeTgMX528id6OFgh6khVOf2EKppikl6MXulvN6sB59E7kbKxR0JM3TqK7NSVtK0NNHT5zX8a33kTeRu7FCoREsq8EeQsPk2FpU5EnOj1dO0Mcij099QYM3kbuxQqEJLEtmQyNU0zXnxyslqNfQ9Jub8zeRu9+61PshIYZCguaz+EF6EzRWKDSBhoIuv+tDilcBTfzM+kHyfjw6SSA1DDOB1DBQD1JTcqpz7E1qXuyuL96ELhKFAtSDxSIgNQgKUoOgIDUIClKDoCA1CApSg6AgNQgKUoOgIDUIClKDoCA1CApS046gAE3RhqBSIHEYp2pVQNDOoGpVQNDOoGpVQNDOoGpV0E1Q0AwEBalBUJAaBAWpQVCQGgQFqdFA0Ivd0WgktjnJ3p28Tw5u/27LWLXTR6ORuy+MfFULo76gF7vOb3UsftfZm570yHQkBJWvalOnWufbsv7WFqgv6HwXs5xto/rjfFsIKl/VvIrI+lsLob6gHs5//ZyN9/pjfPu/HEHlq5q3e6adu12hFOgi6EFox9Lk1qW94VRFtEHlq9r01v9uuy13+aoWRRNBp87vOmfz574QaVMIKl/VxiPHRLEbnHxVi6KHoNOgjyTZr3rsyCmpoDf9eClf1aJoIejUHWWSL1m5FZEzxXttTafdKV/Vougg6NgbBZWvuT8eeTyRr2qeiI6U8lUtigaCjkdP3I+SDpgcSDnMdL4tfmlThpna5/TRln8l55DzgZwD9ePg/418VYugvqB+HhW/2czdyfvEm+qUr2rTYIJYvqqFUV9Q0BoEBalBUJAaBAWpQVCQGgQFqUFQkBoEBalBUJAaBK3KB8vl8vUvzpvZzjfvwp+cvalW6FG0GO8fuvKlWmFagKBV8QW1rMGLhKAnm1crlXm2cSN5c7aTctMYELQqH6yH4sPJjpWMcMfDaoLupQbLI/FfwFQQtCq+oE6A8y9CVBT0eJgoyfsXqumuBQhalUBQ10Y3xc9eDS1r7a0T8kTmdz57csf5uPJcKHbl/zatwZ/Fl4uba26gnL1y2gf3QzFzT7QTnKL+4Xziuj176ry6n/1gcAhF0KrMBRVyuoLuuU1S58IX9MhvpD4UUdblhtBZXIhUfrZhBZceZxtXveL+Vdx/sON/h/gec1uhCFqVhKBnGytv7dmeuO2m+NnOQATPPUsEWOvK29lrIeOeExVP3FaBuBJRdC7fkXvpfO03b+2Pjrlv7X96+joB2NiOPIJWJSHo8dARyyPcBj1yBRVJ+mzjyhfx11PRi5dh+bwSvTZt8B3e4MBeyuiTISBoVRKCunl8zR0ADQT9+utffxhafhPVFXShrpfrvTaBx57b1PTU9L4jGL3aM7cRiqBVmQsqvPM6SU+FbysvAkFPNj0D0wUNWqhJQRdqIiiCVibZi3eE+usdt9fjt0GtlXv7b44yI2h88AhBU0DQqkTGQRczSWebzpUrn2/gh4igXhvUu4o3LIM2aIqgtEGhLL6gn92ZJGHSkeh325+GbgR1X5xOkxjrDAvq9t2dnv0N0YsXX/9xOO8kBb34hKCe1WaCoFX5EG5DzjtJ3gi9GOJ8ELy3/Caq55nXN/LezqfyPebjoHFBGQeF8gSrme7PVzO5M0li4si2/zl0oqHoNA3W/mfDH8f3A2FoJumpP/MUsBdX0xeUmSSQgoxIyVw8SAKrmRIgqExkrAc1OIAiqFywoj4OgoLUIChIDYKC1CAoSA2CgtQgKEgNgoLUIChIDYKC1Pw/L78oNBZlwS8AAAAASUVORK5CYII=" /><!-- --></p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
