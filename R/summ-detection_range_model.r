@@ -47,10 +47,10 @@
 #' polynomial \code{formula} call and when it is appropriate to use 
 #' \code{"data_frame"} or \code{"matrix"}.   
 #' 
-#' @details If a third order polynomial model is selected the formula call 
-#' can be in two different formats. The preferred format is 
+#' @details If a third order polynomial model is selected, the formula call 
+#' can be in two different formats. The preferred and default format is 
 #' \code{y ~ -1 + x + I(x ^ 2) + I(x ^ 3) + offset(y-intercept)}. \code{model_frame} 
-#' needs to be set \code{"data_frame"}, which is its default, to properly extract
+#' needs to be set \code{"data_frame"}to properly extract
 #' parameters and determine distances away from a receiver given a percentage 
 #' of interest. If using the \code{base::poly()} within the formula as such
 #' \code{y ~ -1 + poly(x, 3, raw = TRUE) + offset(y-intercept)}, then
@@ -62,7 +62,7 @@
 #' A third order polynomial will handle preliminary detection efficiency 
 #' percentages (y variable) as whole numbers as the model is not bound by 
 #' 0 and 1. While both logit and probit models have to use percentages as 
-#' decimals as the models is bound by 0 and 1. 
+#' decimals as the models are bound by 0 and 1. 
 #' 
 #' Additionally, its been noticed that with fewer data points a third order 
 #' polynomial often fits the data better however this does not mean that neither
@@ -81,7 +81,7 @@
 #' degrees of freedom, chi-square (deviance), person's goodness of fit test, 
 #' slope, slope's standard error, slope's p-value, z-value, null deviance, and aic value. 
 #' 
-#' @references This function was developed for an ongoing study which followed 
+#' @references This function was developed for an ongoing study that followed 
 #' detection range efficiency methods similar to: 
 #' 
 #' Brownscombe, J.W., L.P. Griffin, J.M. Chapman, D. Morley, A. 
@@ -94,7 +94,7 @@
 #' @examples 
 #' sample_detection_efficiency
 #' 
-#' # third order polynomial: # ave_ percent is a whole number
+#' # third order polynomial: # ave_percent is a whole number
 #' 
 #' m <- detection_range_model(avg_percent ~ -1 + distance_m + I(distance_m ^ 2) + 
 #'                              I(distance_m ^ 3) + offset(intercept), 
