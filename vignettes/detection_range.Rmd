@@ -3,21 +3,20 @@ title: "Estimate Detection Range for
                       Acoustic Telemetry Receivers"
 date: "Updated: `r Sys.Date()`"
 output: 
+  rmarkdown::pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
   rmarkdown::html_document:
     toc: true
     toc_depth: 3
     number_sections: true
     toc_float: true
     toc_collapsed: false
-  rmarkdown::pdf_document:
-    toc: true
-    toc_depth: 3
-    number_sections: true
 vignette: >
   %\VignetteIndexEntry{Estimate Detection Range for 
                       Acoustic Telemetry Receivers}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -63,11 +62,90 @@ The preliminary study design/protocol is the following:
 
 The code below will walk through how to use the detection efficiency data produced by Innovasea software to estimate the distance and create the redeployment location. 
 
-# Analysis
+# Intial deploy 
+
+We will initially deploy range tags at set distances away from the receiver. The below workflow will allow you to determine the latitude and longitude of each tag deployment and export as a gpx file to easily upload to a gps or sonar unit. 
 
 ## Load packages and data 
 We will first load the desired packages in R. We will load [{dplyr}](https://dplyr.tidyverse.org/) for data manipulation processes,[{ggplot2}](https://ggplot2.tidyverse.org/) to plot our models, [{glatos}](https://github.com/ocean-tracking-network/glatos) to use multiple functions associated with acoustic telemetry, and [{sf}](https://r-spatial.github.io/sf/) to work with spatial data including creating the redeployment locations. 
 ```{r load packages, message = FALSE}
+# ---- Bring in R packages ---- 
+{
+  library(dplyr)
+  library(ggplot2)
+  library(glatos)
+  library(mapview)
+  library(sf)
+}
+```
+
+We will work with the example data set in [{glatos}](https://github.com/ocean-tracking-network/glatos) but you will want to have a shapefile or sf object of the body of water you're working on and the receiver deployment data. We will download the zip file of Lake Huron from the [USGS repository](https://www.sciencebase.gov/catalog/item/530f8a0ee4b0e7e46bd300dd). You will have to unzip the file local to then import it into R. [{sf}](https://r-spatial.github.io/sf/) does have the ability to extract shapefiles using a URL, however, the URL for Lake Huron is not easy to get find. 
+
+<!-- ```{r} -->
+<!-- #get path to example receiver_locations file -->
+<!-- rec_file <- system.file("extdata",  -->
+<!--   "sample_receivers.csv", package = "glatos") -->
+
+<!-- #note that code above is needed to find the example file -->
+<!-- #for real glatos data, use something like below -->
+<!-- #rec_file <- "c:/path_to_file/GLATOS_receiverLocations_20150321_132242.csv"    -->
+
+<!-- rcv <- read_glatos_receivers(rec_file) -->
+
+<!-- glimpse(rcv) -->
+
+<!-- rcv_sf <- rcv %>%  -->
+<!--   st_as_sf(coords = c("deploy_long", "deploy_lat"),  -->
+<!--            crs = 4326) -->
+
+
+<!-- rcv_osc <- rcv_sf %>%  -->
+<!--   filter(glatos_array %in% "OSC") -->
+
+
+<!-- rcv_osc_12 <- rcv_osc %>%  -->
+<!--   filter(station_no %in% 12) -->
+
+
+<!-- n <- 20 -->
+
+<!-- N = 40 -->
+<!-- pts_rep <- rcv_osc_12  -->
+<!-- for (n in 2:N) pts_rep <- rbind(pts_rep,rcv_osc_12) -->
+<!-- dists <- c(100, 250, 500, 750) -->
+<!-- dists <- rep(dists, n) -->
+
+<!-- # apply buffer -->
+<!-- buff1 <- st_buffer(pts_rep, dists) %>% st_cast("LINESTRING") -->
+
+<!-- mapview(rcv_osc) +  -->
+<!--   mapview(buff1) -->
+
+
+
+<!-- # we will do range testing on receiver station no 12  -->
+<!-- #  -->
+<!-- #  -->
+<!-- #  -->
+<!-- # lake_huron <- st_read(dsn = "..\\data-raw\\shpfile\\.", -->
+<!-- #                       layer = "hydro_p_LakeHuron") %>%  -->
+<!-- #   st_transform(crs = 4326) -->
+<!-- # ggplot() + -->
+<!-- # geom_sf(data = lake_huron) + -->
+<!-- #   geom_sf(data = rcv_sf %>% -->
+<!-- #             filter(glatos_array %in% "SBI"), aes(colour = glatos_array)) -->
+<!-- #   geom_sf(data = rcv_sf, aes(colour = glatos_array))  -->
+
+<!-- ``` -->
+
+
+# Analysis
+
+For the analysis you will want to start a new script, hence why I have left load packages below. 
+
+## Load packages and data 
+We will first load the desired packages in R. We will load [{dplyr}](https://dplyr.tidyverse.org/) for data manipulation processes,[{ggplot2}](https://ggplot2.tidyverse.org/) to plot our models, [{glatos}](https://github.com/ocean-tracking-network/glatos) to use multiple functions associated with acoustic telemetry, and [{sf}](https://r-spatial.github.io/sf/) to work with spatial data including creating the redeployment locations. 
+```{r load packages, eval = FALSEmessage = FALSE}
 # ---- Bring in R packages ---- 
 {
   library(dplyr)
@@ -240,3 +318,4 @@ ggplot() +
   )
 ```
 
+## Reploy 
