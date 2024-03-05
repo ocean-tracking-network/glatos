@@ -331,6 +331,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
     by = c("animal_id", location_col)
     ]
     
+    
     # add animal-location combinations not present in dtc
     combos <- data.table::as.data.table(expand.grid(
       animals,
