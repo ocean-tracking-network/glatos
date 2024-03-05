@@ -154,47 +154,89 @@ m2 <- detection_range_model(avg_percent_d ~ distance_m,
                             summary_stats = TRUE)
 ```
 
-We can then view each of the results with the first being the third order polynomial 
+We can will then view each of the results with the first being the third order polynomial. 
 ```{r}
+#| title: view poly
 m
 ```
 
-Then logit
+Second being the logit model. 
 ```{r}
+#| title: view logit 
 m1
 ```
 
-Then probit
+and third the probit model. 
 ```{r}
+#| title: view provit
 m2
 ```
 
-### Plot all three models 
+Considering the example data set is quite limited, you will notice each model performs different especially, the third-order polynomial which fits better than the logit and probit models. 
+
+## Plot all three models 
+
+We will first plot the three-order polynominal model first becasue we cannot plot all three models on the same plot. The reason why we can't plot all three models is a scaling issue as the three-order polynominal is bound by 0-100 while the probit and logit models are bound by 0-1. 
 
 ```{r, warning = FALSE, message = FALSE}
+#| title: plot models 
 #| fig-height: 5
 #| fig-width: 7
 ggplot() +
   geom_point(data = sample_detection_efficiency,
-             aes(x = distance_m, y = avg_percent_d)) +
+             aes(x = distance_m, y = avg_percent), 
+             size = 3) +
+  geom_hline(yintercept = c(10, 50, 90), linetype = 2) + 
   geom_smooth(data = sample_detection_efficiency,
-              aes(x = distance_m, y = avg_percent_d), 
-              method = "glm",
-              method.args = list(family = binomial(link = "logit")),
-              colour = "#FF0000", se = FALSE) + 
-  geom_smooth(data = sample_detection_efficiency,
-              aes(x = distance_m, y = avg_percent_d), 
-              method = "glm",
-              method.args = list(family = binomial(link = "probit")),
-              colour = "blue", se = FALSE) + 
-  theme_bw(base_size = 15) + 
+              aes(x = distance_m, y = avg_percent),
+              method = "lm",
+              linewidth = 1,
+              formula = y ~ -1 + x + I(x ^ 2) +
+                I(x ^ 3),
+              method.args = list(offset = sample_detection_efficiency$intercept),
+              colour = "#8da0cb", se = FALSE) +
+  scale_y_continuous(breaks = seq(0, 100, 20)) + 
+  theme_bw(base_size = 15) +
   theme(
     panel.grid = element_blank()
-  ) + 
+  ) +
   labs(
     x = "Distance (m)", 
     y = "Detection efficency (%)"
   )
+```
 
+I have added in the dotted lines at where the 10, 50, and 90% detection efficiency occurs. We will then plot the logit and probit models next. 
+
+```{r, warning = FALSE, message = FALSE}
+#| title: plot logist and probit models 
+#| fig-height: 5
+#| fig-width: 7
+ggplot() +
+  geom_point(data = sample_detection_efficiency,
+             aes(x = distance_m, y = avg_percent_d), 
+             size = 3) +
+  geom_hline(yintercept = c(0.10, 0.50, 0.90), linetype = 2) +
+  geom_smooth(data = sample_detection_efficiency,
+              aes(x = distance_m, y = avg_percent_d),
+              method = "glm",
+              linewidth = 1,
+              method.args = list(family = binomial(link = "logit")),
+              colour = "#66c2a5", se = FALSE) +
+  geom_smooth(data = sample_detection_efficiency,
+              aes(x = distance_m, y = avg_percent_d),
+              method = "glm",
+              linewidth = 1,
+              method.args = list(family = binomial(link = "probit")),
+              colour = "#fc8d62", se = FALSE) + 
+  scale_y_continuous(breaks = seq(0, 1, 0.20)) + 
+  theme_bw(base_size = 15) +
+  theme(
+    panel.grid = element_blank()
+  ) +
+  labs(
+    x = "Distance (m)", 
+    y = "Detection efficency (%)"
+  )
 ```
 
