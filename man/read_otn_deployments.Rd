@@ -42,11 +42,13 @@ Column names are changed to match GLATOS standard columns when possible.
 Otherwise, OTN columns and column names are retained.
 }
 \examples{
+\dontrun{
 # get path to example deployments file
 deployment_file <- system.file("extdata", "hfx_deployments.csv",
   package = "glatos"
 )
 dep <- read_otn_deployments(deployment_file)
+}
 
 }
 \author{

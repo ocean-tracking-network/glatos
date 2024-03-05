@@ -93,6 +93,8 @@
 #' wb <- read_glatos_workbook(wb_file)
 #'
 #' @export
+
+
 read_glatos_workbook <- function(
     wb_file, read_all = FALSE,
     wb_version = NULL) {
@@ -107,7 +109,7 @@ read_glatos_workbook <- function(
 
   # Identify workbook version (based on sheet names)
   id_workbook_version <- function(wb_file, sheets) {
-    if (all(names(glatos:::glatos_workbook_schema$v1.3) %in% sheets)) {
+    if (all(names(glatos_workbook_schema$v1.3) %in% sheets)) {
       return("1.3")
     } else {
       stop(paste0(
@@ -122,7 +124,7 @@ read_glatos_workbook <- function(
   if (is.null(wb_version)) {
     wb_version <- id_workbook_version(wb_file, sheets)
   } else if (!(paste0("v", wb_version) %in%
-    names(glatos:::glatos_workbook_schema))) {
+    names(glatos_workbook_schema))) {
     stop(paste0("Workbook version ", wb_version, " is not supported."))
   }
 
@@ -132,7 +134,7 @@ read_glatos_workbook <- function(
 
   #-Workbook v1.3--------------------------------------------------------------
   if (wb_version == "1.3") {
-    wb[names(glatos:::glatos_workbook_schema$v1.3)] <- NA
+    wb[names(glatos_workbook_schema$v1.3)] <- NA
 
     # Get project data
     tmp <- tryCatch(
@@ -168,18 +170,18 @@ read_glatos_workbook <- function(
     # Read all sheets except project
     if (read_all) {
       sheets_to_read <- sheets
-      extra_sheets <- setdiff(sheets, names(glatos:::glatos_workbook_schema[[
+      extra_sheets <- setdiff(sheets, names(glatos_workbook_schema[[
         paste0("v", wb_version)
       ]]))
     } else {
-      sheets_to_read <- names(glatos:::glatos_workbook_schema[[
+      sheets_to_read <- names(glatos_workbook_schema[[
         paste0("v", wb_version)
       ]])
     }
     sheets_to_read <- setdiff(sheets_to_read, "project") # exclude project
 
     for (i in 1:length(sheets_to_read)) {
-      schema_i <- glatos:::glatos_workbook_schema[[
+      schema_i <- glatos_workbook_schema[[
         paste0("v", wb_version)
       ]][[sheets_to_read[i]]]
 
@@ -325,9 +327,12 @@ read_glatos_workbook <- function(
               rows_k <- tzone_j %in% tz_cmd[k] # get rows with kth tz
               # round to nearest minute and force to correct timezone
               posix_as_num[rows_k] <- as.POSIXct(
-                round(
-                  posix_as_num[rows_k],
-                  "mins"
+                format(
+                  round(
+                    posix_as_num[rows_k],
+                    "mins"
+                  ),
+                  "%Y-%m-%d %H:%M",
                 ),
                 tz = tz_cmd[k]
               )
@@ -527,7 +532,7 @@ read_glatos_workbook <- function(
   # assign classes
   wb2$animals <- as_glatos_animals(wb2$animals)
   wb2$receivers <- as_glatos_receivers(wb2$receivers)
-  wb2 <- glatos:::glatos_workbook(wb2)
+  wb2 <- glatos_workbook(wb2)
 
   return(wb2)
 }

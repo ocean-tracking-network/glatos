@@ -1,14 +1,35 @@
+----
 
 # glatos 0.8.0 (dev)
 
 
-### Bug fixes
+### Bug fixes and minor changes
+
+- Add `@srs` slot to `greatLakesTrLayer` data object and rename file 
+  'data/greatLakesTrLayer.rda'.
+    - fixes [issue #213](https://github.com/ocean-tracking-network/glatos/issues/213)
+
+- Fix bug in `read_glatos_workbook()` where timestamps during daylight savings 
+  were shifted one hour on linux operating system (not an issue on windows or 
+  mac).
+    - fixes [issue #208](https://github.com/ocean-tracking-network/glatos/issues/208)
+
+- Omit data.table from class of object returned by `read_glatos_detections()`  
+  and `read_glatos_receivers()`. 
+    - fixes [issue #200](https://github.com/ocean-tracking-network/glatos/issues/200)
 
 - Fix typo in Description to Suggest 'gifski' (not 'gifsky'). 
     - fixes [issue #185](https://github.com/ocean-tracking-network/glatos/issues/185)
 
 
 ### New features
+
+#### 2024-01-19
+
+- In `make_frames()`, allow `terra::SpatVector` input for background map 
+  (`bg_map` arg).
+    - add test for `terra::SpatVector` input
+
 
 #### 2023-08-30
 
@@ -61,6 +82,20 @@
 - Add new function `read_vdat_csv()` to read data exported from VRL or VDAT 
   using VDAT.exe (e.g., using `vdat_convert()`).
 
+
+----
+
+# glatos 0.7.1 (2024-01-19)
+
+
+### Bug fixes and minor changes
+
+
+- Fix bug introduced in glatos 0.7.0 where x and y limits were switched 
+  when `bg_map` was supplied.
+    - Add test for various inputs of `background_xlim`, `background_ylim`, and 
+      `bg_map` to function `make_frames`.
+  
 
 ----
 

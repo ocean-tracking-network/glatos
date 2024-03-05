@@ -437,15 +437,15 @@ get_days <- function(dets, calculation_method = "kessel",
                      time_interval_size = "1 day") {
   days <- 0
   if (calculation_method == "aggregate_with_overlap") {
-    days <- glatos:::aggregate_total_with_overlap(dets)
+    days <- aggregate_total_with_overlap(dets)
   } else if (calculation_method == "aggregate_no_overlap") {
-    days <- glatos:::aggregate_total_no_overlap(dets)
+    days <- aggregate_total_no_overlap(dets)
   } else if (calculation_method == "timedelta") {
-    days <- glatos:::total_diff_days(dets)
+    days <- total_diff_days(dets)
   } else if (calculation_method == "kessel") {
-    days <- glatos:::interval_count(dets, time_interval_size = "1 day")
+    days <- interval_count(dets, time_interval_size = "1 day")
   } else if (calculation_method == "time_interval") {
-    days <- glatos:::interval_count(dets, time_interval_size)
+    days <- interval_count(dets, time_interval_size)
   } else {
     stop("Unsupported 'calculated_method'.")
   }

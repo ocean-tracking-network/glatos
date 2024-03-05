@@ -49,9 +49,9 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
   # Identify file version
   id_file_version <- function(rec_file) {
     col_names <- names(data.table::fread(rec_file, nrows = 0))
-    if (all(glatos:::glatos_receivers_schema$v1.1$name %in% col_names)) {
+    if (all(glatos_receivers_schema$v1.1$name %in% col_names)) {
       return("1.1")
-    } else if (all(glatos:::glatos_receivers_schema$v1.0$name %in% col_names)) {
+    } else if (all(glatos_receivers_schema$v1.0$name %in% col_names)) {
       return("1.0")
     } else {
       stop("Receiver location file version could not be identified.")
@@ -61,7 +61,7 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
   if (is.null(version)) {
     version <- id_file_version(rec_file)
   } else if (!(paste0("v", version) %in%
-    names(glatos:::glatos_receivers_schema))) {
+    names(glatos_receivers_schema))) {
     stop(paste0(
       "Receiver locations file version ", version,
       " is not supported."
@@ -72,7 +72,7 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
   if (version %in% c("1.0", "1.1")) {
     ver_txt <- paste0("v", version)
 
-    col_classes <- glatos:::glatos_receivers_schema[[ver_txt]]$type
+    col_classes <- glatos_receivers_schema[[ver_txt]]$type
     timestamp_cols <- which(col_classes == "POSIXct")
     date_cols <- which(col_classes == "Date")
     col_classes[c(timestamp_cols, date_cols)] <- "character"
@@ -109,7 +109,9 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
   }
   #-end v1.x----------------------------------------------------------------
 
-  # assign class
+  # strip data.table and assign glatos_receivers class
+  data.table::setDF(rec)
+
   rec <- as_glatos_receivers(rec)
 
   return(rec)

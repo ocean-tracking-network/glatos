@@ -53,9 +53,9 @@ read_glatos_detections <- function(det_file, version = NULL) {
   # Identify detection file version
   id_det_version <- function(det_file) {
     det_col_names <- names(data.table::fread(det_file, nrows = 0))
-    if (all(glatos:::glatos_detection_schema$v1.4$name %in% det_col_names)) {
+    if (all(glatos_detection_schema$v1.4$name %in% det_col_names)) {
       return("1.4")
-    } else if (all(glatos:::glatos_detection_schema$v1.3$name %in% det_col_names)) {
+    } else if (all(glatos_detection_schema$v1.3$name %in% det_col_names)) {
       return("1.3")
     } else {
       stop("Detection file version could not be identified.")
@@ -65,7 +65,7 @@ read_glatos_detections <- function(det_file, version = NULL) {
   if (is.null(version)) {
     version <- id_det_version(det_file)
   } else if (!(paste0("v", version) %in%
-    names(glatos:::glatos_detection_schema))) {
+    names(glatos_detection_schema))) {
     stop(paste0("Detection file version ", version, " is not supported."))
   }
 
@@ -73,7 +73,7 @@ read_glatos_detections <- function(det_file, version = NULL) {
   if (version %in% c("1.3", "1.4")) {
     vversion <- paste0("v", version)
 
-    col_classes <- glatos:::glatos_detection_schema[[vversion]]$type
+    col_classes <- glatos_detection_schema[[vversion]]$type
     timestamp_cols <- which(col_classes == "POSIXct")
     date_cols <- which(col_classes == "Date")
     col_classes[c(timestamp_cols, date_cols)] <- "character"
@@ -89,9 +89,9 @@ read_glatos_detections <- function(det_file, version = NULL) {
     options(lubridate.fasttime = TRUE)
     for (j in timestamp_cols) {
       data.table::set(dtc,
-        j = glatos:::glatos_detection_schema[[vversion]]$name[j],
+        j = glatos_detection_schema[[vversion]]$name[j],
         value = lubridate::parse_date_time(
-          dtc[[glatos:::glatos_detection_schema[[vversion]]$name[j]]],
+          dtc[[glatos_detection_schema[[vversion]]$name[j]]],
           orders = "ymd HMS",
           tz = "UTC"
         )
@@ -100,15 +100,15 @@ read_glatos_detections <- function(det_file, version = NULL) {
     # coerce dates to date
     for (j in date_cols) {
       data.table::set(dtc,
-        j = glatos:::glatos_detection_schema[[vversion]]$name[j],
-        value = ifelse(dtc[[glatos:::glatos_detection_schema[[vversion]]$name[j]]] == "",
+        j = glatos_detection_schema[[vversion]]$name[j],
+        value = ifelse(dtc[[glatos_detection_schema[[vversion]]$name[j]]] == "",
           NA,
-          dtc[[glatos:::glatos_detection_schema[[vversion]]$name[j]]]
+          dtc[[glatos_detection_schema[[vversion]]$name[j]]]
         )
       )
       data.table::set(dtc,
-        j = glatos:::glatos_detection_schema[[vversion]]$name[j],
-        value = as.Date(dtc[[glatos:::glatos_detection_schema[[vversion]]$name[j]]])
+        j = glatos_detection_schema[[vversion]]$name[j],
+        value = as.Date(dtc[[glatos_detection_schema[[vversion]]$name[j]]])
       )
     }
   }
@@ -128,7 +128,9 @@ read_glatos_detections <- function(det_file, version = NULL) {
     ))
   }
 
-  # assign class
+  # strip data.table and assign glatos_detections class
+  data.table::setDF(dtc)
+
   dtc <- as_glatos_detections(dtc)
 
   return(dtc)

@@ -86,6 +86,7 @@
 #'
 #' gr_tbl <- as_glatos_receivers(x_tbl)
 #'
+#' # All below will error as invalid
 #'
 #' # data.frame input; missing column name
 #' library(dplyr) # for rename
@@ -94,8 +95,9 @@
 #'   deploy_timestamp = deploy_date_time
 #' )
 #'
-#' gr2 <- as_glatos_receivers(x2)
-#'
+#' try(
+#'   gr2 <- as_glatos_receivers(x2)
+#' )
 #'
 #' # data.frame input; wrong column class
 #' x3 <- mutate(x,
@@ -103,8 +105,9 @@
 #'   deploy_date_time = as.character(deploy_date_time)
 #' )
 #'
-#' gr3 <- as_glatos_receivers(x3)
-#'
+#' try(
+#'   gr3 <- as_glatos_receivers(x3)
+#' )
 #'
 #' # Validation and checking
 #'
