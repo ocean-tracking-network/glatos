@@ -66,7 +66,6 @@ all over-water movements.
 # Example 1 - read from SpatialPolygonsDataFrame
 # use example polygon for Great lakes
 
-
 # get polygon of the Great Lakes
 data(great_lakes_polygon) # glatos example data; a sf polygon object
 
