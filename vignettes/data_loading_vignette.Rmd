@@ -302,14 +302,16 @@ be consistent with the schema described above. Tip boxes will also show
 alternatives (simpler and/or faster) for these methods using functions in the
 *data.table* and *lubridate* packages.
 
-First, get the path to a file (\*.csv) that
+First, get the path to a file (\*.csv) that 
 contains detection data exported from VEMCO VUE software. Such a file
 is included in the *glatos* package.   
 
 ```{r, echo=TRUE}
-#get path to example CSV file included with glatos package
-csv_file <- system.file("extdata", "VR2W_109924_20110718_1.csv",
+#get path to example VRL file included with glatos package
+csv_file <- system.file("extdata", 
+                        "VR2W_109924_20110718_1.csv",
                         package = "glatos")
+
 ```
 
 Now that we have the path to a VUE export file, we will read the data using 

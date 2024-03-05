@@ -34,18 +34,21 @@ Read data from a standard OTN deployment (csv) file and return
 a data.frame of class \code{glatos_receivers}.
 }
 \details{
-Data are loaded using \code{\link[data.table]{fread}} package and timestamps
-are coerced to POSIXct using the \code{\link[fasttime]{fastPOSIXct}}. All
+Data are loaded using \code{\link[data.table:fread]{data.table::fread()}} package and timestamps
+are coerced to POSIXct using the \code{\link[fasttime:fastPOSIXct]{fasttime::fastPOSIXct()}}. All
 times must be in UTC timezone per GLATOS standard.
 
 Column names are changed to match GLATOS standard columns when possible.
 Otherwise, OTN columns and column names are retained.
 }
 \examples{
-#get path to example deployments file
+\dontrun{
+# get path to example deployments file
 deployment_file <- system.file("extdata", "hfx_deployments.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 dep <- read_otn_deployments(deployment_file)
+}
 
 }
 \author{

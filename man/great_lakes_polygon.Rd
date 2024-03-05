@@ -12,7 +12,7 @@ An object of class \code{sf} (inherits from \code{data.frame}) with 4 rows and 9
 great_lakes_polygon
 }
 \description{
-Created from \code{\link{greatLakesPoly}}. This is used as a
+Created from \code{\link[=greatLakesPoly]{greatLakesPoly()}}. This is used as a
 default map background in several \link{glatos} functions.
 }
 \author{

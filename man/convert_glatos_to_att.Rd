@@ -30,7 +30,7 @@ This function takes 2 lists containing detection and reciever data
 and transforms them into one list containing 3 \code{tibble::tibble}
 objects. The input that AAT uses to get this data product is located here:
 https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-are found here: https://gitlab.oceantrack.org/GreatLakes/glatos/issues/83
+are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
 in a comment by Ryan Gosse.
 }
 \examples{
@@ -40,11 +40,13 @@ in a comment by Ryan Gosse.
 
 library(glatos)
 wal_det_file <- system.file("extdata", "walleye_detections.csv",
-     package = "glatos")
+  package = "glatos"
+)
 walleye_detections <- read_glatos_detections(wal_det_file) # load walleye data
 
-rec_file <- system.file("extdata", "sample_receivers.csv", 
-     package = "glatos")
+rec_file <- system.file("extdata", "sample_receivers.csv",
+  package = "glatos"
+)
 rcv <- read_glatos_receivers(rec_file) # load receiver data
 
 ATTdata <- convert_glatos_to_att(walleye_detections, rcv)

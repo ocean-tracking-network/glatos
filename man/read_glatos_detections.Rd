@@ -15,8 +15,9 @@ GLATOSWeb Data Portal \url{https://glatos.glos.us}.}
 
 \item{version}{An optional character string with the glatos file version
 number. If NULL (default value) then version will be determined by
-evaluating file structure. The only allowed values currently are \code{NULL} and
-\code{"1.3"}. Any other values will trigger an error.}
+evaluating file structure. The only allowed values currently are \code{NULL},
+\code{"1.3"}, and \code{"1.4"}. Any other values will trigger an error. Users should
+never need to set this argument (\code{NULL} should work).}
 }
 \value{
 A data.frame of class \code{glatos_detections}.
@@ -36,13 +37,14 @@ When created, it will be constructed from \code{transmitter_codespace} and
 \code{transmitter_id}, separated by '-'.
 }
 \examples{
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 
-#note that code above is needed to find the example file
-#for real glatos data, use something like below
-#det_file <- "c:/path_to_file/HECWL_detectionsWithLocs_20150321_132242.csv"
+# note that code above is needed to find the example file
+# for real glatos data, use something like below
+# det_file <- "c:/path_to_file/HECWL_detectionsWithLocs_20150321_132242.csv"
 
 det <- read_glatos_detections(det_file)
 

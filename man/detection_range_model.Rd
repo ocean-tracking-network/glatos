@@ -129,7 +129,7 @@ m1
 m2                             
 }
 \references{
-This function was developed for an ongoing study that followed
+This function was developed for an ongoing study which followed
 detection range efficiency methods similar to:
 
 Brownscombe, J.W., L.P. Griffin, J.M. Chapman, D. Morley, A.

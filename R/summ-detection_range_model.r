@@ -46,7 +46,6 @@
 #' \code{"polynomial"} default is \code{"data_frame"}. See details about 
 #' polynomial \code{formula} call and when it is appropriate to use 
 #' \code{"data_frame"} or \code{"matrix"}.   
-#' 
 #' @details If a third order polynomial model is selected, the formula call 
 #' can be in two different formats. The preferred and default format is 
 #' \code{y ~ -1 + x + I(x ^ 2) + I(x ^ 3) + offset(y-intercept)}. \code{model_frame} 
@@ -80,8 +79,8 @@
 #' If a logit or probit model is selected the following summary statistics are displayed:
 #' degrees of freedom, chi-square (deviance), person's goodness of fit test, 
 #' slope, slope's standard error, slope's p-value, z-value, null deviance, and aic value. 
-#' 
-#' @references This function was developed for an ongoing study that followed 
+
+#' @references This function was developed for an ongoing study which followed 
 #' detection range efficiency methods similar to: 
 #' 
 #' Brownscombe, J.W., L.P. Griffin, J.M. Chapman, D. Morley, A. 
@@ -93,7 +92,7 @@
 #' @author Benjamin L. Hlina
 #' @examples 
 #' sample_detection_efficiency
-#' 
+#'
 #' # third order polynomial: # ave_percent is a whole number
 #' 
 #' m <- detection_range_model(avg_percent ~ -1 + distance_m + I(distance_m ^ 2) + 
@@ -236,7 +235,7 @@ detection_range_model <- function(formula,
     # ax^3 + bx^2 + dx + f = 0  
     
     # Intercept (b0) or f set to 100 usually as at 0 m away from rec you would hear a tag 100 % 
-    
+
     y1 <- unique(model$offset)
     
     
@@ -267,8 +266,6 @@ detection_range_model <- function(formula,
     
     # p value of a 
     d_sig <-  summary$coefficients[12]
-    
-    
     
     # Residual standard error 
     

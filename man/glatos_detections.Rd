@@ -2,22 +2,142 @@
 % Please edit documentation in R/class-glatos_detections.r
 \name{glatos_detections}
 \alias{glatos_detections}
-\title{Constructor function for the class glatos_detections}
+\alias{as_glatos_detections}
+\alias{is_glatos_detections}
+\alias{validate_glatos_detections}
+\title{Construct, check, and validate a glatos_detections object}
 \usage{
-glatos_detections(x)
+glatos_detections(..., validate = TRUE)
+
+as_glatos_detections(x, validate = TRUE)
+
+is_glatos_detections(x)
+
+validate_glatos_detections(x)
 }
 \arguments{
-\item{x}{A data.frame or data.table created from a standard glatos
-detection file.}
-}
-\value{
-A data.frame of class \code{glatos_detections}:
+\item{...}{Named vectors, minimally one for each required column of the
+specified class:
+
+\describe{
+\item{\code{animal_id}}{must be character, indifies unique individual animal.}
+\item{\code{detection_timestamp_utc}}{must be POSIXct, timestamps(in UTC) of
+detection.}
+\item{\code{deploy_lat}}{must be numeric, latitude, in decimal degrees, WGS84,
+southern hemisphere is negative.}
+\item{\code{deploy_long}}{must be numeric, longitude, in decimal degrees,
+WGS84, western hemisphere is negative.}
+}}
+
+\item{validate}{logical, indicates if column names and classes should be
+checked against requirements.}
+
+\item{x}{A data.frame or object that inherits from data.frame (e.g.,
+data.table, tibble) and contains all required columns (see \code{...}).}
 }
 \description{
-Constructor function for the class glatos_detections. Currently barebones
-and only used inside read_glatos_detections and read_otn_detections.
+Creates, checks, or validates a glatos_detections object.
 }
-\note{
-This function may be developed in the future to dictate conversion
-constuction from a data frame.
+\section{Construction}{
+ \code{glatos_detections()} creates a \code{glatos_detections}
+object from individual vectors (one for each column) and optionally checks
+for required column names and classes using \code{validate_glatos_detections()}.
+}
+
+\section{Coercion}{
+ \code{as_glatos_detections()} coerces a data.frame, or object that
+inherits from data.frame, to \code{glatos_detections} and optionally checks for
+required column names and classes using \code{validate_glatos_detections()}.
+}
+
+\section{Validation}{
+
+\code{is_glatos_detections()} checks class attribute for \code{"glatos_detections"}
+
+
+\code{validate_glatos_detections()} checks for required column names and classes
+}
+
+\examples{
+
+#  glatos_detections
+x <- data.frame(
+  animal_id = c("153", "153", "153", "153"),
+  detection_timestamp_utc = as.POSIXct(
+    c(
+      "2012-04-29 01:48:37",
+      "2012-04-29 01:52:55",
+      "2012-04-29 01:55:12",
+      "2012-04-29 01:56:42"
+    ),
+    tz = "UTC"
+  ),
+  deploy_lat = c(43.39165, 43.39165, 43.39165, 43.39165),
+  deploy_long = c(-83.99264, -83.99264, -83.99264, -83.99264)
+)
+
+gd_df1 <- glatos_detections(
+  animal_id = x$animal_id,
+  detection_timestamp_utc =
+    x$detection_timestamp_utc,
+  deploy_lat = x$deploy_lat,
+  deploy_long = x$deploy_long
+)
+
+
+# as_glatos_detections
+gd_df2 <- as_glatos_detections(x)
+
+
+# sf input
+
+library(sf)
+
+# use remove = FALSE to keep required columns
+x_sf <- sf::st_as_sf(x,
+  coords = c("deploy_long", "deploy_lat"),
+  remove = FALSE
+)
+
+gd_sf <- as_glatos_detections(x_sf)
+
+
+# tibble input
+library(tibble)
+
+x_tbl <- as_tibble(x)
+
+gd_tbl <- as_glatos_detections(x_tbl)
+
+
+# All below will error as invalid
+
+# data.frame input; missing column name
+library(dplyr) # for rename
+x2 <- rename(x,
+  fish_id = animal_id,
+  det_date_time = detection_timestamp_utc
+)
+
+try(
+  gd2 <- as_glatos_detections(x2)
+)
+
+# data.frame input; wrong column class
+x3 <- mutate(x,
+  animal_id = as.integer(animal_id),
+  detection_timestamp_utc = as.character(detection_timestamp_utc)
+)
+
+try(
+  gr3 <- as_glatos_detections(x3)
+)
+
+# Validation and checking
+
+validate_glatos_detections(x)
+
+is_glatos_detections(x) # FALSE
+
+is_glatos_detections(gd_df1) # TRUE
 }

@@ -1,24 +1,24 @@
-context("Check detect_transmissions")
-
-# Get path to testdir
-# when called from devtools::test, working dir test
-#  so need to handle that case vs package root
-if(grepl("^glatos$", basename(getwd()))) testdata_dir <- normalizePath("./inst/testdata")
-if(grepl("^testthat$", basename(getwd()))) testdata_dir <- normalizePath("../../inst/testdata")
-
 # spatial transmission output
-tr_sf <- readRDS(file.path(testdata_dir, 
-                           "test-transmit_along_path-tr_dfin_spout.rds"))
+tr_sf <- readRDS(
+  test_path(
+    "testdata",
+    "transmit_along_path-tr_dfin_spout.rds"
+  )
+)
 
 # non spatial transmission output
-tr_df <- data.frame(x = sf::st_coordinates(tr_sf)[,"X"],
-                    y = sf::st_coordinates(tr_sf)[,"Y"],
-                    time = tr_sf$time,
-                    row.names = NULL)
+tr_df <- data.frame(
+  x = sf::st_coordinates(tr_sf)[, "X"],
+  y = sf::st_coordinates(tr_sf)[, "Y"],
+  time = tr_sf$time,
+  row.names = NULL
+)
 
 # add receivers (non-spatial)
-recs_df <- expand.grid(x = c(-87.75, -87.65),
-                       y = c(48.5, 48.6))
+recs_df <- expand.grid(
+  x = c(-87.75, -87.65),
+  y = c(48.5, 48.6)
+)
 
 recs_df$rec_id <- 1:nrow(recs_df)
 
@@ -26,64 +26,103 @@ recs_df$rec_id <- 1:nrow(recs_df)
 recs_sf <- sf::st_as_sf(recs_df, coords = c("x", "y"), crs = 4326)
 
 
-# Spatial input
-
-# spatial detection output - 50% constant detection prob
-set.seed(33)
-dtc_spin_spout <- detect_transmissions(trnsLoc = tr_sf, 
-                                       recLoc = recs_sf, 
-                                       detRngFun = function(x) 0.5, 
-                                       show_progress = FALSE)
-
-# non-spatial detection output - 50% constant detection prob
-set.seed(33)
-dtc_spin_dfout <- detect_transmissions(trnsLoc = tr_sf, 
-                                       recLoc = recs_sf, 
-                                       detRngFun = function(x) 0.5,
-                                       sp_out = FALSE, 
-                                       show_progress = FALSE)
-
-# Non-spatial input
-
-# spatial detection output - 50% constant detection prob
-set.seed(33)
-dtc_dfin_spout <- detect_transmissions(trnsLoc = tr_df, 
-                                       recLoc = recs_df, 
-                                       detRngFun = function(x) 0.5, 
-                                       inputCRS = sf::st_crs(tr_sf),
-                                       show_progress = FALSE)
-
-# non-spatial detection output - 50% constant detection prob
-set.seed(33)
-dtc_dfin_dfout <- detect_transmissions(trnsLoc = tr_df, 
-                                       recLoc = recs_df, 
-                                       detRngFun = function(x) 0.5,
-                                       inputCRS = 4326,
-                                       sp_out = FALSE, 
-                                       show_progress = FALSE)
-
-# Expected values
-dtc_dfout_shouldBe <- readRDS(file.path(testdata_dir, 
-                                        "test-detect_transmissions-dtc_dfout.rds"))
-dtc_spout_shouldBe <- readRDS(file.path(testdata_dir, 
-                                        "test-detect_transmissions-dtc_spout.rds"))
-attr(dtc_dfout_shouldBe, "row.names") <- as.integer(row.names(dtc_dfout_shouldBe))
-attr(dtc_spout_shouldBe, "row.names") <- as.integer(row.names(dtc_spout_shouldBe))
-
 # Testing output matches desired format for each input
+
 test_that("data.frame input, spatial output gives expected result", {
+  # spatial detection output - 50% constant detection prob
+
+  set.seed(33)
+
+  expect_s3_class(
+    dfin_spout <- detect_transmissions(
+      trnsLoc = tr_df,
+      recLoc = recs_df,
+      detRngFun = function(x) 0.5,
+      inputCRS = sf::st_crs(tr_sf),
+      show_progress = FALSE
+    ),
+    "sf"
+  )
+
+  expect_equal(dim(dfin_spout), c(8, 5))
+
   # Check if expected and actual results are the same
-  expect_equal(dtc_dfin_spout, dtc_spout_shouldBe)
+  expect_snapshot(
+    dfin_spout
+  )
 })
+
+
 test_that("data.frame input, data.frame output gives expected result", {
+  # non-spatial detection output - 50% constant detection prob
+
+  set.seed(33)
+
+  expect_s3_class(
+    dfin_dfout <- detect_transmissions(
+      trnsLoc = tr_df,
+      recLoc = recs_df,
+      detRngFun = function(x) 0.5,
+      inputCRS = 4326,
+      sp_out = FALSE,
+      show_progress = FALSE
+    ),
+    "data.frame"
+  )
+
+  expect_equal(dim(dfin_dfout), c(8, 7))
+
   # Check if expected and actual results are the same
-  expect_equal(dtc_dfin_dfout, dtc_dfout_shouldBe)
+  expect_snapshot(
+    dfin_dfout
+  )
 })
+
 test_that("spatial input, data.frame output gives expected result", {
+  # non-spatial detection output - 50% constant detection prob
+
+  set.seed(33)
+
+  expect_s3_class(
+    spin_dfout <- detect_transmissions(
+      trnsLoc = tr_sf,
+      recLoc = recs_sf,
+      detRngFun = function(x) 0.5,
+      sp_out = FALSE,
+      show_progress = FALSE
+    ),
+    "data.frame"
+  )
+
+  expect_equal(dim(spin_dfout), c(8, 7))
+
   # Check if expected and actual results are the same
-  expect_equal(dtc_spin_dfout, dtc_dfout_shouldBe)
+  expect_snapshot(
+    spin_dfout
+  )
 })
+
+
+
 test_that("spatial input, spatial output gives expected result", {
+  # spatial detection output - 50% constant detection prob
+
+  set.seed(33)
+
+  expect_s3_class(
+    spin_spout <- detect_transmissions(
+      trnsLoc = tr_sf,
+      recLoc = recs_sf,
+      detRngFun = function(x) 0.5,
+      show_progress = FALSE
+    ),
+    "sf"
+  )
+
+  expect_equal(dim(spin_spout), c(8, 5))
+
   # Check if expected and actual results are the same
-  expect_equal(dtc_spin_spout, dtc_spout_shouldBe)
+  expect_snapshot(
+    spin_spout
+  )
 })

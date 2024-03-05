@@ -11,7 +11,7 @@ convert_otn_to_att(
   deploymentObj = NULL,
   deploymentSheet = NULL,
   timeFilter = TRUE,
-  crs = sf::st_crs(3426)
+  crs = sf::st_crs(4326)
 )
 }
 \arguments{
@@ -48,40 +48,46 @@ or \code{prepare_deploy_sheet} and transforms them into 3
 \code{tibble::tibble} objects inside of a list. The input that AAT uses to
 get this data product is located here:
 https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-are found here: https://github.com/ocean-tracking-network/glatos/issues/75
+are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
 in a comment by Ryan Gosse.
 }
 \examples{
-
+\dontrun{
 #--------------------------------------------------
 # EXAMPLE #1 - loading from Deployment Object
 
 library(glatos)
 
 dets_path <- system.file("extdata", "blue_shark_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 deploy_path <- system.file("extdata", "hfx_deployments.csv",
-                           package = "glatos")
+  package = "glatos"
+)
 tag_path <- system.file("extdata", "otn_nsbs_tag_metadata.xls",
-                        package = "glatos")
+  package = "glatos"
+)
 
 dets <- read_otn_detections(dets_path)
 tags <- prepare_tag_sheet(tag_path, 5, 2)
 deploy <- read_otn_deployments(deploy_path)
 
 ATTdata <- convert_otn_to_att(dets, tags, deploymentObj = deploy)
-
+}
 #--------------------------------------------------
 # EXAMPLE #2 - loading from Deployment Sheet
 
 library(glatos)
 
 dets_path <- system.file("extdata", "blue_shark_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
-                           package = "glatos")
+  package = "glatos"
+)
 tag_path <- system.file("extdata", "otn_nsbs_tag_metadata.xls",
-                        package = "glatos")
+  package = "glatos"
+)
 
 dets <- read_otn_detections(dets_path)
 tags <- prepare_tag_sheet(tag_path, 5, 2)

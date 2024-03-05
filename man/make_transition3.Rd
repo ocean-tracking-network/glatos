@@ -37,7 +37,7 @@ at \code{output_dir}
 Create transition layer for \link{interpolate_path} from polygon shapefile.
 }
 \details{
-\code{make_transition} uses \link[fasterize]{fasterize}
+\code{make_transition} uses \link[fasterize:fasterize]{fasterize}
 to convert a polygon shapefile into a raster layer and
 geo-corrected transition layer \link{interpolate_path}.  Raster
 cell values on land equal 1 cells in water equal 0. Output is a
@@ -63,39 +63,35 @@ all over-water movements.
 }
 \examples{
 
-#Example 1 - read from SpatialPolygonsDataFrame
+# Example 1 - read from SpatialPolygonsDataFrame
 # use example polygon for Great lakes
 
-library(sp) #for loading greatLakesPoly
-library(raster) # for plotting rasters
-
-#get polygon of the Great Lakes
-data(greatLakesPoly) #glatos example data; a SpatialPolygonsDataFrame
+# get polygon of the Great Lakes
+data(great_lakes_polygon) # glatos example data; a sf polygon object
 
 # make_transition layer
-tst <- make_transition3(greatLakesPoly, res = c(0.1, 0.1))
+tst <- make_transition3(great_lakes_polygon, res = c(0.1, 0.1))
 
 # plot raster layer
 # notice land = 1, water = 0
-plot(tst$rast)
+raster::plot(tst$rast)
 
-#compare to polygon
-plot(greatLakesPoly, add = TRUE)
+# compare to polygon
+plot(sf::st_geometry(great_lakes_polygon), add = TRUE, fill = NA)
 
-#Example 2 - read from ESRI Shapefile and include receiver file
+# Example 2 - read from ESRI Shapefile and include receiver file
 # to account for any receivers outside of great lakes polygon
 
 # path to polygon shapefile
 poly <- system.file("extdata", "shoreline.zip", package = "glatos")
-poly <- unzip(poly, exdir = tempdir())
-poly <- sf::st_read(poly[grepl("*.shp", poly)])
+poly <- sf::st_read(paste0("/vsizip/", poly))
 
 # read in glatos receivers object
-rec_file <- system.file("extdata", "sample_receivers.csv", package="glatos")
+rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
 recs <- read_glatos_receivers(rec_file)
 
 # change a coordinate to on-land to show impact...
-recs[1, "deploy_lat"] <- recs[1,"deploy_lat"]+4
+recs[1, "deploy_lat"] <- recs[1, "deploy_lat"] + 4
 
 # make_transition layer
 tst <- make_transition3(poly, res = c(0.1, 0.1), receiver_points = recs)
@@ -109,40 +105,39 @@ points(recs$deploy_long, recs$deploy_lat, col = "red", pch = 20)
 # plot transition layer
 raster::plot(raster::raster(tst$transition))
 
-Example 3- transition layer of Lake Huron only with receivers
+# Example 3- transition layer of Lake Huron only with receivers
 
-# read polygon shapefile
-poly <- system.file("extdata", "shoreline.zip", package = "glatos")
-poly <- unzip(poly, exdir = tempdir())
-poly <- sf::st_read(poly[grepl("*.shp", poly)])
-
+# read polygon layer of Great Lakes
+data(great_lakes_polygon)
 
 # transform to great lakes projection
-poly <- sf::st_transform(poly, crs = 3175)
+poly <- sf::st_transform(great_lakes_polygon, crs = 3175)
 
 # set attribute-geometry relationship to constant.
 # this avoids error when cropping
-sf::st_agr(poly) = "constant"
+sf::st_agr(poly) <- "constant"
 
 # crop Great lakes polygon file
-poly <- sf::st_crop(x = poly, xmin = 829242.55, ymin = 698928.27,
-                              xmax = 1270000.97, ymax = 1097196.15)
+poly <- sf::st_crop(
+  x = poly, xmin = 829242.55, ymin = 698928.27,
+  xmax = 1270000.97, ymax = 1097196.15
+)
 
 # read in glatos receivers object
-rec_file <- system.file("extdata", "sample_receivers.csv", package="glatos")
+rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
 recs <- read_glatos_receivers(rec_file)
 
 # extract receivers in "HECWL" project
 # all receiver stations except one is in Lake Huron
-recs <- recs[recs$glatos_project == "HECWL",]
+recs <- recs[recs$glatos_project == "HECWL", ]
 
 # remove two stations not in Lake Huron
-recs <- recs[!recs$glatos_array \%in\% c("MAU","LVD"),]
+recs <- recs[!recs$glatos_array \%in\% c("MAU", "LVD"), ]
 
 # convert recs to simple feature  object (sf)
-recs <- sf::st_as_sf(recs, coords = c("deploy_long", "deploy_lat"), crs = 4326 )
+recs <- sf::st_as_sf(recs, coords = c("deploy_long", "deploy_lat"), crs = 4326)
 
-# transform to great lakes projection
+# transform receivers to same projection as great lakes polygon
 recs <- sf::st_transform(recs, crs = 3175)
 
 # check by plotting
@@ -154,11 +149,12 @@ tst1 <- make_transition3(poly, res = c(0.01, 0.01), receiver_points = recs)
 
 # plot raster layer
 raster::plot(tst1$rast)
- plot(sf::st_transform(sf::st_geometry(recs), crs = 4326), add = TRUE, col = "red", pch = 20)
+plot(sf::st_transform(sf::st_geometry(recs), crs = 4326),
+  add = TRUE, col = "red", pch = 20
+)
 
 # plot transition layer
 raster::plot(raster::raster(tst1$transition))
-
 
 }
 \author{

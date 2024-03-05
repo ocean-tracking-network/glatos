@@ -56,10 +56,11 @@ degrees, NAD83.
 degrees, NAD83.
 }}
 
-\item{map}{An optional sp or sf spatial object
-that can by plotted with using \code{plot} to be included as the
-background for the plot. If NULL, then the example Great Lakes polygon
-object (\code{data(great_lakes_polygon)}) will be used.}
+\item{map}{An optional sp, sf, or terra::SpatVect spatial object that
+can by plotted with using \code{plot} to be included as the background for the
+plot. If NULL, then the example Great Lakes polygon
+object (\code{data(great_lakes_polygon)}) will be used.  Map CRS must be in
+EPSG:4326 or conversion will be attempted.}
 
 \item{out_file}{An optional character string with the name (including
 extension) of output file created. File extension will determine type of
@@ -91,7 +92,7 @@ and upper right coordinates of the rectangle of colors
 }
 \value{
 A data frame produced by
-\code{glatos::summarize_detections(det, location_col = location_col,  receiver_locs = receiver_locs, summ_type = "location")}
+\code{glatos::summarize_detections(det, location_col = location_col, receiver_locs = receiver_locs, summ_type = "location")}
 
 If not out_file is specified, then an image is printed to the
 default plot device. If out_file is specified, then an image of
@@ -120,22 +121,24 @@ which will accept a vector containing any two colors return by
 }
 \examples{
 
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-  package = "glatos")
+  package = "glatos"
+)
 det <- read_glatos_detections(det_file)
 
-#call with defaults
+# call with defaults
 detection_bubble_plot(det, map = great_lakes_polygon)
 
-#change symbol size and color
+# change symbol size and color
 detection_bubble_plot(det, symbol_radius = 2, col_grad = c("grey90", "grey10"))
 
-#Add all receivers
+# Add all receivers
 
 # get path to example receiver file
 rec_file <- system.file("extdata", "sample_receivers.csv",
-  package = "glatos")
+  package = "glatos"
+)
 rec <- read_glatos_receivers(rec_file)
 
 detection_bubble_plot(det, receiver_locs = rec)
@@ -146,7 +149,8 @@ detection_bubble_plot(det, receiver_locs = rec)
 
 # get path to example receiver file
 rec_file <- system.file("extdata", "sample_receivers.csv",
-  package = "glatos")
+  package = "glatos"
+)
 rec <- read_glatos_receivers(rec_file)
 
 first <- min(det$detection_timestamp_utc) # time of first detection
@@ -155,9 +159,9 @@ last <- max(det$detection_timestamp_utc) # time of last detection
 # Subset receiver deployments oustide the detection period.
 # !is.na(rec$recover_date_time) eliminates receivers that have been
 # deployed but not yet recovered.
-plot_rec <- rec[rec$deploy_date_time < last & 
-                rec$recover_date_time > first & 
-                !is.na(rec$recover_date_time),]
+plot_rec <- rec[rec$deploy_date_time < last &
+  rec$recover_date_time > first &
+  !is.na(rec$recover_date_time), ]
 
 detection_bubble_plot(det, receiver_locs = plot_rec)
 

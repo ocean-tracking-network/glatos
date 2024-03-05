@@ -573,4 +573,3 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
   # if out_class == NULL, then return data.frame object
   return(out)
 }
-

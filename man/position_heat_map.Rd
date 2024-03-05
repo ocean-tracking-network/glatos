@@ -95,7 +95,7 @@ specified then \code{folder} will be created in the working directory.
 Default is "position_heat_map".}
 
 \item{out_file}{A character string indicating base name of output files (if
-\code{output = "png" or "kmz"}). If \code{out_file} is a path, all but last
+\verb{output = "png" or "kmz"}). If \code{out_file} is a path, all but last
 part is ignored (via \code{basename}). Any file extension is also ignored
 (via \code{tools::file_path_sans_ext}).}
 }
@@ -125,7 +125,7 @@ of raw number of positions. For example, in 4 hours there are a total of 4
 1-h intervals. If fish 'A' was positioned in a single grid cell during 3 of
 the 4 intervals, than the number of intervals for that fish and grid
 combination is 3. Intervals are determined by applying the
-\link[base]{findInterval} function (base R) to a sequence of timestamps
+\link[base:findInterval]{findInterval} function (base R) to a sequence of timestamps
 (class: POSIXct) created using seq(from = min(positions\link{, DATETIME}), to =
 min(positions\link{, DATETIME}), by = interval), where interval is the
 user-assigned interval duration in seconds. Number of intervals is a more
