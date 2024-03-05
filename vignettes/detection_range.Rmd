@@ -3,10 +3,6 @@ title: "Estimate Detection Range for
                       Acoustic Telemetry Receivers"
 date: "Updated: `r Sys.Date()`"
 output: 
-  rmarkdown::pdf_document:
-    toc: true
-    toc_depth: 3
-    number_sections: true
   rmarkdown::html_document:
     toc: true
     toc_depth: 3
@@ -16,6 +12,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Estimate Detection Range for 
                       Acoustic Telemetry Receivers}
+  %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
@@ -145,7 +142,7 @@ For the analysis you will want to start a new script, hence why I have left load
 
 ## Load packages and data 
 We will first load the desired packages in R. We will load [{dplyr}](https://dplyr.tidyverse.org/) for data manipulation processes,[{ggplot2}](https://ggplot2.tidyverse.org/) to plot our models, [{glatos}](https://github.com/ocean-tracking-network/glatos) to use multiple functions associated with acoustic telemetry, and [{sf}](https://r-spatial.github.io/sf/) to work with spatial data including creating the redeployment locations. 
-```{r load packages, eval = FALSEmessage = FALSE}
+```{r reload, eval = FALSE, message = FALSE}
 # ---- Bring in R packages ---- 
 {
   library(dplyr)
@@ -318,4 +315,4 @@ ggplot() +
   )
 ```
 
-## Reploy 
+# Reploy 
