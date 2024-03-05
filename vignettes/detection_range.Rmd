@@ -30,7 +30,7 @@ options(width = 85)
 
 This vignette describes methods to quickly and easily calculate the distance 
 that a given percentage (e.g., 50%) of detections are heard by a receiver to 
-estimate detection range. 
+estimate detection range for further long-term deployment and estiamtes of detection efficency. 
 
 The preliminary study design/protocol is the following:
 
@@ -40,20 +40,22 @@ The preliminary study design/protocol is the following:
 
 3) Import vrl files, receiver locations, and tag location data into [Fathom Central](https://fathomcentral.com/signin). Unfortunately you will need internet to do this. If you are unable to use internet you can download an older version of the detection efficiency software produced by Innovasea and import the vrl and receiver and tag location data. The manual for this software is quite good and will walk you through how to get your data into the detection efficiency tool. You can download the older version at the following [Innovasea website](https://support.vemco.com/s/downloads). 
 
-4) Calculate the detection efficiency for each distance over the 24 hr using detection range calculator either linked above or in fathom central and export the csv. 
+4) Highly suggest doing multiple 24 hr deployments at the same distances and/or drifts depending on the range transmitter you have. If you have multiple sets of detection efficiency you will be able to create a model that fits the data better ultimately improving the placement of the tag  
 
-5) Use the exported csv to estimate the detection efficiency at a given distance using using `detection_range_model()` from `{glatos}`. The function, `detection_range_model()`, will return an estimate of distance for a given  detection effiency (e.g., 50%). 
+5) Calculate the detection efficiency for each distance over the 24 hr using detection range calculator either linked above or in fathom central and export the csv. 
 
-6) We can use R, Python, or GIS to create deployment latitude and longitude for range tags to be deployed at the distance the model estimates will produce the desired detection efficiency (e.g., 50%). 
+6) Use the exported csv to estimate the detection efficiency at a given distance using using `detection_range_model()` from `{glatos}`. The function, `detection_range_model()`, will return an estimate of distance for a given  detection effiency (e.g., 50%). 
 
-7) We can easily redeploy our range tags at the distances the model estimates will produce the desired detection efficiency for a  duration (e.g., 6 month, 1 year), to determine changes in detection efficiency over the study period.  
+7) We can use R, Python, or GIS to create deployment latitude and longitude for range tags to be deployed at the distance the model estimates will produce the desired detection efficiency (e.g., 50%). 
+
+8) We can easily redeploy our range tags at the distances the model estimates will produce the desired detection efficiency for a  duration (e.g., 6 month, 1 year), to determine changes in detection efficiency over the study period.  
 
 The code below will walk through how to use the detection efficiency data produced by Innovasea software to estimate the distance and create the redeployment location. 
 
-# Code procedues
+# Analysis
 
-### Load packages and data 
-We will first load the desired packages in R. We will load [{dplyr}]() for data manipulation processes,[{ggplot2}]() to plot our models, [{glatos}]() to use multiple functions associated with acoustic telemetry, and [{sf}]() to work with spatial data including creating the redeployment locations. 
+## Load packages and data 
+We will first load the desired packages in R. We will load [{dplyr}](https://dplyr.tidyverse.org/) for data manipulation processes,[{ggplot2}](https://ggplot2.tidyverse.org/) to plot our models, [{glatos}](https://github.com/ocean-tracking-network/glatos) to use multiple functions associated with acoustic telemetry, and [{sf}](https://r-spatial.github.io/sf/) to work with spatial data including creating the redeployment locations. 
 ```{r load packages, message = FALSE}
 # ---- Bring in R packages ---- 
 {
@@ -84,9 +86,9 @@ sample_detection_efficiency
 glimpse(sample_detection_efficiency)
 ```
 
-### Get distances for a given detection efficency
+## Calculate distances
 
-Next we will use `detection_range_model()` to produce estimated distances for particular percentage (e.g., 50%). You will want to look through the help page for the function to make sure you're setting upe the model correctly. 
+Next we will use `detection_range_model()` to produce estimated distances for particular percentage (e.g., 50%). You will want to look through the help page for the function to make sure you're setting up the model correctly. 
 
 Few additional tips: 
 
@@ -94,7 +96,7 @@ Few additional tips:
 
 2) If a third order polynomial model is selected, the formula call 
 can be in two different formats. The preferred and default format is
-`y ~ -1 + x + I(x ^ 2) + I(x ^ 3) + offset(y-intercept)`, therefore, `model_frame` argument needs to be set `"data_frame"` to properly extract
+`y ~ -1 + x + I(x ^ 2) + I(x ^ 3) + offset(y-intercept)`, therefore, `model_frame` argument needs to be set `"data_frame"`, which is the default, to properly extract
 parameters and determine distances from a receiver for the percentage 
 of interest. If using the `base::poly()` in the formula such as, 
 `y ~ -1 + poly(x, 3, raw = TRUE) + offset(y-intercept)`, then, `model_frame` argument needs to be set to `"matrix"`.
