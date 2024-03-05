@@ -1,10 +1,11 @@
 # Make internal data object detection_efficiency for testing and examples
 # (example data object)
 
-# get path to example detection efficency 
-sample_detection_efficiency <- system.file("extdata", 
-                                           "sample_detection_efficiency.csv",
-                                           package = "glatos")
+# get path to example detection efficency
+sample_detection_efficiency <- system.file("extdata",
+  "sample_detection_efficiency.csv",
+  package = "glatos"
+)
 
 #----------------------------------------------------
 
