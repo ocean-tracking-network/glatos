@@ -101,32 +101,38 @@ sample_detection_efficiency
 
 # third order polynomial: # ave_percent is a whole number
 
-m <- detection_range_model(avg_percent ~ -1 + distance_m + I(distance_m ^ 2) + 
-                             I(distance_m ^ 3) + offset(intercept), 
-                            data = sample_detection_efficiency, 
-                            percentage = c(10, 50, 90), 
-                            link = "polynomial", 
-                            model_frame = "data_frame")
-                            
+m <- detection_range_model(
+  avg_percent ~ -1 + distance_m + I(distance_m^2) +
+    I(distance_m^3) + offset(intercept),
+  data = sample_detection_efficiency,
+  percentage = c(10, 50, 90),
+  link = "polynomial",
+  model_frame = "data_frame"
+)
+
 # logit model: aver percent is in decimal form
 
-m1 <- detection_range_model(avg_percent_d ~ distance_m, 
-                           data = sample_detection_efficiency, 
-                           percentage = c(10, 50, 90), 
-                           link = "logit",
-                           summary_stats = TRUE)
+m1 <- detection_range_model(avg_percent_d ~ distance_m,
+  data = sample_detection_efficiency,
+  percentage = c(10, 50, 90),
+  link = "logit",
+  summary_stats = TRUE
+)
 
 # probit model: aver percent is in decimal form
 
-m2 <- detection_range_model(avg_percent_d ~ distance_m, 
-                            data = sample_detection_efficiency, 
-                            percentage = c(10, 50, 90), 
-                            link = "probit",
-                            summary_stats = TRUE)
-                            
+m2 <- detection_range_model(avg_percent_d ~ distance_m,
+  data = sample_detection_efficiency,
+  percentage = c(10, 50, 90),
+  link = "probit",
+  summary_stats = TRUE
+)
+
 m
 m1
-m2                             
+m2
+
+# for further instruction see vignettes
 }
 \references{
 This function was developed for an ongoing study which followed
