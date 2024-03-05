@@ -120,11 +120,11 @@ percentages (y variable) as whole numbers as the model is not bound by
 0 and 1. While both logit and probit models have to use percentages as 
 decimals as the models are bound by 0 and 1. 
 
-First a third order polynominal 
+First, we will use a third order polynomial.  
 ```{r}
 #| title: use detection_range_model
 
-# third order polynomial: # ave_percent is a whole number
+# third order polynomial: ave_percent is a whole number
 m <- detection_range_model(avg_percent ~ -1 + distance_m + I(distance_m ^ 2) + 
                              I(distance_m ^ 3) + offset(intercept), 
                            data = sample_detection_efficiency, 
@@ -133,8 +133,10 @@ m <- detection_range_model(avg_percent ~ -1 + distance_m + I(distance_m ^ 2) +
                            model_frame = "data_frame")
 ```
 
-Second, a logit and probit model 
+Second, we will model the same data using a logit and probit model.  
 ```{r, warning=FALSE}
+#| title: use detection_range_model
+
 # logit model: aver percent is in decimal form
 
 m1 <- detection_range_model(avg_percent_d ~ distance_m, 
