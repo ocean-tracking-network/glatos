@@ -198,7 +198,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
                                  summ_type = "animal") {
   # coerce to data.table
   dtc <- data.table::as.data.table(det)
-  
+
   # check 'summ_type'
   if (!(summ_type %in% c("animal", "location", "both"))) {
     stop(paste0(
@@ -206,7 +206,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
       "summary type ('summ_type'); must be 'animal', 'location', or 'both'."
     ))
   }
-  
+
   # check that required columns exist in detections
   missing_cols <- setdiff(c("animal_id", "detection_timestamp_utc"), names(dtc))
   if (length(missing_cols) > 0) {
@@ -215,7 +215,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
       paste(missing_cols, collapse = ", "), "."
     ))
   }
-  
+
   # check that location_col exists in detections
   if (!(location_col %in% names(dtc))) {
     stop(paste0(
@@ -223,12 +223,12 @@ summarize_detections <- function(det, location_col = "glatos_array",
       "Double check input argument 'location_col'."
     ))
   }
-  
+
   # check that detection_timestamp_utc is POSIXct
   if (!(inherits(dtc$detection_timestamp_utc, "POSIXct"))) {
     stop("Column 'detection_timestamp_utc' in 'dtc' must be of class POSIXct.")
   }
-  
+
   if (!is.null(receiver_locs)) {
     # check that location_col exists in receiver locations
     if (!(location_col %in% names(receiver_locs))) {
@@ -238,7 +238,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
       ))
     }
     rcv <- data.table::as.data.table(receiver_locs)
-    
+
     # get mean receiver locations from receiver_locs
     mean_locs <- rcv[, list(
       mean_lat = mean(deploy_lat),
@@ -255,7 +255,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
     by = location_col
     ]
   }
-  
+
   if (!is.null(animals)) {
     # read animal_id vector from data frame if passed as data frame
     if (is.data.frame(animals) & "animal_id" %in% names(animals)) {
@@ -264,7 +264,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
   } else {
     animals <- sort(unique(dtc$animal_id))
   }
-  
+
   if (summ_type == "location") {
     # summarize fish detections
     loc_summary <- dtc[, list(
@@ -273,28 +273,28 @@ summarize_detections <- function(det, location_col = "glatos_array",
       first_det = min(detection_timestamp_utc),
       last_det = max(detection_timestamp_utc),
       animals = paste(sort(unique(.SD[["animal_id"]])),
-                      collapse = " "
+        collapse = " "
       )
     ),
     by = location_col
     ]
-    
+
     # add mean locations
     loc_summary <- merge(loc_summary, mean_locs, by = location_col, all.y = T)
-    
+
     loc_summary[is.na(num_fish), `:=`(num_fish = 0, num_dets = 0)]
-    
+
     # reorder columns
     data.table::setcolorder(loc_summary, c(
       setdiff(names(loc_summary), "animals"),
       "animals"
     ))
-    
+
     data.table::setkeyv(loc_summary, location_col)
-    
+
     det_sum <- loc_summary
   }
-  
+
   if (summ_type == "animal") {
     # summarize fish detections
     anim_summary <- dtc[, list(
@@ -306,20 +306,20 @@ summarize_detections <- function(det, location_col = "glatos_array",
     ),
     by = animal_id
     ]
-    
+
     # add animals not detected
     anim_summary <- merge(anim_summary,
-                          data.table::data.table(animal_id = animals),
-                          by = "animal_id", all.y = TRUE
+      data.table::data.table(animal_id = animals),
+      by = "animal_id", all.y = TRUE
     )
-    
+
     anim_summary[is.na(num_locs), `:=`(num_locs = 0, num_dets = 0)]
-    
+
     data.table::setkey(anim_summary, "animal_id")
-    
+
     det_sum <- anim_summary
   }
-  
+
   if (summ_type == "both") {
     # summarize fish detections
     both_summary <- dtc[, list(
@@ -329,7 +329,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
     ),
     by = c("animal_id", location_col)
     ]
-    
+
     # add animal-location combinations not present in dtc
     combos <- data.table::as.data.table(expand.grid(
       animals,
@@ -340,27 +340,27 @@ summarize_detections <- function(det, location_col = "glatos_array",
       "animal_id",
       location_col
     ), all.y = TRUE)
-    
+
     # add mean locations
     both_summary <- merge(both_summary, mean_locs, by = location_col, all.y = T)
-    
+
     both_summary[is.na(num_dets), `:=`(num_dets = 0)]
-    
+
     both_summary <- both_summary[, c(2, 1, 3:ncol(both_summary)), with = FALSE]
     data.table::setkeyv(both_summary, c("animal_id", location_col))
-    
+
     det_sum <- both_summary
   }
-  
+
   # return data.table if input class data.table
   if (inherits(det, "data.table")) {
     return(det_sum)
   }
-  
+
   # return tibble if input class tibble
   if (inherits(det, "tbl")) {
     return(tibble::as_tibble(det_sum))
   }
-  
+
   return(as.data.frame(det_sum))
 }
