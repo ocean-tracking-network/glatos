@@ -125,7 +125,9 @@
 #' m
 #' m1
 #' m2
-
+#'
+#' # for further instruction see vignettes
+#'
 #' @import tibble
 #' @export
 

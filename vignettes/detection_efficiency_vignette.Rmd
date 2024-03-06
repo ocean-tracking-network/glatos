@@ -15,10 +15,9 @@ output:
     toc_depth: 3
     number_sections: true
 vignette: >
- %\VignetteIndexEntry{Estimate Detection Range for 
-           Acoustic Telemetry Receivers}
- %\VignetteEncoding{UTF-8}
- %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Estimate Detection Range for Acoustic Telemetry Receivers}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
