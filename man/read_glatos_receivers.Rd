@@ -27,7 +27,7 @@ data.frame of class \code{glatos_receivers}.
 }
 \details{
 Data are loaded using \link[data.table:fread]{fread} and timestamps are
-coerced to POSIXct using \link[fasttime:fastPOSIXct]{fastPOSIXct}. All
+coerced to POSIXct using \link[lubridate:parse_date_time]{fast_strptime}. All
 timestamps must be 'YYYY-MM-DD HH:MM' format and in UTC timezone per GLATOS
 standard.
 }
