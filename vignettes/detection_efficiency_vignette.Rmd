@@ -48,7 +48,7 @@ The preliminary study design/protocol is the following:
 
 2) After 24 hr retrieve transmitters and receivers and download vrl files. 
 
-3) Import vrl files and receiver and transmitter location data into [Fathom Central](https://fathomcentral.com/signin). Unfortunately you will need internet to do this. If you are unable to use the internet (e.g., in the field), download an older version of the detection efficiency software produced by Innovasea and import the vrl and receiver and transmitter location data. The manual for this software is quite good and will walk you through how to get your data into the detection efficiency tool. You can download the older version at the following [Innovasea website](https://support.vemco.com/s/downloads).
+3) Import vrl files and receiver and transmitter location data into [Fathom Central](https://fathomcentral.com/signin). Unfortunately you will need internet to do this. If you are unable to use the internet (e.g., in the field), download an older version of the detection efficiency software produced by Innovasea and import the vrl and receiver and transmitter location data. The manual for this software is quite good and will walk you through how to get your data into the detection efficiency tool. You can download the older version at the following [Innovasea website](https://support.vemco.com/s/downloads). We can also determine detection efficiency in R as well. All we need is the detection csv and receiver and transmitter location data. 
 
 4) Highly suggest doing multiple 24 hr deployments at the same distances and/or drifts. If you have multiple sets of detection efficiency you will be able to create a model that fits the data better, thus ultimately improving the redeployment locations of range transmitters for longer duration (e.g., length of study).
 
@@ -131,12 +131,12 @@ Next we will create buffer rings at our set distances away from the receiver. Th
 ```{r, warning = FALSE}
 #| title: create buffer rings
 
-# first create a dataframe  of distances to itterate over
+# first create a dataframe  of distances to iterate over
 
 dists <- data.frame(
   distance = c(100, 250, 500, 750)
 )
-# next we will split the dataframe by distnace and iterate over it using map
+# next we will split the data frame by distance and iterate over it using map
 buffer_rings <- dists %>%
   split(.$distance) %>%
   map(~ st_buffer(dist = .x$distance, rcv_osc_sf_12)) %>%
@@ -150,7 +150,7 @@ mapview(rcv_osc_sf) +
 
 Now that we have the buffer rings we are going to pick 3 locations for each distance to potentially deploy range transmitters for 24 hr. We will then create an excel and gpx file of all the locations.
 
-First we transform our buffer rings into spatial points, view them using `mapview()` and filter our the points we want. Then save as an execl and/or gpx file.  
+First we transform our buffer rings into spatial points, view them using `mapview()` and filter our the points we want. Then save as an excel and/or gpx file.  
 
 ```{r, warning = FALSE}
 #| title: tranform, view and filter
