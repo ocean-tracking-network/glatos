@@ -48,7 +48,7 @@ The preliminary study design/protocol is the following:
 
 2) After 24 hr retrieve transmitters and receivers and download vrl files. 
 
-3) Import vrl files and receiver and transmitter location data into [Fathom Central](https://fathomcentral.com/signin). Unfortunately you will need internet to do this. If you are unable to use the internet (e.g., in the field), download an older version of the detection efficiency software produced by Innovasea and import the vrl and receiver and transmitter location data. The manual for this software is quite good and will walk you through how to get your data into the detection efficiency tool. You can download the older version at the following [Innovasea website](https://support.vemco.com/s/downloads). We can also determine detection efficiency in R as well ([A section] at the end of the vignette). All we need is the detection csv and receiver and transmitter location data. 
+3) Import vrl files and receiver and transmitter location data into [Fathom Central](https://fathomcentral.com/signin). Unfortunately you will need internet to do this. If you are unable to use the internet (e.g., in the field), download an older version of the detection efficiency software produced by Innovasea and import the vrl and receiver and transmitter location data. The manual for this software is quite good and will walk you through how to get your data into the detection efficiency tool. You can download the older version at the following [Innovasea website](https://support.vemco.com/s/downloads). We can also determine detection efficiency in R as well. All we need is the detection csv and receiver and transmitter location data. 
 
 4) Highly suggest doing multiple 24 hr deployments at the same distances and/or drifts. If you have multiple sets of detection efficiency you will be able to create a model that fits the data better, thus ultimately improving the redeployment locations of range transmitters for longer duration (e.g., length of study).
 
@@ -150,7 +150,7 @@ mapview(rcv_osc_sf) +
 
 Now that we have the buffer rings we are going to pick 3 locations for each distance to potentially deploy range transmitters for 24 hr. We will then create an excel and gpx file of all the locations.
 
-First we transform our buffer rings into spatial points, view them using `mapview()` and filter our the points we want. Then save as an execl and/or gpx file.  
+First we transform our buffer rings into spatial points, view them using `mapview()` and filter our the points we want. Then save as an excel and/or gpx file.  
 
 ```{r, warning = FALSE}
 #| title: tranform, view and filter
@@ -514,14 +514,3 @@ st_write(redeploy_sites, "YOUR_FILE_PATH", driver = "GPX")
 ```
 
 Now that you've created your excel and gpx file you can head out in the field to deploy your ranges transmitters for your study period. After the time period you will retriever your receivers, download the vrl files and create detection csvs. From there you can filter your range transmitters, calculate the number of heard in a day (e.g., 38) and divide it by the number you're suppose to hear (e.g., 96), to get your daily detection efficiency. You can then model changes in daily detection efficiency over the course of the study. Congratulations you have now successfully calculated your receiver detection range over your study time period.
-
-
-## Calculate preliminary detection efficiency in R 
-
-We can calculate our preliminary detection efficiency also in R instead of using either the two software produced by Innovasea. To do so we need three things, the detection data, the receiver location data, and the transmitter deployment data. 
-
-For the purpose of the vignette, I am going to manufacture this data. 
-
-
-
-
