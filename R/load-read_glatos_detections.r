@@ -16,8 +16,8 @@
 #'   never need to set this argument (`NULL` should work).
 #'
 #' @details Data are loaded using [fread][data.table::fread] and timestamps are
-#' coerced to POSIXct using [fastPOSIXct][fasttime::fastPOSIXct]. All times must
-#' be in UTC timezone per GLATOS standard.
+#' coerced to POSIXct using [fast_strptime][lubridate::fast_strptime]. All times
+#' must be in UTC timezone per GLATOS standard.
 #'
 #' @details Column `animal_id` is considered a required column by many other
 #'   functions in this package, so it will be created if any records are `NULL`.
@@ -40,7 +40,7 @@
 #'
 #' det <- read_glatos_detections(det_file)
 #'
-#' @importFrom lubridate parse_date_time
+#' @importFrom lubridate fast_strptime
 #'
 #' @export
 read_glatos_detections <- function(det_file, version = NULL) {
@@ -84,16 +84,13 @@ read_glatos_detections <- function(det_file, version = NULL) {
       na.strings = c("", "NA")
     )
 
-    # coerce timestamps to POSIXct; note that with fastPOSIXct raw
-    #  timestamp must be in UTC; and tz argument sets the tzone attr only
-    options(lubridate.fasttime = TRUE)
+    # coerce timestamps to POSIXct
     for (j in timestamp_cols) {
       data.table::set(dtc,
         j = glatos_detection_schema[[vversion]]$name[j],
-        value = lubridate::parse_date_time(
+        value = lubridate::fast_strptime(
           dtc[[glatos_detection_schema[[vversion]]$name[j]]],
-          orders = "ymd HMS",
-          tz = "UTC"
+          format = "%Y-%m-%d %H:%M:%S", tz = "UTC", lt = FALSE
         )
       )
     }
