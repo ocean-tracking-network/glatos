@@ -131,6 +131,9 @@ m2 <- detection_range_model(avg_percent_d ~ distance_m,
 m
 m1
 m2
+
+# for further instruction see vignettes
+
 }
 \references{
 This function was developed for an ongoing study which followed

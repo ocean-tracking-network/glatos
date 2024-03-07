@@ -18,6 +18,7 @@ Imports:
 		geosphere,
 		jsonlite,
 		lubridate,
+		mapview,
 		magrittr,
 		plotrix,
 		purrr,
