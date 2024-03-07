@@ -71,7 +71,8 @@ read_otn_deployments <- function(deployment_file,
       j = otn_deployments_schema$name[j],
       value = lubridate::fast_strptime(
         dtc[[otn_deployments_schema$name[j]]],
-        format = "%Y-%m-%d %H:%M:%S", tz = "UTC", lt = FALSE)
+        format = "%Y-%m-%d %H:%M:%S", tz = "UTC", lt = FALSE
+      )
     )
   }
   # coerce dates to date

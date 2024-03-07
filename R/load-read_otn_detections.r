@@ -38,11 +38,11 @@ read_otn_detections <- function(det_file) {
   timestamp_cols <- which(col_classes == "POSIXct")
   date_cols <- which(col_classes == "Date")
   col_classes[c(timestamp_cols, date_cols)] <- "character"
-  
+
   # read data, suppressWarnings because some columns could be missing
   dtc <- suppressWarnings(data.table::fread(det_file,
-                                            sep = ",", colClasses = col_classes,
-                                            na.strings = c("", "NA")
+    sep = ",", colClasses = col_classes,
+    na.strings = c("", "NA")
   ))
   # This check is for non-matched detection extracts. They are missing some required columns, this attempts to create them.
   # More info on OTN detection extracts here: https://members.oceantrack.org/data/otn-detection-extract-documentation-matched-to-animals
@@ -56,11 +56,11 @@ read_otn_detections <- function(det_file) {
   # coerce timestamps to POSIXct
   for (j in timestamp_cols) {
     data.table::set(dtc,
-                    j = otn_detection_schema$name[j],
-                    value = lubridate::fast_strptime(
-                      dtc[[otn_detection_schema$name[j]]], 
-                      format = "%Y-%m-%d %H:%M:%S", tz = "UTC", lt = FALSE
-                    )
+      j = otn_detection_schema$name[j],
+      value = lubridate::fast_strptime(
+        dtc[[otn_detection_schema$name[j]]],
+        format = "%Y-%m-%d %H:%M:%S", tz = "UTC", lt = FALSE
+      )
     )
   }
   # coerce dates to date
