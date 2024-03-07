@@ -15,6 +15,7 @@ test_that("Test if polynomial model for model_frame = 'data_frame', is correct",
       summary_stats = TRUE
     )
   )
+  expect_warning(m)
   expect_equal(m$distance, expected = 371)
   expect_equal(m$chi_square, expected = 1304, tolerance = 0.01)
   expect_equal(m$pgof, expected = 4.20e-281, tolerance = 0.01)
