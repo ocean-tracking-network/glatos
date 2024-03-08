@@ -34,6 +34,7 @@ Suggests:
 		gganimate,
 		gifski,
 		knitr,
+		mapview,
 		methods,
 		png,
 		rmarkdown,
