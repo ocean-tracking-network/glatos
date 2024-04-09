@@ -1,5 +1,19 @@
 ----
 
+# glatos 0.7.3 (2024-04-09)
+
+
+### Bug fixes
+
+- Fixed bug in `summarize_detections()` where values in `num_locs` and 
+  `locations` columns were incorrect. 
+    - Likely a side effect of 
+    [commit 3f0a2ee](https://github.com/ocean-tracking-network/glatos/commit/3f0a2ee366d8c9447bf4b0bff0a1f8dbfd3819a6)
+which aimed to fix [issue #182](https://github.com/ocean-tracking-network/glatos/issues/182)
+
+
+----
+
 # glatos 0.7.2 (2024-02-25)
 
 
@@ -10,7 +24,7 @@
   column was name of input column (e.g. "glatos_array"), rather than values 
   from that column (e.g., "AGR", "BBI").
     - fixed [issue #182](https://github.com/ocean-tracking-network/glatos/issues/182)
-    - cherry-picked from [commit 182]( https://github.com/ocean-tracking-network/glatos/commit/db9d69a3d08a97e7b8f86e0d4977aa0909776ddd)
+    - cherry-picked from [commit db9d69a]( https://github.com/ocean-tracking-network/glatos/commit/db9d69a3d08a97e7b8f86e0d4977aa0909776ddd)
       which was merged with dev but not main.
   
 
