@@ -15,7 +15,7 @@
 #'   `"1.0"`. Any other values will trigger an error.
 #'
 #' @details Data are loaded using [fread][data.table::fread] and timestamps are
-#'   coerced to POSIXct using [fastPOSIXct][fasttime::fastPOSIXct]. All
+#'   coerced to POSIXct using [fast_strptime][lubridate::fast_strptime]. All
 #'   timestamps must be 'YYYY-MM-DD HH:MM' format and in UTC timezone per GLATOS
 #'   standard.
 #'
@@ -36,7 +36,7 @@
 #'
 #' rcv <- read_glatos_receivers(rec_file)
 #'
-#' @importFrom lubridate parse_date_time
+#' @importFrom lubridate fast_strptime
 #'
 #' @export
 read_glatos_receivers <- function(rec_file, version = NULL) {
@@ -80,16 +80,13 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
     # read data
     rec <- data.table::fread(rec_file, sep = ",", colClasses = col_classes)
 
-    # coerce timestamps to POSIXct; note that with fastPOSIXct raw
-    #  timestamp must be in UTC; and tz argument sets the tzone attr only
-    options(lubridate.fasttime = TRUE)
+    # coerce timestamps to POSIXct
     for (j in timestamp_cols) {
       data.table::set(rec,
         j = glatos_receivers_schema[[ver_txt]]$name[j],
-        value = lubridate::parse_date_time(
+        value = lubridate::fast_strptime(
           rec[[glatos_receivers_schema[[ver_txt]]$name[j]]],
-          orders = "ymd HMS",
-          tz = "UTC"
+          format = "%Y-%m-%d %H:%M:%S", tz = "UTC", lt = FALSE
         )
       )
     }

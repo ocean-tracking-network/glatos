@@ -28,8 +28,8 @@ a data.frame of class \code{glatos_detections}.
 }
 \details{
 Data are loaded using \link[data.table:fread]{fread} and timestamps are
-coerced to POSIXct using \link[fasttime:fastPOSIXct]{fastPOSIXct}. All times must
-be in UTC timezone per GLATOS standard.
+coerced to POSIXct using \link[lubridate:parse_date_time]{fast_strptime}. All times
+must be in UTC timezone per GLATOS standard.
 
 Column \code{animal_id} is considered a required column by many other
 functions in this package, so it will be created if any records are \code{NULL}.
