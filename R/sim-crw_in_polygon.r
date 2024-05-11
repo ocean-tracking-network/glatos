@@ -429,8 +429,8 @@ check_cross_boundary <- function(path, boundary, EPSG) {
   # Make line segment objects of sequential point-pairs in path
 
   segs_mat <- cbind(
-    head(path, -1),
-    tail(path, -1)
+    utils::head(path, -1),
+    utils::tail(path, -1)
   )
 
   in_poly <-
