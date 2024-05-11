@@ -167,7 +167,7 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   }
   
   if (is.null(map)) {
-    data("great_lakes_polygon", envir = environment())
+    utils::data("great_lakes_polygon", envir = environment())
     map <- great_lakes_polygon
     rm(great_lakes_polygon)
   } # example in glatos package (sf object)
