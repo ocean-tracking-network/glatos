@@ -174,6 +174,11 @@ residence_index <- function(
     detections, calculation_method = "kessel",
     locations = NULL, group_col = "animal_id", time_interval_size = "1 day",
     groupwise_total = TRUE) {
+  # Declare global variables for R CMD check
+  location <- mean_latitude <- mean_longitude <- days_detected <- 
+    total_days <- NULL
+  
+  
   # set to NULL if NA
   if (!is.null(group_col)) if (is.na(group_col)) group_col <- NULL
   if (!is.null(locations)) if (all(is.na(locations))) locations <- NULL
@@ -237,7 +242,7 @@ residence_index <- function(
   # numerator
   group_cols <- c("location", group_col)
 
-  detections <- dplyr::group_by(detections, across(group_cols))
+  detections <- dplyr::group_by(detections, dplyr::across(group_cols))
 
   ri <- dplyr::do(
     detections,
@@ -263,7 +268,7 @@ residence_index <- function(
       time_interval_size
     )
   } else {
-    detections <- dplyr::group_by(detections, across(group_col))
+    detections <- dplyr::group_by(detections, dplyr::across(group_col))
     ri <- dplyr::left_join(ri,
       dplyr::do(
         detections,
@@ -365,6 +370,9 @@ total_diff_days <- function(detections) {
 #'
 #' @importFrom dplyr mutate
 aggregate_total_with_overlap <- function(detections) {
+  # Declare global variables for R CMD check
+  last_detection <- first_detection <- NULL
+  
   detections <- mutate(detections, timedelta = as.double(difftime(last_detection, first_detection, units = "secs")))
   detections <- mutate(detections, timedelta = dplyr::recode(detections$timedelta, `0` = 1))
   total <- as.double(sum(detections$timedelta)) / 86400.0
@@ -382,6 +390,9 @@ aggregate_total_with_overlap <- function(detections) {
 #'
 #' @importFrom data.table foverlaps
 aggregate_total_no_overlap <- function(detections) {
+  # Declare global variables for R CMD check
+  t1 <- t2 <- first_detection <- last_detection <- xid <- yid <- tdiff <- NULL
+  
   # extract intervals, rename
   ints <- data.table::as.data.table(detections)[, .(
     t1 = first_detection,
