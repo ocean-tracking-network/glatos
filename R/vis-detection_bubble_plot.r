@@ -123,6 +123,10 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
                                   symbol_radius = 1,
                                   col_grad = c("white", "red"),
                                   scale_loc = NULL) {
+  
+  #  Declare global variables for NSE & R CMD check
+  great_lakes_polygon <- NULL
+  
   # Check that the specified columns appear in the det data frame
   missingCols <- setdiff(
     c(
@@ -136,54 +140,58 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
       paste0(
         "det is missing the following ",
         "column(s):\n", paste0("       '", missingCols, "'",
-          collapse = "\n"
+                               collapse = "\n"
         )
       ),
       call. = FALSE
     )
   }
-
-
+  
+  
   # convert sp to sf
   if (!is.null(map) & inherits(map, "Spatial")) {
     map <- sf::st_as_sf(map)
     message("Converted sp object to sf")
   }
-
+  
   # convert terra::SpatVector to sf
   if (!is.null(map) & inherits(map, "SpatVector")) {
     map <- sf::st_as_sf(map)
     message("Converted terra SpatVector to sf")
   }
-
+  
   # Check CRS == 4326 and attempt conversion if not
   if (!is.null(map) & sf::st_crs(map)$input != "EPSG:4326") {
     map <- sf::st_transform(map, 4326)
     message("Converted map to EPSG:4326")
   }
-
-  if (is.null(map)) map <- utils::data("great_lakes_polygon", envir = environment()) # example in glatos package (sf object)
-
+  
+  if (is.null(map)) {
+    data("great_lakes_polygon", envir = environment())
+    map <- great_lakes_polygon
+    rm(great_lakes_polygon)
+  } # example in glatos package (sf object)
+  
   # Check that timestamp is of class 'POSIXct'
   if (!("POSIXct" %in% class(det$detection_timestamp_utc))) {
     stop(paste0("Column detection_timestamp_utc in det data frame must be of
                 class 'POSIXct'."),
-      call. = FALSE
+         call. = FALSE
     )
   }
-
+  
   # Call glatos::detection_summary to create summary data.
   det_summ <- glatos::summarize_detections(det,
-    location_col = location_col,
-    receiver_locs = receiver_locs,
-    summ_type = "location"
+                                           location_col = location_col,
+                                           receiver_locs = receiver_locs,
+                                           summ_type = "location"
   )
-
+  
   # Re-order the summaries so that sites with detections plot on top of sites
   #  without. Makes it easier to see detected locations when they are close
   #  enough together that the bubbles overlap
   det_summ <- det_summ[order(det_summ$num_fish), ]
-
+  
   # Create labs with degrees symbol for plots
   xlabs <- round(seq(
     from = background_xlim[1], to = background_xlim[2],
@@ -193,10 +201,10 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
     from = background_ylim[1], to = background_ylim[2],
     length.out = 5
   ), 2)
-
+  
   # Define the color palette used to color-code the bubbles
   color <- c(colorRampPalette(col_grad)(101))
-
+  
   # Calculate great circle distance in meters of x and y limits.
   # needed to determine aspect ratio of the output
   linear_x <- geodist::geodist_vec(
@@ -207,21 +215,21 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
     x1 = background_xlim[1], y1 = background_ylim[1],
     x2 = background_xlim[1], y2 = background_ylim[2], measure = "haversine"
   )
-
+  
   # aspect ratio of image
   figRatio <- linear_y / linear_x
-
+  
   # get file extension
   file_type <- ifelse(is.null(out_file), NA, tools::file_ext(out_file))
-
+  
   # check file extension is supported
   ext_supp <- c(NA, "png", "jpeg", "png", "bmp", "tiff")
   if (!(tolower(file_type) %in% ext_supp)) {
     stop(paste0("Image type '", file_type, "' is not supported."),
-      call. = FALSE
+         call. = FALSE
     )
   }
-
+  
   if (!is.na(file_type) & tolower(file_type) == "png") {
     png(out_file, height = 1000 * figRatio, width = 1000, pointsize = 28)
   }
@@ -234,45 +242,45 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   if (!is.na(file_type) & tolower(file_type) == "tiff") {
     tiff(out_file, height = 1000 * figRatio, width = 1000, pointsize = 28)
   }
-
+  
   if (is.null(out_file)) {
     dev.new(noRStudioGD = TRUE, height = 7 * figRatio, width = 7)
   }
-
+  
   # Set margins
   par(mar = c(1, 0, 0, 2), oma = c(3, 5, 1, 0))
-
+  
   # Plot background image
   plot(sf::st_geometry(map),
-    xlim = background_xlim, ylim = background_ylim, axes = T,
-    xaxs = "i", lwd = 1.5, xaxt = "n", yaxt = "n", col = "White",
-    bg = "WhiteSmoke"
+       xlim = background_xlim, ylim = background_ylim, axes = T,
+       xaxs = "i", lwd = 1.5, xaxt = "n", yaxt = "n", col = "White",
+       bg = "WhiteSmoke"
   )
-
+  
   # Plot the bubbles
   symbols(det_summ$mean_lon, det_summ$mean_lat,
-    circles = rep(
-      (background_xlim[2] -
-        background_xlim[1]) * symbol_radius / 100,
-      length(det_summ$mean_lon)
-    ),
-    add = T, inches = FALSE,
-    bg = color[round(det_summ$num_fish
-      / max(det_summ$num_fish) * 100, 0) + 1],
-    fg = "black", lwd = 3
+          circles = rep(
+            (background_xlim[2] -
+               background_xlim[1]) * symbol_radius / 100,
+            length(det_summ$mean_lon)
+          ),
+          add = T, inches = FALSE,
+          bg = color[round(det_summ$num_fish
+                           / max(det_summ$num_fish) * 100, 0) + 1],
+          fg = "black", lwd = 3
   )
-
+  
   # Add 'X' to bubbles with no detections
   if (any(det_summ$num_fish == 0)) {
     with(
       det_summ[det_summ$num_fish == 0, ],
       text(mean_lon, mean_lat,
-        "X",
-        cex = 0.6 * symbol_radius
+           "X",
+           cex = 0.6 * symbol_radius
       )
     )
   }
-
+  
   if (is.null(scale_loc)) {
     # Calculate the location to plot the color scale
     scale_loc <- c(
@@ -285,34 +293,34 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
   # Add color legend
   # explore options for doing this without an extra plotrix package https://stackoverflow.com/questions/13355176/gradient-legend-in-base
   plotrix::color.legend(scale_loc[1], scale_loc[2], scale_loc[3], scale_loc[4],
-    paste0(" ", round(
-      seq(from = 1, to = max(det_summ$num_fish), length.out = 6),
-      0
-    )), color,
-    gradient = "y", family = "sans", cex = 0.75, align = "rb"
+                        paste0(" ", round(
+                          seq(from = 1, to = max(det_summ$num_fish), length.out = 6),
+                          0
+                        )), color,
+                        gradient = "y", family = "sans", cex = 0.75, align = "rb"
   )
-
+  
   # Add x-axis and title
   axis(1, at = xlabs, labels = paste0(format(xlabs, 4), intToUtf8(176)), cex.axis = 1)
   mtext("Longitude", side = 1, line = 2.5, cex = 1)
-
+  
   # Add y-axis and title
   axis(2,
-    at = ylabs, labels = paste0(format(ylabs, 4), intToUtf8(176)), cex.axis = 1,
-    las = 1
+       at = ylabs, labels = paste0(format(ylabs, 4), intToUtf8(176)), cex.axis = 1,
+       las = 1
   )
   mtext("Latitude", side = 2, line = 4, cex = 1)
-
+  
   box()
-
+  
   if (!is.na(file_type)) dev.off() # Close plot device
-
+  
   if (!is.na(file_type)) {
     message(paste0(
       "Image files were written to the following directory:\n",
       getwd(), "\n"
     ))
   }
-
+  
   return(det_summ)
 }

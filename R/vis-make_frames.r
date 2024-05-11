@@ -218,7 +218,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   #  Declare global variables for NSE & R CMD check
   row_in <- recover_date_time <- grp <- bin_timestamp <- t_end <- grp_num <-
     f_name <- animal_id <- record_type <- latitude <- longitude <-
-    deploy_date_time <- NULL
+    deploy_date_time <- great_lakes_polygon <- NULL
   
   # expand path to animation output file
   # - place in same file as images (out_dir) if none specified
@@ -397,9 +397,10 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   data.table::setkey(work_proc_obj, bin_timestamp, animal_id, record_type)
   
   # Load background (use example Great Lakes if null)
-  if (is.null(bg_map)) {
-    utils::data("great_lakes_polygon", envir = environment()) # example in glatos package
+  if (is.null(bg_map)) { # example in glatos package
+    utils::data("great_lakes_polygon", envir = environment()) 
     background <- great_lakes_polygon
+    rm(great_lakes_polygon)
   } else {
     background <- bg_map
     
