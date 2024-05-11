@@ -242,7 +242,7 @@ crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
     }
 
     # Close polyg if needed (first and last point must be same)
-    if (!identical(polyg[1, ], tail(polyg, 1))) polyg <- rbind(polyg, polyg[1, ])
+    if (!identical(polyg[1, ], utils::tail(polyg, 1))) polyg <- rbind(polyg, polyg[1, ])
 
     # Make sf object
     polyg_sf <- sf::st_polygon(list(as.matrix(polyg[c("x", "y")])))
