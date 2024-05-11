@@ -214,12 +214,12 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         overwrite = FALSE, preview = FALSE,
                         bg_map = NULL, show_progress = TRUE, ...) {
   # NOTE: As of glatos v 0.4.1, the package no longer uses the external program ffmpeg.  Input argument 'ffmpeg' has been removed"
-
-  ##  Declare global variables for NSE & R CMD check
+  
+  #  Declare global variables for NSE & R CMD check
   row_in <- recover_date_time <- grp <- bin_timestamp <- t_end <- grp_num <-
     f_name <- animal_id <- record_type <- latitude <- longitude <-
     deploy_date_time <- NULL
-
+  
   # expand path to animation output file
   # - place in same file as images (out_dir) if none specified
   # - preserve "./" prefix if specified
@@ -233,31 +233,31 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
       if (!contains_dir) ani_name <- file.path(out_dir, ani_name)
     }
   }
-
+  
   # if overwrite = FALSE, check if animation output file exists
   if (!overwrite & file.exists(ani_name)) {
     stop("Operation aborted ",
-      "because output video file ",
-      "exists and 'overwrite = ",
-      "FALSE'.",
-      call. = FALSE
+         "because output video file ",
+         "exists and 'overwrite = ",
+         "FALSE'.",
+         call. = FALSE
     )
   }
-
+  
   # Convert proc_obj and recs dataframes into data.table objects
   work_proc_obj <- data.table::as.data.table(proc_obj)
-
+  
   # make column to identify original row to join with option plot arguments
   work_proc_obj[, row_in := 1:.N]
-
-
+  
+  
   # capture optional plot arguments passed via ellipses
   #  and add original row indices to join on both
   inargs <- list(...)
   # set defaults and apply if needed
   rcv_args <- list(pch = 16, cex = 1.5)
   dtc_args <- list(pch = 16, col = "blue", cex = 2)
-
+  
   # identify and subset par arguments
   par_inargs <- inargs[grepl("^par\\.", names(inargs))] # temporary
   # identify and subset receiver point arguments
@@ -266,7 +266,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   timeline_inargs <- inargs[grepl("^timeline\\.", names(inargs))]
   # identify and subset timeslider arguments
   timeslider_inargs <- inargs[grepl("^timeslider\\.", names(inargs))]
-
+  
   # identify dtc input arguments
   dtc_inarg_names <- setdiff(names(inargs), c(
     names(par_inargs),
@@ -274,7 +274,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     names(timeline_inargs),
     names(timeslider_inargs)
   ))
-
+  
   # identify and subset detection point arguments
   dtc_inargs <- inargs[dtc_inarg_names]
   # strip argument names
@@ -282,12 +282,12 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   names(timeline_inargs) <- gsub("^timeline\\.", "", names(timeline_inargs))
   names(timeslider_inargs) <- gsub("^timeslider\\.", "", names(timeslider_inargs))
   names(rcv_inargs) <- gsub("^recs\\.", "", names(rcv_inargs))
-
+  
   # update from ...
   if (length(rcv_inargs) > 0) rcv_args[names(rcv_inargs)] <- rcv_inargs
   # update from ...
   if (length(dtc_inargs) > 0) dtc_args[names(dtc_inargs)] <- dtc_inargs
-
+  
   # expand single rcv_args elements to equal number of rows in recs
   if (!is.null(recs)) {
     for (i in 1:length(rcv_args)) {
@@ -301,7 +301,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
       }
     }
   }
-
+  
   # expand single dtc_args elements to equal number of rows in work_proc_obj
   for (i in 1:length(dtc_args)) {
     if (length(dtc_args[[i]]) == 1) {
@@ -313,21 +313,21 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
       ))
     }
   }
-
+  
   # coerce to data.table and add original row index (for join to recs)
   rcv_args <- data.table::as.data.table(rcv_args)
   rcv_args[, row_in := 1:.N]
   dtc_args <- data.table::as.data.table(dtc_args)
   dtc_args[, row_in := 1:.N]
-
-
+  
+  
   # set recs to data.table and remove receivers not recovered
   if (!is.null(recs)) {
     recs <- data.table::as.data.table(recs)
-
+    
     # make column to identify original row to join with option plot arguments
     recs[, row_in := 1:.N]
-
+    
     # Remove receivers not recovered (records with NA in recover_date_time)
     data.table::setkey(recs, recover_date_time)
     recs <- recs[!list(NA_real_), c(
@@ -336,15 +336,15 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
       "recover_date_time", "row_in"
     )]
   }
-
-
+  
+  
   # Make output directory if it does not already exist
   if (!dir.exists(out_dir)) dir.create(out_dir)
-
+  
   # extract time sequence for plotting
   t_seq <- unique(work_proc_obj$bin_timestamp)
-
-
+  
+  
   # make tails if needed
   if (tail_dur == 0) {
     #  Create group identifier for plotting
@@ -353,22 +353,22 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     # make tail groups if needed
     dur <- work_proc_obj[, .(t_seq = sort(unique(bin_timestamp)))]
     dur[, c("t_end", "t_grp") :=
-      list(
-        data.table::shift(t_seq,
-          type = "lag",
-          fill = min(t_seq), n = tail_dur
-        ),
-        1:nrow(dur)
-      )]
-
+          list(
+            data.table::shift(t_seq,
+                              type = "lag",
+                              fill = min(t_seq), n = tail_dur
+            ),
+            1:nrow(dur)
+          )]
+    
     # group obs for tails
     work_proc_obj[, t_end := bin_timestamp]
     data.table::setkey(dur, t_end, t_seq)
-
+    
     # merge by overlap
     work_proc_obj <- data.table::foverlaps(work_proc_obj, dur,
-      type = "within",
-      nomatch = 0L, by.x = c("bin_timestamp", "t_end")
+                                           type = "within",
+                                           nomatch = 0L, by.x = c("bin_timestamp", "t_end")
     )
     work_proc_obj <- work_proc_obj[, c(
       "animal_id", "t_seq", "latitude",
@@ -380,78 +380,79 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     ))
     work_proc_obj[, grp := bin_timestamp]
   }
-
+  
   # set rows in time order
   data.table::setorder(work_proc_obj, bin_timestamp)
-
+  
   # create num group for later
   work_proc_obj[, grp_num := .GRP, by = bin_timestamp]
-
+  
   # determine leading zeros needed by ffmpeg and add as new column
   char <- paste0("%", 0, nchar((length(t_seq))), "d")
   data.table::setkey(work_proc_obj, bin_timestamp)
   work_proc_obj[, f_name := .GRP, by = grp]
   work_proc_obj[, f_name := paste0(sprintf(char, f_name), ".png")]
-
+  
   # order data for plotting
   data.table::setkey(work_proc_obj, bin_timestamp, animal_id, record_type)
-
+  
   # Load background (use example Great Lakes if null)
   if (is.null(bg_map)) {
-    background <- utils::data("great_lakes_polygon", envir = environment()) # example in glatos package
+    utils::data("great_lakes_polygon", envir = environment()) # example in glatos package
+    background <- great_lakes_polygon
   } else {
     background <- bg_map
-
+    
     # convert to sf if sp::Spatial object
     if (inherits(background, "Spatial")) {
       background <- sf::st_as_sf(background)
       message("Converted sp object to sf")
     }
-
+    
     # convert to sf if map is terra::SpatVector object
     if (inherits(background, "SpatVector")) {
       background <- sf::st_as_sf(background)
       message("Converted terra object to sf")
     }
-
+    
     # convert to WGS 84 (EPSG 4326)
     if (sf::st_crs(background)$epsg != 4326) {
       background <- sf::st_transform(background, 4326)
       message("Converted background to long/lat (epsg: 4326) CRS")
     }
-
+    
     # if x and y limits are equal to default, then set limits to extent of bg_map
     # if x and y limits are not equal to default, then leave as specified in input arguments.
     if (missing(background_ylim) | all(background_ylim == c(41.3, 49.0))) {
       background_ylim <- as.numeric(sf::st_bbox(bg_map)[c("ymin", "ymax")])
     }
-
+    
     if (missing(background_xlim) | all(background_xlim == c(-92.45, -75.87))) {
       background_xlim <- as.numeric(sf::st_bbox(bg_map)[c("xmin", "xmax")])
     }
   }
-
+  
   # turn off interpolated points if show_interpolated = FALSE
   if (!show_interpolated) {
     work_proc_obj[record_type == "interpolated", latitude := NA]
     work_proc_obj[record_type == "interpolated", longitude := NA]
   }
-
+  
   # Calculate the duration of the animation for timeline
   time_period <- range(work_proc_obj$bin_timestamp)
-
+  
   # define custom plot function
   cust_plot <- function(x, .time_period, .recs, .out_dir, .background,
                         .background_xlim, .background_ylim) {
     # Calculate great circle distance in meters of x and y limits.
     # needed to determine aspect ratio of the output
-
+    
     # old version, new below, needs tested
     # linear_x = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
     #                                c(.background_xlim[2], .background_ylim[1]))
     # linear_y = geosphere::distMeeus(c(.background_xlim[1], .background_ylim[1]),
     #                                c(.background_xlim[1], .background_ylim[2]))
-
+    
     linear_x <- geodist::geodist_vec(
       x1 = .background_xlim[1],
       y1 = .background_ylim[1],
@@ -459,7 +460,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
       y2 = .background_ylim[1],
       measure = "haversine"
     )
-
+    
     linear_y <- geodist::geodist_vec(
       x1 = .background_xlim[1],
       y1 = .background_ylim[1],
@@ -467,58 +468,58 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
       y2 = .background_ylim[2],
       measure = "haversine"
     )
-
+    
     # aspect ratio of image
     figRatio <- linear_y / linear_x
-
+    
     # calculate image height based on aspect ratio
     height <- trunc(2000 * figRatio)
-
+    
     # plot GL outline and movement points
     png(file.path(.out_dir, x$f_name[1]),
-      width = 2000,
-      height = ifelse(height %% 2 == 0, height, height + 1), units = "px",
-      pointsize = 22 * figRatio
+        width = 2000,
+        height = ifelse(height %% 2 == 0, height, height + 1), units = "px",
+        pointsize = 22 * figRatio
     )
-
+    
     # Plot background image
     # Set bottom margin to plot timeline outside of plot window
-
+    
     # set defaults and apply if needed
     par_args <- list(oma = c(0, 0, 0, 0), mar = c(6, 0, 0, 0), xpd = FALSE)
     # update from defaults...
     if (length(par_inargs) > 0) par_args[names(par_inargs)] <- par_inargs
-
+    
     do.call(par, par_args)
-
+    
     # Note this call was changed to sf?
     plot(sf::st_geometry(.background),
-      ylim = c(.background_ylim),
-      xlim = c(.background_xlim),
-      axes = FALSE, lwd = 2 * figRatio, col = "white", bg = "gray74"
+         ylim = c(.background_ylim),
+         xlim = c(.background_xlim),
+         axes = FALSE, lwd = 2 * figRatio, col = "white", bg = "gray74"
     )
-
+    
     box(lwd = 3 * figRatio)
-
+    
     # Add receiver locations
     if (!is.null(.recs)) {
       # extract receivers in the water during plot interval
       sub_recs <- .recs[deploy_date_time <= x$bin_timestamp[1] &
-        (recover_date_time >= x$bin_timestamp[1] & !is.na(recover_date_time))]
-
+                          (recover_date_time >= x$bin_timestamp[1] & !is.na(recover_date_time))]
+      
       # get optional plot arguments that correspond with sub_recs
       sub_rcv_args <- rcv_args[match(sub_recs$row_in, rcv_args$row_in), ]
-
+      
       # plot receivers; not do.call to include optional input arguments
       do.call(points, c(
         list(x = sub_recs$deploy_long, y = sub_recs$deploy_lat),
         sub_rcv_args[, !"row_in", with = FALSE]
       ))
     }
-
+    
     # Add timeline
     par(xpd = TRUE)
-
+    
     # Define timeline x and y location
     xlim_diff <- diff(.background_xlim)
     ylim_diff <- diff(.background_ylim)
@@ -527,18 +528,18 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
       .background_xlim[1] + (0.10 * xlim_diff),
       .background_xlim[2] - (0.10 * xlim_diff)
     )
-
+    
     time_dur <- diff(as.numeric(.time_period))
-
+    
     # Add labels to timeline
     labels <- seq(as.POSIXct(format(min(.time_period), "%Y-%m-%d")),
-      as.POSIXct(format(max(.time_period), "%Y-%m-%d")),
-      length.out = 5
+                  as.POSIXct(format(max(.time_period), "%Y-%m-%d")),
+                  length.out = 5
     )
     labels_ticks <- as.POSIXct(format(labels, "%Y-%m-%d"), tz = "GMT")
     ptime <- (as.numeric(labels_ticks) - as.numeric(min(.time_period))) / time_dur
     labels_x <- timeline_x[1] + (diff(timeline_x) * ptime)
-
+    
     # set defaults and apply if needed
     timeline_args <- list(
       side = 1, at = labels_x, pos = timeline_y[1],
@@ -546,57 +547,57 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
       lwd = 20 * figRatio, lend = 0, lwd.ticks = NA,
       col.ticks = 1, cex.axis = 2, padj = 0.5
     )
-
+    
     # update from ...
     if (length(timeline_inargs) > 0) {
       timeline_args[names(timeline_inargs)] <-
         timeline_inargs
     }
-
+    
     do.call(axis, timeline_args)
-
-
+    
+    
     # Update timeline
     ptime <- (as.numeric(x[1, "grp"]) - as.numeric(min(.time_period))) / time_dur
-
+    
     # Proportion of timeline elapsed
     timeline_x_i <- timeline_x[1] + diff(timeline_x) * ptime
-
+    
     # set defaults and apply if needed
     timeslider_args <- list(
       pch = 21,
       cex = 2, bg = "grey40", col = "grey20", lwd = 1
     )
-
+    
     # update from ...
     if (length(timeslider_inargs) > 0) {
       timeslider_args[names(timeslider_inargs)] <-
         timeslider_inargs
     }
-
+    
     # Plot slider along timeline at appropriate location
     do.call(points, c(
       list(x = timeline_x_i, y = timeline_args$pos),
       timeslider_args
     ))
-
-
+    
+    
     # Add fish positions
     # get optional plot arguments that correspond with x
     sub_dtc_args <- dtc_args[match(x$row_in, dtc_args$row_in), ]
-
+    
     do.call(points, c(
       list(x = x$longitude, y = x$latitude),
       sub_dtc_args[, !"row_in", with = FALSE]
     ))
-
+    
     dev.off()
   }
-
+  
   # order for plotting
   data.table::setkey(work_proc_obj, grp_num)
-
-
+  
+  
   if (preview) {
     grpn <- 1
   } else {
@@ -604,37 +605,37 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
     grpn <- data.table::uniqueN(work_proc_obj$grp)
     if (show_progress) pb <- txtProgressBar(min = 0, max = grpn, style = 3)
   }
-
+  
   # call cust_plot witin data.table
   work_proc_obj[grp_num <= grpn,
-    {
-      if (!preview & show_progress) setTxtProgressBar(pb, .GRP)
-      cust_plot(
-        x = .SD,
-        .time_period = time_period,
-        .recs = recs,
-        .out_dir = out_dir,
-        .background = background,
-        .background_xlim = background_xlim,
-        .background_ylim = background_ylim
-      )
-    },
-    by = grp,
-    .SDcols = c(
-      "bin_timestamp", "longitude", "latitude",
-      "record_type", "f_name", "grp", "row_in"
-    )
+                {
+                  if (!preview & show_progress) setTxtProgressBar(pb, .GRP)
+                  cust_plot(
+                    x = .SD,
+                    .time_period = time_period,
+                    .recs = recs,
+                    .out_dir = out_dir,
+                    .background = background,
+                    .background_xlim = background_xlim,
+                    .background_ylim = background_ylim
+                  )
+                },
+                by = grp,
+                .SDcols = c(
+                  "bin_timestamp", "longitude", "latitude",
+                  "record_type", "f_name", "grp", "row_in"
+                )
   ]
-
+  
   if (preview) {
     message("Preview frames written to\n ", out_dir)
   } else {
     if (show_progress) close(pb)
-
+    
     if (animate) {
       make_video(input_dir = out_dir, output = ani_name, overwrite = overwrite)
     }
-
+    
     if (frame_delete) {
       unlink(file.path(out_dir, unique(work_proc_obj$f_name)))
     } else {
