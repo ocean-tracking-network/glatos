@@ -179,6 +179,9 @@ transmit_along_path <- function(path = NA,
                                 ),
                                 pathCRS = NA,
                                 sp_out = TRUE) {
+  ##  Declare global variables for NSE & R CMD check
+  cumdistm <- NULL
+  
   # Check input class
   if (!inherits(path, c("data.frame", "sf", "sfc", "SpatialPointsDataFrame"))) {
     stop(
