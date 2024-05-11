@@ -2,7 +2,8 @@
 % Please edit documentation in R/vis-detection_bubble_plot.r
 \name{detection_bubble_plot}
 \alias{detection_bubble_plot}
-\title{Plot number of tagged animals or detections on a map}
+\title{Make bubble plots showing the number of fish detected across a defined set
+of receiver locations.}
 \usage{
 detection_bubble_plot(
   det,
