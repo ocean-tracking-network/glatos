@@ -77,6 +77,11 @@
 #'
 convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
                                       crs = sf::st_crs(4326)) {
+  ##  Declare global variables for R CMD check
+  Sex <- latitude <- longitude <- station <- receiver_model <-
+    receiver_serial_number <- dummy <- time <- recovery_datetime_utc <-
+    deploy_datetime_utc <- detection_timestamp_utc <- NULL
+  
   transmitters <-
     if (all(grepl("-", detectionObj$transmitter_id, fixed = TRUE))) {
       detectionObj$transmitter_id
