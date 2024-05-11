@@ -196,6 +196,14 @@
 interpolate_path <- function(det, trans = NULL, start_time = NULL,
                              int_time_stamp = 86400, lnl_thresh = 0.9,
                              out_class = NULL, show_progress = TRUE){
+  ##  Declare global variables for NSE & R CMD check
+  detection_timestamp_utc <- record_type <- num_rows <- animal_id <- bin <- 
+    bin_stamp <- i_lat <- deploy_lat <- i_lon <- deploy_long <- bin_timestamp <- 
+    num <- start_dtc <- x.animal_id <- x.detection_timestamp_utc <- x.deploy_lat <- 
+    x.deploy_long <- x.record_type <- x.num_rows <- x.bin <- gcd <- i.start <- 
+    lcd <- crit <- t_lat <- t_lon <- t_timestamp <- coord <- grp <- nln_longitude <- 
+    nln_latitude <- seq_count <- i_time <- latitude_lead <- longitude_lead <- 
+    cumdist <- NULL
   
   # stop if out_class is not NULL, data.table, or tibble
   if(!is.null(out_class)){
