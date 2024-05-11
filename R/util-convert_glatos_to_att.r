@@ -42,6 +42,11 @@
 
 convert_glatos_to_att <- function(detectionObj, receiverObj,
                                   crs = sp::CRS("+init=epsg:4326")) {
+  ##  Declare global variables for R CMD check
+  Sex <- glatos_array <- station_no <- deploy_lat <- deploy_long <-
+  station <- dummy <- ins_model_no <- ins_serial_no <-
+  deploy_date_time <- recover_date_time <- detection_timestamp_utc <- NULL
+  
   transmitters <-
     if (all(grepl("-", detectionObj$transmitter_id, fixed = TRUE))) {
       detectionObj$transmitter_id
