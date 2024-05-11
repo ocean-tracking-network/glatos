@@ -191,8 +191,6 @@
 #'
 #' @export
 
-
-
 summarize_detections <- function(det, location_col = "glatos_array",
                                  receiver_locs = NULL, animals = NULL,
                                  summ_type = "animal") {
@@ -285,10 +283,13 @@ summarize_detections <- function(det, location_col = "glatos_array",
     loc_summary[is.na(num_fish), `:=`(num_fish = 0, num_dets = 0)]
 
     # reorder columns
-    data.table::setcolorder(loc_summary, c(
-      setdiff(names(loc_summary), "animals"),
-      "animals"
-    ))
+    data.table::setcolorder(
+      loc_summary,
+      c(
+        setdiff(names(loc_summary), "animals"),
+        "animals"
+      )
+    )
 
     data.table::setkeyv(loc_summary, location_col)
 
@@ -298,11 +299,11 @@ summarize_detections <- function(det, location_col = "glatos_array",
   if (summ_type == "animal") {
     # summarize fish detections
     anim_summary <- dtc[, list(
-      num_locs = data.table::uniqueN(location_col),
+      num_locs = data.table::uniqueN(.SD[[location_col]]),
       num_dets = .N,
       first_det = min(detection_timestamp_utc),
       last_det = max(detection_timestamp_utc),
-      locations = paste(sort(unique(dtc[[location_col]])), collapse = " ")
+      locations = paste(sort(unique(.SD[[location_col]])), collapse = " ")
     ),
     by = animal_id
     ]
