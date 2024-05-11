@@ -163,7 +163,7 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
     message("Converted map to EPSG:4326")
   }
 
-  if (is.null(map)) map <- data("great_lakes_polygon") # example in glatos package (sf object)
+  if (is.null(map)) map <- utils::data("great_lakes_polygon") # example in glatos package (sf object)
 
   # Check that timestamp is of class 'POSIXct'
   if (!("POSIXct" %in% class(det$detection_timestamp_utc))) {
