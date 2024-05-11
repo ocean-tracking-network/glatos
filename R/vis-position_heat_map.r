@@ -397,7 +397,7 @@ position_heat_map <- function(positions,
 
 
     png(
-      file = file.path(png_file),
+      filename = file.path(png_file),
       bg = "transparent",
       height = 2000,
       width = 2000 * (ncol(results) / nrow(results)),
