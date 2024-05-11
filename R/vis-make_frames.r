@@ -398,7 +398,7 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
 
   # Load background (use example Great Lakes if null)
   if (is.null(bg_map)) { # example in glatos package
-    utils::data("great_lakes_polygon", envir = environment()) 
+    utils::data("great_lakes_polygon", envir = environment())
     background <- great_lakes_polygon
     rm(great_lakes_polygon)
   } else {
