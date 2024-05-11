@@ -39,10 +39,10 @@ prepare_deploy_sheet <- function(path, header_line = 5, sheet_name = 1, combine_
   ##  Declare global variables for NSE & R CMD check
   DEPLOY_LAT <- DEPLOY_LONG <- INS_MODEL_NO <-
     `DEPLOY_DATE_TIME   (yyyy-mm-ddThh:mm:ss)` <-
-    `RECOVER_DATE_TIME (yyyy-mm-ddThh:mm:ss)` <- STATION_NO <- 
+    `RECOVER_DATE_TIME (yyyy-mm-ddThh:mm:ss)` <- STATION_NO <-
     OTN_ARRAY <- station <- ins_model_no <- deploy_lat <- deploy_long <-
     deploy_date_time <- recover_date_time <- NULL
-  
+
   deploy_sheet <- readxl::read_excel(path,
     sheet = sheet_name,
     skip = header_line - 1,

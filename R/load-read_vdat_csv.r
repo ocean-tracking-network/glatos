@@ -133,12 +133,11 @@ read_vdat_csv <- function(src,
     warning("File not found: ", src)
     return()
   }
-  
-  ##  Declare global variables for NSE & R CMD check
-  record_type <- 
 
-  # Identify vdat csv format version and vdat.exe version that created input csv
-  vdat_header <- data.table::fread(file = src, nrows = 1L, header = FALSE)
+  ##  Declare global variables for NSE & R CMD check
+  record_type <-
+    # Identify vdat csv format version and vdat.exe version that created input csv
+    vdat_header <- data.table::fread(file = src, nrows = 1L, header = FALSE)
 
   # Check if fathom csv format (error if looks like VUE export format)
   if (vdat_header$V1[1] == "VEMCO DATA LOG") {

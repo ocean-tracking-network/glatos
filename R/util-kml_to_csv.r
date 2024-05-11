@@ -36,7 +36,6 @@
 
 kml_to_csv <- function(filePath,
                        type = c("points", "lines", "polygons")) {
-  
   # Change type to sf-style types
   type[type == "points"] <- "POINT"
   type[type == "lines"] <- "LINE"

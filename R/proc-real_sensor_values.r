@@ -111,9 +111,9 @@
 
 real_sensor_values <- function(det, tag_specs) {
   ##  Declare global variables for NSE & R CMD check
-  ord <- transmitter_codespace <- transmitter_id <- code_space <- id_code <- 
+  ord <- transmitter_codespace <- transmitter_id <- code_space <- id_code <-
     sensor_value_real <- sensor_intercept <- sensor_value <- sensor_slope <- NULL
-  
+
   # coerce to data.table
   dtc <- data.table::as.data.table(det)
 

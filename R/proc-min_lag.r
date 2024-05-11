@@ -67,7 +67,7 @@ min_lag <- function(det) {
   ##  Declare global variables for NSE & R CMD check
   ord <- transmitter_codespace <- transmitter_id <- receiver_sn <-
     detection_timestamp_utc <- NULL
-  
+
   # coerce to data.table
   dtc <- data.table::as.data.table(det)
 
