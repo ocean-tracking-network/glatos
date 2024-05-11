@@ -219,6 +219,9 @@ detect_transmissions <- function(trnsLoc = NA,
                                  inputCRS = NA,
                                  sp_out = TRUE,
                                  show_progress = TRUE) {
+  ##  Declare global variables for NSE & R CMD check
+  trns_x <- trns_y <- NULL
+  
   # Check input class - trnsLoc
   if (!inherits(trnsLoc, c("data.frame", "sf", "sfc", "SpatialPointsDataFrame"))) {
     stop(
