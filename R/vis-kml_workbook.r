@@ -114,7 +114,7 @@ kml_workbook <- function(
       "specified when 'wb_file = NULL.'"
     ))
   }
-  
+
   ##  Declare global variables for NSE & R CMD check
   Folder <- NULL
 

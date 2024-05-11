@@ -75,10 +75,10 @@ write_vdat_csv <- function(vdat,
                            output_format = "csv.fathom",
                            include_empty = FALSE) {
   ##  Declare global variables for NSE & R CMD check
-  record_type <- dt2 <- `Device Time (UTC)` <- `Time Correction (s)` <- 
-    `Ambient (deg C)` <- `Ambient Min (deg C)` <- `Ambient Max (deg C)` <- 
+  record_type <- dt2 <- `Device Time (UTC)` <- `Time Correction (s)` <-
+    `Ambient (deg C)` <- `Ambient Min (deg C)` <- `Ambient Max (deg C)` <-
     `Ambient Mean (deg C)` <- `Internal (deg C)` <- ..txt_cols <- txt <- NULL
-  
+
   # Check input class
   if (!inherits(vdat, "vdat_list")) {
     stop(

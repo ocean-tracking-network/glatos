@@ -181,9 +181,9 @@ vdat_convert <- function(src,
                          show_progress = TRUE,
                          diagn = FALSE) {
   ##  Declare global variables for NSE & R CMD check
-  src_dir <- src_file <- out_file <- out_file_exists <- src_to_convert <- 
+  src_dir <- src_file <- out_file <- out_file_exists <- src_to_convert <-
     written <- NULL
-  
+
   # Supported input file extensions (not case sensitive)
   supported_ext <- c("vrl", "vdat")
 

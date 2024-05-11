@@ -216,10 +216,10 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   # NOTE: As of glatos v 0.4.1, the package no longer uses the external program ffmpeg.  Input argument 'ffmpeg' has been removed"
 
   ##  Declare global variables for NSE & R CMD check
-  row_in <- recover_date_time <- grp <- bin_timestamp <- t_end <- grp_num <- 
+  row_in <- recover_date_time <- grp <- bin_timestamp <- t_end <- grp_num <-
     f_name <- animal_id <- record_type <- latitude <- longitude <-
     deploy_date_time <- NULL
-  
+
   # expand path to animation output file
   # - place in same file as images (out_dir) if none specified
   # - preserve "./" prefix if specified
