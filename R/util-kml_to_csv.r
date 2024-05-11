@@ -36,13 +36,14 @@
 
 kml_to_csv <- function(filePath,
                        type = c("points", "lines", "polygons")) {
+  
   # Change type to sf-style types
   type[type == "points"] <- "POINT"
   type[type == "lines"] <- "LINE"
   type[type == "polygons"] <- "POLYGON"
 
   # Unzip if kmz
-  fileExt <- tools::file_ext(kml_file)
+  fileExt <- tools::file_ext(filePath)
 
   if (tolower(fileExt) == "kmz") stop("kmz are not supported.")
 
