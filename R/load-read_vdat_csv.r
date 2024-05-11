@@ -218,7 +218,7 @@ read_vdat_csv <- function(src,
     keep.by = FALSE
   )
 
-  utils::data("vdat_csv_schema")
+  utils::data("vdat_csv_schema", envir = environment())
 
   vdat_csv_schema <- vdat_csv_schema[[paste0("v", src_version$fathom_csv)]]
 
