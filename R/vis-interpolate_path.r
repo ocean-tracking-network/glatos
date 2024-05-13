@@ -63,7 +63,7 @@
 #'   interpolation will be used for all points when `lnl_thresh`
 #'   = 0.
 #'   
-#' @details All linear interpolation is done by code{stats::approx} with
+#' @details All linear interpolation is done by [stats::approx] with
 #'   argument `ties = "ordered"` controlling how tied `x` values 
 #'   are handled. See [approxfun()].
 #'
