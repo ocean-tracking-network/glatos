@@ -22,7 +22,6 @@ Imports:
 		readxl,
 		sf,
 		sp,
-		tidyr,
 		units,
 		zip
 Suggests: 
