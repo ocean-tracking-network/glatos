@@ -18,9 +18,6 @@ worksheets:
 \source{
 \url{http://glatos.glos.us/home/project/SMRSL}
 }
-\usage{
-system.file("extdata", "SMRSL_GLATOS_20140828.xlsm", package="glatos")
-}
 \description{
 A completed GLATOS workbook from St. Marys River Sea Lamprey
 project.
@@ -29,6 +26,10 @@ project.
  SMRSL_GLATOS_20140828.xlsm
 }
 
+\examples{
+system.file("extdata", "SMRSL_GLATOS_20140828.xlsm", package = "glatos")
+
+}
 \author{
 Chris Holbrook
 }

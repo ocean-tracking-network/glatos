@@ -41,9 +41,10 @@ pixel must be at least 50\% covered by polygon to be coded as water.}
 \value{
 A list with two elements:
 \itemize{
-\item{\verb{transition:}}{ a geo-corrected transition raster layer where land = 0
-and water=1 (see \code{gdistance})}
-\item{\verb{rast:}}{ rasterized input layer of class \code{raster}}}
+\item \code{transition}: a geo-corrected transition raster layer where land = 0
+and water=1 (see \code{gdistance})
+\item \code{rast}: rasterized input layer of class \code{raster}
+}
 Additionally, rasterized version of input shapefile (*.tif extension) is
 written to computer at \code{output_dir}
 }

@@ -31,6 +31,10 @@
 #' @export
 
 prepare_tag_sheet <- function(path, header_line = 5, sheet_name = 2) {
+  ##  Declare global variables for NSE & R CMD check
+  TAG_CODE_SPACE <- TAG_ID_CODE <- EST_TAG_LIFE <- UTC_RELEASE_DATE_TIME <-
+    SEX <- RELEASE_LATITUDE <- RELEASE_LONGITUDE <- SCIENTIFIC_NAME <- NULL
+
   tag_sheet <- readxl::read_excel(path, sheet = sheet_name, skip = header_line - 1)
   tag_sheet <- tag_sheet %>% dplyr::mutate(
     transmitter_id = paste(TAG_CODE_SPACE, TAG_ID_CODE, sep = "-"),

@@ -13,7 +13,7 @@ of the system.}
 }
 \value{
 Character string with command for calling VUE.exe via
-\code{system2}'s \code{\link{command}} argument.
+\code{system2}'s \code{command} argument.
 }
 \description{
 Check path to Innovasea program VUE.exe

@@ -9,9 +9,6 @@ shapefile
 \source{
 \url{http://glatos.glos.us/home}
 }
-\usage{
-system.file("extdata", "shoreline.zip", package="glatos")
-}
 \description{
 Polygon coastline of Great Lakes in WGS84
 projection.  Includes outlines of Tittabawassee River (Lake
@@ -21,6 +18,10 @@ Huron), Maumee River (Lake Erie), and Sandusky River (Lake Erie)
  shoreline.zip
 }
 
+\examples{
+system.file("extdata", "shoreline.zip", package = "glatos")
+
+}
 \author{
 Todd Hayden
 }

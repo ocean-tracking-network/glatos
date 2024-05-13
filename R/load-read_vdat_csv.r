@@ -1,7 +1,5 @@
 #' Read data from an Innovasea Fathom VDAT CSV file
 #'
-#' Read data from an Innovasea Fathom VDAT CSV file
-#'
 #' @param src A character string with path and name of an Innovasea VDAT CSV
 #'   detection file. If only file name is given, then the file must be located
 #'   in the working directory.
@@ -136,6 +134,9 @@ read_vdat_csv <- function(src,
     return()
   }
 
+  ##  Declare global variables for NSE & R CMD check
+  record_type <- NULL
+
   # Identify vdat csv format version and vdat.exe version that created input csv
   vdat_header <- data.table::fread(file = src, nrows = 1L, header = FALSE)
 
@@ -218,13 +219,13 @@ read_vdat_csv <- function(src,
     keep.by = FALSE
   )
 
-  data(vdat_csv_schema)
+  utils::data("vdat_csv_schema", envir = environment())
 
   vdat_csv_schema <- vdat_csv_schema[[paste0("v", src_version$fathom_csv)]]
 
 
   # Preallocate list; element = record type
-  vdat <- setNames(
+  vdat <- stats::setNames(
     object = vector("list", length(vdat_list)),
     nm = names(vdat_list)
   )

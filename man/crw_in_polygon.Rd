@@ -24,14 +24,14 @@ features (but \code{SpatialPolygonsDataFrame} and \code{SpatialPolygons}
 are also accepted); \cr \emph{OR} \cr A polygon defined as data frame or
 matrix with numeric columns x and y.}
 
-\item{theta}{A 2-element numeric vector with turn angle parameters (theta\link{1}
-= mean; theta\link{2} = sd), in degrees, from normal distribution.}
+\item{theta}{A 2-element numeric vector with turn angle parameters (\code{theta[1]}
+= mean; \code{theta[2]} = sd), in degrees, from normal distribution.}
 
 \item{stepLen}{A numeric scalar with total distance moved in each step, in
 meters.}
 
 \item{initPos}{A 2-element numeric vector with initial position
-(initPos\link{1}=x, initPos\link{2}=y) in same coordinate reference system as
+(\code{initPos[1]}=x, \code{initPos[2]}=y) in same coordinate reference system as
 \code{polyg}.}
 
 \item{initHeading}{A numeric scalar with initial heading in degrees. E.g., 0

@@ -8,8 +8,8 @@
 #'
 #' @section Filename: walleye_detections.zip
 #'
-#' @usage
-#' system.file("extdata", "walleye_detections.zip", package="glatos")
+#' @examples
+#' system.file("extdata", "walleye_detections.zip", package = "glatos")
 #'
 #' @author Todd Hayden
 #'
@@ -37,8 +37,8 @@ NULL
 #'
 #' @section Filename: SMRSL_GLATOS_20140828.xlsm
 #'
-#' @usage
-#' system.file("extdata", "SMRSL_GLATOS_20140828.xlsm", package="glatos")
+#' @examples
+#' system.file("extdata", "SMRSL_GLATOS_20140828.xlsm", package = "glatos")
 #'
 #' @author Chris Holbrook
 #'
@@ -53,12 +53,12 @@ NULL
 #'
 #' @format Folder contains 30 sequentially labeled .png image files
 #'
-#' @name video images
+#' @name video-images
 #'
 #' @section Filename: frames
 #'
-#' @usage
-#' system.file("extdata", "frames", package="glatos")
+#' @examples
+#' system.file("extdata", "frames", package = "glatos")
 #'
 #' @author Todd Hayden
 #'
@@ -77,8 +77,8 @@ NULL
 #'
 #' @section Filename: shoreline.zip
 #'
-#' @usage
-#' system.file("extdata", "shoreline.zip", package="glatos")
+#' @examples
+#' system.file("extdata", "shoreline.zip", package = "glatos")
 #'
 #' @author Todd Hayden
 #'
@@ -95,7 +95,7 @@ NULL
 #'
 #' @section Filename: otn_aat_animals.csv
 #'
-#' @usage
+#' @examples
 #' system.file("extdata", "otn_aat_animals.csv", package = "glatos")
 #'
 #' @source Ryan Gosse, Ocean Tracking Network
@@ -111,7 +111,7 @@ NULL
 #'
 #' @section Filename: otn_aat_receivers.csv
 #'
-#' @usage
+#' @examples
 #' system.file("extdata", "otn_aat_receivers.csv", package = "glatos")
 #'
 #' @source Ryan Gosse, Ocean Tracking Network
@@ -127,7 +127,7 @@ NULL
 #'
 #' @section Filename: otn_aat_tag_releases.csv
 #'
-#' @usage
+#' @examples
 #' system.file("extdata", "otn_aat_tag_releases.csv", package = "glatos")
 #'
 #' @source Ryan Gosse, Ocean Tracking Network

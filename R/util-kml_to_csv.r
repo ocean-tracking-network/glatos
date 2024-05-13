@@ -42,7 +42,7 @@ kml_to_csv <- function(filePath,
   type[type == "polygons"] <- "POLYGON"
 
   # Unzip if kmz
-  fileExt <- tools::file_ext(kml_file)
+  fileExt <- tools::file_ext(filePath)
 
   if (tolower(fileExt) == "kmz") stop("kmz are not supported.")
 
