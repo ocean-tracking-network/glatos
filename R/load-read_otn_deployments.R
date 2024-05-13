@@ -63,11 +63,11 @@ read_otn_deployments <- function(deployment_file,
   data.table::setnames(
     dtc,
     c(deploy_date_col, recovery_date_col, last_download_col),
-    c('deploy_date', 'recovery_date', 'last_download')
+    c("deploy_date", "recovery_date", "last_download")
   )
-  dtc[, ':='(deploy_date = sub('.*?(\\d+-\\d+-\\d+).*', '\\1', deploy_date),
-             recovery_date = sub('.*?(\\d+-\\d+-\\d+).*', '\\1', recovery_date),
-             last_download = sub('.*?(\\d+-\\d+-\\d+).*', '\\1', last_download))]
+  dtc[, ":="(deploy_date = sub(".*?(\\d+-\\d+-\\d+).*", "\\1", deploy_date),
+    recovery_date = sub(".*?(\\d+-\\d+-\\d+).*", "\\1", recovery_date),
+    last_download = sub(".*?(\\d+-\\d+-\\d+).*", "\\1", last_download))]
 
   options(lubridate.fasttime = TRUE)
   for (j in timestamp_cols) {
