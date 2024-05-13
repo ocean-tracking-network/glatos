@@ -52,7 +52,7 @@
 #' @return A list with two elements:
 #' \itemize{
 #'    \item `transition`: a geo-corrected transition raster layer where land = 0
-#'       and water=1 (see `gdistance`) 
+#'       and water=1 (see `gdistance`)
 #'    \item `rast`: rasterized input layer of class `raster`
 #' }
 #'   Additionally, rasterized version of input shapefile (*.tif extension) is

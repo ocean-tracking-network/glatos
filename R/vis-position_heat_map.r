@@ -8,7 +8,7 @@
 #'  following 4 columns:
 #'  \describe{
 #'      \item{`DETECTEDID`}{Individual animal identifier; character.}
-#'      \item{`DATETIME`}{Date-time stamps for the positions (MUST be of 
+#'      \item{`DATETIME`}{Date-time stamps for the positions (MUST be of
 #'      class 'POSIXct')}
 #'      \item{`LAT`}{Position latitude.}
 #'      \item{`LON`}{Position longitude.}

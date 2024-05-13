@@ -63,18 +63,18 @@
 #'  location points, receiver location points, timeline, and slider (moves along
 #'  the timeline). See also **Details** and **Note** sections.
 #'
-#' @details 
+#' @details
 #' ***To customize fish location points (from `proc_obj`):*** Add any argument
 #' that can be passed to [points][graphics::points]. The following values will
 #' create the default plot:
 #' \itemize{
 #'    \item `cex`: symbol size; default = 2
-#'    \item `col`: symbol color; default = "blue" 
-#'    \item `pch`: symbol type; default = 16 
+#'    \item `col`: symbol color; default = "blue"
+#'    \item `pch`: symbol type; default = 16
 #' }
-#' 
+#'
 #' @details
-#' 
+#'
 #' ***To customize receiver location points (from `recs`):*** Add prefix
 #' `recs.` to any argument that can be passed to [points][graphics::points]. The
 #' following values will create the default plot:
@@ -102,7 +102,7 @@
 #' ratio of the plot device
 #'    \item `timeline.cex.axis`: size of labels; default = 2
 #' }
-#' 
+#'
 #' ***To customize time slider (symbol that slides):*** Add prefix
 #' `timeline.` to any argument that can be passed to [points][graphics::points].
 #' The following values will create the default plot:
@@ -114,7 +114,7 @@
 #' "grey20"
 #'    \item `timeslider.pch`: a single value with symbol type; default = 21
 #' }
-#' 
+#'
 #' ***To customize parameters controlled by `par`:*** Add prefix
 #' `par.` to any argument that can be passed to [par][graphics::par]. Note that
 #' `par.mar` controls whitespace behind default timeslider. The following values
@@ -134,7 +134,7 @@
 #'  dimensions (size), and other ouput video characteristics can be modified by
 #'  calling [make_video()] directly. To do this, set `animate = FALSE` and then
 #'  use [make_video()] to create a video from the resulting set of images.
-#' 
+#'
 #'
 #' @return Sequentially-numbered png files (one for each frame) and one mp4 file
 #'  will be written to `out_dir`.
