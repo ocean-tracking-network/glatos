@@ -9,14 +9,14 @@
 #'   are also accepted); \cr *OR* \cr A polygon defined as data frame or
 #'   matrix with numeric columns x and y.
 #'
-#' @param theta A 2-element numeric vector with turn angle parameters (theta[1]
-#'   = mean; theta[2] = sd), in degrees, from normal distribution.
+#' @param theta A 2-element numeric vector with turn angle parameters (`theta[1]`
+#'   = mean; `theta[2]` = sd), in degrees, from normal distribution.
 #'
 #' @param stepLen A numeric scalar with total distance moved in each step, in
 #'   meters.
 #'
 #' @param initPos A 2-element numeric vector with initial position
-#'   (initPos[1]=x, initPos[2]=y) in same coordinate reference system as
+#'   (`initPos[1]`=x, `initPos[2]`=y) in same coordinate reference system as
 #'   `polyg`.
 #'
 #' @param initHeading A numeric scalar with initial heading in degrees. E.g., 0
