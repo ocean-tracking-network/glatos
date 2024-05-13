@@ -18,7 +18,7 @@ for testing functionality of ffmpeg function.
 }
 
 \examples{
-system.file("extdata", "frames", package="glatos")
+system.file("extdata", "frames", package = "glatos")
 
 }
 \author{

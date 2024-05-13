@@ -27,7 +27,7 @@ project.
 }
 
 \examples{
-system.file("extdata", "SMRSL_GLATOS_20140828.xlsm", package="glatos")
+system.file("extdata", "SMRSL_GLATOS_20140828.xlsm", package = "glatos")
 
 }
 \author{

@@ -17,7 +17,7 @@ An example detection file
 }
 
 \examples{
-system.file("extdata", "walleye_detections.zip", package="glatos")
+system.file("extdata", "walleye_detections.zip", package = "glatos")
 
 }
 \author{

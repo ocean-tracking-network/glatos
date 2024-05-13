@@ -19,7 +19,7 @@ Huron), Maumee River (Lake Erie), and Sandusky River (Lake Erie)
 }
 
 \examples{
-system.file("extdata", "shoreline.zip", package="glatos")
+system.file("extdata", "shoreline.zip", package = "glatos")
 
 }
 \author{
