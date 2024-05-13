@@ -15,6 +15,10 @@ A transition object, created from
  higgins_lake_transition.rds
 }
 
+\examples{
+system.file("testdata", "higgins_lake_transition.rds", package = "glatos")
+
+}
 \author{
 Chris Holbrook
 }

@@ -15,6 +15,10 @@ A transition object, created from
  flynn_island_transition.rds
 }
 
+\examples{
+system.file("testdata", "flynn_island_transition.rds", package = "glatos")
+
+}
 \author{
 Chris Holbrook
 }
