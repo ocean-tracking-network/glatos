@@ -63,23 +63,24 @@
 #'  location points, receiver location points, timeline, and slider (moves along
 #'  the timeline). See also **Details** and **Note** sections.
 #'
-#' @details
-#'
+#' @details 
 #' ***To customize fish location points (from `proc_obj`):*** Add any argument
 #' that can be passed to [points][graphics::points]. The following values will
 #' create the default plot:
 #' \itemize{
-#' \item{`cex:`}{ symbol size; default = 2}
-#' \item{`col:`}{ symbol color; default = "blue"}
-#' \item{`pch:`}{ symbol type; default = 16}
+#'    \item `cex`: symbol size; default = 2
+#'    \item `col`: symbol color; default = "blue" 
+#'    \item `pch`: symbol type; default = 16 
 #' }
-#'
+#' 
+#' @details
+#' 
 #' ***To customize receiver location points (from `recs`):*** Add prefix
 #' `recs.` to any argument that can be passed to [points][graphics::points]. The
 #' following values will create the default plot:
 #' \itemize{
-#' \item{`recs.cex:`}{ symbol size; default = 1.5}
-#' \item{`recs.pch:`}{ symbol type; default = 16}
+#'    \item `recs.cex`: symbol size; default = 1.5
+#'    \item `recs.pch`: symbol type; default = 16
 #' }
 #'
 #' ***To customize timeline:*** Add add prefix `timeline.` to any
@@ -87,43 +88,43 @@
 #' the sliding symbol (see 'slider' below) are created by a call to `axis`. The
 #' following values will create the default plot:
 #' \itemize{
-#' \item{`timeline.at:`}{ a sequence with locations of labels (with first
+#'    \item `timeline.at`: a sequence with locations of labels (with first
 #' and last being start and end) along x-axis; in units of longitude; by default
 #' this will center the timeline with five equally-spaced labels in the middle
-#' 80% of background_xlim.}
-#' \item{`timeline.pos:`}{ location along the y-axis; in units of latitude;
+#' 80% of background_xlim.
+#'    \item `timeline.pos`: location along the y-axis; in units of latitude;
 #' by default this will place the timeline up from the bottom 6% of the range
-#' of `background_ylim`}
-#' \item{`timeline.labels:`}{ text used for labels; default =
-#' `format(labels, "\%Y-\%m-\%d")`, where labels are values of proc_obj$bin_timestamp}
-#' \item{`timeline.col:`}{ color of line; default = "grey70"}
-#' \item{`timeline.lwd:`}{ width of line; default = 20 times the aspect
-#' ratio of the plot device}
-#' \item{`timeline.cex.axis:`}{size of labels; default = 2}
+#' of `background_ylim`
+#'    \item `timeline.labels`: text used for labels; default =
+#' `format(labels, "\%Y-\%m-\%d")`, where labels are values of proc_obj$bin_timestamp
+#'    \item `timeline.col`: color of line; default = "grey70"
+#'    \item `timeline.lwd`: width of line; default = 20 times the aspect
+#' ratio of the plot device
+#'    \item `timeline.cex.axis`: size of labels; default = 2
 #' }
-#'
+#' 
 #' ***To customize time slider (symbol that slides):*** Add prefix
 #' `timeline.` to any argument that can be passed to [points][graphics::points].
 #' The following values will create the default plot:
 #' \itemize{
-#' \item{`timeslider.bg:`}{ a single value with symbol bg color; default =
-#' "grey40"}
-#' \item{`timeslider.cex:`}{ a single value with symbol size; default = 2}
-#' \item{`timeslider.col:`}{ a single value with symbol type; default =
-#' "grey20"}
-#' \item{`timeslider.pch:`}{ a single value with symbol type; default = 21}
+#'    \item `timeslider.bg`: a single value with symbol bg color; default =
+#' "grey40"
+#'    \item `timeslider.cex`: a single value with symbol size; default = 2
+#'    \item `timeslider.col`: a single value with symbol type; default =
+#' "grey20"
+#'    \item `timeslider.pch`: a single value with symbol type; default = 21
 #' }
-#'
+#' 
 #' ***To customize parameters controlled by `par`:*** Add prefix
 #' `par.` to any argument that can be passed to [par][graphics::par]. Note that
 #' `par.mar` controls whitespace behind default timeslider. The following values
 #' will create the default plot:
 #' \itemize{
-#' \item{`par.oma`}{ plot outer margins; default = c(0,0,0,0)}
-#' \item{`par.mar`}{ plot inner margins; default = c(6,0,0,0)}
+#'    \item `par.oma`: plot outer margins; default = c(0,0,0,0)
+#'    \item `par.mar`: plot inner margins; default = c(6,0,0,0)
 #' }
 #'
-#' @details If `animate = TRUE` then the animation output file name (`ani_name`
+#'  If `animate = TRUE` then the animation output file name (`ani_name`
 #'  argument) will be passed to the `output` argument in [make_video()]. Default
 #'  values for all other [make_video()] arguments will be used. Note that the
 #'  default frame rate is 24 frames per second (`framerate` argument in
@@ -133,7 +134,7 @@
 #'  dimensions (size), and other ouput video characteristics can be modified by
 #'  calling [make_video()] directly. To do this, set `animate = FALSE` and then
 #'  use [make_video()] to create a video from the resulting set of images.
-#'
+#' 
 #'
 #' @return Sequentially-numbered png files (one for each frame) and one mp4 file
 #'  will be written to `out_dir`.
