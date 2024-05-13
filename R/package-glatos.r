@@ -123,6 +123,7 @@
 #'   txtProgressBar unzip write.csv write.table zip
 #' @importFrom grDevices bmp colorRampPalette dev.new dev.off jpeg png rainbow
 #'   tiff
+#' @importFrom dplyr %>%
 globalVariables(".") # to avoid R CMD check note
 
 # package startup message

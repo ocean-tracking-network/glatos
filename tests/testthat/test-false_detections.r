@@ -68,7 +68,7 @@ test_that("data.table input gives expected result", {
 
 # Testing column that tibble input returns expected
 test_that("tibble input gives expected result", {
-  tbl_in <- tibble::as_tibble(walleye_detections[129:138, ])
+  tbl_in <- dplyr::as_tibble(walleye_detections[129:138, ])
 
   expect_message(
     tbl_result <- false_detections(

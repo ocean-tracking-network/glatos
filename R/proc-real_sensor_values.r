@@ -154,7 +154,7 @@ real_sensor_values <- function(det, tag_specs) {
 
   # return tibble if input class tibble
   if (inherits(det, "tbl")) {
-    return(tibble::as_tibble(dtc))
+    return(dplyr::as_tibble(dtc))
   }
 
   return(as.data.frame(dtc))

@@ -28,7 +28,7 @@ geographic coordinate system for all spatial information
 defaults to WGS84.}
 }
 \value{
-a list of 3 tibble::tibbles containing tag dectections, tag metadata,
+a list of 3 tibbles containing tag detections, tag metadata,
 and station metadata, to be ingested by VTrack/ATT
 }
 \description{
@@ -39,7 +39,7 @@ Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
 \details{
 This function takes 4 data frames containing detection, and ERDDAP
 data from the tags, receivers, and animals tables, and transforms them into
-3 \code{tibble::tibble} objects inside of a list. The input that AAT uses
+3 \code{tibble} objects inside of a list. The input that AAT uses
 to get this data product is located here:
 https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
 are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
