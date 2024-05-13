@@ -25,7 +25,6 @@ Imports:
 		sp,
 		tibble,
 		tidyr,
-		units,
 		zip
 Suggests: 
 		gganimate,
