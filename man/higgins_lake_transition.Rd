@@ -7,9 +7,6 @@
 A list comprised of a TransitionLayer and RasterLayer
 (see \code{\link[=make_transition]{make_transition()}}).
 }
-\usage{
-system.file("testdata", "higgins_lake_transition.rds", package = "glatos")
-}
 \description{
 A transition object, created from
 \code{\link[=higgins_lake_polygon]{higgins_lake_polygon()}} for testing \code{\link[=make_transition]{make_transition()}}.

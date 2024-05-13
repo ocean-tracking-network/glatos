@@ -9,9 +9,6 @@ CSV
 \source{
 Ryan Gosse, Ocean Tracking Network
 }
-\usage{
-system.file("extdata", "otn_aat_tag_releases.csv", package = "glatos")
-}
 \description{
 An example tag release data file from the OTN ERDDAP
 }
@@ -19,3 +16,7 @@ An example tag release data file from the OTN ERDDAP
  otn_aat_tag_releases.csv
 }
 
+\examples{
+system.file("extdata", "otn_aat_tag_releases.csv", package = "glatos")
+
+}

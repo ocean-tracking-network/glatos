@@ -9,9 +9,6 @@ A zipped walleye detection file in detection file format 1.3:
 \source{
 \url{http://glatos.glos.us/home/project/HECWL}
 }
-\usage{
-system.file("extdata", "walleye_detections.zip", package="glatos")
-}
 \description{
 An example detection file
 }
@@ -19,6 +16,10 @@ An example detection file
  walleye_detections.zip
 }
 
+\examples{
+system.file("extdata", "walleye_detections.zip", package="glatos")
+
+}
 \author{
 Todd Hayden
 }

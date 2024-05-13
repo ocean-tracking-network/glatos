@@ -10,7 +10,7 @@
 #'
 #' @section Filename: higgins_lake_transition.rds
 #'
-#' @usage
+#' @example
 #' system.file("testdata", "higgins_lake_transition.rds", package = "glatos")
 #'
 #' @author Chris Holbrook
@@ -29,7 +29,7 @@ NULL
 #'
 #' @section Filename: flynn_island_transition.rds
 #'
-#' @usage
+#' @example
 #' system.file("testdata", "flynn_island_transition.rds", package = "glatos")
 #'
 #' @author Chris Holbrook
