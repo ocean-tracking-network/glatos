@@ -96,7 +96,7 @@ min_lag <- function(det) {
 
   # return tibble if input class tibble
   if (inherits(det, "tbl")) {
-    return(tibble::as_tibble(dtc))
+    return(dplyr::as_tibble(dtc))
   }
 
   return(as.data.frame(dtc))

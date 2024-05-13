@@ -19,7 +19,7 @@ convert_glatos_to_att(
 \item{crs}{a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.}
 }
 \value{
-a list of 3 tibble::tibbles containing tag dectections, tag metadata,
+a list of 3 tibbles containing tag detections, tag metadata,
 and station metadata, to be ingested by VTrack/ATT
 }
 \description{
@@ -27,7 +27,7 @@ Convert \code{glatos_detections} and \code{glatos_receiver} objects to \code{ATT
 }
 \details{
 This function takes 2 lists containing detection and reciever data
-and transforms them into one list containing 3 \code{tibble::tibble}
+and transforms them into one list containing 3 \code{tibble}
 objects. The input that AAT uses to get this data product is located here:
 https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
 are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
