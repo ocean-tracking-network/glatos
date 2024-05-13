@@ -491,7 +491,7 @@ vdat_convert <- function(src,
 #'  of the system.
 #'
 #' @returns Character string with command for calling VDAT.exe via
-#'   \code{system2}'s \code{\link{command}} argument.
+#'   \code{system2}'s \code{command} argument.
 #'
 #' @examples
 #' \dontrun{
