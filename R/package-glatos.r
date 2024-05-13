@@ -125,6 +125,9 @@
 #'   tiff
 "_PACKAGE"
 
+# avoid R CMD check note
+globalVariables(".")
+
 # package startup message
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste0(
