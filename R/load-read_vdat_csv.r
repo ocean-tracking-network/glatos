@@ -133,13 +133,13 @@ read_vdat_csv <- function(src,
     warning("File not found: ", src)
     return()
   }
-  
+
   ##  Declare global variables for NSE & R CMD check
   record_type <- NULL
-  
+
   # Identify vdat csv format version and vdat.exe version that created input csv
   vdat_header <- data.table::fread(file = src, nrows = 1L, header = FALSE)
-  
+
   # Check if fathom csv format (error if looks like VUE export format)
   if (vdat_header$V1[1] == "VEMCO DATA LOG") {
     # Set column names
@@ -158,21 +158,21 @@ read_vdat_csv <- function(src,
     "Latitude",
     "Longitude"
   ) %in%
-  as.character(vdat_header))) {
+    as.character(vdat_header))) {
     stop(
       "Input file appears to be in VUE Export format, which is not ",
       "supported.\n Only Fathom CSV format is supported. \n",
       " Perhaps you want read_vue_detection_csv()?"
     )
   }
-  
+
   # Read all data into character vector (like readLines)
   vdat_txt <- data.table::fread(
     file = src, skip = 2, header = FALSE,
     sep = NULL, col.names = "txt",
     showProgress = show_progress
   )
-  
+
   # Identify record type of each row
   vdat_txt[, record_type := data.table::fread(
     file = src,
@@ -183,59 +183,59 @@ read_vdat_csv <- function(src,
     fill = TRUE,
     showProgress = show_progress
   )]
-  
+
   # Drop _DESC from headers
   vdat_txt[, record_type := gsub("_DESC$", "", record_type)]
-  
-  
+
+
   # Get record identifiers from csv file
   csv_record_types <- unique(vdat_txt$record_type)
-  
-  
+
+
   if (is.null(record_types)) {
     record_types <- csv_record_types
   } else {
     # Check if any record_types are not in csv
     unknown_record_types <- setdiff(record_types, csv_record_types)
-    
+
     if (length(unknown_record_types) > 0) {
       stop(
         "The following input ",
         "'record_types' ",
         "were not found in CSV file: \n\t",
         paste(unknown_record_types,
-              collapse = ", "
+          collapse = ", "
         )
       )
     }
   }
-  
+
   # Drop data types not requested by user
   vdat_txt <- vdat_txt[record_type %in% record_types]
-  
+
   # Split into list elements by record type
   vdat_list <- split(vdat_txt,
-                     by = "record_type",
-                     keep.by = FALSE
+    by = "record_type",
+    keep.by = FALSE
   )
-  
+
   utils::data("vdat_csv_schema", envir = environment())
-  
+
   vdat_csv_schema <- vdat_csv_schema[[paste0("v", src_version$fathom_csv)]]
-  
-  
+
+
   # Preallocate list; element = record type
   vdat <- stats::setNames(
     object = vector("list", length(vdat_list)),
     nm = names(vdat_list)
   )
-  
+
   for (i in 1:length(vdat)) {
     # fread has issues with numerical precision (e.g., 'Time Correction (s)')
     #  so read all columns as character then coerce
     vdat[[i]] <- data.table::fread(
       text = paste0(c(vdat_list[[i]]$txt, ""),
-                    collapse = "\n"
+        collapse = "\n"
       ),
       sep = ",", na.strings = "",
       colClasses = "character",
@@ -243,22 +243,22 @@ read_vdat_csv <- function(src,
       drop = 1,
       showProgress = show_progress
     )
-    
+
     # Coerce to class
     schema_i <- vdat_csv_schema[[names(vdat[i])]]
-    
+
     # numeric
     numeric_cols <- schema_i$name[schema_i$type == "numeric"]
-    
+
     if (length(numeric_cols) > 0) {
       vdat[[i]][, (numeric_cols) := lapply(.SD, as.numeric),
-                .SDcols = numeric_cols
+        .SDcols = numeric_cols
       ]
     }
-    
+
     # POSIXct
     timestamp_cols <- schema_i$name[schema_i$type == "POSIXct"]
-    
+
     if (length(timestamp_cols) > 0) {
       vdat[[i]][, (timestamp_cols) := lapply(
         .SD,
@@ -273,18 +273,18 @@ read_vdat_csv <- function(src,
       .SDcols = timestamp_cols
       ]
     }
-    
+
     # Assign class
     new_class <- c(paste0("vdat_", names(vdat[i])), class(vdat[[i]]))
     data.table::setattr(vdat[[i]], "class", new_class)
   } # end i
-  
+
   # Assign class and other attributes
   vdat_list <- structure(vdat,
-                         class = c("vdat_list", class(vdat)),
-                         fathom_csv_version = src_version$fathom_csv,
-                         source = src_version$vdat_exe
+    class = c("vdat_list", class(vdat)),
+    fathom_csv_version = src_version$fathom_csv,
+    source = src_version$vdat_exe
   )
-  
+
   return(vdat_list)
 }
