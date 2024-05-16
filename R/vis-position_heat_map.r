@@ -532,6 +532,7 @@ position_heat_map <- function(positions,
 
 
 #' Convert geographic positions to UTM
+#' @noRd
 lonlat_to_utm <- function(lonlat) {
   # Calculate UTM zone
   utm_zone <- (floor((lonlat[["X"]] + 180) / 6) %% 60) + 1
@@ -564,6 +565,7 @@ lonlat_to_utm <- function(lonlat) {
 }
 
 #' Convert UTM positions to lonlat
+#' @noRd
 utm_to_lonlat <- function(utm, hemisphere) {
   # Define EPSG
   utm_epsg <- ifelse(hemisphere == "N",
