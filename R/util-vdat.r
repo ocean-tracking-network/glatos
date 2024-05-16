@@ -179,7 +179,8 @@ vdat_convert <- function(src,
                          vdat_exe_path = NULL,
                          skip_pattern = "-RLD_",
                          show_progress = TRUE,
-                         diagn = FALSE) {
+                         diagn = FALSE,
+                         export_settings = NULL) {
   # Supported input file extensions (not case sensitive)
   supported_ext <- c("vrl", "vdat")
 

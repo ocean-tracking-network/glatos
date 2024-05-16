@@ -23,15 +23,6 @@
 #' @param include_empty Logical (default = \code{FALSE}). If \code{output_format
 #'  = "csv.fathom.split"}, should files be written for empty objects.
 #'
-#' @param overwrite Logical. If \code{TRUE}, output CSV file(s) will overwrite
-#'  existing CSV file(s) with same name in \code{out_dir}. If \code{FALSE}
-#'  (default), any output files that already exist in \code{out_dir} will be
-#'  skipped, with warning.
-#'
-#' @param recursive Logical. If \code{TRUE} and \code{src} is a directory, then
-#'  all VRL/VDAT files in all subdirectories of \code{src} will be converted.
-#'  Default is \code{FALSE}. Ignored if \code{src} is a not directory.
-#'
 #' @param export_settings (NOT YET IMPLEMENTED). Placeholder for future
 #'  specification of other options available via Fathom Data Export app. (E.g.,
 #'  'Data Types to Include', 'Data Filter', 'Filename Suffix', 'Time Offset in
@@ -73,7 +64,8 @@ write_vdat_csv <- function(vdat,
                            record_types = NULL,
                            out_file = NULL,
                            output_format = "csv.fathom",
-                           include_empty = FALSE) {
+                           include_empty = FALSE,
+                           export_settings = NULL) {
   # Check input class
   if (!inherits(vdat, "vdat_list")) {
     stop(
@@ -501,6 +493,11 @@ format_POSIXt <- function(x, digits = 0, drop0trailing = TRUE) {
 
 
 #' Subset method for vdat_list that retains attributes
+#' 
+#' @param x a vdat_list from which to extract element(s).
+#' @param i indices specifying elements to extract or replace.
+#' @param ... unused.
+#'
 #' @export
 `[.vdat_list` <- function(x, i, ...) {
   attrs <- attributes(x)
