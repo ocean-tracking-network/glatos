@@ -9,7 +9,8 @@ write_vdat_csv(
   record_types = NULL,
   out_file = NULL,
   output_format = "csv.fathom",
-  include_empty = FALSE
+  include_empty = FALSE,
+  export_settings = NULL
 )
 }
 \arguments{
@@ -33,15 +34,6 @@ folder (for each input file) containing a separate CSV for each record type.}
 
 \item{include_empty}{Logical (default = \code{FALSE}). If \code{output_format
 = "csv.fathom.split"}, should files be written for empty objects.}
-
-\item{overwrite}{Logical. If \code{TRUE}, output CSV file(s) will overwrite
-existing CSV file(s) with same name in \code{out_dir}. If \code{FALSE}
-(default), any output files that already exist in \code{out_dir} will be
-skipped, with warning.}
-
-\item{recursive}{Logical. If \code{TRUE} and \code{src} is a directory, then
-all VRL/VDAT files in all subdirectories of \code{src} will be converted.
-Default is \code{FALSE}. Ignored if \code{src} is a not directory.}
 
 \item{export_settings}{(NOT YET IMPLEMENTED). Placeholder for future
 specification of other options available via Fathom Data Export app. (E.g.,
