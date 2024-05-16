@@ -170,7 +170,7 @@ points(deploy_lat ~ deploy_long, data = det, pch = 20, col = "red",
   xlim = c(-83.7, -80))
 
 
-make transition layer object
+# make transition layer object
 tran <- make_transition3(sf::st_as_sf(maumee), res = c(0.1, 0.1))
 
 # plot to check output
