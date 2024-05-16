@@ -7,13 +7,13 @@
 #'   file in OTN deployment format (*.csv). If only file name is given, then the
 #'   file must be located in the working directory.
 #'
-#'  @param deploy_date_col A character string representing the column
+#' @param deploy_date_col A character string representing the column
 #'  name containing deploy_date data. Defaults to "deploy_date".
 #'
-#'  @param recovery_date_col A character string representing the column
+#' @param recovery_date_col A character string representing the column
 #'  name containing recovery_date. Defaults to "recovery_date."
 #'
-#'  @param last_download_col A character string representing the column
+#' @param last_download_col A character string representing the column
 #'  name containing the last_download date. Defaults to "last_download."
 #'
 #' @details
