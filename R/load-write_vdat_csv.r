@@ -493,7 +493,7 @@ format_POSIXt <- function(x, digits = 0, drop0trailing = TRUE) {
 
 
 #' Subset method for vdat_list that retains attributes
-#' 
+#'
 #' @param x a vdat_list from which to extract element(s).
 #' @param i indices specifying elements to extract or replace.
 #' @param ... unused.
