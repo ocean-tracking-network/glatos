@@ -337,12 +337,17 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
              on = .(start_dtc >= start, start_dtc <= end)]
   
   # calculate great circle distance between coords
-  #dtc[, gcd := geosphere::distHaversine(as.matrix(
+  # dtc[, gcd := geosphere::distHaversine(as.matrix(
   #  .SD[1, c("deploy_long", "deploy_lat")]),
   #  as.matrix(.SD[.N, c("deploy_long", "deploy_lat")])), by = i.start]
   
   # remove geosphere dependency and use geodist.  geosphere relies on sp and raster.
-  dtc[, gcd := geodist::geodist_vec(x1 = .SD[[1, "deploy_long"]], y1 = .SD[[1, "deploy_lat"]], x2 = .SD[[.N, "deploy_long"]], y2 = .SD[[.N, "deploy_lat"]], measure = "haversine"), by = i.start]
+  dtc[, gcd := geodist::geodist_vec(x1 = .SD[[1, "deploy_long"]],
+                                    y1 = .SD[[1, "deploy_lat"]],
+                                    x2 = .SD[[.N, "deploy_long"]],
+                                    y2 = .SD[[.N, "deploy_lat"]],
+                                    measure = "haversine"),
+      by = i.start]
   
   # calculate least cost (non-linear) distance between points
   message("Calculating least-cost (non-linear) distances... (step 1 of 3)")
@@ -498,8 +503,17 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
     nln_small[, latitude_lead := data.table::shift(nln_latitude, type = "lag", fill = NA), by = i.start]
     nln_small[, longitude_lead := data.table::shift(nln_longitude, type = "lag", fill = NA), by = i.start]
     
-    nln_small[, cumdist :=  geosphere::distGeo(.SD[, c("nln_longitude", "nln_latitude")],
-                                               .SD[,c("longitude_lead", "latitude_lead")]), by = i.start]
+    # Switch from geosphere to geodist
+    # nln_small[, cumdist :=  geosphere::distGeo(
+    #    .SD[, c("nln_longitude", "nln_latitude")],
+    #    .SD[,c("longitude_lead", "latitude_lead")]), by = i.start]
+    
+    nln_small[, cumdist := geodist::geodist_vec(x1 = .SD[["nln_longitude"]],
+                                                y1 = .SD[["nln_latitude"]],
+                                                x2 = .SD[["longitude_lead"]],
+                                                y2 = .SD[["latitude_lead"]],
+                                                measure = 'geodesic'),
+              by = .I]
     
     nln_small[is.na(cumdist), cumdist := 0]
     nln_small[, cumdist := cumsum(cumdist), by = i.start]
