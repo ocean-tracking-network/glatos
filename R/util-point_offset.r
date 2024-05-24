@@ -66,8 +66,11 @@ point_offset <- function(lon = NA, lat = NA, offsetDist = NA, offsetDir = NA,
     
     lat2 <- 180/pi * lat2
     
-    coords <- matrix(c(lon2, lat2), ncol = 2)
-    colnames(coords) <- c('lon', 'lat')
+    coords <- matrix(
+      c(lon2, lat2),
+      ncol = 2,
+      dimnames = list(NULL, c('lon', 'lat'))
+    )
     
     return(coords)
   }
