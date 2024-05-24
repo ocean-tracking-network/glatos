@@ -167,7 +167,6 @@ https://github.com/ocean-tracking-network/glatos.
 # load libraries
 library(glatos)
 library(data.table)
-library(geosphere)
 library(ggplot2)
 
 # load detection data from glatos package
@@ -188,7 +187,7 @@ of columns.
 Many of the columns in the dtc object are not needed for this
 analysis.  In the next code chunk, we will extract only the necessary
 columns from the `dtc` object and calculate the geographic distance
-between each receiver using the `geosphere::distm` function. The
+between each receiver using the `geodist::geodist_vec` function. The
 internal tag on 4 receivers was used in this study so distances among
 receivers is the same as distances between each tag and receiver.
 
@@ -202,8 +201,7 @@ dtc <- dtc[, c("detection_timestamp_utc", "transmitter_id", "receiver_sn",
 rec_dist <- unique(dtc[,c("receiver_sn", "deploy_lat", "deploy_long")])
 
 # calculate distance matrix 
-dist_matrix <- distm(rec_dist[, c("deploy_long", "deploy_lat")],
-                     rec_dist[, c("deploy_long", "deploy_lat")])
+dist_matrix <- geodist::geodist_vec(rec_dist$deploy_long, rec_dist$deploy_lat)
 
 # rename columns and rows of matrix
 colnames(dist_matrix) <- rec_dist[,get("receiver_sn")]

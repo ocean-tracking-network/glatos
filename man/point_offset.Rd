@@ -28,8 +28,7 @@ Options are NA,"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S",
 }
 \description{
 Calculates latitude and longitude for new point that is x meters
-away at bearing y from a geographic location (Longitude, Latitude). uses
-"destPoint" function from "geosphere" package and calculations are based on
+away at bearing y from a geographic location (Longitude, Latitude) using
 great circle distances.
 }
 \examples{
