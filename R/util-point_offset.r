@@ -31,7 +31,6 @@
 
 point_offset <- function(lon = NA, lat = NA, offsetDist = NA, offsetDir = NA,
                          distUnit = "m") {
-
   if (distUnit == "ft") offsetDist <- 0.3048 * offsetDist # convert to m if needed
   if (!(distUnit) %in% c("ft", "m")) {
     stop("Input attribute 'dirUnit' must be 'm' (meters) or 'ft' (feet).")
@@ -50,28 +49,28 @@ point_offset <- function(lon = NA, lat = NA, offsetDist = NA, offsetDir = NA,
   )
 
   bearing <- dirKey$deg[match(offsetDir, dirKey$txt)]
-  
-  haversine <- function(lon, lat, bearing, offsetDist){
-    lat <- lat * pi/180
-    lon <- lon * pi/180
+
+  haversine <- function(lon, lat, bearing, offsetDist) {
+    lat <- lat * pi / 180
+    lon <- lon * pi / 180
     R <- 6378137
-    bearing <- bearing * pi/180
-    lat2 <- asin(sin(lat) * cos(offsetDist/R) + cos(lat) * sin(offsetDist/R) * cos(bearing))
-    lon2 <- 180/pi * (
+    bearing <- bearing * pi / 180
+    lat2 <- asin(sin(lat) * cos(offsetDist / R) + cos(lat) * sin(offsetDist / R) * cos(bearing))
+    lon2 <- 180 / pi * (
       lon + atan2(
-        sin(bearing) * sin(offsetDist/R) * cos(lat),
-        cos(offsetDist/R) - sin(lat) * sin(lat2)
+        sin(bearing) * sin(offsetDist / R) * cos(lat),
+        cos(offsetDist / R) - sin(lat) * sin(lat2)
       )
     )
-    
-    lat2 <- 180/pi * lat2
-    
+
+    lat2 <- 180 / pi * lat2
+
     coords <- matrix(
       c(lon2, lat2),
       ncol = 2,
-      dimnames = list(NULL, c('lon', 'lat'))
+      dimnames = list(NULL, c("lon", "lat"))
     )
-    
+
     return(coords)
   }
 
