@@ -199,7 +199,10 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
   
   # stop if out_class is not NULL, data.table, or tibble
   if(!is.null(out_class)){
-    if( !(out_class %in% c("data.table", "tibble"))) {stop('out_class is not a "data.table" or "tibble"')}}
+    if( !(out_class %in% c("data.table", "tibble"))) {
+      stop('out_class is not a "data.table" or "tibble"')
+    }
+  }
   
   # check to see that trans is a transition layer or transition stack
   if(!is.null(trans) & 
