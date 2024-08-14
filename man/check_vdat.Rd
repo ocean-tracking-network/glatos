@@ -13,7 +13,7 @@ of the system.}
 }
 \value{
 Character string with command for calling VDAT.exe via
-\code{system2}'s \code{\link{command}} argument.
+\code{system2}'s \code{command} argument.
 }
 \description{
 Check path to Innovasea program VDAT.exe

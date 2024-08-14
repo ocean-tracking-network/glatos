@@ -4,12 +4,12 @@
 #'   drawn from a normal distribution.
 #'
 #' @param theta A 2-element numeric vector with turn angle parameters
-#'   (theta[1] = mean; theta[2] = sd) from normal distribution.
+#'   (`theta[1]` = mean; `theta[2]` = sd) from normal distribution.
 #'
 #' @param stepLen A numeric scalar with total distance moved in each step.
 #'
-#' @param initPos A 2-element numeric vector with nital position (initPos[1]=x,
-#'   initPos[2]=y).
+#' @param initPos A 2-element numeric vector with nital position (`initPos[1]`=x,
+#'   `initPos[2]`=y).
 #'
 #' @param initHeading A numeric scalar with initial heading in degrees.
 #'
