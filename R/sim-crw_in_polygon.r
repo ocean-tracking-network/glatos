@@ -413,6 +413,7 @@ crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
 }
 
 #' Check if in polygon
+#' @noRd
 check_in_polygon <- function(points, polygon, EPSG) {
   points_sf <- sf::st_as_sf(points,
     coords = c("x", "y"),
@@ -425,6 +426,7 @@ check_in_polygon <- function(points, polygon, EPSG) {
 
 
 #' Check if track crosses polygon boundary
+#' @noRd
 check_cross_boundary <- function(path, boundary, EPSG) {
   # Make line segment objects of sequential point-pairs in path
 

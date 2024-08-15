@@ -179,7 +179,9 @@ vdat_convert <- function(src,
                          vdat_exe_path = NULL,
                          skip_pattern = "-RLD_",
                          show_progress = TRUE,
-                         diagn = FALSE) {
+                         diagn = FALSE,
+                         export_settings = NULL) {
+
   ##  Declare global variables for NSE & R CMD check
   src_dir <- src_file <- out_file <- out_file_exists <- src_to_convert <-
     written <- NULL
