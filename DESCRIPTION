@@ -16,16 +16,12 @@ Imports:
 		geosphere,
 		jsonlite,
 		lubridate,
-		magrittr,
 		plotrix,
 		purrr,
 		raster,
 		readxl,
 		sf,
 		sp,
-		tibble,
-		tidyr,
-		units,
 		zip
 Suggests: 
 		gganimate,
@@ -51,7 +47,7 @@ Authors@R: c(
 License: GPL-2
 LazyLoad: yes
 LazyData: true
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

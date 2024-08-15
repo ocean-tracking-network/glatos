@@ -64,22 +64,23 @@
 #'  the timeline). See also **Details** and **Note** sections.
 #'
 #' @details
-#'
 #' ***To customize fish location points (from `proc_obj`):*** Add any argument
 #' that can be passed to [points][graphics::points]. The following values will
 #' create the default plot:
 #' \itemize{
-#' \item{`cex:`}{ symbol size; default = 2}
-#' \item{`col:`}{ symbol color; default = "blue"}
-#' \item{`pch:`}{ symbol type; default = 16}
+#'    \item `cex`: symbol size; default = 2
+#'    \item `col`: symbol color; default = "blue"
+#'    \item `pch`: symbol type; default = 16
 #' }
+#'
+#' @details
 #'
 #' ***To customize receiver location points (from `recs`):*** Add prefix
 #' `recs.` to any argument that can be passed to [points][graphics::points]. The
 #' following values will create the default plot:
 #' \itemize{
-#' \item{`recs.cex:`}{ symbol size; default = 1.5}
-#' \item{`recs.pch:`}{ symbol type; default = 16}
+#'    \item `recs.cex`: symbol size; default = 1.5
+#'    \item `recs.pch`: symbol type; default = 16
 #' }
 #'
 #' ***To customize timeline:*** Add add prefix `timeline.` to any
@@ -87,31 +88,31 @@
 #' the sliding symbol (see 'slider' below) are created by a call to `axis`. The
 #' following values will create the default plot:
 #' \itemize{
-#' \item{`timeline.at:`}{ a sequence with locations of labels (with first
+#'    \item `timeline.at`: a sequence with locations of labels (with first
 #' and last being start and end) along x-axis; in units of longitude; by default
 #' this will center the timeline with five equally-spaced labels in the middle
-#' 80% of background_xlim.}
-#' \item{`timeline.pos:`}{ location along the y-axis; in units of latitude;
+#' 80% of background_xlim.
+#'    \item `timeline.pos`: location along the y-axis; in units of latitude;
 #' by default this will place the timeline up from the bottom 6% of the range
-#' of `background_ylim`}
-#' \item{`timeline.labels:`}{ text used for labels; default =
-#' `format(labels, "\%Y-\%m-\%d")`, where labels are values of proc_obj$bin_timestamp}
-#' \item{`timeline.col:`}{ color of line; default = "grey70"}
-#' \item{`timeline.lwd:`}{ width of line; default = 20 times the aspect
-#' ratio of the plot device}
-#' \item{`timeline.cex.axis:`}{size of labels; default = 2}
+#' of `background_ylim`
+#'    \item `timeline.labels`: text used for labels; default =
+#' `format(labels, "\%Y-\%m-\%d")`, where labels are values of proc_obj$bin_timestamp
+#'    \item `timeline.col`: color of line; default = "grey70"
+#'    \item `timeline.lwd`: width of line; default = 20 times the aspect
+#' ratio of the plot device
+#'    \item `timeline.cex.axis`: size of labels; default = 2
 #' }
 #'
 #' ***To customize time slider (symbol that slides):*** Add prefix
 #' `timeline.` to any argument that can be passed to [points][graphics::points].
 #' The following values will create the default plot:
 #' \itemize{
-#' \item{`timeslider.bg:`}{ a single value with symbol bg color; default =
-#' "grey40"}
-#' \item{`timeslider.cex:`}{ a single value with symbol size; default = 2}
-#' \item{`timeslider.col:`}{ a single value with symbol type; default =
-#' "grey20"}
-#' \item{`timeslider.pch:`}{ a single value with symbol type; default = 21}
+#'    \item `timeslider.bg`: a single value with symbol bg color; default =
+#' "grey40"
+#'    \item `timeslider.cex`: a single value with symbol size; default = 2
+#'    \item `timeslider.col`: a single value with symbol type; default =
+#' "grey20"
+#'    \item `timeslider.pch`: a single value with symbol type; default = 21
 #' }
 #'
 #' ***To customize parameters controlled by `par`:*** Add prefix
@@ -119,11 +120,11 @@
 #' `par.mar` controls whitespace behind default timeslider. The following values
 #' will create the default plot:
 #' \itemize{
-#' \item{`par.oma`}{ plot outer margins; default = c(0,0,0,0)}
-#' \item{`par.mar`}{ plot inner margins; default = c(6,0,0,0)}
+#'    \item `par.oma`: plot outer margins; default = c(0,0,0,0)
+#'    \item `par.mar`: plot inner margins; default = c(6,0,0,0)
 #' }
 #'
-#' @details If `animate = TRUE` then the animation output file name (`ani_name`
+#'  If `animate = TRUE` then the animation output file name (`ani_name`
 #'  argument) will be passed to the `output` argument in [make_video()]. Default
 #'  values for all other [make_video()] arguments will be used. Note that the
 #'  default frame rate is 24 frames per second (`framerate` argument in
@@ -214,6 +215,11 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
                         overwrite = FALSE, preview = FALSE,
                         bg_map = NULL, show_progress = TRUE, ...) {
   # NOTE: As of glatos v 0.4.1, the package no longer uses the external program ffmpeg.  Input argument 'ffmpeg' has been removed"
+
+  #  Declare global variables for NSE & R CMD check
+  row_in <- recover_date_time <- grp <- bin_timestamp <- t_end <- grp_num <-
+    f_name <- animal_id <- record_type <- latitude <- longitude <-
+    deploy_date_time <- great_lakes_polygon <- NULL
 
   # expand path to animation output file
   # - place in same file as images (out_dir) if none specified
@@ -392,8 +398,10 @@ make_frames <- function(proc_obj, recs = NULL, out_dir = getwd(),
   data.table::setkey(work_proc_obj, bin_timestamp, animal_id, record_type)
 
   # Load background (use example Great Lakes if null)
-  if (is.null(bg_map)) {
-    background <- great_lakes_polygon # example in glatos package
+  if (is.null(bg_map)) { # example in glatos package
+    utils::data("great_lakes_polygon", envir = environment())
+    background <- great_lakes_polygon
+    rm(great_lakes_polygon)
   } else {
     background <- bg_map
 

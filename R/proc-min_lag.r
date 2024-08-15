@@ -64,6 +64,10 @@
 #' @export
 
 min_lag <- function(det) {
+  ##  Declare global variables for NSE & R CMD check
+  ord <- transmitter_codespace <- transmitter_id <- receiver_sn <-
+    detection_timestamp_utc <- NULL
+
   # coerce to data.table
   dtc <- data.table::as.data.table(det)
 
@@ -96,7 +100,7 @@ min_lag <- function(det) {
 
   # return tibble if input class tibble
   if (inherits(det, "tbl")) {
-    return(tibble::as_tibble(dtc))
+    return(dplyr::as_tibble(dtc))
   }
 
   return(as.data.frame(dtc))

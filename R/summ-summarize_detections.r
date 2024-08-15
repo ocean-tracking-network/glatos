@@ -194,6 +194,11 @@
 summarize_detections <- function(det, location_col = "glatos_array",
                                  receiver_locs = NULL, animals = NULL,
                                  summ_type = "animal") {
+  ##  Declare global variables for NSE & R CMD check
+  deploy_lat <- deploy_long <- detection_timestamp_utc <- num_fish <- animal_id <-
+    num_locs <- num_dets <- NULL
+
+
   # coerce to data.table
   dtc <- data.table::as.data.table(det)
 
@@ -360,7 +365,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
 
   # return tibble if input class tibble
   if (inherits(det, "tbl")) {
-    return(tibble::as_tibble(det_sum))
+    return(dplyr::as_tibble(det_sum))
   }
 
   return(as.data.frame(det_sum))

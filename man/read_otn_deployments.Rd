@@ -35,7 +35,7 @@ a data.frame of class \code{glatos_receivers}.
 }
 \details{
 Data are loaded using \code{\link[data.table:fread]{data.table::fread()}} package and timestamps
-are coerced to POSIXct using the \code{\link[fasttime:fastPOSIXct]{fasttime::fastPOSIXct()}}. All
+are coerced to POSIXct using \code{\link[lubridate:parse_date_time]{lubridate::fast_strptime()}}. All
 times must be in UTC timezone per GLATOS standard.
 
 Column names are changed to match GLATOS standard columns when possible.

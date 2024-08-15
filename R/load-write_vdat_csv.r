@@ -66,6 +66,12 @@ write_vdat_csv <- function(vdat,
                            output_format = "csv.fathom",
                            include_empty = FALSE,
                            export_settings = NULL) {
+
+  ##  Declare global variables for NSE & R CMD check
+  record_type <- dt2 <- `Device Time (UTC)` <- `Time Correction (s)` <-
+    `Ambient (deg C)` <- `Ambient Min (deg C)` <- `Ambient Max (deg C)` <-
+    `Ambient Mean (deg C)` <- `Internal (deg C)` <- ..txt_cols <- txt <- NULL
+
   # Check input class
   if (!inherits(vdat, "vdat_list")) {
     stop(
@@ -99,7 +105,7 @@ write_vdat_csv <- function(vdat,
   if (out_file_type == "dir") {
     out_file_name <- gsub("\\.vrl$|\\.vdat$",
       out_file_ext,
-      tail(vdat$DATA_SOURCE_FILE$`File Name`, 1),
+      utils::tail(vdat$DATA_SOURCE_FILE$`File Name`, 1),
       ignore.case = TRUE
     )
 
@@ -134,12 +140,12 @@ write_vdat_csv <- function(vdat,
 
   # Compress each list element into a character vector
 
-  vdat_lines_body <- setNames(
+  vdat_lines_body <- stats::setNames(
     object = vector("list", length(record_types)),
     record_types
   )
 
-  vdat_lines_header <- setNames(
+  vdat_lines_header <- stats::setNames(
     object = vector("list", length(record_types)),
     record_types
   )

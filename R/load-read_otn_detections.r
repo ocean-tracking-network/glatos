@@ -9,7 +9,7 @@
 #'
 #' @details
 #' Data are loaded using [data.table::fread()] package and timestamps
-#' are coerced to POSIXct using the [fasttime::fastPOSIXct()]. All
+#' are coerced to POSIXct using [lubridate::fast_strptime()]. All
 #' times must be in UTC timezone per GLATOS standard.
 #'
 #' @details
@@ -28,7 +28,7 @@
 #' )
 #' det <- read_otn_detections(det_file)
 #'
-#' @importFrom lubridate parse_date_time
+#' @importFrom lubridate fast_strptime
 #'
 #' @export
 read_otn_detections <- function(det_file) {
@@ -53,13 +53,14 @@ read_otn_detections <- function(det_file) {
     dtc$tagname <- dtc$fieldnumber
     dtc$codespace <- purrr::map(dtc$fieldnumber, get_codemap)
   }
-  # coerce timestamps to POSIXct; note that with fastPOSIXct raw
-  #  timestamp must be in UTC; and tz argument sets the tzone attr only
-  options(lubridate.fasttime = TRUE)
+  # coerce timestamps to POSIXct
   for (j in timestamp_cols) {
     data.table::set(dtc,
       j = otn_detection_schema$name[j],
-      value = lubridate::parse_date_time(dtc[[otn_detection_schema$name[j]]], orders = "ymd HMS", tz = "UTC")
+      value = lubridate::fast_strptime(
+        dtc[[otn_detection_schema$name[j]]],
+        format = "%Y-%m-%d %H:%M:%S", tz = "UTC", lt = FALSE
+      )
     )
   }
   # coerce dates to date

@@ -1,4 +1,3 @@
-#' Plot number of tagged animals or detections on a map
 #'
 #' Make bubble plots showing the number of fish detected across a defined set
 #' of receiver locations.
@@ -124,6 +123,9 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
                                   symbol_radius = 1,
                                   col_grad = c("white", "red"),
                                   scale_loc = NULL) {
+  #  Declare global variables for NSE & R CMD check
+  great_lakes_polygon <- NULL
+
   # Check that the specified columns appear in the det data frame
   missingCols <- setdiff(
     c(
@@ -163,7 +165,11 @@ detection_bubble_plot <- function(det, location_col = "glatos_array",
     message("Converted map to EPSG:4326")
   }
 
-  if (is.null(map)) map <- great_lakes_polygon # example in glatos package (sf object)
+  if (is.null(map)) {
+    utils::data("great_lakes_polygon", envir = environment())
+    map <- great_lakes_polygon
+    rm(great_lakes_polygon)
+  } # example in glatos package (sf object)
 
   # Check that timestamp is of class 'POSIXct'
   if (!("POSIXct" %in% class(det$detection_timestamp_utc))) {
