@@ -212,7 +212,7 @@ detection_events <- function(det,
 
     # return tibble if input class tibble
     if (inherits(xin, "tbl")) {
-      return(tibble::as_tibble(xout))
+      return(dplyr::as_tibble(xout))
     }
 
     return(as.data.frame(xout))

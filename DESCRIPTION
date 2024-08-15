@@ -16,15 +16,12 @@ Imports:
 		geosphere,
 		jsonlite,
 		lubridate,
-		magrittr,
 		plotrix,
 		purrr,
 		raster,
 		readxl,
 		sf,
 		sp,
-		tibble,
-		tidyr,
 		zip
 Suggests: 
 		gganimate,

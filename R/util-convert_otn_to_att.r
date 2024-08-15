@@ -26,7 +26,7 @@
 #' @details This function takes 3 data frames containing detections, tagging
 #'   metadata, and deployment metadata from either \code{read_otn_deployments}
 #'   or \code{prepare_deploy_sheet} and transforms them into 3
-#'   \code{tibble::tibble} objects inside of a list. The input that AAT uses to
+#'   \code{tibble} objects inside of a list. The input that AAT uses to
 #'   get this data product is located here:
 #'   https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
 #'   are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
@@ -34,7 +34,7 @@
 #'
 #' @author Ryan Gosse
 #'
-#' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata,
+#' @return a list of 3 tibbles containing tag detections, tag metadata,
 #'   and station metadata, to be ingested by VTrack/ATT
 #'
 #' @examples
@@ -116,7 +116,7 @@ convert_otn_to_att <- function(detectionObj,
       concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
     }
 
-  tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
+  tagMetadata <- unique(dplyr::tibble( # Start building Tag.Metadata table
     Tag.ID = detectionObj$animal_id,
     Transmitter = as.factor(transmitters),
     Common.Name = as.factor(detectionObj$common_name_e),
@@ -151,7 +151,7 @@ convert_otn_to_att <- function(detectionObj,
 
   detectionObj$est_tag_life[detectionObj$est_tag_life == "NULL"] <- NA
 
-  releaseData <- tibble::tibble( # Get the rest from detectionObj
+  releaseData <- dplyr::tibble( # Get the rest from detectionObj
     Tag.ID = detectionObj$animal_id,
     Tag.Project = as.factor(detectionObj$collectioncode),
     Release.Latitude = as.double(detectionObj$latitude),
@@ -168,7 +168,7 @@ convert_otn_to_att <- function(detectionObj,
     Bio = as.factor(NA)
   ) %>% unique()
 
-  detections <- tibble::tibble(
+  detections <- dplyr::tibble(
     Date.Time = detectionObj$detection_timestamp_utc,
     Transmitter = as.factor(detectionObj$transmitter_id),
     Station.Name = as.factor(detectionObj$station),
@@ -187,7 +187,7 @@ convert_otn_to_att <- function(detectionObj,
     Sex = as.factor(as.character(animal_sex))
   )
 
-  stations <- unique(tibble::tibble(
+  stations <- unique(dplyr::tibble(
     Station.Name = as.factor(detectionObj$station),
     Receiver = as.factor(detectionObj$ReceiverFull),
     Installation = as.factor(NA),

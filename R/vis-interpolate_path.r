@@ -303,7 +303,7 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
     }
     
     # if out_class == "tibble", then return tibble object
-    if(out_class == "tibble"){ out <- tibble::as_tibble(out)
+    if(out_class == "tibble"){ out <- dplyr::as_tibble(out)
     return(out)}
     
     # if out_class == NULL, then return data.frame object
@@ -575,7 +575,7 @@ interpolate_path <- function(det, trans = NULL, start_time = NULL,
   }
   
   # if out_class == "tibble", then return tibble object
-  if(out_class == "tibble"){ out <- tibble::as_tibble(out)
+  if(out_class == "tibble"){ out <- dplyr::as_tibble(out)
   return(out)}
   
   # if out_class == NULL, then return data.frame object

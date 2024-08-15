@@ -22,7 +22,7 @@
 #'
 #' @details This function takes 4 data frames containing detection, and ERDDAP
 #'   data from the tags, receivers, and animals tables, and transforms them into
-#'   3 `tibble::tibble` objects inside of a list. The input that AAT uses
+#'   3 `tibble` objects inside of a list. The input that AAT uses
 #'   to get this data product is located here:
 #'   https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
 #'   are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
@@ -32,7 +32,7 @@
 #'
 #' @author Ryan Gosse
 #'
-#' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata,
+#' @return a list of 3 tibbles containing tag detections, tag metadata,
 #'   and station metadata, to be ingested by VTrack/ATT
 #'
 #' @examples
@@ -89,7 +89,7 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
       concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
     }
 
-  tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
+  tagMetadata <- unique(dplyr::tibble( # Start building Tag.Metadata table
     Tag.ID = detectionObj$animal_id,
     Transmitter = as.factor(transmitters),
     Common.Name = as.factor(detectionObj$common_name_e)
@@ -97,7 +97,7 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
 
   tagMetadata <- unique(tagMetadata) # Cut out dupes
 
-  nameLookup <- tibble::tibble( # Get all the unique common names
+  nameLookup <- dplyr::tibble( # Get all the unique common names
     Common.Name = unique(tagMetadata$Common.Name)
   )
   nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
@@ -119,7 +119,7 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
   colnames(erdAni)[colnames(erdAni) == "animal_reference_id"] <- "animal_id"
   detectionObj <- dplyr::left_join(detectionObj, erdAni)
 
-  releaseData <- tibble::tibble( # Get the rest from detectionObj
+  releaseData <- dplyr::tibble( # Get the rest from detectionObj
     Tag.ID = detectionObj$animal_id,
     Tag.Project = as.factor(detectionObj$animal_project_reference),
     Release.Latitude = as.double(detectionObj$latitude),
@@ -170,7 +170,7 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
     )) %>%
     dplyr::select(-dummy)
 
-  detections <- tibble::tibble(
+  detections <- dplyr::tibble(
     Date.Time = detectionObj$detection_timestamp_utc,
     Transmitter = as.factor(detectionObj$transmitter_id),
     Station.Name = as.factor(detectionObj$station),
@@ -181,7 +181,7 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
     Sensor.Unit = as.factor(detectionObj$sensorunit)
   )
 
-  stations <- unique(tibble::tibble(
+  stations <- unique(dplyr::tibble(
     Station.Name = as.factor(detectionObj$station),
     Receiver = as.factor(detectionObj$ReceiverFull),
     Installation = as.factor(NA),
