@@ -66,7 +66,6 @@ write_vdat_csv <- function(vdat,
                            output_format = "csv.fathom",
                            include_empty = FALSE,
                            export_settings = NULL) {
-
   ##  Declare global variables for NSE & R CMD check
   record_type <- dt2 <- `Device Time (UTC)` <- `Time Correction (s)` <-
     `Ambient (deg C)` <- `Ambient Min (deg C)` <- `Ambient Max (deg C)` <-
