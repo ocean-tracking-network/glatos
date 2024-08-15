@@ -26,7 +26,7 @@
 #'   layer.  Both objects have the same extents and geographic
 #'   projection as input shapefile.
 #'
-#'  @details If receiver\_points is provided, any receiver not in water
+#'  @details If receiver_points is provided, any receiver not in water
 #'   is buffered by the distance from the receiver to the nearest
 #'   water.  This allows all receivers to be coded as in water if the
 #'   receiver is on land.
@@ -193,7 +193,7 @@ make_transition3 <- function(poly, res = c(0.1, 0.1), receiver_points = NULL, ep
     recs_gl <- sf::st_transform(receiver_points, crs = epsg)
 
     # determine shortest distance from receiver to water polygon
-    dist_rec <- units::drop_units(sf::st_distance(recs_gl, poly_gl))
+    dist_rec <- as.matrix(sf::st_distance(recs_gl, poly_gl))
     recs_gl$rec_water_dist <- apply(dist_rec, 1, "min")
 
     # extract rec_water_dist > 0

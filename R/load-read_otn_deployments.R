@@ -18,7 +18,7 @@
 #'
 #' @details
 #' Data are loaded using [data.table::fread()] package and timestamps
-#' are coerced to POSIXct using the [fasttime::fastPOSIXct()]. All
+#' are coerced to POSIXct using [lubridate::fast_strptime()]. All
 #' times must be in UTC timezone per GLATOS standard.
 #'
 #' @details
@@ -39,7 +39,7 @@
 #' dep <- read_otn_deployments(deployment_file)
 #' }
 #'
-#' @importFrom lubridate parse_date_time
+#' @importFrom lubridate fast_strptime
 #' @importFrom dplyr mutate
 #' @export
 read_otn_deployments <- function(deployment_file,
@@ -73,7 +73,10 @@ read_otn_deployments <- function(deployment_file,
   for (j in timestamp_cols) {
     data.table::set(dtc,
       j = otn_deployments_schema$name[j],
-      value = lubridate::parse_date_time(dtc[[otn_deployments_schema$name[j]]], orders = "ymd", tz = "UTC")
+      value = lubridate::fast_strptime(
+        dtc[[otn_deployments_schema$name[j]]],
+        format = "%Y-%m-%d %H:%M:%S", tz = "UTC", lt = FALSE
+      )
     )
   }
   # coerce dates to date

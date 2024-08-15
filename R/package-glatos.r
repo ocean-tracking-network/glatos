@@ -35,12 +35,12 @@
 #'
 #'   \item{[real_sensor_values]}{ Converts 'raw' transmitter sensor (e.g.,
 #'   depth, temperature) to 'real'-scale values (e.g., depth in meters) using
-#'   transmitter specification data (e.g., from read\_vemco\_tag\_specs).} }
+#'   transmitter specification data (e.g., from [read_vemco_tag_specs]).} }
 #'
 #' @section Filtering and summarizing: \describe{
 #'   \item{[min_lag]}{
 #'   Facilitates identification and removal of false positive detections by
-#'   calculating the minimum time interval (min\_lag) between successive
+#'   calculating the minimum time interval (min_lag) between successive
 #'   detections.}
 #'
 #'  \item{[false_detections]}{ Removes potential false positive detections
@@ -124,7 +124,10 @@
 #' @importFrom grDevices bmp colorRampPalette dev.new dev.off jpeg png rainbow
 #'   tiff
 #' @importFrom dplyr %>%
-globalVariables(".") # to avoid R CMD check note
+"_PACKAGE"
+
+# avoid R CMD check note
+globalVariables(".")
 
 # package startup message
 .onAttach <- function(libname, pkgname) {

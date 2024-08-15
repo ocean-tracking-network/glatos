@@ -5,10 +5,14 @@
 #' VPS positional telemetry data.
 #'
 #' @param positions A dataframe containing detection data with at least the
-#'  following 4 columns: \describe{ \item{`DETECTEDID`}{Individual animal
-#'  identifier; character.} \item{`DATETIME`}{Date-time stamps for the
-#'  positions (MUST be of class 'POSIXct')} \item{`LAT`}{Position
-#'  latitude.} \item{`LON`}{Position longitude.} }
+#'  following 4 columns:
+#'  \describe{
+#'      \item{`DETECTEDID`}{Individual animal identifier; character.}
+#'      \item{`DATETIME`}{Date-time stamps for the positions (MUST be of
+#'      class 'POSIXct')}
+#'      \item{`LAT`}{Position latitude.}
+#'      \item{`LON`}{Position longitude.}
+#' }
 #'
 #' @param projection A character string indicating if the coordinates in the
 #'  'positions' dataframe are geographic (`projection = "LL"`) or
@@ -87,13 +91,13 @@
 #'  the 4 intervals, than the number of intervals for that fish and grid
 #'  combination is 3. Intervals are determined by applying the
 #'  [findInterval][base::findInterval] function (base R) to a sequence of timestamps
-#'  (class: POSIXct) created using seq(from = min(positions[, DATETIME]), to =
-#'  min(positions[, DATETIME]), by = interval), where interval is the
-#'  user-assigned interval duration in seconds. Number of intervals is a more
-#'  robust surrogate than number of positions for relative time spent in each
-#'  grid in cases where spatial or temporal variability in positioning
-#'  probability are likely to significantly bias the distribution of positions
-#'  in the array.
+#'  (class: POSIXct) created using
+#'  `seq(from = min(positions[, DATETIME]), to = min(positions[, DATETIME]), by = interval)`,
+#'  where interval is the user-assigned interval duration in seconds. Number of
+#'  intervals is a more robust surrogate than number of positions for relative
+#'  time spent in each grid in cases where spatial or temporal variability in
+#'  positioning probability are likely to significantly bias the distribution of
+#'  positions in the array.
 
 #' @details Calculated values (i.e., fish, positions, intervals) can be returned
 #'  as absolute or relative, which is specified using the abs_or_rel argument;
@@ -397,7 +401,7 @@ position_heat_map <- function(positions,
 
 
     png(
-      file = file.path(png_file),
+      filename = file.path(png_file),
       bg = "transparent",
       height = 2000,
       width = 2000 * (ncol(results) / nrow(results)),

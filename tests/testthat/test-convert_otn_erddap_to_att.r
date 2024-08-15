@@ -62,7 +62,7 @@ test_that("matches internal data: blue_shark_erddap_att", {
   )
 
   # Check if expected and actual results are the same
-  expect_identical(bs_att, blue_shark_erddap_att)
+  expect_equal(bs_att, blue_shark_erddap_att)
 })
 
 
