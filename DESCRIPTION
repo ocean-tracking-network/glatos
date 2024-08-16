@@ -13,7 +13,6 @@ Imports:
 		gdalUtilities,
 		geodist,
 		gdistance,
-		geosphere,
 		jsonlite,
 		lubridate,
 		plotrix,
