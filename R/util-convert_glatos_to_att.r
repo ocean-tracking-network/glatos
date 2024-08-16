@@ -10,7 +10,7 @@
 #' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or `crs` is not recognized, defaults to WGS84.
 #'
 #' @details This function takes 2 lists containing detection and reciever data
-#'   and transforms them into one list containing 3 `tibble::tibble`
+#'   and transforms them into one list containing 3 `tibble`
 #'   objects. The input that AAT uses to get this data product is located here:
 #'   https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
 #'   are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
@@ -18,7 +18,7 @@
 #'
 #' @author Ryan Gosse
 #'
-#' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata,
+#' @return a list of 3 tibbles containing tag detections, tag metadata,
 #'   and station metadata, to be ingested by VTrack/ATT
 #'
 #' @examples
@@ -42,6 +42,11 @@
 
 convert_glatos_to_att <- function(detectionObj, receiverObj,
                                   crs = sp::CRS("+init=epsg:4326")) {
+  ##  Declare global variables for R CMD check
+  Sex <- glatos_array <- station_no <- deploy_lat <- deploy_long <-
+    station <- dummy <- ins_model_no <- ins_serial_no <-
+    deploy_date_time <- recover_date_time <- detection_timestamp_utc <- NULL
+
   transmitters <-
     if (all(grepl("-", detectionObj$transmitter_id, fixed = TRUE))) {
       detectionObj$transmitter_id
@@ -52,7 +57,7 @@ convert_glatos_to_att <- function(detectionObj, receiverObj,
       )
     }
 
-  tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
+  tagMetadata <- unique(dplyr::tibble( # Start building Tag.Metadata table
     Tag.ID = as.integer(detectionObj$animal_id),
     Transmitter = as.factor(transmitters),
     Common.Name = as.factor(detectionObj$common_name_e)
@@ -60,7 +65,7 @@ convert_glatos_to_att <- function(detectionObj, receiverObj,
 
   tagMetadata <- unique(tagMetadata) # Cut out dupes
 
-  nameLookup <- tibble::tibble( # Get all the unique common names
+  nameLookup <- dplyr::tibble( # Get all the unique common names
     Common.Name = unique(tagMetadata$Common.Name)
   )
   nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
@@ -70,7 +75,7 @@ convert_glatos_to_att <- function(detectionObj, receiverObj,
   tagMetadata <- dplyr::left_join(tagMetadata, nameLookup, by = "Common.Name")
 
 
-  releaseData <- tibble::tibble( # Get the rest from detectionObj
+  releaseData <- dplyr::tibble( # Get the rest from detectionObj
     Tag.ID = as.integer(detectionObj$animal_id),
     Tag.Project = as.factor(detectionObj$glatos_project_transmitter),
     Release.Latitude = detectionObj$release_latitude,
@@ -114,7 +119,7 @@ convert_glatos_to_att <- function(detectionObj, receiverObj,
     )) %>%
     dplyr::select(-dummy)
 
-  detections <- unique(tibble::tibble(
+  detections <- unique(dplyr::tibble(
     Date.Time = detectionObj$detection_timestamp_utc,
     Transmitter = as.factor(
       concat_list_strings(
@@ -130,7 +135,7 @@ convert_glatos_to_att <- function(detectionObj, receiverObj,
     Sensor.Unit = as.factor(detectionObj$sensor_unit)
   ))
 
-  stations <- unique(tibble::tibble(
+  stations <- unique(dplyr::tibble(
     Station.Name = as.factor(receiverObj$station),
     Receiver = as.factor(concat_list_strings(
       receiverObj$ins_model_no,

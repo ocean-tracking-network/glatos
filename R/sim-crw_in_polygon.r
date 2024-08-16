@@ -9,14 +9,14 @@
 #'   are also accepted); \cr *OR* \cr A polygon defined as data frame or
 #'   matrix with numeric columns x and y.
 #'
-#' @param theta A 2-element numeric vector with turn angle parameters (theta[1]
-#'   = mean; theta[2] = sd), in degrees, from normal distribution.
+#' @param theta A 2-element numeric vector with turn angle parameters (`theta[1]`
+#'   = mean; `theta[2]` = sd), in degrees, from normal distribution.
 #'
 #' @param stepLen A numeric scalar with total distance moved in each step, in
 #'   meters.
 #'
 #' @param initPos A 2-element numeric vector with initial position
-#'   (initPos[1]=x, initPos[2]=y) in same coordinate reference system as
+#'   (`initPos[1]`=x, `initPos[2]`=y) in same coordinate reference system as
 #'   `polyg`.
 #'
 #' @param initHeading A numeric scalar with initial heading in degrees. E.g., 0
@@ -242,7 +242,7 @@ crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
     }
 
     # Close polyg if needed (first and last point must be same)
-    if (!identical(polyg[1, ], tail(polyg, 1))) polyg <- rbind(polyg, polyg[1, ])
+    if (!identical(polyg[1, ], utils::tail(polyg, 1))) polyg <- rbind(polyg, polyg[1, ])
 
     # Make sf object
     polyg_sf <- sf::st_polygon(list(as.matrix(polyg[c("x", "y")])))
@@ -413,6 +413,7 @@ crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
 }
 
 #' Check if in polygon
+#' @noRd
 check_in_polygon <- function(points, polygon, EPSG) {
   points_sf <- sf::st_as_sf(points,
     coords = c("x", "y"),
@@ -425,12 +426,13 @@ check_in_polygon <- function(points, polygon, EPSG) {
 
 
 #' Check if track crosses polygon boundary
+#' @noRd
 check_cross_boundary <- function(path, boundary, EPSG) {
   # Make line segment objects of sequential point-pairs in path
 
   segs_mat <- cbind(
-    head(path, -1),
-    tail(path, -1)
+    utils::head(path, -1),
+    utils::tail(path, -1)
   )
 
   in_poly <-

@@ -23,15 +23,6 @@
 #' @param include_empty Logical (default = \code{FALSE}). If \code{output_format
 #'  = "csv.fathom.split"}, should files be written for empty objects.
 #'
-#' @param overwrite Logical. If \code{TRUE}, output CSV file(s) will overwrite
-#'  existing CSV file(s) with same name in \code{out_dir}. If \code{FALSE}
-#'  (default), any output files that already exist in \code{out_dir} will be
-#'  skipped, with warning.
-#'
-#' @param recursive Logical. If \code{TRUE} and \code{src} is a directory, then
-#'  all VRL/VDAT files in all subdirectories of \code{src} will be converted.
-#'  Default is \code{FALSE}. Ignored if \code{src} is a not directory.
-#'
 #' @param export_settings (NOT YET IMPLEMENTED). Placeholder for future
 #'  specification of other options available via Fathom Data Export app. (E.g.,
 #'  'Data Types to Include', 'Data Filter', 'Filename Suffix', 'Time Offset in
@@ -73,7 +64,13 @@ write_vdat_csv <- function(vdat,
                            record_types = NULL,
                            out_file = NULL,
                            output_format = "csv.fathom",
-                           include_empty = FALSE) {
+                           include_empty = FALSE,
+                           export_settings = NULL) {
+  ##  Declare global variables for NSE & R CMD check
+  record_type <- dt2 <- `Device Time (UTC)` <- `Time Correction (s)` <-
+    `Ambient (deg C)` <- `Ambient Min (deg C)` <- `Ambient Max (deg C)` <-
+    `Ambient Mean (deg C)` <- `Internal (deg C)` <- ..txt_cols <- txt <- NULL
+
   # Check input class
   if (!inherits(vdat, "vdat_list")) {
     stop(
@@ -107,7 +104,7 @@ write_vdat_csv <- function(vdat,
   if (out_file_type == "dir") {
     out_file_name <- gsub("\\.vrl$|\\.vdat$",
       out_file_ext,
-      tail(vdat$DATA_SOURCE_FILE$`File Name`, 1),
+      utils::tail(vdat$DATA_SOURCE_FILE$`File Name`, 1),
       ignore.case = TRUE
     )
 
@@ -142,12 +139,12 @@ write_vdat_csv <- function(vdat,
 
   # Compress each list element into a character vector
 
-  vdat_lines_body <- setNames(
+  vdat_lines_body <- stats::setNames(
     object = vector("list", length(record_types)),
     record_types
   )
 
-  vdat_lines_header <- setNames(
+  vdat_lines_header <- stats::setNames(
     object = vector("list", length(record_types)),
     record_types
   )
@@ -501,6 +498,11 @@ format_POSIXt <- function(x, digits = 0, drop0trailing = TRUE) {
 
 
 #' Subset method for vdat_list that retains attributes
+#'
+#' @param x a vdat_list from which to extract element(s).
+#' @param i indices specifying elements to extract or replace.
+#' @param ... unused.
+#'
 #' @export
 `[.vdat_list` <- function(x, i, ...) {
   attrs <- attributes(x)

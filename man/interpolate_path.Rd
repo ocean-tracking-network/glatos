@@ -92,50 +92,57 @@ are handled. See \code{\link[=approxfun]{approxfun()}}.
 
 #--------------------------------------------------
 # EXAMPLE #1 - simple interpolate among lakes
-  
-# get polygon of the Great Lakes 
-data(great_lakes_polygon) #glatos example data
+
+# get polygon of the Great Lakes
+data(great_lakes_polygon) # glatos example data
 plot(sf::st_geometry(great_lakes_polygon), xlim = c(-92, -76))
-  
+
 # make sample detections data frame
 pos <- data.frame(
-   animal_id=1,
-   deploy_long=c(-87,-82.5, -78),
-   deploy_lat=c(44, 44.5, 43.5),
-   detection_timestamp_utc=as.POSIXct(c("2000-01-01 00:00",
-     "2000-02-01 00:00", "2000-03-01 00:00"), tz = "UTC"))
+  animal_id = 1,
+  deploy_long = c(-87, -82.5, -78),
+  deploy_lat = c(44, 44.5, 43.5),
+  detection_timestamp_utc = as.POSIXct(c(
+    "2000-01-01 00:00",
+    "2000-02-01 00:00", "2000-03-01 00:00"
+  ), tz = "UTC")
+)
 
-#add to plot
-points(deploy_lat ~ deploy_long, data = pos, pch = 20, cex = 2, col = 'red')
+# add to plot
+points(deploy_lat ~ deploy_long, data = pos, pch = 20, cex = 2, col = "red")
 
 # interpolate path using linear method
 path1 <- interpolate_path(pos)
-nrow(path1) #now 61 points
-sum(path1$record_type == "interpolated") #58 interpolated points
- 
-#add linear path to plot
-points(latitude ~ longitude, data = path1, pch = 20, cex = 0.8, col = 'blue')
+nrow(path1) # now 61 points
+sum(path1$record_type == "interpolated") # 58 interpolated points
+
+# add linear path to plot
+points(latitude ~ longitude, data = path1, pch = 20, cex = 0.8, col = "blue")
 
 # load a transition matrix of Great Lakes
-# NOTE: This is a LOW RESOLUTION TransitionLayer suitable only for 
+# NOTE: This is a LOW RESOLUTION TransitionLayer suitable only for
 #       coarse/large scale interpolation only. Most realistic uses
 #       will need to create a TransitionLayer; see ?make_transition.
-data(greatLakesTrLayer) #glatos example data; a TransitionLayer
- 
+data(greatLakesTrLayer) # glatos example data; a TransitionLayer
+
 # interpolate path using non-linear method (requires 'trans')
 path2 <- interpolate_path(pos, trans = greatLakesTrLayer)
 
 # add non-linear path to plot
-points(latitude ~ longitude, data = path2, pch = 20, cex = 1, 
-       col = 'green')
- 
+points(latitude ~ longitude,
+  data = path2, pch = 20, cex = 1,
+  col = "green"
+)
+
 # can also force linear-interpolation with lnlThresh = 0
 path3 <- interpolate_path(pos, trans = greatLakesTrLayer, lnl_thresh = 0)
 
 # add new linear path to plot
-points(latitude ~ longitude, data = path3, pch = 20, cex = 1, 
-          col = 'magenta')
-          
+points(latitude ~ longitude,
+  data = path3, pch = 20, cex = 1,
+  col = "magenta"
+)
+
 #--------------------------------------------------
 # EXAMPLE #2 - walleye in western Lake Erie
 \dontrun{
@@ -143,34 +150,38 @@ points(latitude ~ longitude, data = path3, pch = 20, cex = 1,
 
 # get example walleye detection data
 det_file <- system.file("extdata", "walleye_detections.csv",
-                        package = "glatos")
+  package = "glatos"
+)
 det <- read_glatos_detections(det_file)
 
 # take a look
 head(det)
 
 # extract one fish and subset date
-det <- det[det$animal_id == 22 & 
-           det$detection_timestamp_utc > as.POSIXct("2012-04-08") &
-           det$detection_timestamp_utc < as.POSIXct("2013-04-15") , ]
+det <- det[det$animal_id == 22 &
+  det$detection_timestamp_utc > as.POSIXct("2012-04-08") &
+  det$detection_timestamp_utc < as.POSIXct("2013-04-15"), ]
 
-# get polygon of the Great Lakes 
-data(great_lakes_polygon) #glatos example data; an sf object
+# get polygon of the Great Lakes
+data(great_lakes_polygon) # glatos example data; an sf object
 
 # convert polygon to terra::spatVector
 great_lakes_polygon <- terra::vect(great_lakes_polygon)
 
 # crop polygon to western Lake Erie
-maumee <-  terra::crop(great_lakes_polygon, 
-                       y = terra::ext(-83.7, -82.5, 41.3, 42.4))
+maumee <- terra::crop(great_lakes_polygon,
+  y = terra::ext(-83.7, -82.5, 41.3, 42.4)
+)
 
 
 plot(maumee, col = "grey")
-points(deploy_lat ~ deploy_long, data = det, pch = 20, col = "red", 
-  xlim = c(-83.7, -80))
+points(deploy_lat ~ deploy_long,
+  data = det, pch = 20, col = "red",
+  xlim = c(-83.7, -80)
+)
 
 
-make transition layer object
+# make transition layer object
 tran <- make_transition3(sf::st_as_sf(maumee), res = c(0.1, 0.1))
 
 # plot to check output
@@ -187,22 +198,19 @@ plot(maumee, add = TRUE)
 
 # add fish detections to make sure they are "on the map"
 # plot unique values only for simplicity
-foo <- unique(det[, c("deploy_lat", "deploy_long")]) 
+foo <- unique(det[, c("deploy_lat", "deploy_long")])
 points(foo$deploy_long, foo$deploy_lat, pch = 20, col = "red")
 
 # call with "transition matrix" (non-linear interpolation), other options
 # note that it is quite a bit slower than linear interpolation
-pos2 <- interpolate_path(det, 
-                         trans = tran1$transition, 
-                         out_class = "data.table")
+pos2 <- interpolate_path(det,
+  trans = tran1$transition,
+  out_class = "data.table"
+)
 
 plot(maumee, col = "grey")
-points(latitude ~ longitude, data = pos2, pch=20, col='red', cex=0.5)
-
-} 
-
-
-
+points(latitude ~ longitude, data = pos2, pch = 20, col = "red", cex = 0.5)
+}
 
 }
 \author{

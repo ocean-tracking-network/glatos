@@ -50,11 +50,14 @@
 #' hfx_receiver_efficiency_index <- glatos::REI(dets, hfx_deployments)
 #' }
 #' @importFrom dplyr group_by mutate coalesce filter summarise
-#' @importFrom magrittr "%>%"
 #'
 #' @export
 
 REI <- function(detections, deployments) {
+  ##  Declare global variables for NSE & R CMD check
+  recover_date_time <- last_download <- station <- days_deployed <- deploy_lat <-
+    deploy_long <- animal_id <- common_name_e <- detection_timestamp_utc <- NULL
+
   # Check for proper columns
   required_deployment_columns <- c("station", "deploy_date_time", "recover_date_time")
   required_detection_columns <- c("station", "common_name_e", "animal_id", "detection_timestamp_utc")

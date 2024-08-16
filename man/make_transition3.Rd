@@ -45,7 +45,7 @@ two-object list containing the raster layer and transition
 layer.  Both objects have the same extents and geographic
 projection as input shapefile.
 
-@details If receiver\_points is provided, any receiver not in water
+@details If receiver_points is provided, any receiver not in water
 is buffered by the distance from the receiver to the nearest
 water.  This allows all receivers to be coded as in water if the
 receiver is on land.

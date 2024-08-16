@@ -115,6 +115,9 @@ kml_workbook <- function(
     ))
   }
 
+  ##  Declare global variables for NSE & R CMD check
+  Folder <- NULL
+
   # set default and get optional kml arguments
   kml_args <- list(labelSize = 0.6, iconSize = 0.6)
   args_in <- list(...)
