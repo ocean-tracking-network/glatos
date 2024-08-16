@@ -150,6 +150,7 @@ Authors:
 
 Other contributors:
 \itemize{
+  \item Mike O'Brien [contributor]
   \item Alex Nunes [contributor]
   \item Angela Dini [contributor]
   \item Ryan Gosse [contributor]
