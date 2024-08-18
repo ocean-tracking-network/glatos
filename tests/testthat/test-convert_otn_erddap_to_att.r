@@ -47,12 +47,12 @@ test_that("matches internal data: blue_shark_erddap_att", {
     )
   )
 
-  expect_message(
-    convert_otn_erddap_to_att(
-      blue_shark_detections,
-      tags, stations, animals
-    )
-  )
+  # expect_message(
+  #   convert_otn_erddap_to_att(
+  #     blue_shark_detections,
+  #     tags, stations, animals
+  #   )
+  # )
 
   expect_output(
     convert_otn_erddap_to_att(

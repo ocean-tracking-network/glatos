@@ -2,8 +2,7 @@
 % Please edit documentation in R/util-convert_glatos_to_att.r
 \name{convert_glatos_to_att}
 \alias{convert_glatos_to_att}
-\title{Convert detections and receiver metadata to a format that
-ATT accepts.}
+\title{Convert detections and receiver metadata to a format that ATT accepts.}
 \usage{
 convert_glatos_to_att(
   detectionObj,
@@ -12,26 +11,42 @@ convert_glatos_to_att(
 )
 }
 \arguments{
-\item{detectionObj}{a list from \code{read_glatos_detections}}
+\item{detectionObj}{A \code{glatos_detections} object (e.g., created by
+\link{read_glatos_detections}) or a \code{data.frame} containing required columns
+(see \link{glatos_detections}).}
 
-\item{receiverObj}{a list from \code{read_glatos_receivers}}
+\item{receiverObj}{A \code{glatos_receivers} object (e.g., created by
+\link{read_glatos_receivers}) or a \code{data.frame} containing required columns
+(see \link{glatos_receivers}).}
 
-\item{crs}{a \code{\link[=CRS-class]{sp::CRS}} object with geographic coordinate system for all spatial information (latitude/longitude). If none provided or \code{crs} is not recognized, defaults to WGS84.}
+\item{crs}{a \code{\link[=CRS-class]{sp::CRS}} object with geographic
+coordinate system for all spatial information (latitude/longitude). If none
+provided or \code{crs} is not recognized, defaults to WGS84.}
 }
 \value{
 a list of 3 tibbles containing tag detections, tag metadata,
 and station metadata, to be ingested by VTrack/ATT
 }
 \description{
-Convert \code{glatos_detections} and \code{glatos_receiver} objects to \code{ATT} for compatibility with the Animal Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
+Convert \code{glatos_detections} and \code{glatos_receiver} objects to \code{ATT} for
+compatibility with the Animal Tracking Toolbox
+\url{https://github.com/vinayudyawer/ATT}, now part of \code{VTrack}
+\url{https://github.com/RossDwyer/VTrack}.
 }
 \details{
 This function takes 2 lists containing detection and reciever data
-and transforms them into one list containing 3 \code{tibble}
-objects. The input that AAT uses to get this data product is located here:
-https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
+and transforms them into one list containing 3 \code{tibble} objects. The input
+that AAT uses to get this data product is located here:
+\url{https://github.com/vinayudyawer/ATT/blob/master/README.md} and our mappings
+are found here:
+\url{https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886}
 in a comment by Ryan Gosse.
+
+Note that the \code{Tag.Detections} element of the output can contain
+fewer records than \code{detectionObj} because detections are omitted if they
+do not match a station deployment-recovery interval in \code{receiverObj}.
+For example, in the walleye data example, \code{walleye_detections} contains
+7180 rows but \code{Tag.Detectons} output only contains 7083 rows.
 }
 \examples{
 

@@ -1,12 +1,14 @@
 #' Convert detections, transmitter, receiver, and animal metadata to a format
 #' that ATT accepts.
 #'
-#' Convert \code{glatos_detections} and transmitter, receiver, and animal
-#' metadata from the OTN ERDDAP to \code{ATT} format for use in the Animal
-#' Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
+#' Convert `glatos_detections` and transmitter, receiver, and animal metadata
+#' from the OTN ERDDAP to `ATT` format for use in the Animal Tracking Toolbox
+#' <https://github.com/vinayudyawer/ATT>, now part of `VTrack`
+#' <https://github.com/RossDwyer/VTrack>.
 #'
-#'
-#' @param detectionObj a data frame from \code{read_glatos_detections}
+#' @param detectionObj A `glatos_detections` object (e.g., created by
+#'   [read_otn_detections] or [read_glatos_detections]) or a `data.frame`
+#'   containing required columns (see [glatos_detections]).
 #'
 #' @param erdTags a data frame with tag release data from the OTN ERDDAP
 #'
@@ -22,12 +24,13 @@
 #'
 #' @details This function takes 4 data frames containing detection, and ERDDAP
 #'   data from the tags, receivers, and animals tables, and transforms them into
-#'   3 `tibble` objects inside of a list. The input that AAT uses
-#'   to get this data product is located here:
-#'   https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-#'   are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
+#'   3 `tibble` objects inside of a list. The input that AAT uses to get this
+#'   data product is located here:
+#'   <https://github.com/vinayudyawer/ATT/blob/master/README.md> and our
+#'   mappings are found here:
+#'   <https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886>
 #'   in a comment by Ryan Gosse. The OTN ERDDAP instance is here:
-#'   https://members.oceantrack.org/erddap/tabledap/index.html but please note
+#'   <https://members.oceantrack.org/erddap/tabledap/index.html> but please note
 #'   that this only contains public data.
 #'
 #' @author Ryan Gosse
@@ -70,13 +73,19 @@
 #' blue_shark_detections <- read_otn_detections(shrk_det_file) # load shark data
 #'
 #' ATTdata <- convert_otn_erddap_to_att(
-#'   blue_shark_detections,
-#'   tags, stations, animals
+#'   detectionObj = blue_shark_detections,
+#'   erdTags = tags, 
+#'   erdRcv = stations, 
+#'   erdAni = animals
 #' )
 #' @export
 #'
-convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
+convert_otn_erddap_to_att <- function(detectionObj, 
+                                      erdTags, 
+                                      erdRcv, 
+                                      erdAni,
                                       crs = sf::st_crs(4326)) {
+  
   ##  Declare global variables for R CMD check
   Sex <- latitude <- longitude <- station <- receiver_model <-
     receiver_serial_number <- dummy <- time <- recovery_datetime_utc <-
@@ -89,37 +98,52 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
       concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
     }
 
-  tagMetadata <- unique(dplyr::tibble( # Start building Tag.Metadata table
+  # Start building Tag.Metadata table
+  tagMetadata <- unique(dplyr::tibble( 
     Tag.ID = detectionObj$animal_id,
     Transmitter = as.factor(transmitters),
     Common.Name = as.factor(detectionObj$common_name_e)
   ))
 
-  tagMetadata <- unique(tagMetadata) # Cut out dupes
+  # Cut out dupes
+  tagMetadata <- unique(tagMetadata) 
 
   nameLookup <- dplyr::tibble( # Get all the unique common names
     Common.Name = unique(tagMetadata$Common.Name)
   )
-  nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
+  
+  # Add scinames to the name lookup
+  nameLookup <- dplyr::mutate(nameLookup, 
     Sci.Name = as.factor(purrr::map(nameLookup$Common.Name, query_worms_common))
   )
+  
   # Apply sci names to frame
-  tagMetadata <- dplyr::left_join(tagMetadata, nameLookup)
+  tagMetadata <- dplyr::left_join(tagMetadata, 
+                                  nameLookup,
+                                  by = "Common.Name")
 
   # Matching cols that have different names
   colnames(erdTags)[colnames(erdTags) == "tag_device_id"] <- "transmitter_id"
-  detectionObj <- dplyr::left_join(detectionObj, erdTags)
+  detectionObj <- dplyr::left_join(detectionObj, 
+                                   erdTags,
+                                   by = "transmitter_id")
   erdRcv <- dplyr::mutate(erdRcv,
     station = as.character(purrr::map(
       erdRcv$receiver_reference_id,
       extract_station
     ))
   )
+  
   # Matching cols that have different names
   colnames(erdAni)[colnames(erdAni) == "animal_reference_id"] <- "animal_id"
-  detectionObj <- dplyr::left_join(detectionObj, erdAni)
+  detectionObj <- dplyr::left_join(detectionObj, 
+                                   erdAni,
+                                   by = c("animal_id", 
+                                          "scientificname", 
+                                          "datacenter_reference"))
 
-  releaseData <- dplyr::tibble( # Get the rest from detectionObj
+  # Get the rest from detectionObj
+  releaseData <- dplyr::tibble( 
     Tag.ID = detectionObj$animal_id,
     Tag.Project = as.factor(detectionObj$animal_project_reference),
     Release.Latitude = as.double(detectionObj$latitude),
@@ -136,7 +160,9 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
     Bio = as.factor(NA)
   )
   # Final version of Tag.Metadata
-  tagMetadata <- unique(dplyr::left_join(tagMetadata, releaseData))
+  tagMetadata <- unique(dplyr::left_join(tagMetadata, 
+                                         releaseData, 
+                                         by = "Tag.ID"))
 
   datetime_timezone <- unique(detectionObj$timezone)
 
@@ -151,7 +177,9 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
       dummy,
       deploy_datetime_utc = time,
       recovery_datetime_utc
-    )) %>%
+    ),
+    by = c("station", "dummy"),
+    relationship = "many-to-many") %>%
     dplyr::mutate(
       deploy_datetime_utc = as.POSIXct(deploy_datetime_utc,
         format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
@@ -192,6 +220,7 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
     Station.Longitude = as.double(detectionObj$deploy_long),
     Receiver.Status = as.factor(NA)
   ))
+  
   att_obj <- list(
     Tag.Detections = detections,
     Tag.Metadata = tagMetadata,
@@ -203,7 +232,8 @@ convert_otn_erddap_to_att <- function(detectionObj, erdTags, erdRcv, erdAni,
   if (inherits(crs, "crs")) {
     attr(att_obj, "crs") <- crs
   } else {
-    message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
+    message("Geographic projection for detection positions not recognised, ",
+            "reverting to WGS84 global coordinate reference system.")
     attr(att_obj, "crs") <- eval(formals()$crs)
   }
 
