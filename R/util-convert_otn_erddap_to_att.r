@@ -18,7 +18,7 @@
 #'
 #' @param crs an object of class `crs` (see [sf::st_crs][st_crs]) with
 #'   geographic coordinate system for all spatial information
-#'   (latitude/longitude). If none provided or \code{crs} is not recognized,
+#'   (latitude/longitude). If none provided or `crs` is not recognized,
 #'   defaults to WGS84.
 #'
 #'
@@ -229,12 +229,14 @@ convert_otn_erddap_to_att <- function(detectionObj,
 
   class(att_obj) <- "ATT"
 
+  # Note that sf::st_crs() uses class name 'crs' but this is changed to 'CRS' 
+  #  because VTrack/ATT are using sp::CRS()
   if (inherits(crs, "crs")) {
-    attr(att_obj, "crs") <- crs
+    attr(att_obj, "CRS") <- crs
   } else {
     message("Geographic projection for detection positions not recognised, ",
             "reverting to WGS84 global coordinate reference system.")
-    attr(att_obj, "crs") <- eval(formals()$crs)
+    attr(att_obj, "CRS") <- eval(formals()$crs)
   }
 
   return(att_obj)

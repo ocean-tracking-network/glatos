@@ -13,9 +13,10 @@
 #'   [read_glatos_receivers]) or a `data.frame` containing required columns
 #'   (see [glatos_receivers]).
 #'
-#' @param crs a \code{\link[=CRS-class]{sp::CRS}} object with geographic
-#'   coordinate system for all spatial information (latitude/longitude). If none
-#'   provided or `crs` is not recognized, defaults to WGS84.
+#' @param crs an object of class `crs` (see [sf::st_crs][st_crs]) with
+#'   geographic coordinate system for all spatial information
+#'   (latitude/longitude). If none provided or `crs` is not recognized,
+#'   defaults to WGS84.
 #' 
 #' @details This function takes 2 lists containing detection and reciever data
 #'   and transforms them into one list containing 3 `tibble` objects. The input
@@ -57,7 +58,7 @@
 
 convert_glatos_to_att <- function(detectionObj, 
                                   receiverObj,
-                                  crs = sp::CRS("+init=epsg:4326")) {
+                                  crs = sf::st_crs(4326)) {
   
   ##  Declare global variables for R CMD check
   Sex <- glatos_array <- station_no <- deploy_lat <- deploy_long <-
@@ -178,10 +179,13 @@ convert_glatos_to_att <- function(detectionObj,
   class(att_obj) <- "ATT"
 
 
-  if (inherits(crs, "CRS")) {
+  # Note that sf::st_crs() uses class name 'crs' but this is changed to 'CRS' 
+  #  because VTrack/ATT are using sp::CRS()
+  if (inherits(crs, "crs")) {
     attr(att_obj, "CRS") <- crs
   } else {
-    message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
+    message("Geographic projection for detection positions not recognised, ",
+            "reverting to WGS84 global coordinate reference system.")
     attr(att_obj, "CRS") <- eval(formals()$crs)
   }
 

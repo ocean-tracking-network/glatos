@@ -24,6 +24,3 @@ walleye_att <- glatos::convert_glatos_to_att(walleye_detections, rcv)
 # add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")
 glatos:::add_internal_data(walleye_att, rda_file)
-
-# for exported ('public') data
-# devtools::use_data(walleye_detections, pkg = "..", overwrite = TRUE)

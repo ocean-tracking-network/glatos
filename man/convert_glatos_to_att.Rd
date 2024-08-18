@@ -4,11 +4,7 @@
 \alias{convert_glatos_to_att}
 \title{Convert detections and receiver metadata to a format that ATT accepts.}
 \usage{
-convert_glatos_to_att(
-  detectionObj,
-  receiverObj,
-  crs = sp::CRS("+init=epsg:4326")
-)
+convert_glatos_to_att(detectionObj, receiverObj, crs = sf::st_crs(4326))
 }
 \arguments{
 \item{detectionObj}{A \code{glatos_detections} object (e.g., created by
@@ -19,9 +15,10 @@ convert_glatos_to_att(
 \link{read_glatos_receivers}) or a \code{data.frame} containing required columns
 (see \link{glatos_receivers}).}
 
-\item{crs}{a \code{\link[=CRS-class]{sp::CRS}} object with geographic
-coordinate system for all spatial information (latitude/longitude). If none
-provided or \code{crs} is not recognized, defaults to WGS84.}
+\item{crs}{an object of class \code{crs} (see \link[=st_crs]{sf::st_crs}) with
+geographic coordinate system for all spatial information
+(latitude/longitude). If none provided or \code{crs} is not recognized,
+defaults to WGS84.}
 }
 \value{
 a list of 3 tibbles containing tag detections, tag metadata,
