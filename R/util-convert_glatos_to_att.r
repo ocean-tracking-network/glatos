@@ -191,16 +191,3 @@ convert_glatos_to_att <- function(detectionObj,
 
   return(att_obj)
 }
-
-
-# Function for taking 2 lists of string of the same length and concatenating the
-# columns, row by row.
-concat_list_strings <- function(list1, list2, sep = "-") {
-  if (length(list1) != length(list2)) {
-    stop(sprintf(
-      "Lists are not the same size. %d != %d.",
-      length(list1), length(list2)
-    ))
-  }
-  return(paste(list1, list2, sep = sep))
-}
