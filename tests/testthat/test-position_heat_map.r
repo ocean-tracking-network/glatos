@@ -112,14 +112,15 @@ test_that("png output default name gives expected result", {
   )
 
   expect_invisible(
-    phm_png_out <- position_heat_map(
+    phm_png_out <- 
+      suppressMessages(position_heat_map(
       lamprey_tracks,
       x_limits = c(-84.14, -84.12),
       y_limits = c(46.45, 46.47),
       resolution = 100,
       output = "png",
       folder = temp_dir
-    )
+    ))
   )
 
   # Check if png file produced
@@ -164,7 +165,8 @@ test_that("png output custom name gives expected result", {
   )
 
   expect_invisible(
-    phm_png_out_named <- position_heat_map(
+    phm_png_out_named <- 
+      suppressMessages(position_heat_map(
       lamprey_tracks,
       x_limits = c(-84.14, -84.12),
       y_limits = c(46.45, 46.47),
@@ -172,7 +174,7 @@ test_that("png output custom name gives expected result", {
       output = "png",
       folder = temp_dir,
       out_file = "mymap"
-    )
+    ))
   )
 
   # Check if png file produced
@@ -216,14 +218,15 @@ test_that("kmz output default name gives expected result", {
   )
 
   expect_invisible(
-    phm_kmz_out <- position_heat_map(
+    phm_kmz_out <- 
+      suppressMessages(position_heat_map(
       lamprey_tracks,
       x_limits = c(-84.14, -84.12),
       y_limits = c(46.45, 46.47),
       resolution = 100,
       output = "kmz",
       folder = temp_dir
-    )
+    ))
   )
 
   # Check if kmz file produced
@@ -270,7 +273,8 @@ test_that("kmz output custom name gives expected result", {
   )
 
   expect_invisible(
-    phm_kmz_out_named <- position_heat_map(
+    phm_kmz_out_named <- 
+      suppressMessages(position_heat_map(
       lamprey_tracks,
       x_limits = c(-84.14, -84.12),
       y_limits = c(46.45, 46.47),
@@ -279,7 +283,7 @@ test_that("kmz output custom name gives expected result", {
       folder = temp_dir,
       out_file = "mymap"
     )
-  )
+  ))
 
   # Check if kmz file produced
   expect_true(
