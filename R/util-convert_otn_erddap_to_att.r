@@ -95,7 +95,8 @@ convert_otn_erddap_to_att <- function(detectionObj,
     if (all(grepl("-", detectionObj$transmitter_id, fixed = TRUE))) {
       detectionObj$transmitter_id
     } else {
-      concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
+      concat_list_strings(detectionObj$transmitter_codespace, 
+                          detectionObj$transmitter_id)
     }
 
   # Start building Tag.Metadata table
@@ -114,7 +115,9 @@ convert_otn_erddap_to_att <- function(detectionObj,
   
   # Add scinames to the name lookup
   nameLookup <- dplyr::mutate(nameLookup, 
-    Sci.Name = as.factor(purrr::map(nameLookup$Common.Name, query_worms_common))
+    Sci.Name = as.factor(purrr::map(nameLookup$Common.Name, 
+                                    query_worms_common,
+                                    silent = TRUE))
   )
   
   # Apply sci names to frame

@@ -93,16 +93,19 @@ convert_otn_to_att <- function(detectionObj,
                                deploymentSheet = NULL,
                                timeFilter = TRUE,
                                crs = sf::st_crs(4326)) {
+
   ##  Declare global variables for R CMD check
-  station <- receiver_sn <- deploy_lat <- deploy_long <- detection_timestamp_utc <-
-    deploy_date_time <- recover_date_time <- last_download <- instrumenttype <-
-    ins_model_no <- Tag.ID <- Sex <- NULL
+  station <- receiver_sn <- deploy_lat <- deploy_long <- 
+    detection_timestamp_utc <- deploy_date_time <- recover_date_time <- 
+    last_download <- instrumenttype <- ins_model_no <- Tag.ID <- Sex <- NULL
 
 
   if (is.null(deploymentObj) && is.null(deploymentSheet)) {
-    stop("Deployment data must be supplied by either 'deploymentObj' or 'deploymentSheet'")
+    stop("Deployment data must be supplied by either 'deploymentObj' or ",
+         "'deploymentSheet'")
   } else if ((!is.null(deploymentObj)) && (!is.null(deploymentSheet))) {
-    stop("Deployment data must be supplied by either 'deploymentObj' or 'deploymentSheet', not both")
+    stop("Deployment data must be supplied by either 'deploymentObj' or ",
+    "'deploymentSheet', not both")
   } else if (!is.null(deploymentSheet)) {
     deploymentObj <- deploymentSheet
   }
@@ -117,7 +120,8 @@ convert_otn_to_att <- function(detectionObj,
     if (all(grepl("-", detectionObj$transmitter_id, fixed = TRUE))) {
       detectionObj$transmitter_id
     } else {
-      concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
+      concat_list_strings(detectionObj$transmitter_codespace, 
+                          detectionObj$transmitter_id)
     }
 
   tagMetadata <- unique(dplyr::tibble( # Start building Tag.Metadata table
@@ -129,20 +133,26 @@ convert_otn_to_att <- function(detectionObj,
 
   tagMetadata <- unique(tagMetadata) # Cut out dupes
 
-  detectionObj <- dplyr::left_join(detectionObj, taggingSheet %>% dplyr::select(-c("animal_id")), by = "transmitter_id")
+  detectionObj <- dplyr::left_join(detectionObj, taggingSheet %>% 
+                                     dplyr::select(-c("animal_id")), 
+                                   by = "transmitter_id")
 
-  detectionObj <- dplyr::left_join(detectionObj %>% dplyr::select(-deploy_lat, -deploy_long), deploymentObj, by = "station")
+  detectionObj <- dplyr::left_join(detectionObj %>% 
+                                     dplyr::select(-deploy_lat, -deploy_long), 
+                                   deploymentObj, by = "station")
   if (timeFilter) {
     if (is.null(deploymentSheet)) {
       detectionObj <- detectionObj %>% dplyr::filter(
         detection_timestamp_utc >= deploy_date_time,
-        detection_timestamp_utc <= dplyr::coalesce(recover_date_time, last_download),
+        detection_timestamp_utc <= dplyr::coalesce(recover_date_time, 
+                                                   last_download),
         instrumenttype == "rcvr"
       )
     } else {
       detectionObj <- detectionObj %>% dplyr::filter(
         detection_timestamp_utc >= deploy_date_time,
-        detection_timestamp_utc <= recover_date_time | recover_date_time %in% c(NA)
+        detection_timestamp_utc <= recover_date_time | 
+          recover_date_time %in% c(NA)
       )
     }
   }
@@ -226,7 +236,8 @@ convert_otn_to_att <- function(detectionObj,
 
 
 # Simple query to WoRMS based on the common name and returns the sci name
-query_worms_common <- function(commonName) {
+query_worms_common <- function(commonName, 
+                               silent = FALSE) {
   url <- utils::URLencode(
     sprintf(
       "https://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s",
@@ -236,7 +247,7 @@ query_worms_common <- function(commonName) {
 
   sciname <- tryCatch(
     {
-      print(url)
+      if(!silent) print(url)
       payload <- jsonlite::fromJSON(url)
       sciname <- payload$scientificname
     },
