@@ -3,9 +3,12 @@
 #'
 #' Convert \code{glatos_detections}, OTN tagging metadata and OTN deployment
 #' metadata to \code{ATT} format for use in the Animal Tracking Toolbox
-#' (\url{https://github.com/vinayudyawer/ATT}).
+#' <https://github.com/vinayudyawer/ATT>, now part of `VTrack`
+#' <https://github.com/RossDwyer/VTrack>.
 #'
-#' @param detectionObj a data frame from \code{read_otn_detections}
+#' @param detectionObj A `glatos_detections` object (e.g., created by
+#'   [read_otn_detections] or [read_glatos_detections]) or a `data.frame`
+#'   containing required columns (see [glatos_detections]).
 #'
 #' @param taggingSheet a data frame from \code{prepare_tag_sheet}
 #'
@@ -18,18 +21,19 @@
 #'   receiver metadata is available, this should be set to FALSE otherwise there
 #'   will be data loss.
 #'
-#' @param crs a object of class `crs` (see [sf::st_crs][st_crs] with geographic
-#'   coordinate system for all spatial information (latitude/longitude). If none
-#'   provided or `crs` is not recognized, defaults to WGS84 (EPSG:4326).
+#' @param crs an object of class `crs` (see [sf::st_crs][st_crs]) with
+#'   geographic coordinate system for all spatial information
+#'   (latitude/longitude). If none provided or `crs` is not recognized,
+#'   defaults to WGS84.
 #'
 #'
 #' @details This function takes 3 data frames containing detections, tagging
-#'   metadata, and deployment metadata from either \code{read_otn_deployments}
-#'   or \code{prepare_deploy_sheet} and transforms them into 3
-#'   \code{tibble} objects inside of a list. The input that AAT uses to
+#'   metadata, and deployment metadata from either `read_otn_deployments`
+#'   or `prepare_deploy_sheet` and transforms them into 3
+#'   `tibble` objects inside of a list. The input that AAT uses to
 #'   get this data product is located here:
-#'   https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-#'   are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
+#'   <https://github.com/vinayudyawer/ATT/blob/master/README.md> and our mappings
+#'   are found here: <https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886>
 #'   in a comment by Ryan Gosse.
 #'
 #' @author Ryan Gosse
@@ -207,11 +211,14 @@ convert_otn_to_att <- function(detectionObj,
 
   class(att_obj) <- "ATT"
 
+  # Note that sf::st_crs() uses class name 'crs' but this is changed to 'CRS' 
+  #  because VTrack/ATT are using sp::CRS()
   if (inherits(crs, "crs")) {
-    attr(att_obj, "crs") <- crs
+    attr(att_obj, "CRS") <- crs
   } else {
-    message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
-    attr(att_obj, "crs") <- eval(formals()$crs)
+    message("Geographic projection for detection positions not recognised, ",
+            "reverting to WGS84 global coordinate reference system.")
+    attr(att_obj, "CRS") <- eval(formals()$crs)
   }
 
   return(att_obj)
