@@ -14,7 +14,7 @@ test_that("RI for Kessel method gives exepected result on blue sharks", {
   )
 
   data <- read_otn_detections(bsd_file)
-  cdata <- detection_events(data, location_col = "station")
+  cdata <- suppressMessages(detection_events(data, location_col = "station"))
 
   rik_data <- residence_index(
     cdata,
@@ -39,7 +39,7 @@ test_that("RI for timedelta method gives exepected result on blue sharks", {
   )
 
   data <- read_otn_detections(bsd_file)
-  cdata <- detection_events(data, location_col = "station")
+  cdata <- suppressMessages(detection_events(data, location_col = "station"))
 
   rit_data <- residence_index(
     cdata,
@@ -64,7 +64,7 @@ test_that("RI for Aggregate With Overlap method gives exepected result on blue s
 
   data <- read_otn_detections(bsd_file)
 
-  cdata <- detection_events(data, location_col = "station")
+  cdata <- suppressMessages(detection_events(data, location_col = "station"))
 
   riawo_data <- residence_index(
     cdata,
@@ -89,7 +89,7 @@ test_that("RI for Aggregate No Overlap method gives exepected result on blue sha
 
   data <- read_otn_detections(bsd_file)
 
-  cdata <- detection_events(data, location_col = "station")
+  cdata <- suppressMessages(detection_events(data, location_col = "station"))
 
 
   riano_data <- residence_index(

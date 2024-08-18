@@ -171,9 +171,13 @@
 #' @importFrom dplyr count distinct select
 #' @export
 residence_index <- function(
-    detections, calculation_method = "kessel",
-    locations = NULL, group_col = "animal_id", time_interval_size = "1 day",
+    detections, 
+    calculation_method = "kessel",
+    locations = NULL, 
+    group_col = "animal_id", 
+    time_interval_size = "1 day",
     groupwise_total = TRUE) {
+  
   # Declare global variables for R CMD check
   location <- mean_latitude <- mean_longitude <- days_detected <-
     total_days <- NULL
@@ -184,8 +188,11 @@ residence_index <- function(
   if (!is.null(locations)) if (all(is.na(locations))) locations <- NULL
 
   if (!is.null(group_col)) {
-    if ((group_col == "animal_id") & (calculation_method == "aggregate_with_overlap")) {
-      message("NOTE: Becuase an individual animal cannot overlap with itself, this will produce the same output as aggregate_no_overlap when animal_id is passed to group_col")
+    if ((group_col == "animal_id") & 
+        (calculation_method == "aggregate_with_overlap")) {
+      message("NOTE: Becuase an individual animal cannot overlap with itself, ",
+      "this will produce the same output as aggregate_no_overlap when ",
+      "animal_id is passed to group_col.")
     }
   }
 
@@ -242,7 +249,8 @@ residence_index <- function(
   # numerator
   group_cols <- c("location", group_col)
 
-  detections <- dplyr::group_by(detections, dplyr::across(group_cols))
+  detections <- dplyr::group_by(detections, 
+                                dplyr::across(dplyr::all_of(group_cols)))
 
   ri <- dplyr::do(
     detections,
