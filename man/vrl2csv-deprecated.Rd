@@ -19,6 +19,9 @@ already exist in \code{outDir}.}
 \item{vueExePath}{An optional character string with directory containing
 VUE.exe. If NA (default) then the path to VUE.exe must be added to the
 PATH environment variable of your system. See Note below.}
+
+\item{showProgress}{If TRUE (default) a progress bar and message are
+displayed.}
 }
 \value{
 A character vector with output directory and file name(s).

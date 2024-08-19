@@ -7,7 +7,13 @@
 \alias{vrl2csv}
 \title{Deprecated functions in package \pkg{glatos}.}
 \usage{
-vrl2csv(vrl, outDir = NA, overwrite = TRUE, vueExePath = NA)
+vrl2csv(
+  vrl,
+  outDir = NA,
+  overwrite = TRUE,
+  vueExePath = NA,
+  showProgress = TRUE
+)
 }
 \description{
 The functions listed below are deprecated and will be defunct in
