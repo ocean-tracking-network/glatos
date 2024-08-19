@@ -9,7 +9,7 @@ dtc_file <- system.file("extdata",
 shrk_det_file <- system.file("extdata", "blue_shark_detections.csv",
   package = "glatos"
 )
-blue_shark_detections <- glatos::read_otn_detections(shrk_det_file)
+blue_shark_detections <- read_otn_detections(shrk_det_file)
 
 
 # get path to example files from OTN ERDDAP
@@ -34,7 +34,7 @@ tags <- tags[-1, ]
 stations <- stations[-1, ]
 
 # create ATT object
-blue_shark_erddap_att <- glatos::convert_otn_erddap_to_att(
+blue_shark_erddap_att <- convert_otn_erddap_to_att(
   blue_shark_detections,
   tags, stations, animals
 )
@@ -44,4 +44,4 @@ blue_shark_erddap_att <- glatos::convert_otn_erddap_to_att(
 
 # add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")
-glatos:::add_internal_data(blue_shark_erddap_att, rda_file)
+add_internal_data(blue_shark_erddap_att, rda_file)

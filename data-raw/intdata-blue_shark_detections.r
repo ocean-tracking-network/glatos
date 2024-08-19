@@ -14,4 +14,4 @@ blue_shark_detections <- read_otn_detections(dtc_file)
 
 # add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")
-glatos:::add_internal_data(blue_shark_detections, rda_file)
+add_internal_data(blue_shark_detections, rda_file)

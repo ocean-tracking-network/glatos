@@ -74,7 +74,4 @@ glatos_detection_schema$v1.4 <- rbind(
 
 # add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")
-glatos:::add_internal_data(glatos_detection_schema, rda_file)
-
-# for exported ('public') data
-# devtools::use_data(glatos_detection_schema, pkg = "..", overwrite = TRUE)
+add_internal_data(glatos_detection_schema, rda_file)
