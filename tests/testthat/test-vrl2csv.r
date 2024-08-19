@@ -52,12 +52,12 @@ test_that("one vrl gives expected result", {
       )
     )
   )
-  
+
   expect_equal(
     normalizePath(dirname(good_csv)),
     normalizePath(vrl_loc$test_dir)
   )
-  
+
   expect_equal(
     basename(good_csv),
     gsub(
@@ -66,19 +66,19 @@ test_that("one vrl gives expected result", {
     )
   )
 
-  
+
   # Check message and progress bar when showProgress = TRUE
-  
+
   suppressWarnings(
     good_csv <- vrl2csv(
       vrl_loc$vrl,
       outDir = vrl_loc$test_dir,
       vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
     )
-  ) |> 
+  ) |>
     expect_message("Converting 1 detection files\\.\\.\\.") |>
     expect_output("\\|======================================================================\\| 100%")
-  
+
   # # Creates message
   # expect_message(
   #   suppressWarnings(
@@ -90,7 +90,7 @@ test_that("one vrl gives expected result", {
   #   ),
   #   "Converting 1 detection files\\.\\.\\."
   # )
-  # 
+  #
   # # Outputs progress bar
   # expect_output(
   #   suppressWarnings(
@@ -157,7 +157,7 @@ test_that("one vrl in dir with space in name gives expected result", {
     )
   )
 
-  
+
   # Check message and progress bar when showProgress = TRUE
   suppressWarnings(
     good_csv <- vrl2csv(
@@ -165,10 +165,10 @@ test_that("one vrl in dir with space in name gives expected result", {
       outDir = vrl_loc$test_dir,
       vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
     )
-  ) |> 
+  ) |>
     expect_message("Converting 1 detection files\\.\\.\\.") |>
     expect_output("\\|======================================================================\\| 100%")
-  
+
 
   # Check if expected and actual results are the same
   expect_snapshot(

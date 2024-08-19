@@ -16,7 +16,7 @@ rec_file <- system.file("extdata", "sample_receivers.csv",
 walleye_detections <- read_glatos_detections(dtc_file)
 
 # load receiver data
-rcv <- read_glatos_receivers(rec_file) 
+rcv <- read_glatos_receivers(rec_file)
 
 walleye_att <- convert_glatos_to_att(walleye_detections, rcv)
 

@@ -538,7 +538,6 @@ position_heat_map <- function(positions,
 #' Convert geographic positions to UTM
 #' @noRd
 lonlat_to_utm <- function(lonlat) {
-  
   # Calculate UTM zone
   utm_zone <- (floor((lonlat[["X"]] + 180) / 6) %% 60) + 1
 
@@ -555,7 +554,7 @@ lonlat_to_utm <- function(lonlat) {
   # if multiple epsg, choose zone with most obs; in case of tie, choose first
   utm_epsg_freq <- table(utm_epsg)
   utm_epsg_dom <- as.integer(names(utm_epsg_freq)[which.max(utm_epsg_freq)][1])
-  hem <- if(s_hem[match(utm_epsg_dom, utm_epsg)]) "S" else "N"
+  hem <- if (s_hem[match(utm_epsg_dom, utm_epsg)]) "S" else "N"
 
   # Convert to UTM
   lonlat_sf <- sf::st_as_sf(lonlat, coords = c("X", "Y"), crs = 4326)
@@ -576,7 +575,6 @@ lonlat_to_utm <- function(lonlat) {
 #' Convert UTM positions to lonlat
 #' @noRd
 utm_to_lonlat <- function(utm, hemisphere) {
-  
   # Define EPSG
   utm_epsg <- ifelse(hemisphere == "N",
     32600 + attr(utm, "zone"),
@@ -588,10 +586,11 @@ utm_to_lonlat <- function(utm, hemisphere) {
   lonlat_sf <- sf::st_transform(utm_sf, crs = 4326)
 
   # Return format consistent with PBSMapping::convUL
-  lonlat_df <- 
-    cbind(sf::st_drop_geometry(lonlat_sf),
-    as.data.frame(sf::st_coordinates(lonlat_sf))[, c("X", "Y")]
-  )
+  lonlat_df <-
+    cbind(
+      sf::st_drop_geometry(lonlat_sf),
+      as.data.frame(sf::st_coordinates(lonlat_sf))[, c("X", "Y")]
+    )
 
   attr(lonlat_df, "projection") <- "LL"
   attr(lonlat_df, "zone") <- attr(utm, "zone")

@@ -112,15 +112,15 @@ test_that("png output default name gives expected result", {
   )
 
   expect_invisible(
-    phm_png_out <- 
+    phm_png_out <-
       suppressMessages(position_heat_map(
-      lamprey_tracks,
-      x_limits = c(-84.14, -84.12),
-      y_limits = c(46.45, 46.47),
-      resolution = 100,
-      output = "png",
-      folder = temp_dir
-    ))
+        lamprey_tracks,
+        x_limits = c(-84.14, -84.12),
+        y_limits = c(46.45, 46.47),
+        resolution = 100,
+        output = "png",
+        folder = temp_dir
+      ))
   )
 
   # Check if png file produced
@@ -165,16 +165,16 @@ test_that("png output custom name gives expected result", {
   )
 
   expect_invisible(
-    phm_png_out_named <- 
+    phm_png_out_named <-
       suppressMessages(position_heat_map(
-      lamprey_tracks,
-      x_limits = c(-84.14, -84.12),
-      y_limits = c(46.45, 46.47),
-      resolution = 100,
-      output = "png",
-      folder = temp_dir,
-      out_file = "mymap"
-    ))
+        lamprey_tracks,
+        x_limits = c(-84.14, -84.12),
+        y_limits = c(46.45, 46.47),
+        resolution = 100,
+        output = "png",
+        folder = temp_dir,
+        out_file = "mymap"
+      ))
   )
 
   # Check if png file produced
@@ -218,15 +218,15 @@ test_that("kmz output default name gives expected result", {
   )
 
   expect_invisible(
-    phm_kmz_out <- 
+    phm_kmz_out <-
       suppressMessages(position_heat_map(
-      lamprey_tracks,
-      x_limits = c(-84.14, -84.12),
-      y_limits = c(46.45, 46.47),
-      resolution = 100,
-      output = "kmz",
-      folder = temp_dir
-    ))
+        lamprey_tracks,
+        x_limits = c(-84.14, -84.12),
+        y_limits = c(46.45, 46.47),
+        resolution = 100,
+        output = "kmz",
+        folder = temp_dir
+      ))
   )
 
   # Check if kmz file produced
@@ -273,17 +273,17 @@ test_that("kmz output custom name gives expected result", {
   )
 
   expect_invisible(
-    phm_kmz_out_named <- 
+    phm_kmz_out_named <-
       suppressMessages(position_heat_map(
-      lamprey_tracks,
-      x_limits = c(-84.14, -84.12),
-      y_limits = c(46.45, 46.47),
-      resolution = 100,
-      output = "kmz",
-      folder = temp_dir,
-      out_file = "mymap"
-    )
-  ))
+        lamprey_tracks,
+        x_limits = c(-84.14, -84.12),
+        y_limits = c(46.45, 46.47),
+        resolution = 100,
+        output = "kmz",
+        folder = temp_dir,
+        out_file = "mymap"
+      ))
+  )
 
   # Check if kmz file produced
   expect_true(
@@ -312,29 +312,35 @@ test_that("kmz output custom name gives expected result", {
 
 # Test non-exported function lonlat_to_utm()
 test_that("internal function lonlat_to_utm", {
-  
   # data.frame input
-  expect_equal(lonlat_to_utm(lonlat_should_be()),
-               utm_should_be())
-  
+  expect_equal(
+    lonlat_to_utm(lonlat_should_be()),
+    utm_should_be()
+  )
+
   # data.table input
-  expect_equal(data.table::as.data.table(lonlat_to_utm(lonlat_should_be())),
-               data.table::as.data.table(utm_should_be()))
-  
+  expect_equal(
+    data.table::as.data.table(lonlat_to_utm(lonlat_should_be())),
+    data.table::as.data.table(utm_should_be())
+  )
 })
 
 
 # Test non-exported function utm_to_lonlat()
 test_that("internal function utm_to_lonlat", {
-
   # data.frame input
-  expect_equal(utm_to_lonlat(utm_should_be(),
-                             hemisphere = attr(utm_should_be(), "hemisphere")),
-               lonlat_should_be())
-  
+  expect_equal(
+    utm_to_lonlat(utm_should_be(),
+      hemisphere = attr(utm_should_be(), "hemisphere")
+    ),
+    lonlat_should_be()
+  )
+
   # data.table input
-  expect_equal(data.table::as.data.table(utm_to_lonlat(utm_should_be(),
-                             hemisphere = attr(utm_should_be(), "hemisphere"))),
-               data.table::as.data.table(lonlat_should_be()))  
-  
+  expect_equal(
+    data.table::as.data.table(utm_to_lonlat(utm_should_be(),
+      hemisphere = attr(utm_should_be(), "hemisphere")
+    )),
+    data.table::as.data.table(lonlat_should_be())
+  )
 })

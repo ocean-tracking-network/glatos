@@ -15,8 +15,9 @@ dets <- read_otn_detections(dets_path)
 tags <- prepare_tag_sheet(tag_path, 5, 2)
 deploy <- prepare_deploy_sheet(deploy_path, 1)
 
-blue_shark_att <- convert_otn_to_att(dets, tags, 
-                                     deploymentSheet = deploy)
+blue_shark_att <- convert_otn_to_att(dets, tags,
+  deploymentSheet = deploy
+)
 
 
 #----------------------------------------------------

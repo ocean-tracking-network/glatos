@@ -74,18 +74,17 @@
 #'
 #' ATTdata <- convert_otn_erddap_to_att(
 #'   detectionObj = blue_shark_detections,
-#'   erdTags = tags, 
-#'   erdRcv = stations, 
+#'   erdTags = tags,
+#'   erdRcv = stations,
 #'   erdAni = animals
 #' )
 #' @export
 #'
-convert_otn_erddap_to_att <- function(detectionObj, 
-                                      erdTags, 
-                                      erdRcv, 
+convert_otn_erddap_to_att <- function(detectionObj,
+                                      erdTags,
+                                      erdRcv,
                                       erdAni,
                                       crs = sf::st_crs(4326)) {
-  
   ##  Declare global variables for R CMD check
   Sex <- latitude <- longitude <- station <- receiver_model <-
     receiver_serial_number <- dummy <- time <- recovery_datetime_utc <-
@@ -95,58 +94,66 @@ convert_otn_erddap_to_att <- function(detectionObj,
     if (all(grepl("-", detectionObj$transmitter_id, fixed = TRUE))) {
       detectionObj$transmitter_id
     } else {
-      concat_list_strings(detectionObj$transmitter_codespace, 
-                          detectionObj$transmitter_id)
+      concat_list_strings(
+        detectionObj$transmitter_codespace,
+        detectionObj$transmitter_id
+      )
     }
 
   # Start building Tag.Metadata table
-  tagMetadata <- unique(dplyr::tibble( 
+  tagMetadata <- unique(dplyr::tibble(
     Tag.ID = detectionObj$animal_id,
     Transmitter = as.factor(transmitters),
     Common.Name = as.factor(detectionObj$common_name_e)
   ))
 
   # Cut out dupes
-  tagMetadata <- unique(tagMetadata) 
+  tagMetadata <- unique(tagMetadata)
 
   nameLookup <- dplyr::tibble( # Get all the unique common names
     Common.Name = unique(tagMetadata$Common.Name)
   )
-  
+
   # Add scinames to the name lookup
-  nameLookup <- dplyr::mutate(nameLookup, 
-    Sci.Name = as.factor(purrr::map(nameLookup$Common.Name, 
-                                    query_worms_common,
-                                    silent = TRUE))
+  nameLookup <- dplyr::mutate(nameLookup,
+    Sci.Name = as.factor(purrr::map(nameLookup$Common.Name,
+      query_worms_common,
+      silent = TRUE
+    ))
   )
-  
+
   # Apply sci names to frame
-  tagMetadata <- dplyr::left_join(tagMetadata, 
-                                  nameLookup,
-                                  by = "Common.Name")
+  tagMetadata <- dplyr::left_join(tagMetadata,
+    nameLookup,
+    by = "Common.Name"
+  )
 
   # Matching cols that have different names
   colnames(erdTags)[colnames(erdTags) == "tag_device_id"] <- "transmitter_id"
-  detectionObj <- dplyr::left_join(detectionObj, 
-                                   erdTags,
-                                   by = "transmitter_id")
+  detectionObj <- dplyr::left_join(detectionObj,
+    erdTags,
+    by = "transmitter_id"
+  )
   erdRcv <- dplyr::mutate(erdRcv,
     station = as.character(purrr::map(
       erdRcv$receiver_reference_id,
       extract_station
     ))
   )
-  
+
   # Matching cols that have different names
   colnames(erdAni)[colnames(erdAni) == "animal_reference_id"] <- "animal_id"
-  detectionObj <- dplyr::left_join(detectionObj, 
-                                   erdAni,
-                                   by = c("animal_id", 
-                                          "scientificname", 
-                                          "datacenter_reference"))
+  detectionObj <- dplyr::left_join(detectionObj,
+    erdAni,
+    by = c(
+      "animal_id",
+      "scientificname",
+      "datacenter_reference"
+    )
+  )
 
   # Get the rest from detectionObj
-  releaseData <- dplyr::tibble( 
+  releaseData <- dplyr::tibble(
     Tag.ID = detectionObj$animal_id,
     Tag.Project = as.factor(detectionObj$animal_project_reference),
     Release.Latitude = as.double(detectionObj$latitude),
@@ -163,26 +170,29 @@ convert_otn_erddap_to_att <- function(detectionObj,
     Bio = as.factor(NA)
   )
   # Final version of Tag.Metadata
-  tagMetadata <- unique(dplyr::left_join(tagMetadata, 
-                                         releaseData, 
-                                         by = "Tag.ID"))
+  tagMetadata <- unique(dplyr::left_join(tagMetadata,
+    releaseData,
+    by = "Tag.ID"
+  ))
 
   datetime_timezone <- unique(detectionObj$timezone)
 
   detectionObj <- detectionObj %>%
     dplyr::mutate(dummy = TRUE) %>%
-    dplyr::left_join(dplyr::select(erdRcv %>% dplyr::mutate(dummy = TRUE),
-      rcv_latitude = latitude,
-      rcv_longitude = longitude,
-      station,
-      receiver_model,
-      receiver_serial_number,
-      dummy,
-      deploy_datetime_utc = time,
-      recovery_datetime_utc
-    ),
-    by = c("station", "dummy"),
-    relationship = "many-to-many") %>%
+    dplyr::left_join(
+      dplyr::select(erdRcv %>% dplyr::mutate(dummy = TRUE),
+        rcv_latitude = latitude,
+        rcv_longitude = longitude,
+        station,
+        receiver_model,
+        receiver_serial_number,
+        dummy,
+        deploy_datetime_utc = time,
+        recovery_datetime_utc
+      ),
+      by = c("station", "dummy"),
+      relationship = "many-to-many"
+    ) %>%
     dplyr::mutate(
       deploy_datetime_utc = as.POSIXct(deploy_datetime_utc,
         format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
@@ -223,7 +233,7 @@ convert_otn_erddap_to_att <- function(detectionObj,
     Station.Longitude = as.double(detectionObj$deploy_long),
     Receiver.Status = as.factor(NA)
   ))
-  
+
   att_obj <- list(
     Tag.Detections = detections,
     Tag.Metadata = tagMetadata,
@@ -232,13 +242,15 @@ convert_otn_erddap_to_att <- function(detectionObj,
 
   class(att_obj) <- "ATT"
 
-  # Note that sf::st_crs() uses class name 'crs' but this is changed to 'CRS' 
+  # Note that sf::st_crs() uses class name 'crs' but this is changed to 'CRS'
   #  because VTrack/ATT are using sp::CRS()
   if (inherits(crs, "crs")) {
     attr(att_obj, "CRS") <- crs
   } else {
-    message("Geographic projection for detection positions not recognised, ",
-            "reverting to WGS84 global coordinate reference system.")
+    message(
+      "Geographic projection for detection positions not recognised, ",
+      "reverting to WGS84 global coordinate reference system."
+    )
     attr(att_obj, "CRS") <- eval(formals()$crs)
   }
 

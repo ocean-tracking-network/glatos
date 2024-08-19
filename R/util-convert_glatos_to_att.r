@@ -2,9 +2,9 @@
 #'
 #' Convert `glatos_detections` and `glatos_receiver` objects to `ATT` for
 #' compatibility with the Animal Tracking Toolbox
-#' <https://github.com/vinayudyawer/ATT>, now part of `VTrack` 
+#' <https://github.com/vinayudyawer/ATT>, now part of `VTrack`
 #' <https://github.com/RossDwyer/VTrack>.
-#' 
+#'
 #' @param detectionObj A `glatos_detections` object (e.g., created by
 #'   [read_glatos_detections]) or a `data.frame` containing required columns
 #'   (see [glatos_detections]).
@@ -17,7 +17,7 @@
 #'   geographic coordinate system for all spatial information
 #'   (latitude/longitude). If none provided or `crs` is not recognized,
 #'   defaults to WGS84.
-#' 
+#'
 #' @details This function takes 2 lists containing detection and reciever data
 #'   and transforms them into one list containing 3 `tibble` objects. The input
 #'   that AAT uses to get this data product is located here:
@@ -25,11 +25,11 @@
 #'   are found here:
 #'   <https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886>
 #'   in a comment by Ryan Gosse.
-#'   
-#' @details Note that the `Tag.Detections` element of the output can contain 
-#'   fewer records than `detectionObj` because detections are omitted if they 
-#'   do not match a station deployment-recovery interval in `receiverObj`. 
-#'   For example, in the walleye data example, `walleye_detections` contains 
+#'
+#' @details Note that the `Tag.Detections` element of the output can contain
+#'   fewer records than `detectionObj` because detections are omitted if they
+#'   do not match a station deployment-recovery interval in `receiverObj`.
+#'   For example, in the walleye data example, `walleye_detections` contains
 #'   7180 rows but `Tag.Detectons` output only contains 7083 rows.
 #'
 #' @author Ryan Gosse
@@ -56,10 +56,9 @@
 #' ATTdata <- convert_glatos_to_att(walleye_detections, rcv)
 #' @export
 
-convert_glatos_to_att <- function(detectionObj, 
+convert_glatos_to_att <- function(detectionObj,
                                   receiverObj,
                                   crs = sf::st_crs(4326)) {
-  
   ##  Declare global variables for R CMD check
   Sex <- glatos_array <- station_no <- deploy_lat <- deploy_long <-
     station <- dummy <- ins_model_no <- ins_serial_no <-
@@ -87,9 +86,10 @@ convert_glatos_to_att <- function(detectionObj,
     Common.Name = unique(tagMetadata$Common.Name)
   )
   nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
-    Sci.Name = as.factor(purrr::map(nameLookup$Common.Name, 
-                                    query_worms_common, 
-                                    silent = TRUE))
+    Sci.Name = as.factor(purrr::map(nameLookup$Common.Name,
+      query_worms_common,
+      silent = TRUE
+    ))
   )
   # Apply sci names to frame
   tagMetadata <- dplyr::left_join(tagMetadata, nameLookup, by = "Common.Name")
@@ -111,7 +111,7 @@ convert_glatos_to_att <- function(detectionObj,
     Tag.Status = as.factor(NA),
     Bio = as.factor(NA)
   )
-  
+
   # Final version of Tag.Metadata
   tagMetadata <- dplyr::left_join(tagMetadata, releaseData, by = "Tag.ID")
 
@@ -132,7 +132,7 @@ convert_glatos_to_att <- function(detectionObj,
       relationship = "many-to-many"
     ) %>%
     dplyr::filter(
-      detection_timestamp_utc >= deploy_date_time ,
+      detection_timestamp_utc >= deploy_date_time,
       detection_timestamp_utc <= recover_date_time
     ) %>%
     dplyr::mutate(ReceiverFull = concat_list_strings(
@@ -181,13 +181,15 @@ convert_glatos_to_att <- function(detectionObj,
   class(att_obj) <- "ATT"
 
 
-  # Note that sf::st_crs() uses class name 'crs' but this is changed to 'CRS' 
+  # Note that sf::st_crs() uses class name 'crs' but this is changed to 'CRS'
   #  because VTrack/ATT are using sp::CRS()
   if (inherits(crs, "crs")) {
     attr(att_obj, "CRS") <- crs
   } else {
-    message("Geographic projection for detection positions not recognised, ",
-            "reverting to WGS84 global coordinate reference system.")
+    message(
+      "Geographic projection for detection positions not recognised, ",
+      "reverting to WGS84 global coordinate reference system."
+    )
     attr(att_obj, "CRS") <- eval(formals()$crs)
   }
 
