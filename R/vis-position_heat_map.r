@@ -588,7 +588,7 @@ utm_to_lonlat <- function(utm, hemisphere) {
   lonlat_sf <- sf::st_transform(utm_sf, crs = 4326)
 
   # Return format consistent with PBSMapping::convUL
-  lonlat_df <- lonlat
+  lonlat_df <- 
     cbind(sf::st_drop_geometry(lonlat_sf),
     as.data.frame(sf::st_coordinates(lonlat_sf))[, c("X", "Y")]
   )
