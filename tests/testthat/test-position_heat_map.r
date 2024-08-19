@@ -307,16 +307,34 @@ test_that("kmz output custom name gives expected result", {
 })
 
 
+##### TEST NON-EXPORTED FUNCTIONS ####
 
 
-
-##### TBD: TEST NON-EXPORTED FUNCTIONS ####
-# Test non-exported query_worms_common function
+# Test non-exported function lonlat_to_utm()
 test_that("internal function lonlat_to_utm", {
-  skip("Test needs to be created.")
+  
+  # data.frame input
+  expect_equal(lonlat_to_utm(lonlat_should_be()),
+               utm_should_be())
+  
+  # data.table input
+  expect_equal(data.table::as.data.table(lonlat_to_utm(lonlat_should_be())),
+               data.table::as.data.table(utm_should_be()))
+  
 })
 
-# Test non-exported query_worms_common function
+
+# Test non-exported function utm_to_lonlat()
 test_that("internal function utm_to_lonlat", {
-  skip("Test needs to be created.")
+
+  # data.frame input
+  expect_equal(utm_to_lonlat(utm_should_be(),
+                             hemisphere = attr(utm_should_be(), "hemisphere")),
+               lonlat_should_be())
+  
+  # data.table input
+  expect_equal(data.table::as.data.table(utm_to_lonlat(utm_should_be(),
+                             hemisphere = attr(utm_should_be(), "hemisphere"))),
+               data.table::as.data.table(lonlat_should_be()))  
+  
 })

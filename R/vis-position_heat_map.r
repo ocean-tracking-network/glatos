@@ -538,6 +538,7 @@ position_heat_map <- function(positions,
 #' Convert geographic positions to UTM
 #' @noRd
 lonlat_to_utm <- function(lonlat) {
+  
   # Calculate UTM zone
   utm_zone <- (floor((lonlat[["X"]] + 180) / 6) %% 60) + 1
 
@@ -545,32 +546,37 @@ lonlat_to_utm <- function(lonlat) {
   utm_epsg <- rep(NA_real_, length(utm_zone))
 
   # southern hemisphere
-  utm_epsg[lonlat[["Y"]] < 0] <- utm_zone + 32700
+  s_hem <- lonlat[["Y"]] < 0
+  utm_epsg[s_hem] <- utm_zone[s_hem] + 32700
 
   # northern hemisphere
-  utm_epsg[lonlat[["Y"]] >= 0] <- utm_zone + 32600
+  utm_epsg[!s_hem] <- utm_zone[!s_hem] + 32600
 
   # if multiple epsg, choose zone with most obs; in case of tie, choose first
   utm_epsg_freq <- table(utm_epsg)
-  utm_epsg <- as.integer(names(utm_epsg_freq)[which.max(utm_epsg_freq)][1])
+  utm_epsg_dom <- as.integer(names(utm_epsg_freq)[which.max(utm_epsg_freq)][1])
+  hem <- if(s_hem[match(utm_epsg_dom, utm_epsg)]) "S" else "N"
 
   # Convert to UTM
   lonlat_sf <- sf::st_as_sf(lonlat, coords = c("X", "Y"), crs = 4326)
-  utm_sf <- sf::st_transform(lonlat_sf, crs = utm_epsg)
+  utm_sf <- sf::st_transform(lonlat_sf, crs = utm_epsg_dom)
 
   # Return format consistent with PBSMapping::convUL
   lonlat[, c("Y", "X")] <-
     as.data.frame(sf::st_coordinates(utm_sf))[, c("Y", "X")]
 
   attr(lonlat, "projection") <- "UTM"
-  attr(lonlat, "zone") <- utm_epsg %% 100
+  attr(lonlat, "zone") <- utm_epsg_dom %% 100
+  attr(lonlat, "hemisphere") <- hem
 
   return(lonlat)
 }
 
+
 #' Convert UTM positions to lonlat
 #' @noRd
 utm_to_lonlat <- function(utm, hemisphere) {
+  
   # Define EPSG
   utm_epsg <- ifelse(hemisphere == "N",
     32600 + attr(utm, "zone"),
@@ -582,8 +588,8 @@ utm_to_lonlat <- function(utm, hemisphere) {
   lonlat_sf <- sf::st_transform(utm_sf, crs = 4326)
 
   # Return format consistent with PBSMapping::convUL
-  lonlat_df <- cbind(
-    corner = lonlat_sf$corner,
+  lonlat_df <- lonlat
+    cbind(sf::st_drop_geometry(lonlat_sf),
     as.data.frame(sf::st_coordinates(lonlat_sf))[, c("X", "Y")]
   )
 

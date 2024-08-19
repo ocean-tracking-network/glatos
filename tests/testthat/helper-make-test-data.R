@@ -1,4 +1,4 @@
-# For test-position_head_map.r
+# For test-position_heat_map.r
 phm_values_known <- function() {
   structure(c(
     43L, 20L, 23L, 19L, 21L, 19L, 25L,
@@ -47,6 +47,41 @@ phm_values_known <- function() {
     ""
   )))
 }
+
+
+lonlat_should_be <- function(){
+  
+  structure(list(X = c(-85.2135, -70.0109, -150.7894, 
+                       6.8652, 37.3556, 42.4453, 
+                       86.925, 137.1866, 148.2636), 
+                 Y = c(-78.6341, -32.6532, 63.2828, 
+                       45.8326, -3.0674, 43.3499, 
+                       27.9881, -4.0846, -36.4559
+                       )), 
+            class = "data.frame", 
+            row.names = c(NA, -9L), 
+            projection = "LL", zone = 5)
+}
+
+
+utm_should_be <- function(){
+  
+  structure(list(
+    X = c(1680180.65973495, 8186849.16570993, 610871.594791948, 
+          2062264.13674811, -657001.789635807, -752492.034126653, 
+          -5920071.59263027, -10437816.4889341, -4882044.53090541), 
+    Y = c(-9512814.56242553, -8803144.21007502, 7019009.41828118, 
+          14719479.8058522, -19651244.951772, 15078900.7921101, 
+          14811143.88555, -1324049.10137187, -6094098.13883573)), 
+    row.names = c(NA, -9L), 
+    class = "data.frame", 
+    projection = "UTM", 
+    zone = 5, 
+    hemisphere = "N")
+
+}
+
+
 
 
 # For test-receiver_efficiency.r
@@ -625,3 +660,4 @@ blueshark_ri_ano_data <- function() {
     -40L
   ))
 }
+
