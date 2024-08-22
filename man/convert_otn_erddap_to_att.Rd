@@ -87,8 +87,8 @@ blue_shark_detections <- read_otn_detections(shrk_det_file) # load shark data
 
 ATTdata <- convert_otn_erddap_to_att(
   detectionObj = blue_shark_detections,
-  erdTags = tags, 
-  erdRcv = stations, 
+  erdTags = tags,
+  erdRcv = stations,
   erdAni = animals
 )
 }
