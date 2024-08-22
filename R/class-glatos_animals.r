@@ -64,9 +64,8 @@
 #'
 #'
 #' # tibble input
-#' library(tibble)
 #'
-#' x_tbl <- as_tibble(x)
+#' x_tbl <- dplyr::as_tibble(x)
 #'
 #' ga_tbl <- as_glatos_animals(x_tbl)
 #'

@@ -80,16 +80,15 @@
 #'
 #'
 #' # tibble input
-#' library(tibble)
+#' library(dplyr)
 #'
-#' x_tbl <- as_tibble(x)
+#' x_tbl <- dplyr::as_tibble(x)
 #'
 #' gr_tbl <- as_glatos_receivers(x_tbl)
 #'
 #' # All below will error as invalid
 #'
 #' # data.frame input; missing column name
-#' library(dplyr) # for rename
 #' x2 <- rename(x,
 #'   receiver_loc = station,
 #'   deploy_timestamp = deploy_date_time

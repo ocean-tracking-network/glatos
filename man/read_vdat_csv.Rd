@@ -86,7 +86,7 @@ det2_tbl <- csv_files \%>\%
   lapply(
     function(x) {
       read_vdat_csv(x, record_types = "DET")$DET \%>\%
-        as_tibble() \%>\%
+        dplyr::as_tibble() \%>\%
         mutate(source_file = basename(x))
     }
   ) \%>\%

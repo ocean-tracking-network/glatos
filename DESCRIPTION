@@ -31,7 +31,6 @@ Suggests:
 		rmarkdown,
 		terra,
 		testthat (>= 3.0.0),
-		tibble,
 		tint
 URL: https://github.com/ocean-tracking-network/glatos
 BugReports: https://github.com/ocean-tracking-network/glatos/issues
