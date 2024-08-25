@@ -265,7 +265,7 @@ query_worms_common <- function(commonName,
         {
           if (!silent) print(x)
           payload <- jsonlite::fromJSON(x)
-          sciname <- payload$scientificname
+          sciname <- list(payload$scientificname)
         },
         error = function(e) {
           print(geterrmessage())
