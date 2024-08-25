@@ -89,7 +89,7 @@ convert_otn_erddap_to_att <- function(detectionObj,
   Sex <- latitude <- longitude <- station <- receiver_model <-
     receiver_serial_number <- dummy <- time <- recovery_datetime_utc <-
     deploy_datetime_utc <- detection_timestamp_utc <- NULL
-  
+
   transmitters <-
     if (all(grepl("-", detectionObj$transmitter_id, fixed = TRUE))) {
       detectionObj$transmitter_id
@@ -99,59 +99,59 @@ convert_otn_erddap_to_att <- function(detectionObj,
         detectionObj$transmitter_id
       )
     }
-  
+
   # Start building Tag.Metadata table
   tagMetadata <- unique(dplyr::tibble(
     Tag.ID = detectionObj$animal_id,
     Transmitter = as.factor(transmitters),
     Common.Name = as.factor(detectionObj$common_name_e)
   ))
-  
+
   # Cut out dupes
   tagMetadata <- unique(tagMetadata)
-  
+
   nameLookup <- dplyr::tibble( # Get all the unique common names
     Common.Name = unique(tagMetadata$Common.Name)
   )
-  
+
   # Add scinames to the name lookup
   nameLookup <- dplyr::mutate(nameLookup,
-                              Sci.Name = as.factor(
-                                query_worms_common(nameLookup$Common.Name,
-                                                   silent = TRUE
-                                )
-                              )
+    Sci.Name = as.factor(
+      query_worms_common(nameLookup$Common.Name,
+        silent = TRUE
+      )
+    )
   )
-  
+
   # Apply sci names to frame
   tagMetadata <- dplyr::left_join(tagMetadata,
-                                  nameLookup,
-                                  by = "Common.Name"
+    nameLookup,
+    by = "Common.Name"
   )
-  
+
   # Matching cols that have different names
   colnames(erdTags)[colnames(erdTags) == "tag_device_id"] <- "transmitter_id"
   detectionObj <- dplyr::left_join(detectionObj,
-                                   erdTags,
-                                   by = "transmitter_id"
+    erdTags,
+    by = "transmitter_id"
   )
   erdRcv <- dplyr::mutate(erdRcv,
-                          station = as.character(extract_station(
-                            erdRcv$receiver_reference_id
-                          ))
+    station = as.character(extract_station(
+      erdRcv$receiver_reference_id
+    ))
   )
-  
+
   # Matching cols that have different names
   colnames(erdAni)[colnames(erdAni) == "animal_reference_id"] <- "animal_id"
   detectionObj <- dplyr::left_join(detectionObj,
-                                   erdAni,
-                                   by = c(
-                                     "animal_id",
-                                     "scientificname",
-                                     "datacenter_reference"
-                                   )
+    erdAni,
+    by = c(
+      "animal_id",
+      "scientificname",
+      "datacenter_reference"
+    )
   )
-  
+
   # Get the rest from detectionObj
   releaseData <- dplyr::tibble(
     Tag.ID = detectionObj$animal_id,
@@ -161,44 +161,44 @@ convert_otn_erddap_to_att <- function(detectionObj,
     Release.Date = as.Date(detectionObj$time),
     Sex = as.factor(detectionObj$sex)
   )
-  
+
   releaseData <- dplyr::mutate(releaseData,
-                               # Convert sex text and null missing columns
-                               Sex = as.factor(convert_sex(Sex)),
-                               Tag.Life = as.integer(NA),
-                               Tag.Status = as.factor(NA),
-                               Bio = as.factor(NA)
+    # Convert sex text and null missing columns
+    Sex = as.factor(convert_sex(Sex)),
+    Tag.Life = as.integer(NA),
+    Tag.Status = as.factor(NA),
+    Bio = as.factor(NA)
   )
   # Final version of Tag.Metadata
   tagMetadata <- unique(dplyr::left_join(tagMetadata,
-                                         releaseData,
-                                         by = "Tag.ID"
+    releaseData,
+    by = "Tag.ID"
   ))
-  
+
   datetime_timezone <- unique(detectionObj$timezone)
-  
+
   detectionObj <- detectionObj %>%
     dplyr::mutate(dummy = TRUE) %>%
     dplyr::left_join(
       dplyr::select(erdRcv %>% dplyr::mutate(dummy = TRUE),
-                    rcv_latitude = latitude,
-                    rcv_longitude = longitude,
-                    station,
-                    receiver_model,
-                    receiver_serial_number,
-                    dummy,
-                    deploy_datetime_utc = time,
-                    recovery_datetime_utc
+        rcv_latitude = latitude,
+        rcv_longitude = longitude,
+        station,
+        receiver_model,
+        receiver_serial_number,
+        dummy,
+        deploy_datetime_utc = time,
+        recovery_datetime_utc
       ),
       by = c("station", "dummy"),
       relationship = "many-to-many"
     ) %>%
     dplyr::mutate(
       deploy_datetime_utc = as.POSIXct(deploy_datetime_utc,
-                                       format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
+        format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
       ),
       recovery_datetime_utc = as.POSIXct(recovery_datetime_utc,
-                                         format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
+        format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
       )
     ) %>%
     dplyr::filter(
@@ -210,7 +210,7 @@ convert_otn_erddap_to_att <- function(detectionObj,
       receiver_serial_number
     )) %>%
     dplyr::select(-dummy)
-  
+
   detections <- dplyr::tibble(
     Date.Time = detectionObj$detection_timestamp_utc,
     Transmitter = as.factor(detectionObj$transmitter_id),
@@ -221,7 +221,7 @@ convert_otn_erddap_to_att <- function(detectionObj,
     Sensor.Value = as.integer(detectionObj$sensorvalue),
     Sensor.Unit = as.factor(detectionObj$sensorunit)
   )
-  
+
   stations <- unique(dplyr::tibble(
     Station.Name = as.factor(detectionObj$station),
     Receiver = as.factor(detectionObj$ReceiverFull),
@@ -233,15 +233,15 @@ convert_otn_erddap_to_att <- function(detectionObj,
     Station.Longitude = as.double(detectionObj$deploy_long),
     Receiver.Status = as.factor(NA)
   ))
-  
+
   att_obj <- list(
     Tag.Detections = detections,
     Tag.Metadata = tagMetadata,
     Station.Information = stations
   )
-  
+
   class(att_obj) <- "ATT"
-  
+
   # Note that sf::st_crs() uses class name 'crs' but this is changed to 'CRS'
   #  because VTrack/ATT are using sp::CRS()
   if (inherits(crs, "crs")) {
@@ -253,7 +253,7 @@ convert_otn_erddap_to_att <- function(detectionObj,
     )
     attr(att_obj, "CRS") <- eval(formals()$crs)
   }
-  
+
   return(att_obj)
 }
 
@@ -274,14 +274,14 @@ concat_list_strings <- function(list1, list2, sep = "-") {
 # Converts the receiver reference id to station name
 extract_station <- function(receiver_ref) {
   sapply(receiver_ref,
-         FUN = function(x) {
-           x <- as.character(x)
-           return( # Split the string by _ and drop the array name
-             unlist(
-               strsplit(c(x), c("_"))
-             )[-1]
-           )
-         },
-         USE.NAMES = FALSE
+    FUN = function(x) {
+      x <- as.character(x)
+      return( # Split the string by _ and drop the array name
+        unlist(
+          strsplit(c(x), c("_"))
+        )[-1]
+      )
+    },
+    USE.NAMES = FALSE
   )
 }
