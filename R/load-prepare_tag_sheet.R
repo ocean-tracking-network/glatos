@@ -34,11 +34,11 @@ prepare_tag_sheet <- function(path, header_line = 5, sheet_name = 2) {
   ##  Declare global variables for NSE & R CMD check
   TAG_CODE_SPACE <- TAG_ID_CODE <- EST_TAG_LIFE <- UTC_RELEASE_DATE_TIME <-
     SEX <- RELEASE_LATITUDE <- RELEASE_LONGITUDE <- SCIENTIFIC_NAME <- NULL
-
+  
   tag_sheet <- readxl::read_excel(path, sheet = sheet_name, skip = header_line - 1)
   tag_sheet <- tag_sheet %>% dplyr::mutate(
     transmitter_id = paste(TAG_CODE_SPACE, TAG_ID_CODE, sep = "-"),
-    est_tag_life = as.integer(purrr::map(EST_TAG_LIFE, convert_life_to_days))
+    est_tag_life = convert_life_to_days(EST_TAG_LIFE)
   )
   tag_sheet <- tag_sheet %>% dplyr::rename(
     animal_id = "ANIMAL_ID   (floy tag ID, pit tag code, etc.)",
@@ -53,17 +53,22 @@ prepare_tag_sheet <- function(path, header_line = 5, sheet_name = 2) {
 
 # For converting tag life column to a count of days
 convert_life_to_days <- function(tagLife) {
-  if (!grepl("[a-zA-Z]", tagLife)) {
-    return(as.integer(tagLife))
-  } else if (grepl("days?", tolower(tagLife))) {
-    days <- gsub("days?", "", tolower(tagLife))
-    return(as.integer(days))
-  } else {
-    stop(
-      sprintf(
-        "Cannot convert %s to time days. Please change the est_tag_life in the tagging metadata sheet to days",
-        tagLife
-      )
-    )
-  }
+  sapply(tagLife,
+         function(x){
+           if (!grepl("[a-zA-Z]", x)) {
+             return(as.integer(x))
+           } else if (grepl("days?", tolower(x))) {
+             days <- gsub("days?", "", tolower(x))
+             return(as.integer(days))
+           } else {
+             stop(
+               sprintf(
+                 "Cannot convert %s to time days. Please change the est_tag_life in the tagging metadata sheet to days",
+                 x
+               )
+             )
+           }
+         },
+         USE.NAMES = FALSE
+  )
 }

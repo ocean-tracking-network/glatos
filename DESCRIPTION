@@ -16,7 +16,6 @@ Imports:
 		jsonlite,
 		lubridate,
 		plotrix,
-		purrr,
 		raster,
 		readxl,
 		sf,
