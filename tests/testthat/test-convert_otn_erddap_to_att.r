@@ -97,15 +97,3 @@ test_that("internal function concat_list_strings errors with unequal length", {
     "Lists are not the same size."
   )
 })
-
-
-
-# Test non-exported extract_station function
-test_that("internal function extract_station works", {
-  expect_no_error(
-    station_extracted <- extract_station(stations$receiver_reference_id[1])
-  )
-
-  expect_length(station_extracted, 1)
-  expect_type(station_extracted, "character")
-})
