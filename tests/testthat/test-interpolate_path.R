@@ -15,7 +15,7 @@ pos <- data.frame(
 test_that("linear interpolation works", {
   linear_interp <- interpolate_path(pos)
 
-    expect_snapshot(
+  expect_snapshot(
     linear_interp
   )
 

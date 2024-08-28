@@ -1,7 +1,7 @@
 # Make data object great_lakes_polygon
 
 # Read polygon from shapefile
- 
+
 poly_file <- system.file("extdata", "shoreline.zip", package = "glatos")
 
 poly <- sf::st_read(paste0("/vsizip/", poly_file))
@@ -24,9 +24,11 @@ sf::st_crs(great_lakes_polygon) <- 4326
 
 
 # Make an sf object (for consistency with early version)
-great_lakes_polygon <- sf::st_sf(id = 1, 
-                                 geometry = great_lakes_polygon,
-                                 agr = "constant")
+great_lakes_polygon <- sf::st_sf(
+  id = 1,
+  geometry = great_lakes_polygon,
+  agr = "constant"
+)
 
 #----------------------------------------------------
 

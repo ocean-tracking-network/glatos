@@ -1,15 +1,13 @@
-
 ### make_transition
 # Testing water polygon transition layer
 test_that("make_transition: Transition layer for Higgins Lake water polygon as expected", {
-    
   water <- suppressMessages(
     make_transition(
       higgins_lake_polygon,
       res = c(0.01, 0.01)
     )$transition
   )
-  
+
   expect_s3_class(water, NA)
 
   expect_equal(dim(water), c(9, 11, 1))
@@ -18,12 +16,12 @@ test_that("make_transition: Transition layer for Higgins Lake water polygon as e
     water,
     "TransitionLayer"
   )
-  
+
   expect_s4_class(
     water@transitionMatrix,
     "dsCMatrix"
   )
-  
+
   expect_length(water@transitionCells, 99)
 
 
@@ -34,14 +32,13 @@ test_that("make_transition: Transition layer for Higgins Lake water polygon as e
 
 # Testing water polygon raster
 test_that("make_transition: Raster values for Higgins Lake water polygon as expected", {
- 
-   water <- suppressMessages(
-     make_transition(
-       higgins_lake_polygon,
-       res = c(0.01, 0.01)
-     )$rast
-   ) 
-   
+  water <- suppressMessages(
+    make_transition(
+      higgins_lake_polygon,
+      res = c(0.01, 0.01)
+    )$rast
+  )
+
   expect_s4_class(
     water,
     "RasterLayer"
@@ -59,7 +56,6 @@ test_that("make_transition: Raster values for Higgins Lake water polygon as expe
 
 # Testing land polygon transition matrix
 test_that("make_transition: Transition layer for Flynn Island land polygon as expected", {
-
   land <- suppressMessages(
     make_transition(
       flynn_island_polygon,
@@ -79,7 +75,7 @@ test_that("make_transition: Transition layer for Flynn Island land polygon as ex
     land,
     "TransitionLayer"
   )
-  
+
   expect_s4_class(
     land@transitionMatrix,
     "dsCMatrix"
@@ -93,7 +89,6 @@ test_that("make_transition: Transition layer for Flynn Island land polygon as ex
 
 # Testing land polygon raster
 test_that("make_transition: Raster values for Flynn Island polygon as expected", {
-
   land <- suppressMessages(
     make_transition(
       flynn_island_polygon,
