@@ -182,14 +182,14 @@ points(deploy_lat ~ deploy_long,
 
 
 # make transition layer object
-tran <- make_transition3(sf::st_as_sf(maumee), res = c(0.1, 0.1))
+tran <- make_transition(sf::st_as_sf(maumee), res = c(0.1, 0.1))
 
 # plot to check output
 plot(tran$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
 plot(maumee, add = TRUE)
 
 # not high enough resolution- bump up resolution, will take some time
-tran1 <- make_transition3(sf::st_as_sf(maumee), res = c(0.001, 0.001))
+tran1 <- make_transition(sf::st_as_sf(maumee), res = c(0.001, 0.001))
 
 # plot to check resolution- much better
 plot(tran1$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))

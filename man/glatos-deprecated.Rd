@@ -2,8 +2,7 @@
 % Please edit documentation in R/package-glatos-deprecated.r, R/util-vrl2csv.r
 \name{glatos-deprecated}
 \alias{glatos-deprecated}
-\alias{make_transition-deprecated}
-\alias{make_transition2-deprecated}
+\alias{vrl2csv-deprecated}
 \alias{vrl2csv}
 \title{Deprecated functions in package \pkg{glatos}.}
 \usage{
@@ -24,12 +23,9 @@ available at \code{help("<function>-deprecated")}.
 These functions still work but will be removed (defunct) in the next version.
 
 \itemize{
-\item \code{\link{make_transition}}: This function is deprecated, and will
+\item \code{vrl2_csv}: This function is deprecated, and will
 be removed in the next version of this package.
-Use \code{\link{make_transition3}} instead.
-\item \code{\link{make_transition2}}: This function is deprecated, and will
-be removed in the next version of this package.
-Use \code{\link{make_transition3}} instead.
+Use \link{vue_convert} instead.
 }
 }
 \section{\code{vrl2csv}}{

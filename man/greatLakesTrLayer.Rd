@@ -3,24 +3,36 @@
 \docType{data}
 \name{greatLakesTrLayer}
 \alias{greatLakesTrLayer}
-\title{A TransitionLayer object that only allows transitions to occur within
-water of the Great Lakes Basin.}
+\title{A \code{TransitionLayer} of the Great Lakes that only prevents transition
+over land}
 \format{
-An object of class \code{TransitionLayer} of dimension 692 x 504 x 1.
+An object of class \code{TransitionLayer} of dimension 667 x 667 x 1.
 }
 \usage{
 greatLakesTrLayer
 }
 \description{
 A TransitionLayer object that only allows transitions to occur
-within water (i.e., prohibits movement onto land). This dataset was
-developed for non-linear interpolation of fish movement paths from telemetry
-data and is used by default in \link{interpolate_path}.
+within water (i.e., prohibits movement onto land).
+}
+\details{
+This dataset was developed for non-linear interpolation of fish
+movement paths from telemetry data and is used by default in
+\link{interpolate_path}.
+
+Created from \link{great_lakes_polygon}; see
+'data-raw/data-greatLakesTrLayer.r'.
+}
+\examples{
+/dontrun{
+raster::plot(raster::raster(greatLakesTrLayer))
+}
+
 }
 \seealso{
 \link{interpolate_path}, \link{gdistance}
 }
 \author{
-Todd Hayden
+Todd Hayden (rebuilt by C. Holbrook)
 }
 \keyword{datasets}

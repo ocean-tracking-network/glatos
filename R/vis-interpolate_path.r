@@ -167,14 +167,14 @@
 #'
 #'
 #' # make transition layer object
-#' tran <- make_transition3(sf::st_as_sf(maumee), res = c(0.1, 0.1))
+#' tran <- make_transition(sf::st_as_sf(maumee), res = c(0.1, 0.1))
 #'
 #' # plot to check output
 #' plot(tran$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
 #' plot(maumee, add = TRUE)
 #'
 #' # not high enough resolution- bump up resolution, will take some time
-#' tran1 <- make_transition3(sf::st_as_sf(maumee), res = c(0.001, 0.001))
+#' tran1 <- make_transition(sf::st_as_sf(maumee), res = c(0.001, 0.001))
 #'
 #' # plot to check resolution- much better
 #' plot(tran1$rast, xlim = c(-83.7, -82.0), ylim = c(41.3, 42.7))
@@ -201,9 +201,14 @@
 
 
 
-interpolate_path <- function(det, trans = NULL, start_time = NULL,
-                             int_time_stamp = 86400, lnl_thresh = 0.9,
-                             out_class = NULL, show_progress = TRUE) {
+interpolate_path <- function(det, 
+                             trans = NULL, 
+                             start_time = NULL,
+                             int_time_stamp = 86400, 
+                             lnl_thresh = 0.9,
+                             out_class = NULL, 
+                             show_progress = TRUE) {
+  
   ##  Declare global variables for NSE & R CMD check
   detection_timestamp_utc <- record_type <- num_rows <- animal_id <- bin <-
     bin_stamp <- i_lat <- deploy_lat <- i_lon <- deploy_long <-

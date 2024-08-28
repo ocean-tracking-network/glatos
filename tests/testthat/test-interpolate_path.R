@@ -14,7 +14,8 @@ pos <- data.frame(
 
 test_that("linear interpolation works", {
   linear_interp <- interpolate_path(pos)
-  expect_snapshot(
+
+    expect_snapshot(
     linear_interp
   )
 
@@ -180,7 +181,7 @@ test_that("Checks output class", {
 
 test_that("Checks trans is a transition layer or transition stack", {
   suppressMessages(
-    trans <- make_transition3(great_lakes_polygon)
+    trans <- make_transition(great_lakes_polygon, res = 0.5)
   )
 
   expect_error(

@@ -7,16 +7,13 @@
 #' These functions still work but will be removed (defunct) in the next version.
 #'
 #' \itemize{
-#'  \item \code{\link{make_transition}}: This function is deprecated, and will
+#'  \item `vrl2_csv`: This function is deprecated, and will
 #'  be removed in the next version of this package.
-#'  Use \code{\link{make_transition3}} instead.
-#'  \item \code{\link{make_transition2}}: This function is deprecated, and will
-#'  be removed in the next version of this package.
-#'  Use \code{\link{make_transition3}} instead.
+#'  Use [vue_convert] instead.
 #' }
 #'
 #'
 #' @name glatos-deprecated
-#' @aliases make_transition-deprecated make_transition2-deprecated
+#' @aliases vrl2csv-deprecated
 #' @keywords internal
 NULL

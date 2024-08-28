@@ -1,25 +1,41 @@
-#' @title [Deprecated] A SpatialPolygonDataFrame with Great Lakes coastline and some major
-#'   tributaries.
+#' @title An sf POLYGON object with Great Lakes coastline
 #'
-#' @description A SpatialPolygonDataFrame with Great Lakes coastline and some
-#'   major tributaries. This is used as a default map background in several
-#'   \link{glatos} functions.
+#' @description An sf POLYGON object with Great Lakes coastline, used as default
+#'   map background in several [glatos] functions.
 #'
-#' @details This dataset is deprecated and will be removed in a future version.
-#'   Use \code{\link{great_lakes_polygon}} instead.
+#' @details Created from [shoreline] shapefile (see
+#'   'data-raw/data-great_lakes_polygon.r).
 #'
-#' @author Todd Hayden
-"greatLakesPoly"
-
-
-#' @title An sf POLYGON object with Great Lakes coastline and some major
-#' tributaries.
+#' @examples
+#' /dontrun{
+#' plot(sf::st_geometry(great_lakes_polygon))
+#' } 
 #'
-#' @description Created from [greatLakesPoly()]. This is used as a
-#'   default map background in several [glatos] functions.
-#'
-#' @author Todd Hayden (coerced to sf by C. Holbrook)
+#' @author Todd Hayden (coerced to sf via by C. Holbrook)
 "great_lakes_polygon"
+
+
+#' @title A `TransitionLayer` of the Great Lakes that only prevents transition
+#'   over land
+#'
+#' @description A TransitionLayer object that only allows transitions to occur
+#'   within water (i.e., prohibits movement onto land).
+#'
+#' @details This dataset was developed for non-linear interpolation of fish
+#'   movement paths from telemetry data and is used by default in
+#'   [interpolate_path].
+#'
+#' @details Created from [great_lakes_polygon]; see
+#'   'data-raw/data-greatLakesTrLayer.r'.
+#'
+#' @examples
+#' /dontrun{
+#' raster::plot(raster::raster(greatLakesTrLayer))
+#' }
+#'
+#' @seealso [interpolate_path], [gdistance]
+#' @author Todd Hayden (rebuilt by C. Holbrook)
+"greatLakesTrLayer"
 
 
 #' @title An sf POLYGON object with coastline of Higgins Lake
@@ -40,19 +56,6 @@
 #'
 #' @author Chris Holbrook
 "flynn_island_polygon"
-
-
-#' @title A TransitionLayer object that only allows transitions to occur within
-#' water of the Great Lakes Basin.
-#'
-#' @description A TransitionLayer object that only allows transitions to occur
-#' within water (i.e., prohibits movement onto land). This dataset was
-#' developed for non-linear interpolation of fish movement paths from telemetry
-#' data and is used by default in [interpolate_path].
-#'
-#' @seealso [interpolate_path], [gdistance]
-#' @author Todd Hayden
-"greatLakesTrLayer"
 
 
 #' Sea Lamprey positions from Lake George, St. Marys River, 2012
