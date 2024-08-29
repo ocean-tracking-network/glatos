@@ -13,7 +13,7 @@ with a geometry column of polygon and/or multipolygon objects.}
 
 \item{res}{two element vector that specifies the x and y dimension of output
 raster cells. Units are same as \code{poly} crs. May be calculated from desired
-resolution in meters using \code{\link[=scale_meter_to_degrees]{scale_meter_to_degrees()}}.}
+resolution in meters using \code{\link[=scale_meters_to_degrees]{scale_meters_to_degrees()}}.}
 
 \item{receiver_points}{Object containing coordinates of receiver locations.
 Must be of class \code{SpatialPointsDataFrame}, \code{SpatialPoints}, \code{sf},
@@ -22,7 +22,7 @@ Must be of class \code{SpatialPointsDataFrame}, \code{SpatialPoints}, \code{sf},
 \item{epsg}{coordinate reference code that describes projection used for
 \code{res} and \code{buffer}.  Defaults to NAD83/Great Lakes and St. Lawrence Albers.}
 
-\item{buffer.}{Buffer, in same units as \code{epsg}, that will be added to \code{poly}
+\item{buffer}{Buffer, in same units as \code{epsg}, that will be added to \code{poly}
 before rasterization.}
 }
 \value{

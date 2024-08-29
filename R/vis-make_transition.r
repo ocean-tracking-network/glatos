@@ -8,7 +8,7 @@
 #'
 #' @param res two element vector that specifies the x and y dimension of output
 #'   raster cells. Units are same as `poly` crs. May be calculated from desired
-#'   resolution in meters using [scale_meter_to_degrees()].
+#'   resolution in meters using [scale_meters_to_degrees()].
 #'
 #' @param receiver_points Object containing coordinates of receiver locations.
 #'   Must be of class `SpatialPointsDataFrame`, `SpatialPoints`, `sf`,
@@ -17,7 +17,7 @@
 #' @param epsg coordinate reference code that describes projection used for
 #'   `res` and `buffer`.  Defaults to NAD83/Great Lakes and St. Lawrence Albers.
 #'
-#' @param buffer. Buffer, in same units as `epsg`, that will be added to `poly`
+#' @param buffer Buffer, in same units as `epsg`, that will be added to `poly`
 #'   before rasterization.
 #'
 #' @details `make_transition` uses [jarasterize()] to convert a polygon
