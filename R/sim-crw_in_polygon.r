@@ -177,10 +177,17 @@
 #'
 #' @export
 
-crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
-                           initPos = c(NA, NA), initHeading = NA, nsteps = 30,
-                           inputCRS = NA, cartesianCRS = NA, sp_out = TRUE,
+crw_in_polygon <- function(polyg, 
+                           theta = c(0, 10), 
+                           stepLen = 100,
+                           initPos = c(NA, NA), 
+                           initHeading = NA, 
+                           nsteps = 30,
+                           inputCRS = NA, 
+                           cartesianCRS = NA, 
+                           sp_out = TRUE,
                            show_progress = TRUE) {
+  
   # Check input class
   if (!inherits(polyg, c(
     "data.frame", "sf", "sfc", "SpatialPolygonsDataFrame",
@@ -323,21 +330,17 @@ crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
       initHeading, nsteps = length(rows_i)
     )
 
-    # replace check_in_polygon with check_cross_boundary
-    #  otherwise, paths can jump peninsulas etc
-    # inPoly <- check_in_polygon(path_fwd_i, polyg_sf,
-    #                            EPSG = crs_cartesian)
-
     # combine init and path_fwd_i
     path_mat <- rbind(
       unname(sf::st_coordinates(init_i)),
       unname(as.matrix(path_fwd_i))
     )
 
-    inPoly <- check_cross_boundary(
+    # check if path crosses polygon boundary
+    #  otherwise, paths can jump peninsulas etc
+    inPoly <- !crosses_boundary(
       path = path_mat,
-      boundary = xl,
-      EPSG = crs_cartesian
+      boundary = xl
     )
 
     if (all(!inPoly)) {
@@ -412,55 +415,76 @@ crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
   return(path_fwd_df)
 }
 
-#' Check if in polygon
-#' @noRd
-check_in_polygon <- function(points, polygon, EPSG) {
-  points_sf <- sf::st_as_sf(points,
-    coords = c("x", "y"),
-    crs = EPSG
-  )
-  # identify points contains in any polygon
-  inPoly <- apply(sf::st_contains(polygon, points_sf, sparse = FALSE), 2, any)
-  return(inPoly)
-}
 
-
-#' Check if track crosses polygon boundary
-#' @noRd
-check_cross_boundary <- function(path, boundary, EPSG) {
+#' Check if path segments cross polygon boundary
+#'
+#' Check if each segment in a path crosses polygon boundary
+#'
+#' @param path A two-column matrix of points, representing x and y,
+#'   respectively, along a path.
+#'
+#' @param boundary An `sf` object containing `MULTILINESTRING` geometry
+#'   representing a polygon boundary.
+#'
+#' @description Internal function used in [crw_in_polygon()] to determine if
+#'   (and identify which) line segments cross polygon boundaries (e.g., steps
+#'   onto land or over a peninsula).
+#'   
+#' @returns A logical vector with an element for each 'step' in `path` that 
+#'  indicates if that step crosses `boundary` (TRUE) or not (FALSE).
+#'
+#' @examples
+#' 
+#' # Example 1
+#' 
+#' # make path
+#' path <- matrix(c(0:6, rep(3, 7)), ncol = 2)
+#' 
+#' # make polygon
+#' poly <- matrix(c(0,0, 6,0, 3,6, 0,0), ncol = 2, byrow = TRUE)
+#' 
+#' plot(poly, type = "l")
+#' lines(path, type = "o", col = "red")
+#' 
+#' poly <- sf::st_linestring(poly)
+#' 
+#' crosses_boundary(path, poly)
+#' 
+#' #Example 2
+#' 
+#' # make path
+#' path <- matrix(c(0,1,5,6, rep(3, 4)), ncol = 2)
+#' 
+#' # make polygon
+#' poly <- matrix(c(0,0, 6,0, 3,6, 0,0), ncol = 2, byrow = TRUE)
+#' 
+#' plot(poly, type = "l")
+#' lines(path, type = "o", col = "red")
+#' 
+#' poly <- sf::st_linestring(poly)
+#' 
+#' crosses_boundary(path, poly)
+#' 
+crosses_boundary <- function(path, boundary) {
+ 
   # Make line segment objects of sequential point-pairs in path
-
   segs_mat <- cbind(
     utils::head(path, -1),
     utils::tail(path, -1)
   )
 
-  in_poly <-
+  cross_bndry <-
     unname(
       apply(segs_mat, 1,
         function(x) {
-          !any(sf::st_intersects(boundary,
-            sf::st_linestring(rbind(x[1:2], x[3:4])),
-            sparse = FALSE
+          any(sf::st_intersects(boundary,
+                                 sf::st_linestring(rbind(x[1:2], x[3:4])),
+                                 sparse = FALSE
           ))
         },
         simplify = TRUE
       )
     )
 
-
-  # segs_list <- apply(segs_mat, 1,
-  #                function(x) sf::st_linestring(rbind(x[1:2], x[3:4])),
-  #                simplify = FALSE)
-  #
-  # segs_sfc <- do.call(sf::st_sfc, segs_list)
-  # sf::st_crs(segs_sfc) <- EPSG
-  #
-  # segs_sf <- sf::st_as_sf(segs_sfc)
-  #
-  # #identify line segments that cross polygon boundary
-  # in_poly <- !apply(sf::st_crosses(boundary, segs_sf, sparse = FALSE), 2, any)
-  # #in_poly <- !colSums(sf::st_crosses(boundary, segs_sf, sparse = FALSE))
-  #
-  return(in_poly)
+  return(cross_bndry)
 }
