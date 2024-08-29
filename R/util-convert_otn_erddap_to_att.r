@@ -116,10 +116,11 @@ convert_otn_erddap_to_att <- function(detectionObj,
 
   # Add scinames to the name lookup
   nameLookup <- dplyr::mutate(nameLookup,
-    Sci.Name = as.factor(purrr::map(nameLookup$Common.Name,
-      query_worms_common,
-      silent = TRUE
-    ))
+    Sci.Name = as.factor(
+      query_worms_common(nameLookup$Common.Name,
+        silent = TRUE
+      )
+    )
   )
 
   # Apply sci names to frame
@@ -135,9 +136,8 @@ convert_otn_erddap_to_att <- function(detectionObj,
     by = "transmitter_id"
   )
   erdRcv <- dplyr::mutate(erdRcv,
-    station = as.character(purrr::map(
-      erdRcv$receiver_reference_id,
-      extract_station
+    station = as.character(extract_station(
+      erdRcv$receiver_reference_id
     ))
   )
 
@@ -164,7 +164,7 @@ convert_otn_erddap_to_att <- function(detectionObj,
 
   releaseData <- dplyr::mutate(releaseData,
     # Convert sex text and null missing columns
-    Sex = as.factor(purrr::map(Sex, convert_sex)),
+    Sex = as.factor(convert_sex(Sex)),
     Tag.Life = as.integer(NA),
     Tag.Status = as.factor(NA),
     Bio = as.factor(NA)
@@ -271,12 +271,17 @@ concat_list_strings <- function(list1, list2, sep = "-") {
 }
 
 
-# Converts the reciever reference id to station name
-extract_station <- function(reciever_ref) {
-  reciever_ref <- as.character(reciever_ref)
-  return( # Split the string by _ and drop the array name
-    unlist(
-      strsplit(c(reciever_ref), c("_"))
-    )[-1]
+# Converts the receiver reference id to station name
+extract_station <- function(receiver_ref) {
+  sapply(receiver_ref,
+    FUN = function(x) {
+      x <- as.character(x)
+      return( # Split the string by _ and drop the array name
+        unlist(
+          strsplit(c(x), c("_"))
+        )[-1]
+      )
+    },
+    USE.NAMES = FALSE
   )
 }

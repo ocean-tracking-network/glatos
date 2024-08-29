@@ -86,10 +86,9 @@ convert_glatos_to_att <- function(detectionObj,
     Common.Name = unique(tagMetadata$Common.Name)
   )
   nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
-    Sci.Name = as.factor(purrr::map(nameLookup$Common.Name,
-      query_worms_common,
-      silent = TRUE
-    ))
+    Sci.Name = as.factor(
+      query_worms_common(nameLookup$Common.Name, silent = TRUE)
+    )
   )
   # Apply sci names to frame
   tagMetadata <- dplyr::left_join(tagMetadata, nameLookup, by = "Common.Name")
@@ -106,7 +105,7 @@ convert_glatos_to_att <- function(detectionObj,
 
   releaseData <- dplyr::mutate(releaseData,
     # Convert sex text and null missing columns
-    Sex = as.factor(purrr::map(Sex, convert_sex)),
+    Sex = as.factor(convert_sex(Sex)),
     Tag.Life = as.integer(NA),
     Tag.Status = as.factor(NA),
     Bio = as.factor(NA)

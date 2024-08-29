@@ -51,7 +51,7 @@ read_otn_detections <- function(det_file) {
     dtc$receiver_group <- substr(dtc$station, 1, nchar(dtc$station) - 3)
     dtc$receiver <- dtc$collectornumber
     dtc$tagname <- dtc$fieldnumber
-    dtc$codespace <- purrr::map(dtc$fieldnumber, get_codemap)
+    dtc$codespace <- get_codemap(dtc$fieldnumber)
   }
   # coerce timestamps to POSIXct
   for (j in timestamp_cols) {
@@ -74,6 +74,11 @@ read_otn_detections <- function(det_file) {
 }
 
 get_codemap <- function(x) {
-  x0 <- unlist(strsplit(x, "-"))
-  return(paste0(x0[1:2], collapse = "-"))
+  sapply(x,
+    FUN = function(.) {
+      x0 <- unlist(strsplit(., "-"))
+      return(paste0(x0[1:2], collapse = "-"))
+    },
+    USE.NAMES = FALSE
+  )
 }

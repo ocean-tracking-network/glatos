@@ -28,16 +28,3 @@ test_that("matches type/class of internal data: blue_shark_att", {
   expect_s3_class(bs_att, "ATT")
   expect_type(bs_att, "list")
 })
-
-
-
-##### TBD: TEST NON-EXPORTED FUNCTIONS ####
-# Test non-exported query_worms_common function
-test_that("internal function query_worms_common", {
-  skip("Test needs to be created.")
-})
-
-# Test non-exported query_worms_common function
-test_that("internal function query_worms_common", {
-  skip("Test needs to be created.")
-})

@@ -188,7 +188,7 @@ convert_otn_to_att <- function(detectionObj,
 
   releaseData <- dplyr::mutate(releaseData,
     # Convert sex text and null missing columns
-    Sex = purrr::map(Sex, convert_sex),
+    Sex = convert_sex(Sex),
     Tag.Status = as.factor(NA),
     Bio = as.factor(NA)
   ) %>% unique()
@@ -258,30 +258,40 @@ query_worms_common <- function(commonName,
     )
   )
 
-  sciname <- tryCatch(
-    {
-      if (!silent) print(url)
-      payload <- jsonlite::fromJSON(url)
-      sciname <- payload$scientificname
+  sapply(
+    url,
+    FUN = function(x) {
+      tryCatch(
+        {
+          if (!silent) print(x)
+          payload <- jsonlite::fromJSON(x)
+          sciname <- list(payload$scientificname)
+        },
+        error = function(e) {
+          print(geterrmessage())
+          stop(sprintf(
+            "Error in querying WoRMS, %s was probably not found.",
+            utils::URLdecode(gsub(".*/", "", x))
+          ))
+        }
+      )
+      return(sciname)
     },
-    error = function(e) {
-      print(geterrmessage())
-      stop(sprintf(
-        "Error in querying WoRMS, %s was probably not found.",
-        commonName
-      ))
-    }
+    USE.NAMES = FALSE
   )
-
-  return(sciname)
 }
 
 convert_sex <- function(sex) {
-  if (toupper(sex) %in% c("F", "FEMALE")) {
-    return("FEMALE")
-  }
-  if (toupper(sex) %in% c("M", "MALE")) {
-    return("MALE")
-  }
-  return(sex)
+  sapply(sex,
+    FUN = function(.) {
+      if (toupper(.) %in% c("F", "FEMALE")) {
+        return("FEMALE")
+      }
+      if (toupper(.) %in% c("M", "MALE")) {
+        return("MALE")
+      }
+      return(.)
+    },
+    USE.NAMES = FALSE
+  )
 }
