@@ -24,7 +24,7 @@ Created from \link{great_lakes_polygon}; see
 'data-raw/data-greatLakesTrLayer.r'.
 }
 \examples{
-/dontrun{
+\dontrun{
 raster::plot(raster::raster(greatLakesTrLayer))
 }
 

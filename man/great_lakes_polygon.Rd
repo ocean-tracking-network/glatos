@@ -19,7 +19,7 @@ Created from \link{shoreline} shapefile (see
 'data-raw/data-great_lakes_polygon.r).
 }
 \examples{
-/dontrun{
+\dontrun{
 plot(sf::st_geometry(great_lakes_polygon))
 } 
 

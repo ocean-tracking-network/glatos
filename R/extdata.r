@@ -94,7 +94,7 @@ NULL
 #'
 #' poly <- sf::st_read(paste0("/vsizip/", poly_file))
 #' 
-#' /dontrun{
+#' \dontrun{
 #' plot(sf::st_geometry(poly))
 #' }
 #' 

@@ -67,7 +67,7 @@
 #' # make_transition layer
 #' tst <- make_transition(great_lakes_polygon, res = res)
 #'
-#' /dontrun{
+#' \dontrun{
 #' # plot raster layer (notice water = 1, land = 0)
 #' raster::plot(tst$rast)
 #'
@@ -82,7 +82,7 @@
 #'                        res = res,
 #'                        buffer = 3000)
 #'
-#' /dontrun{
+#' \dontrun{
 #' # plot raster layer (notice water = 1, land = 0)
 #' raster::plot(tst2$rast)
 #'
@@ -108,7 +108,7 @@
 #' # make_transition layer (roughly 500 m res)
 #' tst <- make_transition(poly, res = c(0.065, 0.046), receiver_points = recs)
 #'
-#' /dontrun{
+#' \dontrun{
 #' # plot raster layer
 #' # notice the huge circle rasterized as "water"  north of Lake Superior.
 #' # This occurred because we had a "receiver" deployed at that locations
@@ -153,7 +153,7 @@
 #' # transform receivers to same projection as great lakes polygon
 #' recs <- sf::st_transform(recs, crs = 3175)
 #'
-#' /dontrun{
+#' \dontrun{
 #' # check by plotting
 #' plot(sf::st_geometry(poly), col = NA)
 #' plot(sf::st_geometry(recs), col = "red", add = TRUE)
@@ -163,7 +163,7 @@
 #' #   (note that res in in meters here because crs is 3175)
 #' tst1 <- make_transition(poly, res = 5000, receiver_points = recs)
 #'
-#' /dontrun{
+#' \dontrun{
 #' # plot raster layer
 #' raster::plot(tst1$rast)
 #' 

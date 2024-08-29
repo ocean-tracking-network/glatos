@@ -7,7 +7,7 @@
 #'   'data-raw/data-great_lakes_polygon.r).
 #'
 #' @examples
-#' /dontrun{
+#' \dontrun{
 #' plot(sf::st_geometry(great_lakes_polygon))
 #' } 
 #'
@@ -29,7 +29,7 @@
 #'   'data-raw/data-greatLakesTrLayer.r'.
 #'
 #' @examples
-#' /dontrun{
+#' \dontrun{
 #' raster::plot(raster::raster(greatLakesTrLayer))
 #' }
 #'
