@@ -2,7 +2,6 @@
 % Please edit documentation in R/package-glatos-deprecated.r, R/util-vrl2csv.r
 \name{glatos-deprecated}
 \alias{glatos-deprecated}
-\alias{vrl2csv-deprecated}
 \alias{vrl2csv}
 \title{Deprecated functions in package \pkg{glatos}.}
 \usage{
@@ -33,4 +32,3 @@ Use \link{vue_convert} instead.
 For \code{vrl2csv}, use \code{\link{vue_convert}}.
 }
 
-\keyword{internal}

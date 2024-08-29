@@ -14,6 +14,4 @@
 #'
 #'
 #' @name glatos-deprecated
-#' @aliases vrl2csv-deprecated
-#' @keywords internal
 NULL
