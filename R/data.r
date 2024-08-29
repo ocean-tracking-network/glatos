@@ -118,3 +118,22 @@
 #' @source F. Zomer, T. Hayden
 #'
 "range_detection"
+
+
+#' A schema for Innovasea Fathom (VDAT) CSV files
+#'
+#' A schema for Innovasea Fathom (VDAT) CSV files, produced by 'vdat.exe'
+#' (Fathom Connect) or [vdat_convert()].
+#'
+#' @details A list of lists of data frames that define record types (e.g.,
+#'   `DIAG`, `DET`, `EVENT_OFFLOAD`), columm names (e.g. `Device Time (UTC)`,
+#'   `Time`), and data types (e.g., `character`, `POSIXct`) for
+#'   comma-separated-values text file containing data produced by Innovasea's
+#'   `vdat.exe` (packaged with Fathom Connect software).
+#'
+#' @details This is used to enforce column names and data types in
+#'   [read_vdat_csv()].
+#'
+#' @author C. Holbrook
+#' 
+"vdat_csv_schema"
