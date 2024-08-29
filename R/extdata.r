@@ -74,30 +74,29 @@ NULL
 #' @name shoreline
 #'
 #' @section Filename: shoreline.zip
-#' 
+#'
 #' @section Used to make [great_lakes_polygon].
-#' 
+#'
 #' @details Note from Todd: "This polygon layer of GL shoreline was modified by
 #'   hand to include Saginaw, Tittabawasssee, Maumee, and Sandusky rivers.
 #'   Outlines of rivers are not precise but were wide enough to allow a
 #'   continuous connection between pixels for the entire undammed river stretch
 #'   when the 'rasterize' function is used to produce a raster layer of the GL
 #'   in QGIS."
-#'   
+#'
 #' @details Todd's original file name was 'coastline_poly_modified_rivers'.
 #'
 #' @examples
-#' 
+#'
 #' # Read polygon from shapefile
-#' 
+#'
 #' poly_file <- system.file("extdata", "shoreline.zip", package = "glatos")
 #'
 #' poly <- sf::st_read(paste0("/vsizip/", poly_file))
-#' 
+#'
 #' \dontrun{
 #' plot(sf::st_geometry(poly))
 #' }
-#' 
 #'
 #' @author Todd Hayden
 #'

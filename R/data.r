@@ -23,7 +23,7 @@
 #' @examples
 #' \dontrun{
 #' plot(sf::st_geometry(great_lakes_polygon))
-#' } 
+#' }
 #'
 #' @author Todd Hayden (coerced to sf via by C. Holbrook)
 "great_lakes_polygon"
@@ -135,5 +135,5 @@
 #'   [read_vdat_csv()].
 #'
 #' @author C. Holbrook
-#' 
+#'
 "vdat_csv_schema"
