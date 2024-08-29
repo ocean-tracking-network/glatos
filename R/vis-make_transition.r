@@ -490,6 +490,10 @@ jarasterize <- function(x,
                         all_touched = TRUE,
                         silent = FALSE){
             
+  ##  Declare global variables for NSE & R CMD check
+  lat_id <- line_type <- lon_id <- rast_cell <- x1 <- x1cell <- x2 <- 
+    x2cell <- x_cell <- y1 <- y1cell <- y2 <- y2cell <- y_cell <- NULL
+  
   if(silent == FALSE) message("Rasterizing...")
   
   t0 <- Sys.time()
