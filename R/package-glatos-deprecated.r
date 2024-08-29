@@ -14,4 +14,5 @@
 #'
 #'
 #' @name glatos-deprecated
+#' @inheritParams vrl2csv-deprecated
 NULL
