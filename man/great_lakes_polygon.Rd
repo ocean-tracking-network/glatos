@@ -21,7 +21,7 @@ Created from \link{shoreline} shapefile (see
 \examples{
 \dontrun{
 plot(sf::st_geometry(great_lakes_polygon))
-} 
+}
 
 }
 \author{

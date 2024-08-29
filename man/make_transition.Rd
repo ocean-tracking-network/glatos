@@ -85,9 +85,10 @@ plot(sf::st_geometry(great_lakes_polygon), add = TRUE)
 # Example 2 - add 1 km buffer (same resolution)
 
 # make_transition layer
-tst2 <- make_transition(great_lakes_polygon, 
-                       res = res,
-                       buffer = 3000)
+tst2 <- make_transition(great_lakes_polygon,
+  res = res,
+  buffer = 3000
+)
 
 \dontrun{
 # plot raster layer (notice water = 1, land = 0)
@@ -106,7 +107,8 @@ poly <- sf::st_read(paste0("/vsizip/", poly))
 
 # read in glatos receivers object
 rec_file <- system.file("extdata", "sample_receivers.csv",
-  package = "glatos")
+  package = "glatos"
+)
 recs <- read_glatos_receivers(rec_file)
 
 # change a coordinate to on-land to show impact...
@@ -143,7 +145,8 @@ poly <- sf::st_crop(
 
 # read in glatos receivers object
 rec_file <- system.file("extdata", "sample_receivers.csv",
-  package = "glatos")
+  package = "glatos"
+)
 recs <- read_glatos_receivers(rec_file)
 
 # extract receivers in "HECWL" project
@@ -154,8 +157,10 @@ recs <- recs[recs$glatos_project == "HECWL", ]
 recs <- recs[!recs$glatos_array \%in\% c("MAU", "LVD"), ]
 
 # convert recs to simple feature  object (sf)
-recs <- sf::st_as_sf(recs, coords = c("deploy_long", "deploy_lat"),
-  crs = 4326)
+recs <- sf::st_as_sf(recs,
+  coords = c("deploy_long", "deploy_lat"),
+  crs = 4326
+)
 
 # transform receivers to same projection as great lakes polygon
 recs <- sf::st_transform(recs, crs = 3175)
@@ -164,7 +169,7 @@ recs <- sf::st_transform(recs, crs = 3175)
 # check by plotting
 plot(sf::st_geometry(poly), col = NA)
 plot(sf::st_geometry(recs), col = "red", add = TRUE)
-} 
+}
 
 # create slightly higher resolution transition layer
 #   (note that res in in meters here because crs is 3175)

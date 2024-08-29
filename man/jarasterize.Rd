@@ -50,10 +50,10 @@ rast1 <- jarasterize(poly1, res = c(0.1, 0.05))
 \dontrun{
 # compare to polygon
 x11(width = 12, height = 8)
-raster::plot(rast1) 
+raster::plot(rast1)
 plot(sf::st_geometry(poly1), add = TRUE)
 }
- 
+
 # Example 2. projected input; 5 km cell size
 
 poly2 <- sf::st_transform(poly1, crs = 3175)
@@ -63,7 +63,7 @@ rast2 <- jarasterize(poly2, res = 5000)
 \dontrun{
 # compare to polygon
 x11(width = 12, height = 8)
-raster::plot(rast2) 
+raster::plot(rast2)
 plot(sf::st_geometry(poly2), add = TRUE)
 }
 
@@ -74,7 +74,7 @@ rast3 <- jarasterize(poly2, res = 5000, all_touched = FALSE)
 \dontrun{
 # compare to polygon
 x11(width = 12, height = 8)
-raster::plot(rast3) 
+raster::plot(rast3)
 plot(sf::st_geometry(poly2), add = TRUE)
 }
 

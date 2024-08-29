@@ -35,17 +35,23 @@ A helper function to determine input resolution to
 \examples{
 
 # how many long, lat equal to 5000 m at center of great_lakes_polygon?
-scale_meters_to_degrees(x = 5000,
-                        sf = great_lakes_polygon)
+scale_meters_to_degrees(
+  x = 5000,
+  sf = great_lakes_polygon
+)
 
 # how many long, lat equal to 5000 m at top of great_lakes_polygon?
-scale_meters_to_degrees(x = 5000,
-                        sf = great_lakes_polygon,
-                        ref = "max")
+scale_meters_to_degrees(
+  x = 5000,
+  sf = great_lakes_polygon,
+  ref = "max"
+)
 
 # how many long, lat equal to 5000 m at bottom of great_lakes_polygon?
-scale_meters_to_degrees(x = 5000,
-                        sf = great_lakes_polygon,
-                        ref = "min")
+scale_meters_to_degrees(
+  x = 5000,
+  sf = great_lakes_polygon,
+  ref = "min"
+)
 
 }
