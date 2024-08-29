@@ -20,7 +20,7 @@ Must be of class \code{SpatialPointsDataFrame}, \code{SpatialPoints}, \code{sf},
 \code{glatos_receivers}, or \code{glatos_detections}.}
 
 \item{epsg}{coordinate reference code that describes projection used for
-\code{res} and \code{buffer}.  Defaults to NAD83/Great Lakes and St. Lawrence Albers.}
+buffers.  Defaults to NAD83/Great Lakes and St. Lawrence Albers.}
 
 \item{buffer}{Buffer, in same units as \code{epsg}, that will be added to \code{poly}
 before rasterization.}
@@ -39,28 +39,26 @@ Create transition layer for \code{\link[=interpolate_path]{interpolate_path()}} 
 \details{
 \code{make_transition} uses \code{\link[=jarasterize]{jarasterize()}} to convert a polygon
 shapefile into a raster layer and geo-corrected transition layer
-\code{\link[=interpolate_path]{interpolate_path()}}. Raster cell values on land equal 0 cells in water
+\code{\link[=interpolate_path]{interpolate_path()}}. Raster cell values on land equal 0, cells in water
 equal 1. Output is a two-object list containing the raster layer and
-transition layer.  Both objects have the same (or slightly larger; within
-\code{res}) extents and geographic projection as input polygon.
+transition layer.
 
-If receiver_points is provided, any receiver not in water is
+If \code{receiver_points} is provided, any receiver not in water is
 buffered by the distance from the receiver to the nearest water.  This
 allows all receivers to be coded as in water if the receiver is on land.
 
 Poly object is transformed into planer map projection specified by
 epsg argument for calculation of transition object if receiver_points is
-provided.  Output is projected to WGS84 (epsg 4326).
+provided.  Output is projected to crs of input \code{poly}.
 
 output transition layer is corrected for projection distortions
 using \code{gdistance::geoCorrection}.  Adjacent cells are connected by 16
 directions and transition function returns 0 (land) for movements between
-land and water and 1 for all over-water movements.
+land and water and >0 for all over-water movements.
 
 Note that this function underwent breaking changes between 0.7.3 and
 0.8.0 (uses \code{jasterize} instead of \code{gdalUtilities::gdal_rasterize} see
-NEWS). The functions previously named \code{make_transition2} and
-\code{make_transition3} have also been removed starting with 0.8.0.
+NEWS).
 }
 \examples{
 

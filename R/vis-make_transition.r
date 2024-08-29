@@ -15,35 +15,33 @@
 #'   `glatos_receivers`, or `glatos_detections`.
 #'
 #' @param epsg coordinate reference code that describes projection used for
-#'   `res` and `buffer`.  Defaults to NAD83/Great Lakes and St. Lawrence Albers.
+#'   buffers.  Defaults to NAD83/Great Lakes and St. Lawrence Albers.
 #'
 #' @param buffer Buffer, in same units as `epsg`, that will be added to `poly`
 #'   before rasterization.
 #'
 #' @details `make_transition` uses [jarasterize()] to convert a polygon
 #'   shapefile into a raster layer and geo-corrected transition layer
-#'   [interpolate_path()]. Raster cell values on land equal 0 cells in water
+#'   [interpolate_path()]. Raster cell values on land equal 0, cells in water
 #'   equal 1. Output is a two-object list containing the raster layer and
-#'   transition layer.  Both objects have the same (or slightly larger; within
-#'   `res`) extents and geographic projection as input polygon.
+#'   transition layer.
 #'
-#' @details If receiver_points is provided, any receiver not in water is
+#' @details If `receiver_points` is provided, any receiver not in water is
 #'   buffered by the distance from the receiver to the nearest water.  This
 #'   allows all receivers to be coded as in water if the receiver is on land.
 #'
 #' @details Poly object is transformed into planer map projection specified by
 #'   epsg argument for calculation of transition object if receiver_points is
-#'   provided.  Output is projected to WGS84 (epsg 4326).
+#'   provided.  Output is projected to crs of input `poly`.
 #'
 #' @details output transition layer is corrected for projection distortions
 #'   using `gdistance::geoCorrection`.  Adjacent cells are connected by 16
 #'   directions and transition function returns 0 (land) for movements between
-#'   land and water and 1 for all over-water movements.
+#'   land and water and >0 for all over-water movements.
 #'
 #' @details Note that this function underwent breaking changes between 0.7.3 and
 #'   0.8.0 (uses `jasterize` instead of `gdalUtilities::gdal_rasterize` see
-#'   NEWS). The functions previously named `make_transition2` and
-#'   `make_transition3` have also been removed starting with 0.8.0.
+#'   NEWS). 
 #'
 #' @return A list with two elements:
 #' \describe{
