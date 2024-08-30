@@ -671,3 +671,52 @@ blueshark_ri_ano_data <- function() {
     -40L
   ))
 }
+
+# test-class-glatos_animals.R
+
+ga_df_shouldbe <- 
+structure(list(
+  animal_id = c("120", "107", "109"), 
+  tag_id_code = c("32024", "32012", "32014"), 
+  tag_code_space = c("A69-9001", "A69-9001", "A69-9001"), 
+  utc_release_date_time = 
+    structure(c(1301270400, 1301270460, 1301270700), 
+              class = c("POSIXct", "POSIXt"), tzone = "UTC"),
+  release_latitude = c(41.56093, 41.56093, 41.56093), 
+  release_longitude = c(-83.645, -83.645, -83.645)), 
+    class = c("glatos_animals", "data.frame"), 
+  row.names = c(NA, -3L))
+
+
+# test-class-glatos_detections.R
+
+gd_df_shouldbe <- 
+structure(list(animal_id = c("153", "153", "153", "153"), 
+               detection_timestamp_utc = structure(
+                 c(1335664117, 1335664375, 1335664512, 1335664602), 
+                 class = c("POSIXct", "POSIXt"), 
+                 tzone = "UTC"), 
+               deploy_lat = c(43.39165, 43.39165, 43.39165, 43.39165), 
+               deploy_long = c(-83.99264, -83.99264, -83.99264, -83.99264)), 
+          class = c("glatos_detections", "data.frame"), 
+          row.names = c(NA, -4L))
+
+# test-class-glatos_receivers.R
+
+gr_df_shouldbe <- 
+structure(list(station = c("WHT-009", "FDT-001", "FDT-004", "FDT-003"), 
+               deploy_lat = c(43.7, 45.9, 45.9, 45.9), 
+               deploy_long = c(-82.5, -83.5, -83.5, -83.5), 
+               deploy_date_time = structure(
+                 c(1285178700, 1289574420, 1289576160, 1289577360), 
+                 class = c("POSIXct", "POSIXt"), 
+                 tzone = "UTC"), 
+               recover_date_time = structure(
+                 c(1345049520, 1337088300, 1337091300, 1337092800), 
+                 class = c("POSIXct", "POSIXt"), 
+                 tzone = "UTC"), 
+               ins_serial_no = c("109450", "442", "441", "444")), 
+          class = c("glatos_receivers", "data.frame"), 
+          row.names = c(NA, -4L))
+
+
