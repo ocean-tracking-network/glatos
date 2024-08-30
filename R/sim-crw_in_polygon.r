@@ -177,17 +177,16 @@
 #'
 #' @export
 
-crw_in_polygon <- function(polyg, 
-                           theta = c(0, 10), 
+crw_in_polygon <- function(polyg,
+                           theta = c(0, 10),
                            stepLen = 100,
-                           initPos = c(NA, NA), 
-                           initHeading = NA, 
+                           initPos = c(NA, NA),
+                           initHeading = NA,
                            nsteps = 30,
-                           inputCRS = NA, 
-                           cartesianCRS = NA, 
+                           inputCRS = NA,
+                           cartesianCRS = NA,
                            sp_out = TRUE,
                            show_progress = TRUE) {
-  
   # Check input class
   if (!inherits(polyg, c(
     "data.frame", "sf", "sfc", "SpatialPolygonsDataFrame",
@@ -429,44 +428,43 @@ crw_in_polygon <- function(polyg,
 #' @description Internal function used in [crw_in_polygon()] to determine if
 #'   (and identify which) line segments cross polygon boundaries (e.g., steps
 #'   onto land or over a peninsula).
-#'   
-#' @returns A logical vector with an element for each 'step' in `path` that 
+#'
+#' @returns A logical vector with an element for each 'step' in `path` that
 #'  indicates if that step crosses `boundary` (TRUE) or not (FALSE).
 #'
 #' @examples
-#' 
+#'
 #' # Example 1
-#' 
+#'
 #' # make path
 #' path <- matrix(c(0:6, rep(3, 7)), ncol = 2)
-#' 
+#'
 #' # make polygon
-#' poly <- matrix(c(0,0, 6,0, 3,6, 0,0), ncol = 2, byrow = TRUE)
-#' 
+#' poly <- matrix(c(0, 0, 6, 0, 3, 6, 0, 0), ncol = 2, byrow = TRUE)
+#'
 #' plot(poly, type = "l")
 #' lines(path, type = "o", col = "red")
-#' 
+#'
 #' poly <- sf::st_linestring(poly)
-#' 
+#'
 #' crosses_boundary(path, poly)
-#' 
-#' #Example 2
-#' 
+#'
+#' # Example 2
+#'
 #' # make path
-#' path <- matrix(c(0,1,5,6, rep(3, 4)), ncol = 2)
-#' 
+#' path <- matrix(c(0, 1, 5, 6, rep(3, 4)), ncol = 2)
+#'
 #' # make polygon
-#' poly <- matrix(c(0,0, 6,0, 3,6, 0,0), ncol = 2, byrow = TRUE)
-#' 
+#' poly <- matrix(c(0, 0, 6, 0, 3, 6, 0, 0), ncol = 2, byrow = TRUE)
+#'
 #' plot(poly, type = "l")
 #' lines(path, type = "o", col = "red")
-#' 
+#'
 #' poly <- sf::st_linestring(poly)
-#' 
+#'
 #' crosses_boundary(path, poly)
-#' 
+#'
 crosses_boundary <- function(path, boundary) {
- 
   # Make line segment objects of sequential point-pairs in path
   segs_mat <- cbind(
     utils::head(path, -1),
@@ -478,8 +476,8 @@ crosses_boundary <- function(path, boundary) {
       apply(segs_mat, 1,
         function(x) {
           any(sf::st_intersects(boundary,
-                                 sf::st_linestring(rbind(x[1:2], x[3:4])),
-                                 sparse = FALSE
+            sf::st_linestring(rbind(x[1:2], x[3:4])),
+            sparse = FALSE
           ))
         },
         simplify = TRUE

@@ -41,7 +41,7 @@
 #'
 #' @details Note that this function underwent breaking changes between 0.7.3 and
 #'   0.8.0 (uses `jasterize` instead of `gdalUtilities::gdal_rasterize` see
-#'   NEWS). 
+#'   NEWS).
 #'
 #' @return A list with two elements:
 #' \describe{
