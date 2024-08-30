@@ -464,6 +464,7 @@ crw_in_polygon <- function(polyg,
 #'
 #' crosses_boundary(path, poly)
 #'
+#' @noRd
 crosses_boundary <- function(path, boundary) {
   # Make line segment objects of sequential point-pairs in path
   segs_mat <- cbind(
