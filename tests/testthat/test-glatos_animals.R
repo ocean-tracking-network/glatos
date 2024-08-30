@@ -85,7 +85,6 @@ test_that("glatos_animals works as expected", {
 
 
 test_that("validate_glatos_animals catches bad inputs", {
-
   x <- data.frame(
     animal_id = c("120", "107", "109"),
     tag_id_code = c("32024", "32012", "32014"),
