@@ -122,24 +122,11 @@ test_that("validate_glatos_animals catches bad inputs", {
    fixed = TRUE
   )
   
-  # # glatos_check_col_names
-  # expect_error(
-  #   glatos_check_col_names(
-  #     dplyr::rename(x,
-  #                   fish_name = animal_id,
-  #                   release_timestamp = utc_release_date_time
-  #     ), 
-  #     req_cols
-  #   ),
-  #   regexp = "Required column(s) missing from input x",
-  #   fixed = TRUE
-  # )
-  
   
   # data.frame input; wrong column class
   expect_error(
     as_glatos_animals(
-      plyr::mutate(x,
+      dplyr::mutate(x,
         animal_id = as.integer(animal_id),
         utc_release_date_time = as.character(utc_release_date_time)
       )
@@ -148,20 +135,7 @@ test_that("validate_glatos_animals catches bad inputs", {
     fixed = TRUE
   )
   
-  # # glatos_check_col_names
-  # expect_error(
-  #   glatos_check_col_classes(
-  #     plyr::mutate(x,
-  #                  animal_id = as.integer(animal_id),
-  #                  utc_release_date_time = as.character(utc_release_date_time)
-  #     ), 
-  #     req_cols
-  #   ),
-  #   regexp = "The following column(s) have wrong class",
-  #   fixed = TRUE
-  # )
-  
-  
+
   # non-data.frame input
   expect_error(
     as_glatos_animals(
