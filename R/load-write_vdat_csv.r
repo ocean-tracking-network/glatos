@@ -54,11 +54,15 @@
 #' vdat <- read_vdat_csv(csv_file)
 #'
 #' # write to single file (output_format = "csv.fathom")
-#' write_vdat_csv(vdat)
+#' temp_file <- tempfile(fileext = ".csv")
+#' write_vdat_csv(vdat, out_file = temp_file)
 #'
-#' # write to multiple files
-#' write_vdat_csv(vdat, output_format = "csv.fathom.split")
+#' # write to multiple files (fathom split option)
+#' temp_dir2 <- tempdir()
+#' write_vdat_csv(vdat, out_file = temp_dir2, 
+#'   output_format = "csv.fathom.split")
 #' }
+#'
 #' @export
 write_vdat_csv <- function(vdat,
                            record_types = NULL,
@@ -66,10 +70,11 @@ write_vdat_csv <- function(vdat,
                            output_format = "csv.fathom",
                            include_empty = FALSE,
                            export_settings = NULL) {
+  
   ##  Declare global variables for NSE & R CMD check
   record_type <- dt2 <- `Device Time (UTC)` <- `Time Correction (s)` <-
     `Ambient (deg C)` <- `Ambient Min (deg C)` <- `Ambient Max (deg C)` <-
-    `Ambient Mean (deg C)` <- `Internal (deg C)` <- ..txt_cols <- txt <- NULL
+    `Ambient Mean (deg C)` <- `Internal (deg C)` <- txt_cols <- txt <- NULL
 
   # Check input class
   if (!inherits(vdat, "vdat_list")) {
@@ -118,6 +123,11 @@ write_vdat_csv <- function(vdat,
     )
   }
 
+  # out_file must contain file name if vdat does not contain DATA_SOURCE_FILE
+  if(out_file_type == "dir" & !("DATA_SOURCE_FILE" %in% names(vdat)))
+    stop("Input 'out_file' must include file name if 'vdat' does not contain",
+         " a 'DATA_SOURCE_FILE' record type.", 
+         call. = FALSE)
 
   # Make vdat csv format version and identify data generating mechanism
   src_version <- paste0(
@@ -150,6 +160,7 @@ write_vdat_csv <- function(vdat,
   )
 
   for (i in 1:length(record_types)) {
+    
     # Make a deep copy
     x_i <- data.table::as.data.table(vdat[[i]])
 
@@ -282,7 +293,7 @@ write_vdat_csv <- function(vdat,
 
       temp_file_i <- tempfile()
 
-      fwrite(x_i[, ..txt_cols], file = temp_file_i)
+      fwrite(x_i[, .SD, .SDcols = txt_cols], file = temp_file_i)
 
       x_i[, txt := fread(temp_file_i, sep = "")]
     } else {
@@ -363,7 +374,7 @@ write_vdat_csv <- function(vdat,
 
   if (output_format == "csv.fathom.split") {
     # Create folder if not exist
-    if (!dir.exists(out_file)) dir.create(out_file)
+    if (!dir.exists(out_file)) dir.create(out_file, recursive = TRUE)
 
 
     # Write csv for each record type
@@ -501,12 +512,13 @@ format_POSIXt <- function(x, digits = 0, drop0trailing = TRUE) {
 #'
 #' @param x a vdat_list from which to extract element(s).
 #' @param i indices specifying elements to extract or replace.
-#' @param ... unused.
 #'
 #' @export
-`[.vdat_list` <- function(x, i, ...) {
+`[.vdat_list` <- function(x, i) {
   attrs <- attributes(x)
   out <- unclass(x)
+  if(is.numeric(i)) i <- as.integer(i)
+  if(is.character(i)) i <- match(i, names(x))
   out <- out[i]
   if (!is.null(attrs$names)) attrs$names <- names(x)[i]
   attributes(out) <- attrs

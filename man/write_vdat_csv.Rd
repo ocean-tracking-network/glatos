@@ -69,11 +69,15 @@ csv_file <- vdat_convert(vrl_file, out_dir = temp_dir)
 vdat <- read_vdat_csv(csv_file)
 
 # write to single file (output_format = "csv.fathom")
-write_vdat_csv(vdat)
+temp_file <- tempfile(fileext = ".csv")
+write_vdat_csv(vdat, out_file = temp_file)
 
-# write to multiple files
-write_vdat_csv(vdat, output_format = "csv.fathom.split")
+# write to multiple files (fathom split option)
+temp_dir2 <- tempdir()
+write_vdat_csv(vdat, out_file = temp_dir2, 
+  output_format = "csv.fathom.split")
 }
+
 }
 \author{
 C. Holbrook (cholbrook@usgs.gov)
