@@ -181,7 +181,6 @@ vdat_convert <- function(src,
                          show_progress = TRUE,
                          diagn = FALSE,
                          export_settings = NULL) {
-  
   ##  Declare global variables for NSE & R CMD check
   src_dir <- src_file <- out_file <- out_file_exists <- src_to_convert <-
     written <- NULL
@@ -607,13 +606,13 @@ get_local_vdat_version <- function(vdat_exe_path = NULL) {
 #' @param vdat_exe_path The full path to \code{VDAT.exe}. If \code{NULL}
 #'  (default) then the path to VDAT.exe must be in the PATH environment variable
 #'  of the system. See \code{\link{check_vdat}}.
-#'  
+#'
 #' @details A bug in vdat.exe version 9 (confirmed on v. vdat-9.3.0) will cause
 #'   this function to return an empty list. Fixed in vdat.exe version 10
 #'   (confirmed in 10.6.0).
-#' 
+#'
 #' @returns
-#' Schema (template) of VDAT CSV produced by installed version of VDAT.exe. 
+#' Schema (template) of VDAT CSV produced by installed version of VDAT.exe.
 #'
 #' @examples
 #' \dontrun{
@@ -630,7 +629,6 @@ get_local_vdat_version <- function(vdat_exe_path = NULL) {
 #'
 #' @export
 get_local_vdat_template <- function(vdat_exe_path = NULL) {
-  
   # Check path to vdat.exe and get (valid) command arg for system2 call
   vdat_cmd <- check_vdat(vdat_exe_path)
 
@@ -647,6 +645,6 @@ get_local_vdat_template <- function(vdat_exe_path = NULL) {
 
   # Drop RECORD TYPE element
   vdat_schema_list["RECORD TYPE"] <- NULL
-  
+
   return(vdat_schema_list)
 }

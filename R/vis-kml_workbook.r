@@ -82,17 +82,16 @@
 #'
 #' @export
 kml_workbook <- function(
-    wb = NULL, 
-    wb_file = NULL, 
+    wb = NULL,
+    wb_file = NULL,
     receiver_locs = NULL,
-    animals = NULL, 
-    kmz = FALSE, 
-    show_ongoing_recs = TRUE, 
+    animals = NULL,
+    kmz = FALSE,
+    show_ongoing_recs = TRUE,
     end_date = NULL,
-    out_file = NULL, 
-    wb_version = NULL, 
+    out_file = NULL,
+    wb_version = NULL,
     ...) {
-  
   # check for features not yet supported
   if (!is.null(animals)) stop("use of 'animals' input not yet supported.")
   if (!is.null(receiver_locs)) stop("use of 'receiver_locs' input not yet supported.")
@@ -128,7 +127,7 @@ kml_workbook <- function(
 
   # set default and get optional kml arguments
   kml_args <- list(labelSize = 0.6, iconSize = 0.6)
-  args_in <- if(interactive()) list() else list(...)
+  args_in <- if (interactive()) list() else list(...)
   if (length(args_in) > 0) kml_args[names(args_in)] <- args_in
 
   # get data from workbook
@@ -406,12 +405,12 @@ kml_workbook <- function(
   )
 
   # change ext to kml if kmz
-  if(kmz & grepl("\\.kmz$", kmlFullName, ignore.case = TRUE)){
+  if (kmz & grepl("\\.kmz$", kmlFullName, ignore.case = TRUE)) {
     kmzFullName <- kmlFullName
-    kmlFullName <- gsub("z$", "l", kmlFullName) 
-    kmlFullName <- gsub("Z$", "L", kmlFullName) 
+    kmlFullName <- gsub("z$", "l", kmlFullName)
+    kmlFullName <- gsub("Z$", "L", kmlFullName)
   }
-    
+
   write.table(kmlOut, kmlFullName,
     col.names = FALSE, row.names = FALSE,
     quote = FALSE

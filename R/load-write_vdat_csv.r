@@ -59,8 +59,10 @@
 #'
 #' # write to multiple files (fathom split option)
 #' temp_dir2 <- tempdir()
-#' write_vdat_csv(vdat, out_file = temp_dir2, 
-#'   output_format = "csv.fathom.split")
+#' write_vdat_csv(vdat,
+#'   out_file = temp_dir2,
+#'   output_format = "csv.fathom.split"
+#' )
 #' }
 #'
 #' @export
@@ -70,7 +72,6 @@ write_vdat_csv <- function(vdat,
                            output_format = "csv.fathom",
                            include_empty = FALSE,
                            export_settings = NULL) {
-  
   ##  Declare global variables for NSE & R CMD check
   record_type <- dt2 <- `Device Time (UTC)` <- `Time Correction (s)` <-
     `Ambient (deg C)` <- `Ambient Min (deg C)` <- `Ambient Max (deg C)` <-
@@ -124,10 +125,12 @@ write_vdat_csv <- function(vdat,
   }
 
   # out_file must contain file name if vdat does not contain DATA_SOURCE_FILE
-  if(out_file_type == "dir" & !("DATA_SOURCE_FILE" %in% names(vdat)))
+  if (out_file_type == "dir" & !("DATA_SOURCE_FILE" %in% names(vdat))) {
     stop("Input 'out_file' must include file name if 'vdat' does not contain",
-         " a 'DATA_SOURCE_FILE' record type.", 
-         call. = FALSE)
+      " a 'DATA_SOURCE_FILE' record type.",
+      call. = FALSE
+    )
+  }
 
   # Make vdat csv format version and identify data generating mechanism
   src_version <- paste0(
@@ -160,7 +163,6 @@ write_vdat_csv <- function(vdat,
   )
 
   for (i in 1:length(record_types)) {
-    
     # Make a deep copy
     x_i <- data.table::as.data.table(vdat[[i]])
 
@@ -517,8 +519,8 @@ format_POSIXt <- function(x, digits = 0, drop0trailing = TRUE) {
 `[.vdat_list` <- function(x, i) {
   attrs <- attributes(x)
   out <- unclass(x)
-  if(is.numeric(i)) i <- as.integer(i)
-  if(is.character(i)) i <- match(i, names(x))
+  if (is.numeric(i)) i <- as.integer(i)
+  if (is.character(i)) i <- match(i, names(x))
   out <- out[i]
   if (!is.null(attrs$names)) attrs$names <- names(x)[i]
   attributes(out) <- attrs

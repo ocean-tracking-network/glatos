@@ -22,7 +22,8 @@
 #' @examples
 #' csv_file <- system.file("extdata",
 #'   "VR2W_receiverEvents_109924_20110718_1.csv",
-#'   package = "glatos")
+#'   package = "glatos"
+#' )
 #'
 #' vue_evn <- read_vue_event_csv(csv_file)
 #'
