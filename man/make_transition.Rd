@@ -85,7 +85,12 @@ tst <- make_transition(poly, res = c(0.065, 0.046), receiver_points = recs)
 # list points outside of polygons
 tst$pip
 
+<<<<<<< HEAD
 # Example 3- transition layer of Lake Huron only with receivers
+=======
+
+# Example 4- transition layer of Lake Huron only with receivers
+>>>>>>> 3ebe204eda25e23fe535186fd65397a57f206679
 
 # transform to great lakes projection
 poly <- sf::st_transform(great_lakes_polygon, crs = 3175)
