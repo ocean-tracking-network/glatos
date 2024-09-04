@@ -57,18 +57,7 @@
 #' plot(sf::st_geometry(great_lakes_polygon), add = TRUE)
 #' }
 #'
-#' # Example 2 - add 1 km buffer (same resolution)
-#'
-#'
-#' \dontrun{
-#' # plot raster layer (notice water = 1, land = 0)
-#' raster::plot(tst$rast)
-#'
-#' # compare to polygon
-#' plot(sf::st_geometry(great_lakes_polygon), add = TRUE)
-#' }
-#'
-#' # Example 3 - read from ESRI Shapefile and include receiver file
+#' # Example 2 - read from ESRI Shapefile and include receiver file
 #' # to account for any receivers outside of great lakes polygon
 #'
 #' # path to polygon shapefile
@@ -88,8 +77,7 @@
 #' # list points outside of polygons
 #' tst$pip
 #' 
-#'
-#' # Example 4- transition layer of Lake Huron only with receivers
+#' # Example 3- transition layer of Lake Huron only with receivers
 #'
 #' # transform to great lakes projection
 #' poly <- sf::st_transform(great_lakes_polygon, crs = 3175)
@@ -117,21 +105,6 @@
 #' # remove two stations not in Lake Huron
 #' recs <- recs[!recs$glatos_array %in% c("MAU", "LVD"), ]
 #'
-#' # convert recs to simple feature  object (sf)
-#' recs <- sf::st_as_sf(recs,
-#'   coords = c("deploy_long", "deploy_lat"),
-#'   crs = 4326
-#' )
-#'
-#' # transform receivers to same projection as great lakes polygon
-#' recs <- sf::st_transform(recs, crs = 3175)
-#'
-#' \dontrun{
-#' # check by plotting
-#' plot(sf::st_geometry(poly), col = NA)
-#' plot(sf::st_geometry(recs), col = "red", add = TRUE)
-#' }
-#'
 #' # create slightly higher resolution transition layer
 #' #   (note that res in in meters here because crs is 3175)
 #' tst1 <- make_transition(poly, res = 5000, receiver_points = recs)
@@ -140,12 +113,17 @@
 #' # plot raster layer
 #' raster::plot(tst1$rast)
 #'
+#' recs <- sf::st_as_sf(recs, coords = c("deploy_long", "deploy_lat"), crs = 4326)
+#' recs <- sf::st_transform(recs, 3175)
 #' plot(sf::st_geometry(recs),
 #'   add = TRUE, col = "red", pch = 20
 #' )
 #'
 #' # plot transition layer
-#' raster::plot(raster::raster(tst1$transition))
+#' raster::plot(raster::raster(tst1$transition), add = TRUE)
+#'
+#' # list receivers on land
+#' tst1$pip
 #' }
 #'
 #' @export
@@ -207,7 +185,7 @@ make_transition <- function(poly,
                      "Points outside of polygon will not be used in interpolation \n",
                      "See output for points."))
       land <- receiver_points[-(pip[, "id.y"]),]
-      land <- project(land, og_crs)
+      land <- terra::project(land, og_crs)
       land <- cbind(as.data.table(terra::crds(land)), as.data.table(land))
       data.table::setnames(land, c("x", "y"), c("deploy_long", "deploy_lat"))
     }
