@@ -66,8 +66,10 @@ detection event.}
 \item{res_time_sec}{The elapsed time in seconds between the first and last
 detection in a given event.}
 
-If \code{condense = FALSE}, a data.frame, data.table, or tibble matching the
-input data frame \code{det} with the following columns added:
+\if{html}{\out{<div class="sourceCode">}}\preformatted{If `condense = FALSE`, a data.frame, data.table, or tibble matching the
+input data frame `det` with the following columns added:
+}\if{html}{\out{</div>}}
+
 \item{time_diff}{Lagged time difference in seconds between successive
 detections of each animal_id.}
 \item{arrive}{Flag (0 or 1) representing the first detection in each
@@ -93,18 +95,19 @@ detections that occurred on each station).
 }
 \examples{
 
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 det <- read_glatos_detections(det_file)
 
-filt0 <- detection_events(det) #no time filter
+filt0 <- detection_events(det) # no time filter
 
-#7-day filter
-filt_7d <- detection_events(det , time_sep = 604800) 
+# 7-day filter
+filt_7d <- detection_events(det, time_sep = 604800)
 
-#7-day filter but return do not condense result
-filt_7d <- detection_events(det , time_sep = 604800, condense = FALSE) 
+# 7-day filter but return do not condense result
+filt_7d <- detection_events(det, time_sep = 604800, condense = FALSE)
 
 }
 \author{

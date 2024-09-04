@@ -9,9 +9,6 @@ CSV
 \source{
 Ryan Gosse, Ocean Tracking Network
 }
-\usage{
-system.file("extdata", "otn_aat_receivers.csv", package = "glatos")
-}
 \description{
 An example receiver station data file from the OTN ERDDAP
 }
@@ -19,3 +16,7 @@ An example receiver station data file from the OTN ERDDAP
  otn_aat_receivers.csv
 }
 
+\examples{
+system.file("extdata", "otn_aat_receivers.csv", package = "glatos")
+
+}

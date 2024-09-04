@@ -97,69 +97,85 @@ duration may also be controlled by setting the \code{framerate} argument of
 \link[=encoding]{av::av_encode_video}. See \code{...} above.
 }
 \examples{
-
 \dontrun{
 
 # load frames
 frames <- system.file("extdata", "frames", package = "glatos")
 
 # make .mp4 video
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = file.path(tempdir(), "animation1.mp4"))
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = file.path(tempdir(), "animation1.mp4")
+)
 
 # set duration to 10 seconds
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = file.path(tempdir(), "animation2.mp4"),
-           duration = 10)
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = file.path(tempdir(), "animation2.mp4"),
+  duration = 10
+)
 
 # set size of ouput video
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = file.path(tempdir(), "animation3.mp4"),
-           size = c(320, 240))
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = file.path(tempdir(), "animation3.mp4"),
+  size = c(320, 240)
+)
 
 # start animation on frame 10, end on frame 20
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = file.path(tempdir(), "animation_4.mp4"),
-           start_frame = 10, 
-           end_frame = 20)
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = file.path(tempdir(), "animation_4.mp4"),
+  start_frame = 10,
+  end_frame = 20
+)
 
 # make move backwards- start animation of frame 20 and end on frame 10
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = file.path(tempdir(), "animation_5.mp4"),
-           start_frame = 20, 
-           end_frame = 10)
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = file.path(tempdir(), "animation_5.mp4"),
+  start_frame = 20,
+  end_frame = 10
+)
 
 # make .wmv video
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = file.path(tempdir(), "animation1.wmv"))
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = file.path(tempdir(), "animation1.wmv")
+)
 
 
 #--- Examples using more advanced features of av_encode_video
 
 # resize output video by specifying a scale filter
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = file.path(tempdir(), "animation_6.mp4"),
-           vfilter = "scale=320:240")
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = file.path(tempdir(), "animation_6.mp4"),
+  vfilter = "scale=320:240"
+)
 
 # slow the video by 10 times
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = file.path(tempdir(), "animation_7.mp4"),
-           vfilter = "setpts=10*PTS")
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = file.path(tempdir(), "animation_7.mp4"),
+  vfilter = "setpts=10*PTS"
+)
 
 # slow video by 10 times and scale to 320x240 resolution
-make_video(input_dir = frames, 
-           input_ext = ".png", 
-           output = file.path(tempdir(), "animation_8.mp4"),
-           vfilter = "scale=320:240, setpts=10*PTS")
-
+make_video(
+  input_dir = frames,
+  input_ext = ".png",
+  output = file.path(tempdir(), "animation_8.mp4"),
+  vfilter = "scale=320:240, setpts=10*PTS"
+)
 }
 
 }

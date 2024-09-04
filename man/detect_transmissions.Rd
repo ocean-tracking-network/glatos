@@ -18,14 +18,14 @@ detect_transmissions(
 \arguments{
 \item{trnsLoc}{A data frame with location (two numeric columns) and time
 (numeric or POSIXct column) of signal transmissions.\cr \emph{OR} \cr An
-object of class \code{\link[sf]{sf}} or \code{\link[sf]{sfc}} containing
+object of class \code{\link[sf:sf]{sf::sf()}} or \code{\link[sf:sfc]{sf::sfc()}} containing
 \code{POINT} features (geometry column) and time (see \code{colNames}).
-(\code{\link[sp]{SpatialPointsDataFrame}} is also allowed.)}
+(\code{\link[sp:SpatialPoints]{sp::SpatialPointsDataFrame()}} is also allowed.)}
 
 \item{recLoc}{A data frame with coordinates (two numeric columns) of receiver
-locations.\cr \emph{OR} \cr An object of class \code{\link[sf]{sf}} or
-\code{\link[sf]{sfc}} containing a \code{POINT} feature (geometry column)
-for each receiver. (\code{\link[sp]{SpatialPointsDataFrame}} is also
+locations.\cr \emph{OR} \cr An object of class \code{\link[sf:sf]{sf::sf()}} or
+\code{\link[sf:sfc]{sf::sfc()}} containing a \code{POINT} feature (geometry column)
+for each receiver. (\code{\link[sp:SpatialPoints]{sp::SpatialPointsDataFrame()}} is also
 allowed.)}
 
 \item{detRngFun}{A function that defines detection range curve; must accept a
@@ -81,8 +81,7 @@ distance), location of transmitter, and location of receivers.
 }
 \details{
 Distances between each signal transmission and receiver are
-calculated using \code{\link[geodist]{geodist}} (\code{measure =
-  "haversine"}) if input crs is geographic (i.e., longitude, latitude) and
+calculated using \code{\link[geodist:geodist]{geodist::geodist()}} (\code{measure = "haversine"}) if input crs is geographic (i.e., longitude, latitude) and
 using simple Euclidean distances if input crs is Cartesian (e.g., UTM). If
 crs is missing, the an arbitrary Cartesian coordinate system with base unit
 of 1 meter is assumed. Computation time is fastest if coordinates are are
@@ -95,113 +94,131 @@ receiver is determined stochastically by draws from a Bernoulli
 distribution with probability p (detection prob.).
 
 This function was written to be used along with
-\code{\link{transmit_along_path}}.
+\code{\link[=transmit_along_path]{transmit_along_path()}}.
 }
 \examples{
 
-#Example 1 - data.frame input (make a simple path in polygon)
+# Example 1 - data.frame input (make a simple path in polygon)
 
-mypoly <- data.frame(x = c(0, 0, 1000, 1000),
-                     y = c(0, 1000, 1000, 0))
+mypoly <- data.frame(
+  x = c(0, 0, 1000, 1000),
+  y = c(0, 1000, 1000, 0)
+)
 
-mypath <- crw_in_polygon(mypoly, 
-                         stepLen = 100, 
-                         nsteps = 50,
-                         sp_out = FALSE)
-                                    
+mypath <- crw_in_polygon(mypoly,
+  stepLen = 100,
+  nsteps = 50,
+  sp_out = FALSE
+)
+
 plot(mypath, type = "l", xlim = c(0, 1000), ylim = c(0, 1000))
 
-#add receivers
+# add receivers
 recs <- expand.grid(x = c(250, 750), y = c(250, 750))
 points(recs, pch = 15, col = "blue")
 
-#simulate tag transmissions
-mytrns <- transmit_along_path(mypath, vel = 2.0, delayRng = c(60, 180),
-                              burstDur = 5.0, sp_out = FALSE)
-points(mytrns, pch = 21) #add to plot
+# simulate tag transmissions
+mytrns <- transmit_along_path(mypath,
+  vel = 2.0, delayRng = c(60, 180),
+  burstDur = 5.0, sp_out = FALSE
+)
+points(mytrns, pch = 21) # add to plot
 
-#Define detection range function (to pass as detRngFun)
+# Define detection range function (to pass as detRngFun)
 # that returns detection probability for given distance
 # assume logistic form of detection range curve where
 #   dm = distance in meters
 #   b = intercept and slope
-pdrf <- function(dm, b=c(0.5, -1/120)){
-  p <- 1/(1+exp(-(b[1]+b[2]*dm)))
+pdrf <- function(dm, b = c(0.5, -1 / 120)) {
+  p <- 1 / (1 + exp(-(b[1] + b[2] * dm)))
   return(p)
 }
-pdrf(c(100,200,300,400,500)) #view detection probs. at some distances
+pdrf(c(100, 200, 300, 400, 500)) # view detection probs. at some distances
 
-#simulate detection
-mydtc <- detect_transmissions(trnsLoc = mytrns, 
-                              recLoc = recs, 
-                              detRngFun = pdrf,
-                              sp_out = FALSE)
-                             
+# simulate detection
+mydtc <- detect_transmissions(
+  trnsLoc = mytrns,
+  recLoc = recs,
+  detRngFun = pdrf,
+  sp_out = FALSE
+)
+
 points(mydtc[, c("trns_x", "trns_y")], pch = 21, bg = "red")
 
-#link transmitter and receiver locations for each detection\
-with(mydtc, segments(x0 = trns_x, 
-                     y0 = trns_y,
-                     x1 = rec_x, 
-                     y1 = rec_y,
-                     col = "red"))
-         
-         
-#Example 2 - spatial (sf) input 
+# link transmitter and receiver locations for each detection\
+with(mydtc, segments(
+  x0 = trns_x,
+  y0 = trns_y,
+  x1 = rec_x,
+  y1 = rec_y,
+  col = "red"
+))
+
+
+# Example 2 - spatial (sf) input
 
 data(great_lakes_polygon)
 
 set.seed(610)
-mypath <- crw_in_polygon(great_lakes_polygon, 
-                         stepLen = 100, 
-                         initPos = c(-83.7, 43.8),
-                         initHeading = 0,
-                         nsteps = 50,
-                         cartesianCRS = 3175)
-                                    
+mypath <- crw_in_polygon(great_lakes_polygon,
+  stepLen = 100,
+  initPos = c(-83.7, 43.8),
+  initHeading = 0,
+  nsteps = 50,
+  cartesianCRS = 3175
+)
+
 plot(sf::st_geometry(mypath), type = "l")
 
-#add receivers
-recs <- expand.grid(x = c(-83.705, -83.70), 
-                    y = c(43.810, 43.815)) 
+# add receivers
+recs <- expand.grid(
+  x = c(-83.705, -83.70),
+  y = c(43.810, 43.815)
+)
 points(recs, pch = 15, col = "blue")
 
-#simulate tag transmissions
-mytrns <- transmit_along_path(mypath, vel = 2.0, delayRng = c(60, 180),
-                              burstDur = 5.0)
-points(sf::st_coordinates(mytrns), pch = 21) #add to plot
+# simulate tag transmissions
+mytrns <- transmit_along_path(mypath,
+  vel = 2.0, delayRng = c(60, 180),
+  burstDur = 5.0
+)
+points(sf::st_coordinates(mytrns), pch = 21) # add to plot
 
-#Define detection range function (to pass as detRngFun)
+# Define detection range function (to pass as detRngFun)
 # that returns detection probability for given distance
 # assume logistic form of detection range curve where
 #   dm = distance in meters
 #   b = intercept and slope
-pdrf <- function(dm, b=c(2, -1/120)){
-  p <- 1/(1+exp(-(b[1]+b[2]*dm)))
+pdrf <- function(dm, b = c(2, -1 / 120)) {
+  p <- 1 / (1 + exp(-(b[1] + b[2] * dm)))
   return(p)
 }
-pdrf(c(100,200,300,400,500)) #view detection probs. at some distances
+pdrf(c(100, 200, 300, 400, 500)) # view detection probs. at some distances
 
-#simulate detection
-mydtc <- detect_transmissions(trnsLoc = mytrns, 
-                              recLoc = recs, 
-                              detRngFun = pdrf)
-                              
-#view transmissions that were detected
+# simulate detection
+mydtc <- detect_transmissions(
+  trnsLoc = mytrns,
+  recLoc = recs,
+  detRngFun = pdrf
+)
+
+# view transmissions that were detected
 sf::st_geometry(mydtc) <- "trns_geometry"
 
 points(sf::st_coordinates(mydtc$trns_geometry), pch = 21, bg = "red")
 
-#link transmitter and receiver locations for each detection
-segments(x0 = sf::st_coordinates(mydtc$trns_geometry)[,"X"], 
-         y0 = sf::st_coordinates(mydtc$trns_geometry)[,"Y"],
-         x1 = sf::st_coordinates(mydtc$rec_geometry)[,"X"], 
-         y1 = sf::st_coordinates(mydtc$rec_geometry)[,"Y"],
-         col = "red")
+# link transmitter and receiver locations for each detection
+segments(
+  x0 = sf::st_coordinates(mydtc$trns_geometry)[, "X"],
+  y0 = sf::st_coordinates(mydtc$trns_geometry)[, "Y"],
+  x1 = sf::st_coordinates(mydtc$rec_geometry)[, "X"],
+  y1 = sf::st_coordinates(mydtc$rec_geometry)[, "Y"],
+  col = "red"
+)
 
 }
 \seealso{
-\code{\link{transmit_along_path}} to simulate transmissions along a
+\code{\link[=transmit_along_path]{transmit_along_path()}} to simulate transmissions along a
 path (i.e., create \code{trnsLoc}).
 }
 \author{

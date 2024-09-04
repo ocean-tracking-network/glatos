@@ -3,19 +3,28 @@
 \docType{data}
 \name{great_lakes_polygon}
 \alias{great_lakes_polygon}
-\title{An sf POLYGON object with Great Lakes coastline and some major
-tributaries.}
+\title{An sf POLYGON object with Great Lakes coastline}
 \format{
-An object of class \code{sf} (inherits from \code{data.frame}) with 4 rows and 9 columns.
+An object of class \code{sf} (inherits from \code{data.frame}) with 1 rows and 2 columns.
 }
 \usage{
 great_lakes_polygon
 }
 \description{
-Created from \code{\link{greatLakesPoly}}. This is used as a
-default map background in several \link{glatos} functions.
+An sf POLYGON object with Great Lakes coastline, used as default
+map background in several \link{glatos} functions.
+}
+\details{
+Created from \link{shoreline} shapefile (see
+'data-raw/data-great_lakes_polygon.r).
+}
+\examples{
+\dontrun{
+plot(sf::st_geometry(great_lakes_polygon))
+}
+
 }
 \author{
-Todd Hayden (coerced to sf by C. Holbrook)
+Todd Hayden (coerced to sf via by C. Holbrook)
 }
 \keyword{datasets}

@@ -74,23 +74,26 @@ timestamps at each location. Release locations will be displayed when the
 display window includes the date of release.
 }
 \examples{
-
 \dontrun{
-#get path to example GLATOS Data Workbook
-wb_file <- system.file("extdata", 
-"walleye_workbook.xlsm", package = "glatos")
+# get path to example GLATOS Data Workbook
+wb_file <- system.file("extdata",
+  "walleye_workbook.xlsm",
+  package = "glatos"
+)
 
-#read workbook directly
+# read workbook directly
 kml_workbook(wb_file = wb_file)
 
-#now with bigger label and point and out_file
-kml_workbook(wb_file = wb_file, labelSize = 20, iconSize = 1, 
-  out_file = "bigger.kml")
+# now with bigger label and point and out_file
+kml_workbook(
+  wb_file = wb_file, labelSize = 20, iconSize = 1,
+  out_file = "bigger.kml"
+)
 
-#read workbook directly; output kmz
+# read workbook directly; output kmz
 kml_workbook(wb_file = wb_file, kmz = TRUE)
 
-#get path to example GLATOS Data Workbook
+# get path to example GLATOS Data Workbook
 wb <- read_glatos_workbook(wb_file)
 kml_workbook(wb = wb, kmz = TRUE, out_file = "bigger.kmz")
 }

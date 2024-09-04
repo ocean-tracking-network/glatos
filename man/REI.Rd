@@ -41,18 +41,20 @@ REI = (Tr/Ta) x (Sr/Sa) x (DDr/DDa) x (Da/Dr)
 }
 }
 \examples{
+\dontrun{
 det_file <- system.file("extdata", "hfx_detections.csv",
-package = "glatos")
+  package = "glatos"
+)
 
 dep_file <- system.file("extdata", "hfx_deployments.csv",
-                        package = "glatos")
+  package = "glatos"
+)
 
 hfx_deployments <- glatos::read_otn_deployments(dep_file)
 dets <- glatos::read_otn_detections(det_file)
 
-hfx_receiver_efficiency_index <- glatos::REI(dets,hfx_deployments)
-
-
+hfx_receiver_efficiency_index <- glatos::REI(dets, hfx_deployments)
+}
 }
 \author{
 Alex Nunes  \email{anunes@dal.ca}

@@ -49,7 +49,8 @@ standard glatos export.
 
 # load example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 det <- read_glatos_detections(det_file)
 
 # rename existing min_lag column
@@ -68,7 +69,7 @@ Nova Scotia.
 \cr \url{http://www.vemco.com/pdf/false_detections.pdf}
 }
 \seealso{
-\code{\link{false_detections}}
+\code{\link[=false_detections]{false_detections()}}
 }
 \author{
 Chris Holbrook, Todd Hayden, Angela Dini

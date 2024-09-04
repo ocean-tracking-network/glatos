@@ -71,15 +71,15 @@ and tiff.}
 (default value), then range of x-axis will be divided into that number of
 equally-spaced bins; and will be passed to \code{length.out} argument of
 \code{seq.Date}. If character, then value will be passed to \code{by}
-argument of \link[base]{seq.Date}. In that case, a character string,
+argument of \link[base:seq.Date]{seq.Date}. In that case, a character string,
 containing one of "day", "week", "month", "quarter" or "year". This can
 optionally be preceded by a (positive or negative) integer and a space, or
 followed by "s". E.g., "10 days", "weeks", "4 weeks", etc. See
-\link[base]{seq.Date}.}
+\link[base:seq.Date]{seq.Date}.}
 
 \item{x_format}{Format of the x-axis tick mark labels (major ticks only; minor
 ticks are not supported). Default is "\%Y-\%m-\%d". Any valid
-\link[base]{strptime} specification should work.}
+\link[base:strptime]{strptime} specification should work.}
 
 \item{outFile}{Deprecated. Use \code{out_file} instead.}
 
@@ -117,63 +117,77 @@ optional graphical parameters
 to "points" (see ?points).
 }
 \examples{
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
- package = "glatos")
+  package = "glatos"
+)
 det <- read_glatos_detections(det_file)
 
-#subset one transmitter
+# subset one transmitter
 det2 <- det[det$animal_id == 153, ]
 
-#plot without control table and main tile and change color to red
-abacus_plot(det2, locations=NULL,
-  main = "TagID: 32054", col = "red")
+# plot without control table and main tile and change color to red
+abacus_plot(det2,
+  locations = NULL,
+  main = "TagID: 32054", col = "red"
+)
 
-#example with locations specified
-abacus_plot(det2, locations=c("DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
-   "DRM", "FDT"), main = "TagID: 32054", col = "red")
+# example with locations specified
+abacus_plot(det2, locations = c(
+  "DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
+  "DRM", "FDT"
+), main = "TagID: 32054", col = "red")
 
-#plot with custom y-axis label and lines connecting symbols
-abacus_plot(det2, main = "TagID: 32054", type = "o", pch = 20,  col = "red")
+# plot with custom y-axis label and lines connecting symbols
+abacus_plot(det2, main = "TagID: 32054", type = "o", pch = 20, col = "red")
 
-#plot with custom x-axis resolution - 10 bins
+# plot with custom x-axis resolution - 10 bins
 abacus_plot(det2, main = "TagID: 32054", x_res = 10)
 
-#plot with custom x-axis resolution - monthly bins
+# plot with custom x-axis resolution - monthly bins
 abacus_plot(det2, main = "TagID: 32054", x_res = "month")
 
-#plot with custom x-axis resolution - 8-week bins
+# plot with custom x-axis resolution - 8-week bins
 abacus_plot(det2, main = "TagID: 32054", x_res = "8 weeks")
 
-#plot with custom x-axis format
+# plot with custom x-axis format
 abacus_plot(det2, main = "TagID: 32054", x_res = "months", x_format = "\%b-\%y")
 
-#plot with custom x axis limits
+# plot with custom x axis limits
 xLim <- as.POSIXct(c("2012-01-01", "2014-01-01"), tz = "UTC")
 abacus_plot(det2, main = "TagID: 32054", xlim = xLim)
 
-#example with receiver locations
+# example with receiver locations
 # get example receiver location data
 rec_file <- system.file("extdata", "sample_receivers2.csv",
- package = "glatos")
+  package = "glatos"
+)
 rec <- read_glatos_receivers(rec_file)
 
-abacus_plot(det2, locations=c("DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
- "DRM", "FDT"), receiver_history = rec,
- main = "TagID: 32054", col = "red")
- 
-#example with grey box plotted in background (using panel.first)
+abacus_plot(det2,
+  locations = c(
+    "DRF", "DRL", "FMP", "MAU", "PRS", "RAR",
+    "DRM", "FDT"
+  ), receiver_history = rec,
+  main = "TagID: 32054", col = "red"
+)
 
-#set time range covered by rectangle
+# example with grey box plotted in background (using panel.first)
+
+# set time range covered by rectangle
 rect_x_rng <- as.POSIXct(c("2012-07-31", "2013-04-15"), tz = "UTC")
-#get number of unique locations (y-axis)
+# get number of unique locations (y-axis)
 n_locs <- length(unique(det2$glatos_array))
 
-#plot as grey box in background
-abacus_plot(det2, locations=NULL,
- main = "TagID: 32054", col = "red", 
- panel.first = rect(rect_x_rng[1], 1, rect_x_rng[2], n_locs, col = "grey", 
-   border = NA))
+# plot as grey box in background
+abacus_plot(det2,
+  locations = NULL,
+  main = "TagID: 32054", col = "red",
+  panel.first = rect(rect_x_rng[1], 1, rect_x_rng[2], n_locs,
+    col = "grey",
+    border = NA
+  )
+)
 
 }
 \author{

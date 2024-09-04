@@ -5,19 +5,20 @@
 \title{A transition object for Flynn Island for testing make_transition}
 \format{
 A list comprised of a TransitionLayer and RasterLayer
-(see \code{\link{make_transition}}).
-}
-\usage{
-system.file("testdata", "flynn_island_transition.rds", package = "glatos")
+(see \code{\link[=make_transition]{make_transition()}}).
 }
 \description{
 A transition object, created from
-\code{\link{flynn_island_polygon}} for testing \code{\link{make_transition}}.
+\code{\link[=flynn_island_polygon]{flynn_island_polygon()}} for testing \code{\link[=make_transition]{make_transition()}}.
 }
 \section{Filename}{
  flynn_island_transition.rds
 }
 
+\examples{
+system.file("testdata", "flynn_island_transition.rds", package = "glatos")
+
+}
 \author{
 Chris Holbrook
 }

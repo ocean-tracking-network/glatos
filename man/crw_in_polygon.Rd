@@ -18,20 +18,20 @@ crw_in_polygon(
 )
 }
 \arguments{
-\item{polyg}{A spatial polygon object of class \code{\link[sf]{sf}} or
-\code{\link[sf]{sfc}} containing \code{POLYGON} or \code{MULTIPOLYGON}
+\item{polyg}{A spatial polygon object of class \code{\link[sf:sf]{sf::sf()}} or
+\code{\link[sf:sfc]{sf::sfc()}} containing \code{POLYGON} or \code{MULTIPOLYGON}
 features (but \code{SpatialPolygonsDataFrame} and \code{SpatialPolygons}
 are also accepted); \cr \emph{OR} \cr A polygon defined as data frame or
 matrix with numeric columns x and y.}
 
-\item{theta}{A 2-element numeric vector with turn angle parameters (theta\link{1}
-= mean; theta\link{2} = sd), in degrees, from normal distribution.}
+\item{theta}{A 2-element numeric vector with turn angle parameters (\code{theta[1]}
+= mean; \code{theta[2]} = sd), in degrees, from normal distribution.}
 
 \item{stepLen}{A numeric scalar with total distance moved in each step, in
 meters.}
 
 \item{initPos}{A 2-element numeric vector with initial position
-(initPos\link{1}=x, initPos\link{2}=y) in same coordinate reference system as
+(\code{initPos[1]}=x, \code{initPos[2]}=y) in same coordinate reference system as
 \code{polyg}.}
 
 \item{initHeading}{A numeric scalar with initial heading in degrees. E.g., 0
@@ -62,12 +62,12 @@ When \code{sp_out = TRUE}, an \code{sf} object containing one
 \code{polyg}.
 }
 \description{
-Uses \code{\link{crw}} to simulate a random walk as series of equal-length steps
+Uses \code{\link[=crw]{crw()}} to simulate a random walk as series of equal-length steps
 with turning angles drawn from a normal distribution inside a polygon.
 }
 \details{
 If initPos = NA, then a starting point is randomly selected within
-the polygon boundary. A path is simulated forward using \code{\link{crw}}.
+the polygon boundary. A path is simulated forward using \code{\link[=crw]{crw()}}.
 Initial heading is also randomly selected if \code{initHeading = NA}. When
 a step crosses the polygon boundary, a new heading for that step is drawn
 and the turn angle standard deviation is enlarged slightly for each
@@ -93,84 +93,104 @@ River system.
 \examples{
 
 # Example 1 - data.frame input
-mypolygon <- data.frame(x = c(-50,-50, 50, 50), y = c(-50,50,50,-50))
+mypolygon <- data.frame(x = c(-50, -50, 50, 50), y = c(-50, 50, 50, -50))
 
-path_df <- crw_in_polygon(mypolygon, theta = c(0, 20), stepLen = 10,
-  initPos=c(0,0), initHeading=0, nsteps=50, sp_out = FALSE)
+path_df <- crw_in_polygon(mypolygon,
+  theta = c(0, 20), stepLen = 10,
+  initPos = c(0, 0), initHeading = 0, nsteps = 50, sp_out = FALSE
+)
 
-class(path_df) #note object is data.frame
+class(path_df) # note object is data.frame
 
-plot(path_df, type = "o", pch = 20, asp = c(1,1),
-  xlim = range(mypolygon$x), ylim = range(mypolygon$y))
+plot(path_df,
+  type = "o", pch = 20, asp = c(1, 1),
+  xlim = range(mypolygon$x), ylim = range(mypolygon$y)
+)
 
 polygon(mypolygon, border = "red")
 
 
 # Example 2 - data.frame input; input CRS specified
-mypolygon <- data.frame(x = c(-84,-85, -85, -84), 
-                        y = c(45, 44, 45, 45))
-path_df <- crw_in_polygon(mypolygon, 
-                          theta = c(0, 20), 
-                          stepLen = 1000,
-                          initPos = c(-84.75, 44.75),
-                          initHeading = 0, 
-                          nsteps = 50, 
-                          inputCRS = 4326,
-                          cartesianCRS = 3175,
-                          sp_out = FALSE)
-plot(path_df, type = "o", pch = 20, asp = c(1,1),
-  xlim = range(mypolygon$x), ylim = range(mypolygon$y))
-class(path_df) #note object is data.frame
+mypolygon <- data.frame(
+  x = c(-84, -85, -85, -84),
+  y = c(45, 44, 45, 45)
+)
+path_df <- crw_in_polygon(mypolygon,
+  theta = c(0, 20),
+  stepLen = 1000,
+  initPos = c(-84.75, 44.75),
+  initHeading = 0,
+  nsteps = 50,
+  inputCRS = 4326,
+  cartesianCRS = 3175,
+  sp_out = FALSE
+)
+plot(path_df,
+  type = "o", pch = 20, asp = c(1, 1),
+  xlim = range(mypolygon$x), ylim = range(mypolygon$y)
+)
+class(path_df) # note object is data.frame
 polygon(mypolygon, border = "red")
 
 
 # Example 3 - sf POLYGON input
 data(great_lakes_polygon)
 
-#simulate in great lakes polygon
+# simulate in great lakes polygon
 path_sf <- crw_in_polygon(great_lakes_polygon,
-                          theta = c(0, 25), 
-                          stepLen = 10000,
-                          initHeading = 0, 
-                          nsteps = 100,
-                          cartesianCRS = 3175)
+  theta = c(0, 25),
+  stepLen = 10000,
+  initHeading = 0,
+  nsteps = 100,
+  cartesianCRS = 3175
+)
 
-#plot
+# plot
 plot(sf::st_geometry(great_lakes_polygon),
-                     col = "lightgrey", 
-                     border = "grey")
+  col = "lightgrey",
+  border = "grey"
+)
 points(sf::st_coordinates(path_sf), type = "o", pch = 20, col = "red")
 
-#zoom in
-plot(sf::st_geometry(great_lakes_polygon), col = "lightgrey",
-  xlim = sf::st_bbox(path_sf)[c("xmin", "xmax")], 
-  ylim = sf::st_bbox(path_sf)[c("ymin", "ymax")])
-points(sf::st_coordinates(path_sf),type="o", pch = 20, col = "red")
+# zoom in
+plot(sf::st_geometry(great_lakes_polygon),
+  col = "lightgrey",
+  xlim = sf::st_bbox(path_sf)[c("xmin", "xmax")],
+  ylim = sf::st_bbox(path_sf)[c("ymin", "ymax")]
+)
+points(sf::st_coordinates(path_sf), type = "o", pch = 20, col = "red")
 
 
 # Example 4 - SpatialPolygonsDataFrame input
 data(greatLakesPoly)
 
-#simulate in great lakes polygon
-path_sp <- crw_in_polygon(greatLakesPoly, 
-                          theta = c(0, 25), 
-                          stepLen = 10000,
-                          initHeading = 0, 
-                          nsteps = 100, 
-                          cartesianCRS = 3175,
-                          sp_out = TRUE)
+# simulate in great lakes polygon
+path_sp <- crw_in_polygon(greatLakesPoly,
+  theta = c(0, 25),
+  stepLen = 10000,
+  initHeading = 0,
+  nsteps = 100,
+  cartesianCRS = 3175,
+  sp_out = TRUE
+)
 
-#plot
+# plot
 plot(sf::st_as_sfc(greatLakesPoly), col = "lightgrey", border = "grey")
-points(sf::st_coordinates(sf::st_as_sf(path_sp)), type = "o", pch = 20, 
-                          col = "red")
+points(sf::st_coordinates(sf::st_as_sf(path_sp)),
+  type = "o", pch = 20,
+  col = "red"
+)
 
-#zoom in
-plot(sf::st_as_sfc(greatLakesPoly), col = "lightgrey", border = "grey",
-  xlim = sp::bbox(sf::st_coordinates(sf::st_as_sf(path_sp)))[1,], 
-  ylim = sp::bbox(sf::st_coordinates(sf::st_as_sf(path_sp)))[2,])
-points(sf::st_coordinates(sf::st_as_sf(path_sp)), type = "o", pch = 20, 
-       col = "red")
+# zoom in
+plot(sf::st_as_sfc(greatLakesPoly),
+  col = "lightgrey", border = "grey",
+  xlim = sf::st_bbox(path_sp)[c("xmin", "xmax")],
+  ylim = sf::st_bbox(path_sp)[c("ymin", "ymax")]
+)
+points(sf::st_coordinates(sf::st_as_sf(path_sp)),
+  type = "o", pch = 20,
+  col = "red"
+)
 
 }
 \seealso{

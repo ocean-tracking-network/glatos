@@ -14,12 +14,12 @@ crw(
 }
 \arguments{
 \item{theta}{A 2-element numeric vector with turn angle parameters
-(theta\link{1} = mean; theta\link{2} = sd) from normal distribution.}
+(\code{theta[1]} = mean; \code{theta[2]} = sd) from normal distribution.}
 
 \item{stepLen}{A numeric scalar with total distance moved in each step.}
 
-\item{initPos}{A 2-element numeric vector with nital position (initPos\link{1}=x,
-initPos\link{2}=y).}
+\item{initPos}{A 2-element numeric vector with nital position (\code{initPos[1]}=x,
+\code{initPos[2]}=y).}
 
 \item{initHeading}{A numeric scalar with initial heading in degrees.}
 
@@ -44,9 +44,11 @@ to obtain the simualted path.
 Adapted from code provided by Tom Binder.
 }
 \examples{
-foo <- crw(theta=c(0,5), stepLen=10, initPos=c(0,0), initHeading=0, 
-  nsteps=10)
-plot(foo,type="o",pch=20,asp=c(1,1))
+foo <- crw(
+  theta = c(0, 5), stepLen = 10, initPos = c(0, 0), initHeading = 0,
+  nsteps = 10
+)
+plot(foo, type = "o", pch = 20, asp = c(1, 1))
 
 }
 \author{
