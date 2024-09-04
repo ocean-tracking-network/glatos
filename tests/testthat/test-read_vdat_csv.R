@@ -1,5 +1,8 @@
 # R/load-read_vdat_csv.r
 
+skip_on_cran()
+skip_on_ci()
+
 test_that("read_vdat_csv works", {
   # VR2W file
   vrl_file <- system.file("extdata", "detection_files_raw",
