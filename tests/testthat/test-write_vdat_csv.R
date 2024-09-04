@@ -55,24 +55,34 @@ test_that("write_vdat_csv works", {
   
   # "split" output format
   # write to multiple files (fathom split option)
+  split_dir <- paste0(csv_file, "-fathom-split")
   expect_equal(
     write_vdat_csv(vdat, out_file = temp_dir,
                    output_format = "csv.fathom.split"),
-    paste0(csv_file, "-fathom-split"))
+    split_dir)
   
   # "split" output format
   # out_file is dir that does not exist
+  new_dir <- file.path(temp_dir, "newdir")
   expect_type(
-    write_vdat_csv(vdat, out_file = file.path(temp_dir, "newdir"),
+    write_vdat_csv(vdat, out_file = new_dir,
                    output_format = "csv.fathom.split"),
     "character")
+
   
+  # clean up
+  on.exit(unlink(c(csv_file, 
+                   temp_file,
+                   new_dir,
+                   split_dir),
+                 recursive = TRUE))  
   
+    
   # tests to skip
   skip("skip writing to wd")
   
   expect_type(write_vdat_csv(vdat), "character")
-               
+
 })
 
 
@@ -105,6 +115,8 @@ test_that("bad inputs are caught", {
                    out_file = file.path(temp_dir, "newdir"),
                    output_format = "csv.fathom.split"),
     "Input 'out_file' must include file name if 'vdat' does not contain")
+  
+  on.exit(unlink(csv_file))
   
 })
 
@@ -184,5 +196,8 @@ test_that("vdat_list subset method works", {
   expect_s3_class(vdat3, "vdat_list")
   expect_equal(names(vdat3), record_types_names)
   
+  
+  # clean up
+  on.exit(unlink(csv_file))
   
 })

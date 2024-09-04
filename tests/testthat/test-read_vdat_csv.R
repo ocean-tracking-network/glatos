@@ -22,6 +22,9 @@ test_that("read_vdat_csv works", {
   expect_equal(read_vdat_csv(csv_file, record_types = c("DET"))$DET,
                vdat$DET)
   
+  # clean up
+  on.exit(unlink(csv_file))
+  
 })
 
 
@@ -55,5 +58,8 @@ test_that("bad inputs are caught", {
   expect_error(read_vdat_csv(temp_file, record_types = "DET"),
                "The following input 'record_types' were not found in CSV file")
   
+  
+  # clean up
+  on.exit(unlink(temp_file))
 })
 
