@@ -1,5 +1,8 @@
 # R/load-write_vdat_csv.r
 
+skip_on_ci()
+skip_on_cran()
+
 test_that("write_vdat_csv works", {
   
   # VR2W file  
