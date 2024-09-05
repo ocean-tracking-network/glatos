@@ -629,7 +629,6 @@ get_local_vdat_version <- function(vdat_exe_path = NULL) {
 #'
 #' @export
 get_local_vdat_template <- function(vdat_exe_path = NULL) {
-  
   # Check path to vdat.exe and get (valid) command arg for system2 call
   vdat_cmd <- check_vdat(vdat_exe_path)
 
@@ -638,18 +637,18 @@ get_local_vdat_template <- function(vdat_exe_path = NULL) {
 
   vdat_schema <- system2(vdat_cmd, vdat_call, stdout = TRUE)
 
-  #remove ï»¿" BOM from start of first row if present
-  check_bom <- vdat_schema[1] 
+  # remove ï»¿" BOM from start of first row if present
+  check_bom <- vdat_schema[1]
   Encoding(check_bom) <- "latin1"
-  
-  if(grepl("^ï»¿", check_bom)) { 
+
+  if (grepl("^ï»¿", check_bom)) {
     Encoding(vdat_schema[1]) <- "latin1"
     vdat_schema[1] <- iconv(vdat_schema[1], "latin1", "ascii", sub = "")
   }
-  
+
   vdat_schema_names <- lapply(vdat_schema, function(x) strsplit(x, ",")[[1]][1])
   vdat_schema_list <- lapply(vdat_schema, function(x) strsplit(x, ",")[[1]][-1])
-  
+
   # Drop _DESC suffix and assign names to each element
   names(vdat_schema_list) <- gsub("_DESC$", "", vdat_schema_names)
 

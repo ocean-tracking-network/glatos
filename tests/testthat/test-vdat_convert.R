@@ -226,7 +226,6 @@ test_that("get_local_vdat_version works", {
 
 
 test_that("get_local_vdat_template works", {
-  
   # skip if vdat.exe tested is < v 10
   skip_if(
     numeric_version(get_local_vdat_version()$version) < "10"
@@ -235,21 +234,26 @@ test_that("get_local_vdat_template works", {
   expect_type(temp_vdat_csv_schema <- get_local_vdat_template(), "list")
 
   # convert to same format as temp_vdat_schema for comparison
-  vdat_csv_schema_i <- 
+  vdat_csv_schema_i <-
     vdat_csv_schema[[paste0("v", temp_vdat_csv_schema$`VEMCO DATA LOG`[1])]]
 
   # strip empty strings
-  temp_vdat_csv_schema <- lapply(temp_vdat_csv_schema, 
-                                 function(x) grep("^$", x, 
-                                                  value = TRUE, 
-                                                  invert = TRUE))
-                              
+  temp_vdat_csv_schema <- lapply(
+    temp_vdat_csv_schema,
+    function(x) {
+      grep("^$", x,
+        value = TRUE,
+        invert = TRUE
+      )
+    }
+  )
+
   # strip _DESC records
   vdat_csv_schema_i <- lapply(vdat_csv_schema_i, function(x) x$name[-1])
 
-  
+
   expect_equal(
     temp_vdat_csv_schema[-1],
-    vdat_csv_schema_i)
-         
+    vdat_csv_schema_i
+  )
 })

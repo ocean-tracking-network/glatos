@@ -836,13 +836,13 @@ vdat_csv_schema$v2.0.0 <- list(
   "HEALTH_VR2TX" = NA,
   "HEALTH_VR2W" = NA,
   "HEALTH_VR4" = NA,
-  "HEALTH_NEXTRAK" = NA, #new vdat-10.6.0-20240716-1903df-release
+  "HEALTH_NEXTRAK" = NA, # new vdat-10.6.0-20240716-1903df-release
   "NOISE_STATS_VR2AR" = NA,
   "NOISE_STATS_VR2TX" = NA,
   "PING" = NA, # new v2.0.0
   "TEMP" = NA,
   "TEMP_STATS" = NA
-  #"XPND_EVENT" = NA # new v2.0.0; but absent vdat-10.6.0
+  # "XPND_EVENT" = NA # new v2.0.0; but absent vdat-10.6.0
 )
 
 vdat_csv_schema$v2.0.0$ATTITUDE <- read.table(
