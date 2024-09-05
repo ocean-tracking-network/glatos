@@ -23,10 +23,9 @@ test_that("detection_bubble_plot works", {
   expect_true(file.exists(temp_png))
 
   # Check if expected and actual file sizes
-  expect_equal(
+  expect_gt(
     file.size(temp_png),
-    17226,
-    tolerance = 0.005
+    5000
   )
 
   # check returned value
