@@ -836,12 +836,13 @@ vdat_csv_schema$v2.0.0 <- list(
   "HEALTH_VR2TX" = NA,
   "HEALTH_VR2W" = NA,
   "HEALTH_VR4" = NA,
+  "HEALTH_NEXTRAK" = NA, #new vdat-10.6.0-20240716-1903df-release
   "NOISE_STATS_VR2AR" = NA,
   "NOISE_STATS_VR2TX" = NA,
   "PING" = NA, # new v2.0.0
   "TEMP" = NA,
-  "TEMP_STATS" = NA,
-  "XPND_EVENT" = NA # new v2.0.0
+  "TEMP_STATS" = NA
+  #"XPND_EVENT" = NA # new v2.0.0; but absent vdat-10.6.0
 )
 
 vdat_csv_schema$v2.0.0$ATTITUDE <- read.table(
@@ -1654,6 +1655,24 @@ vdat_csv_schema$v2.0.0$HEALTH_VR4 <- read.table(
   comment.char = ""
 )
 
+vdat_csv_schema$v2.0.0$HEALTH_NEXTRAK <- read.table(
+  text = '
+  name                            type
+  "HEALTH_NEXTRAK_DESC"           character
+  "Device Time (UTC)"             POSIXct
+  "Time"                          POSIXct
+  "Time Offset (h)"               numeric
+  "Time Correction (s)"           numeric
+  "Model"                         character
+  "Serial Number"                 character
+  "Memory Remaining (%)"          numeric
+  ',
+  header = TRUE,
+  stringsAsFactors = FALSE,
+  check.names = FALSE,
+  comment.char = ""
+)
+
 vdat_csv_schema$v2.0.0$NOISE_STATS_VR2AR <- read.table(
   text = '
   name                      type
@@ -1765,34 +1784,35 @@ vdat_csv_schema$v2.0.0$TEMP_STATS <- read.table(
   comment.char = ""
 )
 
-vdat_csv_schema$v2.0.0$XPND_EVENT <- read.table(
-  text = '
-  name                      type
-  "XPND_EVENT_DESC"         character
-  "Device Time (UTC)"       POSIXct
-  "Time"                    POSIXct
-  "Time Offset (h)"         numeric
-  "Time Correction (s)"     numeric
-  "Model"                   character
-  "Serial Number"           character
-  "Type"                    character
-  "Subtype"                 character
-  "Description"             character
-  "Values"                  character
-  "Responder Model"         character
-  "Responder Serial Number" character
-  "Responder Range (m)"     numeric
-  "Transmit Power (dB)"     numeric
-  "Receive Signal (dB)"     numeric
-  "Receive Gain (dB)"       numeric
-  "Latitude"                numeric
-  "Longitude"               numeric
-  "GPS HDOP"                numeric
-  ',
-  header = TRUE,
-  stringsAsFactors = FALSE,
-  check.names = FALSE,
-  comment.char = ""
-)
+# XPND_EVENT was present in vdat.exe v. 9.3 but not 10.6
+# vdat_csv_schema$v2.0.0$XPND_EVENT <- read.table(
+#   text = '
+#   name                      type
+#   "XPND_EVENT_DESC"         character
+#   "Device Time (UTC)"       POSIXct
+#   "Time"                    POSIXct
+#   "Time Offset (h)"         numeric
+#   "Time Correction (s)"     numeric
+#   "Model"                   character
+#   "Serial Number"           character
+#   "Type"                    character
+#   "Subtype"                 character
+#   "Description"             character
+#   "Values"                  character
+#   "Responder Model"         character
+#   "Responder Serial Number" character
+#   "Responder Range (m)"     numeric
+#   "Transmit Power (dB)"     numeric
+#   "Receive Signal (dB)"     numeric
+#   "Receive Gain (dB)"       numeric
+#   "Latitude"                numeric
+#   "Longitude"               numeric
+#   "GPS HDOP"                numeric
+#   ',
+#   header = TRUE,
+#   stringsAsFactors = FALSE,
+#   check.names = FALSE,
+#   comment.char = ""
+# )
 
 # usethis::use_data(vdat_csv_schema, overwrite = TRUE)

@@ -4,7 +4,8 @@ skip_on_cran()
 skip_on_ci()
 
 test_that("read_vdat_csv works", {
-  # VR2W file
+ 
+   # VR2W file
   vrl_file <- system.file("extdata", "detection_files_raw",
     "VR2W_109924_20110718_1.vrl",
     package = "glatos"

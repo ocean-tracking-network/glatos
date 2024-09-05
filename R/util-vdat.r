@@ -78,7 +78,7 @@
 #'  output file, including files that were skipped (when output file exists and
 #'  \code{overwrite = FALSE}).
 #'
-#' @note Tested on VDAT version 3.4.1.
+#' @note Tested on VDAT version vdat-10.6.0-20240716-1903df-release
 #'
 #' @author C. Holbrook, \email{cholbrook@@usgs.gov}
 #'
@@ -607,9 +607,9 @@ get_local_vdat_version <- function(vdat_exe_path = NULL) {
 #'  (default) then the path to VDAT.exe must be in the PATH environment variable
 #'  of the system. See \code{\link{check_vdat}}.
 #'
-#' @details A bug in vdat.exe version 9 (confirmed on v. vdat-9.3.0) will cause
+#' @details A bug in vdat.exe version 9 (confirmed on vdat-9.3.0) will cause
 #'   this function to return an empty list. Fixed in vdat.exe version 10
-#'   (confirmed in 10.6.0).
+#'   (confirmed on vdat-10.6.0).
 #'
 #' @returns
 #' Schema (template) of VDAT CSV produced by installed version of VDAT.exe.
@@ -629,6 +629,7 @@ get_local_vdat_version <- function(vdat_exe_path = NULL) {
 #'
 #' @export
 get_local_vdat_template <- function(vdat_exe_path = NULL) {
+  
   # Check path to vdat.exe and get (valid) command arg for system2 call
   vdat_cmd <- check_vdat(vdat_exe_path)
 
@@ -637,9 +638,18 @@ get_local_vdat_template <- function(vdat_exe_path = NULL) {
 
   vdat_schema <- system2(vdat_cmd, vdat_call, stdout = TRUE)
 
+  #remove ï»¿" BOM from start of first row if present
+  check_bom <- vdat_schema[1] 
+  Encoding(check_bom) <- "latin1"
+  
+  if(grepl("^ï»¿", check_bom)) { 
+    Encoding(vdat_schema[1]) <- "latin1"
+    vdat_schema[1] <- iconv(vdat_schema[1], "latin1", "ascii", sub = "")
+  }
+  
   vdat_schema_names <- lapply(vdat_schema, function(x) strsplit(x, ",")[[1]][1])
   vdat_schema_list <- lapply(vdat_schema, function(x) strsplit(x, ",")[[1]][-1])
-
+  
   # Drop _DESC suffix and assign names to each element
   names(vdat_schema_list) <- gsub("_DESC$", "", vdat_schema_names)
 

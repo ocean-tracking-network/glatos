@@ -226,25 +226,30 @@ test_that("get_local_vdat_version works", {
 
 
 test_that("get_local_vdat_template works", {
+  
   # skip if vdat.exe tested is < v 10
   skip_if(
     numeric_version(get_local_vdat_version()$version) < "10"
   )
 
-  expect_type(temp_vdat_schema <- get_local_vdat_template(), "list")
+  expect_type(temp_vdat_csv_schema <- get_local_vdat_template(), "list")
 
+  # convert to same format as temp_vdat_schema for comparison
+  vdat_csv_schema_i <- 
+    vdat_csv_schema[[paste0("v", temp_vdat_csv_schema$`VEMCO DATA LOG`[1])]]
+
+  # strip empty strings
+  temp_vdat_csv_schema <- lapply(temp_vdat_csv_schema, 
+                                 function(x) grep("^$", x, 
+                                                  value = TRUE, 
+                                                  invert = TRUE))
+                              
+  # strip _DESC records
+  vdat_csv_schema_i <- lapply(vdat_csv_schema_i, function(x) x$name[-1])
+
+  
   expect_equal(
-    names(temp_vdat_schema),
-    c(
-      "VEMCO DATA LOG", "ATTITUDE", "BATTERY", "CFG_CHANNEL", "CFG_RECEIVER_HR3",
-      "CFG_STATION", "CFG_STUDY", "CFG_TRANSMITTER", "CLOCK_REF", "CLOCK_SET",
-      "DATA_ERROR", "DATA_SOURCE_FILE", "DEPTH", "DEPTH_STATS", "DET",
-      "DET_HTI", "DET_FILTER", "DET_SENS", "DIAG", "DIAG_FAST", "DIAG_HR2",
-      "DIAG_HR3", "DIAG_VR2W", "DIAG_VR2W_INTERIM", "DIAG_VR2AR", "DIAG_VR2AR_INTERIM",
-      "DIAG_VR2TX", "DIAG_VR2TX_INTERIM", "DIAG_VR4", "EVENT", "EVENT_FAULT",
-      "EVENT_INIT", "EVENT_OFFLOAD", "HEALTH_HR2", "HEALTH_HR3", "HEALTH_VR2AR",
-      "HEALTH_VR2TX", "HEALTH_VR2W", "HEALTH_VR4", "NOISE", "NOISE_STATS_VR2AR",
-      "NOISE_STATS_VR2TX", "PING", "TEMP", "TEMP_STATS", "XPND_EVENT"
-    )
-  )
+    temp_vdat_csv_schema[-1],
+    vdat_csv_schema_i)
+         
 })

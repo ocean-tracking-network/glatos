@@ -83,7 +83,7 @@ or via system PATH environment variable. See also
 \code{\link{check_vdat}}.
 }
 \note{
-Tested on VDAT version 3.4.1.
+Tested on VDAT version vdat-10.6.0-20240716-1903df-release
 }
 \section{Output}{
 

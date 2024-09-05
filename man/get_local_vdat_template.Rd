@@ -18,9 +18,9 @@ Schema (template) of VDAT CSV produced by installed version of VDAT.exe.
 Get schema from local installation of Innovasea program VDAT.exe
 }
 \details{
-A bug in vdat.exe version 9 (confirmed on v. vdat-9.3.0) will cause
+A bug in vdat.exe version 9 (confirmed on vdat-9.3.0) will cause
 this function to return an empty list. Fixed in vdat.exe version 10
-(confirmed in 10.6.0).
+(confirmed on vdat-10.6.0).
 }
 \examples{
 \dontrun{

@@ -74,8 +74,10 @@ write_vdat_csv(vdat, out_file = temp_file)
 
 # write to multiple files (fathom split option)
 temp_dir2 <- tempdir()
-write_vdat_csv(vdat, out_file = temp_dir2, 
-  output_format = "csv.fathom.split")
+write_vdat_csv(vdat,
+  out_file = temp_dir2,
+  output_format = "csv.fathom.split"
+)
 }
 
 }
