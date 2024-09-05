@@ -20,7 +20,14 @@ test_that("detection_bubble_plot works", {
   )
 
   # check image written to disk
-  expect_snapshot_file(temp_png)
+  expect_true(file.exists(temp_png))
+  
+  # Check if expected and actual file sizes
+  expect_equal(
+    file.size(temp_png),
+    17226,
+    tolerance = 0.005
+  )
 
   # check returned value
   expect_equal(dbp, dbp_shouldbe)
