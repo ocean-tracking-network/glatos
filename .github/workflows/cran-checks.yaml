@@ -5,6 +5,7 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+    
   # schedule:
   # #   # Runs daily at 4:00 PM UTC (9:00 AM PST)
   #   - cron: '0 16 * * *'
