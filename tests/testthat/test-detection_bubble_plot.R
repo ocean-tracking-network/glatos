@@ -21,7 +21,7 @@ test_that("detection_bubble_plot works", {
 
   # check image written to disk
   expect_true(file.exists(temp_png))
-  
+
   # Check if expected and actual file sizes
   expect_equal(
     file.size(temp_png),
