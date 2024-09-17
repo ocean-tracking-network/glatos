@@ -131,6 +131,18 @@ deploy_sites <- buffer_rings_pts %>%
 #  # save as gpx
 #  st_write(deploy_sites, "YOUR_FILE_PATH", driver = "GPX")
 
+## ----------------------------------------------------------------------------------
+#  det_summary <- dets %>%
+#    group_by(station, dets_expected, tag_serial_name) %>%
+#    summarise(
+#      dets_heard = n()
+#    ) %>%
+#    ungroup() %>%
+#    mutate(
+#      dets_eff = dets_heard / dets_expected,
+#      dets_eff_perc = (dets_heard / dets_expected) * 100
+#    )
+
 ## ----reload, eval = FALSE, message = FALSE-----------------------------------------
 #  # ---- Bring in R packages ----
 #  {
