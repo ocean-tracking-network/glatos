@@ -21,11 +21,13 @@ Imports:
 		zip
 Suggests: 
     vdiffr,
+    ggplot2,
 		gifski,
 		knitr,
 		mapview,
 		methods,
 		png,
+		purrr,
 		rmarkdown,
 		terra,
 		testthat (>= 3.0.0),
