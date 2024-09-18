@@ -1,7 +1,7 @@
 ---
 title: "Supplemental documents & workshop handouts"
 subtitle: "for the R package glatos"
-date: "Updated: `r Sys.Date()`"
+date: "Updated: 2024-09-18"
 output: 
   rmarkdown::html_document
 vignette: >

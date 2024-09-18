@@ -1,10 +1,9 @@
 ----
 
-# glatos 0.8.0 (dev)
+# glatos 0.8.9011 (2024-09-18)
 
 
 ## Breaking changes
-
 
 - Changed `make_transition()` to use `jarasterize()` (see New Features) and 
   added input arg `buffer`.
@@ -25,44 +24,23 @@ from earlier versions.
 - Removed 'gganimate_handout' (pdf and html) from 'vignettes'.
 
 
-### Bug fixes and minor changes
-
-- Add `@srs` slot to `greatLakesTrLayer` data object and rename file 
-  'data/greatLakesTrLayer.rda'.
-    - fixes [issue #213](https://github.com/ocean-tracking-network/glatos/issues/213)
-
-- Fix bug in `read_glatos_workbook()` where timestamps during daylight savings 
-  were shifted one hour on linux operating system (not an issue on windows or 
-  mac).
-    - fixes [issue #208](https://github.com/ocean-tracking-network/glatos/issues/208)
-
-- Omit data.table from class of object returned by `read_glatos_detections()`  
-  and `read_glatos_receivers()`. 
-    - fixes [issue #200](https://github.com/ocean-tracking-network/glatos/issues/200)
-
-- Fix typo in Description to Suggest 'gifski' (not 'gifsky'). 
-    - fixes [issue #185](https://github.com/ocean-tracking-network/glatos/issues/185)
-
-
 ### New features
 
-#### 2024-08-28
-
-- New function `jarasterize()` to allow rasterization 
-  (esp. with `all_touched = TRUE`) using only `sf` and `raster`. 
-  Used by `make_transition()`.
+- Add new function `vue_convert()` to convert VRL file to CSV file (detection
+  records only; receiver event log records are not supported). 
+    - replaces `vrl2csv()` (deprecated).
+    
+- Add new function `vdat_convert()` to convert VRL or VDAT files to 
+  Fathom/VDAT CSV. 
   
-- New function `scale_meters_to_degrees()` to inform selection of `res` argument 
-  to `make_transition()`.
-
-#### 2024-01-19
-
-- In `make_frames()`, allow `terra::SpatVector` input for background map 
-  (`bg_map` arg).
-    - add test for `terra::SpatVector` input
-
-
-#### 2023-08-30
+- Add new functions for reading data exported from VRL with VUE software.
+    - `read_vue_detection_csv()` to read data from detection file exported 
+    from VUE or created using `vue_convert()` or `vrl2csv()`.
+    - `read_vue_event_csv()` to read data from receiver event log file exported 
+    from VUE.
+  
+- Add new function `read_vdat_csv()` to read data exported from VRL or VDAT 
+  using VDAT.exe (e.g., using `vdat_convert()`).
 
 - Add new functions to create, check, and validate `glatos_animals` objects:
     - `glatos_animals()` to construct a `glatos_animals` object from
@@ -102,22 +80,42 @@ from earlier versions.
       names and classes.
     - fixes [issue #126](https://github.com/ocean-tracking-network/glatos/issues/126)
     - fixes [issue #78](https://github.com/ocean-tracking-network/glatos/issues/78)
-    
-- Add new function `vue_convert()` to convert VRL file to CSV file (detection
-  records only; receiver event log records are not supported). 
-    - replaces `vrl2csv()` (deprecated).
-    
-- Add new function `vdat_convert()` to convert VRL or VDAT files to 
-  Fathom/VDAT CSV. 
+
+- New function `jarasterize()` to allow rasterization 
+  (esp. with `all_touched = TRUE`) using only `sf` and `raster`. 
+  Used by `make_transition()`.
   
-- Add new functions for reading data exported from VRL with VUE software.
-    - `read_vue_detection_csv()` to read data from detection file exported 
-    from VUE or created using `vue_convert()` or `vrl2csv()`.
-    - `read_vue_event_csv()` to read data from receiver event log file exported 
-    from VUE.
-  
-- Add new function `read_vdat_csv()` to read data exported from VRL or VDAT 
-  using VDAT.exe (e.g., using `vdat_convert()`).
+- Add new function `scale_meters_to_degrees()` to inform selection of `res` 
+  argument to `make_transition()`.
+
+- In `make_frames()`, allow `terra::SpatVector` input for background map 
+  (`bg_map` arg).
+    - add test for `terra::SpatVector` input
+
+
+### Bug fixes and minor changes
+
+- Add `@srs` slot to `greatLakesTrLayer` data object and rename file 
+  'data/greatLakesTrLayer.rda'.
+    - fixes [issue #213](https://github.com/ocean-tracking-network/glatos/issues/213)
+
+- Fix bug in `read_glatos_workbook()` where timestamps during daylight savings 
+  were shifted one hour on linux operating system (not an issue on windows or 
+  mac).
+    - fixes [issue #208](https://github.com/ocean-tracking-network/glatos/issues/208)
+
+- Omit data.table from class of object returned by `read_glatos_detections()`  
+  and `read_glatos_receivers()`. 
+    - fixes [issue #200](https://github.com/ocean-tracking-network/glatos/issues/200)
+
+- Fix typo in Description to Suggest 'gifski' (not 'gifsky'). 
+    - fixes [issue #185](https://github.com/ocean-tracking-network/glatos/issues/185)
+
+- Various changes to resolve R CMD check errors, warning, and notes (generally
+  not user-facing).
+
+
+----
 
 
 # glatos 0.7.3 (2024-04-09)

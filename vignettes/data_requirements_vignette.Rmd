@@ -1,6 +1,6 @@
 ---
 title: "Data requirements of the R package glatos"
-date: "Updated: `r Sys.Date()`"
+date: "Updated: 2024-09-18"
 output: 
   rmarkdown::html_document:
     toc: true
@@ -50,9 +50,9 @@ vignette, if followed, will ensure compatibility with all *glatos* functions.
 For data in standard GLATOS and OTN formats, use of built-in data loading
 functions (see the [Data Loading vignette](data_loading.html) for details) will
 ensure that resulting data objects meet the requirements of *glatos* functions.
-For reference, the [appendix](#appendix-glatos-network-standard-data-files) provides data
-field definitions (data dictionary) of standard data files obtained from the
-GLATOS [Data Portal](https://glatos.glos.us/portal).
+For reference, the [appendix](#appendix-glatos-network-standard-data-files)
+provides data field definitions (data dictionary) of standard data files
+obtained from the GLATOS [Data Portal](https://glatos.glos.us/portal).
 
 
 ## Data requirements 
@@ -209,7 +209,10 @@ merely be thought of as labels showing that the objects were produced by a
 *glatos* function and will therefore be compatible with other *glatos*
 functions. Beware, as with any S3 class, that it is possible to modify a
 *glatos* object to the point that is will no longer be compatible with *glatos*
-functions. 
+functions. Starting with *glatos* version 0.8.0, there are constructor and 
+validator functions (e.g., *glatos_detections()*, *as_glatos_detection()*, 
+*validate_glatos_detections()*) to help create and check *glatos_animals*, 
+*glatos_receivers*, and *glatos_detections* objects.
 
 # Appendix: GLATOS network standard data files
 
