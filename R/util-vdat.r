@@ -629,6 +629,7 @@ get_local_vdat_version <- function(vdat_exe_path = NULL) {
 #'
 #' @export
 get_local_vdat_template <- function(vdat_exe_path = NULL) {
+  
   # Check path to vdat.exe and get (valid) command arg for system2 call
   vdat_cmd <- check_vdat(vdat_exe_path)
 
@@ -637,11 +638,12 @@ get_local_vdat_template <- function(vdat_exe_path = NULL) {
 
   vdat_schema <- system2(vdat_cmd, vdat_call, stdout = TRUE)
 
-  # remove ï»¿" BOM from start of first row if present
+  # remove BOM from start of first row if present
   check_bom <- vdat_schema[1]
   Encoding(check_bom) <- "latin1"
+  
 
-  if (grepl("^ï»¿", check_bom)) {
+  if(length(suppressMessages(tools::showNonASCII(check_bom))) > 0) {
     Encoding(vdat_schema[1]) <- "latin1"
     vdat_schema[1] <- iconv(vdat_schema[1], "latin1", "ascii", sub = "")
   }
