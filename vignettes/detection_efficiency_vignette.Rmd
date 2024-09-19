@@ -271,6 +271,52 @@ For the analysis you will want to start a new R script, hence why I have left lo
 }
 ```
 
+Considering we will be starting a new script and you will need the location of the receiver we will bring this information back in.  For this example I will bring in the receiver location data that we used in the first half of the vignette
+
+```{r}
+
+# get path to example receiver_locations file
+rec_file <- system.file("extdata",
+  "sample_receivers.csv",
+  package = "glatos"
+)
+
+# note that code above is needed to find the example file
+# for real glatos data, use something like below
+# rec_file <- "c:/path_to_file/GLATOS_receiverLocations_20150321_132242.csv"
+
+rcv <- read_glatos_receivers(rec_file)
+
+glimpse(rcv)
+```
+
+## Convert to `sf` object
+We will convert deployment data to a `sf` object and filter the data to only use the glatos array `"OSC"` for the example. You will not have to do the filtering when using your data but you will want to convert your receiver locations to a `sf` object and display using `mapview()`. 
+```{r, messages = FALSE}
+#| title: convert to sf and filter out array and specific station
+
+rcv_osc_sf <- rcv %>%
+  st_as_sf(
+    coords = c("deploy_long", "deploy_lat"),
+    crs = 4326
+  ) %>%
+  filter(glatos_array %in% "OSC")
+
+# view in mapview
+mapview(rcv_osc_sf)
+```
+
+We will filter out station number 12 as example to create our intial deployment rings. We will also convert into UTMs so we can estimate distances away from the receiver in meters. 
+```{r}
+#| title: filter out 12
+
+rcv_osc_sf_12 <- rcv_osc_sf %>%
+  filter(station_no %in% 12) %>%
+  st_transform(crs = 32617)
+
+
+```
+
 Next, we will bring in our example data which is loaded with `{glatos}` but you will need to replace `sample_detection_efficiency` with your data frame either by loading the csv produced by Innovasea software. You can do this multiple ways, I prefer using `readr::read_csv()` but base R works perfectly fine. 
 
 ```{r, results = 'hide'}
