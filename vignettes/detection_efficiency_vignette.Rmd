@@ -2,7 +2,7 @@
 title: "Estimate Detection Range for 
            Acoustic Telemetry Receivers"
 author: Benjamin L. Hlina           
-date: "Updated: `r Sys.Date()`"
+date: "Updated: 2024-09-19"
 output: 
   rmarkdown::html_document:
     toc: true

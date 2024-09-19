@@ -1,39 +1,31 @@
 Package: glatos
 Type: Package
 Title: A package for the Great Lakes Acoustic Telemetry Observation System
-Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System https://glatos.glos.us; 
-        many more broadly relevant to simulating, processing, analysing, 
-        and visualizing acoustic telemetry data.
-Version: 0.8.0.9004
-Date: 2024-02-16
-Depends: R (>= 3.5.0)
+Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System https://glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
+Version: 0.8.0.9011
+Date: 2024-09-05
+Depends: R (>= 3.6.0)
 Imports:
 		av,
 		data.table,
 		dplyr,
-		fasterize,
-		gdalUtilities,
 		geodist,
 		gdistance,
-		geosphere,
 		jsonlite,
 		lubridate,
 		magrittr,
 		plotrix,
-		purrr,
 		raster,
 		readxl,
 		sf,
 		sp,
-		tibble,
+		tibble, 
 		tidyr,
-		units,
 		zip
 Suggests: 
-		gganimate,
+    vdiffr,
 		gifski,
 		knitr,
-		mapview,
 		methods,
 		png,
 		rmarkdown,
@@ -48,6 +40,7 @@ Authors@R: c(
     person("Todd", "Hayden", role = "aut"),
 		person("Thomas", "Binder", role = "aut"),
 		person("Jon", "Pye", role = "aut"),
+		person("Mike", "O'Brien", role = "ctb"),
 		person("Alex", "Nunes", role = "ctb"),
 		person("Angela", "Dini", role = "ctb"),
 		person("Ryan", "Gosse", role = "ctb"))
