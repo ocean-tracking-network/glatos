@@ -7,13 +7,13 @@
 \title{\subsection{glatos: An R package for the Great Lakes Acoustic Telemetry Observation System}{
 
 glatos is an R package with functions useful to members of the Great Lakes
-Acoustic Telemetry Observation System \link{https://glatos.glos.us}. Functions may
+Acoustic Telemetry Observation System https://glatos.glos.us. Functions may
 be generally useful for processing, analyzing, simulating, and visualizing
 acoustic telemetry data, but are not strictly limited to acoustic telemetry
 applications.
 \subsection{Package status}{
 
-glatos is hosted by the Ocean Tracking Network on \href{https://github.com/ocean-tracking-network/glatos]}{github}.
+glatos is hosted by the Ocean Tracking Network on \href{https://github.com/ocean-tracking-network/glatos}{github}.
 \itemize{
 \item For recent changes, see
 \href{https://github.com/ocean-tracking-network/glatos/blob/main/NEWS.md}{NEWS}.
@@ -33,7 +33,7 @@ install_github('ocean-tracking-network/glatos', build_vignettes = TRUE)
 
 To install the development version, an earlier version, or to see frequently
 asked questions about installation, see
-\link{https://github.com/ocean-tracking-network/glatos/wiki/installation-instructions}
+https://github.com/ocean-tracking-network/glatos/wiki/installation-instructions.
 }
 
 \subsection{Contents}{
@@ -43,7 +43,7 @@ asked questions about installation, see
 \item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_glatos_receivers.r}{\code{read_glatos_receivers}} and \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_otn_deployments.r}{\code{read_otn_deployments}} reads receiver location histories from standard GLATOS and OTN data files to a single structure that is compatible with other glatos functions.
 \item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_glatos_workbook.r}{\code{read_glatos_workbook}} reads project-specific receiver history and fish taggging and release data from a standard glatos workbook file.
 \item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_vemco_tag_specs.r}{\code{read_vemco_tag_specs}} reads transmitter (tag) specifications and operating schedule.
-\item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/proc-real_sensor_values.r}{\code{real_sensor_values}} converts 'raw' transmitter sensor (e.g., depth, temperature) to 'real'-scale values (e.g., depth in meters) using transmitter specification data (e.g., from read\_vemco\_tag\_specs).
+\item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/proc-real_sensor_values.r}{\code{real_sensor_values}} converts 'raw' transmitter sensor (e.g., depth, temperature) to 'real'-scale values (e.g., depth in meters) using transmitter specification data (e.g., from read_vemco_tag_specs).
 \item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/load-prepare_tag_sheet.r}{\code{prepare_tag_sheet}} and \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/load-prepare_deploy_sheet.r}{\code{prepare_deploy_sheet}} load OTN metadata sheets for Tagging and Deployment of Receivers and formats them for converting to ATT Data.
 \item \code{vue_convert} and \code{vdat_convert} extracts data from proprietary receiver
 files (.vrl, .vdat) using Innovasea's VUE and VDAT software (packaged with
@@ -58,8 +58,8 @@ exported from Innovasea's VUE software.
 
 \subsection{Filtering and summarizing}{
 \enumerate{
-\item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/proc-min_lag.r}{\code{min_lag}} facilitates identification and removal of false positive detections by calculating the minimum time interval (min\_lag) between successive detections.
-\item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/filt-false_detections.r}{\code{false_detections}} removes potential false positive detections using "short interval" criteria (see \emph{min\_lag}).
+\item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/proc-min_lag.r}{\code{min_lag}} facilitates identification and removal of false positive detections by calculating the minimum time interval (min_lag) between successive detections.
+\item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/filt-false_detections.r}{\code{false_detections}} removes potential false positive detections using "short interval" criteria (see \emph{min_lag}).
 \item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/summ-detection_events.r}{\code{detection_events}} distills detection data down to a much smaller number of discrete detection events, defined as a change in location or time gap that exceeds a threshold.
 \item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/summ-summarize_detections.r}{\code{summarize_detections}} calculates number of fish detected, number of detections, first and last detection timestamps, and/or mean location of receivers or groups, depending on specific type of summary requested.
 \item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/summ-residence_index.r}{\code{residence_index}} calculates the relative proportion of time spent at each location.
@@ -72,7 +72,7 @@ species and individual animals.
 \enumerate{
 \item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-calc_collision_prob.r}{\code{calc_collision_prob}} estimates the probability of collisions for pulse-position-modulation type co-located telemetry transmitters. This is useful for determining the number of fish to release or tag specifications (e.g., delay).
 \item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-receiver_line_det_sim.r}{\code{receiver_line_det_sim}} simulates detection of acoustic-tagged fish crossing a receiver line (or single receiver). This is useful for determining optimal spacing of receviers in a line and tag specifications (e.g., delay).
-\item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/simutil-crw_in_polygon.r}{\code{crw_in_polygon}}, \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-transmit_along_path.r}{\code{transmit_along_path}}, and \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-detect_transmissions.r}{\code{detect_transmissions}} individually simulate random fish movement paths within a water body (\emph{crw\_in\_polygon}: a random walk in a polygon), tag signal transmissions along those paths (\emph{transmit\_along\_path}: time series and locations of transmissions based on tag specs), and detection of those transmittions by receivers in a user-defined receiver network (\emph{detect\_transmissions}: time series and locations of detections based on detection range curve). Collectively, these functions can be used to explore, compare, and contrast theoretical performance of a wide range of transmitter and receiver network designs.
+\item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/simutil-crw_in_polygon.r}{\code{crw_in_polygon}}, \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-transmit_along_path.r}{\code{transmit_along_path}}, and \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-detect_transmissions.r}{\code{detect_transmissions}} individually simulate random fish movement paths within a water body (\emph{crw_in_polygon}: a random walk in a polygon), tag signal transmissions along those paths (\emph{transmit_along_path}: time series and locations of transmissions based on tag specs), and detection of those transmittions by receivers in a user-defined receiver network (\emph{detect_transmissions}: time series and locations of detections based on detection range curve). Collectively, these functions can be used to explore, compare, and contrast theoretical performance of a wide range of transmitter and receiver network designs.
 }
 }
 
