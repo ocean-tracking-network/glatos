@@ -14,7 +14,9 @@ convert_otn_erddap_to_att(
 )
 }
 \arguments{
-\item{detectionObj}{a data frame from \code{read_glatos_detections}}
+\item{detectionObj}{A \code{glatos_detections} object (e.g., created by
+\link{read_otn_detections} or \link{read_glatos_detections}) or a \code{data.frame}
+containing required columns (see \link{glatos_detections}).}
 
 \item{erdTags}{a data frame with tag release data from the OTN ERDDAP}
 
@@ -28,23 +30,25 @@ geographic coordinate system for all spatial information
 defaults to WGS84.}
 }
 \value{
-a list of 3 tibble::tibbles containing tag dectections, tag metadata,
+a list of 3 tibbles containing tag detections, tag metadata,
 and station metadata, to be ingested by VTrack/ATT
 }
 \description{
-Convert \code{glatos_detections} and transmitter, receiver, and animal
-metadata from the OTN ERDDAP to \code{ATT} format for use in the Animal
-Tracking Toolbox (\url{https://github.com/vinayudyawer/ATT}).
+Convert \code{glatos_detections} and transmitter, receiver, and animal metadata
+from the OTN ERDDAP to \code{ATT} format for use in the Animal Tracking Toolbox
+\url{https://github.com/vinayudyawer/ATT}, now part of \code{VTrack}
+\url{https://github.com/RossDwyer/VTrack}.
 }
 \details{
 This function takes 4 data frames containing detection, and ERDDAP
 data from the tags, receivers, and animals tables, and transforms them into
-3 \code{tibble::tibble} objects inside of a list. The input that AAT uses
-to get this data product is located here:
-https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-are found here: https://github.com/ocean-tracking-network/glatos/issues/75
+3 \code{tibble} objects inside of a list. The input that AAT uses to get this
+data product is located here:
+\url{https://github.com/vinayudyawer/ATT/blob/master/README.md} and our
+mappings are found here:
+\url{https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886}
 in a comment by Ryan Gosse. The OTN ERDDAP instance is here:
-https://members.oceantrack.org/erddap/tabledap/index.html but please note
+\url{https://members.oceantrack.org/erddap/tabledap/index.html} but please note
 that this only contains public data.
 }
 \examples{
@@ -54,31 +58,39 @@ that this only contains public data.
 
 library(glatos)
 
-#get path to example files from OTN ERDDAP
+# get path to example files from OTN ERDDAP
 ani_erd_file <- system.file("extdata", "otn_aat_animals.csv",
-                            package = "glatos")
+  package = "glatos"
+)
 animals <- read.csv(ani_erd_file) # load the CSVs from ERDDAP
 
 tags_erd_file <- system.file("extdata", "otn_aat_tag_releases.csv",
-                            package = "glatos")
+  package = "glatos"
+)
 tags <- read.csv(tags_erd_file)
 
 rcv_erd_file <- system.file("extdata", "otn_aat_receivers.csv",
-                            package = "glatos")
+  package = "glatos"
+)
 stations <- read.csv(rcv_erd_file)
 
-#Remove first row; (blank or metadata about the column)
-animals <- animals[-1,]
-tags <- tags[-1,]
-stations <- stations[-1,]
+# Remove first row; (blank or metadata about the column)
+animals <- animals[-1, ]
+tags <- tags[-1, ]
+stations <- stations[-1, ]
 
-#get blue shark example data
+# get blue shark example data
 shrk_det_file <- system.file("extdata", "blue_shark_detections.csv",
-     package = "glatos")
+  package = "glatos"
+)
 blue_shark_detections <- read_otn_detections(shrk_det_file) # load shark data
 
-ATTdata <- convert_otn_erddap_to_att(blue_shark_detections,
-                                     tags, stations, animals)
+ATTdata <- convert_otn_erddap_to_att(
+  detectionObj = blue_shark_detections,
+  erdTags = tags,
+  erdRcv = stations,
+  erdAni = animals
+)
 }
 \author{
 Ryan Gosse

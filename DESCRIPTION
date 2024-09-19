@@ -2,36 +2,32 @@ Package: glatos
 Type: Package
 Title: A package for the Great Lakes Acoustic Telemetry Observation System
 Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System https://glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
-Version: 0.7.3
-Date: 2024-04-09
-Depends: R (>= 3.5.0)
+Version: 0.8.0
+Date: 2024-09-18
+Depends: R (>= 3.6.0)
 Imports:
 		av,
-		data.table,		
-		fasterize,
-		fasttime,
-		gdalUtilities,
+		data.table,
+		dplyr,
 		geodist,
 		gdistance,
 		jsonlite,
-		knitr,
 		lubridate,
-		magrittr,
-		methods,
 		plotrix,
-		plyr,
-		purrr,
 		raster,
 		readxl,
-		rmarkdown,
 		sf,
-		tibble,
-		tidyr
+		sp,
+		zip
 Suggests: 
-		gganimate,
-		gifsky,
-		GISTools,
+    vdiffr,
+		gifski,
+		knitr,
+		methods,
 		png,
+		rmarkdown,
+		terra,
+		testthat (>= 3.0.0),
 		tint
 URL: https://github.com/ocean-tracking-network/glatos
 BugReports: https://github.com/ocean-tracking-network/glatos/issues
@@ -41,13 +37,15 @@ Authors@R: c(
     person("Todd", "Hayden", role = "aut"),
 		person("Thomas", "Binder", role = "aut"),
 		person("Jon", "Pye", role = "aut"),
+		person("Mike", "O'Brien", role = "ctb"),
 		person("Alex", "Nunes", role = "ctb"),
 		person("Angela", "Dini", role = "ctb"),
 		person("Ryan", "Gosse", role = "ctb"))
 License: GPL-2
 LazyLoad: yes
 LazyData: true
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3

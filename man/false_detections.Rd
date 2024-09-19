@@ -72,15 +72,16 @@ sensitivity of the proportion of detections removed to the choice of
 \code{tf}.
 }
 \examples{
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 det <- read_glatos_detections(det_file)
 
 det <- false_detections(det, 3600)
 head(det)
 
-#plot sensitivity to tf
+# plot sensitivity to tf
 det <- false_detections(det, 3600, show_plot = TRUE)
 
 }
@@ -97,7 +98,7 @@ monitoring equipment. Animal Biotelemetry, 3(1), p.55.
 \cr \url{https://animalbiotelemetry.biomedcentral.com/articles/10.1186/s40317-015-0094-z}
 }
 \seealso{
-\code{\link{min_lag}}
+\code{\link[=min_lag]{min_lag()}}
 }
 \author{
 T. R. Binder, edited by A. Dini

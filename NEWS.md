@@ -1,5 +1,123 @@
 ----
 
+# glatos 0.8.9011 (2024-09-18)
+
+
+## Breaking changes
+
+- Changed `make_transition()` to use `jarasterize()` (see New Features) and 
+  added input arg `buffer`.
+  - Removed dependence on gdalUtilities.
+  - fixes [issue #234](https://github.com/ocean-tracking-network/glatos/issues/234)
+
+- Removed `make_transition2()` (deprecated in 0.7) and `make_transition3()`.
+  Also removed dependence on `fasterize`.
+  - fixes [issue #67](https://github.com/ocean-tracking-network/glatos/issues/67)
+  
+- Updated example TransitionLayer object `greatLakesTrLayer` using new
+`make_transition()` and `great_lakes_polygon` (an `sf` object) . The new version
+has the same cell size (resolution) as the previous, but different extents
+(matches great_lakes_polygon, so returned values (with same input) will differ
+from earlier versions.
+  - fixes [issue #219](https://github.com/ocean-tracking-network/glatos/issues/219)
+
+- Removed 'gganimate_handout' (pdf and html) from 'vignettes'.
+
+
+### New features
+
+- Add new function `vue_convert()` to convert VRL file to CSV file (detection
+  records only; receiver event log records are not supported). 
+    - replaces `vrl2csv()` (deprecated).
+    
+- Add new function `vdat_convert()` to convert VRL or VDAT files to 
+  Fathom/VDAT CSV. 
+  
+- Add new functions for reading data exported from VRL with VUE software.
+    - `read_vue_detection_csv()` to read data from detection file exported 
+    from VUE or created using `vue_convert()` or `vrl2csv()`.
+    - `read_vue_event_csv()` to read data from receiver event log file exported 
+    from VUE.
+  
+- Add new function `read_vdat_csv()` to read data exported from VRL or VDAT 
+  using VDAT.exe (e.g., using `vdat_convert()`).
+
+- Add new functions to create, check, and validate `glatos_animals` objects:
+    - `glatos_animals()` to construct a `glatos_animals` object from
+      individual vectors (one for each column) and optionally check for required
+      column names and classes using `validate_glatos_animals()`. 
+    - `as_glatos_animals()` to coerce a data.frame, or object that
+      inherits from data.frame, to `glatos_animals` and optionally check for
+      required column names and classes using `validate_glatos_animals()`.
+    - `is_glatos_animals()` to check class attribute for `"glatos_animals"`.
+    - `validate_glatos_animals()` to check for existence of required column 
+      names and classes.
+    - fixes [issue #126](https://github.com/ocean-tracking-network/glatos/issues/126)
+    - fixes [issue #78](https://github.com/ocean-tracking-network/glatos/issues/78)
+      
+- Add new functions to create, check, and validate `glatos_detections` objects:
+    - `glatos_detections()` to construct a `glatos_detections` object from
+      individual vectors (one for each column) and optionally check for required
+      column names and classes using `validate_glatos_detections()`. 
+    - `as_glatos_detections()` to coerce a data.frame, or object that
+      inherits from data.frame, to `glatos_detections` and optionally check for
+      required column names and classes using `validate_glatos_detections()`.
+    - `is_glatos_detections()` to check class attribute for `"glatos_detections"`.
+    - `validate_glatos_detections()` to check for existence of required column 
+      names and classes.
+    - fixes [issue #126](https://github.com/ocean-tracking-network/glatos/issues/126)
+    - fixes [issue #78](https://github.com/ocean-tracking-network/glatos/issues/78)
+    
+- Add new functions to create, check, and validate `glatos_recievers` objects:
+    - `glatos_receivers()` to construct a `glatos_receivers` object from
+      individual vectors (one for each column) and optionally check for required
+      column names and classes using `validate_glatos_receivers()`. 
+    - `as_glatos_receivers()` to coerce a data.frame, or object that
+      inherits from data.frame, to `glatos_receivers` and optionally check for
+      required column names and classes using `validate_glatos_receivers()`.
+    - `is_glatos_receivers()` to check class attribute for `"glatos_receivers"`.
+    - `validate_glatos_receivers()` to check for existence of required column 
+      names and classes.
+    - fixes [issue #126](https://github.com/ocean-tracking-network/glatos/issues/126)
+    - fixes [issue #78](https://github.com/ocean-tracking-network/glatos/issues/78)
+
+- New function `jarasterize()` to allow rasterization 
+  (esp. with `all_touched = TRUE`) using only `sf` and `raster`. 
+  Used by `make_transition()`.
+  
+- Add new function `scale_meters_to_degrees()` to inform selection of `res` 
+  argument to `make_transition()`.
+
+- In `make_frames()`, allow `terra::SpatVector` input for background map 
+  (`bg_map` arg).
+    - add test for `terra::SpatVector` input
+
+
+### Bug fixes and minor changes
+
+- Add `@srs` slot to `greatLakesTrLayer` data object and rename file 
+  'data/greatLakesTrLayer.rda'.
+    - fixes [issue #213](https://github.com/ocean-tracking-network/glatos/issues/213)
+
+- Fix bug in `read_glatos_workbook()` where timestamps during daylight savings 
+  were shifted one hour on linux operating system (not an issue on windows or 
+  mac).
+    - fixes [issue #208](https://github.com/ocean-tracking-network/glatos/issues/208)
+
+- Omit data.table from class of object returned by `read_glatos_detections()`  
+  and `read_glatos_receivers()`. 
+    - fixes [issue #200](https://github.com/ocean-tracking-network/glatos/issues/200)
+
+- Fix typo in Description to Suggest 'gifski' (not 'gifsky'). 
+    - fixes [issue #185](https://github.com/ocean-tracking-network/glatos/issues/185)
+
+- Various changes to resolve R CMD check errors, warning, and notes (generally
+  not user-facing).
+
+
+----
+
+
 # glatos 0.7.3 (2024-04-09)
 
 
@@ -13,6 +131,7 @@ which aimed to fix [issue #182](https://github.com/ocean-tracking-network/glatos
 
 
 ----
+
 
 # glatos 0.7.2 (2024-02-25)
 
@@ -41,7 +160,7 @@ which aimed to fix [issue #182](https://github.com/ocean-tracking-network/glatos
     - Add test for various inputs of `background_xlim`, `background_ylim`, and 
       `bg_map` to function `make_frames`.
   
-    
+
 ----
 
 # glatos 0.7.0 (2024-01-04)
@@ -85,9 +204,6 @@ which aimed to fix [issue #182](https://github.com/ocean-tracking-network/glatos
   attributes.
     
 
-
-
-
 ----
 
 # glatos 0.6.5 (2023-09-07)
@@ -105,8 +221,8 @@ which aimed to fix [issue #182](https://github.com/ocean-tracking-network/glatos
 ### Bug fixes and minor changes
 
 - Add support for new column named 'record_status' in GLATOS detection export CSV.
+    - Add new glatos detection schema version 1.4 (developer use)
     - fix [issue #179](https://github.com/ocean-tracking-network/glatos/issues/179)
-
 
 
 ----
@@ -117,7 +233,7 @@ which aimed to fix [issue #182](https://github.com/ocean-tracking-network/glatos
 
 - Add support for new GLATOS receiver_locations file format; with code_map and 
 code_map_comment columns.
-    - fix [issue #177](https://github.com/ocean-tracking-network/glatos/issues/159)
+    - fix [issue #177](https://github.com/ocean-tracking-network/glatos/issues/177)
 
 
 ----

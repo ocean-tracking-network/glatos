@@ -33,7 +33,8 @@ to be used by \code{convert_otn_to_att}.
 
 library(glatos)
 tag_path <- system.file("extdata", "otn_nsbs_tag_metadata.xls",
-                        package = "glatos")
+  package = "glatos"
+)
 
 tags <- prepare_tag_sheet(tag_path, 5, 2)
 

@@ -10,8 +10,7 @@ kml_to_csv(filePath, type = c("points", "lines", "polygons"))
 \item{filePath}{The pathname for the kml file you wish to convert.}
 
 \item{type}{Optional character string indicating the type(s) of feature(s)
-to read from the kml file. Valid values are \code{c("points", "lines", and
-  "polygons")}.}
+to read from the kml file. Valid values are \verb{c("points", "lines", and "polygons")}.}
 }
 \value{
 A csv file (same name as input \code{filePath} but with \code{csv}
@@ -35,10 +34,11 @@ saved as kml. Or extract (unzip) kml from kmz.
 }
 \examples{
 
-#Get example kml with two polygons
-kml_file <- system.file("inst/extdata", "example_polygons.kml",
-                        package = "glatos")
-                        
+# Get example kml with two polygons
+kml_file <- system.file("extdata", "example_polygons.kml",
+  package = "glatos"
+)
+
 kml_to_csv(kml_file)
 
 }

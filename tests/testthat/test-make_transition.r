@@ -1,77 +1,110 @@
-context("Check make_transition")
+### make_transition
+# Testing water polygon transition layer
+test_that("make_transition: Transition layer for Higgins Lake water polygon as expected", {
+  water <- suppressMessages(
+    make_transition(
+      higgins_lake_polygon,
+      res = c(0.01, 0.01)
+    )$transition
+  )
 
-#example 1 water polygon (Higgins Lake)
-data(higgins_lake_polygon)
-poly1 <- higgins_lake_polygon
+  expect_s3_class(water, NA)
 
-trl1 <- make_transition(poly1, res = c(0.01, 0.01))
+  expect_equal(dim(water), c(9, 11, 1))
 
-#raster::plot(trl1$rast)
-#raster::plot(raster::raster(trl1$transition))
+  expect_s4_class(
+    water,
+    "TransitionLayer"
+  )
 
-#higgins_lake_transition <- trl1
-#saveRDS(higgins_lake_transition, file = "./inst/testdata/higgins_lake_transition.rds")
+  expect_s4_class(
+    water@transitionMatrix,
+    "dsCMatrix"
+  )
 
-
-#example 2 land polygon (Flynn Island, Higgins Lake)
-data(flynn_island_polygon)
-poly2 <- flynn_island_polygon
-
-trl2 <- make_transition(poly2, res = c(0.001, 0.001), 
-                        all_touched = FALSE, 
-                        invert = TRUE)
-
-#raster::plot(trl2$rast)
-#raster::plot(raster::raster(trl2$transition))
-
-#flynn_island_transition <- trl2
-#saveRDS(flynn_island_transition, file = "./inst/testdata/flynn_island_transition.rds")
+  expect_length(water@transitionCells, 99)
 
 
-
-# Expected results
-# when called from devtools::test, working dir test
-#  so need to handle that case vs package root
-if(grepl("^glatos$", basename(getwd()))) testdata_dir <- normalizePath("./inst/testdata")
-if(grepl("^testthat$", basename(getwd()))) testdata_dir <- normalizePath("../../inst/testdata")
-
-trl1_trns_shouldBe <- readRDS(file.path(testdata_dir, 
-                                        "higgins_lake_transition.rds"))
-
-trl2_trns_shouldBe <- readRDS(file.path(testdata_dir, 
-                                        "flynn_island_transition.rds"))
-
-#raster::plot(trl2$rast)
-
-# Drop names from rasters (to omit from comparisons)
-trl1$rast@file@name <- NA_character_
-trl2$rast@file@name <- NA_character_
-trl1_trns_shouldBe$rast@file@name <- NA_character_
-trl2_trns_shouldBe$rast@file@name <- NA_character_
-
-
-
-# Testing water polygon transition matrix
-test_that("Transition matrix for water polygon as expected", {
-  # Check if expected and actual equal
-  expect_equal(trl1$transition, trl1_trns_shouldBe$transition)
+  expect_snapshot(
+    water
+  )
 })
 
 # Testing water polygon raster
-test_that("Raster values for water polygon as expected", {
-  # Check if expected and actual equal
-  expect_equal(trl1$rast, trl1_trns_shouldBe$rast)
+test_that("make_transition: Raster values for Higgins Lake water polygon as expected", {
+  water <- suppressMessages(
+    make_transition(
+      higgins_lake_polygon,
+      res = c(0.01, 0.01)
+    )$rast
+  )
+
+  expect_s4_class(
+    water,
+    "RasterLayer"
+  )
+  expect_s3_class(water, NA)
+
+  expect_equal(dim(water), c(9, 11, 1))
+
+  expect_snapshot(
+    water
+  )
 })
+
 
 
 # Testing land polygon transition matrix
-test_that("Transition matrix for land polygon as expected", {
-  # Check if expected and actual equal
-  expect_equal(trl2$transition, trl2_trns_shouldBe$transition)
+test_that("make_transition: Transition layer for Flynn Island land polygon as expected", {
+  land <- suppressMessages(
+    make_transition(
+      flynn_island_polygon,
+      res = c(0.001, 0.001)
+    )$transition
+  )
+
+  expect_s4_class(
+    land,
+    "TransitionLayer"
+  )
+  expect_s3_class(land, NA)
+
+  expect_equal(dim(land), c(6, 8, 1))
+
+  expect_s4_class(
+    land,
+    "TransitionLayer"
+  )
+
+  expect_s4_class(
+    land@transitionMatrix,
+    "dsCMatrix"
+  )
+  expect_length(land@transitionMatrix, 2304)
+
+  expect_snapshot(
+    land
+  )
 })
 
 # Testing land polygon raster
-test_that("Raster values for land polygon as expected", {
-  # Check if expected and actual equal
-  expect_equal(trl2$rast, trl2_trns_shouldBe$rast)
+test_that("make_transition: Raster values for Flynn Island polygon as expected", {
+  land <- suppressMessages(
+    make_transition(
+      flynn_island_polygon,
+      res = c(0.001, 0.001)
+    )$rast
+  )
+
+  expect_s4_class(
+    land,
+    "RasterLayer"
+  )
+  expect_s3_class(land, NA)
+
+  expect_equal(dim(land), c(6, 8, 1))
+
+  expect_snapshot(
+    land
+  )
 })

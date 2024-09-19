@@ -14,7 +14,7 @@ residence_index(
 )
 }
 \arguments{
-\item{detections}{A data.frame from the \code{\link{detection_events}}
+\item{detections}{A data.frame from the \code{\link[=detection_events]{detection_events()}}
 function.}
 
 \item{calculation_method}{A character string with the calculation method
@@ -43,7 +43,7 @@ any other variable).}
 
 \item{time_interval_size}{Character string with size of the time interval
 used when \code{calculation_method = "time_interval"}. This is passed to
-\link[base]{seq.Date}'s \code{by} argument, so must meet the requirements of
+\link[base:seq.Date]{seq.Date}'s \code{by} argument, so must meet the requirements of
 that argument for that function (e.g., "1 day", "4 hours", etc.). Default is
 \code{"1 day"}.}
 
@@ -60,7 +60,7 @@ mean_latitude, mean_longitude
 }
 \description{
 This residence index tool will take condensed detection event data (from
-\code{\link{detection_events}} and caculate the residence index for each
+\code{\link[=detection_events]{detection_events()}} and caculate the residence index for each
 location. The information passed to the function is
 what is used to calculate the residence index, make sure you are only passing
 the data you want taken into consideration for the residence index (i.e.
@@ -90,9 +90,9 @@ among all sites. For each location, residency index (RI) is calculated:
 
 \deqn{ RI = L/T}
 \deqn{ RI = Residence Index}
-\deqn{L = Distinct number of time intervals in which detection observed at 
+\deqn{L = Distinct number of time intervals in which detection observed at
           this location}
-\deqn{T = Distinct number of time intervals in which detection observed at 
+\deqn{T = Distinct number of time intervals in which detection observed at
           any location}
 
 For consistency with other \code{calculation_method}s,
@@ -130,8 +130,8 @@ RI = AwOS/AwOT}
 The \strong{aggregate_no_overlap} calculation method takes the length of time of each
 detection and sums them together. However, any overlap in time between one or
 more detections is excluded from the sum. For example, if the first detection
-is from \code{2016-01-01 01:02:43} to \code{2016-01-01 01:10:12} and the second
-detection is from \code{2016-01-01 01:09:01 }to \code{2016-01-01 01:12:43}, then the
+is from \verb{2016-01-01 01:02:43} to \verb{2016-01-01 01:10:12} and the second
+detection is from \verb{2016-01-01 01:09:01 }to \verb{2016-01-01 01:12:43}, then the
 sum of those two detections would be 10 minutes. A total is returned once all
 detections of been added without overlap. The sum for each location is then
 divided by the sum among all locations to determine the residence index.
@@ -146,21 +146,27 @@ RI = AnOS/AnOT}
 \deqn{AnOT = Sum of length of time of each detection among all locations, excluding any overlap}
 }
 \examples{
-#get path to example detection file
+# get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-                         package = "glatos")
+  package = "glatos"
+)
 det <- read_glatos_detections(det_file)
 detection_events <- glatos::detection_events(det)
-rik_data <- glatos::residence_index(detection_events, 
-                                    calculation_method = 'kessel')
-rit_data <- glatos::residence_index(detection_events, 
-                                    calculation_method = 'time_interval')
-rit_data <- glatos::residence_index(detection_events, 
-                                    calculation_method = 'timedelta')
-riawo_data <- glatos::residence_index(detection_events, 
-                             calculation_method = 'aggregate_with_overlap')
-riano_data <- glatos::residence_index(detection_events, 
-                             calculation_method = 'aggregate_no_overlap')
+rik_data <- glatos::residence_index(detection_events,
+  calculation_method = "kessel"
+)
+rit_data <- glatos::residence_index(detection_events,
+  calculation_method = "time_interval"
+)
+rit_data <- glatos::residence_index(detection_events,
+  calculation_method = "timedelta"
+)
+riawo_data <- glatos::residence_index(detection_events,
+  calculation_method = "aggregate_with_overlap"
+)
+riano_data <- glatos::residence_index(detection_events,
+  calculation_method = "aggregate_no_overlap"
+)
 
 }
 \references{

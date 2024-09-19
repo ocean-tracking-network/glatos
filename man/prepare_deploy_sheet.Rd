@@ -40,11 +40,13 @@ to be used by \code{convert_otn_to_att}.
 
 library(glatos)
 deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
-                        package = "glatos")
+  package = "glatos"
+)
 
-deploy <- prepare_deploy_sheet(deploy_path, 
-                               header_line = 1, 
-                               sheet_name = 1)
+deploy <- prepare_deploy_sheet(deploy_path,
+  header_line = 1,
+  sheet_name = 1
+)
 
 }
 \author{

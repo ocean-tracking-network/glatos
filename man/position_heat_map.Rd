@@ -24,10 +24,14 @@ position_heat_map(
 }
 \arguments{
 \item{positions}{A dataframe containing detection data with at least the
-following 4 columns: \describe{ \item{\code{DETECTEDID}}{Individual animal
-identifier; character.} \item{\code{DATETIME}}{Date-time stamps for the
-positions (MUST be of class 'POSIXct')} \item{\code{LAT}}{Position
-latitude.} \item{\code{LON}}{Position longitude.} }}
+following 4 columns:
+\describe{
+\item{\code{DETECTEDID}}{Individual animal identifier; character.}
+\item{\code{DATETIME}}{Date-time stamps for the positions (MUST be of
+class 'POSIXct')}
+\item{\code{LAT}}{Position latitude.}
+\item{\code{LON}}{Position longitude.}
+}}
 
 \item{projection}{A character string indicating if the coordinates in the
 'positions' dataframe are geographic (\code{projection = "LL"}) or
@@ -95,7 +99,7 @@ specified then \code{folder} will be created in the working directory.
 Default is "position_heat_map".}
 
 \item{out_file}{A character string indicating base name of output files (if
-\code{output = "png" or "kmz"}). If \code{out_file} is a path, all but last
+\verb{output = "png" or "kmz"}). If \code{out_file} is a path, all but last
 part is ignored (via \code{basename}). Any file extension is also ignored
 (via \code{tools::file_path_sans_ext}).}
 }
@@ -125,14 +129,14 @@ of raw number of positions. For example, in 4 hours there are a total of 4
 1-h intervals. If fish 'A' was positioned in a single grid cell during 3 of
 the 4 intervals, than the number of intervals for that fish and grid
 combination is 3. Intervals are determined by applying the
-\link[base]{findInterval} function (base R) to a sequence of timestamps
-(class: POSIXct) created using seq(from = min(positions\link{, DATETIME}), to =
-min(positions\link{, DATETIME}), by = interval), where interval is the
-user-assigned interval duration in seconds. Number of intervals is a more
-robust surrogate than number of positions for relative time spent in each
-grid in cases where spatial or temporal variability in positioning
-probability are likely to significantly bias the distribution of positions
-in the array.
+\link[base:findInterval]{findInterval} function (base R) to a sequence of timestamps
+(class: POSIXct) created using
+\code{seq(from = min(positions[, DATETIME]), to = min(positions[, DATETIME]), by = interval)},
+where interval is the user-assigned interval duration in seconds. Number of
+intervals is a more robust surrogate than number of positions for relative
+time spent in each grid in cases where spatial or temporal variability in
+positioning probability are likely to significantly bias the distribution of
+positions in the array.
 
 Calculated values (i.e., fish, positions, intervals) can be returned
 as absolute or relative, which is specified using the abs_or_rel argument;

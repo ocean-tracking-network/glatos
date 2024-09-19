@@ -1,9 +1,9 @@
-#Make glatos_detection_schema (internal data object for read_glatos_detections)
-#Specify column names and data types for each detection file version
+# Make glatos_detection_schema (internal data object for read_glatos_detections)
+# Specify column names and data types for each detection file version
 
 
-#Make list element for each version
-#pre-allocate table-level structure within each version
+# Make list element for each version
+# pre-allocate table-level structure within each version
 glatos_detection_schema <- list(
   "v1.3" = NA,
   "v1.4" = NA
@@ -11,9 +11,10 @@ glatos_detection_schema <- list(
 
 
 #----------------------------------------------------
-#Version 1.3
+# Version 1.3
 
-glatos_detection_schema$v1.3 <- read.table(text = "
+glatos_detection_schema$v1.3 <- read.table(
+  text = "
   name                       type
   animal_id                  character
   detection_timestamp_utc    POSIXct
@@ -47,29 +48,30 @@ glatos_detection_schema$v1.3 <- read.table(text = "
   min_lag                    numeric
   ",
   header = TRUE,
-  stringsAsFactors = FALSE)
+  stringsAsFactors = FALSE
+)
 
-#\Version 1.3
+# \Version 1.3
 #----------------------------------------------------
 
 #----------------------------------------------------
-#Version 1.4
+# Version 1.4
 
-glatos_detection_schema$v1.4 <- rbind(glatos_detection_schema$v1.3,
-read.table(text = "
+glatos_detection_schema$v1.4 <- rbind(
+  glatos_detection_schema$v1.3,
+  read.table(
+    text = "
   name                       type
   record_status              character
   ",
- header = TRUE,
- stringsAsFactors = FALSE))
+    header = TRUE,
+    stringsAsFactors = FALSE
+  )
+)
 
-#\Version 1.4
+# \Version 1.4
 #-------------
 
-#add to sysdata.rda
+# add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")
-glatos:::add_internal_data(glatos_detection_schema, rda_file)
-
-#for exported ('public') data
-#devtools::use_data(glatos_detection_schema, pkg = "..", overwrite = TRUE)
-
+add_internal_data(glatos_detection_schema, rda_file)

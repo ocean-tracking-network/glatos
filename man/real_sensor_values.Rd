@@ -93,23 +93,27 @@ ensure that the each combination of those columns occurs only once in
 }
 \examples{
 
-#get path to example detection file
-det_file <- system.file("extdata", 
-  "lamprey_detections.csv", package="glatos")
-  
+# get path to example detection file
+det_file <- system.file("extdata",
+  "lamprey_detections.csv",
+  package = "glatos"
+)
+
 lamprey_detections <- read_glatos_detections(det_file)
 
-#get path to example Vemco tag spec file
-spec_file <- system.file("extdata", 
-  "lamprey_tag_specs.xls", package="glatos")
-  
+# get path to example Vemco tag spec file
+spec_file <- system.file("extdata",
+  "lamprey_tag_specs.xls",
+  package = "glatos"
+)
+
 lamprey_tags <- read_vemco_tag_specs(spec_file, file_format = "vemco_xls")
 
-#note use of '$specs' in tag_specs argument
+# note use of '$specs' in tag_specs argument
 dtc <- real_sensor_values(lamprey_detections, lamprey_tags$specs)
 
-#now view records with sensor measurements
-dtc[!is.na(dtc$sensor_value_real),]
+# now view records with sensor measurements
+dtc[!is.na(dtc$sensor_value_real), ]
 
 }
 \author{
