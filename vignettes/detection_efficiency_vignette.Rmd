@@ -497,7 +497,7 @@ ggplot() +
 
 Now that we have our distances, we will need to create locations at the given percentages (e.g., 50%) we want to deploy for the course of the study. Given the above data we will deploy range transmitters at 365-370 m away from the receiver. 
 
-# Redployment 
+# Redeployment 
 
 ## Create buffer ring 
 The first step in redeployment of the range transmitters is to calculate a buffer ring at the given distance estimated from the models (e.g., 370 m). We will use steps very similar to the deployment steps. 
