@@ -124,7 +124,7 @@ deploy_sites <- buffer_rings_pts %>%
     deploy_date_time:expect_deploy_long, geometry
   )
 
-## ----eval = FALSE------------------------------------------------------------------
+## ----------------------------------------------------------------------------------
 #  # save as excel
 #  openxlsx::write.xlsx(deploy_sites, "YOUR_FILE_PATH.xlsx")
 #  
@@ -153,6 +153,40 @@ deploy_sites <- buffer_rings_pts %>%
 #    library(purrr)
 #    library(sf)
 #  }
+
+## ----------------------------------------------------------------------------------
+
+# get path to example receiver_locations file
+rec_file <- system.file("extdata",
+  "sample_receivers.csv",
+  package = "glatos"
+)
+
+# note that code above is needed to find the example file
+# for real glatos data, use something like below
+# rec_file <- "c:/path_to_file/GLATOS_receiverLocations_20150321_132242.csv"
+
+rcv <- read_glatos_receivers(rec_file)
+
+glimpse(rcv)
+
+## ----messages = FALSE--------------------------------------------------------------
+rcv_osc_sf <- rcv %>%
+  st_as_sf(
+    coords = c("deploy_long", "deploy_lat"),
+    crs = 4326
+  ) %>%
+  filter(glatos_array %in% "OSC")
+
+# view in mapview
+mapview(rcv_osc_sf)
+
+## ----------------------------------------------------------------------------------
+rcv_osc_sf_12 <- rcv_osc_sf %>%
+  filter(station_no %in% 12) %>%
+  st_transform(crs = 32617)
+
+
 
 ## ----results = 'hide'--------------------------------------------------------------
 # ----- uncomment the lines below to bring in your data ----
@@ -295,7 +329,7 @@ mapview(rcv_osc_sf) +
   mapview(redeploy_loc_pts)
 
 ## ----results = 'hide'--------------------------------------------------------------
-redeploy_sites <- buffer_rings_pts %>%
+redeploy_sites <- redeploy_loc_pts %>%
   st_transform(crs = 4326) %>%
   filter(id %in% c(116, 161, 201)) %>%
   rename(
