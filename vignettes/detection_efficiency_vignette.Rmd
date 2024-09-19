@@ -538,7 +538,7 @@ mapview(rcv_osc_sf) +
 ## Select redeployment location 
 Then filter out the points we want, this will change depending on your study site and what locations you want. We will transform the projection back to WGS 84 as this is likely what your gps or sonar will want. We will also add in a few columns to conform to GLATOS and OTN data standards and rearrange the column order. 
 ```{r, results = 'hide'}
-redeploy_sites <- buffer_rings_pts %>%
+redeploy_sites <- redeploy_loc_pts %>%
   st_transform(crs = 4326) %>%
   filter(id %in% c(116, 161, 201)) %>%
   rename(
