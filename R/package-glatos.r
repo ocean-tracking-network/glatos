@@ -2,7 +2,7 @@
 #' ```
 #' @docType package
 #' @name glatos
-#' 
+#'
 #' @import data.table sp
 #' @importFrom graphics abline axis box legend lines mtext par points symbols
 #'   text
