@@ -242,16 +242,16 @@ We can use the following example code to determine the preliminary percentage of
 #| echo: TRUE
 #| eval: FALSE
 
-det_summary <- dets %>% 
-  group_by(station, dets_expected, tag_serial_name) %>% 
+det_summary <- dets %>%
+  group_by(station, dets_expected, tag_serial_name) %>%
   summarise(
     dets_heard = n()
-  ) %>% 
-  ungroup() %>% 
+  ) %>%
+  ungroup() %>%
   mutate(
-    dets_eff = dets_heard / dets_expected, 
-    dets_eff_perc = (dets_heard / dets_expected) * 100 
-  ) 
+    dets_eff = dets_heard / dets_expected,
+    dets_eff_perc = (dets_heard / dets_expected) * 100
+  )
 ```
 
 # Analysis
@@ -274,7 +274,6 @@ For the analysis you will want to start a new R script, hence why I have left lo
 Considering we will be starting a new script and you will need the location of the receiver we will bring this information back in.  For this example I will bring in the receiver location data that we used in the first half of the vignette
 
 ```{r}
-
 # get path to example receiver_locations file
 rec_file <- system.file("extdata",
   "sample_receivers.csv",
@@ -313,8 +312,6 @@ We will filter out station number 12 as example to create our intial deployment 
 rcv_osc_sf_12 <- rcv_osc_sf %>%
   filter(station_no %in% 12) %>%
   st_transform(crs = 32617)
-
-
 ```
 
 Next, we will bring in our example data which is loaded with `{glatos}` but you will need to replace `sample_detection_efficiency` with your data frame either by loading the csv produced by Innovasea software. You can do this multiple ways, I prefer using `readr::read_csv()` but base R works perfectly fine. 
