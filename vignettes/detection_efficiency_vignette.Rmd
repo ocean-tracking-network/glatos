@@ -2,7 +2,7 @@
 title: "Estimate Detection Range for 
            Acoustic Telemetry Receivers"
 author: Benjamin L. Hlina           
-date: "Updated: `r Sys.Date()`"
+date: "Updated: 2024-09-19"
 output: 
   rmarkdown::html_document:
     toc: true
@@ -214,8 +214,10 @@ deploy_sites <- buffer_rings_pts %>%
 ## Export to excel and gpx formats
 Then we will save as an excel and gpx file. To save as excel we will use [{openxlsx}](https://ycphs.github.io/openxlsx/index.html). You will notice that I don't have it in the load packages area of this vignette. I have not placed it there for the purpose of how R builds vignettes but please add it to your load packages call. You will also need to replace `"YOUR_FILE_PATH"` with your file path for both saving as an excel and/or gpx file. 
 
-```{r, eval = FALSE}
+```{r}
 #| title: save excel and gpx file
+#| echo: TRUE
+#| eval: FALSE
 
 # save as excel
 openxlsx::write.xlsx(deploy_sites, "YOUR_FILE_PATH.xlsx")
@@ -267,6 +269,49 @@ For the analysis you will want to start a new R script, hence why I have left lo
   library(purrr)
   library(sf)
 }
+```
+
+Considering we will be starting a new script and you will need the location of the receiver we will bring this information back in.  For this example I will bring in the receiver location data that we used in the first half of the vignette
+
+```{r}
+# get path to example receiver_locations file
+rec_file <- system.file("extdata",
+  "sample_receivers.csv",
+  package = "glatos"
+)
+
+# note that code above is needed to find the example file
+# for real glatos data, use something like below
+# rec_file <- "c:/path_to_file/GLATOS_receiverLocations_20150321_132242.csv"
+
+rcv <- read_glatos_receivers(rec_file)
+
+glimpse(rcv)
+```
+
+## Convert to `sf` object
+We will convert deployment data to a `sf` object and filter the data to only use the glatos array `"OSC"` for the example. You will not have to do the filtering when using your data but you will want to convert your receiver locations to a `sf` object and display using `mapview()`. 
+```{r, messages = FALSE}
+#| title: convert to sf and filter out array and specific station
+
+rcv_osc_sf <- rcv %>%
+  st_as_sf(
+    coords = c("deploy_long", "deploy_lat"),
+    crs = 4326
+  ) %>%
+  filter(glatos_array %in% "OSC")
+
+# view in mapview
+mapview(rcv_osc_sf)
+```
+
+We will filter out station number 12 as example to create our intial deployment rings. We will also convert into UTMs so we can estimate distances away from the receiver in meters. 
+```{r}
+#| title: filter out 12
+
+rcv_osc_sf_12 <- rcv_osc_sf %>%
+  filter(station_no %in% 12) %>%
+  st_transform(crs = 32617)
 ```
 
 Next, we will bring in our example data which is loaded with `{glatos}` but you will need to replace `sample_detection_efficiency` with your data frame either by loading the csv produced by Innovasea software. You can do this multiple ways, I prefer using `readr::read_csv()` but base R works perfectly fine. 
@@ -449,7 +494,7 @@ ggplot() +
 
 Now that we have our distances, we will need to create locations at the given percentages (e.g., 50%) we want to deploy for the course of the study. Given the above data we will deploy range transmitters at 365-370 m away from the receiver. 
 
-# Redployment 
+# Redeployment 
 
 ## Create buffer ring 
 The first step in redeployment of the range transmitters is to calculate a buffer ring at the given distance estimated from the models (e.g., 370 m). We will use steps very similar to the deployment steps. 
@@ -490,7 +535,7 @@ mapview(rcv_osc_sf) +
 ## Select redeployment location 
 Then filter out the points we want, this will change depending on your study site and what locations you want. We will transform the projection back to WGS 84 as this is likely what your gps or sonar will want. We will also add in a few columns to conform to GLATOS and OTN data standards and rearrange the column order. 
 ```{r, results = 'hide'}
-redeploy_sites <- buffer_rings_pts %>%
+redeploy_sites <- redeploy_loc_pts %>%
   st_transform(crs = 4326) %>%
   filter(id %in% c(116, 161, 201)) %>%
   rename(
@@ -539,4 +584,4 @@ openxlsx::write.xlsx(redeploy_sites, "YOUR_FILE_PATH.xlsx")
 st_write(redeploy_sites, "YOUR_FILE_PATH", driver = "GPX")
 ```
 
-Now that you've created the excel and gpx file you can head out in the field to deploy your ranges transmitters for your study period. After the time period you will retriever your receivers, download the vrl files and create detection csvs. From there you can filter your range transmitters, calculate the number of heard in a day (e.g., 38) and divide it by the number you're supposed to hear (e.g., 96), to get your daily detection efficiency. You can then model changes in daily detection efficiency over the course of the study. Congratulations! you have now successfully calculated your receiver detection range over your study time period.
+Now that you've created the excel and gpx file you can head out in the field to deploy your ranges transmitters for your study period. After the time period you will retriever your receivers, download the vrl files and create detection csvs. From there you can filter your range transmitters, calculate the number of heard in a day (e.g., 38) and divide it by the number you're supposed to hear (e.g., 96), to get your daily detection efficiency. You can then model changes in daily detection efficiency over the course of the study. Congratulations! You have now successfully calculated your receiver detection range over your study time period.
