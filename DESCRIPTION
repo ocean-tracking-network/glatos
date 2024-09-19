@@ -24,10 +24,13 @@ Imports:
 		zip
 Suggests: 
     vdiffr,
+    ggplot2,
 		gifski,
 		knitr,
 		methods,
+		mapview,
 		png,
+		purrr,
 		rmarkdown,
 		terra,
 		testthat (>= 3.0.0),
