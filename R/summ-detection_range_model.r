@@ -128,7 +128,6 @@
 #'
 #' # for further instruction see vignettes
 #'
-#' @import tibble
 #' @export
 
 # function ------
@@ -154,7 +153,7 @@ detection_range_model <- function(formula,
   if (link == "logit") {
     model <- do.call("glm", list(
       formula = formula,
-      family = binomial(link = "logit"),
+      family = stats::binomial(link = "logit"),
       data = data,
       subset = substitute(subset)
     ))
@@ -164,7 +163,7 @@ detection_range_model <- function(formula,
   if (link == "probit") {
     model <- do.call("glm", list(
       formula = formula,
-      family = binomial(link = "probit"),
+      family = stats::binomial(link = "probit"),
       data = data,
       subset = substitute(subset)
     ))
@@ -188,11 +187,11 @@ detection_range_model <- function(formula,
 
   if (link %in% "logit" | link %in% "probit") {
     # # test goodness of fit for model -----
-    chi_square <- sum(residuals(model, link = "pearson")^2)
+    chi_square <- sum(stats::residuals(model, link = "pearson")^2)
 
-    df <- df.residual(model)
+    df <- stats::df.residual(model)
 
-    pgof <- pchisq(chi_square, df, lower.tail = FALSE)
+    pgof <- stats::pchisq(chi_square, df, lower.tail = FALSE)
 
     # create summary which you are going to extract coefficientsts from -----
     summary <- summary(model)
@@ -229,11 +228,11 @@ detection_range_model <- function(formula,
     aic <- summary$aic
   } else {
     # test goodness of fit for model -----
-    chi_square <- sum(residuals(model, link = "pearson")^2)
+    chi_square <- sum(stats::residuals(model, link = "pearson")^2)
 
-    df <- df.residual(model)
+    df <- stats::df.residual(model)
 
-    pgof <- pchisq(chi_square, df, lower.tail = FALSE)
+    pgof <- stats::pchisq(chi_square, df, lower.tail = FALSE)
 
     # create summary which you are going to extract coefficients from -----
     summary <- summary(model)
@@ -284,7 +283,7 @@ detection_range_model <- function(formula,
     adj_r2 <- summary$adj.r.squared
 
     # AIC
-    aic <- AIC(model)
+    aic <- stats::AIC(model)
   }
 
   # logit ------
@@ -300,7 +299,7 @@ detection_range_model <- function(formula,
     # in est
 
 
-    est <- qnorm(percentage / 100)
+    est <- stats::qnorm(percentage / 100)
     m <- (est - b0) / b1
   }
 
@@ -324,13 +323,13 @@ detection_range_model <- function(formula,
       # if(any(form == "y ~ -1 + poly(x, 3, raw = TRUE) + offset(y-intercept"))
       # stopifnot(form == "y ~ -1 + x + I(x ^ 2) + I(x ^ 3) + offset(y-intercept)")
       warning("Check if your formula is correct for the model_frame argument", call. = FALSE)
-      dist <- model.frame(model)[[2]]
+      dist <- stats::model.frame(model)[[2]]
     }
 
     if (model_frame == "matrix") {
       # model_frame <- c("matrix")
       warning("Check if your formula is correct for the model_frame argument", call. = FALSE)
-      matr <- model.frame(model)[[2]]
+      matr <- stats::model.frame(model)[[2]]
       dist <- matr[, 1]
     }
 
@@ -344,14 +343,14 @@ detection_range_model <- function(formula,
 
   if (link %in% "logit" | link %in% "probit") {
     if (summary_stats == FALSE) {
-      table <- tibble(
+      table <- dplyr::tibble(
         p = percentage,
         distance = m
       )
     }
 
     if (summary_stats == TRUE) {
-      table <- tibble(
+      table <- dplyr::tibble(
         p = percentage,
         distance = m,
         df = df,
@@ -370,14 +369,14 @@ detection_range_model <- function(formula,
     }
   } else {
     if (summary_stats == FALSE) {
-      table <- tibble(
+      table <- dplyr::tibble(
         p = percentage,
         distance = m
       )
     }
 
     if (summary_stats == TRUE) {
-      table <- tibble(
+      table <- dplyr::tibble(
         p = percentage,
         distance = m,
         df = df,

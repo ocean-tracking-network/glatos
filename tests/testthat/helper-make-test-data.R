@@ -1,4 +1,4 @@
-# For test-position_head_map.r
+# For test-position_heat_map.r
 phm_values_known <- function() {
   structure(c(
     43L, 20L, 23L, 19L, 21L, 19L, 25L,
@@ -47,6 +47,52 @@ phm_values_known <- function() {
     ""
   )))
 }
+
+
+lonlat_should_be <- function() {
+  structure(
+    list(
+      X = c(
+        -85.2135, -70.0109, -150.7894,
+        6.8652, 37.3556, 42.4453,
+        86.925, 137.1866, 148.2636
+      ),
+      Y = c(
+        -78.6341, -32.6532, 63.2828,
+        45.8326, -3.0674, 43.3499,
+        27.9881, -4.0846, -36.4559
+      )
+    ),
+    class = "data.frame",
+    row.names = c(NA, -9L),
+    projection = "LL", zone = 5
+  )
+}
+
+
+utm_should_be <- function() {
+  structure(
+    list(
+      X = c(
+        1680180.65973495, 8186849.16570993, 610871.594791948,
+        2062264.13674811, -657001.789635807, -752492.034126653,
+        -5920071.59263027, -10437816.4889341, -4882044.53090541
+      ),
+      Y = c(
+        -9512814.56242553, -8803144.21007502, 7019009.41828118,
+        14719479.8058522, -19651244.951772, 15078900.7921101,
+        14811143.88555, -1324049.10137187, -6094098.13883573
+      )
+    ),
+    row.names = c(NA, -9L),
+    class = "data.frame",
+    projection = "UTM",
+    zone = 5,
+    hemisphere = "N"
+  )
+}
+
+
 
 
 # For test-receiver_efficiency.r
@@ -625,3 +671,153 @@ blueshark_ri_ano_data <- function() {
     -40L
   ))
 }
+
+# test-class-glatos_animals.R
+
+ga_df_shouldbe <-
+  structure(
+    list(
+      animal_id = c("120", "107", "109"),
+      tag_id_code = c("32024", "32012", "32014"),
+      tag_code_space = c("A69-9001", "A69-9001", "A69-9001"),
+      utc_release_date_time =
+        structure(c(1301270400, 1301270460, 1301270700),
+          class = c("POSIXct", "POSIXt"), tzone = "UTC"
+        ),
+      release_latitude = c(41.56093, 41.56093, 41.56093),
+      release_longitude = c(-83.645, -83.645, -83.645)
+    ),
+    class = c("glatos_animals", "data.frame"),
+    row.names = c(NA, -3L)
+  )
+
+
+# test-class-glatos_detections.R
+
+gd_df_shouldbe <-
+  structure(
+    list(
+      animal_id = c("153", "153", "153", "153"),
+      detection_timestamp_utc = structure(
+        c(1335664117, 1335664375, 1335664512, 1335664602),
+        class = c("POSIXct", "POSIXt"),
+        tzone = "UTC"
+      ),
+      deploy_lat = c(43.39165, 43.39165, 43.39165, 43.39165),
+      deploy_long = c(-83.99264, -83.99264, -83.99264, -83.99264)
+    ),
+    class = c("glatos_detections", "data.frame"),
+    row.names = c(NA, -4L)
+  )
+
+# test-class-glatos_receivers.R
+
+gr_df_shouldbe <-
+  structure(
+    list(
+      station = c("WHT-009", "FDT-001", "FDT-004", "FDT-003"),
+      deploy_lat = c(43.7, 45.9, 45.9, 45.9),
+      deploy_long = c(-82.5, -83.5, -83.5, -83.5),
+      deploy_date_time = structure(
+        c(1285178700, 1289574420, 1289576160, 1289577360),
+        class = c("POSIXct", "POSIXt"),
+        tzone = "UTC"
+      ),
+      recover_date_time = structure(
+        c(1345049520, 1337088300, 1337091300, 1337092800),
+        class = c("POSIXct", "POSIXt"),
+        tzone = "UTC"
+      ),
+      ins_serial_no = c("109450", "442", "441", "444")
+    ),
+    class = c("glatos_receivers", "data.frame"),
+    row.names = c(NA, -4L)
+  )
+
+# test-detection_bubble_plot.R
+dbp_shouldbe <-
+  structure(
+    list(
+      glatos_array = c(
+        "DRF", "DRL", "DRU", "FMP", "OSC", "PRS", "RAR", "SBI",
+        "SBO", "SCL", "SCM", "SGR", "SHR", "STG", "THB", "TSR",
+        "TTB", "MAU"
+      ),
+      num_fish = c(
+        1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L,
+        1L, 1L, 2L
+      ),
+      num_dets = c(
+        62L, 186L, 169L, 856L, 47L, 665L, 1765L, 452L, 429L, 56L,
+        41L, 171L, 1L, 7L, 362L, 221L, 56L, 1634L
+      ),
+      first_det = structure(
+        c(
+          1338045135, 1337940654, 1338104017, 1345689117,
+          1337921541, 1343298212, 1365266330, 1337736291,
+          1337846480, 1338321994, 1338367368, 1335761200,
+          1366167359, 1351545544, 1342350940, 1365964552,
+          1335664117, 1332853527
+        ),
+        class = c("POSIXct", "POSIXt"),
+        tzone = "UTC"
+      ),
+      last_det = structure(
+        c(
+          1338058820, 1337986087, 1338159410, 1348695217,
+          1368112233, 1350743255, 1367428755, 1367949812,
+          1368057615, 1338361963, 1338430276, 1366253919,
+          1366167359, 1351547668, 1342776514, 1367171617,
+          1366167151, 1333996434
+        ),
+        class = c("POSIXct", "POSIXt"),
+        tzone = "UTC"
+      ),
+      mean_lat = c(
+        42.24937, 42.0978779569892, 42.3405844378698,
+        45.5011146378501, 44.451605106383, 45.342391233083,
+        41.6370474730881, 44.1334756858408, 44.2310045920746,
+        42.5635721428571, 42.7568704878048, 43.6116023976609,
+        43.37698, 44.71315, 44.9574962430939, 41.6243299999999,
+        43.3880923214286, 41.6079892227659
+      ),
+      mean_lon = c(
+        -83.1182399999999, -83.1192915591399, -82.9752284023668,
+        -83.9047890420557, -83.3028529787234, -83.4444803007522,
+        -82.9741154334291, -83.4396808628316, -83.4107523310021,
+        -82.5747644642857, -82.4744753658537, -83.8679587134504,
+        -83.99115, -83.2011, -83.295101685083, -83.0128399999997,
+        -83.988549642857, -83.5718802264372
+      ),
+      animals = c(
+        "23", "23", "23", "153", "153", "153", "22", "153", "153",
+        "23", "23", "153", "153", "153", "153", "22", "153", "22 23"
+      )
+    ),
+    row.names = c(
+      1L, 2L, 3L, 4L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L,
+      16L, 17L, 18L, 5L
+    ),
+    class = "data.frame"
+  )
+
+
+# test-calc_collision_prob.R
+
+ccp_shouldbe <- structure(
+  list(
+    nTags = c(1, 2, 3),
+    min = c(1, 1, 0.9),
+    q1 = c(1, 1, 0.9),
+    med = c(1, 1, 0.9),
+    q3 = c(1, 1, 0.95),
+    max = c(1, 1, 1),
+    mean = c(1, 1, 0.933),
+    expDetsPerHr = c(49.57312035252, 99.1462407050399, 148.71936105756),
+    totDetsPerHr = c(50, 99, 139),
+    effDelay = c(68, 68, 72),
+    detsPerTagPerHr = c(50, 50, 46)
+  ),
+  row.names = c(NA, -3L),
+  class = "data.frame"
+)

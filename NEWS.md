@@ -3,6 +3,28 @@
 # glatos 0.8.0 (dev)
 
 
+## Breaking changes
+
+
+- Changed `make_transition()` to use `jarasterize()` (see New Features) and 
+  added input arg `buffer`.
+  - Removed dependence on gdalUtilities.
+  - fixes [issue #234](https://github.com/ocean-tracking-network/glatos/issues/234)
+
+- Removed `make_transition2()` (deprecated in 0.7) and `make_transition3()`.
+  Also removed dependence on `fasterize`.
+  - fixes [issue #67](https://github.com/ocean-tracking-network/glatos/issues/67)
+  
+- Updated example TransitionLayer object `greatLakesTrLayer` using new
+`make_transition()` and `great_lakes_polygon` (an `sf` object) . The new version
+has the same cell size (resolution) as the previous, but different extents
+(matches great_lakes_polygon, so returned values (with same input) will differ
+from earlier versions.
+  - fixes [issue #219](https://github.com/ocean-tracking-network/glatos/issues/219)
+
+- Removed 'gganimate_handout' (pdf and html) from 'vignettes'.
+
+
 ### Bug fixes and minor changes
 
 - Add `@srs` slot to `greatLakesTrLayer` data object and rename file 
@@ -24,6 +46,15 @@
 
 ### New features
 
+#### 2024-08-28
+
+- New function `jarasterize()` to allow rasterization 
+  (esp. with `all_touched = TRUE`) using only `sf` and `raster`. 
+  Used by `make_transition()`.
+  
+- New function `scale_meters_to_degrees()` to inform selection of `res` argument 
+  to `make_transition()`.
+
 #### 2024-01-19
 
 - In `make_frames()`, allow `terra::SpatVector` input for background map 
@@ -43,6 +74,8 @@
     - `is_glatos_animals()` to check class attribute for `"glatos_animals"`.
     - `validate_glatos_animals()` to check for existence of required column 
       names and classes.
+    - fixes [issue #126](https://github.com/ocean-tracking-network/glatos/issues/126)
+    - fixes [issue #78](https://github.com/ocean-tracking-network/glatos/issues/78)
       
 - Add new functions to create, check, and validate `glatos_detections` objects:
     - `glatos_detections()` to construct a `glatos_detections` object from
@@ -54,7 +87,9 @@
     - `is_glatos_detections()` to check class attribute for `"glatos_detections"`.
     - `validate_glatos_detections()` to check for existence of required column 
       names and classes.
-
+    - fixes [issue #126](https://github.com/ocean-tracking-network/glatos/issues/126)
+    - fixes [issue #78](https://github.com/ocean-tracking-network/glatos/issues/78)
+    
 - Add new functions to create, check, and validate `glatos_recievers` objects:
     - `glatos_receivers()` to construct a `glatos_receivers` object from
       individual vectors (one for each column) and optionally check for required
@@ -65,7 +100,9 @@
     - `is_glatos_receivers()` to check class attribute for `"glatos_receivers"`.
     - `validate_glatos_receivers()` to check for existence of required column 
       names and classes.
-
+    - fixes [issue #126](https://github.com/ocean-tracking-network/glatos/issues/126)
+    - fixes [issue #78](https://github.com/ocean-tracking-network/glatos/issues/78)
+    
 - Add new function `vue_convert()` to convert VRL file to CSV file (detection
   records only; receiver event log records are not supported). 
     - replaces `vrl2csv()` (deprecated).
@@ -82,6 +119,35 @@
 - Add new function `read_vdat_csv()` to read data exported from VRL or VDAT 
   using VDAT.exe (e.g., using `vdat_convert()`).
 
+
+# glatos 0.7.3 (2024-04-09)
+
+
+### Bug fixes
+
+- Fixed bug in `summarize_detections()` where values in `num_locs` and 
+  `locations` columns were incorrect. 
+    - Likely a side effect of 
+    [commit 3f0a2ee](https://github.com/ocean-tracking-network/glatos/commit/3f0a2ee366d8c9447bf4b0bff0a1f8dbfd3819a6)
+which aimed to fix [issue #182](https://github.com/ocean-tracking-network/glatos/issues/182)
+
+
+----
+
+
+# glatos 0.7.2 (2024-02-25)
+
+
+### Bug fixes
+
+
+- Fixed bug in `summarize_detections()` where value in `locations` output 
+  column was name of input column (e.g. "glatos_array"), rather than values 
+  from that column (e.g., "AGR", "BBI").
+    - fixed [issue #182](https://github.com/ocean-tracking-network/glatos/issues/182)
+    - cherry-picked from [commit db9d69a]( https://github.com/ocean-tracking-network/glatos/commit/db9d69a3d08a97e7b8f86e0d4977aa0909776ddd)
+      which was merged with dev but not main.
+  
 
 ----
 

@@ -1,7 +1,5 @@
 #' Read data from an Innovasea Fathom VDAT CSV file
 #'
-#' Read data from an Innovasea Fathom VDAT CSV file
-#'
 #' @param src A character string with path and name of an Innovasea VDAT CSV
 #'   detection file. If only file name is given, then the file must be located
 #'   in the working directory.
@@ -60,7 +58,7 @@
 #' vrl_files <- system.file("extdata", "detection_files_raw",
 #'   c(
 #'     "VR2W_109924_20110718_1.vrl",
-#'     "HR2-180 461396 2021-04-20 173145.vdat"
+#'     "HR2-180_461396_2021-04-20_173145.vdat"
 #'   ),
 #'   package = "glatos"
 #' )
@@ -79,7 +77,7 @@
 #'   lapply(
 #'     function(x) {
 #'       read_vdat_csv(x, record_types = "DET")$DET %>%
-#'         as_tibble() %>%
+#'         dplyr::as_tibble() %>%
 #'         mutate(source_file = basename(x))
 #'     }
 #'   ) %>%
@@ -135,6 +133,9 @@ read_vdat_csv <- function(src,
     warning("File not found: ", src)
     return()
   }
+
+  ##  Declare global variables for NSE & R CMD check
+  record_type <- NULL
 
   # Identify vdat csv format version and vdat.exe version that created input csv
   vdat_header <- data.table::fread(file = src, nrows = 1L, header = FALSE)
@@ -218,13 +219,13 @@ read_vdat_csv <- function(src,
     keep.by = FALSE
   )
 
-  data(vdat_csv_schema)
+  utils::data("vdat_csv_schema", envir = environment())
 
   vdat_csv_schema <- vdat_csv_schema[[paste0("v", src_version$fathom_csv)]]
 
 
   # Preallocate list; element = record type
-  vdat <- setNames(
+  vdat <- stats::setNames(
     object = vector("list", length(vdat_list)),
     nm = names(vdat_list)
   )

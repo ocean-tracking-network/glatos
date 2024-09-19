@@ -2,7 +2,7 @@
 % Please edit documentation in R/package-glatos.r
 \docType{package}
 \name{glatos}
-\alias{-package}
+\alias{glatos-package}
 \alias{glatos}
 \title{An R package for the Great Lakes Acoustic Telemetry Observation System}
 \description{
@@ -44,14 +44,14 @@ and operating schedule.}
 
 \item{\link{real_sensor_values}}{ Converts 'raw' transmitter sensor (e.g.,
 depth, temperature) to 'real'-scale values (e.g., depth in meters) using
-transmitter specification data (e.g., from read\_vemco\_tag\_specs).} }
+transmitter specification data (e.g., from \link{read_vemco_tag_specs}).} }
 }
 
 \section{Filtering and summarizing}{
  \describe{
 \item{\link{min_lag}}{
 Facilitates identification and removal of false positive detections by
-calculating the minimum time interval (min\_lag) between successive
+calculating the minimum time interval (min_lag) between successive
 detections.}
 
 \item{\link{false_detections}}{ Removes potential false positive detections
@@ -130,3 +130,30 @@ Toolbox(https://github.com/vinayudyawer/ATT) and the VTrack package.}
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/ocean-tracking-network/glatos}
+  \item Report bugs at \url{https://github.com/ocean-tracking-network/glatos/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Christopher Holbrook \email{cholbrook@usgs.gov}
+
+Authors:
+\itemize{
+  \item Todd Hayden
+  \item Thomas Binder
+  \item Jon Pye
+}
+
+Other contributors:
+\itemize{
+  \item Mike O'Brien [contributor]
+  \item Alex Nunes [contributor]
+  \item Angela Dini [contributor]
+  \item Ryan Gosse [contributor]
+}
+
+}

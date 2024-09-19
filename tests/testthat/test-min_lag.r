@@ -58,7 +58,7 @@ test_that("data.table returns correct classes and types", {
 
 test_that("tibble returns correct classes and types", {
   minLag_tbl <- min_lag(
-    tibble::as_tibble(sampleMinLag)
+    dplyr::as_tibble(sampleMinLag)
   )
 
   # Expected classes

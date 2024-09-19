@@ -4,7 +4,12 @@
 \alias{[.vdat_list}
 \title{Subset method for vdat_list that retains attributes}
 \usage{
-\method{[}{vdat_list}(x, i, ...)
+\method{[}{vdat_list}(x, i)
+}
+\arguments{
+\item{x}{a vdat_list from which to extract element(s).}
+
+\item{i}{indices specifying elements to extract or replace.}
 }
 \description{
 Subset method for vdat_list that retains attributes

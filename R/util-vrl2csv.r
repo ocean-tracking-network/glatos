@@ -21,6 +21,8 @@
 #'   VUE.exe. If NA (default) then the path to VUE.exe must be added to the
 #'   PATH environment variable of your system. See Note below.
 #'
+#' @param showProgress If TRUE (default) a progress bar and message are
+#'   displayed.
 #'
 #' @details
 #' If `vrl` is a directory, then all VRL files in that directory will be
@@ -77,7 +79,11 @@ NULL
 #' For \code{vrl2csv}, use \code{\link{vue_convert}}.
 #'
 #' @export
-vrl2csv <- function(vrl, outDir = NA, overwrite = TRUE, vueExePath = NA) {
+vrl2csv <- function(vrl,
+                    outDir = NA,
+                    overwrite = TRUE,
+                    vueExePath = NA,
+                    showProgress = TRUE) {
   .Deprecated("vue_convert")
 
   # check path to VUE.exe if given
@@ -124,7 +130,7 @@ vrl2csv <- function(vrl, outDir = NA, overwrite = TRUE, vueExePath = NA) {
 
   # invoke vue command for each file
   for (i in 1:length(vrl)) {
-    if (i == 1) {
+    if (i == 1 & showProgress) {
       message("Converting ", length(vrl), " detection files...")
       pb <- txtProgressBar(0, max = length(vrl), style = 3)
     }
@@ -142,14 +148,14 @@ vrl2csv <- function(vrl, outDir = NA, overwrite = TRUE, vueExePath = NA) {
       )
     }
 
-    setTxtProgressBar(pb, i)
+    if (showProgress) setTxtProgressBar(pb, i)
   } # end i
 
   # return output path(s) and file name(s)
   outFName <- file.path(outDir, gsub("vrl$", "csv", basename(vrl), ignore.case = TRUE))
   fileCheck <- file.exists(outFName)
 
-  cat("\n")
+  if (showProgress) cat("\n")
 
   # Warn if any files were not created.
   if (any(!fileCheck)) {

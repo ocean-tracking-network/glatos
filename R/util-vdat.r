@@ -78,7 +78,7 @@
 #'  output file, including files that were skipped (when output file exists and
 #'  \code{overwrite = FALSE}).
 #'
-#' @note Tested on VDAT version 3.4.1.
+#' @note Tested on VDAT version vdat-10.6.0-20240716-1903df-release
 #'
 #' @author C. Holbrook, \email{cholbrook@@usgs.gov}
 #'
@@ -179,7 +179,12 @@ vdat_convert <- function(src,
                          vdat_exe_path = NULL,
                          skip_pattern = "-RLD_",
                          show_progress = TRUE,
-                         diagn = FALSE) {
+                         diagn = FALSE,
+                         export_settings = NULL) {
+  ##  Declare global variables for NSE & R CMD check
+  src_dir <- src_file <- out_file <- out_file_exists <- src_to_convert <-
+    written <- NULL
+
   # Supported input file extensions (not case sensitive)
   supported_ext <- c("vrl", "vdat")
 
@@ -487,7 +492,7 @@ vdat_convert <- function(src,
 #'  of the system.
 #'
 #' @returns Character string with command for calling VDAT.exe via
-#'   \code{system2}'s \code{\link{command}} argument.
+#'   \code{system2}'s \code{command} argument.
 #'
 #' @examples
 #' \dontrun{
@@ -596,11 +601,15 @@ get_local_vdat_version <- function(vdat_exe_path = NULL) {
 }
 
 
-#' Get schema from local installation of Innovsea program VDAT.exe
+#' Get schema from local installation of Innovasea program VDAT.exe
 #'
 #' @param vdat_exe_path The full path to \code{VDAT.exe}. If \code{NULL}
 #'  (default) then the path to VDAT.exe must be in the PATH environment variable
 #'  of the system. See \code{\link{check_vdat}}.
+#'
+#' @details A bug in vdat.exe version 9 (confirmed on vdat-9.3.0) will cause
+#'   this function to return an empty list. Fixed in vdat.exe version 10
+#'   (confirmed on vdat-10.6.0).
 #'
 #' @returns
 #' Schema (template) of VDAT CSV produced by installed version of VDAT.exe.
@@ -609,24 +618,33 @@ get_local_vdat_version <- function(vdat_exe_path = NULL) {
 #' \dontrun{
 #'
 #' # use if VDAT.exe in Windows system PATH variable
-#' get_local_vdat_schema()
+#' get_local_vdat_template()
 #'
 #' # or specify path to VDAT.exe
-#' get_local_vdat_schema(
+#' get_local_vdat_template(
 #'   vdat_exe_path =
 #'     "C:/Program Files/Innovasea/Fathom/VDAT.exe"
 #' )
 #' }
 #'
 #' @export
-get_local_vdat_schema <- function(vdat_exe_path = NULL) {
+get_local_vdat_template <- function(vdat_exe_path = NULL) {
   # Check path to vdat.exe and get (valid) command arg for system2 call
   vdat_cmd <- check_vdat(vdat_exe_path)
 
   # Invoke VDAT.exe
-  vdat_call <- "--format=csv.fathom template"
+  vdat_call <- "template --format=csv.fathom"
 
   vdat_schema <- system2(vdat_cmd, vdat_call, stdout = TRUE)
+
+  # remove ï»¿" BOM from start of first row if present
+  check_bom <- vdat_schema[1]
+  Encoding(check_bom) <- "latin1"
+
+  if (grepl("^ï»¿", check_bom)) {
+    Encoding(vdat_schema[1]) <- "latin1"
+    vdat_schema[1] <- iconv(vdat_schema[1], "latin1", "ascii", sub = "")
+  }
 
   vdat_schema_names <- lapply(vdat_schema, function(x) strsplit(x, ",")[[1]][1])
   vdat_schema_list <- lapply(vdat_schema, function(x) strsplit(x, ",")[[1]][-1])

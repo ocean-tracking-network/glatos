@@ -8,8 +8,8 @@
 #'
 #' @section Filename: walleye_detections.zip
 #'
-#' @usage
-#' system.file("extdata", "walleye_detections.zip", package="glatos")
+#' @examples
+#' system.file("extdata", "walleye_detections.zip", package = "glatos")
 #'
 #' @author Todd Hayden
 #'
@@ -37,8 +37,8 @@ NULL
 #'
 #' @section Filename: SMRSL_GLATOS_20140828.xlsm
 #'
-#' @usage
-#' system.file("extdata", "SMRSL_GLATOS_20140828.xlsm", package="glatos")
+#' @examples
+#' system.file("extdata", "SMRSL_GLATOS_20140828.xlsm", package = "glatos")
 #'
 #' @author Chris Holbrook
 #'
@@ -53,12 +53,12 @@ NULL
 #'
 #' @format Folder contains 30 sequentially labeled .png image files
 #'
-#' @name video images
+#' @name video-images
 #'
 #' @section Filename: frames
 #'
-#' @usage
-#' system.file("extdata", "frames", package="glatos")
+#' @examples
+#' system.file("extdata", "frames", package = "glatos")
 #'
 #' @author Todd Hayden
 #'
@@ -67,9 +67,7 @@ NULL
 
 #' @title zipped polygon shapefile of Great Lakes
 #'
-#' @description Polygon coastline of Great Lakes in WGS84
-#'   projection.  Includes outlines of Tittabawassee River (Lake
-#'   Huron), Maumee River (Lake Erie), and Sandusky River (Lake Erie)
+#' @description Polygon coastline of Great Lakes in WGS84 projection.
 #'
 #' @format shapefile
 #'
@@ -77,8 +75,28 @@ NULL
 #'
 #' @section Filename: shoreline.zip
 #'
-#' @usage
-#' system.file("extdata", "shoreline.zip", package="glatos")
+#' @section Used to make [great_lakes_polygon].
+#'
+#' @details Note from Todd: "This polygon layer of GL shoreline was modified by
+#'   hand to include Saginaw, Tittabawasssee, Maumee, and Sandusky rivers.
+#'   Outlines of rivers are not precise but were wide enough to allow a
+#'   continuous connection between pixels for the entire undammed river stretch
+#'   when the 'rasterize' function is used to produce a raster layer of the GL
+#'   in QGIS."
+#'
+#' @details Todd's original file name was 'coastline_poly_modified_rivers'.
+#'
+#' @examples
+#'
+#' # Read polygon from shapefile
+#'
+#' poly_file <- system.file("extdata", "shoreline.zip", package = "glatos")
+#'
+#' poly <- sf::st_read(paste0("/vsizip/", poly_file))
+#'
+#' \dontrun{
+#' plot(sf::st_geometry(poly))
+#' }
 #'
 #' @author Todd Hayden
 #'
@@ -95,7 +113,7 @@ NULL
 #'
 #' @section Filename: otn_aat_animals.csv
 #'
-#' @usage
+#' @examples
 #' system.file("extdata", "otn_aat_animals.csv", package = "glatos")
 #'
 #' @source Ryan Gosse, Ocean Tracking Network
@@ -111,7 +129,7 @@ NULL
 #'
 #' @section Filename: otn_aat_receivers.csv
 #'
-#' @usage
+#' @examples
 #' system.file("extdata", "otn_aat_receivers.csv", package = "glatos")
 #'
 #' @source Ryan Gosse, Ocean Tracking Network
@@ -127,7 +145,7 @@ NULL
 #'
 #' @section Filename: otn_aat_tag_releases.csv
 #'
-#' @usage
+#' @examples
 #' system.file("extdata", "otn_aat_tag_releases.csv", package = "glatos")
 #'
 #' @source Ryan Gosse, Ocean Tracking Network

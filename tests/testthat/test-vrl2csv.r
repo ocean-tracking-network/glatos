@@ -35,7 +35,8 @@ test_that("one vrl gives expected result", {
     good_csv <- vrl2csv(
       vrl_loc$vrl,
       outDir = vrl_loc$test_dir,
-      vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
+      vueExePath = "C:/Program Files (x86)/VEMCO/VUE",
+      showProgress = FALSE
     ),
     "'vrl2csv' is deprecated\\."
   )
@@ -46,14 +47,17 @@ test_that("one vrl gives expected result", {
       good_csv <- vrl2csv(
         vrl_loc$vrl,
         outDir = vrl_loc$test_dir,
-        vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
+        vueExePath = "C:/Program Files (x86)/VEMCO/VUE",
+        showProgress = FALSE
       )
     )
   )
+
   expect_equal(
     normalizePath(dirname(good_csv)),
     normalizePath(vrl_loc$test_dir)
   )
+
   expect_equal(
     basename(good_csv),
     gsub(
@@ -62,29 +66,42 @@ test_that("one vrl gives expected result", {
     )
   )
 
-  # Creates message
-  expect_message(
-    suppressWarnings(
-      good_csv <- vrl2csv(
-        vrl_loc$vrl,
-        outDir = vrl_loc$test_dir,
-        vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
-      )
-    ),
-    "Converting 1 detection files\\.\\.\\."
-  )
 
-  # Outputs progress bar
-  expect_output(
-    suppressWarnings(
-      good_csv <- vrl2csv(
-        vrl_loc$vrl,
-        outDir = vrl_loc$test_dir,
-        vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
-      )
-    ),
-    "\\|======================================================================\\| 100%"
-  )
+  # Check message and progress bar when showProgress = TRUE
+
+  suppressWarnings(
+    good_csv <- vrl2csv(
+      vrl_loc$vrl,
+      outDir = vrl_loc$test_dir,
+      vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
+    )
+  ) |>
+    expect_message("Converting 1 detection files\\.\\.\\.") |>
+    expect_output("\\|======================================================================\\| 100%")
+
+  # # Creates message
+  # expect_message(
+  #   suppressWarnings(
+  #     good_csv <- vrl2csv(
+  #       vrl_loc$vrl,
+  #       outDir = vrl_loc$test_dir,
+  #       vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
+  #     )
+  #   ),
+  #   "Converting 1 detection files\\.\\.\\."
+  # )
+  #
+  # # Outputs progress bar
+  # expect_output(
+  #   suppressWarnings(
+  #     good_csv <- vrl2csv(
+  #       vrl_loc$vrl,
+  #       outDir = vrl_loc$test_dir,
+  #       vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
+  #     )
+  #   ),
+  #   "\\|======================================================================\\| 100%"
+  # )
 
   # Check if expected and actual results are the same
   expect_snapshot(
@@ -112,7 +129,8 @@ test_that("one vrl in dir with space in name gives expected result", {
     good_csv <- vrl2csv(
       vrl_loc$vrl,
       outDir = vrl_loc$test_dir,
-      vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
+      vueExePath = "C:/Program Files (x86)/VEMCO/VUE",
+      showProgress = FALSE
     ),
     "'vrl2csv' is deprecated\\."
   )
@@ -122,7 +140,8 @@ test_that("one vrl in dir with space in name gives expected result", {
       good_csv <- vrl2csv(
         vrl_loc$vrl,
         outDir = vrl_loc$test_dir,
-        vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
+        vueExePath = "C:/Program Files (x86)/VEMCO/VUE",
+        showProgress = FALSE
       )
     )
   )
@@ -138,29 +157,17 @@ test_that("one vrl in dir with space in name gives expected result", {
     )
   )
 
-  # Creates message
-  expect_message(
-    suppressWarnings(
-      good_csv <- vrl2csv(
-        vrl_loc$vrl,
-        outDir = vrl_loc$test_dir,
-        vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
-      )
-    ),
-    "Converting 1 detection files\\.\\.\\."
-  )
 
-  # Outputs progress bar
-  expect_output(
-    suppressWarnings(
-      good_csv <- vrl2csv(
-        vrl_loc$vrl,
-        outDir = vrl_loc$test_dir,
-        vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
-      )
-    ),
-    "\\|======================================================================\\| 100%"
-  )
+  # Check message and progress bar when showProgress = TRUE
+  suppressWarnings(
+    good_csv <- vrl2csv(
+      vrl_loc$vrl,
+      outDir = vrl_loc$test_dir,
+      vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
+    )
+  ) |>
+    expect_message("Converting 1 detection files\\.\\.\\.") |>
+    expect_output("\\|======================================================================\\| 100%")
 
 
   # Check if expected and actual results are the same
@@ -202,7 +209,8 @@ test_that("one good vrl in dir with corrupt vrl gives expected result", {
     out_csv <- vrl2csv(
       list.files(vrl_loc$test_dir, full.names = T),
       outDir = vrl_loc$test_dir,
-      vueExePath = "C:/Program Files (x86)/VEMCO/VUE"
+      vueExePath = "C:/Program Files (x86)/VEMCO/VUE",
+      showProgress = FALSE
     ),
     "deprecated"
   ) |>

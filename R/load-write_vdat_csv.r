@@ -23,15 +23,6 @@
 #' @param include_empty Logical (default = \code{FALSE}). If \code{output_format
 #'  = "csv.fathom.split"}, should files be written for empty objects.
 #'
-#' @param overwrite Logical. If \code{TRUE}, output CSV file(s) will overwrite
-#'  existing CSV file(s) with same name in \code{out_dir}. If \code{FALSE}
-#'  (default), any output files that already exist in \code{out_dir} will be
-#'  skipped, with warning.
-#'
-#' @param recursive Logical. If \code{TRUE} and \code{src} is a directory, then
-#'  all VRL/VDAT files in all subdirectories of \code{src} will be converted.
-#'  Default is \code{FALSE}. Ignored if \code{src} is a not directory.
-#'
 #' @param export_settings (NOT YET IMPLEMENTED). Placeholder for future
 #'  specification of other options available via Fathom Data Export app. (E.g.,
 #'  'Data Types to Include', 'Data Filter', 'Filename Suffix', 'Time Offset in
@@ -63,17 +54,29 @@
 #' vdat <- read_vdat_csv(csv_file)
 #'
 #' # write to single file (output_format = "csv.fathom")
-#' write_vdat_csv(vdat)
+#' temp_file <- tempfile(fileext = ".csv")
+#' write_vdat_csv(vdat, out_file = temp_file)
 #'
-#' # write to multiple files
-#' write_vdat_csv(vdat, output_format = "csv.fathom.split")
+#' # write to multiple files (fathom split option)
+#' temp_dir2 <- tempdir()
+#' write_vdat_csv(vdat,
+#'   out_file = temp_dir2,
+#'   output_format = "csv.fathom.split"
+#' )
 #' }
+#'
 #' @export
 write_vdat_csv <- function(vdat,
                            record_types = NULL,
                            out_file = NULL,
                            output_format = "csv.fathom",
-                           include_empty = FALSE) {
+                           include_empty = FALSE,
+                           export_settings = NULL) {
+  ##  Declare global variables for NSE & R CMD check
+  record_type <- dt2 <- `Device Time (UTC)` <- `Time Correction (s)` <-
+    `Ambient (deg C)` <- `Ambient Min (deg C)` <- `Ambient Max (deg C)` <-
+    `Ambient Mean (deg C)` <- `Internal (deg C)` <- txt_cols <- txt <- NULL
+
   # Check input class
   if (!inherits(vdat, "vdat_list")) {
     stop(
@@ -107,7 +110,7 @@ write_vdat_csv <- function(vdat,
   if (out_file_type == "dir") {
     out_file_name <- gsub("\\.vrl$|\\.vdat$",
       out_file_ext,
-      tail(vdat$DATA_SOURCE_FILE$`File Name`, 1),
+      utils::tail(vdat$DATA_SOURCE_FILE$`File Name`, 1),
       ignore.case = TRUE
     )
 
@@ -121,6 +124,13 @@ write_vdat_csv <- function(vdat,
     )
   }
 
+  # out_file must contain file name if vdat does not contain DATA_SOURCE_FILE
+  if (out_file_type == "dir" & !("DATA_SOURCE_FILE" %in% names(vdat))) {
+    stop("Input 'out_file' must include file name if 'vdat' does not contain",
+      " a 'DATA_SOURCE_FILE' record type.",
+      call. = FALSE
+    )
+  }
 
   # Make vdat csv format version and identify data generating mechanism
   src_version <- paste0(
@@ -142,12 +152,12 @@ write_vdat_csv <- function(vdat,
 
   # Compress each list element into a character vector
 
-  vdat_lines_body <- setNames(
+  vdat_lines_body <- stats::setNames(
     object = vector("list", length(record_types)),
     record_types
   )
 
-  vdat_lines_header <- setNames(
+  vdat_lines_header <- stats::setNames(
     object = vector("list", length(record_types)),
     record_types
   )
@@ -285,7 +295,7 @@ write_vdat_csv <- function(vdat,
 
       temp_file_i <- tempfile()
 
-      fwrite(x_i[, ..txt_cols], file = temp_file_i)
+      fwrite(x_i[, .SD, .SDcols = txt_cols], file = temp_file_i)
 
       x_i[, txt := fread(temp_file_i, sep = "")]
     } else {
@@ -366,7 +376,7 @@ write_vdat_csv <- function(vdat,
 
   if (output_format == "csv.fathom.split") {
     # Create folder if not exist
-    if (!dir.exists(out_file)) dir.create(out_file)
+    if (!dir.exists(out_file)) dir.create(out_file, recursive = TRUE)
 
 
     # Write csv for each record type
@@ -501,10 +511,16 @@ format_POSIXt <- function(x, digits = 0, drop0trailing = TRUE) {
 
 
 #' Subset method for vdat_list that retains attributes
+#'
+#' @param x a vdat_list from which to extract element(s).
+#' @param i indices specifying elements to extract or replace.
+#'
 #' @export
-`[.vdat_list` <- function(x, i, ...) {
+`[.vdat_list` <- function(x, i) {
   attrs <- attributes(x)
   out <- unclass(x)
+  if (is.numeric(i)) i <- as.integer(i)
+  if (is.character(i)) i <- match(i, names(x))
   out <- out[i]
   if (!is.null(attrs$names)) attrs$names <- names(x)[i]
   attributes(out) <- attrs

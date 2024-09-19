@@ -9,14 +9,14 @@
 #'   are also accepted); \cr *OR* \cr A polygon defined as data frame or
 #'   matrix with numeric columns x and y.
 #'
-#' @param theta A 2-element numeric vector with turn angle parameters (theta[1]
-#'   = mean; theta[2] = sd), in degrees, from normal distribution.
+#' @param theta A 2-element numeric vector with turn angle parameters (`theta[1]`
+#'   = mean; `theta[2]` = sd), in degrees, from normal distribution.
 #'
 #' @param stepLen A numeric scalar with total distance moved in each step, in
 #'   meters.
 #'
 #' @param initPos A 2-element numeric vector with initial position
-#'   (initPos[1]=x, initPos[2]=y) in same coordinate reference system as
+#'   (`initPos[1]`=x, `initPos[2]`=y) in same coordinate reference system as
 #'   `polyg`.
 #'
 #' @param initHeading A numeric scalar with initial heading in degrees. E.g., 0
@@ -177,9 +177,15 @@
 #'
 #' @export
 
-crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
-                           initPos = c(NA, NA), initHeading = NA, nsteps = 30,
-                           inputCRS = NA, cartesianCRS = NA, sp_out = TRUE,
+crw_in_polygon <- function(polyg,
+                           theta = c(0, 10),
+                           stepLen = 100,
+                           initPos = c(NA, NA),
+                           initHeading = NA,
+                           nsteps = 30,
+                           inputCRS = NA,
+                           cartesianCRS = NA,
+                           sp_out = TRUE,
                            show_progress = TRUE) {
   # Check input class
   if (!inherits(polyg, c(
@@ -242,7 +248,7 @@ crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
     }
 
     # Close polyg if needed (first and last point must be same)
-    if (!identical(polyg[1, ], tail(polyg, 1))) polyg <- rbind(polyg, polyg[1, ])
+    if (!identical(polyg[1, ], utils::tail(polyg, 1))) polyg <- rbind(polyg, polyg[1, ])
 
     # Make sf object
     polyg_sf <- sf::st_polygon(list(as.matrix(polyg[c("x", "y")])))
@@ -323,21 +329,17 @@ crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
       initHeading, nsteps = length(rows_i)
     )
 
-    # replace check_in_polygon with check_cross_boundary
-    #  otherwise, paths can jump peninsulas etc
-    # inPoly <- check_in_polygon(path_fwd_i, polyg_sf,
-    #                            EPSG = crs_cartesian)
-
     # combine init and path_fwd_i
     path_mat <- rbind(
       unname(sf::st_coordinates(init_i)),
       unname(as.matrix(path_fwd_i))
     )
 
-    inPoly <- check_cross_boundary(
+    # check if path crosses polygon boundary
+    #  otherwise, paths can jump peninsulas etc
+    inPoly <- !crosses_boundary(
       path = path_mat,
-      boundary = xl,
-      EPSG = crs_cartesian
+      boundary = xl
     )
 
     if (all(!inPoly)) {
@@ -412,32 +414,69 @@ crw_in_polygon <- function(polyg, theta = c(0, 10), stepLen = 100,
   return(path_fwd_df)
 }
 
-#' Check if in polygon
-check_in_polygon <- function(points, polygon, EPSG) {
-  points_sf <- sf::st_as_sf(points,
-    coords = c("x", "y"),
-    crs = EPSG
-  )
-  # identify points contains in any polygon
-  inPoly <- apply(sf::st_contains(polygon, points_sf, sparse = FALSE), 2, any)
-  return(inPoly)
-}
 
-
-#' Check if track crosses polygon boundary
-check_cross_boundary <- function(path, boundary, EPSG) {
+#' Check if path segments cross polygon boundary
+#'
+#' Check if each segment in a path crosses polygon boundary
+#'
+#' @param path A two-column matrix of points, representing x and y,
+#'   respectively, along a path.
+#'
+#' @param boundary An `sf` object containing `MULTILINESTRING` geometry
+#'   representing a polygon boundary.
+#'
+#' @description Internal function used in [crw_in_polygon()] to determine if
+#'   (and identify which) line segments cross polygon boundaries (e.g., steps
+#'   onto land or over a peninsula).
+#'
+#' @returns A logical vector with an element for each 'step' in `path` that
+#'  indicates if that step crosses `boundary` (TRUE) or not (FALSE).
+#'
+#' @examples
+#'
+#' # Example 1
+#'
+#' # make path
+#' path <- matrix(c(0:6, rep(3, 7)), ncol = 2)
+#'
+#' # make polygon
+#' poly <- matrix(c(0, 0, 6, 0, 3, 6, 0, 0), ncol = 2, byrow = TRUE)
+#'
+#' plot(poly, type = "l")
+#' lines(path, type = "o", col = "red")
+#'
+#' poly <- sf::st_linestring(poly)
+#'
+#' crosses_boundary(path, poly)
+#'
+#' # Example 2
+#'
+#' # make path
+#' path <- matrix(c(0, 1, 5, 6, rep(3, 4)), ncol = 2)
+#'
+#' # make polygon
+#' poly <- matrix(c(0, 0, 6, 0, 3, 6, 0, 0), ncol = 2, byrow = TRUE)
+#'
+#' plot(poly, type = "l")
+#' lines(path, type = "o", col = "red")
+#'
+#' poly <- sf::st_linestring(poly)
+#'
+#' crosses_boundary(path, poly)
+#'
+#' @noRd
+crosses_boundary <- function(path, boundary) {
   # Make line segment objects of sequential point-pairs in path
-
   segs_mat <- cbind(
-    head(path, -1),
-    tail(path, -1)
+    utils::head(path, -1),
+    utils::tail(path, -1)
   )
 
-  in_poly <-
+  cross_bndry <-
     unname(
       apply(segs_mat, 1,
         function(x) {
-          !any(sf::st_intersects(boundary,
+          any(sf::st_intersects(boundary,
             sf::st_linestring(rbind(x[1:2], x[3:4])),
             sparse = FALSE
           ))
@@ -446,19 +485,5 @@ check_cross_boundary <- function(path, boundary, EPSG) {
       )
     )
 
-
-  # segs_list <- apply(segs_mat, 1,
-  #                function(x) sf::st_linestring(rbind(x[1:2], x[3:4])),
-  #                simplify = FALSE)
-  #
-  # segs_sfc <- do.call(sf::st_sfc, segs_list)
-  # sf::st_crs(segs_sfc) <- EPSG
-  #
-  # segs_sf <- sf::st_as_sf(segs_sfc)
-  #
-  # #identify line segments that cross polygon boundary
-  # in_poly <- !apply(sf::st_crosses(boundary, segs_sf, sparse = FALSE), 2, any)
-  # #in_poly <- !colSums(sf::st_crosses(boundary, segs_sf, sparse = FALSE))
-  #
-  return(in_poly)
+  return(cross_bndry)
 }

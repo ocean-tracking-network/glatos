@@ -12,7 +12,4 @@ walleye_workbook <- read_glatos_workbook(wb_file)
 
 # add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")
-glatos:::add_internal_data(walleye_workbook, rda_file)
-
-# for exported ('public') data
-# devtools::use_data(walleye_workbook, pkg = "..", overwrite = TRUE)
+add_internal_data(walleye_workbook, rda_file)

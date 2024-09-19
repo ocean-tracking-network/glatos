@@ -167,6 +167,10 @@ vue_convert <- function(src,
                         skip_pattern = "-RLD_",
                         show_progress = TRUE,
                         diagn = FALSE) {
+  ##  Declare global variables for NSE & R CMD check
+  src_dir <- src_file <- out_file <- out_file_exists <- src_to_convert <-
+    written <- NULL
+
   # Supported input file extensions (not case sensitive)
   supported_ext <- "vrl"
 
@@ -468,7 +472,7 @@ vue_convert <- function(src,
 #'  of the system.
 #'
 #' @returns Character string with command for calling VUE.exe via
-#'   \code{system2}'s \code{\link{command}} argument.
+#'   \code{system2}'s \code{command} argument.
 #'
 #' @examples
 #' \dontrun{

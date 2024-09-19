@@ -191,11 +191,14 @@
 #'
 #' @export
 
-
-
 summarize_detections <- function(det, location_col = "glatos_array",
                                  receiver_locs = NULL, animals = NULL,
                                  summ_type = "animal") {
+  ##  Declare global variables for NSE & R CMD check
+  deploy_lat <- deploy_long <- detection_timestamp_utc <- num_fish <- animal_id <-
+    num_locs <- num_dets <- NULL
+
+
   # coerce to data.table
   dtc <- data.table::as.data.table(det)
 
@@ -285,10 +288,13 @@ summarize_detections <- function(det, location_col = "glatos_array",
     loc_summary[is.na(num_fish), `:=`(num_fish = 0, num_dets = 0)]
 
     # reorder columns
-    data.table::setcolorder(loc_summary, c(
-      setdiff(names(loc_summary), "animals"),
-      "animals"
-    ))
+    data.table::setcolorder(
+      loc_summary,
+      c(
+        setdiff(names(loc_summary), "animals"),
+        "animals"
+      )
+    )
 
     data.table::setkeyv(loc_summary, location_col)
 
@@ -298,11 +304,11 @@ summarize_detections <- function(det, location_col = "glatos_array",
   if (summ_type == "animal") {
     # summarize fish detections
     anim_summary <- dtc[, list(
-      num_locs = data.table::uniqueN(location_col),
+      num_locs = data.table::uniqueN(.SD[[location_col]]),
       num_dets = .N,
       first_det = min(detection_timestamp_utc),
       last_det = max(detection_timestamp_utc),
-      locations = paste(sort(unique(dtc[[location_col]])), collapse = " ")
+      locations = paste(sort(unique(.SD[[location_col]])), collapse = " ")
     ),
     by = animal_id
     ]
@@ -359,7 +365,7 @@ summarize_detections <- function(det, location_col = "glatos_array",
 
   # return tibble if input class tibble
   if (inherits(det, "tbl")) {
-    return(tibble::as_tibble(det_sum))
+    return(dplyr::as_tibble(det_sum))
   }
 
   return(as.data.frame(det_sum))

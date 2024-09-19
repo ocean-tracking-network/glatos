@@ -140,12 +140,29 @@ test_that("sf input, sf output gives expected result", {
 })
 
 
-##### TBD: TEST NON-EXPORTED FUNCTIONS ####
-# Test non-exported query_worms_common function
-test_that("internal function check_in_polygon", {
-  skip("Test needs to be created.")
-})
+##### TEST NON-EXPORTED FUNCTIONS ####
 
-test_that("internal function check_cross_boundary", {
-  skip("Test needs to be created.")
+test_that("internal function crosses_boundary gives expected result", {
+  # crosses one boundary (inside poly to outside poly)
+  expect_type(
+    x <- crosses_boundary(
+      matrix(c(0:6, rep(3, 7)), ncol = 2),
+      sf::st_linestring(matrix(c(0, 0, 6, 0, 3, 6, 0, 0), ncol = 2, byrow = TRUE))
+    ),
+    "logical"
+  )
+
+  expect_equal(x, c(FALSE, TRUE, FALSE, FALSE, TRUE, FALSE))
+
+
+  # crosses two boundaries (skips 'peninsula'; inside poly to inside poly)
+  expect_type(
+    x2 <- crosses_boundary(
+      matrix(c(0, 1, 5, 6, rep(3, 4)), ncol = 2),
+      sf::st_linestring(matrix(c(0, 0, 6, 0, 3, 6, 0, 0), ncol = 2, byrow = TRUE))
+    ),
+    "logical"
+  )
+
+  expect_equal(x2, c(FALSE, TRUE, FALSE))
 })

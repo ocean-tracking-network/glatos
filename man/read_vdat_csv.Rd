@@ -67,7 +67,7 @@ vdat <- read_vdat_csv(csv_file, record_types = c("DET"))
 vrl_files <- system.file("extdata", "detection_files_raw",
   c(
     "VR2W_109924_20110718_1.vrl",
-    "HR2-180 461396 2021-04-20 173145.vdat"
+    "HR2-180_461396_2021-04-20_173145.vdat"
   ),
   package = "glatos"
 )
@@ -86,7 +86,7 @@ det2_tbl <- csv_files \%>\%
   lapply(
     function(x) {
       read_vdat_csv(x, record_types = "DET")$DET \%>\%
-        as_tibble() \%>\%
+        dplyr::as_tibble() \%>\%
         mutate(source_file = basename(x))
     }
   ) \%>\%

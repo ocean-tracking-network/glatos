@@ -3,9 +3,12 @@
 #'
 #' Convert \code{glatos_detections}, OTN tagging metadata and OTN deployment
 #' metadata to \code{ATT} format for use in the Animal Tracking Toolbox
-#' (\url{https://github.com/vinayudyawer/ATT}).
+#' <https://github.com/vinayudyawer/ATT>, now part of `VTrack`
+#' <https://github.com/RossDwyer/VTrack>.
 #'
-#' @param detectionObj a data frame from \code{read_otn_detections}
+#' @param detectionObj A `glatos_detections` object (e.g., created by
+#'   [read_otn_detections] or [read_glatos_detections]) or a `data.frame`
+#'   containing required columns (see [glatos_detections]).
 #'
 #' @param taggingSheet a data frame from \code{prepare_tag_sheet}
 #'
@@ -18,23 +21,24 @@
 #'   receiver metadata is available, this should be set to FALSE otherwise there
 #'   will be data loss.
 #'
-#' @param crs a object of class `crs` (see [sf::st_crs][st_crs] with geographic
-#'   coordinate system for all spatial information (latitude/longitude). If none
-#'   provided or `crs` is not recognized, defaults to WGS84 (EPSG:4326).
+#' @param crs an object of class `crs` (see [sf::st_crs][st_crs]) with
+#'   geographic coordinate system for all spatial information
+#'   (latitude/longitude). If none provided or `crs` is not recognized,
+#'   defaults to WGS84.
 #'
 #'
 #' @details This function takes 3 data frames containing detections, tagging
-#'   metadata, and deployment metadata from either \code{read_otn_deployments}
-#'   or \code{prepare_deploy_sheet} and transforms them into 3
-#'   \code{tibble::tibble} objects inside of a list. The input that AAT uses to
+#'   metadata, and deployment metadata from either `read_otn_deployments`
+#'   or `prepare_deploy_sheet` and transforms them into 3
+#'   `tibble` objects inside of a list. The input that AAT uses to
 #'   get this data product is located here:
-#'   https://github.com/vinayudyawer/ATT/blob/master/README.md and our mappings
-#'   are found here: https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886
+#'   <https://github.com/vinayudyawer/ATT/blob/master/README.md> and our mappings
+#'   are found here: <https://github.com/ocean-tracking-network/glatos/issues/75#issuecomment-982822886>
 #'   in a comment by Ryan Gosse.
 #'
 #' @author Ryan Gosse
 #'
-#' @return a list of 3 tibble::tibbles containing tag dectections, tag metadata,
+#' @return a list of 3 tibbles containing tag detections, tag metadata,
 #'   and station metadata, to be ingested by VTrack/ATT
 #'
 #' @examples
@@ -89,10 +93,22 @@ convert_otn_to_att <- function(detectionObj,
                                deploymentSheet = NULL,
                                timeFilter = TRUE,
                                crs = sf::st_crs(4326)) {
+  ##  Declare global variables for R CMD check
+  station <- receiver_sn <- deploy_lat <- deploy_long <-
+    detection_timestamp_utc <- deploy_date_time <- recover_date_time <-
+    last_download <- instrumenttype <- ins_model_no <- Tag.ID <- Sex <- NULL
+
+
   if (is.null(deploymentObj) && is.null(deploymentSheet)) {
-    stop("Deployment data must be supplied by either 'deploymentObj' or 'deploymentSheet'")
+    stop(
+      "Deployment data must be supplied by either 'deploymentObj' or ",
+      "'deploymentSheet'"
+    )
   } else if ((!is.null(deploymentObj)) && (!is.null(deploymentSheet))) {
-    stop("Deployment data must be supplied by either 'deploymentObj' or 'deploymentSheet', not both")
+    stop(
+      "Deployment data must be supplied by either 'deploymentObj' or ",
+      "'deploymentSheet', not both"
+    )
   } else if (!is.null(deploymentSheet)) {
     deploymentObj <- deploymentSheet
   }
@@ -107,10 +123,13 @@ convert_otn_to_att <- function(detectionObj,
     if (all(grepl("-", detectionObj$transmitter_id, fixed = TRUE))) {
       detectionObj$transmitter_id
     } else {
-      concat_list_strings(detectionObj$transmitter_codespace, detectionObj$transmitter_id)
+      concat_list_strings(
+        detectionObj$transmitter_codespace,
+        detectionObj$transmitter_id
+      )
     }
 
-  tagMetadata <- unique(tibble::tibble( # Start building Tag.Metadata table
+  tagMetadata <- unique(dplyr::tibble( # Start building Tag.Metadata table
     Tag.ID = detectionObj$animal_id,
     Transmitter = as.factor(transmitters),
     Common.Name = as.factor(detectionObj$common_name_e),
@@ -119,20 +138,32 @@ convert_otn_to_att <- function(detectionObj,
 
   tagMetadata <- unique(tagMetadata) # Cut out dupes
 
-  detectionObj <- dplyr::left_join(detectionObj, taggingSheet %>% dplyr::select(-c("animal_id")), by = "transmitter_id")
+  detectionObj <- dplyr::left_join(detectionObj, taggingSheet %>%
+    dplyr::select(-c("animal_id")),
+  by = "transmitter_id"
+  )
 
-  detectionObj <- dplyr::left_join(detectionObj %>% dplyr::select(-deploy_lat, -deploy_long), deploymentObj, by = "station")
+  detectionObj <- dplyr::left_join(
+    detectionObj %>%
+      dplyr::select(-deploy_lat, -deploy_long),
+    deploymentObj,
+    by = "station"
+  )
   if (timeFilter) {
     if (is.null(deploymentSheet)) {
       detectionObj <- detectionObj %>% dplyr::filter(
         detection_timestamp_utc >= deploy_date_time,
-        detection_timestamp_utc <= dplyr::coalesce(recover_date_time, last_download),
+        detection_timestamp_utc <= dplyr::coalesce(
+          recover_date_time,
+          last_download
+        ),
         instrumenttype == "rcvr"
       )
     } else {
       detectionObj <- detectionObj %>% dplyr::filter(
         detection_timestamp_utc >= deploy_date_time,
-        detection_timestamp_utc <= recover_date_time | recover_date_time %in% c(NA)
+        detection_timestamp_utc <= recover_date_time |
+          recover_date_time %in% c(NA)
       )
     }
   }
@@ -145,7 +176,7 @@ convert_otn_to_att <- function(detectionObj,
 
   detectionObj$est_tag_life[detectionObj$est_tag_life == "NULL"] <- NA
 
-  releaseData <- tibble::tibble( # Get the rest from detectionObj
+  releaseData <- dplyr::tibble( # Get the rest from detectionObj
     Tag.ID = detectionObj$animal_id,
     Tag.Project = as.factor(detectionObj$collectioncode),
     Release.Latitude = as.double(detectionObj$latitude),
@@ -157,12 +188,12 @@ convert_otn_to_att <- function(detectionObj,
 
   releaseData <- dplyr::mutate(releaseData,
     # Convert sex text and null missing columns
-    Sex = purrr::map(Sex, convert_sex),
+    Sex = convert_sex(Sex),
     Tag.Status = as.factor(NA),
     Bio = as.factor(NA)
   ) %>% unique()
 
-  detections <- tibble::tibble(
+  detections <- dplyr::tibble(
     Date.Time = detectionObj$detection_timestamp_utc,
     Transmitter = as.factor(detectionObj$transmitter_id),
     Station.Name = as.factor(detectionObj$station),
@@ -181,7 +212,7 @@ convert_otn_to_att <- function(detectionObj,
     Sex = as.factor(as.character(animal_sex))
   )
 
-  stations <- unique(tibble::tibble(
+  stations <- unique(dplyr::tibble(
     Station.Name = as.factor(detectionObj$station),
     Receiver = as.factor(detectionObj$ReceiverFull),
     Installation = as.factor(NA),
@@ -201,11 +232,16 @@ convert_otn_to_att <- function(detectionObj,
 
   class(att_obj) <- "ATT"
 
+  # Note that sf::st_crs() uses class name 'crs' but this is changed to 'CRS'
+  #  because VTrack/ATT are using sp::CRS()
   if (inherits(crs, "crs")) {
-    attr(att_obj, "crs") <- crs
+    attr(att_obj, "CRS") <- crs
   } else {
-    message("Geographic projection for detection positions not recognised, reverting to WGS84 global coordinate reference system")
-    attr(att_obj, "crs") <- eval(formals()$crs)
+    message(
+      "Geographic projection for detection positions not recognised, ",
+      "reverting to WGS84 global coordinate reference system."
+    )
+    attr(att_obj, "CRS") <- eval(formals()$crs)
   }
 
   return(att_obj)
@@ -213,7 +249,8 @@ convert_otn_to_att <- function(detectionObj,
 
 
 # Simple query to WoRMS based on the common name and returns the sci name
-query_worms_common <- function(commonName) {
+query_worms_common <- function(commonName,
+                               silent = FALSE) {
   url <- utils::URLencode(
     sprintf(
       "https://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s",
@@ -221,30 +258,40 @@ query_worms_common <- function(commonName) {
     )
   )
 
-  sciname <- tryCatch(
-    {
-      print(url)
-      payload <- jsonlite::fromJSON(url)
-      sciname <- payload$scientificname
+  sapply(
+    url,
+    FUN = function(x) {
+      tryCatch(
+        {
+          if (!silent) print(x)
+          payload <- jsonlite::fromJSON(x)
+          sciname <- list(payload$scientificname)
+        },
+        error = function(e) {
+          print(geterrmessage())
+          stop(sprintf(
+            "Error in querying WoRMS, %s was probably not found.",
+            utils::URLdecode(gsub(".*/", "", x))
+          ))
+        }
+      )
+      return(sciname)
     },
-    error = function(e) {
-      print(geterrmessage())
-      stop(sprintf(
-        "Error in querying WoRMS, %s was probably not found.",
-        commonName
-      ))
-    }
+    USE.NAMES = FALSE
   )
-
-  return(sciname)
 }
 
 convert_sex <- function(sex) {
-  if (toupper(sex) %in% c("F", "FEMALE")) {
-    return("FEMALE")
-  }
-  if (toupper(sex) %in% c("M", "MALE")) {
-    return("MALE")
-  }
-  return(sex)
+  sapply(sex,
+    FUN = function(.) {
+      if (toupper(.) %in% c("F", "FEMALE")) {
+        return("FEMALE")
+      }
+      if (toupper(.) %in% c("M", "MALE")) {
+        return("MALE")
+      }
+      return(.)
+    },
+    USE.NAMES = FALSE
+  )
 }

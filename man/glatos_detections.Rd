@@ -103,9 +103,9 @@ gd_sf <- as_glatos_detections(x_sf)
 
 
 # tibble input
-library(tibble)
+library(dplyr)
 
-x_tbl <- as_tibble(x)
+x_tbl <- dplyr::as_tibble(x)
 
 gd_tbl <- as_glatos_detections(x_tbl)
 
