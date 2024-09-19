@@ -214,8 +214,10 @@ deploy_sites <- buffer_rings_pts %>%
 ## Export to excel and gpx formats
 Then we will save as an excel and gpx file. To save as excel we will use [{openxlsx}](https://ycphs.github.io/openxlsx/index.html). You will notice that I don't have it in the load packages area of this vignette. I have not placed it there for the purpose of how R builds vignettes but please add it to your load packages call. You will also need to replace `"YOUR_FILE_PATH"` with your file path for both saving as an excel and/or gpx file. 
 
-```{r, eval = FALSE}
+```{r}
 #| title: save excel and gpx file
+#| echo: TRUE
+#| eval: FALSE
 
 # save as excel
 openxlsx::write.xlsx(deploy_sites, "YOUR_FILE_PATH.xlsx")
