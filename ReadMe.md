@@ -20,8 +20,7 @@ maintainer (Chris Holbrook): <cholbrook@usgs.gov>.
 
 ### Installation
 
-To install the latest release (
-`r paste0("version ",utils::packageVersion("glatos")," '", nickname(), "'")`): 
+To install the latest release (0.8.0 'very-refreshing-lemonade'): 
   
 ```{r eval = FALSE}
 library(remotes) # for install_github

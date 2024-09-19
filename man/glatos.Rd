@@ -24,8 +24,7 @@ maintainer (Chris Holbrook): \href{mailto:cholbrook@usgs.gov}{cholbrook@usgs.gov
 
 \subsection{Installation}{
 
-To install the latest release (
-version 0.8.0 'very-refreshing-lemonade'):
+To install the latest release (0.8.0 'very-refreshing-lemonade'):
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{library(remotes) # for install_github
 install_github('ocean-tracking-network/glatos', build_vignettes = TRUE)
