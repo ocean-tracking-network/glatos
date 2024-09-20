@@ -226,8 +226,10 @@ deploy_sites_df <- st_drop_geometry(deploy_sites)
 openxlsx::write.xlsx(deploy_sites_df, "YOUR_FILE_PATH.xlsx")
 
 # save as gpx
-st_write(deploy_sites, "YOUR_FILE_PATH.gpx", driver = "GPX",
-         dataset_options = "GPX_USE_EXTENSIONS=YES")
+st_write(deploy_sites, "YOUR_FILE_PATH.gpx",
+  driver = "GPX",
+  dataset_options = "GPX_USE_EXTENSIONS=YES"
+)
 ```
 
 Now that you've created the excel and gpx file you can head out in the field to deploy your ranges transmitters for a given amount of time (e.g., 24 hr). After the time period you will retriever your receivers, download the vrl files and bring them into fathom central or the older detection range software. Once you export the csv you can move on to the next part of this vignette which is the analysis side.  
@@ -588,8 +590,10 @@ redeploy_sites_df <- st_drop_geometry(redeploy_sites)
 openxlsx::write.xlsx(redeploy_sites_df, "YOUR_FILE_PATH2.xlsx")
 
 # save as gpx
-st_write(redeploy_sites, "YOUR_FILE_PATH2.gpx", driver = "GPX",
-         dataset_options = "GPX_USE_EXTENSIONS=YES")
+st_write(redeploy_sites, "YOUR_FILE_PATH2.gpx",
+  driver = "GPX",
+  dataset_options = "GPX_USE_EXTENSIONS=YES"
+)
 ```
 
 Now that you've created the excel and gpx file you can head out in the field to deploy your ranges transmitters for your study period. After the time period you will retriever your receivers, download the vrl files and create detection csvs. From there you can filter your range transmitters, calculate the number of heard in a day (e.g., 38) and divide it by the number you're supposed to hear (e.g., 96), to get your daily detection efficiency. You can then model changes in daily detection efficiency over the course of the study. Congratulations! You have now successfully calculated your receiver detection range over your study time period.
