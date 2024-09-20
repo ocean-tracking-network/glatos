@@ -64,6 +64,9 @@ exported from Innovasea's VUE software.
 \item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/summ-residence_index.r}{\code{residence_index}} calculates the relative proportion of time spent at each location.
 \item \href{https://github.com/ocean-tracking-network/glatos/blob/main/R/REI.r}{\code{REI}} calculates the relative activity at each receiver based on number of unique
 species and individual animals.
+\item \code{detection_range_model} for estimating detection range at which a certain
+detection efficiency is expected, using output from Innovasea's range testing
+software.
 }
 }
 
@@ -122,6 +125,7 @@ Other contributors:
 \itemize{
   \item Mike O'Brien [contributor]
   \item Alex Nunes [contributor]
+  \item Benjamin Hlina [contributor]
   \item Angela Dini [contributor]
   \item Ryan Gosse [contributor]
 }

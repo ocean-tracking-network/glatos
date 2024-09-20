@@ -1,6 +1,6 @@
 ----
 
-# glatos 0.8.9011 (2024-09-18)
+# glatos 0.8.0 (2024-09-19)
 
 
 ## Breaking changes
@@ -81,7 +81,7 @@ from earlier versions.
     - fixes [issue #126](https://github.com/ocean-tracking-network/glatos/issues/126)
     - fixes [issue #78](https://github.com/ocean-tracking-network/glatos/issues/78)
 
-- New function `jarasterize()` to allow rasterization 
+- Add new function `jarasterize()` to allow rasterization 
   (esp. with `all_touched = TRUE`) using only `sf` and `raster`. 
   Used by `make_transition()`.
   
@@ -91,6 +91,10 @@ from earlier versions.
 - In `make_frames()`, allow `terra::SpatVector` input for background map 
   (`bg_map` arg).
     - add test for `terra::SpatVector` input
+    
+- Add new function `detection_range_model()` for estimating detection range at 
+  which a certain detection efficiency is expected, using output from 
+  Innovasea's range testing software.
 
 
 ### Bug fixes and minor changes

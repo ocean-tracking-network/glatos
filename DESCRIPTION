@@ -3,7 +3,7 @@ Type: Package
 Title: A package for the Great Lakes Acoustic Telemetry Observation System
 Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System https://glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
 Version: 0.8.0
-Date: 2024-09-18
+Date: 2024-09-19
 Depends: R (>= 3.6.0)
 Imports:
 		av,
@@ -24,6 +24,7 @@ Suggests:
     ggplot2,
 		gifski,
 		knitr,
+		mapview,
 		methods,
 		png,
 		purrr,
@@ -41,6 +42,7 @@ Authors@R: c(
 		person("Jon", "Pye", role = "aut"),
 		person("Mike", "O'Brien", role = "ctb"),
 		person("Alex", "Nunes", role = "ctb"),
+		person("Benjamin", "Hlina", role = "ctb"),
 		person("Angela", "Dini", role = "ctb"),
 		person("Ryan", "Gosse", role = "ctb"))
 License: GPL-2

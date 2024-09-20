@@ -25,4 +25,7 @@ render(input = "vignettes/data_requirements_vignette.Rmd",
   output_format = "all")
 #output format -> make sure html_document is first in Rmd 
 
-
+render(input = "vignettes/detection_efficiency_vignette.Rmd", 
+       output_dir = "vignettes",
+       output_format = "all")
+#output format -> make sure html_document is first in Rmd 

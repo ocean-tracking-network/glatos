@@ -74,6 +74,11 @@ exported from Innovasea's VUE software.
 6.  [`REI`](https://github.com/ocean-tracking-network/glatos/blob/main/R/REI.r) calculates the relative activity at each receiver based on number of unique 
 species and individual animals.
 
+7.  `detection_range_model` for estimating detection range at which a certain 
+detection efficiency is expected, using output from Innovasea's range testing 
+software.
+
+
 #### Simulation functions for system design and evaluation
 
 1.  [`calc_collision_prob`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-calc_collision_prob.r) estimates the probability of collisions for pulse-position-modulation type co-located telemetry transmitters. This is useful for determining the number of fish to release or tag specifications (e.g., delay).
@@ -81,6 +86,7 @@ species and individual animals.
 2.  [`receiver_line_det_sim`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-receiver_line_det_sim.r) simulates detection of acoustic-tagged fish crossing a receiver line (or single receiver). This is useful for determining optimal spacing of receviers in a line and tag specifications (e.g., delay).
 
 3.  [`crw_in_polygon`](https://github.com/ocean-tracking-network/glatos/blob/main/R/simutil-crw_in_polygon.r), [`transmit_along_path`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-transmit_along_path.r), and [`detect_transmissions`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-detect_transmissions.r) individually simulate random fish movement paths within a water body (*crw_in_polygon*: a random walk in a polygon), tag signal transmissions along those paths (*transmit_along_path*: time series and locations of transmissions based on tag specs), and detection of those transmittions by receivers in a user-defined receiver network (*detect_transmissions*: time series and locations of detections based on detection range curve). Collectively, these functions can be used to explore, compare, and contrast theoretical performance of a wide range of transmitter and receiver network designs.
+
 
 #### Visualization and data exploration
 
