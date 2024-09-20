@@ -128,7 +128,7 @@ rcv_osc_sf_12 <- rcv_osc_sf %>%
 ## Create buffer rings at set distances 
 Next, we will create buffer rings at our set distances away from the receiver. These distances are 100, 250, 500, and 750 but feel free to add more distances. If you add more distances, the model predictions will likely be more accurate. 
 
-```{r, warning = FALSE}
+```{r}
 #| title: create buffer rings
 
 # first create a data frame of distances to iterate over
@@ -141,7 +141,7 @@ buffer_rings <- dists %>%
   split(.$distance) %>%
   map(~ st_buffer(dist = .x$distance, rcv_osc_sf_12)) %>%
   bind_rows(.id = "distance") %>%
-  st_cast("LINESTRING") %>%
+  st_cast("LINESTRING", warn = FALSE) %>%
   dplyr::select(distance, glatos_array, station_no, ins_serial_no, geometry)
 # now view buffer rings
 mapview(rcv_osc_sf) +
@@ -152,11 +152,11 @@ Now that we have the buffer rings, we are going to pick 3 locations for each dis
 
 First we transform our buffer rings into spatial points, view them using `mapview()` and filter out the points we want. Then save as an excel and/or gpx file.  
 
-```{r, warning = FALSE}
+```{r}
 #| title: transform, view and filter
 
 buffer_rings_pts <- buffer_rings %>%
-  st_cast("POINT") %>%
+  st_cast("POINT", warn = FALSE) %>%
   mutate(
     id = 1:nrow(.)
   ) %>%
@@ -219,11 +219,15 @@ Then we will save as an excel and gpx file. To save as excel we will use [{openx
 #| echo: TRUE
 #| eval: FALSE
 
-# save as excel
-openxlsx::write.xlsx(deploy_sites, "YOUR_FILE_PATH.xlsx")
+# drop geometry (coerce to data.frame)
+deploy_sites_df <- st_drop_geometry(deploy_sites)
+
+# write xlsx file
+openxlsx::write.xlsx(deploy_sites_df, "YOUR_FILE_PATH.xlsx")
 
 # save as gpx
-st_write(deploy_sites, "YOUR_FILE_PATH", driver = "GPX")
+st_write(deploy_sites, "YOUR_FILE_PATH.gpx", driver = "GPX",
+         dataset_options = "GPX_USE_EXTENSIONS=YES")
 ```
 
 Now that you've created the excel and gpx file you can head out in the field to deploy your ranges transmitters for a given amount of time (e.g., 24 hr). After the time period you will retriever your receivers, download the vrl files and bring them into fathom central or the older detection range software. Once you export the csv you can move on to the next part of this vignette which is the analysis side.  
@@ -234,7 +238,7 @@ Import vrl files and receiver and transmitter location data into [Fathom Central
 
 To do this in R can either read in each vrl file into R using {glatos} or {rvdat} or create a vue database, bring in all vrl files, and export the detection file as a csv. 
 
-Next, add in a column that is the number of detections expect to be heard in 24 hr for the given delays. To do this we can take the number of seconds in a day, 86,400 s, divided by average delay which in this case is 900 s. This value, 96, means that we should hear a 96 times in a day if a receiver heard all detections. 
+Next, add in a column that is the number of detections expected to be heard in 24 hr for the given delays. To do this we can take the number of seconds in a day, 86400 s, divided by average delay which in this case is 900 s. This value, 96, means that we should hear 96 detections in a day if a receiver heard all detections. 
 
 We can use the following example code to determine the preliminary percentage of detections that were heard at the set distances.  
 
@@ -577,11 +581,15 @@ Then we will save as an excel and gpx file. To save as excel we will use [{openx
 ```{r, eval = FALSE}
 #| title: save excel and gpx file
 
-# save as excel
-openxlsx::write.xlsx(redeploy_sites, "YOUR_FILE_PATH.xlsx")
+# drop geometry (coerce to data.frame)
+redeploy_sites_df <- st_drop_geometry(redeploy_sites)
+
+# write xlsx file
+openxlsx::write.xlsx(redeploy_sites_df, "YOUR_FILE_PATH2.xlsx")
 
 # save as gpx
-st_write(redeploy_sites, "YOUR_FILE_PATH", driver = "GPX")
+st_write(redeploy_sites, "YOUR_FILE_PATH2.gpx", driver = "GPX",
+         dataset_options = "GPX_USE_EXTENSIONS=YES")
 ```
 
 Now that you've created the excel and gpx file you can head out in the field to deploy your ranges transmitters for your study period. After the time period you will retriever your receivers, download the vrl files and create detection csvs. From there you can filter your range transmitters, calculate the number of heard in a day (e.g., 38) and divide it by the number you're supposed to hear (e.g., 96), to get your daily detection efficiency. You can then model changes in daily detection efficiency over the course of the study. Congratulations! You have now successfully calculated your receiver detection range over your study time period.
