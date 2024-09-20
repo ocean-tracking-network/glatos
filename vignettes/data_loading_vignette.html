@@ -10,6 +10,7 @@
 
 
 
+<meta name="date" content="2024-09-18" />
 
 <title>Data loading methods for the R package glatos</title>
 
@@ -1479,11 +1480,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Data loading methods for the R package
 glatos</h1>
-<<<<<<< HEAD
-<h4 class="date">Updated: 2024-08-22</h4>
-=======
-<h4 class="date">Updated: 2024-03-05</h4>
->>>>>>> origin/detection_range_model
+<h4 class="date">2024-09-18</h4>
 
 </div>
 
@@ -1498,11 +1495,18 @@ section contains examples for:</p>
 <ol style="list-style-type: decimal">
 <li><p>data in standardized formats from the Great Lakes Acoustic
 Telemetry Observation System (GLATOS), the Ocean Tracking Network (OTN),
-and VEMCO using built-in data loading functions; and</p></li>
+and Innovasea (VEMCO) software using built-in data loading functions;
+and</p></li>
 <li><p>data in non-standard formats that require loading using
 non-<em>glatos</em> functions and modification to meet <em>glatos</em>
-requirements.</p></li>
+requirements. These may be facilitated and checked using constructor and
+validator functions for <em>glatos</em> objects (e.g.,
+<em>glatos_detections()</em>, <em>as_glatos_detections()</em>,
+<em>validate_glatos_detections()</em>).</p></li>
 </ol>
+<p>To begin attach the glatos package:</p>
+<pre class="r"><code>library(glatos)</code></pre>
+<p>This vignette was written on <em>glatos</em> version 0.8.0.</p>
 <div id="loading-data-from-glatos-otn-and-vemco" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Loading data from
 GLATOS, OTN, and VEMCO</h2>
@@ -1688,7 +1692,11 @@ only be used on data in GLATOS and OTN formats. Data in other formats
 will need to be loaded using other functions (e.g., <em>read.csv</em>,
 <em>fread</em>, etc.) and carefully checked for compatibility with
 <em>glatos</em> functions (see <a href="#other-formats---csv-file-exported-from-a-vue-database">Other
-formats - CSV file exported from a VUE database</a>).</p>
+formats - CSV file exported from a VUE database</a>). Constructor and
+validator functions <em>glatos_detections()</em>,
+<em>as_glatos_detections()</em> and
+<em>validate_glatos_detections()</em> may facilitate creation of
+compatible objects.</p>
 </div>
 <div id="examples" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Examples</h2>
@@ -1710,10 +1718,7 @@ wal_det_file &lt;- system.file(&quot;extdata&quot;, &quot;walleye_detections.csv
                             package = &quot;glatos&quot;)</code></pre>
 <p>Next, we will load data from <em>walleye_detections.csv</em> using
 <em>read_glatos_detections</em>.</p>
-<pre class="r"><code># Attach glatos package
-library(glatos)
-
-# Read in the walleye_detections.csv file using `read_glatos_detections`
+<pre class="r"><code># Read in the walleye_detections.csv file using `read_glatos_detections`
 walleye_detections &lt;- read_glatos_detections(wal_det_file)</code></pre>
 <p>Let’s view the structure of the resulting data frame (we’ve modified
 the <code>str</code> default arguments to show only first record in each
@@ -1822,17 +1827,21 @@ meet <em>glatos</em> requirements, and thus, the
 <div id="other-formats---csv-file-exported-from-a-vue-database" class="section level3" number="2.2.3">
 <h3><span class="header-section-number">2.2.3</span> Other formats - CSV
 file exported from a VUE database</h3>
-<p>Detection data in any format than GLATOS or OTN will need to be<br />
+<p>Detection data in any format than GLATOS or OTN will need to be
 modified to meet the requirements of <em>glatos</em> functions. Here, we
 show an example using detection data that have been exported from a
-VEMCO VUE database. There is currently no <em>glatos</em> function to
-load detection data directly into an R session from VUE software, so
-data in that format will need to be:</p>
+VEMCO VUE database. In this example, we will use the function
+<em>read.csv()</em> to load the detection data into R. However, such
+data files typically do not meet all requirements of a
+<em>glatos_detections</em> object, so additional modificaton is
+necessary. Like data from other sources, format will need to be:</p>
 <ol style="list-style-type: decimal">
-<li><p>loaded into R using some other function (e.g., <em>read_csv</em>)
-and</p></li>
+<li><p>loaded into R using some other function (e.g., <em>read.csv</em>,
+<em>read_vue_detection_csv</em>, <em>read_vdat_csv</em>) and</p></li>
 <li><p>modified to ensure that all requirements of the desired function
-are met.</p></li>
+are met ( may use <em>glatos_detections()</em>,
+<em>as_glatos_detections()</em>, or
+<em>validate_glatos_detection()</em>).</p></li>
 </ol>
 <p>In the example below, we will use the base R functions
 <em>read.csv</em> and <em>as.POSIXct</em> to load detection data from a
@@ -1848,8 +1857,9 @@ csv_file &lt;- system.file(&quot;extdata&quot;,
                         &quot;VR2W_109924_20110718_1.csv&quot;,
                         package = &quot;glatos&quot;)</code></pre>
 <p>Now that we have the path to a VUE export file, we will read the data
-using <em>read.csv</em>. In this case we are also setting some
-<em>read.csv</em> arguments to non-default values. First, we set
+using <em>read.csv()</em> (could also use
+<em>read_vue_detections_csv()</em>. In this case we are also setting
+some <em>read.csv</em> arguments to non-default values. First, we set
 <code>as.is = TRUE</code> so that character values are treated as
 characters and not converted to factors. Second, we set
 <code>check.names = FALSE</code> to prevent conversion of
@@ -1862,8 +1872,12 @@ when called (e.g., <code>dtc$`Sensor Value`</code>). Third, we set
 text file. If this argument is omitted then you might see special
 characters added to the first column name. Setting the
 <em>fileEncoding</em> may also slow down the import.</p>
-<pre class="r"><code>dtc &lt;- read.csv(csv_file, as.is = TRUE, check.names = FALSE, 
-                fileEncoding = &quot;UTF-8-BOM&quot;)</code></pre>
+<pre class="r"><code>
+dtc &lt;- read.csv(csv_file, 
+                as.is = TRUE, 
+                check.names = FALSE, 
+                fileEncoding = &quot;UTF-8-BOM&quot;)
+</code></pre>
 <blockquote>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br />
 <strong>data.table tip:</strong> Use <em>fread</em> instead of
@@ -2021,15 +2035,14 @@ data and merge the new receiver data with the detection data.</p>
 which assigns the same receiver location data to all detection records
 on that receiver without time consideration.</p>
 <pre class="r"><code>#make an example receiver data frame
-rcv &lt;- data.frame(
+rcv &lt;- glatos_receivers(
         glatos_array = &quot;DWM&quot;,
         station = &quot;DWM-001&quot;, 
         deploy_lat = 45.65738, 
         deploy_long = -84.46418, 
         deploy_date_time = as.POSIXct(&quot;2011-04-11 20:30:00&quot;, tz = &quot;UTC&quot;),
         recover_date_time = as.POSIXct(&quot;2011-07-08 17:11:00&quot;, tz = &quot;UTC&quot;),
-        ins_serial_no = &quot;109924&quot;,
-        stringsAsFactors = FALSE) 
+        ins_serial_no = &quot;109924&quot;) 
 
 #left join on receiver serial number to add receiver data to detections
 dtc &lt;- merge(dtc, rcv, by.x = &quot;receiver_sn&quot;, by.y = &quot;ins_serial_no&quot;, 
@@ -2206,19 +2219,18 @@ detection data.</p>
 assigns the same receiver location data to all detection records of each
 transmitter without time consideration.</p>
 <pre class="r"><code>#make an example animal (fish) data frame
-fsh &lt;- data.frame(
+fsh &lt;- glatos_animals(
         animal_id = c(&quot;1&quot;, &quot;4&quot;, &quot;7&quot;, &quot;128&quot;), 
         tag_code_space = &quot;A69-1601&quot;,
         tag_id_code = c(&quot;439&quot;, &quot;442&quot;, &quot;445&quot;, &quot;442&quot;), 
         common_name = &quot;Sea Lamprey&quot;, 
-        release_date_time = as.POSIXct(c(&quot;2011-05-05 12:00&quot;, 
+        utc_release_date_time = as.POSIXct(c(&quot;2011-05-05 12:00&quot;, 
                                          &quot;2011-05-05 12:00&quot;, 
                                          &quot;2011-05-06 12:00&quot;, 
                                          &quot;2011-06-08 12:00&quot;), 
                                        tz = &quot;UTC&quot;),
-        recapture_date_time = as.POSIXct(c(NA, &quot;2011-05-26 15:00&quot;, NA, NA),
-                                         tz = &quot;UTC&quot;), 
-        stringsAsFactors = FALSE)
+        utc_recapture_date_time = as.POSIXct(c(NA, &quot;2011-05-26 15:00&quot;, NA, NA),
+                                         tz = &quot;UTC&quot;))
 
 #simple left join on codespace and id
 dtc &lt;- merge(dtc, fsh, by.x = c(&quot;transmitter_codespace&quot;, &quot;transmitter_id&quot;), 
@@ -2240,11 +2252,14 @@ to omit detections that occurred before release or after recapture.</p>
 nrow(dtc)
 #&gt; [1] 69711
 
+#subset detections to only include those with a known release_date_time
+dtc &lt;- dtc[!is.na(dtc$utc_release_date_time),]
+
 #subset detections to include only those between release and recapture 
 # or after release if never recaptured
-dtc &lt;- with(dtc, dtc[detection_timestamp_utc &gt;= release_date_time &amp; 
-                     (detection_timestamp_utc &lt;= recapture_date_time |
-                        is.na(recapture_date_time)) , ])</code></pre>
+dtc &lt;- with(dtc, dtc[detection_timestamp_utc &gt;= utc_release_date_time &amp; 
+                     (detection_timestamp_utc &lt;= utc_recapture_date_time |
+                        is.na(utc_recapture_date_time)) , ])</code></pre>
 <blockquote>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br />
 <strong>data.table tip</strong> Use <em>between</em> to query records or
@@ -2259,15 +2274,26 @@ dtc2 &lt;- merge(dtc2, fsh,
                all.x = TRUE, allow.cartesian = TRUE)
 
 #subset detections between release and recapture
-dtc2 &lt;- dtc2[between(detection_timestamp_utc, release_date_time,
-                   recapture_date_time) | is.na(recapture_date_time), ] </code></pre>
+dtc2 &lt;- dtc2[between(detection_timestamp_utc, utc_release_date_time,
+                   utc_recapture_date_time) | is.na(utc_recapture_date_time), ] </code></pre>
 <p>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 </blockquote>
 <pre class="r"><code>#count rows after subset
 nrow(dtc)
-#&gt; [1] 69703</code></pre>
+#&gt; [1] 63</code></pre>
 <p>We should now have a detection dataset that will meet the
-requirements of <em>glatos</em> functions.</p>
+requirements of <em>glatos</em> functions. To confirm, we can use
+<em>validate_glatos_detections()</em>:</p>
+<pre class="r"><code># verify that dtc meets requirements of glatos_detections class
+validate_glatos_detections(dtc)
+#&gt; [1] TRUE</code></pre>
+<p>And if we wish to apply the <em>glatos_detections</em> class label,
+we can use <em>as_glatos_detections()</em>:</p>
+<pre class="r"><code># coerce to glatos_detections class
+dtc &lt;- as_glatos_detections(dtc)
+
+class(dtc)
+#&gt; [1] &quot;glatos_detections&quot; &quot;data.frame&quot;</code></pre>
 </div>
 </div>
 </div>
@@ -2305,7 +2331,10 @@ present and formatted correctly, but can only be used on data in GLATOS
 format. Data in other formats will need to be loaded using other
 functions (e.g., <em>read.csv</em>, <em>fread</em>, etc.) and carefully
 checked for compatibility with <em>glatos</em> functions (see <a href="#other-formats---csv-file-exported-from-a-vue-database">Other
-formats - CSV file exported from a VUE database</a>).</p>
+formats - CSV file exported from a VUE database</a>). These objects may
+also be created and checked using constructor and validator functions
+(<em>glatos_receivers()</em>, <em>as_glatos_receivers()</em>, and
+<em>validate_glatos_receivers()</em>.</p>
 </div>
 <div id="examples-1" class="section level2" number="3.2">
 <h2><span class="header-section-number">3.2</span> Examples</h2>
@@ -2464,7 +2493,11 @@ column described in the <a href="data_requirements.html">Data
 Requirements vignette</a>), check that each column meets <em>glatos</em>
 requirements, and modify accordingly using methods described above for
 detection data from a CSV file exported from VUE (see <a href="#other-formats---csv-file-exported-from-a-vue-database">Other
-formats - CSV file exported from a VUE database</a>)</p>
+formats - CSV file exported from a VUE database</a>). You might then
+verify that it meets requirements using
+<em>validate_glatos_receivers()</em> or apply the
+<em>glatos_receivers</em> class label using
+<em>as_glatos_receivers()</em>.</p>
 </div>
 </div>
 </div>
@@ -2487,7 +2520,10 @@ formats will need to be loaded using other functions (e.g.,
 <em>read.csv</em>, <em>fread</em>, etc.). Although there are currently
 no <em>glatos</em> requirements of animal data, any future requirements
 might be expected to be consistent with the <em>glatos_animals</em>
-class.</p>
+class. Such objects may also be created and checked using
+<em>glatos</em> constructor and validator functions
+<em>glatos_animals()</em>, <em>as_glatos_animals()</em>, and
+<em>validate_glatos_animals()</em>.</p>
 </div>
 <div id="examples-2" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> Examples</h2>
@@ -2601,7 +2637,7 @@ requirements of such data in the package. Nonetheless, the
 transmitter specification data from a standard VEMCO tag spec (*.xls)
 file provided to tag purchasers from VEMCO.</p>
 <p>Use of the data loading function <em>read_vemco_tag_specs</em> will
-ensure that transmitter specificaiton data are loaded efficiently and
+ensure that transmitter specification data are loaded efficiently and
 consistently among users, but can only be used on data in VEMCO standard
 format. Data in other formats will need to be loaded using other
 functions (e.g., <em>read.csv</em>, <em>fread</em>, etc.). Although
@@ -2683,22 +2719,18 @@ release.</p>
 <div id="other-formats-2" class="section level3" number="5.2.2">
 <h3><span class="header-section-number">5.2.2</span> Other formats</h3>
 <p>Transmitter specification and schedule data in any format than one of
-the GLATOS standards will need to be:</p>
-<ol style="list-style-type: decimal">
-<li><p>loaded into R using some other function (e.g., <em>read_csv</em>,
-<em>fread</em>, etc) and</p></li>
-<li><p>modified to ensure that all requirements of the desired function
-are met.</p></li>
-</ol>
-<p>This vignette does not include an example of transmitter
-specification and schedule data loaded from CSV because the methods
-would be very similar to those described above. Moreover, there are
-currently no <em>glatos</em> functions that require transmitter
-specification and schedule data other than those present in
-<em>glatos_detections</em> data. Although the <em>glatos</em> package
-currently does not contain any specific requirements of these data,
-future requirements might be expected to resemble key columns of the
-output of <em>read_vemco_tag_specs</em>.</p>
+the GLATOS standards will need to be: 1. loaded into R using some other
+function (e.g., <em>read_csv</em>, <em>fread</em>, etc) and 2. modified
+to ensure that all requirements of the desired function are met. This
+vignette does not include an example of transmitter specification and
+schedule data loaded from CSV because the methods would be very similar
+to those described above. Moreover, there are currently no
+<em>glatos</em> functions that require transmitter specification and
+schedule data other than those present in <em>glatos_detections</em>
+data. Although the <em>glatos</em> package currently does not contain
+any specific requirements of these data, future requirements might be
+expected to resemble key columns of the output of
+<em>read_vemco_tag_specs</em>.</p>
 </div>
 </div>
 </div>
