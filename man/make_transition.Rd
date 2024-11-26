@@ -4,11 +4,11 @@
 \alias{make_transition}
 \title{Create transition layer from spatial object.}
 \usage{
-make_transition(poly, res, receiver_points = NULL, epsg = 3175, buffer = NULL)
+make_transition(poly, res, receiver_points = NULL)
 }
 \arguments{
 \item{poly}{A spatial polygon object of class
-\link[=SpatialPolygons]{SpatialPolygonsDataFrame} or a \link[sf:sf]{sf::sf()} object
+[SpatialPolygonsDataFrame][SpatialPolygons][terra::SpatVector] or a \link[sf:sf]{sf::sf()} object
 with a geometry column of polygon and/or multipolygon objects.}
 
 \item{res}{two element vector that specifies the x and y dimension of output
@@ -16,40 +16,29 @@ raster cells. Units are same as \code{poly} crs. May be calculated from desired
 resolution in meters using \code{\link[=scale_meters_to_degrees]{scale_meters_to_degrees()}}.}
 
 \item{receiver_points}{Object containing coordinates of receiver locations.
-Must be of class \code{SpatialPointsDataFrame}, \code{SpatialPoints}, \code{sf},
+Must be of class \code{SpatialPointsDataFrame}, \code{SpatialPoints}, \code{sf}, \code{SpatVector}
 \code{glatos_receivers}, or \code{glatos_detections}.}
-
-\item{epsg}{coordinate reference code that describes projection used for
-buffers.  Defaults to NAD83/Great Lakes and St. Lawrence Albers.}
-
-\item{buffer}{Buffer, in same units as \code{epsg}, that will be added to \code{poly}
-before rasterization.}
 }
 \value{
-A list with two elements:
+A list with three elements:
 \describe{
 \item{transition}{a geo-corrected transition raster layer where land = 0
 and water = 1
 (see \code{\link[gdistance:Transition-classes]{gdistance::Transition}})}
 \item{rast}{rasterized input layer of class \code{raster}}}
+\item{pip}{table of receivers not within polygon input layer}
 }
 \description{
 Create transition layer for \code{\link[=interpolate_path]{interpolate_path()}} spatial object.
 }
 \details{
-\code{make_transition} uses \code{\link[=jarasterize]{jarasterize()}} to convert a polygon
+\code{make_transition} uses \link[terra:rasterize]{terra::rasterize} to convert a polygon
 shapefile into a raster layer and geo-corrected transition layer
 \code{\link[=interpolate_path]{interpolate_path()}}. Raster cell values on land equal 0, cells in water
-equal 1. Output is a two-object list containing the raster layer and
-transition layer.
+equal 1. Output is a three-object list containing the raster layer, transition layer,
+and a data-frame of receiver points that do not fall inside of the spatial polygon.
 
-If \code{receiver_points} is provided, any receiver not in water is
-buffered by the distance from the receiver to the nearest water.  This
-allows all receivers to be coded as in water if the receiver is on land.
-
-Poly object is transformed into planer map projection specified by
-epsg argument for calculation of transition object if receiver_points is
-provided.  Output is projected to crs of input \code{poly}.
+If \code{receiver_points} is provided, any receiver not in water is identified and included in output.
 
 output transition layer is corrected for projection distortions
 using \code{gdistance::geoCorrection}.  Adjacent cells are connected by 16
@@ -57,7 +46,7 @@ directions and transition function returns 0 (land) for movements between
 land and water and >0 for all over-water movements.
 
 Note that this function underwent breaking changes between 0.7.3 and
-0.8.0 (uses \code{jasterize} instead of \code{gdalUtilities::gdal_rasterize} see
+0.8.0 (uses \code{terra::rasterize} instead of \code{gdalUtilities::gdal_rasterize} see
 NEWS).
 }
 \examples{
@@ -65,12 +54,8 @@ NEWS).
 # Example 1 - read from sf polygon object
 # use example polygon for Great lakes
 
-# calculate resolution in degrees (from meters)
-#  note this applies to cell at center, cell sizes will vary
-res <- scale_meters_to_degrees(5000, sf = great_lakes_polygon)
-
 # make_transition layer
-tst <- make_transition(great_lakes_polygon, res = res)
+tst <- make_transition(great_lakes_polygon, res = 0.1)
 
 \dontrun{
 # plot raster layer (notice water = 1, land = 0)
@@ -80,23 +65,7 @@ raster::plot(tst$rast)
 plot(sf::st_geometry(great_lakes_polygon), add = TRUE)
 }
 
-# Example 2 - add 1 km buffer (same resolution)
-
-# make_transition layer
-tst2 <- make_transition(great_lakes_polygon,
-  res = res,
-  buffer = 3000
-)
-
-\dontrun{
-# plot raster layer (notice water = 1, land = 0)
-raster::plot(tst2$rast)
-
-# compare to polygon
-plot(sf::st_geometry(great_lakes_polygon), add = TRUE)
-}
-
-# Example 3 - read from ESRI Shapefile and include receiver file
+# Example 2 - read from ESRI Shapefile and include receiver file
 # to account for any receivers outside of great lakes polygon
 
 # path to polygon shapefile
@@ -109,24 +78,14 @@ rec_file <- system.file("extdata", "sample_receivers.csv",
 )
 recs <- read_glatos_receivers(rec_file)
 
-# change a coordinate to on-land to show impact...
-recs[1, "deploy_lat"] <- recs[1, "deploy_lat"] + 4
 
 # make_transition layer (roughly 500 m res)
 tst <- make_transition(poly, res = c(0.065, 0.046), receiver_points = recs)
 
-\dontrun{
-# plot raster layer
-# notice the huge circle rasterized as "water"  north of Lake Superior.
-# This occurred because we had a "receiver" deployed at that locations
-raster::plot(tst$rast)
-points(recs$deploy_long, recs$deploy_lat, col = "red", pch = 20)
+# list points outside of polygons
+tst$pip
 
-# plot transition layer
-raster::plot(raster::raster(tst$transition))
-}
-
-# Example 4- transition layer of Lake Huron only with receivers
+# Example 3- transition layer of Lake Huron only with receivers
 
 # transform to great lakes projection
 poly <- sf::st_transform(great_lakes_polygon, crs = 3175)
@@ -154,21 +113,6 @@ recs <- recs[recs$glatos_project == "HECWL", ]
 # remove two stations not in Lake Huron
 recs <- recs[!recs$glatos_array \%in\% c("MAU", "LVD"), ]
 
-# convert recs to simple feature  object (sf)
-recs <- sf::st_as_sf(recs,
-  coords = c("deploy_long", "deploy_lat"),
-  crs = 4326
-)
-
-# transform receivers to same projection as great lakes polygon
-recs <- sf::st_transform(recs, crs = 3175)
-
-\dontrun{
-# check by plotting
-plot(sf::st_geometry(poly), col = NA)
-plot(sf::st_geometry(recs), col = "red", add = TRUE)
-}
-
 # create slightly higher resolution transition layer
 #   (note that res in in meters here because crs is 3175)
 tst1 <- make_transition(poly, res = 5000, receiver_points = recs)
@@ -177,12 +121,17 @@ tst1 <- make_transition(poly, res = 5000, receiver_points = recs)
 # plot raster layer
 raster::plot(tst1$rast)
 
+recs <- sf::st_as_sf(recs, coords = c("deploy_long", "deploy_lat"), crs = 4326)
+recs <- sf::st_transform(recs, 3175)
 plot(sf::st_geometry(recs),
   add = TRUE, col = "red", pch = 20
 )
 
 # plot transition layer
-raster::plot(raster::raster(tst1$transition))
+raster::plot(raster::raster(tst1$transition), add = TRUE)
+
+# list receivers on land
+tst1$pip
 }
 
 }
