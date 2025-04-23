@@ -14,8 +14,6 @@ test_that("read_glatos_receivers gives expected result", {
 })
 
 
-
-
 # test for mixed up column order
 test_that("read_glatos_receivers with mixed columns gives expected result", {
   rec_file <- system.file(

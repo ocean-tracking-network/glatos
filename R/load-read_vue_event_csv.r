@@ -28,8 +28,7 @@
 #' vue_evn <- read_vue_event_csv(csv_file)
 #'
 #' @export
-read_vue_event_csv <- function(src,
-                               show_progress = FALSE) {
+read_vue_event_csv <- function(src, show_progress = FALSE) {
   # Check if exists
   if (!file.exists(src)) {
     warning("File not found: ", src)
@@ -60,7 +59,6 @@ read_vue_event_csv <- function(src,
     )
   }
 
-
   # Read each list element separately
   vue_events <- data.table::fread(
     file = src,
@@ -74,7 +72,8 @@ read_vue_event_csv <- function(src,
   )
 
   # Assign class
-  vue_events <- structure(vue_events,
+  vue_events <- structure(
+    vue_events,
     class = c(
       "vue_receiver_events",
       class(vue_events)

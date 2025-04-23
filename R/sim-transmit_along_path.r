@@ -169,16 +169,18 @@
 #' points(sf::st_coordinates(mytrns_sp), pch = 20, col = "red")
 #'
 #' @export
-transmit_along_path <- function(path = NA,
-                                vel = 0.5,
-                                delayRng = c(60, 180),
-                                burstDur = 5.0,
-                                colNames = list(
-                                  x = "x",
-                                  y = "y"
-                                ),
-                                pathCRS = NA,
-                                sp_out = TRUE) {
+transmit_along_path <- function(
+  path = NA,
+  vel = 0.5,
+  delayRng = c(60, 180),
+  burstDur = 5.0,
+  colNames = list(
+    x = "x",
+    y = "y"
+  ),
+  pathCRS = NA,
+  sp_out = TRUE
+) {
   ##  Declare global variables for NSE & R CMD check
   cumdistm <- NULL
 
@@ -190,12 +192,10 @@ transmit_along_path <- function(path = NA,
     )
   }
 
-
   # Get input CRS and use CRS arg if missing
   crs_in <- sf::st_crs(path)
 
   if (is.na(crs_in)) crs_in <- pathCRS
-
 
   # Check that sf geometry is POINT
   if (inherits(path, c("sf", "sfc"))) {
@@ -229,16 +229,18 @@ transmit_along_path <- function(path = NA,
     path_sf <- sf::st_as_sf(path, crs = crs_in)
   }
 
-
   if (isTRUE(sf::st_crs(path_sf)$IsGeographic)) {
-    step_len <- geodist::geodist(sf::st_coordinates(path_sf),
+    step_len <- geodist::geodist(
+      sf::st_coordinates(path_sf),
       sequential = TRUE,
       measure = "haversine"
     )
   } else {
     # Euclidean distance if Cartesian
-    step_len <- sqrt(diff(sf::st_coordinates(path_sf)[, "X"])^2 +
-      diff(sf::st_coordinates(path_sf)[, "Y"])^2)
+    step_len <- sqrt(
+      diff(sf::st_coordinates(path_sf)[, "X"])^2 +
+        diff(sf::st_coordinates(path_sf)[, "Y"])^2
+    )
   }
 
   path_sf$cumdistm <- c(0, cumsum(step_len))
@@ -266,10 +268,14 @@ transmit_along_path <- function(path = NA,
 
   # Interpolate transmit locations along track
   trns <- data.frame(
-    x = approx(path_sf$etime, sf::st_coordinates(path_sf)[, "X"],
+    x = approx(
+      path_sf$etime,
+      sf::st_coordinates(path_sf)[, "X"],
       xout = etime
     )$y,
-    y = approx(path_sf$etime, sf::st_coordinates(path_sf)[, "Y"],
+    y = approx(
+      path_sf$etime,
+      sf::st_coordinates(path_sf)[, "Y"],
       xout = etime
     )$y,
     time = etime

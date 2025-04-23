@@ -1,7 +1,6 @@
 # Make vemco_tag_spec_schema (internal data object for read_vdat_csv)
 # Specify column names and data types for each each Vemco tag spec file version
 
-
 # Make list element for each workbook version
 # pre-allocate sheet-level structure within each version
 vemco_tag_spec_schema <- list(

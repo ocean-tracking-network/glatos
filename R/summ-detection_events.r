@@ -96,10 +96,12 @@
 #'
 #' @export
 
-detection_events <- function(det,
-                             location_col = "glatos_array",
-                             time_sep = Inf,
-                             condense = TRUE) {
+detection_events <- function(
+  det,
+  location_col = "glatos_array",
+  time_sep = Inf,
+  condense = TRUE
+) {
   # Make detections data frame a data.table object for processing speed
   detections <- data.table::as.data.table(det)
 
@@ -130,7 +132,8 @@ detection_events <- function(det,
     stop(
       paste0(
         "Detections dataframe is missing the following ",
-        "column(s):\n", paste0("       '", missingCols, "'", collapse = "\n")
+        "column(s):\n",
+        paste0("       '", missingCols, "'", collapse = "\n")
       ),
       call. = FALSE
     )
@@ -159,48 +162,46 @@ detection_events <- function(det,
   data.table::setkey(detections, animal_id, detection_timestamp_utc)
 
   # Add a column with time between a given detection and the detection
-  detections[, time_diff := c(NA, diff(as.numeric(detection_timestamp_utc))),
+  detections[,
+    time_diff := c(NA, diff(as.numeric(detection_timestamp_utc))),
     by = c("animal_id", "location_col")
   ]
 
   # Flag as arrival if location not equal to previous or time_diff > time_sep
-  detections[, arrive := as.numeric(
-    (location_col !=
-      data.table::shift(location_col, fill = TRUE)) |
-      (time_diff > time_sep)
-  ),
-  by = animal_id
+  detections[,
+    arrive := as.numeric(
+      (location_col != data.table::shift(location_col, fill = TRUE)) |
+        (time_diff > time_sep)
+    ),
+    by = animal_id
   ]
 
   # Flag as departure if location not equal to next or time_diff > time_sep
-  detections[, depart := as.numeric(
-    (location_col !=
-      data.table::shift(location_col,
-        fill = TRUE,
-        type = "lead"
-      )) |
-      (data.table::shift(time_diff, fill = TRUE, type = "lead") >
-        time_sep)
-  ),
-  by = animal_id
+  detections[,
+    depart := as.numeric(
+      (location_col !=
+        data.table::shift(location_col, fill = TRUE, type = "lead")) |
+        (data.table::shift(time_diff, fill = TRUE, type = "lead") > time_sep)
+    ),
+    by = animal_id
   ]
 
   # Add unique event number (among all fish, not within each fish)
   detections[, event := cumsum(arrive)]
 
   # Summarize the event data using data.table.
-  Results <- detections[, .(
-    animal_id = animal_id[1],
-    location = location_col[1],
-    mean_latitude = mean(deploy_lat, na.rm = T),
-    mean_longitude = mean(deploy_long, na.rm = T),
-    first_detection = detection_timestamp_utc[1],
-    last_detection = detection_timestamp_utc[.N],
-    num_detections = .N,
-    res_time_sec =
-      diff(range(as.numeric(detection_timestamp_utc)))
-  ),
-  by = event
+  Results <- detections[,
+    .(
+      animal_id = animal_id[1],
+      location = location_col[1],
+      mean_latitude = mean(deploy_lat, na.rm = T),
+      mean_longitude = mean(deploy_long, na.rm = T),
+      first_detection = detection_timestamp_utc[1],
+      last_detection = detection_timestamp_utc[.N],
+      num_detections = .N,
+      res_time_sec = diff(range(as.numeric(detection_timestamp_utc)))
+    ),
+    by = event
   ]
 
   # function to match output to input
@@ -222,8 +223,11 @@ detection_events <- function(det,
   if (condense) {
     # Returns dataframe containing summarized detection event data
     message(paste0(
-      "The event filter distilled ", nrow(detections),
-      " detections down to ", nrow(Results), " distinct detection events."
+      "The event filter distilled ",
+      nrow(detections),
+      " detections down to ",
+      nrow(Results),
+      " distinct detection events."
     ))
 
     return(out_class(Results, det))
@@ -231,8 +235,10 @@ detection_events <- function(det,
     # Returns input dataframe with new columns
     message(paste0(
       "The event filter identified ",
-      max(detections$event, na.rm = TRUE), " distinct events in ",
-      nrow(detections), " detections."
+      max(detections$event, na.rm = TRUE),
+      " distinct events in ",
+      nrow(detections),
+      " detections."
     ))
 
     # Rename location variable column back to original

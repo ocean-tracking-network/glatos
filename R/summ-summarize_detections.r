@@ -191,13 +191,16 @@
 #'
 #' @export
 
-summarize_detections <- function(det, location_col = "glatos_array",
-                                 receiver_locs = NULL, animals = NULL,
-                                 summ_type = "animal") {
+summarize_detections <- function(
+  det,
+  location_col = "glatos_array",
+  receiver_locs = NULL,
+  animals = NULL,
+  summ_type = "animal"
+) {
   ##  Declare global variables for NSE & R CMD check
   deploy_lat <- deploy_long <- detection_timestamp_utc <- num_fish <- animal_id <-
     num_locs <- num_dets <- NULL
-
 
   # coerce to data.table
   dtc <- data.table::as.data.table(det)
@@ -215,14 +218,17 @@ summarize_detections <- function(det, location_col = "glatos_array",
   if (length(missing_cols) > 0) {
     stop(paste0(
       "The following required columns are missing:\n",
-      paste(missing_cols, collapse = ", "), "."
+      paste(missing_cols, collapse = ", "),
+      "."
     ))
   }
 
   # check that location_col exists in detections
   if (!(location_col %in% names(dtc))) {
     stop(paste0(
-      "Column ", location_col, " is missing in 'det'.\n",
+      "Column ",
+      location_col,
+      " is missing in 'det'.\n",
       "Double check input argument 'location_col'."
     ))
   }
@@ -236,26 +242,30 @@ summarize_detections <- function(det, location_col = "glatos_array",
     # check that location_col exists in receiver locations
     if (!(location_col %in% names(receiver_locs))) {
       stop(paste0(
-        "Column ", location_col, " is missing in 'receiver_locs'.\n",
+        "Column ",
+        location_col,
+        " is missing in 'receiver_locs'.\n",
         "Double check input argument 'location_col'."
       ))
     }
     rcv <- data.table::as.data.table(receiver_locs)
 
     # get mean receiver locations from receiver_locs
-    mean_locs <- rcv[, list(
-      mean_lat = mean(deploy_lat),
-      mean_lon = mean(deploy_long)
-    ),
-    by = location_col
+    mean_locs <- rcv[,
+      list(
+        mean_lat = mean(deploy_lat),
+        mean_lon = mean(deploy_long)
+      ),
+      by = location_col
     ]
   } else {
     # get mean receiver locations from dtc
-    mean_locs <- dtc[, list(
-      mean_lat = mean(deploy_lat),
-      mean_lon = mean(deploy_long)
-    ),
-    by = location_col
+    mean_locs <- dtc[,
+      list(
+        mean_lat = mean(deploy_lat),
+        mean_lon = mean(deploy_long)
+      ),
+      by = location_col
     ]
   }
 
@@ -270,16 +280,15 @@ summarize_detections <- function(det, location_col = "glatos_array",
 
   if (summ_type == "location") {
     # summarize fish detections
-    loc_summary <- dtc[, list(
-      num_fish = length(unique(.SD$animal_id)),
-      num_dets = .N,
-      first_det = min(detection_timestamp_utc),
-      last_det = max(detection_timestamp_utc),
-      animals = paste(sort(unique(.SD[["animal_id"]])),
-        collapse = " "
-      )
-    ),
-    by = location_col
+    loc_summary <- dtc[,
+      list(
+        num_fish = length(unique(.SD$animal_id)),
+        num_dets = .N,
+        first_det = min(detection_timestamp_utc),
+        last_det = max(detection_timestamp_utc),
+        animals = paste(sort(unique(.SD[["animal_id"]])), collapse = " ")
+      ),
+      by = location_col
     ]
 
     # add mean locations
@@ -303,20 +312,23 @@ summarize_detections <- function(det, location_col = "glatos_array",
 
   if (summ_type == "animal") {
     # summarize fish detections
-    anim_summary <- dtc[, list(
-      num_locs = data.table::uniqueN(.SD[[location_col]]),
-      num_dets = .N,
-      first_det = min(detection_timestamp_utc),
-      last_det = max(detection_timestamp_utc),
-      locations = paste(sort(unique(.SD[[location_col]])), collapse = " ")
-    ),
-    by = animal_id
+    anim_summary <- dtc[,
+      list(
+        num_locs = data.table::uniqueN(.SD[[location_col]]),
+        num_dets = .N,
+        first_det = min(detection_timestamp_utc),
+        last_det = max(detection_timestamp_utc),
+        locations = paste(sort(unique(.SD[[location_col]])), collapse = " ")
+      ),
+      by = animal_id
     ]
 
     # add animals not detected
-    anim_summary <- merge(anim_summary,
+    anim_summary <- merge(
+      anim_summary,
       data.table::data.table(animal_id = animals),
-      by = "animal_id", all.y = TRUE
+      by = "animal_id",
+      all.y = TRUE
     )
 
     anim_summary[is.na(num_locs), `:=`(num_locs = 0, num_dets = 0)]
@@ -328,12 +340,13 @@ summarize_detections <- function(det, location_col = "glatos_array",
 
   if (summ_type == "both") {
     # summarize fish detections
-    both_summary <- dtc[, list(
-      num_dets = .N,
-      first_det = min(detection_timestamp_utc),
-      last_det = max(detection_timestamp_utc)
-    ),
-    by = c("animal_id", location_col)
+    both_summary <- dtc[,
+      list(
+        num_dets = .N,
+        first_det = min(detection_timestamp_utc),
+        last_det = max(detection_timestamp_utc)
+      ),
+      by = c("animal_id", location_col)
     ]
 
     # add animal-location combinations not present in dtc
@@ -342,10 +355,15 @@ summarize_detections <- function(det, location_col = "glatos_array",
       mean_locs[[location_col]]
     ))
     names(combos) <- c("animal_id", location_col)
-    both_summary <- merge(both_summary, combos, by = c(
-      "animal_id",
-      location_col
-    ), all.y = TRUE)
+    both_summary <- merge(
+      both_summary,
+      combos,
+      by = c(
+        "animal_id",
+        location_col
+      ),
+      all.y = TRUE
+    )
 
     # add mean locations
     both_summary <- merge(both_summary, mean_locs, by = location_col, all.y = T)

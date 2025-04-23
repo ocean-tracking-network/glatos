@@ -1,10 +1,16 @@
-dets_path <- system.file("extdata", "blue_shark_detections.csv",
+dets_path <- system.file(
+  "extdata",
+  "blue_shark_detections.csv",
   package = "glatos"
 )
-deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
+deploy_path <- system.file(
+  "extdata",
+  "hfx_deploy_simplified.xlsx",
   package = "glatos"
 )
-tag_path <- system.file("extdata", "otn_nsbs_tag_metadata.xls",
+tag_path <- system.file(
+  "extdata",
+  "otn_nsbs_tag_metadata.xls",
   package = "glatos"
 )
 

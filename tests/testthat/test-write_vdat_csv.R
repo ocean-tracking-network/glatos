@@ -5,14 +5,17 @@ skip_on_cran()
 
 test_that("write_vdat_csv works", {
   # VR2W file
-  vrl_file <- system.file("extdata", "detection_files_raw",
+  vrl_file <- system.file(
+    "extdata",
+    "detection_files_raw",
     "VR2W_109924_20110718_1.vrl",
     package = "glatos"
   )
 
   temp_dir <- tempdir()
 
-  csv_file <- suppressMessages(vdat_convert(vrl_file,
+  csv_file <- suppressMessages(vdat_convert(
+    vrl_file,
     out_dir = temp_dir,
     show_progress = FALSE
   ))
@@ -24,7 +27,8 @@ test_that("write_vdat_csv works", {
   temp_file <- tempfile(fileext = ".csv")
 
   expect_type(
-    out_name <- write_vdat_csv(vdat, out_file = temp_file), "character"
+    out_name <- write_vdat_csv(vdat, out_file = temp_file),
+    "character"
   )
 
   # read in the new file
@@ -45,31 +49,28 @@ test_that("write_vdat_csv works", {
     paste0("glatos-", packageVersion("glatos"))
   )
 
-
   # out_file is dir
   expect_equal(
-    write_vdat_csv(vdat,
-      out_file = temp_dir
-    ),
+    write_vdat_csv(vdat, out_file = temp_dir),
     csv_file
   )
 
-
   # specify output record_types
   expect_equal(
-    write_vdat_csv(vdat,
+    write_vdat_csv(
+      vdat,
       record_types = c("DET", "EVENT_OFFLOAD", "DATA_SOURCE_FILE"),
       out_file = temp_dir
     ),
     csv_file
   )
 
-
   # "split" output format
   # write to multiple files (fathom split option)
   split_dir <- paste0(csv_file, "-fathom-split")
   expect_equal(
-    write_vdat_csv(vdat,
+    write_vdat_csv(
+      vdat,
       out_file = temp_dir,
       output_format = "csv.fathom.split"
     ),
@@ -80,13 +81,13 @@ test_that("write_vdat_csv works", {
   # out_file is dir that does not exist
   new_dir <- file.path(temp_dir, "newdir")
   expect_type(
-    write_vdat_csv(vdat,
+    write_vdat_csv(
+      vdat,
       out_file = new_dir,
       output_format = "csv.fathom.split"
     ),
     "character"
   )
-
 
   # clean up
   on.exit(unlink(
@@ -99,7 +100,6 @@ test_that("write_vdat_csv works", {
     recursive = TRUE
   ))
 
-
   # tests to skip
   skip("skip writing to wd")
 
@@ -109,14 +109,17 @@ test_that("write_vdat_csv works", {
 
 test_that("bad inputs are caught", {
   # VR2W file
-  vrl_file <- system.file("extdata", "detection_files_raw",
+  vrl_file <- system.file(
+    "extdata",
+    "detection_files_raw",
     "VR2W_109924_20110718_1.vrl",
     package = "glatos"
   )
 
   temp_dir <- tempdir()
 
-  csv_file <- suppressMessages(vdat_convert(vrl_file,
+  csv_file <- suppressMessages(vdat_convert(
+    vrl_file,
     out_dir = temp_dir,
     show_progress = FALSE
   ))
@@ -131,10 +134,10 @@ test_that("bad inputs are caught", {
     "Input 'vdat' must have class 'vdat_list'"
   )
 
-
   # out_file is dir but vdat missing DATA_SOURCE_FILE record
   expect_error(
-    write_vdat_csv(vdat[c("DET", "EVENT_OFFLOAD")],
+    write_vdat_csv(
+      vdat[c("DET", "EVENT_OFFLOAD")],
       out_file = file.path(temp_dir, "newdir"),
       output_format = "csv.fathom.split"
     ),
@@ -156,7 +159,6 @@ test_that("format_POSIXt() works", {
     ),
     tz = "UTC"
   )
-
 
   expect_equal(
     format_POSIXt(t1, digits = 5, drop0trailing = FALSE),
@@ -191,7 +193,6 @@ test_that("format_POSIXt() works", {
     c("2011-03-08 23:59:58", "2011-03-08 23:59:59")
   )
 
-
   # catch non-posix input
 
   expect_error(
@@ -204,14 +205,17 @@ test_that("format_POSIXt() works", {
 # vdat_list subset method
 test_that("vdat_list subset method works", {
   # VR2W file
-  vrl_file <- system.file("extdata", "detection_files_raw",
+  vrl_file <- system.file(
+    "extdata",
+    "detection_files_raw",
     "VR2W_109924_20110718_1.vrl",
     package = "glatos"
   )
 
   temp_dir <- tempdir()
 
-  csv_file <- suppressMessages(vdat_convert(vrl_file,
+  csv_file <- suppressMessages(vdat_convert(
+    vrl_file,
     out_dir = temp_dir,
     overwrite = TRUE,
     show_progress = FALSE
@@ -233,7 +237,6 @@ test_that("vdat_list subset method works", {
 
   expect_s3_class(vdat3, "vdat_list")
   expect_equal(names(vdat3), record_types_names)
-
 
   # clean up
   on.exit(unlink(csv_file))

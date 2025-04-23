@@ -11,7 +11,6 @@ vrl_to_tempdir <- function(test_dir) {
   test_dir <- file.path(tempdir(), test_dir)
   if (!dir.exists(test_dir)) dir.create(test_dir)
 
-
   ## Copy internal VRL to test_dir
   good_vrl <- file.path(test_dir, basename(myVRL))
   copied <- file.copy(myVRL, good_vrl)
@@ -61,11 +60,11 @@ test_that("one vrl gives expected result", {
   expect_equal(
     basename(good_csv),
     gsub(
-      "\\.vrl", "\\.csv",
+      "\\.vrl",
+      "\\.csv",
       basename(vrl_loc$vrl)
     )
   )
-
 
   # Check message and progress bar when showProgress = TRUE
 
@@ -77,7 +76,9 @@ test_that("one vrl gives expected result", {
     )
   ) |>
     expect_message("Converting 1 detection files\\.\\.\\.") |>
-    expect_output("\\|======================================================================\\| 100%")
+    expect_output(
+      "\\|======================================================================\\| 100%"
+    )
 
   # # Creates message
   # expect_message(
@@ -116,8 +117,6 @@ test_that("one vrl gives expected result", {
 })
 
 
-
-
 test_that("one vrl in dir with space in name gives expected result", {
   skip_on_ci()
   skip_on_cran()
@@ -152,11 +151,11 @@ test_that("one vrl in dir with space in name gives expected result", {
   expect_equal(
     basename(good_csv),
     gsub(
-      "\\.vrl", "\\.csv",
+      "\\.vrl",
+      "\\.csv",
       basename(vrl_loc$vrl)
     )
   )
-
 
   # Check message and progress bar when showProgress = TRUE
   suppressWarnings(
@@ -167,8 +166,9 @@ test_that("one vrl in dir with space in name gives expected result", {
     )
   ) |>
     expect_message("Converting 1 detection files\\.\\.\\.") |>
-    expect_output("\\|======================================================================\\| 100%")
-
+    expect_output(
+      "\\|======================================================================\\| 100%"
+    )
 
   # Check if expected and actual results are the same
   expect_snapshot(
@@ -181,8 +181,6 @@ test_that("one vrl in dir with space in name gives expected result", {
     recursive = TRUE
   )
 })
-
-
 
 
 test_that("one good vrl in dir with corrupt vrl gives expected result", {
@@ -203,7 +201,6 @@ test_that("one good vrl in dir with corrupt vrl gives expected result", {
   )
 
   vrl_loc <- vrl_to_tempdir("test")
-
 
   expect_warning(
     out_csv <- vrl2csv(

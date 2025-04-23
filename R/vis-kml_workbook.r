@@ -82,19 +82,21 @@
 #'
 #' @export
 kml_workbook <- function(
-    wb = NULL,
-    wb_file = NULL,
-    receiver_locs = NULL,
-    animals = NULL,
-    kmz = FALSE,
-    show_ongoing_recs = TRUE,
-    end_date = NULL,
-    out_file = NULL,
-    wb_version = NULL,
-    ...) {
+  wb = NULL,
+  wb_file = NULL,
+  receiver_locs = NULL,
+  animals = NULL,
+  kmz = FALSE,
+  show_ongoing_recs = TRUE,
+  end_date = NULL,
+  out_file = NULL,
+  wb_version = NULL,
+  ...
+) {
   # check for features not yet supported
   if (!is.null(animals)) stop("use of 'animals' input not yet supported.")
-  if (!is.null(receiver_locs)) stop("use of 'receiver_locs' input not yet supported.")
+  if (!is.null(receiver_locs))
+    stop("use of 'receiver_locs' input not yet supported.")
 
   # check for correct handling of wb and wb_file
   if (!is.null(wb) & !is.null(wb_file)) {
@@ -105,8 +107,10 @@ kml_workbook <- function(
   }
 
   # check for correct handling of workbook data and animals and receivers
-  if ((!is.null(wb) | !is.null(wb_file)) &
-    (!is.null(animals) & !is.null(receiver_locs))) {
+  if (
+    (!is.null(wb) | !is.null(wb_file)) &
+      (!is.null(animals) & !is.null(receiver_locs))
+  ) {
     stop(paste0(
       "You cannot ",
       "specify 'wb' or 'wb_file' if both 'animals' and 'receiver_locs' \n  ",
@@ -139,7 +143,6 @@ kml_workbook <- function(
       stop("Input file '", wb_file, "' does not exist or cannot be accessed.")
     }
   }
-
 
   if (!is.null(wb) | !is.null(wb_file)) {
     rec_loc <- wb$receivers
@@ -184,10 +187,19 @@ kml_workbook <- function(
 
   rec_pos <- data.frame(
     Folder = "Receivers",
-    Name = with(rec_loc, paste0(
-      glatos_project, "-", glatos_array, "-",
-      station_no, " (", water_body, ")"
-    )),
+    Name = with(
+      rec_loc,
+      paste0(
+        glatos_project,
+        "-",
+        glatos_array,
+        "-",
+        station_no,
+        " (",
+        water_body,
+        ")"
+      )
+    ),
     TimeSpan_start = paste0(
       gsub(" ", "T", rec_loc$deploy_date_time),
       "-00:00"
@@ -204,17 +216,19 @@ kml_workbook <- function(
   rec_pos$Altitude <- 0
   rec_pos$Description <- ""
 
-
   # Fish releases
 
   # check for missing release_group
   missing_relgrp <- is.na(anim$release_group)
   if (any(missing_relgrp)) {
-    warning(paste0(
-      "Some or all values in column '",
-      "release_group' are missing values and have been assigned release date ",
-      "instead."
-    ), call. = FALSE)
+    warning(
+      paste0(
+        "Some or all values in column '",
+        "release_group' are missing values and have been assigned release date ",
+        "instead."
+      ),
+      call. = FALSE
+    )
 
     anim$release_group <- format(as.Date(anim$utc_release_date_time))
   }
@@ -222,10 +236,14 @@ kml_workbook <- function(
   # make table of counts
   rel_loc <- as.data.frame(table(anim$release_group))
   names(rel_loc)[1] <- "release_group"
-  rel_loc <- merge(rel_loc,
+  rel_loc <- merge(
+    rel_loc,
     unique(anim[, c(
-      "release_group", "release_location", "release_latitude",
-      "release_longitude", "utc_release_date_time"
+      "release_group",
+      "release_location",
+      "release_latitude",
+      "release_longitude",
+      "utc_release_date_time"
     )]),
     by = "release_group"
   )
@@ -249,7 +267,6 @@ kml_workbook <- function(
   rel_pos$Altitude <- 0
   rel_pos$Description <- ""
 
-
   # make KML
 
   #-kml-specific values
@@ -258,8 +275,6 @@ kml_workbook <- function(
   } else if (!is.null(out_file)) {
     kmlName <- basename(out_file)
   }
-
-
 
   kmlHead <- c(
     '<?xml version="1.0" encoding="UTF-8"?>',
@@ -362,7 +377,17 @@ kml_workbook <- function(
         paste0("<name>", myPoints$Name[i], "</name>"),
         paste0("<styleUrl>#", stylemap, "</styleUrl>"),
         "<Point>",
-        with(myPoints, paste("<coordinates>", Longitude[i], ",", Latitude[i], ",0</coordinates>", sep = "")),
+        with(
+          myPoints,
+          paste(
+            "<coordinates>",
+            Longitude[i],
+            ",",
+            Latitude[i],
+            ",0</coordinates>",
+            sep = ""
+          )
+        ),
         "</Point>",
         "<TimeSpan>",
         paste0("<begin>", myPoints$TimeSpan_start[i], "</begin>"),
@@ -382,26 +407,37 @@ kml_workbook <- function(
   for (i in 1:length(folders)) {
     if (i == 1) folderBody <- vector()
 
-    folderBody <- c(folderBody, makeKMLBody(
-      folders[i], stylemaps[1],
-      subset(rec_pos, Folder == folders[i])
-    ))
+    folderBody <- c(
+      folderBody,
+      makeKMLBody(
+        folders[i],
+        stylemaps[1],
+        subset(rec_pos, Folder == folders[i])
+      )
+    )
   }
 
   # add releases
-  folderBody <- c(folderBody, makeKMLBody(
-    rel_pos$Folder[i], stylemaps[2],
-    rel_pos
-  ))
+  folderBody <- c(
+    folderBody,
+    makeKMLBody(
+      rel_pos$Folder[i],
+      stylemaps[2],
+      rel_pos
+    )
+  )
 
   kmlFoot <- c("</Document>", "</kml>")
 
   kmlOut <- c(kmlHead, folderBody, kmlFoot)
 
-  kmlFullName <- ifelse(!is.null(out_file), file.path(
-    gsub("\\.", getwd(), dirname(out_file)), basename(out_file)
-  ),
-  file.path(dirname(wb_file), kmlName)
+  kmlFullName <- ifelse(
+    !is.null(out_file),
+    file.path(
+      gsub("\\.", getwd(), dirname(out_file)),
+      basename(out_file)
+    ),
+    file.path(dirname(wb_file), kmlName)
   )
 
   # change ext to kml if kmz
@@ -411,8 +447,11 @@ kml_workbook <- function(
     kmlFullName <- gsub("Z$", "L", kmlFullName)
   }
 
-  write.table(kmlOut, kmlFullName,
-    col.names = FALSE, row.names = FALSE,
+  write.table(
+    kmlOut,
+    kmlFullName,
+    col.names = FALSE,
+    row.names = FALSE,
     quote = FALSE
   )
 

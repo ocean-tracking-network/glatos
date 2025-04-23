@@ -59,64 +59,113 @@ REI <- function(detections, deployments) {
     deploy_long <- animal_id <- common_name_e <- detection_timestamp_utc <- NULL
 
   # Check for proper columns
-  required_deployment_columns <- c("station", "deploy_date_time", "recover_date_time")
-  required_detection_columns <- c("station", "common_name_e", "animal_id", "detection_timestamp_utc")
+  required_deployment_columns <- c(
+    "station",
+    "deploy_date_time",
+    "recover_date_time"
+  )
+  required_detection_columns <- c(
+    "station",
+    "common_name_e",
+    "animal_id",
+    "detection_timestamp_utc"
+  )
 
-  if (all(required_deployment_columns %in% colnames(deployments)) & all(required_detection_columns %in% colnames(detections))) {
+  if (
+    all(required_deployment_columns %in% colnames(deployments)) &
+      all(required_detection_columns %in% colnames(detections))
+  ) {
     if ("last_download" %in% colnames(deployments)) {
       deployments <- deployments %>%
-        dplyr::mutate(recover_date_time = coalesce(recover_date_time, last_download))
-      deployments <- deployments %>% filter(!is.na(last_download) | !is.na(recover_date_time))
+        dplyr::mutate(
+          recover_date_time = coalesce(recover_date_time, last_download)
+        )
+      deployments <- deployments %>%
+        filter(!is.na(last_download) | !is.na(recover_date_time))
     }
-
-
 
     # Make sure all dates are a POSIXct type
     if (!inherits(deployments$deploy_date_time, "POSIXct")) {
-      deployments$deploy_date_time <- as.POSIXct(deployments$deploy_date_time, format = "%Y-%m-%d %H:%M:%S")
+      deployments$deploy_date_time <- as.POSIXct(
+        deployments$deploy_date_time,
+        format = "%Y-%m-%d %H:%M:%S"
+      )
     }
 
     if (!inherits(deployments$recover_date_time, "POSIXct")) {
-      deployments$recover_date_time <- as.POSIXct(deployments$recover_date_time, format = "%Y-%m-%d %H:%M:%S")
+      deployments$recover_date_time <- as.POSIXct(
+        deployments$recover_date_time,
+        format = "%Y-%m-%d %H:%M:%S"
+      )
     }
 
     if (!inherits(detections$detection_timestamp_utc, "POSIXct")) {
-      detections$detection_timestamp_utc <- as.POSIXct(detections$detection_timestamp_utc, format = "%Y-%m-%d %H:%M:%S")
+      detections$detection_timestamp_utc <- as.POSIXct(
+        detections$detection_timestamp_utc,
+        format = "%Y-%m-%d %H:%M:%S"
+      )
     }
 
     # Get the total number of days the array/line was active
-    array_days_active <- as.integer(max(na.omit(deployments$recover_date_time)) - min(na.omit(deployments$deploy_date_time)))
+    array_days_active <- as.integer(
+      max(na.omit(deployments$recover_date_time)) -
+        min(na.omit(deployments$deploy_date_time))
+    )
 
     # Calculate each receivers total days deployed
-    deployments$days_deployed <- round(difftime(deployments$recover_date_time, deployments$deploy_date_time, units = "days"), 0)
+    deployments$days_deployed <- round(
+      difftime(
+        deployments$recover_date_time,
+        deployments$deploy_date_time,
+        units = "days"
+      ),
+      0
+    )
     deployments <- deployments[, c("station", "days_deployed")]
 
-    deployments <- group_by(deployments, station) %>% summarise(
-      receiver_days_active = as.numeric(sum(days_deployed))
-    )
+    deployments <- group_by(deployments, station) %>%
+      summarise(
+        receiver_days_active = as.numeric(sum(days_deployed))
+      )
     deployments <- na.omit(deployments)
 
     # Exclude all detections that are not registered with receivers in the deployments
-    detections <- subset(detections, detections$station %in% deployments$station)
+    detections <- subset(
+      detections,
+      detections$station %in% deployments$station
+    )
 
     # Calculate array counts
     array_unique_tags <- length(unique(detections$animal_id))
     array_unique_species <- length(unique(detections$common_name_e))
-    days_with_detections <- length(unique(as.Date(detections$detection_timestamp_utc)))
-
+    days_with_detections <- length(unique(as.Date(
+      detections$detection_timestamp_utc
+    )))
 
     # Loop through each station in the detections and Calculate REI for each station
-    station_stats <- group_by(detections, station) %>% summarise(
-      latitude = mean(deploy_lat),
-      longitude = mean(deploy_long),
-      receiver_unique_tags = length(unique(animal_id)),
-      receiver_unique_species = length(unique(common_name_e)),
-      receiver_days_with_detections = length(unique(as.Date(detection_timestamp_utc)))
+    station_stats <- group_by(detections, station) %>%
+      summarise(
+        latitude = mean(deploy_lat),
+        longitude = mean(deploy_long),
+        receiver_unique_tags = length(unique(animal_id)),
+        receiver_unique_species = length(unique(common_name_e)),
+        receiver_days_with_detections = length(unique(as.Date(
+          detection_timestamp_utc
+        )))
+      )
+
+    station_reis <- merge(
+      station_stats,
+      deployments,
+      by = "station",
+      all.x = TRUE
     )
 
-    station_reis <- merge(station_stats, deployments, by = "station", all.x = TRUE)
-
-    station_reis$rei <- (station_reis$receiver_unique_tags / array_unique_tags) * (station_reis$receiver_unique_species / array_unique_species) * (station_reis$receiver_days_with_detections / days_with_detections) * (array_days_active / station_reis$receiver_days_active)
+    station_reis$rei <- (station_reis$receiver_unique_tags /
+      array_unique_tags) *
+      (station_reis$receiver_unique_species / array_unique_species) *
+      (station_reis$receiver_days_with_detections / days_with_detections) *
+      (array_days_active / station_reis$receiver_days_active)
 
     # Normalize REIs to value from 0 to 1
     station_reis$rei <- station_reis$rei / sum(station_reis$rei)
@@ -126,6 +175,8 @@ REI <- function(detections, deployments) {
 
     return(station_reis)
   } else {
-    message("Please make sure detections and deployments have the correct columns.")
+    message(
+      "Please make sure detections and deployments have the correct columns."
+    )
   }
 }

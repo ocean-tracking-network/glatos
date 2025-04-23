@@ -13,7 +13,6 @@ test_that("creates csv", {
     temp_dir
   )
 
-
   out_loc <- kml_to_csv(file.path(temp_dir, "example_polygons.kml"))
 
   expect_equal(

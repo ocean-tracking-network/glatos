@@ -59,7 +59,8 @@ test_that("glatos_receivers works as expected", {
 
   # sf input
 
-  x_sf <- sf::st_as_sf(x,
+  x_sf <- sf::st_as_sf(
+    x,
     coords = c("deploy_long", "deploy_lat"),
     remove = FALSE
   )
@@ -73,7 +74,6 @@ test_that("glatos_receivers works as expected", {
     sf::st_drop_geometry(gr_sf),
     gr_df_shouldbe
   )
-
 
   # tibble input
 
@@ -89,7 +89,6 @@ test_that("glatos_receivers works as expected", {
     as.data.frame(gr_df_shouldbe)
   )
 })
-
 
 
 test_that("validate_glatos_detections catches bad inputs", {
@@ -132,25 +131,19 @@ test_that("validate_glatos_detections catches bad inputs", {
 
   # data.frame input; missing column name
   expect_error(
-    as_glatos_receivers(dplyr::rename(x,
-      receiver_id = ins_serial_no
-    )),
+    as_glatos_receivers(dplyr::rename(x, receiver_id = ins_serial_no)),
     regexp = "Required column(s) missing from input x",
     fixed = TRUE
   )
 
-
   # data.frame input; wrong column class
   expect_error(
     as_glatos_receivers(
-      dplyr::mutate(x,
-        ins_serial_no = as.integer(ins_serial_no)
-      )
+      dplyr::mutate(x, ins_serial_no = as.integer(ins_serial_no))
     ),
     regexp = "The following column(s) have wrong class",
     fixed = TRUE
   )
-
 
   # non-data.frame input
   expect_error(

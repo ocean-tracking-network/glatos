@@ -70,8 +70,11 @@
 #'
 #' @export
 calc_collision_prob <- function(
-    delayRng = c(60, 180), burstDur = 5.0,
-    maxTags = 50, nTrans = 10000) {
+  delayRng = c(60, 180),
+  burstDur = 5.0,
+  maxTags = 50,
+  nTrans = 10000
+) {
   # preallocate objects
 
   # transmission history (before collisions)
@@ -80,8 +83,13 @@ calc_collision_prob <- function(
   collide <- vector("list", length = maxTags)
   # preallocate
   detProbs <- data.frame(
-    nTags = 1:maxTags, min = NA, q1 = NA, med = NA, q3 = NA,
-    max = NA, mean = NA
+    nTags = 1:maxTags,
+    min = NA,
+    q1 = NA,
+    med = NA,
+    q3 = NA,
+    max = NA,
+    mean = NA
   )
   # observed detection history (after collisions)
   pingHistObs <- vector("list", length = maxTags)
@@ -96,7 +104,8 @@ calc_collision_prob <- function(
     pingHist[[i]] <- sort(c(pingStart, pingStart + burstDur))
 
     if (i == 1) detProbs[i, ] <- c(i, rep(1, 6))
-    if (i > 1) { # check to see if collided with any previous tag
+    if (i > 1) {
+      # check to see if collided with any previous tag
       for (j in 1:(i - 1)) {
         # check to see if ith tag transmissions overlaps
         # with any jth tag transmissions
@@ -105,15 +114,19 @@ calc_collision_prob <- function(
         # identify collisions (TRUE) or nonCollisions (FALSE)
         collisions <- (pingInts / 2) != floor(pingInts / 2)
 
-        collide[[j]] <- unique(c(collide[[j]], ceiling(pingInts[collisions] / 2)))
+        collide[[j]] <- unique(c(
+          collide[[j]],
+          ceiling(pingInts[collisions] / 2)
+        ))
         collide[[i]] <- unique(c(
           collide[[i]],
           ceiling(row(as.matrix(collisions))[collisions] / 2)
         ))
       }
 
-      detProb.k <- 1 - (sapply(collide[1:i], length) /
-        (sapply(pingHist[1:i], length) / 2))
+      detProb.k <- 1 -
+        (sapply(collide[1:i], length) /
+          (sapply(pingHist[1:i], length) / 2))
 
       detProbs[i, 2:7] <- c(fivenum(detProb.k), mean(detProb.k))
     } # end if

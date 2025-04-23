@@ -171,16 +171,18 @@
 #' }
 #'
 #' @export
-vdat_convert <- function(src,
-                         out_dir = NULL,
-                         output_format = "csv.fathom",
-                         overwrite = FALSE,
-                         recursive = FALSE,
-                         vdat_exe_path = NULL,
-                         skip_pattern = "-RLD_",
-                         show_progress = TRUE,
-                         diagn = FALSE,
-                         export_settings = NULL) {
+vdat_convert <- function(
+  src,
+  out_dir = NULL,
+  output_format = "csv.fathom",
+  overwrite = FALSE,
+  recursive = FALSE,
+  vdat_exe_path = NULL,
+  skip_pattern = "-RLD_",
+  show_progress = TRUE,
+  diagn = FALSE,
+  export_settings = NULL
+) {
   ##  Declare global variables for NSE & R CMD check
   src_dir <- src_file <- out_file <- out_file_exists <- src_to_convert <-
     written <- NULL
@@ -191,21 +193,23 @@ vdat_convert <- function(src,
   # Basic input checks
   stopifnot("Input 'src' must be character" = is.character(src))
   stopifnot(
-    "Input 'out_dir' must be character" =
-      is.character(out_dir) | is.null(out_dir)
+    "Input 'out_dir' must be character" = is.character(out_dir) |
+      is.null(out_dir)
   )
-  output_format <- match.arg(output_format,
+  output_format <- match.arg(
+    output_format,
     choices = c("csv.fathom", "csv.fathom.split")
   )
   stopifnot("Input 'overwrite' must be TRUE or FALSE" = is.logical(overwrite))
   stopifnot("Input 'recursive' must be TRUE or FALSE" = is.logical(recursive))
   stopifnot(
-    "Input 'vdat_exe_path' must be character or NULL" =
-      is.character(vdat_exe_path) | is.null(vdat_exe_path)
+    "Input 'vdat_exe_path' must be character or NULL" = is.character(
+      vdat_exe_path
+    ) |
+      is.null(vdat_exe_path)
   )
   stopifnot(
-    "Input 'show_progress' must be TRUE or FALSE" =
-      is.logical(show_progress)
+    "Input 'show_progress' must be TRUE or FALSE" = is.logical(show_progress)
   )
   stopifnot("Input 'diagn' must be TRUE or FALSE" = is.logical(diagn))
 
@@ -221,9 +225,7 @@ vdat_convert <- function(src,
   if (any(src_exists == FALSE)) {
     stop(
       "Input 'src' not found: \n ",
-      paste(src[src_exists == FALSE],
-        collapse = "\n "
-      )
+      paste(src[src_exists == FALSE], collapse = "\n ")
     )
   }
 
@@ -231,15 +233,14 @@ vdat_convert <- function(src,
   #  if not dir, assume file since previous step confirms existence
   src_type <- ifelse(dir.exists(src), "dir", "file")
 
-
   # Stop if mix of dir and file
   if (all(c("file", "dir") %in% src_type)) {
-    stop("Input arg 'src' must contain one or more ",
+    stop(
+      "Input arg 'src' must contain one or more ",
       "files or directories, but not both.",
       call. = FALSE
     )
   }
-
 
   # Check or set output directory
   out_dir_in <- out_dir
@@ -254,8 +255,10 @@ vdat_convert <- function(src,
     #  must either be NULL (use source dir for each file)
     #  scalar (same for all input files),
     #  or same length at src (specific to each input file or folder)
-    if (!(length(out_dir) == 1 |
-      length(out_dir) == length(src))) {
+    if (
+      !(length(out_dir) == 1 |
+        length(out_dir) == length(src))
+    ) {
       stop("Input 'out_dir' must be NULL, length one, or same length at 'src'.")
     }
 
@@ -266,9 +269,7 @@ vdat_convert <- function(src,
     if (any(out_dir_exists == FALSE)) {
       stop(
         "'out_dir' not found: \n ",
-        paste(out_dir[out_dir_exists == FALSE],
-          collapse = "\n "
-        )
+        paste(out_dir[out_dir_exists == FALSE], collapse = "\n ")
       )
     }
 
@@ -295,7 +296,8 @@ vdat_convert <- function(src,
 
     ftp <- ftp[,
       list(
-        src_file = list.files(src_dir,
+        src_file = list.files(
+          src_dir,
           full.names = TRUE,
           recursive = recursive,
           pattern = paste(
@@ -316,9 +318,7 @@ vdat_convert <- function(src,
       warning(paste0(
         "No VRL or VDAT files were ",
         "found in 'src': \n ",
-        paste(src,
-          collapse = "\n "
-        )
+        paste(src, collapse = "\n ")
       ))
 
       return(NA_character_)
@@ -334,34 +334,35 @@ vdat_convert <- function(src,
   # File extension (and type) depends on output_format
   output_file_ext <-
     data.table::fcase(
-      output_format == "csv.fathom", "csv",
-      output_format == "csv.fathom.split", "csv-fathom-split"
+      output_format == "csv.fathom",
+      "csv",
+      output_format == "csv.fathom.split",
+      "csv-fathom-split"
     )
 
   # Set output path(s) and file name(s)
-  ftp[, out_file := file.path(
-    out_dir,
-    gsub(
-      paste(paste0("\\.", supported_ext, "$"),
-        collapse = "|"
-      ),
-      paste0(".", output_file_ext),
-      basename(src_file),
-      ignore.case = TRUE
+  ftp[,
+    out_file := file.path(
+      out_dir,
+      gsub(
+        paste(paste0("\\.", supported_ext, "$"), collapse = "|"),
+        paste0(".", output_file_ext),
+        basename(src_file),
+        ignore.case = TRUE
+      )
     )
-  )]
-
+  ]
 
   # Ignore existing files if overwrite is false
   ftp[, out_file_exists := (file.exists(out_file))]
   ftp[, src_to_convert := !out_file_exists | overwrite]
 
-
   # Convert files
 
   # Loop through files so that progress can be displayed
   message(
-    "Converting ", sum(ftp$src_to_convert),
+    "Converting ",
+    sum(ftp$src_to_convert),
     " VRL/VDAT file(s) to Fathom CSV..."
   )
 
@@ -390,9 +391,12 @@ vdat_convert <- function(src,
     vdat_call <- with(
       ftp,
       paste0(
-        "convert --format=", output_format, " \"",
+        "convert --format=",
+        output_format,
+        " \"",
         src_file[i],
-        "\" --timec=default --output \"", out_dir[i],
+        "\" --timec=default --output \"",
+        out_dir[i],
         "\""
       )
     )
@@ -408,25 +412,33 @@ vdat_convert <- function(src,
 
     # if warning; make new warning with error message
     if (!is.null(attr(msg_i, "status"))) {
-      ftp[i, `:=`(
-        vdat_error = msg_i[1],
-        vdat_status = attr(msg_i, "status")
-      )]
+      ftp[
+        i,
+        `:=`(
+          vdat_error = msg_i[1],
+          vdat_status = attr(msg_i, "status")
+        )
+      ]
 
       if (diagn) {
         warning(
-          "\nError converting ", basename(ftp$src_file[i]), " :\n",
-          "\trunning command'", vdat_cmd, " ", vdat_call,
-          " had status ", ftp$vdat_status[i], ":\n",
+          "\nError converting ",
+          basename(ftp$src_file[i]),
+          " :\n",
+          "\trunning command'",
+          vdat_cmd,
+          " ",
+          vdat_call,
+          " had status ",
+          ftp$vdat_status[i],
+          ":\n",
           ftp$vdat_error[i]
         )
       }
     }
 
     if (show_progress) {
-      setTxtProgressBar(pb,
-        value = sum(ftp$src_to_convert[1:i])
-      )
+      setTxtProgressBar(pb, value = sum(ftp$src_to_convert[1:i]))
     }
   } # end i
 
@@ -440,7 +452,8 @@ vdat_convert <- function(src,
 
   message(
     "Done. ",
-    sum(ftp[src_to_convert == TRUE]$written, na.rm = TRUE), " of ",
+    sum(ftp[src_to_convert == TRUE]$written, na.rm = TRUE),
+    " of ",
     nrow(ftp),
     " file(s) written to disk."
   )
@@ -450,12 +463,13 @@ vdat_convert <- function(src,
     with(
       ftp,
       message(
-        "\n! ", sum(src_to_convert == FALSE),
+        "\n! ",
+        sum(src_to_convert == FALSE),
         " file(s) skipped (already exists &",
-        " 'overwrite' = ", overwrite, "):\n   ",
-        paste(basename(out_file[src_to_convert == FALSE]),
-          collapse = "\n   "
-        ),
+        " 'overwrite' = ",
+        overwrite,
+        "):\n   ",
+        paste(basename(out_file[src_to_convert == FALSE]), collapse = "\n   "),
         "\n"
       )
     )
@@ -466,13 +480,16 @@ vdat_convert <- function(src,
     with(
       ftp[written == FALSE],
       message(
-        "\n! ", sum(written == FALSE),
+        "\n! ",
+        sum(written == FALSE),
         " file(s) not written due to errors:\n   ",
         paste(
           paste0(
             basename(src_file),
-            ": (status ", vdat_status,
-            ") ", vdat_error
+            ": (status ",
+            vdat_status,
+            ") ",
+            vdat_error
           ),
           collapse = "\n   "
         ),
@@ -515,36 +532,29 @@ check_vdat <- function(vdat_exe_path = NULL) {
     vdat_cmd <- "VDAT"
 
     if (Sys.which(vdat_cmd) == "") {
-      stop("VDAT.exe not found in system PATH ",
-        "variable.",
-        call. = FALSE
-      )
+      stop("VDAT.exe not found in system PATH ", "variable.", call. = FALSE)
     }
   } else {
     # remove VDAT.exe from vdat_exe_path if present
-    vdat_exe_dir <- ifelse(grepl("vdat.exe$",
-      vdat_exe_path,
-      ignore.case = TRUE
-    ),
-    dirname(vdat_exe_path),
-    vdat_exe_path
+    vdat_exe_dir <- ifelse(
+      grepl("vdat.exe$", vdat_exe_path, ignore.case = TRUE),
+      dirname(vdat_exe_path),
+      vdat_exe_path
     )
 
     vdat_exe_file <- file.path(vdat_exe_dir, "VDAT.exe")
 
     # Check path to VDAT.exe
     if (!file.exists(vdat_exe_file)) {
-      stop("VDAT.exe not found at specified ",
-        "path.",
-        call. = FALSE
-      )
+      stop("VDAT.exe not found at specified ", "path.", call. = FALSE)
     }
 
     vdat_cmd <- vdat_exe_file
 
     # Check if path can be reached via system call
     if (Sys.which(vdat_cmd) == "") {
-      stop("VDAT.exe found but could not be ",
+      stop(
+        "VDAT.exe found but could not be ",
         "reached via system call.",
         call. = FALSE
       )
@@ -640,7 +650,6 @@ get_local_vdat_template <- function(vdat_exe_path = NULL) {
   # remove BOM from start of first row if present
   check_bom <- vdat_schema[1]
   Encoding(check_bom) <- "latin1"
-
 
   if (length(suppressMessages(tools::showNonASCII(check_bom))) > 0) {
     Encoding(vdat_schema[1]) <- "latin1"

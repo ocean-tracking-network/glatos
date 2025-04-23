@@ -159,14 +159,16 @@
 #' }
 #'
 #' @export
-vue_convert <- function(src,
-                        out_dir = NULL,
-                        overwrite = FALSE,
-                        recursive = FALSE,
-                        vue_exe_path = NULL,
-                        skip_pattern = "-RLD_",
-                        show_progress = TRUE,
-                        diagn = FALSE) {
+vue_convert <- function(
+  src,
+  out_dir = NULL,
+  overwrite = FALSE,
+  recursive = FALSE,
+  vue_exe_path = NULL,
+  skip_pattern = "-RLD_",
+  show_progress = TRUE,
+  diagn = FALSE
+) {
   ##  Declare global variables for NSE & R CMD check
   src_dir <- src_file <- out_file <- out_file_exists <- src_to_convert <-
     written <- NULL
@@ -177,22 +179,23 @@ vue_convert <- function(src,
   # Basic input checks
   stopifnot("Input 'src' must be character" = is.character(src))
   stopifnot(
-    "Input 'out_dir' must be character" =
-      is.character(out_dir) | is.null(out_dir)
+    "Input 'out_dir' must be character" = is.character(out_dir) |
+      is.null(out_dir)
   )
   stopifnot("Input 'overwrite' must be TRUE or FALSE" = is.logical(overwrite))
   stopifnot("Input 'recursive' must be TRUE or FALSE" = is.logical(recursive))
   stopifnot(
-    "Input 'vue_exe_path' must be character or NULL" =
-      is.character(vue_exe_path) | is.null(vue_exe_path)
+    "Input 'vue_exe_path' must be character or NULL" = is.character(
+      vue_exe_path
+    ) |
+      is.null(vue_exe_path)
   )
   stopifnot(
-    "Input 'skip_pattern' must be character" =
-      is.character(skip_pattern) | is.null(skip_pattern)
+    "Input 'skip_pattern' must be character" = is.character(skip_pattern) |
+      is.null(skip_pattern)
   )
   stopifnot(
-    "Input 'show_progress' must be TRUE or FALSE" =
-      is.logical(show_progress)
+    "Input 'show_progress' must be TRUE or FALSE" = is.logical(show_progress)
   )
   stopifnot("Input 'diagn' must be TRUE or FALSE" = is.logical(diagn))
 
@@ -208,9 +211,7 @@ vue_convert <- function(src,
   if (any(src_exists == FALSE)) {
     stop(
       "Input 'src' not found: \n ",
-      paste(src[src_exists == FALSE],
-        collapse = "\n "
-      )
+      paste(src[src_exists == FALSE], collapse = "\n ")
     )
   }
 
@@ -218,15 +219,14 @@ vue_convert <- function(src,
   #  if not dir, assume file since previous step confirms existence
   src_type <- ifelse(dir.exists(src), "dir", "file")
 
-
   # Stop if mix of dir and file
   if (all(c("file", "dir") %in% src_type)) {
-    stop("Input arg 'src' must contain one or more ",
+    stop(
+      "Input arg 'src' must contain one or more ",
       "files or directories, but not both.",
       call. = FALSE
     )
   }
-
 
   # Check or set output directory
   out_dir_in <- out_dir
@@ -241,8 +241,10 @@ vue_convert <- function(src,
     #  must either be NULL (use source dir for each file)
     #  scalar (same for all input files),
     #  or same length at src (specific to each input file or folder)
-    if (!(length(out_dir) == 1 |
-      length(out_dir) == length(src))) {
+    if (
+      !(length(out_dir) == 1 |
+        length(out_dir) == length(src))
+    ) {
       stop("Input 'out_dir' must be NULL, length one, or same length at 'src'.")
     }
 
@@ -253,9 +255,7 @@ vue_convert <- function(src,
     if (any(out_dir_exists == FALSE)) {
       stop(
         "'out_dir' not found: \n ",
-        paste(out_dir[out_dir_exists == FALSE],
-          collapse = "\n "
-        )
+        paste(out_dir[out_dir_exists == FALSE], collapse = "\n ")
       )
     }
 
@@ -273,7 +273,6 @@ vue_convert <- function(src,
     if (length(out_dir) == 1) out_dir <- rep(out_dir, length(src))
   }
 
-
   # Get file names if src is a directory and assemble "files to process"
   if (all(src_type == "dir")) {
     ftp <- data.table::data.table(
@@ -283,7 +282,8 @@ vue_convert <- function(src,
 
     ftp <- ftp[,
       list(
-        src_file = list.files(src_dir,
+        src_file = list.files(
+          src_dir,
           full.names = TRUE,
           recursive = recursive,
           pattern = paste(
@@ -304,9 +304,7 @@ vue_convert <- function(src,
       warning(paste0(
         "No VRL files were ",
         "found in 'src': \n ",
-        paste(src,
-          collapse = "\n "
-        )
+        paste(src, collapse = "\n ")
       ))
 
       return(NA_character_)
@@ -320,29 +318,28 @@ vue_convert <- function(src,
   }
 
   # Set output path(s) and file name(s)
-  ftp[, out_file := file.path(
-    out_dir,
-    gsub(
-      paste(paste0("\\.", supported_ext, "$"),
-        collapse = "|"
-      ),
-      ".csv",
-      basename(src_file),
-      ignore.case = TRUE
+  ftp[,
+    out_file := file.path(
+      out_dir,
+      gsub(
+        paste(paste0("\\.", supported_ext, "$"), collapse = "|"),
+        ".csv",
+        basename(src_file),
+        ignore.case = TRUE
+      )
     )
-  )]
-
+  ]
 
   # Ignore existing files if overwrite is false
   ftp[, out_file_exists := (file.exists(out_file))]
   ftp[, src_to_convert := !out_file_exists | overwrite]
 
-
   # Convert files
 
   # Loop through files so that progress can be displayed
   message(
-    "Converting ", sum(ftp$src_to_convert),
+    "Converting ",
+    sum(ftp$src_to_convert),
     " VRL file(s) to VUE CSV..."
   )
 
@@ -388,25 +385,33 @@ vue_convert <- function(src,
 
     # if warning; make new warning with error message
     if (!is.null(attr(msg_i, "status"))) {
-      ftp[i, `:=`(
-        vue_error = msg_i[1],
-        vue_status = attr(msg_i, "status")
-      )]
+      ftp[
+        i,
+        `:=`(
+          vue_error = msg_i[1],
+          vue_status = attr(msg_i, "status")
+        )
+      ]
 
       if (diagn) {
         warning(
-          "\nError converting ", basename(ftp$src_file[i]), " :\n",
-          "\trunning command'", vue_cmd, " ", vue_call,
-          " had status ", ftp$vue_status[i], ":\n",
+          "\nError converting ",
+          basename(ftp$src_file[i]),
+          " :\n",
+          "\trunning command'",
+          vue_cmd,
+          " ",
+          vue_call,
+          " had status ",
+          ftp$vue_status[i],
+          ":\n",
           ftp$vue_error[i]
         )
       }
     }
 
     if (show_progress) {
-      setTxtProgressBar(pb,
-        value = sum(ftp$src_to_convert[1:i])
-      )
+      setTxtProgressBar(pb, value = sum(ftp$src_to_convert[1:i]))
     }
   } # end i
 
@@ -420,7 +425,8 @@ vue_convert <- function(src,
 
   message(
     "Done. ",
-    sum(ftp[src_to_convert == TRUE]$written, na.rm = TRUE), " of ",
+    sum(ftp[src_to_convert == TRUE]$written, na.rm = TRUE),
+    " of ",
     nrow(ftp),
     " file(s) written to disk."
   )
@@ -430,12 +436,13 @@ vue_convert <- function(src,
     with(
       ftp,
       message(
-        "\n! ", sum(src_to_convert == FALSE),
+        "\n! ",
+        sum(src_to_convert == FALSE),
         " file(s) skipped (already exists &",
-        " 'overwrite' = ", overwrite, "):\n   ",
-        paste(basename(out_file[src_to_convert == FALSE]),
-          collapse = "\n   "
-        ),
+        " 'overwrite' = ",
+        overwrite,
+        "):\n   ",
+        paste(basename(out_file[src_to_convert == FALSE]), collapse = "\n   "),
         "\n"
       )
     )
@@ -446,13 +453,16 @@ vue_convert <- function(src,
     with(
       ftp[written == FALSE],
       message(
-        "\n! ", sum(written == FALSE),
+        "\n! ",
+        sum(written == FALSE),
         " file(s) not written due to errors:\n   ",
         paste(
           paste0(
             basename(src_file),
-            ": (status ", vue_status,
-            ") ", vue_error
+            ": (status ",
+            vue_status,
+            ") ",
+            vue_error
           ),
           collapse = "\n   "
         ),
@@ -495,14 +505,12 @@ check_vue <- function(vue_exe_path = NULL) {
     vue_cmd <- "VUE"
 
     if (Sys.which(vue_cmd) == "") {
-      stop("VUE.exe not found in system PATH ",
-        "variable.",
-        call. = FALSE
-      )
+      stop("VUE.exe not found in system PATH ", "variable.", call. = FALSE)
     }
 
     # Test
-    tryCatch(system2(vue_cmd, "--help", stdout = TRUE),
+    tryCatch(
+      system2(vue_cmd, "--help", stdout = TRUE),
       error = function(e) {
         stop(
           "VUE.exe could not be called from R.\n",
@@ -515,35 +523,29 @@ check_vue <- function(vue_exe_path = NULL) {
     )
   } else {
     # Remove vue.exe from vue_exe_path if present
-    vue_exe_dir <- ifelse(grepl("vue.exe$",
-      vue_exe_path,
-      ignore.case = TRUE
-    ),
-    dirname(vue_exe_path),
-    vue_exe_path
+    vue_exe_dir <- ifelse(
+      grepl("vue.exe$", vue_exe_path, ignore.case = TRUE),
+      dirname(vue_exe_path),
+      vue_exe_path
     )
 
     vue_exe_file <- file.path(vue_exe_dir, "VUE.exe")
 
     # Check path to VUE.exe
     if (!file.exists(vue_exe_file)) {
-      stop("VUE.exe not found at specified ",
-        "path.",
-        call. = FALSE
-      )
+      stop("VUE.exe not found at specified ", "path.", call. = FALSE)
     }
 
     vue_cmd <- vue_exe_file
 
     # Test
-    tryCatch(system2(vue_cmd, "--help", stdout = TRUE),
-      error = function(e) {
-        stop("VUE.exe was found but could not be ",
-          "called from R. (Reason unknown.)",
-          call. = FALSE
-        )
-      }
-    )
+    tryCatch(system2(vue_cmd, "--help", stdout = TRUE), error = function(e) {
+      stop(
+        "VUE.exe was found but could not be ",
+        "called from R. (Reason unknown.)",
+        call. = FALSE
+      )
+    })
   }
 
   return(vue_cmd)
@@ -589,7 +591,8 @@ get_local_vue_version <- function(vue_exe_path = NULL) {
       "').FileVersionInfo.FileVersion"
     )
 
-    vue_version <- system2("powershell.exe",
+    vue_version <- system2(
+      "powershell.exe",
       args = c(
         "-NoProfile",
         "-ExecutionPolicy",
@@ -602,7 +605,8 @@ get_local_vue_version <- function(vue_exe_path = NULL) {
   } else {
     stop(
       "VUE version information is not available for operating system \"",
-      os, "\"."
+      os,
+      "\"."
     )
   }
 
@@ -610,7 +614,6 @@ get_local_vue_version <- function(vue_exe_path = NULL) {
     version = strsplit(vue_version, " \\(")[[1]][1],
     long_version = vue_version
   )
-
 
   return(vue_version_out)
 }

@@ -1,7 +1,6 @@
 # Make vdat_csv_schema (data object for read_vdat_csv)
 # Specify column names and data types for each known vdat csv version
 
-
 # Make list element for each vdat csv schema version
 # pre-allocate sheet-level structure within each version
 vdat_csv_schema <- list(

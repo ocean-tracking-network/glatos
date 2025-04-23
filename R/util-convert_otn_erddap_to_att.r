@@ -80,15 +80,17 @@
 #' )
 #' @export
 #'
-convert_otn_erddap_to_att <- function(detectionObj,
-                                      erdTags,
-                                      erdRcv,
-                                      erdAni,
-                                      crs = sf::st_crs(4326)) {
+convert_otn_erddap_to_att <- function(
+  detectionObj,
+  erdTags,
+  erdRcv,
+  erdAni,
+  crs = sf::st_crs(4326)
+) {
   ##  Declare global variables for R CMD check
   Sex <- latitude <- longitude <- station <- receiver_model <-
     receiver_serial_number <- dummy <- time <- recovery_datetime_utc <-
-    deploy_datetime_utc <- detection_timestamp_utc <- NULL
+      deploy_datetime_utc <- detection_timestamp_utc <- NULL
 
   transmitters <-
     if (all(grepl("-", detectionObj$transmitter_id, fixed = TRUE))) {
@@ -110,32 +112,27 @@ convert_otn_erddap_to_att <- function(detectionObj,
   # Cut out dupes
   tagMetadata <- unique(tagMetadata)
 
-  nameLookup <- dplyr::tibble( # Get all the unique common names
+  nameLookup <- dplyr::tibble(
+    # Get all the unique common names
     Common.Name = unique(tagMetadata$Common.Name)
   )
 
   # Add scinames to the name lookup
-  nameLookup <- dplyr::mutate(nameLookup,
+  nameLookup <- dplyr::mutate(
+    nameLookup,
     Sci.Name = as.factor(
-      query_worms_common(nameLookup$Common.Name,
-        silent = TRUE
-      )
+      query_worms_common(nameLookup$Common.Name, silent = TRUE)
     )
   )
 
   # Apply sci names to frame
-  tagMetadata <- dplyr::left_join(tagMetadata,
-    nameLookup,
-    by = "Common.Name"
-  )
+  tagMetadata <- dplyr::left_join(tagMetadata, nameLookup, by = "Common.Name")
 
   # Matching cols that have different names
   colnames(erdTags)[colnames(erdTags) == "tag_device_id"] <- "transmitter_id"
-  detectionObj <- dplyr::left_join(detectionObj,
-    erdTags,
-    by = "transmitter_id"
-  )
-  erdRcv <- dplyr::mutate(erdRcv,
+  detectionObj <- dplyr::left_join(detectionObj, erdTags, by = "transmitter_id")
+  erdRcv <- dplyr::mutate(
+    erdRcv,
     station = as.character(extract_station(
       erdRcv$receiver_reference_id
     ))
@@ -143,7 +140,8 @@ convert_otn_erddap_to_att <- function(detectionObj,
 
   # Matching cols that have different names
   colnames(erdAni)[colnames(erdAni) == "animal_reference_id"] <- "animal_id"
-  detectionObj <- dplyr::left_join(detectionObj,
+  detectionObj <- dplyr::left_join(
+    detectionObj,
     erdAni,
     by = c(
       "animal_id",
@@ -162,7 +160,8 @@ convert_otn_erddap_to_att <- function(detectionObj,
     Sex = as.factor(detectionObj$sex)
   )
 
-  releaseData <- dplyr::mutate(releaseData,
+  releaseData <- dplyr::mutate(
+    releaseData,
     # Convert sex text and null missing columns
     Sex = as.factor(convert_sex(Sex)),
     Tag.Life = as.integer(NA),
@@ -170,7 +169,8 @@ convert_otn_erddap_to_att <- function(detectionObj,
     Bio = as.factor(NA)
   )
   # Final version of Tag.Metadata
-  tagMetadata <- unique(dplyr::left_join(tagMetadata,
+  tagMetadata <- unique(dplyr::left_join(
+    tagMetadata,
     releaseData,
     by = "Tag.ID"
   ))
@@ -180,7 +180,8 @@ convert_otn_erddap_to_att <- function(detectionObj,
   detectionObj <- detectionObj %>%
     dplyr::mutate(dummy = TRUE) %>%
     dplyr::left_join(
-      dplyr::select(erdRcv %>% dplyr::mutate(dummy = TRUE),
+      dplyr::select(
+        erdRcv %>% dplyr::mutate(dummy = TRUE),
         rcv_latitude = latitude,
         rcv_longitude = longitude,
         station,
@@ -194,21 +195,27 @@ convert_otn_erddap_to_att <- function(detectionObj,
       relationship = "many-to-many"
     ) %>%
     dplyr::mutate(
-      deploy_datetime_utc = as.POSIXct(deploy_datetime_utc,
-        format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
+      deploy_datetime_utc = as.POSIXct(
+        deploy_datetime_utc,
+        format = "%Y-%m-%dT%H:%M:%OS",
+        tz = datetime_timezone
       ),
-      recovery_datetime_utc = as.POSIXct(recovery_datetime_utc,
-        format = "%Y-%m-%dT%H:%M:%OS", tz = datetime_timezone
+      recovery_datetime_utc = as.POSIXct(
+        recovery_datetime_utc,
+        format = "%Y-%m-%dT%H:%M:%OS",
+        tz = datetime_timezone
       )
     ) %>%
     dplyr::filter(
       detection_timestamp_utc >= deploy_datetime_utc,
       detection_timestamp_utc <= recovery_datetime_utc
     ) %>%
-    dplyr::mutate(ReceiverFull = concat_list_strings(
-      receiver_model,
-      receiver_serial_number
-    )) %>%
+    dplyr::mutate(
+      ReceiverFull = concat_list_strings(
+        receiver_model,
+        receiver_serial_number
+      )
+    ) %>%
     dplyr::select(-dummy)
 
   detections <- dplyr::tibble(
@@ -264,7 +271,8 @@ concat_list_strings <- function(list1, list2, sep = "-") {
   if (length(list1) != length(list2)) {
     stop(sprintf(
       "Lists are not the same size. %d != %d.",
-      length(list1), length(list2)
+      length(list1),
+      length(list2)
     ))
   }
   return(paste(list1, list2, sep = sep))
@@ -273,10 +281,12 @@ concat_list_strings <- function(list1, list2, sep = "-") {
 
 # Converts the receiver reference id to station name
 extract_station <- function(receiver_ref) {
-  sapply(receiver_ref,
+  sapply(
+    receiver_ref,
     FUN = function(x) {
       x <- as.character(x)
-      return( # Split the string by _ and drop the array name
+      return(
+        # Split the string by _ and drop the array name
         unlist(
           strsplit(c(x), c("_"))
         )[-1]

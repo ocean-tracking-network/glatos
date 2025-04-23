@@ -66,16 +66,18 @@
 #' }
 #'
 #' @export
-write_vdat_csv <- function(vdat,
-                           record_types = NULL,
-                           out_file = NULL,
-                           output_format = "csv.fathom",
-                           include_empty = FALSE,
-                           export_settings = NULL) {
+write_vdat_csv <- function(
+  vdat,
+  record_types = NULL,
+  out_file = NULL,
+  output_format = "csv.fathom",
+  include_empty = FALSE,
+  export_settings = NULL
+) {
   ##  Declare global variables for NSE & R CMD check
   record_type <- dt2 <- `Device Time (UTC)` <- `Time Correction (s)` <-
     `Ambient (deg C)` <- `Ambient Min (deg C)` <- `Ambient Max (deg C)` <-
-    `Ambient Mean (deg C)` <- `Internal (deg C)` <- txt_cols <- txt <- NULL
+      `Ambient Mean (deg C)` <- `Internal (deg C)` <- txt_cols <- txt <- NULL
 
   # Check input class
   if (!inherits(vdat, "vdat_list")) {
@@ -91,9 +93,7 @@ write_vdat_csv <- function(vdat,
   out_file <- if (is.null(out_file)) {
     getwd()
   } else {
-    normalizePath(out_file,
-      mustWork = FALSE
-    )
+    normalizePath(out_file, mustWork = FALSE)
   }
 
   out_file_ext_in <- tools::file_ext(out_file)
@@ -103,12 +103,15 @@ write_vdat_csv <- function(vdat,
   # File extension (and type) depends on output_format
   out_file_ext <-
     data.table::fcase(
-      output_format == "csv.fathom", ".csv",
-      output_format == "csv.fathom.split", ".csv-fathom-split"
+      output_format == "csv.fathom",
+      ".csv",
+      output_format == "csv.fathom.split",
+      ".csv-fathom-split"
     )
 
   if (out_file_type == "dir") {
-    out_file_name <- gsub("\\.vrl$|\\.vdat$",
+    out_file_name <- gsub(
+      "\\.vrl$|\\.vdat$",
       out_file_ext,
       utils::tail(vdat$DATA_SOURCE_FILE$`File Name`, 1),
       ignore.case = TRUE
@@ -126,7 +129,8 @@ write_vdat_csv <- function(vdat,
 
   # out_file must contain file name if vdat does not contain DATA_SOURCE_FILE
   if (out_file_type == "dir" & !("DATA_SOURCE_FILE" %in% names(vdat))) {
-    stop("Input 'out_file' must include file name if 'vdat' does not contain",
+    stop(
+      "Input 'out_file' must include file name if 'vdat' does not contain",
       " a 'DATA_SOURCE_FILE' record type.",
       call. = FALSE
     )
@@ -135,13 +139,13 @@ write_vdat_csv <- function(vdat,
   # Make vdat csv format version and identify data generating mechanism
   src_version <- paste0(
     "VEMCO DATA LOG,",
-    attr(vdat, "fathom_csv_version"), ",",
+    attr(vdat, "fathom_csv_version"),
+    ",",
     paste0(
       "glatos-",
       packageVersion("glatos")
     )
   )
-
 
   # Subset record_types
   if (is.null(record_types)) {
@@ -173,7 +177,6 @@ write_vdat_csv <- function(vdat,
 
     data.table::setcolorder(x_i, "record_type")
 
-
     if ("Device Time (UTC)" %in% names(x_i)) {
       x_i[, dt2 := `Device Time (UTC)`] # for sort later
     } else {
@@ -186,28 +189,30 @@ write_vdat_csv <- function(vdat,
     # Exclude dtc if present
     timestamp_cols <- setdiff(timestamp_cols, "dt2")
 
-
     # Round and format all timestamp cols
 
     if (length(timestamp_cols) > 0) {
-      x_i[, (timestamp_cols) := lapply(.SD, format_POSIXt,
-        digits = 6,
-        drop0trailing = TRUE
-      ),
-      .SDcols = timestamp_cols
+      x_i[,
+        (timestamp_cols) := lapply(
+          .SD,
+          format_POSIXt,
+          digits = 6,
+          drop0trailing = TRUE
+        ),
+        .SDcols = timestamp_cols
       ]
     }
 
     if ("Time Correction (s)" %in% names(x_i)) {
-      x_i[, `Time Correction (s)` := format(
-        round(`Time Correction (s)`,
-          digits = 9
-        ),
-        nsmall = 9,
-        trim = TRUE,
-        drop0trailing = FALSE,
-        scientific = FALSE
-      )]
+      x_i[,
+        `Time Correction (s)` := format(
+          round(`Time Correction (s)`, digits = 9),
+          nsmall = 9,
+          trim = TRUE,
+          drop0trailing = FALSE,
+          scientific = FALSE
+        )
+      ]
 
       x_i[
         `Time Correction (s)` == "0.000000000",
@@ -216,79 +221,80 @@ write_vdat_csv <- function(vdat,
     }
 
     if ("Ambient (deg C)" %in% names(x_i)) {
-      x_i[, `Ambient (deg C)` := format(
-        round(`Ambient (deg C)`,
-          digits = 1
-        ),
-        nsmall = 1,
-        trim = TRUE,
-        drop0trailing = FALSE,
-        scientific = FALSE
-      )]
+      x_i[,
+        `Ambient (deg C)` := format(
+          round(`Ambient (deg C)`, digits = 1),
+          nsmall = 1,
+          trim = TRUE,
+          drop0trailing = FALSE,
+          scientific = FALSE
+        )
+      ]
 
       x_i[`Ambient (deg C)` == "NA", `Ambient (deg C)` := NA_character_]
     }
 
     if ("Ambient Min (deg C)" %in% names(x_i)) {
-      x_i[, `Ambient Min (deg C)` := format(
-        round(`Ambient Min (deg C)`,
-          digits = 2
-        ),
-        nsmall = 2,
-        trim = TRUE,
-        drop0trailing = FALSE,
-        scientific = FALSE
-      )]
+      x_i[,
+        `Ambient Min (deg C)` := format(
+          round(`Ambient Min (deg C)`, digits = 2),
+          nsmall = 2,
+          trim = TRUE,
+          drop0trailing = FALSE,
+          scientific = FALSE
+        )
+      ]
 
       x_i[`Ambient Min (deg C)` == "NA", `Ambient Min (deg C)` := NA_character_]
     }
 
     if ("Ambient Max (deg C)" %in% names(x_i)) {
-      x_i[, `Ambient Max (deg C)` := format(
-        round(`Ambient Max (deg C)`,
-          digits = 2
-        ),
-        nsmall = 2,
-        trim = TRUE,
-        drop0trailing = FALSE,
-        scientific = FALSE
-      )]
+      x_i[,
+        `Ambient Max (deg C)` := format(
+          round(`Ambient Max (deg C)`, digits = 2),
+          nsmall = 2,
+          trim = TRUE,
+          drop0trailing = FALSE,
+          scientific = FALSE
+        )
+      ]
 
       x_i[`Ambient Max (deg C)` == "NA", `Ambient Max (deg C)` := NA_character_]
     }
 
     if ("Ambient Mean (deg C)" %in% names(x_i)) {
-      x_i[, `Ambient Mean (deg C)` := format(
-        round(`Ambient Mean (deg C)`,
-          digits = 2
-        ),
-        nsmall = 2,
-        trim = TRUE,
-        drop0trailing = FALSE,
-        scientific = FALSE
-      )]
+      x_i[,
+        `Ambient Mean (deg C)` := format(
+          round(`Ambient Mean (deg C)`, digits = 2),
+          nsmall = 2,
+          trim = TRUE,
+          drop0trailing = FALSE,
+          scientific = FALSE
+        )
+      ]
 
-      x_i[`Ambient Mean (deg C)` == "NA", `Ambient Mean (deg C)` := NA_character_]
+      x_i[
+        `Ambient Mean (deg C)` == "NA",
+        `Ambient Mean (deg C)` := NA_character_
+      ]
     }
 
     if ("Internal (deg C)" %in% names(x_i)) {
-      x_i[, `Internal (deg C)` := format(
-        round(`Internal (deg C)`,
-          digits = 1
-        ),
-        nsmall = 1,
-        trim = TRUE,
-        drop0trailing = FALSE,
-        scientific = FALSE
-      )]
+      x_i[,
+        `Internal (deg C)` := format(
+          round(`Internal (deg C)`, digits = 1),
+          nsmall = 1,
+          trim = TRUE,
+          drop0trailing = FALSE,
+          scientific = FALSE
+        )
+      ]
 
       x_i[`Internal (deg C)` == "NA", `Internal (deg C)` := NA_character_]
     }
 
-
     # Create text string
     txt_cols <- setdiff(names(x_i), c("dt2", "txt"))
-
 
     if (nrow(x_i) > 0) {
       # write to temp file; read back in, ignore delim
@@ -319,9 +325,7 @@ write_vdat_csv <- function(vdat,
     if (record_type_i == "EVENT") {
       event_colnames_to_drop <- paste0("V", 12:17)
       vdat_lines_header[[i]] <- gsub(
-        paste(event_colnames_to_drop,
-          collapse = "|"
-        ),
+        paste(event_colnames_to_drop, collapse = "|"),
         "",
         vdat_lines_header[[i]]
       )
@@ -330,15 +334,12 @@ write_vdat_csv <- function(vdat,
     if (record_type_i == "PING") {
       ping_colnames_to_drop <- paste0("V", 14:17)
       vdat_lines_header[[i]] <- gsub(
-        paste(ping_colnames_to_drop,
-          collapse = "|"
-        ),
+        paste(ping_colnames_to_drop, collapse = "|"),
         "",
         vdat_lines_header[[i]]
       )
     }
   } # end i
-
 
   # Combine among record types
 
@@ -346,16 +347,13 @@ write_vdat_csv <- function(vdat,
 
   vdat_lines_header3 <- paste0(
     "RECORD TYPE",
-    paste(rep(",FIELD", max(sapply(vdat, ncol)) - 1),
-      collapse = ""
-    )
+    paste(rep(",FIELD", max(sapply(vdat, ncol)) - 1), collapse = "")
   )
 
   if (output_format == "csv.fathom") {
     vdat_lines_body2 <- data.table::rbindlist(vdat_lines_body)
 
     data.table::setkey(vdat_lines_body2, dt2)
-
 
     vdat_out <- data.table::data.table(
       c(
@@ -377,7 +375,6 @@ write_vdat_csv <- function(vdat,
   if (output_format == "csv.fathom.split") {
     # Create folder if not exist
     if (!dir.exists(out_file)) dir.create(out_file, recursive = TRUE)
-
 
     # Write csv for each record type
 
@@ -463,8 +460,7 @@ format_POSIXt <- function(x, digits = 0, drop0trailing = TRUE) {
   digits <- as.integer(digits) # for as.character
 
   stopifnot(
-    "'digits' must be >= 0 and <= 14" =
-      data.table::between(digits, 0, 14)
+    "'digits' must be >= 0 and <= 14" = data.table::between(digits, 0, 14)
   )
 
   # Coerce to POSIXlt
@@ -483,10 +479,7 @@ format_POSIXt <- function(x, digits = 0, drop0trailing = TRUE) {
   frac_sec <- if (digits > 0) {
     do.call(
       format,
-      c(list(x = xlt$sec %% 1),
-        drop0trailing = drop0trailing,
-        trim = TRUE
-      )
+      c(list(x = xlt$sec %% 1), drop0trailing = drop0trailing, trim = TRUE)
     )
   } else {
     character()
@@ -494,12 +487,11 @@ format_POSIXt <- function(x, digits = 0, drop0trailing = TRUE) {
 
   frac_sec <- gsub("^0|^NA$", "", frac_sec)
 
-
   # Format as string and truncate
-  xch <- do.call(format, c(list(x = xlt),
-    format = "%Y-%m-%d %H:%M:%S",
-    digits = 0
-  ))
+  xch <- do.call(
+    format,
+    c(list(x = xlt), format = "%Y-%m-%d %H:%M:%S", digits = 0)
+  )
 
   xch[is.na(xch)] <- ""
 

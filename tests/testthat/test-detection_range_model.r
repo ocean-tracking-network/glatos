@@ -3,9 +3,13 @@
 test_that("Test if polynomial model for model_frame = 'data_frame', is correct", {
   expect_warning(
     m <- detection_range_model(
-      avg_percent ~ -1 + distance_m + I(distance_m^2) +
+      avg_percent ~
+        -1 +
+          distance_m +
+          I(distance_m^2) +
 
-        I(distance_m^3) + offset(intercept),
+          I(distance_m^3) +
+          offset(intercept),
       data = sample_detection_efficiency,
       p = c(50),
       link = "polynomial",
@@ -23,9 +27,11 @@ test_that("Test if polynomial model for model_frame = 'data_frame', is correct",
 test_that("Test if polynomial model for model_frame = 'matrix', is correct", {
   expect_warning(
     m1 <- detection_range_model(
-      avg_percent ~ -1 + poly(distance_m, 3, raw = TRUE) +
+      avg_percent ~
+        -1 +
+          poly(distance_m, 3, raw = TRUE) +
 
-        offset(intercept),
+          offset(intercept),
       data = sample_detection_efficiency,
       p = c(50),
       link = "polynomial",
@@ -41,7 +47,8 @@ test_that("Test if polynomial model for model_frame = 'matrix', is correct", {
 
 test_that("Test if logit model is correct", {
   expect_warning(
-    m2 <- detection_range_model(avg_percent_d ~ distance_m,
+    m2 <- detection_range_model(
+      avg_percent_d ~ distance_m,
       data = sample_detection_efficiency,
       p = c(50),
       link = "logit",
@@ -57,7 +64,8 @@ test_that("Test if logit model is correct", {
 
 test_that("Test if probit model is correct", {
   expect_warning(
-    m3 <- detection_range_model(avg_percent_d ~ distance_m,
+    m3 <- detection_range_model(
+      avg_percent_d ~ distance_m,
       data = sample_detection_efficiency,
       p = c(50),
       link = "probit",
@@ -73,8 +81,8 @@ test_that("Test if probit model is correct", {
 
 test_that("test warning if model_frame = 'data_frame'", {
   expect_warning(detection_range_model(
-    avg_percent ~ -1 + distance_m + I(distance_m^2) +
-      I(distance_m^3) + offset(intercept),
+    avg_percent ~
+      -1 + distance_m + I(distance_m^2) + I(distance_m^3) + offset(intercept),
     data = sample_detection_efficiency,
     p = c(50),
     link = "polynomial",
@@ -85,8 +93,7 @@ test_that("test warning if model_frame = 'data_frame'", {
 
 test_that("test warning if model_frame = 'matrix'", {
   expect_warning(detection_range_model(
-    avg_percent ~ -1 + poly(distance_m, 3, raw = TRUE) +
-      offset(intercept),
+    avg_percent ~ -1 + poly(distance_m, 3, raw = TRUE) + offset(intercept),
     data = sample_detection_efficiency,
     p = c(50),
     link = "polynomial",

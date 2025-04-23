@@ -2,17 +2,12 @@
 
 # Actual result
 # get path to example detection file
-wd_file <- system.file("extdata",
-  "walleye_detections.csv",
-  package = "glatos"
-)
+wd_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
 
 wald <- read_glatos_detections(wd_file)
 
 # get path to example receiver file
-rec_file <- system.file("extdata", "sample_receivers.csv",
-  package = "glatos"
-)
+rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
 recd <- read_glatos_receivers(rec_file) # load receiver data
 
 
