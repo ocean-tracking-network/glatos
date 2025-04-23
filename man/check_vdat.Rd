@@ -2,21 +2,21 @@
 % Please edit documentation in R/util-vdat.r
 \name{check_vdat}
 \alias{check_vdat}
-\title{Check path to Innovasea program VDAT.exe}
+\title{Check path to Innovasea program \code{vdat.exe}}
 \usage{
 check_vdat(vdat_exe_path = NULL)
 }
 \arguments{
-\item{vdat_exe_path}{The full path to \code{VDAT.exe}. If \code{NULL}
-(default) then the path to VDAT.exe must be in the PATH environment variable
-of the system.}
+\item{vdat_exe_path}{The full path to \code{vdat.exe}. If \code{NULL}
+(default) then the path to \code{vdat.exe} must be in the PATH environment
+variable of the system.}
 }
 \value{
-Character string with command for calling VDAT.exe via
+Character string with command for calling \code{vdat.exe} via
 \code{system2}'s \code{command} argument.
 }
 \description{
-Check path to Innovasea program VDAT.exe
+Check path to Innovasea program \code{vdat.exe}
 }
 \examples{
 \dontrun{
@@ -25,12 +25,12 @@ Check path to Innovasea program VDAT.exe
 check_vdat()
 
 
-# use path to directory containing VDAT.exe
-check_vdat(vdat_exe_path = "C:/Program Files/Innovasea/Fathom")
+# use path to directory containing vdat.exe
+check_vdat(vdat_exe_path = "C:/Program Files/Innovasea/Fathom Connect")
 
 
-# use full path to VDAT.exe
-check_vdat(vdat_exe_path = "C:/Program Files/Innovasea/Fathom/VDAT.exe")
+# use full path to vdat.exe
+check_vdat(vdat_exe_path = "C:/Program Files/Innovasea/Fathom Connect/vdat.exe")
 }
 
 }

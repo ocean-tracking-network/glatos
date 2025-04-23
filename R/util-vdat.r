@@ -1,6 +1,6 @@
 #' Convert an Innovasea VRL or VDAT file to a Fathom CSV file
 #'
-#' Use Innovasea's VDAT command line program VDAT.exe (distributed with Fathom
+#' Use Innovasea's VDAT command line program \code{vdat.exe} (distributed with Fathom
 #' Connect software) to make a CSV file containing data from a VRL or VDAT file
 #' in Fathom CSV format.
 #'
@@ -32,8 +32,8 @@
 #'  'Data Types to Include', 'Data Filter', 'Filename Suffix', 'Time Offset in
 #'  Hours', 'Split CSV by UTC Day'.)
 #'
-#' @param vdat_exe_path The full path to \code{VDAT.exe}. If \code{NULL}
-#'  (default) then the path to VDAT.exe must be in the PATH environment variable
+#' @param vdat_exe_path The full path to \code{vdat.exe}. If \code{NULL}
+#'  (default) then the path to vdat.exe must be in the PATH environment variable
 #'  of the system. See \code{\link{check_vdat}}.
 #'
 #' @param skip_pattern A regular expression used to exclude files from
@@ -51,9 +51,9 @@
 #'  CSV. Otherwise, only those files specified in \code{src} will be converted.
 #'
 #' @details Conversion is done by system call to the Innovasea program
-#'  \code{VDAT.exe} (included with Innovasea's Fathom Connect software;
+#'  \code{vdat.exe} (included with Innovasea's Fathom Connect software;
 #'  available at \url{https://support.fishtracking.innovasea.com/s/downloads}).
-#'  VDAT.exe must be available at the location specified by \code{vdat_exe_path}
+#'  vdat.exe must be available at the location specified by \code{vdat_exe_path}
 #'  or via system PATH environment variable. See also
 #'  \code{\link{check_vdat}}.
 #'
@@ -88,12 +88,14 @@
 #' # Check vdat.exe
 #' check_vdat()
 #'
-#' # all examples below assume path to VDAT.exe is in system PATH environment
+#' # all examples below assume path to vdat.exe is in system PATH environment
 #' # variable. If not (you get an error), add input argument 'vdat_exe_path'
-#' # with path directory with VDAT.exe.
+#' # with path directory with vdat.exe.
 #' # e.g.,
-#' # vdat_convert(vrl_files,
-#' #             vdat_exe_path = "C:/Program Files/Innovasea/Fathom")
+#' # vdat_convert(
+#' #   vrl_files,
+#' #   vdat_exe_path = "C:/Program Files/Innovasea/Fathom Connect"
+#' # )
 #'
 #' # get path to example VRL files in glatos
 #' vrl_files <- system.file("extdata", "detection_files_raw",
@@ -114,7 +116,7 @@
 #' # uncomment to open in file browser
 #' # utils::browseURL(temp_dir)
 #'
-#' # call VDAT.exe; default args
+#' # call vdatT.exe; default args
 #' vdat_convert(vrl_files2)
 #'
 #' # run again and overwrite
@@ -502,13 +504,13 @@ vdat_convert <- function(
 }
 
 
-#' Check path to Innovasea program VDAT.exe
+#' Check path to Innovasea program \code{vdat.exe}
 #'
-#' @param vdat_exe_path The full path to \code{VDAT.exe}. If \code{NULL}
-#'  (default) then the path to VDAT.exe must be in the PATH environment variable
-#'  of the system.
+#' @param vdat_exe_path The full path to \code{vdat.exe}. If \code{NULL}
+#'  (default) then the path to \code{vdat.exe} must be in the PATH environment
+#'  variable of the system.
 #'
-#' @returns Character string with command for calling VDAT.exe via
+#' @returns Character string with command for calling \code{vdat.exe} via
 #'   \code{system2}'s \code{command} argument.
 #'
 #' @examples
@@ -518,12 +520,12 @@ vdat_convert <- function(
 #' check_vdat()
 #'
 #'
-#' # use path to directory containing VDAT.exe
-#' check_vdat(vdat_exe_path = "C:/Program Files/Innovasea/Fathom")
+#' # use path to directory containing vdat.exe
+#' check_vdat(vdat_exe_path = "C:/Program Files/Innovasea/Fathom Connect")
 #'
 #'
-#' # use full path to VDAT.exe
-#' check_vdat(vdat_exe_path = "C:/Program Files/Innovasea/Fathom/VDAT.exe")
+#' # use full path to vdat.exe
+#' check_vdat(vdat_exe_path = "C:/Program Files/Innovasea/Fathom Connect/vdat.exe")
 #' }
 #'
 #' @export
@@ -532,21 +534,21 @@ check_vdat <- function(vdat_exe_path = NULL) {
     vdat_cmd <- "VDAT"
 
     if (Sys.which(vdat_cmd) == "") {
-      stop("VDAT.exe not found in system PATH ", "variable.", call. = FALSE)
+      stop("vdat.exe not found in system PATH ", "variable.", call. = FALSE)
     }
   } else {
-    # remove VDAT.exe from vdat_exe_path if present
+    # remove vdat.exe from vdat_exe_path if present
     vdat_exe_dir <- ifelse(
       grepl("vdat.exe$", vdat_exe_path, ignore.case = TRUE),
       dirname(vdat_exe_path),
       vdat_exe_path
     )
 
-    vdat_exe_file <- file.path(vdat_exe_dir, "VDAT.exe")
+    vdat_exe_file <- file.path(vdat_exe_dir, "vdat.exe")
 
-    # Check path to VDAT.exe
+    # Check path to vdat.exe
     if (!file.exists(vdat_exe_file)) {
-      stop("VDAT.exe not found at specified ", "path.", call. = FALSE)
+      stop("vdat.exe not found at specified ", "path.", call. = FALSE)
     }
 
     vdat_cmd <- vdat_exe_file
@@ -554,7 +556,7 @@ check_vdat <- function(vdat_exe_path = NULL) {
     # Check if path can be reached via system call
     if (Sys.which(vdat_cmd) == "") {
       stop(
-        "VDAT.exe found but could not be ",
+        "vdat.exe found but could not be ",
         "reached via system call.",
         call. = FALSE
       )
@@ -565,26 +567,26 @@ check_vdat <- function(vdat_exe_path = NULL) {
 }
 
 
-#' Get version of local installation of Innovasea program VDAT.exe
+#' Get version of local installation of Innovasea program vdat.exe
 #'
-#' @param vdat_exe_path The full path to \code{VDAT.exe}. If \code{NULL}
-#'  (default) then the path to VDAT.exe must be in the PATH environment variable
-#'  of the system. See \code{\link{check_vdat}}.
+#' @param vdat_exe_path The full path to \code{vdat.exe}. If \code{NULL}
+#'  (default) then the path to \code{vdat.exe} must be in the PATH environment
+#'  variable of the system. See \code{\link{check_vdat}}.
 #'
 #' @returns
 #' A list with \code{version} (version number) and \code{long_version} (full
-#' string returned by VDAT.exe).
+#' string returned by vdat.exe).
 #'
 #' @examples
 #' \dontrun{
 #'
-#' # use if VDAT.exe in Windows system PATH variable
+#' # use if vdat.exe in Windows system PATH variable
 #' get_local_vdat_version()
 #'
-#' # or specify path to VDAT.exe
+#' # or specify path to vdat.exe
 #' get_local_vdat_version(
 #'   vdat_exe_path =
-#'     "C:/Program Files/Innovasea/Fathom/VDAT.exe"
+#'     "C:/Program Files/Innovasea/Fathom Connect/vdat.exe"
 #' )
 #' }
 #'
@@ -593,7 +595,7 @@ get_local_vdat_version <- function(vdat_exe_path = NULL) {
   # Check path to vdat.exe and get (valid) command arg for system2 call
   vdat_cmd <- check_vdat(vdat_exe_path)
 
-  # invoke VDAT.exe
+  # invoke vdat.exe
   vdat_call <- "--version"
 
   vdat_version <- system2(vdat_cmd, vdat_call, stdout = TRUE)
@@ -611,29 +613,29 @@ get_local_vdat_version <- function(vdat_exe_path = NULL) {
 }
 
 
-#' Get schema from local installation of Innovasea program VDAT.exe
+#' Get schema from local installation of Innovasea program \code{vdat.exe}
 #'
-#' @param vdat_exe_path The full path to \code{VDAT.exe}. If \code{NULL}
-#'  (default) then the path to VDAT.exe must be in the PATH environment variable
-#'  of the system. See \code{\link{check_vdat}}.
+#' @param vdat_exe_path The full path to \code{vdat.exe}. If \code{NULL}
+#'  (default) then the path to \code{vdat.exe} must be in the PATH environment
+#'  variable of the system. See \code{\link{check_vdat}}.
 #'
 #' @details A bug in vdat.exe version 9 (confirmed on vdat-9.3.0) will cause
 #'   this function to return an empty list. Fixed in vdat.exe version 10
 #'   (confirmed on vdat-10.6.0).
 #'
 #' @returns
-#' Schema (template) of VDAT CSV produced by installed version of VDAT.exe.
+#' Schema (template) of VDAT CSV produced by installed version of \code{vdat.exe}.
 #'
 #' @examples
 #' \dontrun{
 #'
-#' # use if VDAT.exe in Windows system PATH variable
+#' # use if vdat.exe in Windows system PATH variable
 #' get_local_vdat_template()
 #'
-#' # or specify path to VDAT.exe
+#' # or specify path to vdat.exe
 #' get_local_vdat_template(
 #'   vdat_exe_path =
-#'     "C:/Program Files/Innovasea/Fathom/VDAT.exe"
+#'     "C:/Program Files/Innovasea/Fathom Connect/vdat.exe"
 #' )
 #' }
 #'
@@ -642,7 +644,7 @@ get_local_vdat_template <- function(vdat_exe_path = NULL) {
   # Check path to vdat.exe and get (valid) command arg for system2 call
   vdat_cmd <- check_vdat(vdat_exe_path)
 
-  # Invoke VDAT.exe
+  # Invoke vdat.exe
   vdat_call <- "template --format=csv.fathom"
 
   vdat_schema <- system2(vdat_cmd, vdat_call, stdout = TRUE)
