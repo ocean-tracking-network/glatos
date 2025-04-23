@@ -178,16 +178,15 @@
 #'
 #' @export
 receiver_line_det_sim <- function(
-  vel = 1,
-  delayRng = c(120, 360),
-  burstDur = 5.0,
-  recSpc = 1000,
-  maxDist = 2000,
-  rngFun,
-  outerLim = c(0, 0),
-  nsim = 1000,
-  showPlot = FALSE
-) {
+    vel = 1,
+    delayRng = c(120, 360),
+    burstDur = 5.0,
+    recSpc = 1000,
+    maxDist = 2000,
+    rngFun,
+    outerLim = c(0, 0),
+    nsim = 1000,
+    showPlot = FALSE) {
   # check if rngFun is function
   if (any(!is.function(rngFun))) {
     stop(paste0(

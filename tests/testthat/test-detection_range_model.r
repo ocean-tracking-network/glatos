@@ -5,11 +5,11 @@ test_that("Test if polynomial model for model_frame = 'data_frame', is correct",
     m <- detection_range_model(
       avg_percent ~
         -1 +
-          distance_m +
-          I(distance_m^2) +
+        distance_m +
+        I(distance_m^2) +
 
-          I(distance_m^3) +
-          offset(intercept),
+        I(distance_m^3) +
+        offset(intercept),
       data = sample_detection_efficiency,
       p = c(50),
       link = "polynomial",
@@ -29,9 +29,9 @@ test_that("Test if polynomial model for model_frame = 'matrix', is correct", {
     m1 <- detection_range_model(
       avg_percent ~
         -1 +
-          poly(distance_m, 3, raw = TRUE) +
+        poly(distance_m, 3, raw = TRUE) +
 
-          offset(intercept),
+        offset(intercept),
       data = sample_detection_efficiency,
       p = c(50),
       link = "polynomial",

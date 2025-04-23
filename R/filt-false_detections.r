@@ -93,12 +93,11 @@
 #' @export
 
 false_detections <- function(
-  det,
-  tf,
-  min_lag_col = "min_lag",
-  show_plot = FALSE,
-  ...
-) {
+    det,
+    tf,
+    min_lag_col = "min_lag",
+    show_plot = FALSE,
+    ...) {
   # Check that the min_lag column is in the detections dataframe
   # If not, add it in using min_lag function
   if (!(min_lag_col %in% names(det))) {

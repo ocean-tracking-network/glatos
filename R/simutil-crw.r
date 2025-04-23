@@ -38,12 +38,11 @@
 #'
 #' @export
 crw <- function(
-  theta = c(0, 5),
-  stepLen = 10,
-  initPos = c(0, 0),
-  initHeading = 0,
-  nsteps = 10000
-) {
+    theta = c(0, 5),
+    stepLen = 10,
+    initPos = c(0, 0),
+    initHeading = 0,
+    nsteps = 10000) {
   # generate turn angles
   heading <- rnorm(nsteps, mean = theta[1], sd = theta[2])
   heading <- initHeading + cumsum(heading)

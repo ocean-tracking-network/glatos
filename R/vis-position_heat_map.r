@@ -132,22 +132,21 @@
 #' @export
 
 position_heat_map <- function(
-  positions,
-  projection = "LL",
-  fish_pos_int = "fish",
-  abs_or_rel = "absolute",
-  resolution = 10,
-  interval = NULL,
-  x_limits = NULL,
-  y_limits = NULL,
-  utm_zone = NULL,
-  hemisphere = "N",
-  legend_gradient = "y",
-  legend_pos = c(0.99, 0.2, 1.0, 0.8),
-  output = "plot",
-  folder = "position_heat_map",
-  out_file = NULL
-) {
+    positions,
+    projection = "LL",
+    fish_pos_int = "fish",
+    abs_or_rel = "absolute",
+    resolution = 10,
+    interval = NULL,
+    x_limits = NULL,
+    y_limits = NULL,
+    utm_zone = NULL,
+    hemisphere = "N",
+    legend_gradient = "y",
+    legend_pos = c(0.99, 0.2, 1.0, 0.8),
+    output = "plot",
+    folder = "position_heat_map",
+    out_file = NULL) {
   # Perform checks on supplied data and arguiments ---------------------------
 
   # Check that the required columns appear in the detections dataframe

@@ -170,17 +170,16 @@
 #'
 #' @export
 transmit_along_path <- function(
-  path = NA,
-  vel = 0.5,
-  delayRng = c(60, 180),
-  burstDur = 5.0,
-  colNames = list(
-    x = "x",
-    y = "y"
-  ),
-  pathCRS = NA,
-  sp_out = TRUE
-) {
+    path = NA,
+    vel = 0.5,
+    delayRng = c(60, 180),
+    burstDur = 5.0,
+    colNames = list(
+      x = "x",
+      y = "y"
+    ),
+    pathCRS = NA,
+    sp_out = TRUE) {
   ##  Declare global variables for NSE & R CMD check
   cumdistm <- NULL
 

@@ -173,17 +173,16 @@
 #' @export
 
 abacus_plot <- function(
-  det,
-  location_col = "glatos_array",
-  locations = NULL,
-  show_receiver_status = NULL,
-  receiver_history = NULL,
-  out_file = NULL,
-  x_res = 5,
-  x_format = "%Y-%m-%d",
-  outFile = NULL,
-  ...
-) {
+    det,
+    location_col = "glatos_array",
+    locations = NULL,
+    show_receiver_status = NULL,
+    receiver_history = NULL,
+    out_file = NULL,
+    x_res = 5,
+    x_format = "%Y-%m-%d",
+    outFile = NULL,
+    ...) {
   # deprecation message for show_receiver_status
   if (!is.null(show_receiver_status)) {
     warning(paste(

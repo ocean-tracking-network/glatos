@@ -205,22 +205,21 @@
 #'
 #' @export
 detect_transmissions <- function(
-  trnsLoc = NA,
-  recLoc = NA,
-  detRngFun = NA,
-  trnsColNames = list(
-    time = "time",
-    x = "x",
-    y = "y"
-  ),
-  recColNames = list(
-    x = "x",
-    y = "y"
-  ),
-  inputCRS = NA,
-  sp_out = TRUE,
-  show_progress = TRUE
-) {
+    trnsLoc = NA,
+    recLoc = NA,
+    detRngFun = NA,
+    trnsColNames = list(
+      time = "time",
+      x = "x",
+      y = "y"
+    ),
+    recColNames = list(
+      x = "x",
+      y = "y"
+    ),
+    inputCRS = NA,
+    sp_out = TRUE,
+    show_progress = TRUE) {
   ##  Declare global variables for NSE & R CMD check
   trns_x <- trns_y <- NULL
 

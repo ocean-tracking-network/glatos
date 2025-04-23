@@ -161,17 +161,16 @@
 #'
 #' @export
 make_video <- function(
-  input_dir = getwd(),
-  input_ext = ".png",
-  output = "animation.mp4",
-  duration = NULL,
-  start_frame = 1,
-  end_frame = NULL,
-  size = NULL,
-  overwrite = FALSE,
-  verbose = FALSE,
-  ...
-) {
+    input_dir = getwd(),
+    input_ext = ".png",
+    output = "animation.mp4",
+    duration = NULL,
+    start_frame = 1,
+    end_frame = NULL,
+    size = NULL,
+    overwrite = FALSE,
+    verbose = FALSE,
+    ...) {
   # capture input arguments from ellipses
   in_args <- list(...)
   # in_args <- list(framerate = 30)

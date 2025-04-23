@@ -54,7 +54,8 @@ test_that("bad inputs are caught", {
   # detection_timestamp_utc not POSIXct in det
   expect_error(
     summarize_detections(
-      data.table::as.data.table(walleye_detections)[,
+      data.table::as.data.table(walleye_detections)[
+        ,
         detection_timestamp_utc := as.numeric(detection_timestamp_utc)
       ]
     )

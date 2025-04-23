@@ -67,17 +67,16 @@
 #'
 #' @export
 write_vdat_csv <- function(
-  vdat,
-  record_types = NULL,
-  out_file = NULL,
-  output_format = "csv.fathom",
-  include_empty = FALSE,
-  export_settings = NULL
-) {
+    vdat,
+    record_types = NULL,
+    out_file = NULL,
+    output_format = "csv.fathom",
+    include_empty = FALSE,
+    export_settings = NULL) {
   ##  Declare global variables for NSE & R CMD check
   record_type <- dt2 <- `Device Time (UTC)` <- `Time Correction (s)` <-
     `Ambient (deg C)` <- `Ambient Min (deg C)` <- `Ambient Max (deg C)` <-
-      `Ambient Mean (deg C)` <- `Internal (deg C)` <- txt_cols <- txt <- NULL
+    `Ambient Mean (deg C)` <- `Internal (deg C)` <- txt_cols <- txt <- NULL
 
   # Check input class
   if (!inherits(vdat, "vdat_list")) {
@@ -204,7 +203,8 @@ write_vdat_csv <- function(
     }
 
     if ("Time Correction (s)" %in% names(x_i)) {
-      x_i[,
+      x_i[
+        ,
         `Time Correction (s)` := format(
           round(`Time Correction (s)`, digits = 9),
           nsmall = 9,
@@ -221,7 +221,8 @@ write_vdat_csv <- function(
     }
 
     if ("Ambient (deg C)" %in% names(x_i)) {
-      x_i[,
+      x_i[
+        ,
         `Ambient (deg C)` := format(
           round(`Ambient (deg C)`, digits = 1),
           nsmall = 1,
@@ -235,7 +236,8 @@ write_vdat_csv <- function(
     }
 
     if ("Ambient Min (deg C)" %in% names(x_i)) {
-      x_i[,
+      x_i[
+        ,
         `Ambient Min (deg C)` := format(
           round(`Ambient Min (deg C)`, digits = 2),
           nsmall = 2,
@@ -249,7 +251,8 @@ write_vdat_csv <- function(
     }
 
     if ("Ambient Max (deg C)" %in% names(x_i)) {
-      x_i[,
+      x_i[
+        ,
         `Ambient Max (deg C)` := format(
           round(`Ambient Max (deg C)`, digits = 2),
           nsmall = 2,
@@ -263,7 +266,8 @@ write_vdat_csv <- function(
     }
 
     if ("Ambient Mean (deg C)" %in% names(x_i)) {
-      x_i[,
+      x_i[
+        ,
         `Ambient Mean (deg C)` := format(
           round(`Ambient Mean (deg C)`, digits = 2),
           nsmall = 2,
@@ -280,7 +284,8 @@ write_vdat_csv <- function(
     }
 
     if ("Internal (deg C)" %in% names(x_i)) {
-      x_i[,
+      x_i[
+        ,
         `Internal (deg C)` := format(
           round(`Internal (deg C)`, digits = 1),
           nsmall = 1,

@@ -114,17 +114,16 @@
 #' @export
 
 detection_bubble_plot <- function(
-  det,
-  location_col = "glatos_array",
-  receiver_locs = NULL,
-  map = NULL,
-  out_file = NULL,
-  background_ylim = c(41.3, 49.0),
-  background_xlim = c(-92.45, -75.87),
-  symbol_radius = 1,
-  col_grad = c("white", "red"),
-  scale_loc = NULL
-) {
+    det,
+    location_col = "glatos_array",
+    receiver_locs = NULL,
+    map = NULL,
+    out_file = NULL,
+    background_ylim = c(41.3, 49.0),
+    background_xlim = c(-92.45, -75.87),
+    symbol_radius = 1,
+    col_grad = c("white", "red"),
+    scale_loc = NULL) {
   #  Declare global variables for NSE & R CMD check
   great_lakes_polygon <- NULL
 
