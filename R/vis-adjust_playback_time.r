@@ -81,13 +81,12 @@
 #'
 #' @export
 adjust_playback_time <- function(
-  scale_factor = 1,
-  input,
-  output_dir = getwd(),
-  output = "new.mp4",
-  overwrite = FALSE,
-  diagnostic_mode = FALSE
-) {
+    scale_factor = 1,
+    input,
+    output_dir = getwd(),
+    output = "new.mp4",
+    overwrite = FALSE,
+    diagnostic_mode = FALSE) {
   output_file <- normalizePath(file.path(output_dir, output), mustWork = FALSE)
 
   ffcall <- sprintf("setpts=%f*PTS", scale_factor)

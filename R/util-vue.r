@@ -160,15 +160,14 @@
 #'
 #' @export
 vue_convert <- function(
-  src,
-  out_dir = NULL,
-  overwrite = FALSE,
-  recursive = FALSE,
-  vue_exe_path = NULL,
-  skip_pattern = "-RLD_",
-  show_progress = TRUE,
-  diagn = FALSE
-) {
+    src,
+    out_dir = NULL,
+    overwrite = FALSE,
+    recursive = FALSE,
+    vue_exe_path = NULL,
+    skip_pattern = "-RLD_",
+    show_progress = TRUE,
+    diagn = FALSE) {
   ##  Declare global variables for NSE & R CMD check
   src_dir <- src_file <- out_file <- out_file_exists <- src_to_convert <-
     written <- NULL
@@ -318,7 +317,8 @@ vue_convert <- function(
   }
 
   # Set output path(s) and file name(s)
-  ftp[,
+  ftp[
+    ,
     out_file := file.path(
       out_dir,
       gsub(

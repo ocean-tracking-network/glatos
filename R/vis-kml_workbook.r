@@ -82,21 +82,21 @@
 #'
 #' @export
 kml_workbook <- function(
-  wb = NULL,
-  wb_file = NULL,
-  receiver_locs = NULL,
-  animals = NULL,
-  kmz = FALSE,
-  show_ongoing_recs = TRUE,
-  end_date = NULL,
-  out_file = NULL,
-  wb_version = NULL,
-  ...
-) {
+    wb = NULL,
+    wb_file = NULL,
+    receiver_locs = NULL,
+    animals = NULL,
+    kmz = FALSE,
+    show_ongoing_recs = TRUE,
+    end_date = NULL,
+    out_file = NULL,
+    wb_version = NULL,
+    ...) {
   # check for features not yet supported
   if (!is.null(animals)) stop("use of 'animals' input not yet supported.")
-  if (!is.null(receiver_locs))
+  if (!is.null(receiver_locs)) {
     stop("use of 'receiver_locs' input not yet supported.")
+  }
 
   # check for correct handling of wb and wb_file
   if (!is.null(wb) & !is.null(wb_file)) {

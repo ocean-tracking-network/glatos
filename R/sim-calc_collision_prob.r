@@ -70,11 +70,10 @@
 #'
 #' @export
 calc_collision_prob <- function(
-  delayRng = c(60, 180),
-  burstDur = 5.0,
-  maxTags = 50,
-  nTrans = 10000
-) {
+    delayRng = c(60, 180),
+    burstDur = 5.0,
+    maxTags = 50,
+    nTrans = 10000) {
   # preallocate objects
 
   # transmission history (before collisions)

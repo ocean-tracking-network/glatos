@@ -30,12 +30,11 @@
 #' @export
 
 point_offset <- function(
-  lon = NA,
-  lat = NA,
-  offsetDist = NA,
-  offsetDir = NA,
-  distUnit = "m"
-) {
+    lon = NA,
+    lat = NA,
+    offsetDist = NA,
+    offsetDir = NA,
+    distUnit = "m") {
   if (distUnit == "ft") offsetDist <- 0.3048 * offsetDist # convert to m if needed
   if (!(distUnit) %in% c("ft", "m")) {
     stop("Input attribute 'dirUnit' must be 'm' (meters) or 'ft' (feet).")

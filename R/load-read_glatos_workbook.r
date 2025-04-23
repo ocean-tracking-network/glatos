@@ -95,10 +95,9 @@
 #' @export
 
 read_glatos_workbook <- function(
-  wb_file,
-  read_all = FALSE,
-  wb_version = NULL
-) {
+    wb_file,
+    read_all = FALSE,
+    wb_version = NULL) {
   # Read workbook-----------------------------------------------------------
 
   # see version-specific file specifications
@@ -537,7 +536,8 @@ read_glatos_workbook <- function(
       "glatos_timezone",
       "glatos_recover_date_time"
     )
-    wb2$receivers <- wb2$receivers[,
+    wb2$receivers <- wb2$receivers[
+      ,
       -match(
         drop_cols_rec,
         names(wb2$receivers)
@@ -562,7 +562,8 @@ read_glatos_workbook <- function(
       wb2$animals$glatos_release_date_time[ardt_na]
 
     drop_cols_anim <- c("glatos_release_date_time", "glatos_timezone")
-    wb2$animals <- wb2$animals[,
+    wb2$animals <- wb2$animals[
+      ,
       -match(
         drop_cols_anim,
         names(wb2$animals)

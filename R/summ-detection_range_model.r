@@ -132,14 +132,13 @@
 
 # function ------
 detection_range_model <- function(
-  formula,
-  data,
-  percentage = NULL,
-  link = NULL,
-  subset = NULL,
-  summary_stats = TRUE,
-  model_frame = NULL
-) {
+    formula,
+    data,
+    percentage = NULL,
+    link = NULL,
+    subset = NULL,
+    summary_stats = TRUE,
+    model_frame = NULL) {
   # set null for link to logit however probit and polynomail can be used if supplied -----
   if (is.null(link)) {
     link <- c("polynomial")

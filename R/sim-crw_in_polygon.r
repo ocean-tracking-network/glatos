@@ -178,17 +178,16 @@
 #' @export
 
 crw_in_polygon <- function(
-  polyg,
-  theta = c(0, 10),
-  stepLen = 100,
-  initPos = c(NA, NA),
-  initHeading = NA,
-  nsteps = 30,
-  inputCRS = NA,
-  cartesianCRS = NA,
-  sp_out = TRUE,
-  show_progress = TRUE
-) {
+    polyg,
+    theta = c(0, 10),
+    stepLen = 100,
+    initPos = c(NA, NA),
+    initHeading = NA,
+    nsteps = 30,
+    inputCRS = NA,
+    cartesianCRS = NA,
+    sp_out = TRUE,
+    show_progress = TRUE) {
   # Check input class
   if (
     !inherits(
@@ -217,8 +216,9 @@ crw_in_polygon <- function(
   crs_cartesian <- sf::st_crs(cartesianCRS)
 
   # Set crs_cartesian = crs_input if Cartesian and cartesianCRS missing
-  if (is.na(crs_cartesian) & isTRUE(crs_in$IsGeographic))
+  if (is.na(crs_cartesian) & isTRUE(crs_in$IsGeographic)) {
     crs_cartesian <- crs_in
+  }
 
   # Check for Cartesian CRS
   if (isTRUE(crs_in$IsGeographic) & is.na(cartesianCRS)) {
@@ -256,8 +256,9 @@ crw_in_polygon <- function(
     }
 
     # Close polyg if needed (first and last point must be same)
-    if (!identical(polyg[1, ], utils::tail(polyg, 1)))
+    if (!identical(polyg[1, ], utils::tail(polyg, 1))) {
       polyg <- rbind(polyg, polyg[1, ])
+    }
 
     # Make sf object
     polyg_sf <- sf::st_polygon(list(as.matrix(polyg[c("x", "y")])))

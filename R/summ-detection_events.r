@@ -97,11 +97,10 @@
 #' @export
 
 detection_events <- function(
-  det,
-  location_col = "glatos_array",
-  time_sep = Inf,
-  condense = TRUE
-) {
+    det,
+    location_col = "glatos_array",
+    time_sep = Inf,
+    condense = TRUE) {
   # Make detections data frame a data.table object for processing speed
   detections <- data.table::as.data.table(det)
 

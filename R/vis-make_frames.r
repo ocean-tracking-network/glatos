@@ -208,28 +208,27 @@
 #' @export
 
 make_frames <- function(
-  proc_obj,
-  recs = NULL,
-  out_dir = getwd(),
-  background_ylim = c(41.3, 49.0),
-  background_xlim = c(-92.45, -75.87),
-  show_interpolated = TRUE,
-  tail_dur = 0,
-  animate = TRUE,
-  ani_name = "animation.mp4",
-  frame_delete = FALSE,
-  overwrite = FALSE,
-  preview = FALSE,
-  bg_map = NULL,
-  show_progress = TRUE,
-  ...
-) {
+    proc_obj,
+    recs = NULL,
+    out_dir = getwd(),
+    background_ylim = c(41.3, 49.0),
+    background_xlim = c(-92.45, -75.87),
+    show_interpolated = TRUE,
+    tail_dur = 0,
+    animate = TRUE,
+    ani_name = "animation.mp4",
+    frame_delete = FALSE,
+    overwrite = FALSE,
+    preview = FALSE,
+    bg_map = NULL,
+    show_progress = TRUE,
+    ...) {
   # NOTE: As of glatos v 0.4.1, the package no longer uses the external program ffmpeg.  Input argument 'ffmpeg' has been removed"
 
   #  Declare global variables for NSE & R CMD check
   row_in <- recover_date_time <- grp <- bin_timestamp <- t_end <- grp_num <-
     f_name <- animal_id <- record_type <- latitude <- longitude <-
-      deploy_date_time <- great_lakes_polygon <- NULL
+    deploy_date_time <- great_lakes_polygon <- NULL
 
   # expand path to animation output file
   # - place in same file as images (out_dir) if none specified
@@ -373,7 +372,8 @@ make_frames <- function(
   } else {
     # make tail groups if needed
     dur <- work_proc_obj[, .(t_seq = sort(unique(bin_timestamp)))]
-    dur[,
+    dur[
+      ,
       c("t_end", "t_grp") := list(
         data.table::shift(t_seq, type = "lag", fill = min(t_seq), n = tail_dur),
         1:nrow(dur)
@@ -478,14 +478,13 @@ make_frames <- function(
 
   # define custom plot function
   cust_plot <- function(
-    x,
-    .time_period,
-    .recs,
-    .out_dir,
-    .background,
-    .background_xlim,
-    .background_ylim
-  ) {
+      x,
+      .time_period,
+      .recs,
+      .out_dir,
+      .background,
+      .background_xlim,
+      .background_ylim) {
     # Calculate great circle distance in meters of x and y limits.
     # needed to determine aspect ratio of the output
 

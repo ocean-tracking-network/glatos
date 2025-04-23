@@ -88,17 +88,16 @@
 #' @export
 
 convert_otn_to_att <- function(
-  detectionObj,
-  taggingSheet,
-  deploymentObj = NULL,
-  deploymentSheet = NULL,
-  timeFilter = TRUE,
-  crs = sf::st_crs(4326)
-) {
+    detectionObj,
+    taggingSheet,
+    deploymentObj = NULL,
+    deploymentSheet = NULL,
+    timeFilter = TRUE,
+    crs = sf::st_crs(4326)) {
   ##  Declare global variables for R CMD check
   station <- receiver_sn <- deploy_lat <- deploy_long <-
     detection_timestamp_utc <- deploy_date_time <- recover_date_time <-
-      last_download <- instrumenttype <- ins_model_no <- Tag.ID <- Sex <- NULL
+    last_download <- instrumenttype <- ins_model_no <- Tag.ID <- Sex <- NULL
 
   if (is.null(deploymentObj) && is.null(deploymentSheet)) {
     stop(

@@ -179,7 +179,8 @@ read_vdat_csv <- function(src, record_types = NULL, show_progress = FALSE) {
   )
 
   # Identify record type of each row
-  vdat_txt[,
+  vdat_txt[
+    ,
     record_type := data.table::fread(
       file = src,
       skip = 2,

@@ -171,13 +171,12 @@
 #' @importFrom dplyr count distinct select
 #' @export
 residence_index <- function(
-  detections,
-  calculation_method = "kessel",
-  locations = NULL,
-  group_col = "animal_id",
-  time_interval_size = "1 day",
-  groupwise_total = TRUE
-) {
+    detections,
+    calculation_method = "kessel",
+    locations = NULL,
+    group_col = "animal_id",
+    time_interval_size = "1 day",
+    groupwise_total = TRUE) {
   # Declare global variables for R CMD check
   location <- mean_latitude <- mean_longitude <- days_detected <-
     total_days <- NULL
@@ -489,10 +488,9 @@ aggregate_total_no_overlap <- function(detections) {
 #'   count total time and location time
 #' @param time_interval_size - size of time interval
 get_days <- function(
-  dets,
-  calculation_method = "kessel",
-  time_interval_size = "1 day"
-) {
+    dets,
+    calculation_method = "kessel",
+    time_interval_size = "1 day") {
   days <- 0
   if (calculation_method == "aggregate_with_overlap") {
     days <- aggregate_total_with_overlap(dets)
