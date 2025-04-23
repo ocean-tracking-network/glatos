@@ -31,13 +31,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install updated GIS binaries on Linux
-        if: runner.os == 'Linux'
-        run: |
-          sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
-          && sudo apt-get update \\
-          && sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev libsqlite0-dev
-
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
@@ -46,7 +39,31 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Install updated GIS binaries on Linux
+        if: runner.os == 'Linux'
+        # See discussion here for why: https://github.com/ocean-tracking-network/glatos/issues/256
+        # Can hopefully comment out this section when gdal gets upgraded
+        # (Likely need an Ubuntu upgrade!)
+        run: |
+          sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
+          && sudo apt-get update \
+          && sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev libsqlite3-dev
+
+      - name: Package dependencies on Linux
+        uses: r-lib/actions/setup-r-dependencies@v2
+        if: runner.os == 'Linux'
+        # Need to build packages based on the tools above from source
+        # {pak} parameter reference:
+        # https://pak.r-lib.org/reference/pak_package_sources.html?q=deps#currently-supported-parameters
+        with:
+          extra-packages: |
+           sf=?source
+           terra=?source
+           any::rcmdcheck
+          needs: check
+
       - uses: r-lib/actions/setup-r-dependencies@v2
+        if: runner.os != 'Linux'
         with:
           extra-packages: any::rcmdcheck
           needs: check
