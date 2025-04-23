@@ -539,7 +539,7 @@ check_vdat <- function(vdat_exe_path = NULL) {
   } else {
     # remove vdat.exe from vdat_exe_path if present
     vdat_exe_dir <- ifelse(
-      grepl("vdat.exe$", vdat_exe_path, ignore.case = TRUE),
+      grepl("vdat\\.exe$", vdat_exe_path, ignore.case = TRUE),
       dirname(vdat_exe_path),
       vdat_exe_path
     )
