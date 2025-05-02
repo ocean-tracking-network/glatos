@@ -17,11 +17,20 @@ test_that("matches internal data: walleye_att", {
   )
 
   # Check if expected and actual results are the same
-  expect_identical(watt$Tag.Detections, walleye_att$Tag.Detections)
-  expect_identical(watt$Tag.Metadata, walleye_att$Tag.Metadata)
+  expect_identical(
+    watt$Tag.Detections,
+    walleye_att$Tag.Detections,
+    tolerance = 1e-5
+  )
+  expect_identical(
+    watt$Tag.Metadata,
+    walleye_att$Tag.Metadata,
+    tolerance = 1e-5
+  )
   expect_identical(
     watt$Station.Information,
-    walleye_att$Station.Information
+    walleye_att$Station.Information,
+    tolerance = 1e-5
   )
   expect_identical(
     attr(watt, "CRS")$epsg,

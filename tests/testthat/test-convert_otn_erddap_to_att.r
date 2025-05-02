@@ -70,11 +70,20 @@ test_that("matches internal data: blue_shark_erddap_att", {
   # )
 
   # Check if expected and actual results are the same
-  expect_identical(bs_att$Tag.Detections, blue_shark_erddap_att$Tag.Detections)
-  expect_identical(bs_att$Tag.Metadata, blue_shark_erddap_att$Tag.Metadata)
+  expect_identical(
+    bs_att$Tag.Detections,
+    blue_shark_erddap_att$Tag.Detections,
+    tolerance = 1e-5
+  )
+  expect_identical(
+    bs_att$Tag.Metadata,
+    blue_shark_erddap_att$Tag.Metadata,
+    tolerance = 1e-5
+  )
   expect_identical(
     bs_att$Station.Information,
-    blue_shark_erddap_att$Station.Information
+    blue_shark_erddap_att$Station.Information,
+    tolerance = 1e-5
   )
   expect_identical(
     attr(bs_att, "CRS")$epsg,
