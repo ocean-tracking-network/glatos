@@ -31,7 +31,7 @@ test_that("matches internal data: blue_shark_att", {
     bs_att$Station.Information,
     blue_shark_att$Station.Information
   )
-  expect_identical(attr(bs_att, 'CRS')$epsg, attr(blue_shark_att, 'CRS')$epsg)
+  expect_identical(attr(bs_att, "CRS")$epsg, attr(blue_shark_att, "CRS")$epsg)
 })
 
 test_that("matches type/class of internal data: blue_shark_att", {

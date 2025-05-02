@@ -77,8 +77,8 @@ test_that("matches internal data: blue_shark_erddap_att", {
     blue_shark_erddap_att$Station.Information
   )
   expect_identical(
-    attr(bs_att, 'CRS')$epsg,
-    attr(blue_shark_erddap_att, 'CRS')$epsg
+    attr(bs_att, "CRS")$epsg,
+    attr(blue_shark_erddap_att, "CRS")$epsg
   )
 })
 

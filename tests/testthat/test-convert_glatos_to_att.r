@@ -24,8 +24,8 @@ test_that("matches internal data: walleye_att", {
     walleye_att$Station.Information
   )
   expect_identical(
-    attr(watt, 'CRS')$epsg,
-    attr(walleye_att, 'CRS')$epsg
+    attr(watt, "CRS")$epsg,
+    attr(walleye_att, "CRS")$epsg
   )
 })
 
