@@ -5,9 +5,44 @@
 
 
 #----------------------------------------------------
-# OTN
+
+# OTN 2025
 
 otn_detection_schema <- read.table(
+  text = "
+                                   name           type                 mapping
+                                   catalogNumber      character               animal_id
+                                   commonName         character           common_name_e
+                                   receiver           character             receiver_sn
+                                   station            character                 station
+                                   tagName            character          transmitter_id
+                                   codeSpace          character   transmitter_codespace
+                                   dateCollectedUTC     POSIXct detection_timestamp_utc
+                                   decimalLongitude     numeric             deploy_long
+                                   decimalLatitude      numeric              deploy_lat
+                                   ",
+  header = TRUE,
+  stringsAsFactors = FALSE
+)
+
+otn_detection_schema_min_columns <- c(
+  "catalogNumber",
+  "station",
+  "dateCollectedUTC",
+  "decimalLongitude",
+  "decimalLatitude"
+)
+
+
+
+
+
+
+
+
+# OTN pre-2025
+
+otn_detection_schema_old <- read.table(
   text = "
                                    name           type                 mapping
                                    catalognumber      character               animal_id
@@ -26,7 +61,7 @@ otn_detection_schema <- read.table(
 )
 
 # for non-matched detection extracts from OTN
-otn_detection_schema_min_columns <- c(
+otn_detection_schema_old_min_columns <- c(
   "catalognumber",
   "station",
   "datecollected",
