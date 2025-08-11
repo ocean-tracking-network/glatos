@@ -125,9 +125,7 @@
 #' }
 #'
 #' @export
-read_vdat_csv <- function(src,
-                          record_types = NULL,
-                          show_progress = FALSE) {
+read_vdat_csv <- function(src, record_types = NULL, show_progress = FALSE) {
   # Check if exists
   if (!file.exists(src)) {
     warning("File not found: ", src)
@@ -147,18 +145,22 @@ read_vdat_csv <- function(src,
       fathom_csv = vdat_header$V2[1],
       vdat_exe = vdat_header$V3[1]
     )
-  } else if (all(c(
-    "Receiver",
-    "Transmitter",
-    "Transmitter Name",
-    "Transmitter Serial",
-    "Sensor Value",
-    "Sensor Unit",
-    "Station Name",
-    "Latitude",
-    "Longitude"
-  ) %in%
-    as.character(vdat_header))) {
+  } else if (
+    all(
+      c(
+        "Receiver",
+        "Transmitter",
+        "Transmitter Name",
+        "Transmitter Serial",
+        "Sensor Value",
+        "Sensor Unit",
+        "Station Name",
+        "Latitude",
+        "Longitude"
+      ) %in%
+        as.character(vdat_header)
+    )
+  ) {
     stop(
       "Input file appears to be in VUE Export format, which is not ",
       "supported.\n Only Fathom CSV format is supported. \n",
@@ -168,29 +170,32 @@ read_vdat_csv <- function(src,
 
   # Read all data into character vector (like readLines)
   vdat_txt <- data.table::fread(
-    file = src, skip = 2, header = FALSE,
-    sep = NULL, col.names = "txt",
+    file = src,
+    skip = 2,
+    header = FALSE,
+    sep = NULL,
+    col.names = "txt",
     showProgress = show_progress
   )
 
   # Identify record type of each row
-  vdat_txt[, record_type := data.table::fread(
-    file = src,
-    skip = 2,
-    header = FALSE,
-    sep = ",",
-    select = 1,
-    fill = TRUE,
-    showProgress = show_progress
-  )]
+  vdat_txt[,
+    record_type := data.table::fread(
+      file = src,
+      skip = 2,
+      header = FALSE,
+      sep = ",",
+      select = 1,
+      fill = TRUE,
+      showProgress = show_progress
+    )
+  ]
 
   # Drop _DESC from headers
   vdat_txt[, record_type := gsub("_DESC$", "", record_type)]
 
-
   # Get record identifiers from csv file
   csv_record_types <- unique(vdat_txt$record_type)
-
 
   if (is.null(record_types)) {
     record_types <- csv_record_types
@@ -203,9 +208,7 @@ read_vdat_csv <- function(src,
         "The following input ",
         "'record_types' ",
         "were not found in CSV file: \n\t",
-        paste(unknown_record_types,
-          collapse = ", "
-        )
+        paste(unknown_record_types, collapse = ", ")
       )
     }
   }
@@ -214,15 +217,11 @@ read_vdat_csv <- function(src,
   vdat_txt <- vdat_txt[record_type %in% record_types]
 
   # Split into list elements by record type
-  vdat_list <- split(vdat_txt,
-    by = "record_type",
-    keep.by = FALSE
-  )
+  vdat_list <- split(vdat_txt, by = "record_type", keep.by = FALSE)
 
-  utils::data("vdat_csv_schema", envir = environment())
+  utils::data("vdat_csv_schema", envir = environment(), package = "glatos")
 
   vdat_csv_schema <- vdat_csv_schema[[paste0("v", src_version$fathom_csv)]]
-
 
   # Preallocate list; element = record type
   vdat <- stats::setNames(
@@ -234,10 +233,9 @@ read_vdat_csv <- function(src,
     # fread has issues with numerical precision (e.g., 'Time Correction (s)')
     #  so read all columns as character then coerce
     vdat[[i]] <- data.table::fread(
-      text = paste0(c(vdat_list[[i]]$txt, ""),
-        collapse = "\n"
-      ),
-      sep = ",", na.strings = "",
+      text = paste0(c(vdat_list[[i]]$txt, ""), collapse = "\n"),
+      sep = ",",
+      na.strings = "",
       colClasses = "character",
       header = TRUE,
       drop = 1,
@@ -251,7 +249,8 @@ read_vdat_csv <- function(src,
     numeric_cols <- schema_i$name[schema_i$type == "numeric"]
 
     if (length(numeric_cols) > 0) {
-      vdat[[i]][, (numeric_cols) := lapply(.SD, as.numeric),
+      vdat[[i]][,
+        (numeric_cols) := lapply(.SD, as.numeric),
         .SDcols = numeric_cols
       ]
     }
@@ -260,17 +259,18 @@ read_vdat_csv <- function(src,
     timestamp_cols <- schema_i$name[schema_i$type == "POSIXct"]
 
     if (length(timestamp_cols) > 0) {
-      vdat[[i]][, (timestamp_cols) := lapply(
-        .SD,
-        function(x) {
-          lubridate::fast_strptime(
-            x,
-            format = "%Y-%m-%d %H:%M:%OS",
-            lt = FALSE
-          )
-        }
-      ),
-      .SDcols = timestamp_cols
+      vdat[[i]][,
+        (timestamp_cols) := lapply(
+          .SD,
+          function(x) {
+            lubridate::fast_strptime(
+              x,
+              format = "%Y-%m-%d %H:%M:%OS",
+              lt = FALSE
+            )
+          }
+        ),
+        .SDcols = timestamp_cols
       ]
     }
 
@@ -280,7 +280,8 @@ read_vdat_csv <- function(src,
   } # end i
 
   # Assign class and other attributes
-  vdat_list <- structure(vdat,
+  vdat_list <- structure(
+    vdat,
     class = c("vdat_list", class(vdat)),
     fathom_csv_version = src_version$fathom_csv,
     source = src_version$vdat_exe
