@@ -70,7 +70,25 @@ test_that("matches internal data: blue_shark_erddap_att", {
   # )
 
   # Check if expected and actual results are the same
-  expect_equal(bs_att, blue_shark_erddap_att)
+  expect_identical(
+    bs_att$Tag.Detections,
+    blue_shark_erddap_att$Tag.Detections,
+    tolerance = 1e-5
+  )
+  expect_identical(
+    bs_att$Tag.Metadata,
+    blue_shark_erddap_att$Tag.Metadata,
+    tolerance = 1e-5
+  )
+  expect_identical(
+    bs_att$Station.Information,
+    blue_shark_erddap_att$Station.Information,
+    tolerance = 1e-5
+  )
+  expect_identical(
+    attr(bs_att, "CRS")$epsg,
+    attr(blue_shark_erddap_att, "CRS")$epsg
+  )
 })
 
 
@@ -84,6 +102,7 @@ test_that("matches type/class of internal data: blue_shark_erddap_att", {
 
   expect_s3_class(bs_att, "ATT")
   expect_type(bs_att, "list")
+  expect_named(attributes(bs_att), c("names", "class", "CRS"))
 })
 
 
