@@ -477,14 +477,13 @@ make_frames <- function(
   time_period <- range(work_proc_obj$bin_timestamp)
 
   # define custom plot function
-  cust_plot <- function(
-      x,
-      .time_period,
-      .recs,
-      .out_dir,
-      .background,
-      .background_xlim,
-      .background_ylim) {
+  cust_plot <- function(x,
+                        .time_period,
+                        .recs,
+                        .out_dir,
+                        .background,
+                        .background_xlim,
+                        .background_ylim) {
     # Calculate great circle distance in meters of x and y limits.
     # needed to determine aspect ratio of the output
 
