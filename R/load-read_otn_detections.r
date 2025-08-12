@@ -47,12 +47,16 @@ read_otn_detections <- function(det_file) {
   if (tools::file_ext(det_file) == "zip" && nrow(zip::zip_list(det_file)) > 1) {
     td <- tempdir()
 
-    zip::unzip(det_file, exdir = file.path(td, det_file))
+    zip::unzip(
+      det_file,
+      exdir = file.path(td, tools::file_path_sans_ext(basename(det_file)))
+    )
     det_file <- list.files(
-      file.path(td, det_file),
+      file.path(td, tools::file_path_sans_ext(basename(det_file))),
       pattern = "\\.csv$",
       full.names = TRUE
     )
+    det_file <- normalizePath(det_file)
   }
 
   # read data, suppressWarnings because some columns could be missing
