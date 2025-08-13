@@ -1449,6 +1449,30 @@ vdat_csv_schema$v2.0.0$DIAG_VR4 <- read.table(
 )
 
 
+vdat_csv_schema$v2.0.0$DIAG_NEXTRAK <- read.table(
+  text = '
+  name                          type
+  "DIAG_NEXTRAK_DESC"           character
+  "Device Time (UTC)"           POSIXct
+  "Time"                        POSIXct
+  "Time Offset (h)"             numeric
+  "Time Correction (s)"         numeric
+  "Model"                       character
+  "Serial Number"               character
+  "Ambient Temperature (deg C)" numeric
+  "Noise (dB)"                  numeric
+  "Tilt (deg)"                  numeric
+  "Depth (m)"                   numeric
+  "Pings"                       numeric
+  "Detections"                  numeric  
+  ',
+  header = TRUE,
+  stringsAsFactors = FALSE,
+  check.names = FALSE,
+  comment.char = ""
+)
+
+
 vdat_csv_schema$v2.0.0$EVENT <- read.table(
   text = '
   name                      type
