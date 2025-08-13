@@ -825,6 +825,7 @@ vdat_csv_schema$v2.0.0 <- list(
   "DIAG_VR2TX" = NA,
   "DIAG_VR2TX_INTERIM" = NA,
   "DIAG_VR4" = NA,
+  "DIAG_NEXTRAK" = NA,
   "EVENT" = NA,
   "EVENT_FAULT" = NA,
   "EVENT_INIT" = NA,
