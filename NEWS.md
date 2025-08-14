@@ -17,7 +17,7 @@
 
 - Changed case of vdat.exe and paths to vdat.exe and vue.exe in tests (new default 
   install locations on windows).
-  - fixes [issue #255](https://github.com/ocean-tracking-network/glatos/issues/255)
+  - fixes [issue #253](https://github.com/ocean-tracking-network/glatos/issues/253)
 
 - Added DIAG_NEXTRAK record type to vdat_csv_schema data object. 
   - fixes [issue #265](https://github.com/ocean-tracking-network/glatos/issues/265)
