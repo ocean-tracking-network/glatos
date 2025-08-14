@@ -131,26 +131,32 @@
 #'
 #' @export
 
-position_heat_map <- function(positions,
-                              projection = "LL",
-                              fish_pos_int = "fish",
-                              abs_or_rel = "absolute",
-                              resolution = 10,
-                              interval = NULL,
-                              x_limits = NULL,
-                              y_limits = NULL,
-                              utm_zone = NULL,
-                              hemisphere = "N",
-                              legend_gradient = "y",
-                              legend_pos = c(0.99, 0.2, 1.0, 0.8),
-                              output = "plot",
-                              folder = "position_heat_map",
-                              out_file = NULL) {
+position_heat_map <- function(
+    positions,
+    projection = "LL",
+    fish_pos_int = "fish",
+    abs_or_rel = "absolute",
+    resolution = 10,
+    interval = NULL,
+    x_limits = NULL,
+    y_limits = NULL,
+    utm_zone = NULL,
+    hemisphere = "N",
+    legend_gradient = "y",
+    legend_pos = c(0.99, 0.2, 1.0, 0.8),
+    output = "plot",
+    folder = "position_heat_map",
+    out_file = NULL) {
   # Perform checks on supplied data and arguiments ---------------------------
 
   # Check that the required columns appear in the detections dataframe
-  if (sum(c("DETECTEDID", "DATETIME", "LAT", "LON") %in%
-    names(positions)) != 4) {
+  if (
+    sum(
+      c("DETECTEDID", "DATETIME", "LAT", "LON") %in%
+        names(positions)
+    ) !=
+      4
+  ) {
     stop(
       "The columns 'DETECTEDID', 'DATETIME', 'LAT', and ",
       "'LON' must appear in the positions dataframe."
@@ -187,17 +193,23 @@ position_heat_map <- function(positions,
 
   # Check that abs_or_rel is %in% c("N", "S")
   if (!abs_or_rel %in% c("absolute", "relative")) {
-    stop(paste0("Argument 'abs_or_rel' must be one of 'absolute' or 'relative'."))
+    stop(paste0(
+      "Argument 'abs_or_rel' must be one of 'absolute' or 'relative'."
+    ))
   }
 
   # Check that hemisphere is %in% c("N", "S")
   if (!fish_pos_int %in% c("fish", "positions", "intervals")) {
-    stop(paste0("Argument 'fish_pos_int' must be one of 'fish', 'positions', or 'intervals'."))
+    stop(paste0(
+      "Argument 'fish_pos_int' must be one of 'fish', 'positions', or 'intervals'."
+    ))
   }
 
   # Check that interval argument is supplied if fish_pos_int == "intervals".
   if (fish_pos_int == "intervals" & is.null(interval)) {
-    stop(paste0("Argument 'interval' must be supplied when fish_pos_int == 'intervals'."))
+    stop(paste0(
+      "Argument 'interval' must be supplied when fish_pos_int == 'intervals'."
+    ))
   }
 
   # Determine x and y limits -------------------------------------------------
@@ -207,13 +219,20 @@ position_heat_map <- function(positions,
 
   # If projection is 'LL', convert x and y limits to UTM
   if (projection == "LL") {
-    range_xylim <- data.frame(Y = c(
-      y_limits[1], y_limits[1], y_limits[2],
-      y_limits[2]
-    ), X = c(
-      x_limits[1], x_limits[2],
-      x_limits[1], x_limits[2]
-    ))
+    range_xylim <- data.frame(
+      Y = c(
+        y_limits[1],
+        y_limits[1],
+        y_limits[2],
+        y_limits[2]
+      ),
+      X = c(
+        x_limits[1],
+        x_limits[2],
+        x_limits[1],
+        x_limits[2]
+      )
+    )
     attr(range_xylim, which = "projection") <- "LL"
 
     range_xylim <- lonlat_to_utm(range_xylim)
@@ -221,10 +240,8 @@ position_heat_map <- function(positions,
     y_limits <- range(range_xylim$Y)
   }
 
-
   # Coerce positions to data.frame
   positions <- as.data.frame(positions)
-
 
   # Prepare the positions dataframe ------------------------------------------
   # Remove columns in original dataframe called "X" and "Y" - do this because
@@ -249,7 +266,6 @@ position_heat_map <- function(positions,
     names(positions)[match(c("X", "Y"), names(positions))] <- c("LON", "LAT")
   }
 
-
   if (output %in% c("png", "kmz")) {
     # Create new directory for results based on user-defined 'folder' ------
     dir.create(folder, showWarnings = FALSE)
@@ -257,22 +273,14 @@ position_heat_map <- function(positions,
     folder <- basename(folder)
   }
 
-
   # Determine the total number of fish in the data set -----------------------
   # Total number of unique transmitters positioned - used for determining
   # relative values
   totalFish <- length(unique(positions$DETECTEDID))
 
-
   # Define grid locations ----------------------------------------------------
-  seq_longitude <- seq(floor(x_limits[1]), x_limits[2],
-    by = resolution
-  )
-  seq_latitude <- seq(floor(y_limits[1]), y_limits[2],
-    by = resolution
-  )
-
-
+  seq_longitude <- seq(floor(x_limits[1]), x_limits[2], by = resolution)
+  seq_latitude <- seq(floor(y_limits[1]), y_limits[2], by = resolution)
 
   # Define bounding box for output -------------------------------------------
   b_box_UTM <- data.frame(
@@ -293,7 +301,11 @@ position_heat_map <- function(positions,
 
   # Convert b_box to LL for kmz output
   attr(b_box_UTM, which = "projection") <- "UTM"
-  attr(b_box_UTM, which = "zone") <- ifelse(projection == "LL", attr(positions, which = "zone"), utm_zone)
+  attr(b_box_UTM, which = "zone") <- ifelse(
+    projection == "LL",
+    attr(positions, which = "zone"),
+    utm_zone
+  )
   b_box_LL <- utm_to_lonlat(b_box_UTM, hemisphere)
 
   # Calculate the values to be displayed -------------------------------------
@@ -336,9 +348,11 @@ position_heat_map <- function(positions,
     # Create a new dataframe containing only no-duplicated combinations of
     # DETECTEDID, BinLat, BinLon, and Interval
     # - required to determine the number of unique fish positioned in each grid
-    positions2 <- positions[!(duplicated(
-      positions[, c("DETECTEDID", "BinLat", "BinLon", "Interval")]
-    )), ]
+    positions2 <- positions[
+      !(duplicated(
+        positions[, c("DETECTEDID", "BinLat", "BinLon", "Interval")]
+      )),
+    ]
 
     # Create a matrix containing the number of unique fish x interval
     # combinations in each grid
@@ -362,9 +376,11 @@ position_heat_map <- function(positions,
     # DETECTEDID, BinLat, and BinLon
     # - required for determining the number of unique fish positioned in
     # each grid
-    positions2 <- positions[!(duplicated(
-      positions[, c("DETECTEDID", "BinLat", "BinLon")]
-    )), ]
+    positions2 <- positions[
+      !(duplicated(
+        positions[, c("DETECTEDID", "BinLat", "BinLon")]
+      )),
+    ]
 
     # Create a matrix of the number of unique transmitters positioned in each grid
     # - used to plot NumFish when abs_or_relFish == "absolute"
@@ -399,7 +415,6 @@ position_heat_map <- function(positions,
 
     kmz_file <- file.path(file_path, paste0(out_file, ".kmz"))
 
-
     png(
       filename = file.path(png_file),
       bg = "transparent",
@@ -415,22 +430,32 @@ position_heat_map <- function(positions,
   raster::image(rast, col = c(rev(rainbow(100, end = 0.7))), axes = FALSE)
 
   if (legend_gradient != "n") {
-    plotrix::color.legend(legend_pos[1], legend_pos[2], legend_pos[3], legend_pos[4],
-      round(seq(min(results, na.rm = TRUE),
-        max(results, na.rm = TRUE),
-        by = (max(results, na.rm = TRUE) -
-          min(results, na.rm = TRUE)) / 4
-      ), 0),
+    plotrix::color.legend(
+      legend_pos[1],
+      legend_pos[2],
+      legend_pos[3],
+      legend_pos[4],
+      round(
+        seq(
+          min(results, na.rm = TRUE),
+          max(results, na.rm = TRUE),
+          by = (max(results, na.rm = TRUE) -
+            min(results, na.rm = TRUE)) /
+            4
+        ),
+        0
+      ),
       rev(rainbow(100, end = 0.7)),
-      gradient = legend_gradient, font = 2, family = "sans", cex = 1
+      gradient = legend_gradient,
+      font = 2,
+      family = "sans",
+      cex = 1
     )
   }
 
   if (output %in% c("png", "kmz")) {
     grDevices::dev.off(grDevices::dev.cur())
   }
-
-
 
   # Change row and column names for summary data to corresponding
   # longitudes and latitudes for the corresponding grids.
@@ -449,8 +474,12 @@ position_heat_map <- function(positions,
   	                    xmlns:kml="http://www.opengis.net/kml/2.2"
   	                    xmlns:atom="http://www.w3.org/2005/Atom">',
       "<Folder>",
-      "<name>", out_file, "</name>",
-      "<open>", 1, "</open>",
+      "<name>",
+      out_file,
+      "</name>",
+      "<open>",
+      1,
+      "</open>",
       "<LookAt>",
       "<longitude>",
       mean(b_box_LL[, "X"]),
@@ -475,7 +504,8 @@ position_heat_map <- function(positions,
       paste0("<name>", out_file, "</name>"),
       "<Icon>",
       paste0(
-        "<href>", basename(png_file),
+        "<href>",
+        basename(png_file),
         "</href>"
       ),
       "<viewBoundScale>0.75</viewBoundScale>",
@@ -496,7 +526,8 @@ position_heat_map <- function(positions,
     # Write the kml object to kml text file and places it in the folder
     # containing the three png files.
 
-    write.table(kml,
+    write.table(
+      kml,
       file = kml_file,
       col.names = FALSE,
       row.names = FALSE,
@@ -510,7 +541,6 @@ position_heat_map <- function(positions,
       root = dirname(kmz_file)
     )
 
-
     # Delete the kml and png files.
     file.remove(kml_file)
     file.remove(png_file)
@@ -519,13 +549,10 @@ position_heat_map <- function(positions,
     message(paste0("Output file is located in: ", file_path))
   }
 
-
   return(list(
     values = results,
     utm_zone = paste(
-      ifelse(projection == "LL",
-        attr(positions, which = "zone"), utm_zone
-      ),
+      ifelse(projection == "LL", attr(positions, which = "zone"), utm_zone),
       hemisphere
     ),
     bbox_UTM = b_box_UTM,
@@ -576,7 +603,8 @@ lonlat_to_utm <- function(lonlat) {
 #' @noRd
 utm_to_lonlat <- function(utm, hemisphere) {
   # Define EPSG
-  utm_epsg <- ifelse(hemisphere == "N",
+  utm_epsg <- ifelse(
+    hemisphere == "N",
     32600 + attr(utm, "zone"),
     32700 + attr(utm, "zone")
   )

@@ -94,15 +94,14 @@
 #'
 #' @export
 
-
 read_glatos_workbook <- function(
-    wb_file, read_all = FALSE,
+    wb_file,
+    read_all = FALSE,
     wb_version = NULL) {
   # Read workbook-----------------------------------------------------------
 
   # see version-specific file specifications
   # internal glatos_workbook_spec in R/sysdata.r
-
 
   # Get sheet names
   sheets <- tolower(readxl::excel_sheets(wb_file))
@@ -123,8 +122,10 @@ read_glatos_workbook <- function(
   # Check version if specified
   if (is.null(wb_version)) {
     wb_version <- id_workbook_version(wb_file, sheets)
-  } else if (!(paste0("v", wb_version) %in%
-    names(glatos_workbook_schema))) {
+  } else if (
+    !(paste0("v", wb_version) %in%
+      names(glatos_workbook_schema))
+  ) {
     stop(paste0("Workbook version ", wb_version, " is not supported."))
   }
 
@@ -138,14 +139,17 @@ read_glatos_workbook <- function(
 
     # Get project data
     tmp <- tryCatch(
-      readxl::read_excel(wb_file,
+      readxl::read_excel(
+        wb_file,
         sheet = "Project",
         col_names = FALSE,
         .name_repair = "minimal"
       ),
       error = function(e) {
-        if (e$message ==
-          "Expecting a single string value: [type=character; extent=0].") {
+        if (
+          e$message ==
+            "Expecting a single string value: [type=character; extent=0]."
+        ) {
           stop(
             "There was a problem reading from input file specified. It may ",
             "be protected.\n  Try again after opening, saving, and closing the ",
@@ -170,9 +174,12 @@ read_glatos_workbook <- function(
     # Read all sheets except project
     if (read_all) {
       sheets_to_read <- sheets
-      extra_sheets <- setdiff(sheets, names(glatos_workbook_schema[[
-        paste0("v", wb_version)
-      ]]))
+      extra_sheets <- setdiff(
+        sheets,
+        names(glatos_workbook_schema[[
+          paste0("v", wb_version)
+        ]])
+      )
     } else {
       sheets_to_read <- names(glatos_workbook_schema[[
         paste0("v", wb_version)
@@ -192,9 +199,11 @@ read_glatos_workbook <- function(
       }
 
       # read one row to get dimension and column names
-      tmp <- readxl::read_excel(wb_file,
+      tmp <- readxl::read_excel(
+        wb_file,
         sheet = match(sheets_to_read[i], tolower(sheets)),
-        skip = xl_start_row - 1, na = c("", "NA")
+        skip = xl_start_row - 1,
+        na = c("", "NA")
       )
 
       tmp <- as.data.frame(tmp, stringsAsFactors = FALSE)
@@ -205,7 +214,8 @@ read_glatos_workbook <- function(
         if (length(missing_cols) > 0) {
           stop(paste0(
             "The following columns were not found in sheet named '",
-            sheets_to_read[i], "': ",
+            sheets_to_read[i],
+            "': ",
             paste(missing_cols, collapse = ", ")
           ))
         }
@@ -216,7 +226,9 @@ read_glatos_workbook <- function(
           tmp <- tmp[, match(schema_i$name, tolower(colnames(tmp)))]
         } else {
           # identify project-specific fields
-          extra_cols <- colnames(tmp)[-match(schema_i$name, tolower(colnames(tmp)))]
+          extra_cols <- colnames(tmp)[
+            -match(schema_i$name, tolower(colnames(tmp)))
+          ]
 
           # identify new columns to add
           if (length(extra_cols) > 0) {
@@ -237,9 +249,13 @@ read_glatos_workbook <- function(
                 warning(paste0(
                   "Non-standard (project-specific) columns ",
                   "were found with names matching standard \n  column names ",
-                  "in sheet '", sheets_to_read[i], "'.\n\n  The following ",
+                  "in sheet '",
+                  sheets_to_read[i],
+                  "'.\n\n  The following ",
                   "column names were assigned to avoid conflicts:",
-                  "\n    ", paste0(extra_names_k, collapse = ", "), "."
+                  "\n    ",
+                  paste0(extra_names_k, collapse = ", "),
+                  "."
                 ))
               }
             } # end if
@@ -305,20 +321,30 @@ read_glatos_workbook <- function(
 
             if (any(posix_as_char)) {
               bad_pc_rows <- which(posix_as_char) + 2
-              bad_pc_rows <- ifelse(length(bad_pc_rows) < 10,
+              bad_pc_rows <- ifelse(
+                length(bad_pc_rows) < 10,
                 paste0(bad_pc_rows, collapse = ", "),
-                paste0(paste(bad_pc_rows[1:10], collapse = ", "),
-                  "... +", length(bad_pc_rows) - 10, " more.",
+                paste0(
+                  paste(bad_pc_rows[1:10], collapse = ", "),
+                  "... +",
+                  length(bad_pc_rows) - 10,
+                  " more.",
                   collapse = " "
                 )
               )
               warning(paste0(
                 "Some records (see below) ",
-                "in '", sheets_to_read[i], "` were not recognized as Excel ",
+                "in '",
+                sheets_to_read[i],
+                "` were not recognized as Excel ",
                 "datetime objects.\n  These should have imported correctly if ",
                 "formatted as 'YYYY-MM-DD HH:MM',\n  but see 'Note' in ",
                 "help(\"read_glatos_workbook\") to avoid this warning.\n\n ",
-                "Column: '", j, "'\n   Rows:  ", bad_pc_rows, "\n "
+                "Column: '",
+                j,
+                "'\n   Rows:  ",
+                bad_pc_rows,
+                "\n "
               ))
             }
 
@@ -340,9 +366,7 @@ read_glatos_workbook <- function(
               # do same for posix_as_char and insert into posix_as_num
               if (any(posix_as_char[rows_k])) {
                 posix_as_num[posix_as_char & rows_k] <-
-                  as.POSIXct(tmp[posix_as_char & rows_k, j],
-                    tz = tz_cmd[k]
-                  )
+                  as.POSIXct(tmp[posix_as_char & rows_k, j], tz = tz_cmd[k])
               }
             } # end k
 
@@ -358,7 +382,6 @@ read_glatos_workbook <- function(
         date_cols <- with(schema_i, name[type == "Date"])
         for (j in date_cols) {
           schema_row <- match(j, schema_i$name)
-
 
           # identify date that can be numeric; assume others character
           date_na <- is.na(tmp[, j]) # identify missing
@@ -376,26 +399,39 @@ read_glatos_workbook <- function(
           # do same for date_as_char and insert into ate_as_num
           if (any(date_as_char)) {
             bad_dc_rows <- which(date_as_char) + 2
-            bad_dc_rows <- ifelse(length(bad_dc_rows) < 10,
+            bad_dc_rows <- ifelse(
+              length(bad_dc_rows) < 10,
               paste0(bad_dc_rows, collapse = ", "),
-              paste0(paste(bad_dc_rows[1:10], collapse = ", "),
-                "... +", length(bad_dc_rows) - 10, " more.",
+              paste0(
+                paste(bad_dc_rows[1:10], collapse = ", "),
+                "... +",
+                length(bad_dc_rows) - 10,
+                " more.",
                 collapse = " "
               )
             )
-            date_as_num[date_as_char] <- tryCatch(as.Date(tmp[date_as_char, j]),
+            date_as_num[date_as_char] <- tryCatch(
+              as.Date(tmp[date_as_char, j]),
               error = function(e) {
-                if (e$message == "character string is not in a standard unambiguous format") {
+                if (
+                  e$message ==
+                    "character string is not in a standard unambiguous format"
+                ) {
                   stop(paste0(
                     "At least one of the records identified below in '",
-                    sheets_to_read[i], "`\n  could not be coerced to Date because ",
+                    sheets_to_read[i],
+                    "`\n  could not be coerced to Date because ",
                     "the format was invalid.\n  Dates stored as ",
                     "text in GLATOS Workbooks must be formatted \n  ",
                     "'YYYY-MM-DD'. See 'Note' in ",
                     "help(\"read_glatos_workbook\") \n  about formatting ",
                     "dates and times ",
                     "in GLATOS Workbooks.\n\n ",
-                    "Column: '", j, "'\n   Row:  ", bad_dc_rows, "\n"
+                    "Column: '",
+                    j,
+                    "'\n   Row:  ",
+                    bad_dc_rows,
+                    "\n"
                   ))
                 } else {
                   return(e)
@@ -408,14 +444,18 @@ read_glatos_workbook <- function(
           if (any(date_as_char)) {
             warning(paste0(
               "Some records (see below) in '",
-              sheets_to_read[i], "` were not recognized as Excel date objects.\n",
+              sheets_to_read[i],
+              "` were not recognized as Excel date objects.\n",
               "  These should have imported correctly if formatted as ",
               "'YYYY-MM-DD',\n  but see 'Note' in ",
               "help(\"read_glatos_workbook\") to avoid this warning.\n\n ",
-              "Column: '", j, "'\n    Row:  ", bad_dc_rows, "\n"
+              "Column: '",
+              j,
+              "'\n    Row:  ",
+              bad_dc_rows,
+              "\n"
             ))
           }
-
 
           tmp[, j] <- date_as_num
         } # end j
@@ -424,41 +464,58 @@ read_glatos_workbook <- function(
       wb[[sheets_to_read[i]]] <- tmp
     } # end i
 
-
     # merge to glatos_workbook list object
     ins_key <- list(
       by.x = c(
-        "glatos_project", "glatos_array", "station_no",
-        "consecutive_deploy_no", "ins_serial_no"
+        "glatos_project",
+        "glatos_array",
+        "station_no",
+        "consecutive_deploy_no",
+        "ins_serial_no"
       ),
       by.y = c(
-        "glatos_project", "glatos_array", "station_no",
-        "consecutive_deploy_no", "ins_serial_number"
+        "glatos_project",
+        "glatos_array",
+        "station_no",
+        "consecutive_deploy_no",
+        "ins_serial_number"
       )
     )
-    wb2 <- with(wb, list(
-      metadata = project,
-      animals = tagging,
-      receivers = merge(deployment,
-        recovery[, unique(c(
-          ins_key$by.y,
-          setdiff(names(recovery), names(deployment))
-        ))],
-        by.x = c(
-          "glatos_project", "glatos_array", "station_no",
-          "consecutive_deploy_no", "ins_serial_no"
-        ),
-        by.y = c(
-          "glatos_project", "glatos_array", "station_no",
-          "consecutive_deploy_no", "ins_serial_number"
-        ),
-        all.x = TRUE, all.y = TRUE
+    wb2 <- with(
+      wb,
+      list(
+        metadata = project,
+        animals = tagging,
+        receivers = merge(
+          deployment,
+          recovery[, unique(c(
+            ins_key$by.y,
+            setdiff(names(recovery), names(deployment))
+          ))],
+          by.x = c(
+            "glatos_project",
+            "glatos_array",
+            "station_no",
+            "consecutive_deploy_no",
+            "ins_serial_no"
+          ),
+          by.y = c(
+            "glatos_project",
+            "glatos_array",
+            "station_no",
+            "consecutive_deploy_no",
+            "ins_serial_number"
+          ),
+          all.x = TRUE,
+          all.y = TRUE
+        )
       )
-    ))
+    )
     # add location descriptions
-    wb2$receivers <- with(wb2, merge(receivers, wb$locations,
-      by = "glatos_array"
-    ))
+    wb2$receivers <- with(
+      wb2,
+      merge(receivers, wb$locations, by = "glatos_array")
+    )
 
     # Drop unwanted columns from receivers
 
@@ -475,19 +532,25 @@ read_glatos_workbook <- function(
       wb2$receivers$glatos_recover_date_time[rdt_na]
 
     drop_cols_rec <- c(
-      "glatos_deploy_date_time", "glatos_timezone",
+      "glatos_deploy_date_time",
+      "glatos_timezone",
       "glatos_recover_date_time"
     )
-    wb2$receivers <- wb2$receivers[, -match(
-      drop_cols_rec,
-      names(wb2$receivers)
-    )]
+    wb2$receivers <- wb2$receivers[
+      ,
+      -match(
+        drop_cols_rec,
+        names(wb2$receivers)
+      )
+    ]
 
     # sort rows by deploy_date_time
-    wb2$receivers <- wb2$receivers[with(
-      wb2$receivers,
-      order(deploy_date_time, glatos_array, station_no)
-    ), ]
+    wb2$receivers <- wb2$receivers[
+      with(
+        wb2$receivers,
+        order(deploy_date_time, glatos_array, station_no)
+      ),
+    ]
     row.names(wb2$receivers) <- NULL
 
     # Drop unwanted columns from animals
@@ -499,17 +562,22 @@ read_glatos_workbook <- function(
       wb2$animals$glatos_release_date_time[ardt_na]
 
     drop_cols_anim <- c("glatos_release_date_time", "glatos_timezone")
-    wb2$animals <- wb2$animals[, -match(
-      drop_cols_anim,
-      names(wb2$animals)
-    )]
+    wb2$animals <- wb2$animals[
+      ,
+      -match(
+        drop_cols_anim,
+        names(wb2$animals)
+      )
+    ]
 
     # sort animals
     # sort rows by deploy_date_time
-    wb2$animals <- wb2$animals[with(
-      wb2$animals,
-      order(utc_release_date_time, animal_id)
-    ), ]
+    wb2$animals <- wb2$animals[
+      with(
+        wb2$animals,
+        order(utc_release_date_time, animal_id)
+      ),
+    ]
     row.names(wb2$animals) <- NULL
 
     # create animal_id if missing

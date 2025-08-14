@@ -56,9 +56,10 @@
 #' ATTdata <- convert_glatos_to_att(walleye_detections, rcv)
 #' @export
 
-convert_glatos_to_att <- function(detectionObj,
-                                  receiverObj,
-                                  crs = sf::st_crs(4326)) {
+convert_glatos_to_att <- function(
+    detectionObj,
+    receiverObj,
+    crs = sf::st_crs(4326)) {
   ##  Declare global variables for R CMD check
   Sex <- glatos_array <- station_no <- deploy_lat <- deploy_long <-
     station <- dummy <- ins_model_no <- ins_serial_no <-
@@ -74,7 +75,8 @@ convert_glatos_to_att <- function(detectionObj,
       )
     }
 
-  tagMetadata <- unique(dplyr::tibble( # Start building Tag.Metadata table
+  tagMetadata <- unique(dplyr::tibble(
+    # Start building Tag.Metadata table
     Tag.ID = as.integer(detectionObj$animal_id),
     Transmitter = as.factor(transmitters),
     Common.Name = as.factor(detectionObj$common_name_e)
@@ -82,10 +84,12 @@ convert_glatos_to_att <- function(detectionObj,
 
   tagMetadata <- unique(tagMetadata) # Cut out dupes
 
-  nameLookup <- dplyr::tibble( # Get all the unique common names
+  nameLookup <- dplyr::tibble(
+    # Get all the unique common names
     Common.Name = unique(tagMetadata$Common.Name)
   )
-  nameLookup <- dplyr::mutate(nameLookup, # Add scinames to the name lookup
+  nameLookup <- dplyr::mutate(
+    nameLookup, # Add scinames to the name lookup
     Sci.Name = as.factor(
       query_worms_common(nameLookup$Common.Name, silent = TRUE)
     )
@@ -93,8 +97,8 @@ convert_glatos_to_att <- function(detectionObj,
   # Apply sci names to frame
   tagMetadata <- dplyr::left_join(tagMetadata, nameLookup, by = "Common.Name")
 
-
-  releaseData <- dplyr::tibble( # Get the rest from detectionObj
+  releaseData <- dplyr::tibble(
+    # Get the rest from detectionObj
     Tag.ID = as.integer(detectionObj$animal_id),
     Tag.Project = as.factor(detectionObj$glatos_project_transmitter),
     Release.Latitude = detectionObj$release_latitude,
@@ -103,7 +107,8 @@ convert_glatos_to_att <- function(detectionObj,
     Sex = as.factor(detectionObj$sex)
   )
 
-  releaseData <- dplyr::mutate(releaseData,
+  releaseData <- dplyr::mutate(
+    releaseData,
     # Convert sex text and null missing columns
     Sex = as.factor(convert_sex(Sex)),
     Tag.Life = as.integer(NA),
@@ -120,13 +125,24 @@ convert_glatos_to_att <- function(detectionObj,
       dplyr::select(
         receiverObj %>%
           dplyr::mutate(dummy = TRUE),
-        glatos_array, station_no, deploy_lat, deploy_long,
-        station, dummy, ins_model_no, ins_serial_no,
-        deploy_date_time, recover_date_time
+        glatos_array,
+        station_no,
+        deploy_lat,
+        deploy_long,
+        station,
+        dummy,
+        ins_model_no,
+        ins_serial_no,
+        deploy_date_time,
+        recover_date_time
       ),
       by = c(
-        "glatos_array", "station_no", "deploy_lat",
-        "deploy_long", "station", "dummy"
+        "glatos_array",
+        "station_no",
+        "deploy_lat",
+        "deploy_long",
+        "station",
+        "dummy"
       ),
       relationship = "many-to-many"
     ) %>%
@@ -134,10 +150,12 @@ convert_glatos_to_att <- function(detectionObj,
       detection_timestamp_utc >= deploy_date_time,
       detection_timestamp_utc <= recover_date_time
     ) %>%
-    dplyr::mutate(ReceiverFull = concat_list_strings(
-      ins_model_no,
-      ins_serial_no
-    )) %>%
+    dplyr::mutate(
+      ReceiverFull = concat_list_strings(
+        ins_model_no,
+        ins_serial_no
+      )
+    ) %>%
     dplyr::select(-dummy)
 
   detections <- unique(dplyr::tibble(
@@ -178,7 +196,6 @@ convert_glatos_to_att <- function(detectionObj,
   )
 
   class(att_obj) <- "ATT"
-
 
   # Note that sf::st_crs() uses class name 'crs' but this is changed to 'CRS'
   #  because VTrack/ATT are using sp::CRS()

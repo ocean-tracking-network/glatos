@@ -74,16 +74,21 @@ min_lag <- function(det) {
   dtc[, ord := 1:.N] # original order
 
   data.table::setkey(
-    dtc, transmitter_codespace, transmitter_id, receiver_sn,
+    dtc,
+    transmitter_codespace,
+    transmitter_id,
+    receiver_sn,
     detection_timestamp_utc
   )
 
   # calculate min_lag
-  dtc[, min_lag := pmin(diff(c(NA, as.numeric(detection_timestamp_utc))),
-    diff(c(as.numeric(detection_timestamp_utc), NA)),
-    na.rm = TRUE
-  ),
-  by = c("transmitter_codespace", "transmitter_id", "receiver_sn")
+  dtc[,
+    min_lag := pmin(
+      diff(c(NA, as.numeric(detection_timestamp_utc))),
+      diff(c(as.numeric(detection_timestamp_utc), NA)),
+      na.rm = TRUE
+    ),
+    by = c("transmitter_codespace", "transmitter_id", "receiver_sn")
   ]
 
   # return original order

@@ -173,7 +173,8 @@ glatos_check_col_names <- function(x, req_cols) {
   missing_cols <- setdiff(names(req_cols), names(x))
 
   if (length(missing_cols) > 0) {
-    stop("Required column(s) missing from ",
+    stop(
+      "Required column(s) missing from ",
       "input x:\n ",
       paste0(missing_cols, collapse = "\n "),
       call. = FALSE
@@ -203,7 +204,8 @@ glatos_check_col_classes <- function(x, req_cols) {
   wrong_class <- names(req_cols)[wrong_class]
 
   if (length(wrong_class) > 0) {
-    stop("The following column(s) have wrong class: ",
+    stop(
+      "The following column(s) have wrong class: ",
       "\n ",
       paste0(
         paste0(

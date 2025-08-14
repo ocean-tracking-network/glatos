@@ -1,5 +1,29 @@
 ----
 
+# glatos 0.8.1 dev (2025-08-13)
+
+
+## Breaking changes
+
+- 
+
+
+### New features
+
+- 
+
+
+### Bug fixes and minor changes
+
+- Changed case of vdat.exe and paths to vdat.exe and vue.exe in tests (new default 
+  install locations on windows).
+  - fixes [issue #255](https://github.com/ocean-tracking-network/glatos/issues/255)
+
+- Added DIAG_NEXTRAK record type to vdat_csv_schema data object. 
+  - fixes [issue #265](https://github.com/ocean-tracking-network/glatos/issues/265)
+
+----
+
 # glatos 0.8.0 (2024-09-19)
 
 

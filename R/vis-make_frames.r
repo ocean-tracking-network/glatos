@@ -438,6 +438,7 @@ make_frames <- function(
   # Load background (use example Great Lakes if null)
   if (is.null(bg_map)) {
     # example in glatos package
+
     utils::data(
       "great_lakes_polygon",
       envir = environment(),
@@ -487,6 +488,7 @@ make_frames <- function(
   time_period <- range(work_proc_obj$bin_timestamp)
 
   # define custom plot function
+
   cust_plot <- function(
       x,
       .time_period,
@@ -495,6 +497,7 @@ make_frames <- function(
       .background,
       .background_xlim,
       .background_ylim) {
+
     # Calculate great circle distance in meters of x and y limits.
     # needed to determine aspect ratio of the output
 

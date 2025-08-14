@@ -23,7 +23,7 @@ Default (\code{NULL}) will read all record types present in input CSV
 A list of class \code{vdat_list} with one named element for each
 record type and attributes: \code{fathom_csv_format_version} with version
 of the input Fathom CSV format; \code{source} with version of
-VDAT.exe used to create the input file.
+\code{vdat.exe} used to create the input file.
 }
 \description{
 Read data from an Innovasea Fathom VDAT CSV file

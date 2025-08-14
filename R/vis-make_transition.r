@@ -179,32 +179,42 @@
 #' }
 #'
 #' @export
-make_transition <- function(poly,
-                            res,
-                            receiver_points = NULL,
-                            epsg = 3175,
-                            buffer = NULL) {
-  if (inherits(
+make_transition <- function(
     poly,
-    c(
-      "SpatialPolygonsDataFrame",
-      "SpatialPolygons",
-      "sf"
+    res,
+    receiver_points = NULL,
+    epsg = 3175,
+    buffer = NULL) {
+  if (
+    inherits(
+      poly,
+      c(
+        "SpatialPolygonsDataFrame",
+        "SpatialPolygons",
+        "sf"
+      )
+    ) ==
+      FALSE
+  ) {
+    stop(
+      paste0(
+        "Supplied object for 'poly' argument is not class ",
+        "SpatialPolygonsDataFrame, SpatialPolygons, or a sf polygon object"
+      ),
+      call. = FALSE
     )
-  ) == FALSE) {
-    stop(paste0(
-      "Supplied object for 'poly' argument is not class ",
-      "SpatialPolygonsDataFrame, SpatialPolygons, or a sf polygon object"
-    ), call. = FALSE)
   }
 
-  if (inherits(
-    poly,
-    c(
-      "SpatialPolygonsDataFrame",
-      "SpatialPolygons"
-    )
-  ) == TRUE) {
+  if (
+    inherits(
+      poly,
+      c(
+        "SpatialPolygonsDataFrame",
+        "SpatialPolygons"
+      )
+    ) ==
+      TRUE
+  ) {
     poly <- sf::st_as_sf(poly)
   }
 
@@ -216,7 +226,6 @@ make_transition <- function(poly,
   # combine elements
   poly_proj <- sf::st_union(poly_proj)
 
-
   # Buffer polygon if buffer is NULL (default) or > 0
   if (is.null(buffer) == FALSE) {
     if (buffer < 0) stop("Input `buffer` must be a positive number or NULL.")
@@ -225,35 +234,46 @@ make_transition <- function(poly,
     poly_proj <- sf::st_buffer(poly_proj, buffer)
   }
 
-
   # If receiver_points is specified
   if (is.null(receiver_points) == FALSE) {
-    if (inherits(
-      receiver_points,
-      c("glatos_receivers", "glatos_detections")
-    )) {
-      receiver_points <- sf::st_as_sf(receiver_points,
+    if (
+      inherits(
+        receiver_points,
+        c("glatos_receivers", "glatos_detections")
+      )
+    ) {
+      receiver_points <- sf::st_as_sf(
+        receiver_points,
         coords = c("deploy_long", "deploy_lat"),
         crs = sf::st_crs(poly),
         agr = "identity"
       )
     }
 
-    if (inherits(
-      receiver_points,
-      c("SpatialPoints", "SpatialPointsDataFrame")
-    )) {
+    if (
+      inherits(
+        receiver_points,
+        c("SpatialPoints", "SpatialPointsDataFrame")
+      )
+    ) {
       receiver_points <- sf::st_as_sf(receiver_points)
     }
 
-    if (inherits(receiver_points, c(
-      "SpatialPointsDataFrame",
-      "SpatialPoints",
-      "sf",
-      "glatos_receivers",
-      "glatos_detections"
-    )) == FALSE) {
-      stop("Supplied object for 'receiver_points' argument is not class ",
+    if (
+      inherits(
+        receiver_points,
+        c(
+          "SpatialPointsDataFrame",
+          "SpatialPoints",
+          "sf",
+          "glatos_receivers",
+          "glatos_detections"
+        )
+      ) ==
+        FALSE
+    ) {
+      stop(
+        "Supplied object for 'receiver_points' argument is not class ",
         "SpatialPolygonsDataFrame, SpatialPolygons, sf polygon object, ",
         "or glatos_receiver, glatos_detections",
         call. = FALSE
@@ -262,7 +282,6 @@ make_transition <- function(poly,
 
     # convert to GL projection
     recs_gl <- sf::st_transform(receiver_points, crs = epsg)
-
 
     # check if any receiver points are on land
     recs_in_poly <- sf::st_intersects(
@@ -284,7 +303,6 @@ make_transition <- function(poly,
         "min"
       )
 
-
     # extract rec_water_dist > 0
     land <- recs_gl[recs_gl$rec_water_dist > 0, ]
 
@@ -303,11 +321,8 @@ make_transition <- function(poly,
   # convert back to CRS 4326 (wgs84 lat/lon)
   poly <- sf::st_transform(poly_proj, crs = sf::st_crs(poly))
 
-
   # rasterize
-  burned <- jarasterize(poly,
-    res = res
-  )
+  burned <- jarasterize(poly, res = res)
 
   message("Making transition layer...")
 
@@ -323,13 +338,13 @@ make_transition <- function(poly,
   }
 
   # calculate distances
-  tr1 <- gdistance::transition(burned,
+  tr1 <- gdistance::transition(
+    burned,
     transitionFunction = tran,
     directions = 16
   )
 
   tr1 <- gdistance::geoCorrection(tr1, type = "c")
-
 
   et <- Sys.time() - t0
 
@@ -390,10 +405,7 @@ make_transition <- function(poly,
 #' )
 #'
 #' @export
-scale_meters_to_degrees <- function(x,
-                                    sf,
-                                    ref = "center",
-                                    epsg = 3175) {
+scale_meters_to_degrees <- function(x, sf, ref = "center", epsg = 3175) {
   if (length(x) == 1) x <- rep(x, 2)
 
   # Convert to projected crs
@@ -430,7 +442,6 @@ scale_meters_to_degrees <- function(x,
   } else {
     stop("Input values for 'ref' must be 'center', 'min', or 'max'.")
   }
-
 
   # calculate new point "res" m away in x and y dim
   ref_bbox_proj <- sf::st_bbox(
@@ -530,12 +541,13 @@ scale_meters_to_degrees <- function(x,
 #' }
 #'
 #' @export
-jarasterize <- function(x,
-                        res,
-                        value = 1,
-                        bg_value = 0,
-                        all_touched = TRUE,
-                        silent = FALSE) {
+jarasterize <- function(
+    x,
+    res,
+    value = 1,
+    bg_value = 0,
+    all_touched = TRUE,
+    silent = FALSE) {
   ##  Declare global variables for NSE & R CMD check
   lat_id <- line_type <- lon_id <- rast_cell <- x1 <- x1cell <- x2 <-
     x2cell <- x_cell <- y1 <- y1cell <- y2 <- y2cell <- y_cell <- NULL
@@ -559,7 +571,6 @@ jarasterize <- function(x,
   lon_vals <- seq(rast_extent@xmin, rast_extent@xmax, by = raster::res(rast)[1])
 
   lat_vals <- seq(rast_extent@ymin, rast_extent@ymax, by = raster::res(rast)[2])
-
 
   # If all_touched is false, check if each centerpoint is touched by the polygon
   if (all_touched == FALSE) {
@@ -592,7 +603,6 @@ jarasterize <- function(x,
     lon_rng <- range(lon_vals)
     lat_rng <- range(lat_vals)
 
-
     # Lines of longitude
     lon_lines <- expand.grid(
       x = lon_vals,
@@ -603,12 +613,8 @@ jarasterize <- function(x,
     lon_lines$lon_id <- match(lon_lines$x, lon_vals)
     lon_lines$lat_id <- match(lon_lines$y, lat_vals)
 
-
     # omit crs until after intersection
-    lon_lines <- sf::st_as_sf(lon_lines,
-      coords = c("x", "y"),
-      agr = "constant"
-    )
+    lon_lines <- sf::st_as_sf(lon_lines, coords = c("x", "y"), agr = "constant")
 
     # convert to multilinestring
     lon_lines <-
@@ -616,7 +622,6 @@ jarasterize <- function(x,
       dplyr::group_by(lon_id) %>%
       dplyr::summarize() %>%
       sf::st_cast("MULTILINESTRING")
-
 
     # strip poly of crs
     # (st_intersects contains artifacts otherwise)
@@ -639,18 +644,13 @@ jarasterize <- function(x,
 
         colnames(mat_x) <- c("x1", "y1", "x2", "y2")
 
-        return(data.frame(mat_x,
-          line_type = "lon",
-          segment = 1:nrow(mat_x)
-        ))
+        return(data.frame(mat_x, line_type = "lon", segment = 1:nrow(mat_x)))
       }
     )
-
 
     # reset crs
     sf::st_crs(lon_lines) <- crs_in
     sf::st_crs(lon_in_x) <- crs_in
-
 
     # Lines of latitude
     lat_lines <- expand.grid(
@@ -662,12 +662,8 @@ jarasterize <- function(x,
     lat_lines$lon_id <- match(lat_lines$x, lon_vals)
     lat_lines$lat_id <- match(lat_lines$y, lat_vals)
 
-
     # omit crs until after intersection
-    lat_lines <- sf::st_as_sf(lat_lines,
-      coords = c("x", "y"),
-      agr = "constant"
-    )
+    lat_lines <- sf::st_as_sf(lat_lines, coords = c("x", "y"), agr = "constant")
 
     # convert to multilinestring
     lat_lines <-
@@ -675,7 +671,6 @@ jarasterize <- function(x,
       dplyr::group_by(lat_id) %>%
       dplyr::summarize() %>%
       sf::st_cast("MULTILINESTRING")
-
 
     # find segment of each line that intersects with x
     sf::st_agr(lat_lines) <- "constant"
@@ -694,22 +689,16 @@ jarasterize <- function(x,
 
         colnames(mat_x) <- c("x1", "y1", "x2", "y2")
 
-        return(data.frame(mat_x,
-          line_type = "lat",
-          segment = 1:nrow(mat_x)
-        ))
+        return(data.frame(mat_x, line_type = "lat", segment = 1:nrow(mat_x)))
       }
     )
-
 
     # reset crs
     sf::st_crs(lat_lines) <- crs_in
     sf::st_crs(lat_in_x) <- crs_in
 
-
     # reset crs
     sf::st_crs(x) <- crs_in
-
 
     # plot(sf::st_geometry(x))
     # plot(sf::st_geometry(lon_lines[lon_lines$lon_id == 23,]), col = "grey", add = TRUE)
@@ -719,27 +708,17 @@ jarasterize <- function(x,
     # plot(sf::st_geometry(lat_lines[lat_lines$lat_id == 32,]), col = "grey", add = TRUE)
     # plot(sf::st_geometry(lat_in_x[lat_in_x$lat_id == 32,]), col = "red", add = TRUE)
 
-
     # combine matched
     all_touched <- data.table::rbindlist(c(lon_touched, lat_touched))
-
 
     # find raster cell that contains each endpoint
     all_touched[
       ,
       `:=`(
-        x1cell = findInterval(x1, lon_vals,
-          rightmost.closed = TRUE
-        ),
-        x2cell = findInterval(x2, lon_vals,
-          rightmost.closed = TRUE
-        ),
-        y1cell = findInterval(y1, lat_vals,
-          rightmost.closed = TRUE
-        ),
-        y2cell = findInterval(y2, lat_vals,
-          rightmost.closed = TRUE
-        )
+        x1cell = findInterval(x1, lon_vals, rightmost.closed = TRUE),
+        x2cell = findInterval(x2, lon_vals, rightmost.closed = TRUE),
+        y1cell = findInterval(y1, lat_vals, rightmost.closed = TRUE),
+        y2cell = findInterval(y2, lat_vals, rightmost.closed = TRUE)
       )
     ]
 
@@ -759,21 +738,25 @@ jarasterize <- function(x,
 
     # expand cell ranges
 
-    cells_touched <- all_touched[, expand.grid(
-      x_cell = x1cell:x2cell,
-      y_cell = y1cell:y2cell
-    ),
-    by = 1:nrow(all_touched)
+    cells_touched <- all_touched[,
+      expand.grid(
+        x_cell = x1cell:x2cell,
+        y_cell = y1cell:y2cell
+      ),
+      by = 1:nrow(all_touched)
     ]
 
     cells_touched <- unique(cells_touched[, c("x_cell", "y_cell")])
 
     # note that y is flipped here because raster counts from top down
-    cells_touched[, rast_cell :=
-      raster::cellFromRowCol(rast,
+    cells_touched[
+      ,
+      rast_cell := raster::cellFromRowCol(
+        rast,
         row = nrow(rast) - y_cell + 1,
         col = x_cell
-      )]
+      )
+    ]
 
     # update raster values
     val <- rep(0, length(rast))

@@ -80,10 +80,8 @@ read_vemco_tag_specs <- function(tag_file, file_format = NULL) {
   # see version-specific file specifications
   # internal data object; i.e., in R/sysdata.r
 
-
   # Get sheet names
   sheets <- tolower(readxl::excel_sheets(tag_file))
-
 
   # Identify file version
   id_file_format <- function(schema, sheets) {
@@ -115,7 +113,8 @@ read_vemco_tag_specs <- function(tag_file, file_format = NULL) {
       if (length(spec_i) > 1) {
         # read all columns as character/text because it seems they are often
         # formatted as text in files from Vemco
-        tmp <- readxl::read_excel(tag_file,
+        tmp <- readxl::read_excel(
+          tag_file,
           sheet = match(sheets_to_read[i], tolower(sheets)),
           col_types = "text"
         )
@@ -127,7 +126,6 @@ read_vemco_tag_specs <- function(tag_file, file_format = NULL) {
         #   sheet = match(sheets_to_read[i], tolower(sheets)),
         #   col_types = gsub("character", "text", spec_i$type))
         # wb[[sheets_to_read[i]]] <- data.frame(tmp, check.names = FALSE)
-
 
         # trim leading and trailing white space from column names
         names(wb[[sheets_to_read[i]]]) <-
@@ -142,44 +140,47 @@ read_vemco_tag_specs <- function(tag_file, file_format = NULL) {
     }
 
     # coerce to class tag_spec
-    spec_out <- with(wb$`tag summary`, data.frame(
-      sales_order = `Sales Order`,
-      serial_number = `Serial No.`,
-      manufacturer = "Vemco",
-      model = `Tag Family`,
-      id_count = `# of ID's`,
-      code_space = sapply(
-        `VUE Tag ID`,
-        function(x) {
-          paste0(
-            strsplit(x, "-")[[1]][1:2],
-            collapse = "-"
-          )
-        }
-      ),
-      id_code = sapply(`VUE Tag ID`, function(x) strsplit(x, "-")[[1]][3]),
-      n_steps = apply(
-        data.frame(
-          `Step 1 Status`,
-          `Step 2 Status`,
-          `Step 3 Status`,
-          `Step 4 Status`
+    spec_out <- with(
+      wb$`tag summary`,
+      data.frame(
+        sales_order = `Sales Order`,
+        serial_number = `Serial No.`,
+        manufacturer = "Vemco",
+        model = `Tag Family`,
+        id_count = `# of ID's`,
+        code_space = sapply(
+          `VUE Tag ID`,
+          function(x) {
+            paste0(
+              strsplit(x, "-")[[1]][1:2],
+              collapse = "-"
+            )
+          }
         ),
-        1,
-        function(x) which.max(tolower(x) == "on")
-      ),
-      sensor_type = `Sensor type`,
-      sensor_range = `Range`,
-      sensor_units = `Units`,
-      sensor_slope = `Slope`,
-      sensor_intercept = `Intercept`,
-      accel_algorithm = `Accelerometer Algorithm`,
-      accel_sample_rate = `Accelerometer Samples (/sec)`,
-      sensor_transmit_ratio = `Sensor Transmit Ratio`,
-      est_battery_life_days = `95% Est Battery Life (days)`,
-      battery_life_stat = "95%",
-      stringsAsFactors = FALSE
-    ))
+        id_code = sapply(`VUE Tag ID`, function(x) strsplit(x, "-")[[1]][3]),
+        n_steps = apply(
+          data.frame(
+            `Step 1 Status`,
+            `Step 2 Status`,
+            `Step 3 Status`,
+            `Step 4 Status`
+          ),
+          1,
+          function(x) which.max(tolower(x) == "on")
+        ),
+        sensor_type = `Sensor type`,
+        sensor_range = `Range`,
+        sensor_units = `Units`,
+        sensor_slope = `Slope`,
+        sensor_intercept = `Intercept`,
+        accel_algorithm = `Accelerometer Algorithm`,
+        accel_sample_rate = `Accelerometer Samples (/sec)`,
+        sensor_transmit_ratio = `Sensor Transmit Ratio`,
+        est_battery_life_days = `95% Est Battery Life (days)`,
+        battery_life_stat = "95%",
+        stringsAsFactors = FALSE
+      )
+    )
 
     row.names(spec_out) <- NULL # reset to default
 
@@ -209,17 +210,20 @@ read_vemco_tag_specs <- function(tag_file, file_format = NULL) {
           function(x) {
             x2 <- strsplit(x, " ")[[1]]
             x2_day <- as.numeric(x2[1])
-            x2_time <- sum(as.numeric(strsplit(x2[[2]], ":")[[1]]) /
-              c(24, 1440, 86400))
+            x2_time <- sum(
+              as.numeric(strsplit(x2[[2]], ":")[[1]]) /
+                c(24, 1440, 86400)
+            )
             dec_day <- x2_day + x2_time
           }
         )
       }
     }
 
-
     # identify rows in wb that contain valid data for each step
-    step_rows <- sapply(1:4, function(x) expanded_rows[sched_out$step == x],
+    step_rows <- sapply(
+      1:4,
+      function(x) expanded_rows[sched_out$step == x],
       simplify = FALSE
     )
 

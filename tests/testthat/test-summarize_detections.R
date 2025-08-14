@@ -16,7 +16,8 @@ test_that("summarize_detections works", {
 
   # summ_type = location; with receiver_locs
   expect_snapshot(
-    summarize_detections(walleye_detections,
+    summarize_detections(
+      walleye_detections,
       receiver_locs = sample_receivers,
       summ_type = "location"
     )
@@ -24,7 +25,8 @@ test_that("summarize_detections works", {
 
   # summ_type = both; with receiver_locs and animals
   expect_snapshot(
-    summarize_detections(walleye_detections,
+    summarize_detections(
+      walleye_detections,
       receiver_locs = sample_receivers,
       animals = walleye_workbook$animals,
       summ_type = "both"
@@ -61,7 +63,8 @@ test_that("bad inputs are caught", {
 
   # missing 'location_col' in receiver locs
   expect_error(
-    summarize_detections(walleye_detections,
+    summarize_detections(
+      walleye_detections,
       receiver_locs = sample_receivers[, -2]
     )
   )

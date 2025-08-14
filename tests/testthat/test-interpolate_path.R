@@ -10,8 +10,6 @@ pos <- data.frame(
 )
 
 
-
-
 test_that("linear interpolation works", {
   linear_interp <- interpolate_path(pos)
 
@@ -39,8 +37,6 @@ test_that("linear interpolation works", {
 })
 
 
-
-
 test_that("Non-linear interpolation works", {
   linear_interp <- interpolate_path(pos)
   expect_message(
@@ -48,7 +44,9 @@ test_that("Non-linear interpolation works", {
     "Calculating least-cost \\(non-linear\\) distances\\.\\.\\. \\(step 1 of 3\\)"
   ) |>
     expect_output("|=*| 100%") |>
-    expect_message("Starting non-linear interpolation\\.\\.\\. \\(step 3 of 3\\)") |>
+    expect_message(
+      "Starting non-linear interpolation\\.\\.\\. \\(step 3 of 3\\)"
+    ) |>
     expect_message("Finalizing results\\.")
 
   expect_false(
@@ -82,23 +80,18 @@ test_that("Non-linear interpolation works", {
 })
 
 
-
 test_that("Forced linear interpolation works", {
   linear_interp <- interpolate_path(pos)
   nonlinear_interp <- suppressMessages(
-    interpolate_path(pos,
-      trans = greatLakesTrLayer,
-      show_progress = FALSE
-    )
+    interpolate_path(pos, trans = greatLakesTrLayer, show_progress = FALSE)
   )
 
-
-  forced_linear_interp <- interpolate_path(pos,
+  forced_linear_interp <- interpolate_path(
+    pos,
     trans = greatLakesTrLayer,
     lnl_thresh = 0
   ) |>
     expect_no_message()
-
 
   expect_false(
     identical(
@@ -132,20 +125,14 @@ test_that("Forced linear interpolation works", {
 })
 
 
-
 test_that("Progress bar can be suppressed", {
   expect_output(
     suppressMessages(
-      interpolate_path(pos,
-        trans = greatLakesTrLayer,
-        show_progress = FALSE
-      )
+      interpolate_path(pos, trans = greatLakesTrLayer, show_progress = FALSE)
     ),
     NA
   )
 })
-
-
 
 
 test_that("Checks output class", {
@@ -178,7 +165,6 @@ test_that("Checks output class", {
 })
 
 
-
 test_that("Checks trans is a transition layer or transition stack", {
   suppressMessages(
     trans <- make_transition(great_lakes_polygon, res = 0.5)
@@ -191,14 +177,12 @@ test_that("Checks trans is a transition layer or transition stack", {
 })
 
 
-
 test_that("Checks that start_time was successfully coverted", {
   expect_error(
     interpolate_path(pos, start_time = NA),
     "start_time cannot be coerced to 'POSIXct' or 'POSIXt' class"
   )
 })
-
 
 
 test_that("Checks that start_time < largest timestamp in dataset", {
@@ -209,14 +193,12 @@ test_that("Checks that start_time < largest timestamp in dataset", {
 })
 
 
-
 test_that("Checks that fish have multiple observations", {
   expect_error(
     interpolate_path(pos[1, ]),
     "must have two observations to interpolate"
   )
 })
-
 
 
 test_that("Errors and displays offending receivers if any receivers are on land", {

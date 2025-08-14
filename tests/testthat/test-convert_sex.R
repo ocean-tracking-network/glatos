@@ -1,7 +1,13 @@
 test_that("converts M/MALE/Male/male and F/FEMALE/Female/female", {
   sex <- convert_sex(c(
-    "M", "MALE", "Male", "male",
-    "F", "FEMALE", "Female", "female"
+    "M",
+    "MALE",
+    "Male",
+    "male",
+    "F",
+    "FEMALE",
+    "Female",
+    "female"
   ))
 
   expect_identical(sex, c(rep("MALE", 4), rep("FEMALE", 4)))

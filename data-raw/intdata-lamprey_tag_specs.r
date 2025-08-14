@@ -2,10 +2,7 @@
 # (internal data object)
 
 # get path to example detections file
-tag_file <- system.file("extdata",
-  "lamprey_tag_specs.xls",
-  package = "glatos"
-)
+tag_file <- system.file("extdata", "lamprey_tag_specs.xls", package = "glatos")
 lamprey_tag_specs <- read_vemco_tag_specs(tag_file, file_format = "vemco_xls")
 
 #----------------------------------------------------

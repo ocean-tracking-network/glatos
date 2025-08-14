@@ -29,8 +29,12 @@
 #'
 #' @export
 
-point_offset <- function(lon = NA, lat = NA, offsetDist = NA, offsetDir = NA,
-                         distUnit = "m") {
+point_offset <- function(
+    lon = NA,
+    lat = NA,
+    offsetDist = NA,
+    offsetDir = NA,
+    distUnit = "m") {
   if (distUnit == "ft") offsetDist <- 0.3048 * offsetDist # convert to m if needed
   if (!(distUnit) %in% c("ft", "m")) {
     stop("Input attribute 'dirUnit' must be 'm' (meters) or 'ft' (feet).")
@@ -38,12 +42,42 @@ point_offset <- function(lon = NA, lat = NA, offsetDist = NA, offsetDir = NA,
 
   dirKey <- data.frame(
     txt = c(
-      NA, "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW",
-      "SW", "WSW", "W", "WNW", "NW", "NNW"
+      NA,
+      "N",
+      "NNE",
+      "NE",
+      "ENE",
+      "E",
+      "ESE",
+      "SE",
+      "SSE",
+      "S",
+      "SSW",
+      "SW",
+      "WSW",
+      "W",
+      "WNW",
+      "NW",
+      "NNW"
     ),
     deg = c(
-      NA, 0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5,
-      270, 292.5, 315, 337.5
+      NA,
+      0,
+      22.5,
+      45,
+      67.5,
+      90,
+      112.5,
+      135,
+      157.5,
+      180,
+      202.5,
+      225,
+      247.5,
+      270,
+      292.5,
+      315,
+      337.5
     ),
     stringsAsFactors = F
   )
@@ -55,13 +89,18 @@ point_offset <- function(lon = NA, lat = NA, offsetDist = NA, offsetDir = NA,
     lon <- lon * pi / 180
     R <- 6378137
     bearing <- bearing * pi / 180
-    lat2 <- asin(sin(lat) * cos(offsetDist / R) + cos(lat) * sin(offsetDist / R) * cos(bearing))
-    lon2 <- 180 / pi * (
-      lon + atan2(
-        sin(bearing) * sin(offsetDist / R) * cos(lat),
-        cos(offsetDist / R) - sin(lat) * sin(lat2)
-      )
+    lat2 <- asin(
+      sin(lat) *
+        cos(offsetDist / R) +
+        cos(lat) * sin(offsetDist / R) * cos(bearing)
     )
+    lon2 <- 180 /
+      pi *
+      (lon +
+        atan2(
+          sin(bearing) * sin(offsetDist / R) * cos(lat),
+          cos(offsetDist / R) - sin(lat) * sin(lat2)
+        ))
 
     lat2 <- 180 / pi * lat2
 

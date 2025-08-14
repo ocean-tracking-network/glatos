@@ -2,10 +2,7 @@
 # (example data object)
 
 # get path to example workbook file
-wb_file <- system.file("extdata",
-  "walleye_workbook.xlsm",
-  package = "glatos"
-)
+wb_file <- system.file("extdata", "walleye_workbook.xlsm", package = "glatos")
 walleye_workbook <- read_glatos_workbook(wb_file)
 
 #----------------------------------------------------

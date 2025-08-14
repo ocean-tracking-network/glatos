@@ -21,8 +21,7 @@ test_that("glatos_detections works as expected", {
   expect_equal(
     gd_df <- glatos_detections(
       animal_id = x$animal_id,
-      detection_timestamp_utc =
-        x$detection_timestamp_utc,
+      detection_timestamp_utc = x$detection_timestamp_utc,
       deploy_lat = x$deploy_lat,
       deploy_long = x$deploy_long
     ),
@@ -48,7 +47,8 @@ test_that("glatos_detections works as expected", {
 
   # sf input
 
-  x_sf <- sf::st_as_sf(x,
+  x_sf <- sf::st_as_sf(
+    x,
     coords = c("deploy_long", "deploy_lat"),
     remove = FALSE
   )
@@ -62,7 +62,6 @@ test_that("glatos_detections works as expected", {
     sf::st_drop_geometry(gd_sf),
     gd_df_shouldbe
   )
-
 
   # tibble input
 
@@ -78,7 +77,6 @@ test_that("glatos_detections works as expected", {
     as.data.frame(gd_df_shouldbe)
   )
 })
-
 
 
 test_that("validate_glatos_detections catches bad inputs", {
@@ -99,25 +97,19 @@ test_that("validate_glatos_detections catches bad inputs", {
 
   # data.frame input; missing column name
   expect_error(
-    as_glatos_detections(dplyr::rename(x,
-      fish_name = animal_id
-    )),
+    as_glatos_detections(dplyr::rename(x, fish_name = animal_id)),
     regexp = "Required column(s) missing from input x",
     fixed = TRUE
   )
 
-
   # data.frame input; wrong column class
   expect_error(
     as_glatos_detections(
-      dplyr::mutate(x,
-        animal_id = as.integer(animal_id)
-      )
+      dplyr::mutate(x, animal_id = as.integer(animal_id))
     ),
     regexp = "The following column(s) have wrong class",
     fixed = TRUE
   )
-
 
   # non-data.frame input
   expect_error(

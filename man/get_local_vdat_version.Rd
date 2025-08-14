@@ -2,32 +2,32 @@
 % Please edit documentation in R/util-vdat.r
 \name{get_local_vdat_version}
 \alias{get_local_vdat_version}
-\title{Get version of local installation of Innovasea program VDAT.exe}
+\title{Get version of local installation of Innovasea program vdat.exe}
 \usage{
 get_local_vdat_version(vdat_exe_path = NULL)
 }
 \arguments{
-\item{vdat_exe_path}{The full path to \code{VDAT.exe}. If \code{NULL}
-(default) then the path to VDAT.exe must be in the PATH environment variable
-of the system. See \code{\link{check_vdat}}.}
+\item{vdat_exe_path}{The full path to \code{vdat.exe}. If \code{NULL}
+(default) then the path to \code{vdat.exe} must be in the PATH environment
+variable of the system. See \code{\link{check_vdat}}.}
 }
 \value{
 A list with \code{version} (version number) and \code{long_version} (full
-string returned by VDAT.exe).
+string returned by vdat.exe).
 }
 \description{
-Get version of local installation of Innovasea program VDAT.exe
+Get version of local installation of Innovasea program vdat.exe
 }
 \examples{
 \dontrun{
 
-# use if VDAT.exe in Windows system PATH variable
+# use if vdat.exe in Windows system PATH variable
 get_local_vdat_version()
 
-# or specify path to VDAT.exe
+# or specify path to vdat.exe
 get_local_vdat_version(
   vdat_exe_path =
-    "C:/Program Files/Innovasea/Fathom/VDAT.exe"
+    "C:/Program Files/Innovasea/Fathom Connect/vdat.exe"
 )
 }
 

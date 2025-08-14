@@ -131,13 +131,14 @@
 #' @export
 
 # function ------
-detection_range_model <- function(formula,
-                                  data,
-                                  percentage = NULL,
-                                  link = NULL,
-                                  subset = NULL,
-                                  summary_stats = TRUE,
-                                  model_frame = NULL) {
+detection_range_model <- function(
+    formula,
+    data,
+    percentage = NULL,
+    link = NULL,
+    subset = NULL,
+    summary_stats = TRUE,
+    model_frame = NULL) {
   # set null for link to logit however probit and polynomail can be used if supplied -----
   if (is.null(link)) {
     link <- c("polynomial")
@@ -151,39 +152,50 @@ detection_range_model <- function(formula,
 
   # create model for logit ----
   if (link == "logit") {
-    model <- do.call("glm", list(
-      formula = formula,
-      family = stats::binomial(link = "logit"),
-      data = data,
-      subset = substitute(subset)
-    ))
+    model <- do.call(
+      "glm",
+      list(
+        formula = formula,
+        family = stats::binomial(link = "logit"),
+        data = data,
+        subset = substitute(subset)
+      )
+    )
   }
 
   # create model for probit -----
   if (link == "probit") {
-    model <- do.call("glm", list(
-      formula = formula,
-      family = stats::binomial(link = "probit"),
-      data = data,
-      subset = substitute(subset)
-    ))
+    model <- do.call(
+      "glm",
+      list(
+        formula = formula,
+        family = stats::binomial(link = "probit"),
+        data = data,
+        subset = substitute(subset)
+      )
+    )
   }
 
   # create model for third order polynomial ------
   if (link == "polynomial") {
-    model <- do.call("lm", list(
-      formula = formula,
-      data = data,
-      subset = substitute(subset)
-    ))
+    model <- do.call(
+      "lm",
+      list(
+        formula = formula,
+        data = data,
+        subset = substitute(subset)
+      )
+    )
   }
 
   # make percentage a null object and create warning message if percentage isn't supplied -----
   if (is.null(percentage)) {
     percentage <- seq(1, 99, 1)
-    warning("`percentage`argument has to be supplied otherwise detection percentage values for 1-99 will be displayed", call. = FALSE)
+    warning(
+      "`percentage`argument has to be supplied otherwise detection percentage values for 1-99 will be displayed",
+      call. = FALSE
+    )
   }
-
 
   if (link %in% "logit" | link %in% "probit") {
     # # test goodness of fit for model -----
@@ -244,7 +256,6 @@ detection_range_model <- function(formula,
 
     y1 <- unique(model$offset)
 
-
     # a  -----
     a <- summary$coefficients[1]
 
@@ -298,11 +309,9 @@ detection_range_model <- function(formula,
     # Calculate m for all percentage levels based on probits -----
     # in est
 
-
     est <- stats::qnorm(percentage / 100)
     m <- (est - b0) / b1
   }
-
 
   # third order polynomial ------
   if (link == "polynomial") {
@@ -322,24 +331,28 @@ detection_range_model <- function(formula,
     if (model_frame == "data_frame") {
       # if(any(form == "y ~ -1 + poly(x, 3, raw = TRUE) + offset(y-intercept"))
       # stopifnot(form == "y ~ -1 + x + I(x ^ 2) + I(x ^ 3) + offset(y-intercept)")
-      warning("Check if your formula is correct for the model_frame argument", call. = FALSE)
+      warning(
+        "Check if your formula is correct for the model_frame argument",
+        call. = FALSE
+      )
       dist <- stats::model.frame(model)[[2]]
     }
 
     if (model_frame == "matrix") {
       # model_frame <- c("matrix")
-      warning("Check if your formula is correct for the model_frame argument", call. = FALSE)
+      warning(
+        "Check if your formula is correct for the model_frame argument",
+        call. = FALSE
+      )
       matr <- stats::model.frame(model)[[2]]
       dist <- matr[, 1]
     }
-
 
     fit <- model$fitted.values
 
     # determine x which is distance for polynomial using
     m <- round(approx(x = fit, y = dist, xout = percentage)$y, 0)
   }
-
 
   if (link %in% "logit" | link %in% "probit") {
     if (summary_stats == FALSE) {
@@ -399,8 +412,6 @@ detection_range_model <- function(formula,
       )
     }
   }
-
-
 
   return(table)
 }

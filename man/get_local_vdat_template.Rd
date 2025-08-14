@@ -2,20 +2,20 @@
 % Please edit documentation in R/util-vdat.r
 \name{get_local_vdat_template}
 \alias{get_local_vdat_template}
-\title{Get schema from local installation of Innovasea program VDAT.exe}
+\title{Get schema from local installation of Innovasea program \code{vdat.exe}}
 \usage{
 get_local_vdat_template(vdat_exe_path = NULL)
 }
 \arguments{
-\item{vdat_exe_path}{The full path to \code{VDAT.exe}. If \code{NULL}
-(default) then the path to VDAT.exe must be in the PATH environment variable
-of the system. See \code{\link{check_vdat}}.}
+\item{vdat_exe_path}{The full path to \code{vdat.exe}. If \code{NULL}
+(default) then the path to \code{vdat.exe} must be in the PATH environment
+variable of the system. See \code{\link{check_vdat}}.}
 }
 \value{
-Schema (template) of VDAT CSV produced by installed version of VDAT.exe.
+Schema (template) of VDAT CSV produced by installed version of \code{vdat.exe}.
 }
 \description{
-Get schema from local installation of Innovasea program VDAT.exe
+Get schema from local installation of Innovasea program \code{vdat.exe}
 }
 \details{
 A bug in vdat.exe version 9 (confirmed on vdat-9.3.0) will cause
@@ -25,13 +25,13 @@ this function to return an empty list. Fixed in vdat.exe version 10
 \examples{
 \dontrun{
 
-# use if VDAT.exe in Windows system PATH variable
+# use if vdat.exe in Windows system PATH variable
 get_local_vdat_template()
 
-# or specify path to VDAT.exe
+# or specify path to vdat.exe
 get_local_vdat_template(
   vdat_exe_path =
-    "C:/Program Files/Innovasea/Fathom/VDAT.exe"
+    "C:/Program Files/Innovasea/Fathom Connect/vdat.exe"
 )
 }
 

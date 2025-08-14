@@ -1,8 +1,5 @@
 test_that("metadata element gives expected result", {
-  wb_file <- system.file("extdata",
-    "walleye_workbook.xlsm",
-    package = "glatos"
-  )
+  wb_file <- system.file("extdata", "walleye_workbook.xlsm", package = "glatos")
   wb <- read_glatos_workbook(wb_file)
 
   expect_type(wb[["metadata"]], "list")
@@ -12,10 +9,7 @@ test_that("metadata element gives expected result", {
 })
 
 test_that("receivers element gives expected result", {
-  wb_file <- system.file("extdata",
-    "walleye_workbook.xlsm",
-    package = "glatos"
-  )
+  wb_file <- system.file("extdata", "walleye_workbook.xlsm", package = "glatos")
   wb <- read_glatos_workbook(wb_file)
 
   expect_s3_class(wb[["receivers"]], "glatos_receivers")
@@ -26,10 +20,7 @@ test_that("receivers element gives expected result", {
 })
 
 test_that("animals gives expected result", {
-  wb_file <- system.file("extdata",
-    "walleye_workbook.xlsm",
-    package = "glatos"
-  )
+  wb_file <- system.file("extdata", "walleye_workbook.xlsm", package = "glatos")
   wb <- read_glatos_workbook(wb_file)
 
   expect_s3_class(wb[["animals"]], "glatos_animals")
