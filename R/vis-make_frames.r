@@ -301,9 +301,13 @@ make_frames <- function(
   names(rcv_inargs) <- gsub("^recs\\.", "", names(rcv_inargs))
 
   # update from ...
-  if (length(rcv_inargs) > 0) rcv_args[names(rcv_inargs)] <- rcv_inargs
+  if (length(rcv_inargs) > 0) {
+    rcv_args[names(rcv_inargs)] <- rcv_inargs
+  }
   # update from ...
-  if (length(dtc_inargs) > 0) dtc_args[names(dtc_inargs)] <- dtc_inargs
+  if (length(dtc_inargs) > 0) {
+    dtc_args[names(dtc_inargs)] <- dtc_inargs
+  }
 
   # expand single rcv_args elements to equal number of rows in recs
   if (!is.null(recs)) {
@@ -360,7 +364,9 @@ make_frames <- function(
   }
 
   # Make output directory if it does not already exist
-  if (!dir.exists(out_dir)) dir.create(out_dir)
+  if (!dir.exists(out_dir)) {
+    dir.create(out_dir)
+  }
 
   # extract time sequence for plotting
   t_seq <- unique(work_proc_obj$bin_timestamp)
@@ -432,7 +438,12 @@ make_frames <- function(
   # Load background (use example Great Lakes if null)
   if (is.null(bg_map)) {
     # example in glatos package
-    utils::data("great_lakes_polygon", envir = environment())
+
+    utils::data(
+      "great_lakes_polygon",
+      envir = environment(),
+      package = "glatos"
+    )
     background <- great_lakes_polygon
     rm(great_lakes_polygon)
   } else {
@@ -477,6 +488,7 @@ make_frames <- function(
   time_period <- range(work_proc_obj$bin_timestamp)
 
   # define custom plot function
+
   cust_plot <- function(x,
                         .time_period,
                         .recs,
@@ -530,7 +542,9 @@ make_frames <- function(
     # set defaults and apply if needed
     par_args <- list(oma = c(0, 0, 0, 0), mar = c(6, 0, 0, 0), xpd = FALSE)
     # update from defaults...
-    if (length(par_inargs) > 0) par_args[names(par_inargs)] <- par_inargs
+    if (length(par_inargs) > 0) {
+      par_args[names(par_inargs)] <- par_inargs
+    }
 
     do.call(par, par_args)
 
@@ -677,7 +691,9 @@ make_frames <- function(
   work_proc_obj[
     grp_num <= grpn,
     {
-      if (!preview & show_progress) setTxtProgressBar(pb, .GRP)
+      if (!preview & show_progress) {
+        setTxtProgressBar(pb, .GRP)
+      }
       cust_plot(
         x = .SD,
         .time_period = time_period,
@@ -703,7 +719,9 @@ make_frames <- function(
   if (preview) {
     message("Preview frames written to\n ", out_dir)
   } else {
-    if (show_progress) close(pb)
+    if (show_progress) {
+      close(pb)
+    }
 
     if (animate) {
       make_video(input_dir = out_dir, output = ani_name, overwrite = overwrite)

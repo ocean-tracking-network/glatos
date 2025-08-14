@@ -168,7 +168,11 @@ detection_bubble_plot <- function(
   }
 
   if (is.null(map)) {
-    utils::data("great_lakes_polygon", envir = environment())
+    utils::data(
+      "great_lakes_polygon",
+      envir = environment(),
+      package = "glatos"
+    )
     map <- great_lakes_polygon
     rm(great_lakes_polygon)
   } # example in glatos package (sf object)
@@ -361,7 +365,9 @@ detection_bubble_plot <- function(
 
   box()
 
-  if (!is.na(file_type)) dev.off() # Close plot device
+  if (!is.na(file_type)) {
+    dev.off()
+  } # Close plot device
 
   if (!is.na(file_type)) {
     message(paste0(

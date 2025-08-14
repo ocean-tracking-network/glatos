@@ -220,7 +220,7 @@ read_vdat_csv <- function(src, record_types = NULL, show_progress = FALSE) {
   # Split into list elements by record type
   vdat_list <- split(vdat_txt, by = "record_type", keep.by = FALSE)
 
-  utils::data("vdat_csv_schema", envir = environment())
+  utils::data("vdat_csv_schema", envir = environment(), package = "glatos")
 
   vdat_csv_schema <- vdat_csv_schema[[paste0("v", src_version$fathom_csv)]]
 

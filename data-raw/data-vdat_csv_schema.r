@@ -1465,7 +1465,7 @@ vdat_csv_schema$v2.0.0$DIAG_NEXTRAK <- read.table(
   "Tilt (deg)"                  numeric
   "Depth (m)"                   numeric
   "Pings"                       numeric
-  "Detections"                  numeric  
+  "Detections"                  numeric
   ',
   header = TRUE,
   stringsAsFactors = FALSE,
