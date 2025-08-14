@@ -137,23 +137,22 @@ convert_otn_erddap_to_att <- function(
     ))
   )
 
-  #If the detection file is formatted in the new style, we need to match scientificname to scientificName.
-  #Otherwise we'll use the old verison. 
-  if("scientificName" %in% colnames(detectionObj)) {
-    join_by = c(
+  # If the detection file is formatted in the new style, we need to match scientificname to scientificName.
+  # Otherwise we'll use the old verison.
+  if ("scientificName" %in% colnames(detectionObj)) {
+    join_by <- c(
       "animal_id" = "animal_id",
       "scientificName" = "scientificname",
       "datacenter_reference" = "datacenter_reference"
     )
-  }
-  else {
-    join_by = c(
+  } else {
+    join_by <- c(
       "animal_id",
       "scientificname",
       "datacenter_reference"
     )
   }
-  
+
   # Matching cols that have different names
   colnames(erdAni)[colnames(erdAni) == "animal_reference_id"] <- "animal_id"
   detectionObj <- dplyr::left_join(detectionObj,
