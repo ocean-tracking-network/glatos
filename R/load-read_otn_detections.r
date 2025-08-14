@@ -39,6 +39,26 @@ read_otn_detections <- function(det_file) {
   date_cols <- which(col_classes == "Date")
   col_classes[c(timestamp_cols, date_cols)] <- "character"
 
+  # Check if file is zipped
+  # `data.table::fread` can handle zipped CSVs if they are the only file in the
+  #   directory. If there are multiple files, they need to be unzipped first.
+  #   This code assumes that there is only one CSV within the zipped directory.
+  #   The other file would be "data_description.txt"
+  if (tools::file_ext(det_file) == "zip" && nrow(zip::zip_list(det_file)) > 1) {
+    td <- tempdir()
+
+    zip::unzip(
+      det_file,
+      exdir = file.path(td, tools::file_path_sans_ext(basename(det_file)))
+    )
+    det_file <- list.files(
+      file.path(td, tools::file_path_sans_ext(basename(det_file))),
+      pattern = "\\.csv$",
+      full.names = TRUE
+    )
+    det_file <- normalizePath(det_file)
+  }
+
   # read data, suppressWarnings because some columns could be missing
   dtc <- suppressWarnings(data.table::fread(
     det_file,

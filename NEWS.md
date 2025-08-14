@@ -25,8 +25,12 @@
 - Added explicit calls to data objects so that they can be accessed when the 
   package isn't attached.
   - fixes [issue #261](https://github.com/ocean-tracking-network/glatos/issues/261)
+  
+- Allowed `read_otn_detections()` to handle zipped CSVs
+  - fixes [issue #262](https://github.com/ocean-tracking-network/glatos/issues/262)
 
 ----
+
 
 # glatos 0.8.0 (2024-09-19)
 
