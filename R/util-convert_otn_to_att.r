@@ -129,9 +129,9 @@ convert_otn_to_att <- function(
       )
     }
 
-  #We have to check if we're dealing with new format or old format OTN data. We'll use the scientificName/
-  #scientificname column since that's the hinge point here.
-  if("scientificName" %in% colnames(detectionObj)) {
+  # We have to check if we're dealing with new format or old format OTN data. We'll use the scientificName/
+  # scientificname column since that's the hinge point here.
+  if ("scientificName" %in% colnames(detectionObj)) {
     tagMetadata <- unique(dplyr::tibble(
       # Start building Tag.Metadata table
       Tag.ID = detectionObj$animal_id,
@@ -139,8 +139,7 @@ convert_otn_to_att <- function(
       Common.Name = as.factor(detectionObj$common_name_e),
       Sci.Name = as.factor(detectionObj$scientificName)
     ))
-  }
-  else {
+  } else {
     tagMetadata <- unique(dplyr::tibble(
       # Start building Tag.Metadata table
       Tag.ID = detectionObj$animal_id,
@@ -149,7 +148,7 @@ convert_otn_to_att <- function(
       Sci.Name = as.factor(detectionObj$scientificname)
     ))
   }
-  
+
 
   tagMetadata <- unique(tagMetadata) # Cut out dupes
 
