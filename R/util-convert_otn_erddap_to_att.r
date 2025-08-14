@@ -186,7 +186,14 @@ convert_otn_erddap_to_att <- function(
     by = "Tag.ID"
   ))
 
-  datetime_timezone <- unique(detectionObj$timezone)
+  #If the file is in the old OTN format, a different timezone may be specified...
+  if("timezone" %in% colnames(detectionObj)) {
+    datetime_timezone <- unique(detectionObj$timezone)
+  }
+  #Otherwise, if it's the new format, we can assume UTC.
+  else {
+    datetime_timezone <- "UTC"
+  }
 
   detectionObj <- detectionObj %>%
     dplyr::mutate(dummy = TRUE) %>%
