@@ -235,21 +235,20 @@ convert_otn_erddap_to_att <- function(
     ) %>%
     dplyr::select(-dummy)
 
-  #Once again we're doing a check for the new or old column type and reaching for the appropriate column
-  #names. I'm using collectionCode more or less arbitrarily.
-  if ("collectionCode" %in% colnames(detectionObj))
-  {
+  # Once again we're doing a check for the new or old column type and reaching for the appropriate column
+  # names. I'm using collectionCode more or less arbitrarily.
+  if ("collectionCode" %in% colnames(detectionObj)) {
     detections <- dplyr::tibble(
       Date.Time = detectionObj$detection_timestamp_utc,
       Transmitter = as.factor(detectionObj$transmitter_id),
       Station.Name = as.factor(detectionObj$station),
-      Receiver = as.factor(detectionObj$ReceiverFull), #???
+      Receiver = as.factor(detectionObj$ReceiverFull), # ???
       Latitude = detectionObj$deploy_lat,
       Longitude = detectionObj$deploy_long,
       Sensor.Value = as.integer(detectionObj$sensorValue),
       Sensor.Unit = as.factor(detectionObj$sensorUnit)
     )
-    
+
     stations <- unique(dplyr::tibble(
       Station.Name = as.factor(detectionObj$station),
       Receiver = as.factor(detectionObj$ReceiverFull),
@@ -261,8 +260,7 @@ convert_otn_erddap_to_att <- function(
       Station.Longitude = as.double(detectionObj$deploy_long),
       Receiver.Status = as.factor(NA)
     ))
-  }
-  else {
+  } else {
     detections <- dplyr::tibble(
       Date.Time = detectionObj$detection_timestamp_utc,
       Transmitter = as.factor(detectionObj$transmitter_id),
@@ -273,7 +271,7 @@ convert_otn_erddap_to_att <- function(
       Sensor.Value = as.integer(detectionObj$sensorvalue),
       Sensor.Unit = as.factor(detectionObj$sensorunit)
     )
-    
+
     stations <- unique(dplyr::tibble(
       Station.Name = as.factor(detectionObj$station),
       Receiver = as.factor(detectionObj$ReceiverFull),
