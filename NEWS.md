@@ -22,6 +22,10 @@
 - Added DIAG_NEXTRAK record type to vdat_csv_schema data object. 
   - fixes [issue #265](https://github.com/ocean-tracking-network/glatos/issues/265)
 
+- Added explicit calls to data objects so that they can be accessed when the 
+  package isn't attached.
+  - fixes [issue #261](https://github.com/ocean-tracking-network/glatos/issues/261)
+
 ----
 
 # glatos 0.8.0 (2024-09-19)
