@@ -235,28 +235,57 @@ convert_otn_erddap_to_att <- function(
     ) %>%
     dplyr::select(-dummy)
 
-  detections <- dplyr::tibble(
-    Date.Time = detectionObj$detection_timestamp_utc,
-    Transmitter = as.factor(detectionObj$transmitter_id),
-    Station.Name = as.factor(detectionObj$station),
-    Receiver = as.factor(detectionObj$ReceiverFull),
-    Latitude = detectionObj$deploy_lat,
-    Longitude = detectionObj$deploy_long,
-    Sensor.Value = as.integer(detectionObj$sensorvalue),
-    Sensor.Unit = as.factor(detectionObj$sensorunit)
-  )
-
-  stations <- unique(dplyr::tibble(
-    Station.Name = as.factor(detectionObj$station),
-    Receiver = as.factor(detectionObj$ReceiverFull),
-    Installation = as.factor(NA),
-    Receiver.Project = as.factor(detectionObj$collectioncode),
-    Deployment.Date = detectionObj$deploy_datetime_utc,
-    Recovery.Date = detectionObj$recovery_datetime_utc,
-    Station.Latitude = as.double(detectionObj$deploy_lat),
-    Station.Longitude = as.double(detectionObj$deploy_long),
-    Receiver.Status = as.factor(NA)
-  ))
+  #Once again we're doing a check for the new or old column type and reaching for the appropriate column
+  #names. I'm using collectionCode more or less arbitrarily.
+  if ("collectionCode" %in% colnames(detectionObj))
+  {
+    detections <- dplyr::tibble(
+      Date.Time = detectionObj$detection_timestamp_utc,
+      Transmitter = as.factor(detectionObj$transmitter_id),
+      Station.Name = as.factor(detectionObj$station),
+      Receiver = as.factor(detectionObj$ReceiverFull), #???
+      Latitude = detectionObj$deploy_lat,
+      Longitude = detectionObj$deploy_long,
+      Sensor.Value = as.integer(detectionObj$sensorValue),
+      Sensor.Unit = as.factor(detectionObj$sensorUnit)
+    )
+    
+    stations <- unique(dplyr::tibble(
+      Station.Name = as.factor(detectionObj$station),
+      Receiver = as.factor(detectionObj$ReceiverFull),
+      Installation = as.factor(NA),
+      Receiver.Project = as.factor(detectionObj$collectionCode),
+      Deployment.Date = detectionObj$deploy_datetime_utc,
+      Recovery.Date = detectionObj$recovery_datetime_utc,
+      Station.Latitude = as.double(detectionObj$deploy_lat),
+      Station.Longitude = as.double(detectionObj$deploy_long),
+      Receiver.Status = as.factor(NA)
+    ))
+  }
+  else {
+    detections <- dplyr::tibble(
+      Date.Time = detectionObj$detection_timestamp_utc,
+      Transmitter = as.factor(detectionObj$transmitter_id),
+      Station.Name = as.factor(detectionObj$station),
+      Receiver = as.factor(detectionObj$ReceiverFull),
+      Latitude = detectionObj$deploy_lat,
+      Longitude = detectionObj$deploy_long,
+      Sensor.Value = as.integer(detectionObj$sensorvalue),
+      Sensor.Unit = as.factor(detectionObj$sensorunit)
+    )
+    
+    stations <- unique(dplyr::tibble(
+      Station.Name = as.factor(detectionObj$station),
+      Receiver = as.factor(detectionObj$ReceiverFull),
+      Installation = as.factor(NA),
+      Receiver.Project = as.factor(detectionObj$collectioncode),
+      Deployment.Date = detectionObj$deploy_datetime_utc,
+      Recovery.Date = detectionObj$recovery_datetime_utc,
+      Station.Latitude = as.double(detectionObj$deploy_lat),
+      Station.Longitude = as.double(detectionObj$deploy_long),
+      Receiver.Status = as.factor(NA)
+    ))
+  }
 
   att_obj <- list(
     Tag.Detections = detections,
