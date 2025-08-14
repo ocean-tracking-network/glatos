@@ -160,26 +160,31 @@
 #' }
 #'
 #' @export
-make_video <- function(input_dir = getwd(),
-                       input_ext = ".png",
-                       output = "animation.mp4",
-                       duration = NULL,
-                       start_frame = 1,
-                       end_frame = NULL,
-                       size = NULL,
-                       overwrite = FALSE,
-                       verbose = FALSE,
-                       ...) {
+make_video <- function(
+    input_dir = getwd(),
+    input_ext = ".png",
+    output = "animation.mp4",
+    duration = NULL,
+    start_frame = 1,
+    end_frame = NULL,
+    size = NULL,
+    overwrite = FALSE,
+    verbose = FALSE,
+    ...) {
   # capture input arguments from ellipses
   in_args <- list(...)
   # in_args <- list(framerate = 30)
 
   # check if input_dir exists
   if (!dir.exists(input_dir)) {
-    stop(paste0(
-      "Input dir '", input_dir,
-      "' not found."
-    ), .call = FALSE)
+    stop(
+      paste0(
+        "Input dir '",
+        input_dir,
+        "' not found."
+      ),
+      .call = FALSE
+    )
   }
 
   # strip . from ext if present
@@ -232,15 +237,16 @@ make_video <- function(input_dir = getwd(),
   # warn if framerate is greater than 30
   if (av_args$framerate > 30) {
     warning(
-      "Specified duration (", duration,
-      " seconds) results in a framerate (", av_args$framerate,
+      "Specified duration (",
+      duration,
+      " seconds) results in a framerate (",
+      av_args$framerate,
       " fps) that may be too fast to see!"
     )
   }
 
   return(output_file)
 }
-
 
 
 #' @export

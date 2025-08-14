@@ -40,13 +40,18 @@ read_otn_detections <- function(det_file) {
   col_classes[c(timestamp_cols, date_cols)] <- "character"
 
   # read data, suppressWarnings because some columns could be missing
-  dtc <- suppressWarnings(data.table::fread(det_file,
-    sep = ",", colClasses = col_classes,
+  dtc <- suppressWarnings(data.table::fread(
+    det_file,
+    sep = ",",
+    colClasses = col_classes,
     na.strings = c("", "NA")
   ))
   # This check is for non-matched detection extracts. They are missing some required columns, this attempts to create them.
   # More info on OTN detection extracts here: https://members.oceantrack.org/data/otn-detection-extract-documentation-matched-to-animals
-  if (all(otn_detection_schema_min_columns %in% colnames(dtc)) && !all(otn_detection_schema$name %in% colnames(dtc))) {
+  if (
+    all(otn_detection_schema_min_columns %in% colnames(dtc)) &&
+      !all(otn_detection_schema$name %in% colnames(dtc))
+  ) {
     dtc$commonname <- "Unknown"
     dtc$receiver_group <- substr(dtc$station, 1, nchar(dtc$station) - 3)
     dtc$receiver <- dtc$collectornumber
@@ -55,26 +60,46 @@ read_otn_detections <- function(det_file) {
   }
   # coerce timestamps to POSIXct
   for (j in timestamp_cols) {
-    data.table::set(dtc,
+    data.table::set(
+      dtc,
       j = otn_detection_schema$name[j],
       value = lubridate::fast_strptime(
         dtc[[otn_detection_schema$name[j]]],
-        format = "%Y-%m-%d %H:%M:%S", tz = "UTC", lt = FALSE
+        format = "%Y-%m-%d %H:%M:%S",
+        tz = "UTC",
+        lt = FALSE
       )
     )
   }
   # coerce dates to date
   for (j in date_cols) {
-    data.table::set(dtc, j = otn_detection_schema$name[j], value = ifelse(dtc[[otn_detection_schema$name[j]]] == "", NA, dtc[[otn_detection_schema$name[j]]]))
-    data.table::set(dtc, j = otn_detection_schema$name[j], value = as.Date(dtc[[otn_detection_schema$name[j]]]))
+    data.table::set(
+      dtc,
+      j = otn_detection_schema$name[j],
+      value = ifelse(
+        dtc[[otn_detection_schema$name[j]]] == "",
+        NA,
+        dtc[[otn_detection_schema$name[j]]]
+      )
+    )
+    data.table::set(
+      dtc,
+      j = otn_detection_schema$name[j],
+      value = as.Date(dtc[[otn_detection_schema$name[j]]])
+    )
   }
-  data.table::setnames(dtc, old = otn_detection_schema$name, new = otn_detection_schema$mapping)
+  data.table::setnames(
+    dtc,
+    old = otn_detection_schema$name,
+    new = otn_detection_schema$mapping
+  )
   dtc <- glatos_detections(dtc)
   return(dtc)
 }
 
 get_codemap <- function(x) {
-  sapply(x,
+  sapply(
+    x,
     FUN = function(.) {
       x0 <- unlist(strsplit(., "-"))
       return(paste0(x0[1:2], collapse = "-"))

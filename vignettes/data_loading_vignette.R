@@ -23,8 +23,11 @@ library(lubridate)
 
 ## ----echo=TRUE---------------------------------------------------------------------
 # Set path to walleye_detections.csv example dataset
-wal_det_file <- system.file("extdata", "walleye_detections.csv", 
-                            package = "glatos")
+wal_det_file <- system.file(
+  "extdata",
+  "walleye_detections.csv",
+  package = "glatos"
+)
 
 ## ----message = FALSE---------------------------------------------------------------
 # Attach glatos package
@@ -39,8 +42,11 @@ str(walleye_detections)
 
 ## ----echo=TRUE---------------------------------------------------------------------
 # Set path to blue_shark_detections.csv example dataset
-shrk_det_file <- system.file("extdata", "blue_shark_detections.csv",
-                             package = "glatos")
+shrk_det_file <- system.file(
+  "extdata",
+  "blue_shark_detections.csv",
+  package = "glatos"
+)
 
 # Read in the blue_shark_detections.csv file using `read_otn_detections`
 blue_shark_detections <- read_otn_detections(shrk_det_file)
@@ -51,30 +57,39 @@ str(blue_shark_detections)
 
 ## ----echo=TRUE---------------------------------------------------------------------
 #get path to example VRL file included with glatos package
-csv_file <- system.file("extdata", 
-                        "VR2W_109924_20110718_1.csv",
-                        package = "glatos")
+csv_file <- system.file(
+  "extdata",
+  "VR2W_109924_20110718_1.csv",
+  package = "glatos"
+)
 
 
 ## ----------------------------------------------------------------------------------
-dtc <- read.csv(csv_file, as.is = TRUE, check.names = FALSE, 
-                fileEncoding = "UTF-8-BOM")
+dtc <- read.csv(
+  csv_file,
+  as.is = TRUE,
+  check.names = FALSE,
+  fileEncoding = "UTF-8-BOM"
+)
 
 
 ## ----eval = FALSE------------------------------------------------------------------
 #  library(data.table)
-#  
+#
 #  #read data from csv file using data.table::fread
 #  #name dtc2 (data.table) to distinguish from dtc (data.frame) in this script
 #  dtc2 <- fread(csv_file, sep = ",", header = TRUE, fill = TRUE)
-#  
-#  
+#
+#
 #  Note also that we use `fill = TRUE` because by default VEMCO VUE
 #  exports do not include a comma for every column in the CSV file.
 
 ## ----------------------------------------------------------------------------------
 #change column name
-names(dtc)[match("Date and Time (UTC)", names(dtc))] <- "detection_timestamp_utc"
+names(dtc)[match(
+  "Date and Time (UTC)",
+  names(dtc)
+)] <- "detection_timestamp_utc"
 
 ## ----eval = FALSE------------------------------------------------------------------
 #  #use data.table::setnames to change column names via old and new names
@@ -82,8 +97,10 @@ names(dtc)[match("Date and Time (UTC)", names(dtc))] <- "detection_timestamp_utc
 
 ## ----------------------------------------------------------------------------------
 
-dtc$detection_timestamp_utc <- as.POSIXct(dtc$detection_timestamp_utc,
-                                          tz = "UTC")
+dtc$detection_timestamp_utc <- as.POSIXct(
+  dtc$detection_timestamp_utc,
+  tz = "UTC"
+)
 
 #take a peek
 str(dtc$detection_timestamp_utc)
@@ -100,7 +117,7 @@ head(dtc$detection_timestamp_utc, 3)
 #  #just for this example, we convert detection_timestamp_utc back to string
 #  dtc2$detection_timestamp_utc <- format(dtc2$detection_timestamp_utc)
 #  class(dtc2$detection_timestamp_utc) #now character string again
-#  
+#
 #  #fast_strptime is the fastest way we know to ceorce strings to POSIX
 #  dtc2[ , detection_timestamp_utc :=
 #           lubridate::fast_strptime(detection_timestamp_utc,
@@ -125,18 +142,24 @@ dtc$receiver_sn <- sapply(dtc$Receiver, get_rsn)
 ## ----------------------------------------------------------------------------------
 #make an example receiver data frame
 rcv <- data.frame(
-        glatos_array = "DWM",
-        station = "DWM-001", 
-        deploy_lat = 45.65738, 
-        deploy_long = -84.46418, 
-        deploy_date_time = as.POSIXct("2011-04-11 20:30:00", tz = "UTC"),
-        recover_date_time = as.POSIXct("2011-07-08 17:11:00", tz = "UTC"),
-        ins_serial_no = "109924",
-        stringsAsFactors = FALSE) 
+  glatos_array = "DWM",
+  station = "DWM-001",
+  deploy_lat = 45.65738,
+  deploy_long = -84.46418,
+  deploy_date_time = as.POSIXct("2011-04-11 20:30:00", tz = "UTC"),
+  recover_date_time = as.POSIXct("2011-07-08 17:11:00", tz = "UTC"),
+  ins_serial_no = "109924",
+  stringsAsFactors = FALSE
+)
 
 #left join on receiver serial number to add receiver data to detections
-dtc <- merge(dtc, rcv, by.x = "receiver_sn", by.y = "ins_serial_no", 
-             all.x = TRUE)
+dtc <- merge(
+  dtc,
+  rcv,
+  by.x = "receiver_sn",
+  by.y = "ins_serial_no",
+  all.x = TRUE
+)
 
 # take a look at first few rows
 head(dtc, 3)
@@ -146,8 +169,13 @@ head(dtc, 3)
 nrow(dtc)
 
 #subset deployments between receiver deployment and recovery (omit others)
-dtc <- with(dtc, dtc[detection_timestamp_utc >= deploy_date_time & 
-                     detection_timestamp_utc <= recover_date_time, ])
+dtc <- with(
+  dtc,
+  dtc[
+    detection_timestamp_utc >= deploy_date_time &
+      detection_timestamp_utc <= recover_date_time,
+  ]
+)
 
 #count rows after subset
 nrow(dtc)
@@ -156,11 +184,11 @@ nrow(dtc)
 #  #merge detections and receivers
 #  dtc2 <- merge(dtc2, rcv, by.x = "receiver_sn", by.y = "ins_serial_no",
 #                 all.x = TRUE)
-#  
+#
 #  #subset detections that occurred after deployment and before recovery
 #  dtc2 <- dtc2[between(detection_timestamp_utc, deploy_date_time,
 #                       recover_date_time)]
-#  
+#
 #  nrow(dtc2)
 
 ## ----------------------------------------------------------------------------------
@@ -171,11 +199,11 @@ parse_tid <- function(x) strsplit(x, "-")[[1]][3]
 #make a new function to extract codespace from Transmitter
 #i.e., get first two elements of hyphen-delimited string
 parse_tcs <- function(x) {
-    #split on "-" and keep first two extracted elements
-    tx <- strsplit(x, "-")[[1]][1:2]
-    #re-combine and separate by "-"
-    return(paste(tx[1:2], collapse = "-"))
-  }
+  #split on "-" and keep first two extracted elements
+  tx <- strsplit(x, "-")[[1]][1:2]
+  #re-combine and separate by "-"
+  return(paste(tx[1:2], collapse = "-"))
+}
 
 #apply parse_tcs() to Transmitter and assign to transmitter_codespace
 dtc$transmitter_codespace <- sapply(dtc$Transmitter, parse_tcs)
@@ -191,8 +219,8 @@ dtc$transmitter_id <- sapply(dtc$Transmitter, parse_tid)
 
 ## ----------------------------------------------------------------------------------
 #change column name
-names(dtc)[match(c("Sensor Value", "Sensor Unit"), names(dtc))] <- 
-                 c("sensor_value", "sensor_unit")
+names(dtc)[match(c("Sensor Value", "Sensor Unit"), names(dtc))] <-
+  c("sensor_value", "sensor_unit")
 
 ## ----eval = FALSE------------------------------------------------------------------
 #  setnames(dtc2, c("Sensor Value", "Sensor Unit"),
@@ -204,34 +232,50 @@ str(dtc)
 ## ----------------------------------------------------------------------------------
 #make an example animal (fish) data frame
 fsh <- data.frame(
-        animal_id = c("1", "4", "7", "128"), 
-        tag_code_space = "A69-1601",
-        tag_id_code = c("439", "442", "445", "442"), 
-        common_name = "Sea Lamprey", 
-        release_date_time = as.POSIXct(c("2011-05-05 12:00", 
-                                         "2011-05-05 12:00", 
-                                         "2011-05-06 12:00", 
-                                         "2011-06-08 12:00"), 
-                                       tz = "UTC"),
-        recapture_date_time = as.POSIXct(c(NA, "2011-05-26 15:00", NA, NA),
-                                         tz = "UTC"), 
-        stringsAsFactors = FALSE)
+  animal_id = c("1", "4", "7", "128"),
+  tag_code_space = "A69-1601",
+  tag_id_code = c("439", "442", "445", "442"),
+  common_name = "Sea Lamprey",
+  release_date_time = as.POSIXct(
+    c(
+      "2011-05-05 12:00",
+      "2011-05-05 12:00",
+      "2011-05-06 12:00",
+      "2011-06-08 12:00"
+    ),
+    tz = "UTC"
+  ),
+  recapture_date_time = as.POSIXct(
+    c(NA, "2011-05-26 15:00", NA, NA),
+    tz = "UTC"
+  ),
+  stringsAsFactors = FALSE
+)
 
 #simple left join on codespace and id
-dtc <- merge(dtc, fsh, by.x = c("transmitter_codespace", "transmitter_id"), 
-                       by.y = c("tag_code_space", "tag_id_code"),
-                       all.x = TRUE)
-          
+dtc <- merge(
+  dtc,
+  fsh,
+  by.x = c("transmitter_codespace", "transmitter_id"),
+  by.y = c("tag_code_space", "tag_id_code"),
+  all.x = TRUE
+)
+
 
 ## ----------------------------------------------------------------------------------
 #count rows before subset
 nrow(dtc)
 
-#subset detections to include only those between release and recapture 
+#subset detections to include only those between release and recapture
 # or after release if never recaptured
-dtc <- with(dtc, dtc[detection_timestamp_utc >= release_date_time & 
-                     (detection_timestamp_utc <= recapture_date_time |
-                        is.na(recapture_date_time)) , ])
+dtc <- with(
+  dtc,
+  dtc[
+    detection_timestamp_utc >= release_date_time &
+      (detection_timestamp_utc <= recapture_date_time |
+        is.na(recapture_date_time)),
+  ]
+)
 
 ## ----eval = FALSE------------------------------------------------------------------
 #  #merge detection with fish data
@@ -240,7 +284,7 @@ dtc <- with(dtc, dtc[detection_timestamp_utc >= release_date_time &
 #                 by.x = c("transmitter_codespace", "transmitter_id"),
 #                 by.y = c("tag_code_space", "tag_id_code"),
 #                 all.x = TRUE, allow.cartesian = TRUE)
-#  
+#
 #  #subset detections between release and recapture
 #  dtc2 <- dtc2[between(detection_timestamp_utc, release_date_time,
 #                     recapture_date_time) | is.na(recapture_date_time), ]
@@ -251,8 +295,7 @@ nrow(dtc)
 
 ## ----echo=TRUE---------------------------------------------------------------------
 #get path to example receiver_locations file
-rec_file <- system.file("extdata", "sample_receivers.csv", 
-                        package = "glatos")
+rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
 
 #read sample_receivers.csv using 'read_glatos_receivers'
 rcv <- read_glatos_receivers(rec_file)
@@ -262,8 +305,7 @@ str(rcv)
 
 ## ----echo=TRUE---------------------------------------------------------------------
 #get path to example walleye_workbook.xlsm file
-wb_file <- system.file("extdata", "walleye_workbook.xlsm", 
-                        package = "glatos")
+wb_file <- system.file("extdata", "walleye_workbook.xlsm", package = "glatos")
 
 #read walleye_workbook.xlsm using 'read_glatos_workbook'
 wb <- read_glatos_workbook(wb_file)
@@ -290,8 +332,7 @@ str(fsh)
 
 ## ----echo=TRUE---------------------------------------------------------------------
 #get path to example lamprey_tag_specs.xls file
-spec_file <- system.file("extdata", "lamprey_tag_specs.xls", 
-                        package = "glatos")
+spec_file <- system.file("extdata", "lamprey_tag_specs.xls", package = "glatos")
 
 #read lamprey_tag_specs.xls using 'read_vemco_tag_specs'
 my_tags <- read_vemco_tag_specs(spec_file, file_format = "vemco_xls")
@@ -308,5 +349,3 @@ str(my_tags$specs)
 ## ----------------------------------------------------------------------------------
 #view structure of schedule element
 str(my_tags$schedule)
-
-

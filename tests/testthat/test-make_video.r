@@ -14,7 +14,6 @@ test_that("makes videos with expected size and returns file name", {
     output = temp_file_1
   )
 
-
   # Check if expected and actual file sizes
   expect_equal(
     file.size(temp_file_1),
@@ -44,13 +43,11 @@ test_that("input/output with space/parenth gives expected result", {
     file.path(temp_dir_2, list.files(frames))
   )
 
-
   temp_file_2 <- tempfile(
     pattern = "fname with ( special)",
     tmpdir = temp_dir_2,
     fileext = ".mp4"
   )
-
 
   output <- make_video(
     input_dir = frames,

@@ -2,7 +2,8 @@
 # (example data object)
 
 # get path to example detections file
-dtc_file <- system.file("extdata",
+dtc_file <- system.file(
+  "extdata",
   "blue_shark_detections.csv",
   package = "glatos"
 )

@@ -4,7 +4,8 @@
 data("great_lakes_polygon")
 
 # set resolution to match previous version of this object
-greatLakes_tr <- make_transition(great_lakes_polygon,
+greatLakes_tr <- make_transition(
+  great_lakes_polygon,
   res = c(0.03261609, 0.01153027)
 )
 

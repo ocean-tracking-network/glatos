@@ -1,6 +1,5 @@
 # define expected objects
 
-
 # note that these are just checking RI values after sort for now since
 # structure of object returned by residence_index recently changed
 # group_col = NULL was added to each call above for same reason
@@ -90,7 +89,6 @@ test_that("RI for Aggregate No Overlap method gives exepected result on blue sha
   data <- read_otn_detections(bsd_file)
 
   cdata <- suppressMessages(detection_events(data, location_col = "station"))
-
 
   riano_data <- residence_index(
     cdata,

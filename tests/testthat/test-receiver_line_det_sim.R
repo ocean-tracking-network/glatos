@@ -11,19 +11,18 @@ test_that("receiver_line_det_sim works", {
   expect_equal(round(receiver_line_det_sim(rngFun = pdrf), 3), 0.997)
 
   # 10 virtual fish and optional plot
-  vdiffr::expect_doppelganger("ten-fish-sim",
-    fig = function() {
-      receiver_line_det_sim(rngFun = pdrf, nsim = 10, showPlot = TRUE)
-    }
-  )
+  vdiffr::expect_doppelganger("ten-fish-sim", fig = function() {
+    receiver_line_det_sim(rngFun = pdrf, nsim = 10, showPlot = TRUE)
+  })
 
   # 4 virtual fish and optional plot with irregular spacing
-  vdiffr::expect_doppelganger("four-fish-sim",
-    fig = function() {
-      receiver_line_det_sim(
-        rngFun = pdrf, recSpc = c(2000, 4000, 2000),
-        outerLim = c(1000, 1000), nsim = 4, showPlot = TRUE
-      )
-    }
-  )
+  vdiffr::expect_doppelganger("four-fish-sim", fig = function() {
+    receiver_line_det_sim(
+      rngFun = pdrf,
+      recSpc = c(2000, 4000, 2000),
+      outerLim = c(1000, 1000),
+      nsim = 4,
+      showPlot = TRUE
+    )
+  })
 })

@@ -2,10 +2,7 @@
 # (internal data object)
 
 # get path to example receiver_locations file
-rec_file <- system.file("extdata",
-  "hfx_deployments.csv",
-  package = "glatos"
-)
+rec_file <- system.file("extdata", "hfx_deployments.csv", package = "glatos")
 
 hfx_deployments <- read_otn_deployments(rec_file)
 

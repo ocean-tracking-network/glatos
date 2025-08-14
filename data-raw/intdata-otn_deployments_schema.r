@@ -2,7 +2,6 @@
 # (internal data object for read_otn_deployments)
 # Specify column names and data types for each receiver locations file version
 
-
 #----------------------------------------------------
 # Version 1.0
 

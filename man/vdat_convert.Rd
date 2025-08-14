@@ -41,8 +41,8 @@ skipped, with warning.}
 all VRL/VDAT files in all subdirectories of \code{src} will be converted.
 Default is \code{FALSE}. Ignored if \code{src} is a not directory.}
 
-\item{vdat_exe_path}{The full path to \code{VDAT.exe}. If \code{NULL}
-(default) then the path to VDAT.exe must be in the PATH environment variable
+\item{vdat_exe_path}{The full path to \code{vdat.exe}. If \code{NULL}
+(default) then the path to vdat.exe must be in the PATH environment variable
 of the system. See \code{\link{check_vdat}}.}
 
 \item{skip_pattern}{A regular expression used to exclude files from
@@ -65,7 +65,7 @@ output file, including files that were skipped (when output file exists and
 \code{overwrite = FALSE}).
 }
 \description{
-Use Innovasea's VDAT command line program VDAT.exe (distributed with Fathom
+Use Innovasea's VDAT command line program \code{vdat.exe} (distributed with Fathom
 Connect software) to make a CSV file containing data from a VRL or VDAT file
 in Fathom CSV format.
 }
@@ -76,9 +76,9 @@ extensions (currently \code{"vrl"} and \code{"vdat"}) will be converted to
 CSV. Otherwise, only those files specified in \code{src} will be converted.
 
 Conversion is done by system call to the Innovasea program
-\code{VDAT.exe} (included with Innovasea's Fathom Connect software;
+\code{vdat.exe} (included with Innovasea's Fathom Connect software;
 available at \url{https://support.fishtracking.innovasea.com/s/downloads}).
-VDAT.exe must be available at the location specified by \code{vdat_exe_path}
+vdat.exe must be available at the location specified by \code{vdat_exe_path}
 or via system PATH environment variable. See also
 \code{\link{check_vdat}}.
 }
@@ -110,12 +110,14 @@ extension) as the source file (e.g.,
 # Check vdat.exe
 check_vdat()
 
-# all examples below assume path to VDAT.exe is in system PATH environment
+# all examples below assume path to vdat.exe is in system PATH environment
 # variable. If not (you get an error), add input argument 'vdat_exe_path'
-# with path directory with VDAT.exe.
+# with path directory with vdat.exe.
 # e.g.,
-# vdat_convert(vrl_files,
-#             vdat_exe_path = "C:/Program Files/Innovasea/Fathom")
+# vdat_convert(
+#   vrl_files,
+#   vdat_exe_path = "C:/Program Files/Innovasea/Fathom Connect"
+# )
 
 # get path to example VRL files in glatos
 vrl_files <- system.file("extdata", "detection_files_raw",
@@ -136,7 +138,7 @@ file.copy(vrl_files, vrl_files2)
 # uncomment to open in file browser
 # utils::browseURL(temp_dir)
 
-# call VDAT.exe; default args
+# call vdatT.exe; default args
 vdat_convert(vrl_files2)
 
 # run again and overwrite

@@ -24,7 +24,6 @@ test_that("make_transition: Transition layer for Higgins Lake water polygon as e
 
   expect_length(water@transitionCells, 99)
 
-
   expect_snapshot(
     water
   )
@@ -51,7 +50,6 @@ test_that("make_transition: Raster values for Higgins Lake water polygon as expe
     water
   )
 })
-
 
 
 # Testing land polygon transition matrix

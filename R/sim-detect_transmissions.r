@@ -204,26 +204,29 @@
 #' )
 #'
 #' @export
-detect_transmissions <- function(trnsLoc = NA,
-                                 recLoc = NA,
-                                 detRngFun = NA,
-                                 trnsColNames = list(
-                                   time = "time",
-                                   x = "x",
-                                   y = "y"
-                                 ),
-                                 recColNames = list(
-                                   x = "x",
-                                   y = "y"
-                                 ),
-                                 inputCRS = NA,
-                                 sp_out = TRUE,
-                                 show_progress = TRUE) {
+detect_transmissions <- function(
+    trnsLoc = NA,
+    recLoc = NA,
+    detRngFun = NA,
+    trnsColNames = list(
+      time = "time",
+      x = "x",
+      y = "y"
+    ),
+    recColNames = list(
+      x = "x",
+      y = "y"
+    ),
+    inputCRS = NA,
+    sp_out = TRUE,
+    show_progress = TRUE) {
   ##  Declare global variables for NSE & R CMD check
   trns_x <- trns_y <- NULL
 
   # Check input class - trnsLoc
-  if (!inherits(trnsLoc, c("data.frame", "sf", "sfc", "SpatialPointsDataFrame"))) {
+  if (
+    !inherits(trnsLoc, c("data.frame", "sf", "sfc", "SpatialPointsDataFrame"))
+  ) {
     stop(
       "Input 'trnsLoc' must be of class 'data.frame', 'sf', 'sfc', ",
       " or 'SpatialPointsDataFrame'."
@@ -231,7 +234,9 @@ detect_transmissions <- function(trnsLoc = NA,
   }
 
   # Check input class - recLoc
-  if (!inherits(recLoc, c("data.frame", "sf", "sfc", "SpatialPointsDataFrame"))) {
+  if (
+    !inherits(recLoc, c("data.frame", "sf", "sfc", "SpatialPointsDataFrame"))
+  ) {
     stop(
       "Input 'recLoc' must be of class 'data.frame', 'sf', 'sfc', ",
       " or 'SpatialPointsDataFrame'."
@@ -241,7 +246,6 @@ detect_transmissions <- function(trnsLoc = NA,
   # Get input CRS and use CRS arg if missing
   crs_in <- sf::st_crs(trnsLoc)
   if (is.na(crs_in)) crs_in <- sf::st_crs(inputCRS)
-
 
   # Check that sf geometry is POINT - trnsLoc
   if (inherits(trnsLoc, c("sf", "sfc"))) {
@@ -295,7 +299,6 @@ detect_transmissions <- function(trnsLoc = NA,
     recLoc_sf <- sf::st_as_sf(recLoc, coords = c("x", "y"), crs = crs_in)
   }
 
-
   # Convert to sf_point if polyg is SpatialPointsDataFrame
   if (inherits(trnsLoc, "SpatialPointsDataFrame")) {
     trnsLoc_sf <- sf::st_as_sf(trnsLoc, crs = crs_in)
@@ -318,12 +321,10 @@ detect_transmissions <- function(trnsLoc = NA,
   # Rename time col
   names(trnsLoc)[which(names(trnsLoc) %in% time_trns_col_names)] <- "time"
 
-
   # Set CRS of recLoc to match trnsLoc
   rec_crs_in <- sf::st_crs(recLoc_sf)
 
   if (rec_crs_in != crs_in) recLoc_sf <- sf::st_transform(recLoc_sf, crs_in)
-
 
   # preallocate detection data frame
   dtc <- data.frame(
@@ -346,20 +347,25 @@ detect_transmissions <- function(trnsLoc = NA,
 
     # distance between gth receiver and each transmission
 
-    distM.g <- sqrt((trnsLoc$x - recLoc$x[g])^2 +
-      (trnsLoc$y - recLoc$y[g])^2)
+    distM.g <- sqrt(
+      (trnsLoc$x - recLoc$x[g])^2 +
+        (trnsLoc$y - recLoc$y[g])^2
+    )
 
     if (isTRUE(sf::st_crs(trnsLoc_sf)$IsGeographic)) {
-      distM.g <- geodist::geodist(sf::st_coordinates(trnsLoc_sf),
+      distM.g <- geodist::geodist(
+        sf::st_coordinates(trnsLoc_sf),
         sf::st_coordinates(recLoc_sf[g, ]),
         measure = "haversine"
       )
     } else {
       # Euclidean distance if Cartesian
-      distM.g <- sqrt((sf::st_coordinates(trnsLoc_sf)[, "X"] -
-        sf::st_coordinates(recLoc_sf)[g, "X"])^2 +
-        (sf::st_coordinates(trnsLoc_sf)[, "Y"] -
-          sf::st_coordinates(recLoc_sf)[g, "Y"])^2)
+      distM.g <- sqrt(
+        (sf::st_coordinates(trnsLoc_sf)[, "X"] -
+          sf::st_coordinates(recLoc_sf)[g, "X"])^2 +
+          (sf::st_coordinates(trnsLoc_sf)[, "Y"] -
+            sf::st_coordinates(recLoc_sf)[g, "Y"])^2
+      )
     }
 
     # Probability of detection
@@ -394,16 +400,14 @@ detect_transmissions <- function(trnsLoc = NA,
   dtc <- dtc[order(dtc$time), ]
 
   # Convert to sf with receiver locations
-  dtc_sf <- sf::st_as_sf(dtc,
-    coords = c("rec_x", "rec_y"),
-    crs = crs_in
-  )
+  dtc_sf <- sf::st_as_sf(dtc, coords = c("rec_x", "rec_y"), crs = crs_in)
 
   # Rename geometry column
   dtc_sf <- dplyr::rename(dtc_sf, rec_geometry = geometry)
 
   # Add transmission locations
-  trns_geo <- sf::st_as_sf(dtc,
+  trns_geo <- sf::st_as_sf(
+    dtc,
     coords = c("trns_x", "trns_y"),
     crs = crs_in
   )$geometry
