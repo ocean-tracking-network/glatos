@@ -2,7 +2,8 @@
 # (example data object)
 
 # get path to example detection efficency
-sample_detection_efficiency <- system.file("extdata",
+sample_detection_efficiency <- system.file(
+  "extdata",
   "sample_detection_efficiency.csv",
   package = "glatos"
 )

@@ -1,7 +1,6 @@
 # Make vdat_csv_schema (data object for read_vdat_csv)
 # Specify column names and data types for each known vdat csv version
 
-
 # Make list element for each vdat csv schema version
 # pre-allocate sheet-level structure within each version
 vdat_csv_schema <- list(
@@ -826,6 +825,7 @@ vdat_csv_schema$v2.0.0 <- list(
   "DIAG_VR2TX" = NA,
   "DIAG_VR2TX_INTERIM" = NA,
   "DIAG_VR4" = NA,
+  "DIAG_NEXTRAK" = NA,
   "EVENT" = NA,
   "EVENT_FAULT" = NA,
   "EVENT_INIT" = NA,
@@ -1442,6 +1442,30 @@ vdat_csv_schema$v2.0.0$DIAG_VR4 <- read.table(
   "Pings (180 kHz)"         numeric
   "Detections (180 kHz)"    numeric
   "Tilt (deg)"              numeric
+  ',
+  header = TRUE,
+  stringsAsFactors = FALSE,
+  check.names = FALSE,
+  comment.char = ""
+)
+
+
+vdat_csv_schema$v2.0.0$DIAG_NEXTRAK <- read.table(
+  text = '
+  name                          type
+  "DIAG_NEXTRAK_DESC"           character
+  "Device Time (UTC)"           POSIXct
+  "Time"                        POSIXct
+  "Time Offset (h)"             numeric
+  "Time Correction (s)"         numeric
+  "Model"                       character
+  "Serial Number"               character
+  "Ambient Temperature (deg C)" numeric
+  "Noise (dB)"                  numeric
+  "Tilt (deg)"                  numeric
+  "Depth (m)"                   numeric
+  "Pings"                       numeric
+  "Detections"                  numeric
   ',
   header = TRUE,
   stringsAsFactors = FALSE,

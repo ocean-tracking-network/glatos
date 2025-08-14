@@ -126,20 +126,28 @@ real_sensor_values <- function(det, tag_specs) {
 
   data.table::setkey(tags, code_space, id_code)
 
-  tags <- tags[, c(
-    "code_space", "id_code", "sensor_range", "sensor_units",
-    "sensor_slope", "sensor_intercept", "accel_algorithm",
-    "accel_sample_rate", "sensor_transmit_ratio"
-  ),
-  with = FALSE
+  tags <- tags[,
+    c(
+      "code_space",
+      "id_code",
+      "sensor_range",
+      "sensor_units",
+      "sensor_slope",
+      "sensor_intercept",
+      "accel_algorithm",
+      "accel_sample_rate",
+      "sensor_transmit_ratio"
+    ),
+    with = FALSE
   ]
 
   # merge
-  dtc <- merge(dtc, tags,
+  dtc <- merge(
+    dtc,
+    tags,
     by.x = data.table::key(dtc),
     by.y = data.table::key(tags)
   )
-
 
   data.table::setkey(dtc, ord) # reorder to original
 
@@ -149,7 +157,6 @@ real_sensor_values <- function(det, tag_specs) {
 
   # calculate real values
   dtc[, sensor_value_real := sensor_intercept + (sensor_value * sensor_slope)]
-
 
   # return data.table if input class data.table
   if (inherits(det, "data.table")) {

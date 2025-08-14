@@ -172,16 +172,17 @@
 #'
 #' @export
 
-abacus_plot <- function(det,
-                        location_col = "glatos_array",
-                        locations = NULL,
-                        show_receiver_status = NULL,
-                        receiver_history = NULL,
-                        out_file = NULL,
-                        x_res = 5,
-                        x_format = "%Y-%m-%d",
-                        outFile = NULL,
-                        ...) {
+abacus_plot <- function(
+    det,
+    location_col = "glatos_array",
+    locations = NULL,
+    show_receiver_status = NULL,
+    receiver_history = NULL,
+    out_file = NULL,
+    x_res = 5,
+    x_format = "%Y-%m-%d",
+    outFile = NULL,
+    ...) {
   # deprecation message for show_receiver_status
   if (!is.null(show_receiver_status)) {
     warning(paste(
@@ -191,7 +192,6 @@ abacus_plot <- function(det,
       "is specified."
     ))
   }
-
 
   # check if outFile was given
   if (!is.null(outFile)) {
@@ -211,7 +211,8 @@ abacus_plot <- function(det,
     stop(
       paste0(
         "det is missing the following ",
-        "column(s):\n", paste0("       '", missingCols, "'", collapse = "\n")
+        "column(s):\n",
+        paste0("       '", missingCols, "'", collapse = "\n")
       ),
       call. = FALSE
     )
@@ -222,8 +223,11 @@ abacus_plot <- function(det,
 
   # Check that timestamp is of class 'POSIXct'
   if (!("POSIXct" %in% class(det$detection_timestamp_utc))) {
-    stop(paste0("Column 'detection_timestamp_utc' in the det data frame must
-                be of class 'POSIXct'."),
+    stop(
+      paste0(
+        "Column 'detection_timestamp_utc' in the det data frame must
+                be of class 'POSIXct'."
+      ),
       call. = FALSE
     )
   }
@@ -232,24 +236,26 @@ abacus_plot <- function(det,
   if (!is.null(out_file)) {
     outDir <- ifelse(dirname(out_file) == ".", getwd(), dirname(out_file))
     if (!dir.exists(outDir)) {
-      stop("Output directory '", outDir,
-        "' does not exist.",
-        call. = FALSE
-      )
+      stop("Output directory '", outDir, "' does not exist.", call. = FALSE)
     }
   }
 
   # Perform checks related to receiver_history
   if (!is.null(receiver_history)) {
     # Check that required columns appear in the receiver history data frame
-    missingCols2 <- setdiff(c(
-      "deploy_date_time", "recover_date_time",
-      location_col
-    ), names(receiver_history))
+    missingCols2 <- setdiff(
+      c(
+        "deploy_date_time",
+        "recover_date_time",
+        location_col
+      ),
+      names(receiver_history)
+    )
     if (length(missingCols2) > 0) {
       stop(
         paste0(
-          "receiver_history is missing the following ", "column(s):\n",
+          "receiver_history is missing the following ",
+          "column(s):\n",
           paste0("       '", missingCols2, "'", collapse = "\n")
         ),
         call. = FALSE
@@ -258,22 +264,30 @@ abacus_plot <- function(det,
 
     # Check that deploy_date_time is of class 'POSIXct'
     if (!("POSIXct" %in% class(receiver_history$deploy_date_time))) {
-      stop(paste0("Column 'deploy_date_time' in the receiver_history data
-                    frame must be of class 'POSIXct'."),
+      stop(
+        paste0(
+          "Column 'deploy_date_time' in the receiver_history data
+                    frame must be of class 'POSIXct'."
+        ),
         call. = FALSE
       )
     }
 
     # Check that recover_date_time is of class 'POSIXct'
     if (!("POSIXct" %in% class(receiver_history$deploy_date_time))) {
-      stop(paste0("Column 'recover_date_time' in the receiver_history data
-                    frame must be of class 'POSIXct'."),
+      stop(
+        paste0(
+          "Column 'recover_date_time' in the receiver_history data
+                    frame must be of class 'POSIXct'."
+        ),
         call. = FALSE
       )
     }
 
     # Rename receiver_history column specified in location_col to "location"
-    names(receiver_history)[which(names(receiver_history) == location_col)] <- "location"
+    names(receiver_history)[which(
+      names(receiver_history) == location_col
+    )] <- "location"
   }
 
   # Make a list of optional arguments passed through ... for use in parsing out
@@ -297,7 +311,6 @@ abacus_plot <- function(det,
     )
   }
 
-
   # Merge det and locations_table data frames
   # Keep only locations that appear in the locations_table data frame
   det <- merge(det, locations_table, by = "location", all.y = TRUE)
@@ -309,9 +322,13 @@ abacus_plot <- function(det,
   if (!is.null(receiver_history)) {
     # Merge receiver_history and locations_table data frames
     # Keep only locations that appear in the locations_table data frame
-    receiver_history <- merge(receiver_history, locations_table, by = "location", all.y = TRUE)
+    receiver_history <- merge(
+      receiver_history,
+      locations_table,
+      by = "location",
+      all.y = TRUE
+    )
   }
-
 
   # Variable which scales the height of the y-axis depending on the number of
   # labels to appear.
@@ -322,14 +339,14 @@ abacus_plot <- function(det,
   # different string lengths (e.g., "DRM" vs "DRM-001").
   YlabOffset <- (max(nchar(det$location)) - 3) / 3
 
-
   # get file extension
   file_type <- ifelse(is.null(out_file), NA, tools::file_ext(out_file))
 
   # check file extension is supported
   ext_supp <- c(NA, "png", "jpeg", "png", "bmp", "tiff")
   if (!(tolower(file_type) %in% ext_supp)) {
-    stop(paste0("Image type '", file_type, "' is not supported."),
+    stop(
+      paste0("Image type '", file_type, "' is not supported."),
       call. = FALSE
     )
   }
@@ -347,10 +364,8 @@ abacus_plot <- function(det,
     tiff(out_file, height = pngHeight, width = 1000, pointsize = 22)
   }
 
-
   # Set inner and outer margins
   par(mar = c(1, 1, 1.5, 2), oma = c(3, 4 + YlabOffset, 0, 0))
-
 
   # set plot-level arguments passed via ...
   # set defaults
@@ -372,14 +387,14 @@ abacus_plot <- function(det,
     plot_args[setdiff(names(plot_args), names(arguments))]
   )
 
-
   # Plot detection data
   do.call(plot, c(list(x = NULL), plot_args))
 
   if (!is.null(receiver_history)) {
     with(
       receiver_history,
-      segments(deploy_date_time,
+      segments(
+        deploy_date_time,
         y_order,
         recover_date_time,
         y_order,
@@ -389,15 +404,20 @@ abacus_plot <- function(det,
     )
   }
 
-  with(det, do.call(
-    points,
-    c(list(x = detection_timestamp_utc, y = y_order), arguments)
-  ))
+  with(
+    det,
+    do.call(
+      points,
+      c(list(x = detection_timestamp_utc, y = y_order), arguments)
+    )
+  )
 
   # Add custom axes
-  axis(2,
+  axis(
+    2,
     at = locations_table$y_order,
-    labels = locations_table$location, las = 1
+    labels = locations_table$location,
+    las = 1
   )
 
   # list to hold arguments for seq
@@ -412,9 +432,11 @@ abacus_plot <- function(det,
   } else if (is.character(x_res)) {
     seq_args$by <- x_res
   } else {
-    warning("Input argument `x_res` must be either an integer or \n
+    warning(
+      "Input argument `x_res` must be either an integer or \n
                     a valid string that can be passed to seq.Date(..., by = ).\n
-                    Defeault value 5 has been used.")
+                    Defeault value 5 has been used."
+    )
     seq_args$length.out <- 5 # force default with warning
   }
 
@@ -423,11 +445,17 @@ abacus_plot <- function(det,
   axis(1, at = xmaj, labels = format(xmaj, x_format), las = 1)
 
   # Add axes titles
-  mtext(ifelse("xlab" %in% names(arguments), arguments$xlab, "Date"),
-    side = 1, line = 2.2, cex = 1.2
+  mtext(
+    ifelse("xlab" %in% names(arguments), arguments$xlab, "Date"),
+    side = 1,
+    line = 2.2,
+    cex = 1.2
   )
-  mtext(ifelse("ylab" %in% names(arguments), arguments$ylab, location_col),
-    side = 2, line = 3.5 + YlabOffset, cex = 1.2
+  mtext(
+    ifelse("ylab" %in% names(arguments), arguments$ylab, location_col),
+    side = 2,
+    line = 3.5 + YlabOffset,
+    cex = 1.2
   )
 
   if (!is.na(file_type)) {

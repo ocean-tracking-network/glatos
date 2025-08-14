@@ -2,10 +2,7 @@
 # (internal data object)
 
 # get path to example receiver_locations file
-rec2_file <- system.file("extdata",
-  "sample_receivers2.csv",
-  package = "glatos"
-)
+rec2_file <- system.file("extdata", "sample_receivers2.csv", package = "glatos")
 
 sample_receivers2 <- read_glatos_receivers(rec2_file)
 

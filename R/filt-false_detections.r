@@ -93,8 +93,11 @@
 #' @export
 
 false_detections <- function(
-    det, tf, min_lag_col = "min_lag",
-    show_plot = FALSE, ...) {
+    det,
+    tf,
+    min_lag_col = "min_lag",
+    show_plot = FALSE,
+    ...) {
   # Check that the min_lag column is in the detections dataframe
   # If not, add it in using min_lag function
   if (!(min_lag_col %in% names(det))) {
@@ -103,16 +106,27 @@ false_detections <- function(
 
   # Identify possible false detections by comparing "min_lag" column to
   #  threshold defined in object "tf".
-  det$passed_filter <- ifelse(!is.na(det[[min_lag_col]]) &
-    det[[min_lag_col]] <= tf, 1, 0)
+  det$passed_filter <- ifelse(
+    !is.na(det[[min_lag_col]]) &
+      det[[min_lag_col]] <= tf,
+    1,
+    0
+  )
 
   nr <- nrow(det)
 
   message(paste0(
     "The filter identified ",
-    nr - sum(det$passed_filter), " (",
-    round((nr - sum(det$passed_filter)) /
-      nr * 100, 2), "%) of ", nr,
+    nr - sum(det$passed_filter),
+    " (",
+    round(
+      (nr - sum(det$passed_filter)) /
+        nr *
+        100,
+      2
+    ),
+    "%) of ",
+    nr,
     " detections as potentially false."
   ))
 
@@ -123,7 +137,9 @@ false_detections <- function(
 
     # specify defaults here
     args.default <- list(
-      type = "l", las = 2, xlab = "min_lag threshold (tf)",
+      type = "l",
+      las = 2,
+      xlab = "min_lag threshold (tf)",
       ylab = "Proportion of min_lag > tf"
     )
     inargs <- list(...)

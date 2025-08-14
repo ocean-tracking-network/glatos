@@ -1,5 +1,37 @@
 ----
 
+# glatos 0.8.1 dev (2025-08-13)
+
+
+## Breaking changes
+
+- 
+
+
+### New features
+
+- 
+
+
+### Bug fixes and minor changes
+
+- Changed case of vdat.exe and paths to vdat.exe and vue.exe in tests (new default 
+  install locations on windows).
+  - fixes [issue #253](https://github.com/ocean-tracking-network/glatos/issues/253)
+
+- Added DIAG_NEXTRAK record type to vdat_csv_schema data object. 
+  - fixes [issue #265](https://github.com/ocean-tracking-network/glatos/issues/265)
+
+- Added explicit calls to data objects so that they can be accessed when the 
+  package isn't attached.
+  - fixes [issue #261](https://github.com/ocean-tracking-network/glatos/issues/261)
+  
+- Allowed `read_otn_detections()` to handle zipped CSVs
+  - fixes [issue #262](https://github.com/ocean-tracking-network/glatos/issues/262)
+
+----
+
+
 # glatos 0.8.0 (2024-09-19)
 
 

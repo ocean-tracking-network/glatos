@@ -49,7 +49,6 @@ read_glatos_detections <- function(det_file, version = NULL) {
   # see version-specific file specifications
   # internal data object; i.e., in R/sysdata.r
 
-
   # Identify detection file version
   id_det_version <- function(det_file) {
     det_col_names <- names(data.table::fread(det_file, nrows = 0))
@@ -64,8 +63,10 @@ read_glatos_detections <- function(det_file, version = NULL) {
 
   if (is.null(version)) {
     version <- id_det_version(det_file)
-  } else if (!(paste0("v", version) %in%
-    names(glatos_detection_schema))) {
+  } else if (
+    !(paste0("v", version) %in%
+      names(glatos_detection_schema))
+  ) {
     stop(paste0("Detection file version ", version, " is not supported."))
   }
 
@@ -79,31 +80,39 @@ read_glatos_detections <- function(det_file, version = NULL) {
     col_classes[c(timestamp_cols, date_cols)] <- "character"
 
     # read data
-    dtc <- data.table::fread(det_file,
-      sep = ",", colClasses = col_classes,
+    dtc <- data.table::fread(
+      det_file,
+      sep = ",",
+      colClasses = col_classes,
       na.strings = c("", "NA")
     )
 
     # coerce timestamps to POSIXct
     for (j in timestamp_cols) {
-      data.table::set(dtc,
+      data.table::set(
+        dtc,
         j = glatos_detection_schema[[vversion]]$name[j],
         value = lubridate::fast_strptime(
           dtc[[glatos_detection_schema[[vversion]]$name[j]]],
-          format = "%Y-%m-%d %H:%M:%S", tz = "UTC", lt = FALSE
+          format = "%Y-%m-%d %H:%M:%S",
+          tz = "UTC",
+          lt = FALSE
         )
       )
     }
     # coerce dates to date
     for (j in date_cols) {
-      data.table::set(dtc,
+      data.table::set(
+        dtc,
         j = glatos_detection_schema[[vversion]]$name[j],
-        value = ifelse(dtc[[glatos_detection_schema[[vversion]]$name[j]]] == "",
+        value = ifelse(
+          dtc[[glatos_detection_schema[[vversion]]$name[j]]] == "",
           NA,
           dtc[[glatos_detection_schema[[vversion]]$name[j]]]
         )
       )
-      data.table::set(dtc,
+      data.table::set(
+        dtc,
         j = glatos_detection_schema[[vversion]]$name[j],
         value = as.Date(dtc[[glatos_detection_schema[[vversion]]$name[j]]])
       )

@@ -24,7 +24,10 @@ nickname <- function() "very-refreshing-lemonade"
 # package startup message
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste0(
-    "version ", utils::packageVersion("glatos"),
-    " ('", nickname(), "')"
+    "version ",
+    utils::packageVersion("glatos"),
+    " ('",
+    nickname(),
+    "')"
   ))
 }

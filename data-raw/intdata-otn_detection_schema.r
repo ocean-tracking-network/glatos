@@ -1,9 +1,6 @@
 # Make otn_detection_schema (internal data object for read_otn_detections)
 # Specify column names and data types for each detection file version
 
-
-
-
 #----------------------------------------------------
 
 # OTN 2025
@@ -70,7 +67,6 @@ otn_detection_schema_old_min_columns <- c(
 )
 # \OTN
 #----------------------------------------------------
-
 
 # add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")

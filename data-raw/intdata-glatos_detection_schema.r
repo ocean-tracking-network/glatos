@@ -1,7 +1,6 @@
 # Make glatos_detection_schema (internal data object for read_glatos_detections)
 # Specify column names and data types for each detection file version
 
-
 # Make list element for each version
 # pre-allocate table-level structure within each version
 glatos_detection_schema <- list(

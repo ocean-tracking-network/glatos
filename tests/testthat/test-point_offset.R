@@ -12,15 +12,17 @@ test_that("Returns named matrix", {
 })
 
 
-
-
 test_that("Converts feet to meters", {
   expect_equal(
     point_offset(
-      lon = -83.0, lat = 44.0, offsetDist = 100,
-      offsetDir = "NE", distUnit = "ft"
+      lon = -83.0,
+      lat = 44.0,
+      offsetDist = 100,
+      offsetDir = "NE",
+      distUnit = "ft"
     ),
-    matrix(c(-82.99973, 44.00019),
+    matrix(
+      c(-82.99973, 44.00019),
       ncol = 2,
       dimnames = list(NULL, c("lon", "lat"))
     ),
@@ -30,31 +32,36 @@ test_that("Converts feet to meters", {
   expect_false(
     identical(
       point_offset(
-        lon = -83.0, lat = 44.0, offsetDist = 100,
-        offsetDir = "NE", distUnit = "m"
+        lon = -83.0,
+        lat = 44.0,
+        offsetDist = 100,
+        offsetDir = "NE",
+        distUnit = "m"
       ),
       point_offset(
-        lon = -83.0, lat = 44.0, offsetDist = 100,
-        offsetDir = "NE", distUnit = "ft"
+        lon = -83.0,
+        lat = 44.0,
+        offsetDist = 100,
+        offsetDir = "NE",
+        distUnit = "ft"
       )
     )
   )
 })
 
 
-
-
 test_that("Errors with wrong units", {
   expect_error(
     point_offset(
-      lon = -83.0, lat = 44.0, offsetDist = 100,
-      offsetDir = "NE", distUnit = "km"
+      lon = -83.0,
+      lat = 44.0,
+      offsetDist = 100,
+      offsetDir = "NE",
+      distUnit = "km"
     ),
     "Input attribute 'dirUnit' must be 'm' \\(meters\\) or 'ft' \\(feet\\)\\."
   )
 })
-
-
 
 
 test_that("No input returns NA", {

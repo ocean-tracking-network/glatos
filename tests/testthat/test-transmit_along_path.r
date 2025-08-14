@@ -5,16 +5,18 @@ test_that("data.frame input, spatial output gives expected result", {
 
     crw_in_polygon(
       greatLakesPoly,
-      theta = c(0, 25), stepLen = 10000,
-      initPos = c(-87.49017, 48.42314), initHeading = 0,
+      theta = c(0, 25),
+      stepLen = 10000,
+      initPos = c(-87.49017, 48.42314),
+      initHeading = 0,
       nsteps = 5,
       sp_out = TRUE,
-      cartesianCRS = 3175, show_progress = FALSE
+      cartesianCRS = 3175,
+      show_progress = FALSE
     )
   }
 
   path_df <- as.data.frame(sf::st_coordinates(path_sp))
-
 
   tr_dfin_spout <- {
     set.seed(30)
@@ -42,19 +44,20 @@ test_that("data.frame input, spatial output gives expected result", {
 })
 
 
-
-
 test_that("data.frame input, data.frame output gives expected result", {
   path_sp <- {
     set.seed(30)
 
     crw_in_polygon(
       greatLakesPoly,
-      theta = c(0, 25), stepLen = 10000,
-      initPos = c(-87.49017, 48.42314), initHeading = 0,
+      theta = c(0, 25),
+      stepLen = 10000,
+      initPos = c(-87.49017, 48.42314),
+      initHeading = 0,
       nsteps = 5,
       sp_out = TRUE,
-      cartesianCRS = 3175, show_progress = FALSE
+      cartesianCRS = 3175,
+      show_progress = FALSE
     )
   }
 
@@ -83,19 +86,20 @@ test_that("data.frame input, data.frame output gives expected result", {
 })
 
 
-
-
 test_that("spatial input, data.frame output gives expected result", {
   path_sp <- {
     set.seed(30)
 
     crw_in_polygon(
       greatLakesPoly,
-      theta = c(0, 25), stepLen = 10000,
-      initPos = c(-87.49017, 48.42314), initHeading = 0,
+      theta = c(0, 25),
+      stepLen = 10000,
+      initPos = c(-87.49017, 48.42314),
+      initHeading = 0,
       nsteps = 5,
       sp_out = TRUE,
-      cartesianCRS = 3175, show_progress = FALSE
+      cartesianCRS = 3175,
+      show_progress = FALSE
     )
   }
 
@@ -119,19 +123,20 @@ test_that("spatial input, data.frame output gives expected result", {
 })
 
 
-
-
 test_that("spatial input, spatial output gives expected result", {
   path_sp <- {
     set.seed(30)
 
     crw_in_polygon(
       greatLakesPoly,
-      theta = c(0, 25), stepLen = 10000,
-      initPos = c(-87.49017, 48.42314), initHeading = 0,
+      theta = c(0, 25),
+      stepLen = 10000,
+      initPos = c(-87.49017, 48.42314),
+      initHeading = 0,
       nsteps = 5,
       sp_out = TRUE,
-      cartesianCRS = 3175, show_progress = FALSE
+      cartesianCRS = 3175,
+      show_progress = FALSE
     )
   }
 
@@ -145,7 +150,6 @@ test_that("spatial input, spatial output gives expected result", {
       burstDur = 5.0
     )
   }
-
 
   expect_s3_class(tr_spin_spout, c("sf", "data.frame"), exact = T)
 

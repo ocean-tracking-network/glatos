@@ -1,6 +1,5 @@
 # R/class-glatos_animals.R
 
-
 test_that("glatos_animals works as expected", {
   # data.frame input
 
@@ -51,7 +50,8 @@ test_that("glatos_animals works as expected", {
 
   # sf input
 
-  x_sf <- sf::st_as_sf(x,
+  x_sf <- sf::st_as_sf(
+    x,
     coords = c("release_longitude", "release_latitude"),
     remove = FALSE
   )
@@ -65,7 +65,6 @@ test_that("glatos_animals works as expected", {
     sf::st_drop_geometry(ga_sf),
     ga_df_shouldbe
   )
-
 
   # tibble input
 
@@ -81,7 +80,6 @@ test_that("glatos_animals works as expected", {
     as.data.frame(ga_df_shouldbe)
   )
 })
-
 
 
 test_that("validate_glatos_animals catches bad inputs", {
@@ -103,7 +101,8 @@ test_that("validate_glatos_animals catches bad inputs", {
 
   # data.frame input; missing column name
   expect_error(
-    as_glatos_animals(dplyr::rename(x,
+    as_glatos_animals(dplyr::rename(
+      x,
       fish_name = animal_id,
       release_timestamp = utc_release_date_time
     )),
@@ -114,7 +113,8 @@ test_that("validate_glatos_animals catches bad inputs", {
   # data.frame input; wrong column class
   expect_error(
     as_glatos_animals(
-      dplyr::mutate(x,
+      dplyr::mutate(
+        x,
         animal_id = as.integer(animal_id),
         utc_release_date_time = as.character(utc_release_date_time)
       )

@@ -27,8 +27,7 @@
 #' vue_det <- read_vue_detection_csv(csv_file)
 #'
 #' @export
-read_vue_detection_csv <- function(src,
-                                   show_progress = FALSE) {
+read_vue_detection_csv <- function(src, show_progress = FALSE) {
   # Check if exists
   if (!file.exists(src)) {
     warning("File not found: ", src)
@@ -64,7 +63,6 @@ read_vue_detection_csv <- function(src,
     )
   }
 
-
   # Read each list element separately
   vue_detections <- data.table::fread(
     file = src,
@@ -77,7 +75,8 @@ read_vue_detection_csv <- function(src,
   )
 
   # Assign class
-  vue_detections <- structure(vue_detections,
+  vue_detections <- structure(
+    vue_detections,
     class = c(
       "vue_detections",
       class(vue_detections)

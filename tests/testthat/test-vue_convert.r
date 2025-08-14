@@ -5,7 +5,9 @@ skip_on_cran()
 
 test_that("vue_convert works", {
   # VR2W file
-  vrl_files <- system.file("extdata", "detection_files_raw",
+  vrl_files <- system.file(
+    "extdata",
+    "detection_files_raw",
     c(
       "VR2W_109924_20110718_1.vrl",
       "VR2W180_302187_20180629_1.vrl",
@@ -21,28 +23,24 @@ test_that("vue_convert works", {
   temp_vrl_files <- file.path(temp_vrl_dir, basename(vrl_files))
   file.copy(vrl_files, temp_vrl_files)
 
-
   # default args
   expect_snapshot(temp_csv_files <- vue_convert(temp_vrl_files))
-
 
   # skip existing output files
   expect_snapshot(temp_csv_files <- vue_convert(temp_vrl_files))
 
-
-
   # src is dir; overwrite = TRUE
-  expect_snapshot(temp_csv_files2 <- vue_convert(temp_vrl_dir,
-    overwrite = TRUE
-  ))
+  expect_snapshot(
+    temp_csv_files2 <- vue_convert(temp_vrl_dir, overwrite = TRUE)
+  )
 
   # skip RLD files
   rld_files <- tempfile(rep("VR2W-RLD_", 3), tmpdir = temp_vrl_dir)
   for (file_i in rld_files) writeLines("foo", file_i)
 
-  expect_snapshot(temp_csv_files2 <- vdat_convert(temp_vrl_dir,
-    overwrite = TRUE
-  ))
+  expect_snapshot(
+    temp_csv_files2 <- vdat_convert(temp_vrl_dir, overwrite = TRUE)
+  )
 
   # clean up
   on.exit(
@@ -61,7 +59,9 @@ test_that("vue_convert works", {
 
 test_that("vue_convert catches bad inputs", {
   # VR2W file
-  vrl_files <- system.file("extdata", "detection_files_raw",
+  vrl_files <- system.file(
+    "extdata",
+    "detection_files_raw",
     c(
       "VR2W_109924_20110718_1.vrl",
       "VR2W180_302187_20180629_1.vrl",
@@ -73,7 +73,6 @@ test_that("vue_convert catches bad inputs", {
 
   temp_vrl_dir2 <- file.path(tempdir(), "vrl2")
   dir.create(temp_vrl_dir2)
-
 
   # src is missing file
   expect_error(
@@ -99,18 +98,16 @@ test_that("vue_convert catches bad inputs", {
     )
   )
 
-
   # missing out_dir
   expect_error(
-    vue_convert(temp_vrl_files2[1],
-      out_dir = file.path(tempdir(), "1")
-    ),
+    vue_convert(temp_vrl_files2[1], out_dir = file.path(tempdir(), "1")),
     paste0("'out_dir' not found")
   )
 
   # more out_dir than src
   expect_error(
-    vue_convert(temp_vrl_files2[1],
+    vue_convert(
+      temp_vrl_files2[1],
       out_dir = file.path(tempdir(), c("1", "2"))
     ),
     paste0(
@@ -121,9 +118,7 @@ test_that("vue_convert catches bad inputs", {
 
   # out_dir is file
   expect_error(
-    vue_convert(temp_vrl_files2[1],
-      out_dir = temp_vrl_files2[2]
-    ),
+    vue_convert(temp_vrl_files2[1], out_dir = temp_vrl_files2[2]),
     paste0(
       "'out_dir' cannot contain full paths to files; ",
       "only directories\\."
@@ -153,7 +148,6 @@ test_that("vue_convert catches bad inputs", {
     expect_message("\n") |>
     expect_message("\\! 1 file\\(s\\) not written due to errors\\:")
 
-
   # clean up
   on.exit(
     unlink(
@@ -166,7 +160,6 @@ test_that("vue_convert catches bad inputs", {
     )
   )
 })
-
 
 
 test_that("check_vue works", {
@@ -211,7 +204,8 @@ test_that("get_local_vue_version works", {
 
   expect_type(temp_vue_version$long_version, "character")
 
-  expect_error(get_local_vue_version(tempdir()),
+  expect_error(
+    get_local_vue_version(tempdir()),
     "VUE.exe not found at specified path.",
     fixed = TRUE
   )
