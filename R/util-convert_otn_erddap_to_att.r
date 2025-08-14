@@ -142,7 +142,7 @@ convert_otn_erddap_to_att <- function(
   if("scientificName" %in% colnames(detectionObj)) {
     join_by = c(
       "animal_id" = "animal_id",
-      "scientificName" = "scientificname"
+      "scientificName" = "scientificname",
       "datacenter_reference" = "datacenter_reference"
     )
   }
