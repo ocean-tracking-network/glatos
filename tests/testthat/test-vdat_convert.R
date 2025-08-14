@@ -175,14 +175,14 @@ test_that("check_vdat works", {
 
   # path contains vdat.exe
   expect_equal(
-    check_vdat("C:/Program Files/Innovasea/Fathom/vdat.exe"),
-    "C:/Program Files/Innovasea/Fathom/VDAT.exe"
+    check_vdat("C:/Program Files/Innovasea/Fathom Connect/vdat.exe"),
+    "C:/Program Files/Innovasea/Fathom Connect/vdat.exe"
   )
 
   # vdat.exe not found
   expect_error(
     check_vdat(tempdir()),
-    "VDAT.exe not found at specified path.",
+    "vdat.exe not found at specified path.",
     fixed = TRUE
   )
 })
@@ -208,7 +208,7 @@ test_that("get_local_vdat_version works", {
 
   expect_error(
     get_local_vdat_version(tempdir()),
-    "VDAT.exe not found at specified path.",
+    "vdat.exe not found at specified path.",
     fixed = TRUE
   )
 })
