@@ -194,7 +194,7 @@ convert_otn_to_att <- function(
 
   detectionObj$est_tag_life[detectionObj$est_tag_life == "NULL"] <- NA
 
-  if("collectionCode" %in% colnames(detectionObj)) {
+  if ("collectionCode" %in% colnames(detectionObj)) {
     releaseData <- dplyr::tibble(
       # Get the rest from detectionObj
       Tag.ID = detectionObj$animal_id,
@@ -206,8 +206,7 @@ convert_otn_to_att <- function(
       Tag.Life = as.integer(detectionObj$est_tag_life)
     ) %>%
       dplyr::filter(!Tag.ID %in% NA)
-  }
-  else {
+  } else {
     releaseData <- dplyr::tibble(
       # Get the rest from detectionObj
       Tag.ID = detectionObj$animal_id,
