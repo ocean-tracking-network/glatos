@@ -195,18 +195,32 @@ convert_otn_to_att <- function(
 
   detectionObj$est_tag_life[detectionObj$est_tag_life == "NULL"] <- NA
 
-  releaseData <- dplyr::tibble(
-    # Get the rest from detectionObj
-    Tag.ID = detectionObj$animal_id,
-    Tag.Project = as.factor(detectionObj$collectioncode),
-    Release.Latitude = as.double(detectionObj$latitude),
-    Release.Longitude = as.double(detectionObj$longitude),
-    Release.Date = as.Date(detectionObj$time),
-    Sex = as.factor(detectionObj$sex),
-    Tag.Life = as.integer(detectionObj$est_tag_life)
-  ) %>%
-    dplyr::filter(!Tag.ID %in% NA)
-
+  if("collectionCode" %in% colnames(detectionObj)) {
+    releaseData <- dplyr::tibble(
+      # Get the rest from detectionObj
+      Tag.ID = detectionObj$animal_id,
+      Tag.Project = as.factor(detectionObj$collectionCode),
+      Release.Latitude = as.double(detectionObj$decimalLatitude),
+      Release.Longitude = as.double(detectionObj$decimalLongitude),
+      Release.Date = as.Date(detectionObj$detection_timestamp_utc),
+      Sex = as.factor(detectionObj$sex),
+      Tag.Life = as.integer(detectionObj$est_tag_life)
+    ) %>%
+      dplyr::filter(!Tag.ID %in% NA)
+  }
+  else {
+    releaseData <- dplyr::tibble(
+      # Get the rest from detectionObj
+      Tag.ID = detectionObj$animal_id,
+      Tag.Project = as.factor(detectionObj$collectioncode),
+      Release.Latitude = as.double(detectionObj$latitude),
+      Release.Longitude = as.double(detectionObj$longitude),
+      Release.Date = as.Date(detectionObj$time),
+      Sex = as.factor(detectionObj$sex),
+      Tag.Life = as.integer(detectionObj$est_tag_life)
+    ) %>%
+      dplyr::filter(!Tag.ID %in% NA)
+  }
   releaseData <- dplyr::mutate(
     releaseData,
     # Convert sex text and null missing columns
