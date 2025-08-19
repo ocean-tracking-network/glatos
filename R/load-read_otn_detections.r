@@ -8,7 +8,7 @@
 #'  file must be located in the working directory.
 #'
 #' @param format Either 'new' or 'old', denoting whether or not the file being
-#' loaded is a CSV predating OTN's parquet rollout (old) or not (new). 
+#' loaded is a CSV predating OTN's parquet rollout (old) or not (new).
 #'
 #' @details
 #' Data are loaded using [data.table::fread()] package and timestamps

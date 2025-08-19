@@ -12,7 +12,7 @@ shrk_det_file <- system.file(
   "blue_shark_detections_old.csv",
   package = "glatos"
 )
-blue_shark_detections <- read_otn_detections(shrk_det_file, format="old")
+blue_shark_detections <- read_otn_detections(shrk_det_file, format = "old")
 
 
 # get path to example files from OTN ERDDAP
