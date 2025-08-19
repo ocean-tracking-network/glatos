@@ -77,7 +77,7 @@ tags <- prepare_tag_sheet(tag_path, 5, 2)
 deploy <- read_otn_deployments(deploy_path)
 
 ATTdata <- convert_otn_to_att(dets, tags, deploymentObj = deploy)
-}
+
 #--------------------------------------------------
 # EXAMPLE #2 - loading from Deployment Sheet
 
@@ -98,6 +98,7 @@ tags <- prepare_tag_sheet(tag_path, 5, 2)
 deploy <- prepare_deploy_sheet(deploy_path, 1, 1)
 
 ATTdata <- convert_otn_to_att(dets, tags, deploymentSheet = deploy)
+}
 
 }
 \author{
