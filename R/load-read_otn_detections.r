@@ -53,8 +53,6 @@ read_otn_detections <- function(det_file, format="new") {
   date_cols <- which(col_classes == "Date")
   col_classes[c(timestamp_cols, date_cols)] <- "character"
   
-  View(col_classes)
-  
   # Check if file is zipped
   # `data.table::fread` can handle zipped CSVs if they are the only file in the
   #   directory. If there are multiple files, they need to be unzipped first.
@@ -95,8 +93,6 @@ read_otn_detections <- function(det_file, format="new") {
     dtc$codespace <- get_codemap(dtc$fieldnumber)
   }
   # coerce timestamps to POSIXct
-  message("About to load timestamps.")
-  View(timestamp_cols)
   for (j in timestamp_cols) {
     data.table::set(
       dtc,
@@ -109,7 +105,6 @@ read_otn_detections <- function(det_file, format="new") {
       )
     )
   }
-  message("about to load dates")
   # coerce dates to date
   for (j in date_cols) {
     data.table::set(
