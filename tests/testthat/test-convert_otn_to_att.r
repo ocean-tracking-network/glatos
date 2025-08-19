@@ -1,6 +1,6 @@
 dets_path <- system.file(
   "extdata",
-  "blue_shark_detections.csv",
+  "blue_shark_detections_old.csv",
   package = "glatos"
 )
 deploy_path <- system.file(

@@ -7,6 +7,9 @@
 #'  OTN detection extract format (*.csv). If only file name is given, then the
 #'  file must be located in the working directory.
 #'
+#' @param format Either 'new' or 'old', denoting whether or not the file being
+#' loaded is a CSV predating OTN's parquet rollout (old) or not (new). 
+#'
 #' @details
 #' Data are loaded using [data.table::fread()] package and timestamps
 #' are coerced to POSIXct using [lubridate::fast_strptime()]. All
