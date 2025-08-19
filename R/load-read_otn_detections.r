@@ -31,19 +31,17 @@
 #' @importFrom lubridate fast_strptime
 #'
 #' @export
-read_otn_detections <- function(det_file, format="new") {
-  # We have to determine which schema to use since this function could conceivably take both types. 
-  if(format == "new"){
+read_otn_detections <- function(det_file, format = "new") {
+  # We have to determine which schema to use since this function could conceivably take both types.
+  if (format == "new") {
     det_schema <- otn_detection_schema
     min_cols <- otn_detection_schema_min_columns
-  }
-  else if(format == "old") {
+  } else if (format == "old") {
     det_schema <- otn_detection_schema_old
     min_cols <- otn_detection_schema_old_min_columns
-  }
-  else {
+  } else {
     message("You must provide a valid format to the read_otn_detections function. Valid formats are either 'new' (CSVs and Parquet files from after OTN's Parquet rollout) or 'old' (CSVs from before the Parquet rollout. If no format is supplied, 'new' is the default.")
-    return(0)  
+    return(0)
   }
 
   # Create a named vector for the column classes
@@ -52,7 +50,7 @@ read_otn_detections <- function(det_file, format="new") {
   timestamp_cols <- which(col_classes == "POSIXct")
   date_cols <- which(col_classes == "Date")
   col_classes[c(timestamp_cols, date_cols)] <- "character"
-  
+
   # Check if file is zipped
   # `data.table::fread` can handle zipped CSVs if they are the only file in the
   #   directory. If there are multiple files, they need to be unzipped first.
