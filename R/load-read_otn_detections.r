@@ -31,14 +31,30 @@
 #' @importFrom lubridate fast_strptime
 #'
 #' @export
-read_otn_detections <- function(det_file) {
+read_otn_detections <- function(det_file, format="new") {
+  # We have to determine which schema to use since this function could conceivably take both types. 
+  if(format == "new"){
+    det_schema <- otn_detection_schema
+    min_cols <- otn_detection_schema_min_columns
+  }
+  else if(format == "old") {
+    det_schema <- otn_detection_schema_old
+    min_cols <- otn_detection_schema_old_min_columns
+  }
+  else {
+    message("You must provide a valid format to the read_otn_detections function. Valid formats are either 'new' (CSVs and Parquet files from after OTN's Parquet rollout) or 'old' (CSVs from before the Parquet rollout. If no format is supplied, 'new' is the default.")
+    return(0)  
+  }
+
   # Create a named vector for the column classes
-  col_classes <- otn_detection_schema$type
-  names(col_classes) <- otn_detection_schema$name
+  col_classes <- det_schema$type
+  names(col_classes) <- det_schema$name
   timestamp_cols <- which(col_classes == "POSIXct")
   date_cols <- which(col_classes == "Date")
   col_classes[c(timestamp_cols, date_cols)] <- "character"
-
+  
+  View(col_classes)
+  
   # Check if file is zipped
   # `data.table::fread` can handle zipped CSVs if they are the only file in the
   #   directory. If there are multiple files, they need to be unzipped first.
@@ -69,8 +85,8 @@ read_otn_detections <- function(det_file) {
   # This check is for non-matched detection extracts. They are missing some required columns, this attempts to create them.
   # More info on OTN detection extracts here: https://members.oceantrack.org/data/otn-detection-extract-documentation-matched-to-animals
   if (
-    all(otn_detection_schema_min_columns %in% colnames(dtc)) &&
-      !all(otn_detection_schema$name %in% colnames(dtc))
+    all(min_cols %in% colnames(dtc)) &&
+      !all(det_schema$name %in% colnames(dtc))
   ) {
     dtc$commonname <- "Unknown"
     dtc$receiver_group <- substr(dtc$station, 1, nchar(dtc$station) - 3)
@@ -79,39 +95,42 @@ read_otn_detections <- function(det_file) {
     dtc$codespace <- get_codemap(dtc$fieldnumber)
   }
   # coerce timestamps to POSIXct
+  message("About to load timestamps.")
+  View(timestamp_cols)
   for (j in timestamp_cols) {
     data.table::set(
       dtc,
-      j = otn_detection_schema$name[j],
+      j = det_schema$name[j],
       value = lubridate::fast_strptime(
-        dtc[[otn_detection_schema$name[j]]],
+        dtc[[det_schema$name[j]]],
         format = "%Y-%m-%d %H:%M:%S",
         tz = "UTC",
         lt = FALSE
       )
     )
   }
+  message("about to load dates")
   # coerce dates to date
   for (j in date_cols) {
     data.table::set(
       dtc,
-      j = otn_detection_schema$name[j],
+      j = det_schema$name[j],
       value = ifelse(
-        dtc[[otn_detection_schema$name[j]]] == "",
+        dtc[[det_schema$name[j]]] == "",
         NA,
-        dtc[[otn_detection_schema$name[j]]]
+        dtc[[det_schema$name[j]]]
       )
     )
     data.table::set(
       dtc,
-      j = otn_detection_schema$name[j],
-      value = as.Date(dtc[[otn_detection_schema$name[j]]])
+      j = det_schema$name[j],
+      value = as.Date(dtc[[det_schema$name[j]]])
     )
   }
   data.table::setnames(
     dtc,
-    old = otn_detection_schema$name,
-    new = otn_detection_schema$mapping
+    old = det_schema$name,
+    new = det_schema$mapping
   )
   dtc <- glatos_detections(dtc)
   return(dtc)
