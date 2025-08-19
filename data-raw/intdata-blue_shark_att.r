@@ -3,7 +3,7 @@
 
 dets_path <- system.file(
   "extdata",
-  "blue_shark_detections.csv",
+  "blue_shark_detections_old.csv",
   package = "glatos"
 )
 deploy_path <- system.file(
@@ -17,7 +17,7 @@ tag_path <- system.file(
   package = "glatos"
 )
 
-dets <- read_otn_detections(dets_path)
+dets <- read_otn_detections(dets_path, format="old")
 tags <- prepare_tag_sheet(tag_path, 5, 2)
 deploy <- prepare_deploy_sheet(deploy_path, 1)
 
