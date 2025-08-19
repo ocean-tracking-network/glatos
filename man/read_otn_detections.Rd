@@ -4,7 +4,7 @@
 \alias{read_otn_detections}
 \title{Read data from a OTN detection file}
 \usage{
-read_otn_detections(det_file)
+read_otn_detections(det_file, format = "new")
 }
 \arguments{
 \item{det_file}{A character string with path and name of detection file in
