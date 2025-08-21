@@ -61,5 +61,7 @@ test_that("handles zipped directory with multiple files", {
   expect_s3_class(bsd, "data.frame")
 
   unlink(td, recursive = TRUE)
+  # delete unzipped director created by read_otn_detections()
+  unlink(tools::file_path_sans_ext(td), recursive = TRUE)
   unlink(temp_txt)
 })
