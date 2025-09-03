@@ -71,14 +71,14 @@ read_otn_detections <- function(det_file, format = "new") {
       pattern = "\\.csv$",
       full.names = TRUE
     )
-    
-    if(length(det_file) > 1) {
+
+    if (length(det_file) > 1) {
       message("It looks like there is more than one CSV in the zip archive you are trying to load.")
       message("read_otn_detections can only process zip files if they contain one CSV (or one CSV plus a description.txt file).")
       message("Please unzip the archive and load the CSV files individually.")
       return(FALSE)
     }
-    
+
     det_file <- normalizePath(det_file)
   }
 
