@@ -102,22 +102,13 @@ read_otn_detections <- function(det_file, format = "new") {
     dtc$codespace <- get_codemap(dtc$fieldnumber)
   }
   # coerce timestamps to POSIXct
-  date_format <- ""
-  if (format == "new") {
-    date_format <- "%Y-%m-%dT%H:%M:%SZ"
-  } else {
-    date_format <- "%Y-%m-%d %H:%M:%S"
-  }
-
   for (j in timestamp_cols) {
     data.table::set(
       dtc,
       j = det_schema$name[j],
-      value = lubridate::fast_strptime(
-        dtc[[det_schema$name[j]]],
-        format = date_format,
-        tz = "UTC",
-        lt = FALSE
+      value = lubridate::parse_date_time(
+        tmp_dets$dateCollectedUTC,
+        orders = c("%Y-%m-%d %H:%M:%S")
       )
     )
   }
