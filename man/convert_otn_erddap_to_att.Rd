@@ -24,7 +24,7 @@ containing required columns (see \link{glatos_detections}).}
 
 \item{erdAni}{a data frame with animal data from the OTN ERDDAP}
 
-\item{crs}{an object of class \code{crs} (see \link[=st_crs]{sf::st_crs}) with
+\item{crs}{an object of class \code{crs} (see \link[sf:st_crs]{sf::st_crs}) with
 geographic coordinate system for all spatial information
 (latitude/longitude). If none provided or \code{crs} is not recognized,
 defaults to WGS84.}

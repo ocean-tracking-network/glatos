@@ -18,7 +18,7 @@ adjust_playback_time(
 See details.}
 
 \item{input}{character, path to video file (any file type supported by
-\link[=av_encode_video]{av::av_encode_video}; e.g., *.mp4, *.wmv, etc)}
+\link[av:encoding]{av::av_encode_video}; e.g., *.mp4, *.wmv, etc)}
 
 \item{output_dir}{character, output directory, default is working directory}
 
@@ -37,7 +37,7 @@ path and name of output file with be returned.
 Speed up or slow down playback of video
 }
 \details{
-A simple wrapper for \link[=av_encode_video]{av::av_encode_video}.
+A simple wrapper for \link[av:encoding]{av::av_encode_video}.
 
 \code{adjust_playback_time} adjusts playback speed of video.
 \code{scale_factor} controls the magnitude of speed-up or slow-down by

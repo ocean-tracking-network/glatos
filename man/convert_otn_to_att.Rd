@@ -30,7 +30,7 @@ and recovery/last download times of receivers. Defaults to TRUE, if not all
 receiver metadata is available, this should be set to FALSE otherwise there
 will be data loss.}
 
-\item{crs}{an object of class \code{crs} (see \link[=st_crs]{sf::st_crs}) with
+\item{crs}{an object of class \code{crs} (see \link[sf:st_crs]{sf::st_crs}) with
 geographic coordinate system for all spatial information
 (latitude/longitude). If none provided or \code{crs} is not recognized,
 defaults to WGS84.}

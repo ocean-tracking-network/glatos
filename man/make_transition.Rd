@@ -8,7 +8,7 @@ make_transition(poly, res, receiver_points = NULL, epsg = 3175, buffer = NULL)
 }
 \arguments{
 \item{poly}{A spatial polygon object of class
-\link[=SpatialPolygons]{SpatialPolygonsDataFrame} or a \link[sf:sf]{sf::sf()} object
+\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame} or a \link[sf:sf]{sf::sf()} object
 with a geometry column of polygon and/or multipolygon objects.}
 
 \item{res}{two element vector that specifies the x and y dimension of output
