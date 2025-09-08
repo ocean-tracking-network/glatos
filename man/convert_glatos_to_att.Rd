@@ -15,7 +15,7 @@ convert_glatos_to_att(detectionObj, receiverObj, crs = sf::st_crs(4326))
 \link{read_glatos_receivers}) or a \code{data.frame} containing required columns
 (see \link{glatos_receivers}).}
 
-\item{crs}{an object of class \code{crs} (see \link[=st_crs]{sf::st_crs}) with
+\item{crs}{an object of class \code{crs} (see \link[sf:st_crs]{sf::st_crs}) with
 geographic coordinate system for all spatial information
 (latitude/longitude). If none provided or \code{crs} is not recognized,
 defaults to WGS84.}
