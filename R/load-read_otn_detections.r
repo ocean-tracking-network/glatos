@@ -107,7 +107,7 @@ read_otn_detections <- function(det_file, format = "new") {
       dtc,
       j = det_schema$name[j],
       value = lubridate::parse_date_time(
-        tmp_dets$dateCollectedUTC,
+        dtc[[det_schema$name[j]]],
         orders = c("%Y-%m-%d %H:%M:%S")
       )
     )
