@@ -2,8 +2,8 @@ Package: glatos
 Type: Package
 Title: A package for the Great Lakes Acoustic Telemetry Observation System
 Description: Functions useful to members of the Great Lakes Acoustic Telemetry Observation System https://glatos.glos.us; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
-Version: 0.8.1.9003
-Date: 2025-08-13
+Version: 0.8.1
+Date: 2025-09-09
 Depends: R (>= 3.6.0)
 Imports:
 		av,

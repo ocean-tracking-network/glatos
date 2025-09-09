@@ -3,14 +3,10 @@
 # glatos 0.8.1 dev (2025-08-13)
 
 
-## Breaking changes
-
-- 
-
-
 ### New features
 
-- 
+- Changed `read_otn_detections()` to support new OTN detection extract format.
+  - fixes [issue #254](https://github.com/ocean-tracking-network/glatos/issues/254)
 
 
 ### Bug fixes and minor changes
