@@ -65,7 +65,7 @@ jobs:
           then
             git config --local user.name "$GITHUB_ACTOR"
             git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-            git commit ${FILES_TO_COMMIT[*]} -m "Style code (GHA)"
+            git commit ${FILES_TO_COMMIT[*]} -m "[GitHub Actions] Style code"
             git pull --ff-only
             git push origin
           else
