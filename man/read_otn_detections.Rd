@@ -4,12 +4,15 @@
 \alias{read_otn_detections}
 \title{Read data from a OTN detection file}
 \usage{
-read_otn_detections(det_file)
+read_otn_detections(det_file, format = "new")
 }
 \arguments{
 \item{det_file}{A character string with path and name of detection file in
 OTN detection extract format (*.csv). If only file name is given, then the
 file must be located in the working directory.}
+
+\item{format}{Either 'new' or 'old', denoting whether or not the file being
+loaded is a CSV predating OTN's parquet rollout (old) or not (new).}
 }
 \value{
 A data.frame of class \code{glatos_detections} that includes OTN

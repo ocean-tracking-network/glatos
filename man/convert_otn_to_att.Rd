@@ -30,7 +30,7 @@ and recovery/last download times of receivers. Defaults to TRUE, if not all
 receiver metadata is available, this should be set to FALSE otherwise there
 will be data loss.}
 
-\item{crs}{an object of class \code{crs} (see \link[=st_crs]{sf::st_crs}) with
+\item{crs}{an object of class \code{crs} (see \link[sf:st_crs]{sf::st_crs}) with
 geographic coordinate system for all spatial information
 (latitude/longitude). If none provided or \code{crs} is not recognized,
 defaults to WGS84.}
@@ -77,13 +77,13 @@ tags <- prepare_tag_sheet(tag_path, 5, 2)
 deploy <- read_otn_deployments(deploy_path)
 
 ATTdata <- convert_otn_to_att(dets, tags, deploymentObj = deploy)
-}
+
 #--------------------------------------------------
 # EXAMPLE #2 - loading from Deployment Sheet
 
 library(glatos)
 
-dets_path <- system.file("extdata", "blue_shark_detections.csv",
+dets_path <- system.file("extdata", "blue_shark_detections_old.csv",
   package = "glatos"
 )
 deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
@@ -93,11 +93,12 @@ tag_path <- system.file("extdata", "otn_nsbs_tag_metadata.xls",
   package = "glatos"
 )
 
-dets <- read_otn_detections(dets_path)
+dets <- read_otn_detections(dets_path, format = "old")
 tags <- prepare_tag_sheet(tag_path, 5, 2)
 deploy <- prepare_deploy_sheet(deploy_path, 1, 1)
 
 ATTdata <- convert_otn_to_att(dets, tags, deploymentSheet = deploy)
+}
 
 }
 \author{

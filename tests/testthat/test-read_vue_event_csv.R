@@ -2,7 +2,8 @@
 
 test_that("read_vue_event_csv works", {
   # VR2W file
-  vue_event_csv_file <- system.file("extdata",
+  vue_event_csv_file <- system.file(
+    "extdata",
     "VR2W_receiverEvents_109924_20110718_1.csv",
     package = "glatos"
   )
@@ -20,9 +21,9 @@ test_that("bad inputs are caught", {
     "File not found:"
   )
 
-
   # VUE CSV is missing columns
-  vue_event_csv_file <- system.file("extdata",
+  vue_event_csv_file <- system.file(
+    "extdata",
     "VR2W_receiverEvents_109924_20110718_1.csv",
     package = "glatos"
   )

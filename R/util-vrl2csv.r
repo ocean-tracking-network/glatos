@@ -79,11 +79,12 @@ NULL
 #' For \code{vrl2csv}, use \code{\link{vue_convert}}.
 #'
 #' @export
-vrl2csv <- function(vrl,
-                    outDir = NA,
-                    overwrite = TRUE,
-                    vueExePath = NA,
-                    showProgress = TRUE) {
+vrl2csv <- function(
+    vrl,
+    outDir = NA,
+    overwrite = TRUE,
+    vueExePath = NA,
+    showProgress = TRUE) {
   .Deprecated("vue_convert")
 
   # check path to VUE.exe if given
@@ -105,9 +106,11 @@ vrl2csv <- function(vrl,
       )
     }
     if (length(vrl) == 1) {
-      vrl <- list.files(vrl,
+      vrl <- list.files(
+        vrl,
         full.names = TRUE,
-        pattern = "vrl$", ignore.case = TRUE
+        pattern = "vrl$",
+        ignore.case = TRUE
       )
     }
     if (length(vrl) == 0) stop("No VRL files found.")
@@ -134,11 +137,15 @@ vrl2csv <- function(vrl,
       message("Converting ", length(vrl), " detection files...")
       pb <- txtProgressBar(0, max = length(vrl), style = 3)
     }
-    foo_i <- system2(vuePath, c(
-      "--convert-files",
-      paste("--output-path ", outDir, "", sep = '"'), overwrite_file,
-      paste(" --output-format csv ", vrl[i], "", sep = '"')
-    ))
+    foo_i <- system2(
+      vuePath,
+      c(
+        "--convert-files",
+        paste("--output-path ", outDir, "", sep = '"'),
+        overwrite_file,
+        paste(" --output-format csv ", vrl[i], "", sep = '"')
+      )
+    )
     if (foo_i == "127") {
       stop(
         "VUE.exe was not found.\n",
@@ -152,7 +159,10 @@ vrl2csv <- function(vrl,
   } # end i
 
   # return output path(s) and file name(s)
-  outFName <- file.path(outDir, gsub("vrl$", "csv", basename(vrl), ignore.case = TRUE))
+  outFName <- file.path(
+    outDir,
+    gsub("vrl$", "csv", basename(vrl), ignore.case = TRUE)
+  )
   fileCheck <- file.exists(outFName)
 
   if (showProgress) cat("\n")

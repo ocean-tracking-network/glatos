@@ -2,7 +2,6 @@
 # (internal data object for read_glatos_receivers)
 # Specify column names and data types for each receiver locations file version
 
-
 # Make list element for each version
 # pre-allocate table-level structure within each version
 glatos_receivers_schema <- list(
@@ -86,7 +85,6 @@ glatos_receivers_schema$v1.1 <- read.table(
 
 # \Version 1.1
 #----------------------------------------------------
-
 
 # add to sysdata.rda
 rda_file <- file.path("R/sysdata.rda")

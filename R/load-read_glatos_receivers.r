@@ -45,7 +45,6 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
   # see version-specific file specifications
   # internal data object; i.e., in R/sysdata.r
 
-
   # Identify file version
   id_file_version <- function(rec_file) {
     col_names <- names(data.table::fread(rec_file, nrows = 0))
@@ -60,10 +59,13 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
 
   if (is.null(version)) {
     version <- id_file_version(rec_file)
-  } else if (!(paste0("v", version) %in%
-    names(glatos_receivers_schema))) {
+  } else if (
+    !(paste0("v", version) %in%
+      names(glatos_receivers_schema))
+  ) {
     stop(paste0(
-      "Receiver locations file version ", version,
+      "Receiver locations file version ",
+      version,
       " is not supported."
     ))
   }
@@ -82,23 +84,30 @@ read_glatos_receivers <- function(rec_file, version = NULL) {
 
     # coerce timestamps to POSIXct
     for (j in timestamp_cols) {
-      data.table::set(rec,
+      data.table::set(
+        rec,
         j = glatos_receivers_schema[[ver_txt]]$name[j],
         value = lubridate::fast_strptime(
           rec[[glatos_receivers_schema[[ver_txt]]$name[j]]],
-          format = "%Y-%m-%d %H:%M:%S", tz = "UTC", lt = FALSE
+          format = "%Y-%m-%d %H:%M:%S",
+          tz = "UTC",
+          lt = FALSE
         )
       )
     }
     # coerce dates to date
     for (j in date_cols) {
-      data.table::set(rec,
+      data.table::set(
+        rec,
         j = glatos_receivers_schema[[ver_txt]]$name[j],
-        value = ifelse(rec[[glatos_receivers_schema[[ver_txt]]$name[j]]] == "",
-          NA, rec[[glatos_receivers_schema[[ver_txt]]$name[j]]]
+        value = ifelse(
+          rec[[glatos_receivers_schema[[ver_txt]]$name[j]]] == "",
+          NA,
+          rec[[glatos_receivers_schema[[ver_txt]]$name[j]]]
         )
       )
-      data.table::set(rec,
+      data.table::set(
+        rec,
         j = glatos_receivers_schema[[ver_txt]]$name[j],
         value = as.Date(rec[[glatos_receivers_schema[[ver_txt]]$name[j]]])
       )

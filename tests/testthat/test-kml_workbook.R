@@ -12,7 +12,6 @@ test_that("kml_workbook works", {
     )
   )
 
-
   # kmz output
   # read workbook directly; output kmz
   temp_kmz <- file.path(tempdir(), "wb.kmz")
@@ -24,7 +23,6 @@ test_that("kml_workbook works", {
       out_file = temp_kmz
     )
   )
-
 
   # bigger label and point size
   temp_kml_bigger <- file.path(tempdir(), "wb_bigger.kml")
@@ -38,18 +36,12 @@ test_that("kml_workbook works", {
     )
   )
 
-
   # read from file
-  wb_file <- system.file("extdata",
-    "walleye_workbook.xlsm",
-    package = "glatos"
-  )
-
+  wb_file <- system.file("extdata", "walleye_workbook.xlsm", package = "glatos")
 
   # copy to temp location
   temp_wb_file <- file.path(tempdir(), basename(wb_file))
   file.copy(wb_file, temp_wb_file)
-
 
   # write to same location (default)
   expect_snapshot(

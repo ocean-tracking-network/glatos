@@ -87,7 +87,8 @@ test_that("Expected result when map and background lims supplied", {
   temp_dir <- tempdir()
 
   expect_message(
-    make_frames(pos,
+    make_frames(
+      pos,
       out_dir = temp_dir,
       background_ylim = c(42, 47),
       background_xlim = c(-90, -78),
@@ -130,11 +131,7 @@ test_that("Expected result when map is spatVector, bg lims not supplied", {
   temp_dir <- tempdir()
   expect_message(
     expect_message(
-      make_frames(pos,
-        out_dir = temp_dir,
-        preview = TRUE,
-        bg_map = sv_poly
-      ),
+      make_frames(pos, out_dir = temp_dir, preview = TRUE, bg_map = sv_poly),
       "Converted terra object to sf"
     ),
     "Preview frames written to"
@@ -147,7 +144,6 @@ test_that("Expected result when map is spatVector, bg lims not supplied", {
     )
   )
 
-
   # Check if file size greater than 20000 bytes
   expect_gt(
     file.size(
@@ -155,7 +151,6 @@ test_that("Expected result when map is spatVector, bg lims not supplied", {
     ),
     20000
   )
-
 
   # Clean up
   unlink(

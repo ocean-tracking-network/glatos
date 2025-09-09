@@ -2,10 +2,7 @@
 # (example data object)
 
 # get path to example detections file
-dtc_file <- system.file("extdata",
-  "lamprey_detections.csv",
-  package = "glatos"
-)
+dtc_file <- system.file("extdata", "lamprey_detections.csv", package = "glatos")
 
 # create new object
 lamprey_detections <- read_glatos_detections(dtc_file)

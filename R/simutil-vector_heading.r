@@ -71,7 +71,9 @@ vector_heading <- function(x, y = NULL, coord_sys = NA) {
       y2 <- x[, 2]
 
       if (!is.null(y)) {
-        warning("Input object 'y' was ignored because 'x' was two-column object.")
+        warning(
+          "Input object 'y' was ignored because 'x' was two-column object."
+        )
       }
 
       x <- x2

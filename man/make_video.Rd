@@ -42,10 +42,10 @@ Ignored if \code{vfilter} is passed via \code{...}.}
 \item{overwrite}{logical, overwrite existing output file? (default = FALSE)}
 
 \item{verbose}{logical, show output from
-\link[=av_encode_video]{av::av_encode_video}? Default = FALSE.}
+\link[av:encoding]{av::av_encode_video}? Default = FALSE.}
 
 \item{...}{optional arguments passed to
-\link[=av_encode_video]{av::av_encode_video}. Such as framerate, vfilter, codec.}
+\link[av:encoding]{av::av_encode_video}. Such as framerate, vfilter, codec.}
 }
 \value{
 One video animation will be written disk and the path and file name
@@ -53,7 +53,7 @@ will be returned.
 }
 \description{
 Stitch a sequence of images into a video animation. A simple wrapper for
-\link[=av_encode_video]{av::av_encode_video}.
+\link[av:encoding]{av::av_encode_video}.
 }
 \details{
 This function was overhauled in glatos v 0.4.1 to simplify inputs
@@ -63,12 +63,12 @@ input arguments have changed, as described above. Starting with glatos v
 0.4.0 or earlier will fail.
 
 \code{make_video} is a simple wrapper of
-\link[=av_encode_video]{av::av_encode_video}. It is intended to allow creation of
+\link[av:encoding]{av::av_encode_video}. It is intended to allow creation of
 videos from images (frames) created by \link[=make_frames]{glatos::make_frames}
 as simple as possible. More advanced features of \code{av}, can be used by
-including any argument of \link[=av_encode_video]{av::av_encode_video} in the
+including any argument of \link[av:encoding]{av::av_encode_video} in the
 call to \code{make_video}, or by calling
-\link[=av_encode_video]{av::av_encode_video} directly. More information about the
+\link[av:encoding]{av::av_encode_video} directly. More information about the
 \code{av} package is available at
 https://cran.r-project.org/web/packages/av/index.html and
 https://docs.ropensci.org/av/.

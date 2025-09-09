@@ -12,10 +12,8 @@ test_that("full vps data set gives expected result", {
     )
   )
 
-
   # Check if expected and actual results are the same
   expect_equal(phm_full_input$values, phm_shouldBe)
-
 
   # Check classes and names
   expect_named(
@@ -28,7 +26,6 @@ test_that("full vps data set gives expected result", {
   expect_s3_class(phm_full_input$bbox_LL, "data.frame")
   expect_type(phm_full_input$function_call, "language")
 })
-
 
 
 test_that("data frame with min required columns gives expected result", {
@@ -64,7 +61,6 @@ test_that("data frame with min required columns gives expected result", {
 })
 
 
-
 test_that("data.table input gives expected result", {
   phm_shouldBe <- phm_values_known()
 
@@ -91,7 +87,6 @@ test_that("data.table input gives expected result", {
   expect_s3_class(phm_dt_input$bbox_LL, "data.frame")
   expect_type(phm_dt_input$function_call, "language")
 })
-
 
 
 test_that("png output default name gives expected result", {
@@ -143,8 +138,6 @@ test_that("png output default name gives expected result", {
     )
   )
 })
-
-
 
 
 test_that("png output custom name gives expected result", {
@@ -199,8 +192,6 @@ test_that("png output custom name gives expected result", {
 })
 
 
-
-
 test_that("kmz output default name gives expected result", {
   phm_shouldBe <- phm_values_known()
   temp_dir <- tempdir()
@@ -239,7 +230,6 @@ test_that("kmz output default name gives expected result", {
     )
   )
 
-
   expect_equal(phm_kmz_out$values, phm_shouldBe)
 
   # Clean up
@@ -250,9 +240,6 @@ test_that("kmz output default name gives expected result", {
     )
   )
 })
-
-
-
 
 
 test_that("kmz output custom name gives expected result", {
@@ -309,7 +296,6 @@ test_that("kmz output custom name gives expected result", {
 
 ##### TEST NON-EXPORTED FUNCTIONS ####
 
-
 # Test non-exported function lonlat_to_utm()
 test_that("internal function lonlat_to_utm", {
   # data.frame input
@@ -330,7 +316,8 @@ test_that("internal function lonlat_to_utm", {
 test_that("internal function utm_to_lonlat", {
   # data.frame input
   expect_equal(
-    utm_to_lonlat(utm_should_be(),
+    utm_to_lonlat(
+      utm_should_be(),
       hemisphere = attr(utm_should_be(), "hemisphere")
     ),
     lonlat_should_be()
@@ -338,7 +325,8 @@ test_that("internal function utm_to_lonlat", {
 
   # data.table input
   expect_equal(
-    data.table::as.data.table(utm_to_lonlat(utm_should_be(),
+    data.table::as.data.table(utm_to_lonlat(
+      utm_should_be(),
       hemisphere = attr(utm_should_be(), "hemisphere")
     )),
     data.table::as.data.table(lonlat_should_be())

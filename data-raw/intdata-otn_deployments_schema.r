@@ -2,9 +2,11 @@
 # (internal data object for read_otn_deployments)
 # Specify column names and data types for each receiver locations file version
 
-
 #----------------------------------------------------
 # Version 1.0
+# This must match the format of the stations_receivers layer of the OTN GeoServer
+# pulled via URLs like the below:
+# https://geoserver.oceantrack.org/geoserver/otn/wfs?request=getfeature&service=wfs&typename=otn:stations_receivers&outputFormat=CSV
 
 otn_deployments_schema <- read.table(
   text = "

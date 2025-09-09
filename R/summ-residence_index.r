@@ -181,14 +181,15 @@ residence_index <- function(
   location <- mean_latitude <- mean_longitude <- days_detected <-
     total_days <- NULL
 
-
   # set to NULL if NA
   if (!is.null(group_col)) if (is.na(group_col)) group_col <- NULL
   if (!is.null(locations)) if (all(is.na(locations))) locations <- NULL
 
   if (!is.null(group_col)) {
-    if ((group_col == "animal_id") &
-      (calculation_method == "aggregate_with_overlap")) {
+    if (
+      (group_col == "animal_id") &
+        (calculation_method == "aggregate_with_overlap")
+    ) {
       message(
         "NOTE: Becuase an individual animal cannot overlap with itself, ",
         "this will produce the same output as aggregate_no_overlap when ",
@@ -209,7 +210,8 @@ residence_index <- function(
       stop(
         paste0(
           "det is missing the following ",
-          "column(s):\n", paste0("       '", missingCols, "'", collapse = "\n")
+          "column(s):\n",
+          paste0("       '", missingCols, "'", collapse = "\n")
         ),
         call. = FALSE
       )
@@ -222,7 +224,8 @@ residence_index <- function(
 
   # summarize lat and lon for each unique location
   locs <- dplyr::group_by(locs, location)
-  locs <- dplyr::summarise(locs,
+  locs <- dplyr::summarise(
+    locs,
     mean_latitude = mean(mean_latitude, na.rm = TRUE),
     mean_longitude = mean(mean_longitude, na.rm = TRUE)
   )
@@ -257,16 +260,20 @@ residence_index <- function(
 
   ri <- dplyr::do(
     detections,
-    data.frame(days_detected = get_days(
-      ., calculation_method,
-      time_interval_size
-    ))
+    data.frame(
+      days_detected = get_days(
+        .,
+        calculation_method,
+        time_interval_size
+      )
+    )
   )
 
   # add missing combinations (non-detection)
   ri <- dplyr::left_join(group_levels, ri, by = group_cols)
 
-  ri <- dplyr::mutate(ri,
+  ri <- dplyr::mutate(
+    ri,
     days_detected = ifelse(is.na(days_detected), 0, days_detected)
   )
 
@@ -275,20 +282,22 @@ residence_index <- function(
   if (groupwise_total == FALSE | is.null(group_col)) {
     detections <- dplyr::ungroup(detections)
     ri$total_days <- get_days(
-      detections, calculation_method,
+      detections,
+      calculation_method,
       time_interval_size
     )
   } else {
     detections <- dplyr::group_by(detections, dplyr::across(group_col))
-    ri <- dplyr::left_join(ri,
+    ri <- dplyr::left_join(
+      ri,
       dplyr::do(
         detections,
         data.frame(
-          total_days =
-            get_days(
-              ., calculation_method,
-              time_interval_size
-            )
+          total_days = get_days(
+            .,
+            calculation_method,
+            time_interval_size
+          )
         )
       ),
       by = group_col
@@ -297,17 +306,25 @@ residence_index <- function(
   }
 
   # calculate RI
-  ri <- dplyr::mutate(ri,
+  ri <- dplyr::mutate(
+    ri,
     residency_index = as.double(days_detected) / total_days
   )
 
   # add lat and lon
   ri <- dplyr::left_join(ri, locs, by = "location")
 
-  out_cols <- c(group_col, c(
-    "days_detected", "total_days", "residency_index",
-    "location", "mean_latitude", "mean_longitude"
-  ))
+  out_cols <- c(
+    group_col,
+    c(
+      "days_detected",
+      "total_days",
+      "residency_index",
+      "location",
+      "mean_latitude",
+      "mean_longitude"
+    )
+  )
   ri <- data.frame(ri)[, out_cols]
 
   return(ri)
@@ -331,20 +348,26 @@ residence_index <- function(
 interval_count <- function(detections, time_interval_size) {
   # get unique bins in each detection event
   detections <- dplyr::rowwise(detections)
-  ints <- dplyr::do(detections, data.frame(
-    int = seq(lubridate::floor_date(.$first_detection, time_interval_size),
-      lubridate::floor_date(.$last_detection, time_interval_size),
-      by = time_interval_size
+  ints <- dplyr::do(
+    detections,
+    data.frame(
+      int = seq(
+        lubridate::floor_date(.$first_detection, time_interval_size),
+        lubridate::floor_date(.$last_detection, time_interval_size),
+        by = time_interval_size
+      )
     )
-  ))
+  )
 
   intcount <- dplyr::n_distinct(ints)
 
   # fraction of day covered by one interval
-  day_fraction <- diff(as.numeric(seq(as.POSIXct("2000-01-01 00:00"),
+  day_fraction <- diff(as.numeric(seq(
+    as.POSIXct("2000-01-01 00:00"),
     by = time_interval_size,
     length.out = 2
-  ))) / 86400.0
+  ))) /
+    86400.0
 
   # cumulative days (not necessarily contiguous)
   day_count <- intcount * day_fraction
@@ -384,8 +407,18 @@ aggregate_total_with_overlap <- function(detections) {
   # Declare global variables for R CMD check
   last_detection <- first_detection <- NULL
 
-  detections <- mutate(detections, timedelta = as.double(difftime(last_detection, first_detection, units = "secs")))
-  detections <- mutate(detections, timedelta = dplyr::recode(detections$timedelta, `0` = 1))
+  detections <- mutate(
+    detections,
+    timedelta = as.double(difftime(
+      last_detection,
+      first_detection,
+      units = "secs"
+    ))
+  )
+  detections <- mutate(
+    detections,
+    timedelta = dplyr::recode(detections$timedelta, `0` = 1)
+  )
   total <- as.double(sum(detections$timedelta)) / 86400.0
   return(total)
 }
@@ -418,11 +451,12 @@ aggregate_total_no_overlap <- function(detections) {
     ov_ints <- data.table::foverlaps(x, x, which = TRUE)
 
     # for each row in x, get min first det  & max lat det against overlaps
-    ov_ints <- ov_ints[, .(
-      t1 = min(x$t1[c(xid, yid)]),
-      t2 = max(x$t2[c(xid, yid)])
-    ),
-    by = "xid"
+    ov_ints <- ov_ints[,
+      .(
+        t1 = min(x$t1[c(xid, yid)]),
+        t2 = max(x$t2[c(xid, yid)])
+      ),
+      by = "xid"
     ]
 
     ov_ints <- unique(ov_ints[, c("t1", "t2")])
@@ -430,14 +464,12 @@ aggregate_total_no_overlap <- function(detections) {
     return(ov_ints)
   }
 
-
   # recursively apply until no overlaps
-  repeat{
+  repeat {
     ri <- nrow(ints)
     ints <- aggregate_intervals(ints)
     if (nrow(ints) == ri) break
   }
-
 
   ints[, tdiff := (as.numeric(t2) - as.numeric(t1))]
 
@@ -455,8 +487,10 @@ aggregate_total_no_overlap <- function(detections) {
 #' @param calculation_method - determines which method above will be used to
 #'   count total time and location time
 #' @param time_interval_size - size of time interval
-get_days <- function(dets, calculation_method = "kessel",
-                     time_interval_size = "1 day") {
+get_days <- function(
+    dets,
+    calculation_method = "kessel",
+    time_interval_size = "1 day") {
   days <- 0
   if (calculation_method == "aggregate_with_overlap") {
     days <- aggregate_total_with_overlap(dets)

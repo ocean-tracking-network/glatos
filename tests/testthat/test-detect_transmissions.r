@@ -103,7 +103,6 @@ test_that("spatial input, data.frame output gives expected result", {
 })
 
 
-
 test_that("spatial input, spatial output gives expected result", {
   # spatial detection output - 50% constant detection prob
 

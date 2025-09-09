@@ -28,8 +28,6 @@ test_that("'specs' element gives expected result", {
 })
 
 
-
-
 test_that("'schedule' element gives expected result", {
   # get path to example tag spec file
   tag_file <- system.file(

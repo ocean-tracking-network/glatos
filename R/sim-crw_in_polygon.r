@@ -177,21 +177,30 @@
 #'
 #' @export
 
-crw_in_polygon <- function(polyg,
-                           theta = c(0, 10),
-                           stepLen = 100,
-                           initPos = c(NA, NA),
-                           initHeading = NA,
-                           nsteps = 30,
-                           inputCRS = NA,
-                           cartesianCRS = NA,
-                           sp_out = TRUE,
-                           show_progress = TRUE) {
+crw_in_polygon <- function(
+    polyg,
+    theta = c(0, 10),
+    stepLen = 100,
+    initPos = c(NA, NA),
+    initHeading = NA,
+    nsteps = 30,
+    inputCRS = NA,
+    cartesianCRS = NA,
+    sp_out = TRUE,
+    show_progress = TRUE) {
   # Check input class
-  if (!inherits(polyg, c(
-    "data.frame", "sf", "sfc", "SpatialPolygonsDataFrame",
-    "SpatialPolygons"
-  ))) {
+  if (
+    !inherits(
+      polyg,
+      c(
+        "data.frame",
+        "sf",
+        "sfc",
+        "SpatialPolygonsDataFrame",
+        "SpatialPolygons"
+      )
+    )
+  ) {
     stop(
       "Input 'polyg' must be of class 'data.frame', 'sf', 'sfc', ",
       "'SpatialPolygonsDataFrame', or 'SpatialPolygons'."
@@ -207,8 +216,9 @@ crw_in_polygon <- function(polyg,
   crs_cartesian <- sf::st_crs(cartesianCRS)
 
   # Set crs_cartesian = crs_input if Cartesian and cartesianCRS missing
-  if (is.na(crs_cartesian) & isTRUE(crs_in$IsGeographic)) crs_cartesian <- crs_in
-
+  if (is.na(crs_cartesian) & isTRUE(crs_in$IsGeographic)) {
+    crs_cartesian <- crs_in
+  }
 
   # Check for Cartesian CRS
   if (isTRUE(crs_in$IsGeographic) & is.na(cartesianCRS)) {
@@ -219,7 +229,6 @@ crw_in_polygon <- function(polyg,
     )
   }
 
-
   if (isTRUE(crs_cartesian$IsGeographic)) {
     stop(
       "Coordinate reference system ",
@@ -227,7 +236,6 @@ crw_in_polygon <- function(polyg,
       "Cartesian/projected."
     )
   }
-
 
   # Check that sf geometry is POLYGON
   if (inherits(polyg, c("sf", "sfc"))) {
@@ -248,14 +256,15 @@ crw_in_polygon <- function(polyg,
     }
 
     # Close polyg if needed (first and last point must be same)
-    if (!identical(polyg[1, ], utils::tail(polyg, 1))) polyg <- rbind(polyg, polyg[1, ])
+    if (!identical(polyg[1, ], utils::tail(polyg, 1))) {
+      polyg <- rbind(polyg, polyg[1, ])
+    }
 
     # Make sf object
     polyg_sf <- sf::st_polygon(list(as.matrix(polyg[c("x", "y")])))
     polyg_sf <- sf::st_sfc(polyg_sf, crs = sf::st_crs(crs_in))
     polyg_sf <- sf::st_sf(ID = 1:length(polyg_sf), geom = polyg_sf)
   }
-
 
   # Convert to sf_polygon if SpatialPolygonsDataFrame or SpatialPolygons
   if (inherits(polyg, c("SpatialPolygonsDataFrame", "SpatialPolygons"))) {
@@ -271,7 +280,6 @@ crw_in_polygon <- function(polyg,
   # randomly select one point in the study area
   if (any(is.na(initPos))) init <- sf::st_sample(polyg_sf, size = 1)
 
-
   # If initPos are both given, check to see if in polyg
   if (all(!is.na(initPos))) {
     init <- sf::st_as_sf(
@@ -283,14 +291,11 @@ crw_in_polygon <- function(polyg,
       crs = crs_in
     )
     if (!is.na(crs_in)) {
-      init <- sf::st_transform(init,
-        crs = sf::st_crs(crs_cartesian)
-      )
+      init <- sf::st_transform(init, crs = sf::st_crs(crs_cartesian))
     }
     inPoly <- any(sf::st_contains(polyg_sf, init, sparse = FALSE))
     if (!inPoly) stop("initPos is outside polygon boundary.")
   } # end if
-
 
   # randomly select heading if not given
   if (is.na(initHeading)) initHeading <- runif(1, 0, 360)
@@ -324,9 +329,11 @@ crw_in_polygon <- function(polyg,
 
     # operate on temporary object for ith window
     path_fwd_i <- crw(
-      theta = theta_i, stepLen = stepLen,
+      theta = theta_i,
+      stepLen = stepLen,
       initPos = as.vector(sf::st_coordinates(init_i)),
-      initHeading, nsteps = length(rows_i)
+      initHeading,
+      nsteps = length(rows_i)
     )
 
     # combine init and path_fwd_i
@@ -353,9 +360,9 @@ crw_in_polygon <- function(polyg,
     # update path.fwd
     path_fwd[rows_i, ] <- path_fwd_i[inPoly, ]
 
-
     # simulate track forward
-    init_i <- sf::st_as_sf(path_fwd[max(rows_i), ],
+    init_i <- sf::st_as_sf(
+      path_fwd[max(rows_i), ],
       coords = c("x", "y"),
       crs = crs_cartesian
     )
@@ -368,7 +375,6 @@ crw_in_polygon <- function(polyg,
       path_fwd$x[max(rows_i) - 1:0],
       path_fwd$y[max(rows_i) - 1:0]
     )
-
 
     # update progress bar
     if (show_progress) {
@@ -393,7 +399,8 @@ crw_in_polygon <- function(polyg,
   }
 
   # Coerce to sf
-  path_fwd_sf <- sf::st_as_sf(path_fwd,
+  path_fwd_sf <- sf::st_as_sf(
+    path_fwd,
     coords = c("x", "y"),
     crs = crs_cartesian
   )
@@ -474,9 +481,12 @@ crosses_boundary <- function(path, boundary) {
 
   cross_bndry <-
     unname(
-      apply(segs_mat, 1,
+      apply(
+        segs_mat,
+        1,
         function(x) {
-          any(sf::st_intersects(boundary,
+          any(sf::st_intersects(
+            boundary,
             sf::st_linestring(rbind(x[1:2], x[3:4])),
             sparse = FALSE
           ))

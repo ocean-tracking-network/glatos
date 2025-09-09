@@ -2,7 +2,9 @@
 
 test_that("read_vue_detection_csv works", {
   # VR2W file
-  vue_csv_file <- system.file("extdata", "VR2W_109924_20110718_1.csv",
+  vue_csv_file <- system.file(
+    "extdata",
+    "VR2W_109924_20110718_1.csv",
     package = "glatos"
   )
 
@@ -19,9 +21,10 @@ test_that("bad inputs are caught", {
     "File not found:"
   )
 
-
   # VUE CSV is missing columns
-  vue_csv_file <- system.file("extdata", "VR2W_109924_20110718_1.csv",
+  vue_csv_file <- system.file(
+    "extdata",
+    "VR2W_109924_20110718_1.csv",
     package = "glatos"
   )
 

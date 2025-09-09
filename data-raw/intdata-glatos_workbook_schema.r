@@ -1,7 +1,6 @@
 # Make glatos_workbook_schema (internal data object for read_glatos_workbook)
 # Specify column names and data types for each sheet in each workbook version
 
-
 # Make list element for each workbook version
 # pre-allocate sheet-level structure within each version
 glatos_workbook_schema <- list(

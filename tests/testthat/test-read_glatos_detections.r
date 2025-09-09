@@ -1,6 +1,5 @@
 # check against internal data object 'receivers_2011' in R/sysdata.r
 
-
 test_that("walleye_detections gives expected result", {
   # get path to example detection file
   wd_file <- system.file(
@@ -11,12 +10,9 @@ test_that("walleye_detections gives expected result", {
 
   wd <- read_glatos_detections(wd_file)
 
-
   # Check if expected and actual results are the same
   expect_equal(wd, walleye_detections)
 })
-
-
 
 
 test_that("lamprey_detections gives expected result", {
@@ -31,8 +27,6 @@ test_that("lamprey_detections gives expected result", {
   # Check if expected and actual results are the same
   expect_equal(ld, lamprey_detections)
 })
-
-
 
 
 test_that("lamprey_detections with mixed columns gives expected result", {
@@ -63,8 +57,6 @@ test_that("lamprey_detections with mixed columns gives expected result", {
 })
 
 
-
-
 # test for some missing animal_id but not all
 test_that("lamprey_detections with some missing animal_id expected result", {
   # write data frame with some missing animal_id
@@ -78,8 +70,10 @@ test_that("lamprey_detections with some missing animal_id expected result", {
   ld_missing <- read_glatos_detections(ld_file)
 
   # make two animal_id missing
-  ld_missing$animal_id[ld_missing$animal_id %in%
-    c("A69-1601-1363", "A69-9002-7189")] <- NA
+  ld_missing$animal_id[
+    ld_missing$animal_id %in%
+      c("A69-1601-1363", "A69-9002-7189")
+  ] <- NA
   write.csv(ld_missing, temp_file, row.names = FALSE)
 
   expect_warning(

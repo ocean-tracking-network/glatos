@@ -26,10 +26,7 @@ options(width = 85)
 
 ## ----results = 'hide'--------------------------------------------------------------
 # get path to example receiver_locations file
-rec_file <- system.file("extdata",
-  "sample_receivers.csv",
-  package = "glatos"
-)
+rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
 
 # note that code above is needed to find the example file
 # for real glatos data, use something like below
@@ -87,12 +84,23 @@ mapview(rcv_osc_sf) +
 ## ----results = 'hide'--------------------------------------------------------------
 deploy_sites <- buffer_rings_pts %>%
   st_transform(crs = 4326) %>%
-  filter(id %in% c(
-    4, 49, 155,
-    407, 456, 472,
-    671, 696, 720,
-    835, 876, 920
-  )) %>%
+  filter(
+    id %in%
+      c(
+        4,
+        49,
+        155,
+        407,
+        456,
+        472,
+        671,
+        696,
+        720,
+        835,
+        876,
+        920
+      )
+  ) %>%
   rename(
     receiver_serial_no = ins_serial_no
   ) %>%
@@ -121,13 +129,14 @@ deploy_sites <- buffer_rings_pts %>%
   ) %>%
   dplyr::select(
     id:receiver_serial_no,
-    deploy_date_time:expect_deploy_long, geometry
+    deploy_date_time:expect_deploy_long,
+    geometry
   )
 
 ## ----------------------------------------------------------------------------------
 #  # save as excel
 #  openxlsx::write.xlsx(deploy_sites, "YOUR_FILE_PATH.xlsx")
-#  
+#
 #  # save as gpx
 #  st_write(deploy_sites, "YOUR_FILE_PATH", driver = "GPX")
 
@@ -157,10 +166,7 @@ deploy_sites <- buffer_rings_pts %>%
 ## ----------------------------------------------------------------------------------
 
 # get path to example receiver_locations file
-rec_file <- system.file("extdata",
-  "sample_receivers.csv",
-  package = "glatos"
-)
+rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
 
 # note that code above is needed to find the example file
 # for real glatos data, use something like below
@@ -187,7 +193,6 @@ rcv_osc_sf_12 <- rcv_osc_sf %>%
   st_transform(crs = 32617)
 
 
-
 ## ----results = 'hide'--------------------------------------------------------------
 # ----- uncomment the lines below to bring in your data ----
 #
@@ -207,8 +212,8 @@ glimpse(sample_detection_efficiency)
 ## ----------------------------------------------------------------------------------
 # third order polynomial: ave_percent is a whole number
 m <- detection_range_model(
-  avg_percent ~ -1 + distance_m + I(distance_m^2) +
-    I(distance_m^3) + offset(intercept),
+  avg_percent ~
+    -1 + distance_m + I(distance_m^2) + I(distance_m^3) + offset(intercept),
   data = sample_detection_efficiency,
   percentage = c(10, 50, 90),
   link = "polynomial",
@@ -218,7 +223,8 @@ m <- detection_range_model(
 ## ----warning=FALSE-----------------------------------------------------------------
 # logit model: aver percent is in decimal form
 
-m1 <- detection_range_model(avg_percent_d ~ distance_m,
+m1 <- detection_range_model(
+  avg_percent_d ~ distance_m,
   data = sample_detection_efficiency,
   percentage = c(10, 50, 90),
   link = "logit",
@@ -227,7 +233,8 @@ m1 <- detection_range_model(avg_percent_d ~ distance_m,
 
 # probit model: aver percent is in decimal form
 
-m2 <- detection_range_model(avg_percent_d ~ distance_m,
+m2 <- detection_range_model(
+  avg_percent_d ~ distance_m,
   data = sample_detection_efficiency,
   percentage = c(10, 50, 90),
   link = "probit",
@@ -256,10 +263,10 @@ ggplot() +
     aes(x = distance_m, y = avg_percent),
     method = "lm",
     linewidth = 1,
-    formula = y ~ -1 + x + I(x^2) +
-      I(x^3),
+    formula = y ~ -1 + x + I(x^2) + I(x^3),
     method.args = list(offset = sample_detection_efficiency$intercept),
-    colour = "#8da0cb", se = FALSE
+    colour = "#8da0cb",
+    se = FALSE
   ) +
   scale_y_continuous(breaks = seq(0, 100, 20)) +
   theme_bw(base_size = 15) +
@@ -285,7 +292,8 @@ ggplot() +
     method = "glm",
     linewidth = 1,
     method.args = list(family = binomial(link = "logit")),
-    colour = "#66c2a5", se = FALSE
+    colour = "#66c2a5",
+    se = FALSE
   ) +
   geom_smooth(
     data = sample_detection_efficiency,
@@ -293,7 +301,8 @@ ggplot() +
     method = "glm",
     linewidth = 1,
     method.args = list(family = binomial(link = "probit")),
-    colour = "#fc8d62", se = FALSE
+    colour = "#fc8d62",
+    se = FALSE
   ) +
   scale_y_continuous(breaks = seq(0, 1, 0.20)) +
   theme_bw(base_size = 15) +
@@ -360,13 +369,13 @@ redeploy_sites <- redeploy_loc_pts %>%
   ) %>%
   dplyr::select(
     id:receiver_serial_no,
-    deploy_date_time:expect_deploy_long, geometry
+    deploy_date_time:expect_deploy_long,
+    geometry
   )
 
 ## ----eval = FALSE------------------------------------------------------------------
 #  # save as excel
 #  openxlsx::write.xlsx(redeploy_sites, "YOUR_FILE_PATH.xlsx")
-#  
+#
 #  # save as gpx
 #  st_write(redeploy_sites, "YOUR_FILE_PATH", driver = "GPX")
-

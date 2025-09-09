@@ -63,13 +63,13 @@
 #' deploy <- read_otn_deployments(deploy_path)
 #'
 #' ATTdata <- convert_otn_to_att(dets, tags, deploymentObj = deploy)
-#' }
+#'
 #' #--------------------------------------------------
 #' # EXAMPLE #2 - loading from Deployment Sheet
 #'
 #' library(glatos)
 #'
-#' dets_path <- system.file("extdata", "blue_shark_detections.csv",
+#' dets_path <- system.file("extdata", "blue_shark_detections_old.csv",
 #'   package = "glatos"
 #' )
 #' deploy_path <- system.file("extdata", "hfx_deploy_simplified.xlsx",
@@ -79,25 +79,26 @@
 #'   package = "glatos"
 #' )
 #'
-#' dets <- read_otn_detections(dets_path)
+#' dets <- read_otn_detections(dets_path, format = "old")
 #' tags <- prepare_tag_sheet(tag_path, 5, 2)
 #' deploy <- prepare_deploy_sheet(deploy_path, 1, 1)
 #'
 #' ATTdata <- convert_otn_to_att(dets, tags, deploymentSheet = deploy)
+#' }
 #'
 #' @export
 
-convert_otn_to_att <- function(detectionObj,
-                               taggingSheet,
-                               deploymentObj = NULL,
-                               deploymentSheet = NULL,
-                               timeFilter = TRUE,
-                               crs = sf::st_crs(4326)) {
+convert_otn_to_att <- function(
+    detectionObj,
+    taggingSheet,
+    deploymentObj = NULL,
+    deploymentSheet = NULL,
+    timeFilter = TRUE,
+    crs = sf::st_crs(4326)) {
   ##  Declare global variables for R CMD check
   station <- receiver_sn <- deploy_lat <- deploy_long <-
     detection_timestamp_utc <- deploy_date_time <- recover_date_time <-
     last_download <- instrumenttype <- ins_model_no <- Tag.ID <- Sex <- NULL
-
 
   if (is.null(deploymentObj) && is.null(deploymentSheet)) {
     stop(
@@ -129,18 +130,34 @@ convert_otn_to_att <- function(detectionObj,
       )
     }
 
-  tagMetadata <- unique(dplyr::tibble( # Start building Tag.Metadata table
-    Tag.ID = detectionObj$animal_id,
-    Transmitter = as.factor(transmitters),
-    Common.Name = as.factor(detectionObj$common_name_e),
-    Sci.Name = as.factor(detectionObj$scientificname)
-  ))
+  # We have to check if we're dealing with new format or old format OTN data. We'll use the scientificName/
+  # scientificname column since that's the hinge point here.
+  if ("scientificName" %in% colnames(detectionObj)) {
+    tagMetadata <- unique(dplyr::tibble(
+      # Start building Tag.Metadata table
+      Tag.ID = detectionObj$animal_id,
+      Transmitter = as.factor(transmitters),
+      Common.Name = as.factor(detectionObj$common_name_e),
+      Sci.Name = as.factor(detectionObj$scientificName)
+    ))
+  } else {
+    tagMetadata <- unique(dplyr::tibble(
+      # Start building Tag.Metadata table
+      Tag.ID = detectionObj$animal_id,
+      Transmitter = as.factor(transmitters),
+      Common.Name = as.factor(detectionObj$common_name_e),
+      Sci.Name = as.factor(detectionObj$scientificname)
+    ))
+  }
+
 
   tagMetadata <- unique(tagMetadata) # Cut out dupes
 
-  detectionObj <- dplyr::left_join(detectionObj, taggingSheet %>%
-    dplyr::select(-c("animal_id")),
-  by = "transmitter_id"
+  detectionObj <- dplyr::left_join(
+    detectionObj,
+    taggingSheet %>%
+      dplyr::select(-c("animal_id")),
+    by = "transmitter_id"
   )
 
   detectionObj <- dplyr::left_join(
@@ -151,23 +168,25 @@ convert_otn_to_att <- function(detectionObj,
   )
   if (timeFilter) {
     if (is.null(deploymentSheet)) {
-      detectionObj <- detectionObj %>% dplyr::filter(
-        detection_timestamp_utc >= deploy_date_time,
-        detection_timestamp_utc <= dplyr::coalesce(
-          recover_date_time,
-          last_download
-        ),
-        instrumenttype == "rcvr"
-      )
+      detectionObj <- detectionObj %>%
+        dplyr::filter(
+          detection_timestamp_utc >= deploy_date_time,
+          detection_timestamp_utc <=
+            dplyr::coalesce(
+              recover_date_time,
+              last_download
+            ),
+          instrumenttype == "rcvr"
+        )
     } else {
-      detectionObj <- detectionObj %>% dplyr::filter(
-        detection_timestamp_utc >= deploy_date_time,
-        detection_timestamp_utc <= recover_date_time |
-          recover_date_time %in% c(NA)
-      )
+      detectionObj <- detectionObj %>%
+        dplyr::filter(
+          detection_timestamp_utc >= deploy_date_time,
+          detection_timestamp_utc <= recover_date_time |
+            recover_date_time %in% c(NA)
+        )
     }
   }
-
 
   detectionObj <- detectionObj %>%
     dplyr::mutate(
@@ -176,22 +195,39 @@ convert_otn_to_att <- function(detectionObj,
 
   detectionObj$est_tag_life[detectionObj$est_tag_life == "NULL"] <- NA
 
-  releaseData <- dplyr::tibble( # Get the rest from detectionObj
-    Tag.ID = detectionObj$animal_id,
-    Tag.Project = as.factor(detectionObj$collectioncode),
-    Release.Latitude = as.double(detectionObj$latitude),
-    Release.Longitude = as.double(detectionObj$longitude),
-    Release.Date = as.Date(detectionObj$time),
-    Sex = as.factor(detectionObj$sex),
-    Tag.Life = as.integer(detectionObj$est_tag_life)
-  ) %>% dplyr::filter(!Tag.ID %in% NA)
-
-  releaseData <- dplyr::mutate(releaseData,
+  if ("collectionCode" %in% colnames(detectionObj)) {
+    releaseData <- dplyr::tibble(
+      # Get the rest from detectionObj
+      Tag.ID = detectionObj$animal_id,
+      Tag.Project = as.factor(detectionObj$collectionCode),
+      Release.Latitude = as.double(detectionObj$decimalLatitude),
+      Release.Longitude = as.double(detectionObj$decimalLongitude),
+      Release.Date = as.Date(detectionObj$detection_timestamp_utc),
+      Sex = as.factor(detectionObj$sex),
+      Tag.Life = as.integer(detectionObj$est_tag_life)
+    ) %>%
+      dplyr::filter(!Tag.ID %in% NA)
+  } else {
+    releaseData <- dplyr::tibble(
+      # Get the rest from detectionObj
+      Tag.ID = detectionObj$animal_id,
+      Tag.Project = as.factor(detectionObj$collectioncode),
+      Release.Latitude = as.double(detectionObj$latitude),
+      Release.Longitude = as.double(detectionObj$longitude),
+      Release.Date = as.Date(detectionObj$time),
+      Sex = as.factor(detectionObj$sex),
+      Tag.Life = as.integer(detectionObj$est_tag_life)
+    ) %>%
+      dplyr::filter(!Tag.ID %in% NA)
+  }
+  releaseData <- dplyr::mutate(
+    releaseData,
     # Convert sex text and null missing columns
     Sex = convert_sex(Sex),
     Tag.Status = as.factor(NA),
     Bio = as.factor(NA)
-  ) %>% unique()
+  ) %>%
+    unique()
 
   detections <- dplyr::tibble(
     Date.Time = detectionObj$detection_timestamp_utc,
@@ -208,9 +244,10 @@ convert_otn_to_att <- function(detectionObj,
 
   animal_sex <- tagMetadata$Sex
   animal_sex[animal_sex == "NULL"] <- NA
-  tagMetadata <- tagMetadata %>% dplyr::mutate(
-    Sex = as.factor(as.character(animal_sex))
-  )
+  tagMetadata <- tagMetadata %>%
+    dplyr::mutate(
+      Sex = as.factor(as.character(animal_sex))
+    )
 
   stations <- unique(dplyr::tibble(
     Station.Name = as.factor(detectionObj$station),
@@ -249,8 +286,7 @@ convert_otn_to_att <- function(detectionObj,
 
 
 # Simple query to WoRMS based on the common name and returns the sci name
-query_worms_common <- function(commonName,
-                               silent = FALSE) {
+query_worms_common <- function(commonName, silent = FALSE) {
   url <- utils::URLencode(
     sprintf(
       "https://www.marinespecies.org/rest/AphiaRecordsByVernacular/%s",
@@ -282,7 +318,8 @@ query_worms_common <- function(commonName,
 }
 
 convert_sex <- function(sex) {
-  sapply(sex,
+  sapply(
+    sex,
     FUN = function(.) {
       if (toupper(.) %in% c("F", "FEMALE")) {
         return("FEMALE")
