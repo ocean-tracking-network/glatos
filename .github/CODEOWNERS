@@ -1,0 +1,48 @@
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+## NOTE: matching is done via globbing, not regular expressions!
+
+# Default code owners for everything in the repo
+* @chrisholbrook @jdpye
+
+##################
+# Eveything below is for files requesting review NOT by C. Holbrook or J. Pye
+##################
+
+# Request review of OTN functions by OTN staff
+/R/*_otn_* @jackVanish @jdpye
+/tests/testthat/test-*_otn_* @jackVanish @jdpye
+/data-raw/*-blue_shark*.r @jackVanish @jdpye
+/data-raw/intdata-hfx_deployments.r @jackVanish @jdpye
+/data-raw/*-otn*.r @jackVanish @jdpye
+/R/load-prepare_deploy_sheet.R @jackVanish @jdpye # R. Gosse, original
+/R/load-prepare_tag_sheet.R @jackVanish @jdpye # R. Gosse, original
+/tests/testthat/test-prepare_tag_sheet.R @jackVanish @jdpye
+/R/summ-receiver_efficiency.r @jackVanish @jdpye # A. Nunes, original
+/tests/testthat/test-receiver_efficiency.R @jackVanish @jdpye
+/R/summ-residence_index.r @jackVanish @jdpye # A. Nunes, original
+/tests/testthat/test-residence_index.r @jackVanish @jdpye
+/R/util-convert*.r @jackVanish @jdpye # R. Gosse, original
+/tests/testthat/test-convert* @jackVanish @jdpye
+
+# Request review of changes to functions by their respective authors
+/R/summ-detection_events.R @haydento @chrisholbrook
+/R/vis-adjust_playback_time.r @haydento @chrisholbrook
+/R/vis-interpolate_path.r @haydento @chrisholbrook
+/R/vis-make_frames.r @haydento @chrisholbrook
+/R/vis-make_transition.r @haydento @chrisholbrook
+/R/vis-make_video.r @haydento @chrisholbrook
+
+# Request review of changes to data by their respective authors
+/data/greatLakesPoly.rda @haydento
+/data/great_lakes_polygon.rda @haydento
+/data/greatLakesTrLayer.rda @haydento
+/data/range_detection.rda @haydento
+
+# Request review of detection_range_model by B. Hlina
+/R/summ-detection_range_model.r @benjaminhlina
+/tests/testthat/test-detection_range_model.r @benjaminhlina
+/data/sample_detection_efficiency.rda @benjaminhlina
+/data-raw/intdata-sample_detection_efficiency.r @benjaminhlina
+
+# Request review of GitHub interactions by M. O'Brien
+/.github/ @mhpob
