@@ -32,6 +32,7 @@
 #' det <- read_otn_detections(det_file)
 #'
 #' @importFrom lubridate fast_strptime
+#' @importFrom nanoparquet read_parquet
 #'
 #' @export
 read_otn_detections <- function(det_file, format = "new") {
@@ -83,12 +84,21 @@ read_otn_detections <- function(det_file, format = "new") {
   }
 
   # read data, suppressWarnings because some columns could be missing
-  dtc <- suppressWarnings(data.table::fread(
-    det_file,
-    sep = ",",
-    colClasses = col_classes,
-    na.strings = c("", "NA")
-  ))
+  #If the file is a parquet file, read it using nanoparquet.
+  if (tools::file_ext(det_file) == "zip") {
+    dtc <- nanoparquet::read_parquet(
+        det_file
+      )
+  }
+  else {
+    dtc <- suppressWarnings(data.table::fread(
+      det_file,
+      sep = ",",
+      colClasses = col_classes,
+      na.strings = c("", "NA")
+    ))
+  }
+  
   # This check is for non-matched detection extracts. They are missing some required columns, this attempts to create them.
   # More info on OTN detection extracts here: https://members.oceantrack.org/data/otn-detection-extract-documentation-matched-to-animals
   if (
