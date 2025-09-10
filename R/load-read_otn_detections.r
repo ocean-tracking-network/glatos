@@ -85,7 +85,7 @@ read_otn_detections <- function(det_file, format = "new") {
 
   # read data, suppressWarnings because some columns could be missing
   #If the file is a parquet file, read it using nanoparquet.
-  if (tools::file_ext(det_file) == "zip") {
+  if (tools::file_ext(det_file) == "parquet") {
     dtc <- nanoparquet::read_parquet(
         det_file
       )
