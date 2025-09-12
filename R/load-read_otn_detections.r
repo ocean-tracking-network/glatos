@@ -4,8 +4,8 @@
 #' a data.frame of class `glatos_detections`.
 #'
 #' @param det_file A character string with path and name of detection file in
-#'  OTN detection extract format (*.csv). If only file name is given, then the
-#'  file must be located in the working directory.
+#'   OTN detection extract format (*.csv or *.parquet). If only file name is
+#'   given, then the file must be located in the working directory.
 #'
 #' @param format Either 'new' or 'old', denoting whether or not the file being
 #' loaded is a CSV predating OTN's parquet rollout (old) or not (new).
@@ -32,6 +32,7 @@
 #' det <- read_otn_detections(det_file)
 #'
 #' @importFrom lubridate fast_strptime
+#' @importFrom nanoparquet read_parquet
 #'
 #' @export
 read_otn_detections <- function(det_file, format = "new") {
@@ -83,12 +84,20 @@ read_otn_detections <- function(det_file, format = "new") {
   }
 
   # read data, suppressWarnings because some columns could be missing
-  dtc <- suppressWarnings(data.table::fread(
-    det_file,
-    sep = ",",
-    colClasses = col_classes,
-    na.strings = c("", "NA")
-  ))
+  # If the file is a parquet file, read it using nanoparquet.
+  if (tools::file_ext(det_file) == "parquet") {
+    dtc <- nanoparquet::read_parquet(
+      det_file
+    )
+  } else {
+    dtc <- suppressWarnings(data.table::fread(
+      det_file,
+      sep = ",",
+      colClasses = col_classes,
+      na.strings = c("", "NA")
+    ))
+  }
+
   # This check is for non-matched detection extracts. They are missing some required columns, this attempts to create them.
   # More info on OTN detection extracts here: https://members.oceantrack.org/data/otn-detection-extract-documentation-matched-to-animals
   if (
