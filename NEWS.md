@@ -1,5 +1,16 @@
 ----
 
+# glatos 0.9.0 dev (2025-09-12)
+
+
+### New features
+
+- Added support for parquet files in `read_otn_detections()`.
+  - fixes [issue #254](https://github.com/ocean-tracking-network/glatos/issues/254)
+
+----
+
+
 # glatos 0.8.1 (2025-09-09)
 
 

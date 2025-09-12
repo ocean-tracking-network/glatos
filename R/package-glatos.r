@@ -19,7 +19,7 @@
 globalVariables(".")
 
 # current nickname
-nickname <- function() "very-refreshing-lemonade"
+nickname <- function() "pretty-fragrant-rye"
 
 # package startup message
 .onAttach <- function(libname, pkgname) {
