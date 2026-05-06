@@ -37,7 +37,7 @@ https://github.com/ocean-tracking-network/glatos/wiki/installation-instructions.
 
 1.  [`read_glatos_detections`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_glatos_detections.r) and [`read_otn_detections`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_otn_detections.r) provide fast data loading from standard GLATOS and OTN data files to a single structure that is compatible with other glatos functions.
 
-2.  [`read_glatos_receivers`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_glatos_receivers.r) and [`read_otn_deployments`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_otn_deployments.r) reads receiver location histories from standard GLATOS and OTN data files to a single structure that is compatible with other glatos functions.
+2.  [`read_glatos_receivers`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_glatos_receivers.r) and [`read_otn_deployments`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_otn_deployments.R) reads receiver location histories from standard GLATOS and OTN data files to a single structure that is compatible with other glatos functions.
 
 3.  [`read_glatos_workbook`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_glatos_workbook.r) reads project-specific receiver history and fish taggging and release data from a standard glatos workbook file.
 
@@ -45,7 +45,7 @@ https://github.com/ocean-tracking-network/glatos/wiki/installation-instructions.
 
 5.  [`real_sensor_values`](https://github.com/ocean-tracking-network/glatos/blob/main/R/proc-real_sensor_values.r) converts 'raw' transmitter sensor (e.g., depth, temperature) to 'real'-scale values (e.g., depth in meters) using transmitter specification data (e.g., from read_vemco_tag_specs).
 
-6. [`prepare_tag_sheet`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-prepare_tag_sheet.r) and [`prepare_deploy_sheet`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-prepare_deploy_sheet.r) load OTN metadata sheets for Tagging and Deployment of Receivers and formats them for converting to ATT Data.
+6. [`prepare_tag_sheet`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-prepare_tag_sheet.R) and [`prepare_deploy_sheet`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-prepare_deploy_sheet.R) load OTN metadata sheets for Tagging and Deployment of Receivers and formats them for converting to ATT Data.
 
 7. `vue_convert` and `vdat_convert` extracts data from proprietary receiver
 files (.vrl, .vdat) using Innovasea's VUE and VDAT software (packaged with
@@ -71,7 +71,7 @@ exported from Innovasea's VUE software.
 
 5.  [`residence_index`](https://github.com/ocean-tracking-network/glatos/blob/main/R/summ-residence_index.r) calculates the relative proportion of time spent at each location.
 
-6.  [`REI`](https://github.com/ocean-tracking-network/glatos/blob/main/R/REI.r) calculates the relative activity at each receiver based on number of unique 
+6.  `REI` calculates the relative activity at each receiver based on number of unique 
 species and individual animals.
 
 7.  `detection_range_model` for estimating detection range at which a certain 
@@ -85,7 +85,7 @@ software.
 
 2.  [`receiver_line_det_sim`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-receiver_line_det_sim.r) simulates detection of acoustic-tagged fish crossing a receiver line (or single receiver). This is useful for determining optimal spacing of receviers in a line and tag specifications (e.g., delay).
 
-3.  [`crw_in_polygon`](https://github.com/ocean-tracking-network/glatos/blob/main/R/simutil-crw_in_polygon.r), [`transmit_along_path`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-transmit_along_path.r), and [`detect_transmissions`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-detect_transmissions.r) individually simulate random fish movement paths within a water body (*crw_in_polygon*: a random walk in a polygon), tag signal transmissions along those paths (*transmit_along_path*: time series and locations of transmissions based on tag specs), and detection of those transmittions by receivers in a user-defined receiver network (*detect_transmissions*: time series and locations of detections based on detection range curve). Collectively, these functions can be used to explore, compare, and contrast theoretical performance of a wide range of transmitter and receiver network designs.
+3.  `crw_in_polygon`, [`transmit_along_path`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-transmit_along_path.r), and [`detect_transmissions`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-detect_transmissions.r) individually simulate random fish movement paths within a water body (*crw_in_polygon*: a random walk in a polygon), tag signal transmissions along those paths (*transmit_along_path*: time series and locations of transmissions based on tag specs), and detection of those transmittions by receivers in a user-defined receiver network (*detect_transmissions*: time series and locations of detections based on detection range curve). Collectively, these functions can be used to explore, compare, and contrast theoretical performance of a wide range of transmitter and receiver network designs.
 
 
 #### Visualization and data exploration
