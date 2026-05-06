@@ -30,7 +30,7 @@ A list with two elements:
 \describe{
 \item{transition}{a geo-corrected transition raster layer where land = 0
 and water = 1
-(see \code{\link[gdistance:Transition-classes]{gdistance::Transition}})}
+(see \code{\link[gdistance:Transition-class]{gdistance::Transition}})}
 \item{rast}{rasterized input layer of class \code{raster}}}
 }
 \description{

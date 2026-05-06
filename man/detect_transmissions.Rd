@@ -20,12 +20,12 @@ detect_transmissions(
 (numeric or POSIXct column) of signal transmissions.\cr \emph{OR} \cr An
 object of class \code{\link[sf:sf]{sf::sf()}} or \code{\link[sf:sfc]{sf::sfc()}} containing
 \code{POINT} features (geometry column) and time (see \code{colNames}).
-(\code{\link[sp:SpatialPoints]{sp::SpatialPointsDataFrame()}} is also allowed.)}
+(\code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}} is also allowed.)}
 
 \item{recLoc}{A data frame with coordinates (two numeric columns) of receiver
 locations.\cr \emph{OR} \cr An object of class \code{\link[sf:sf]{sf::sf()}} or
 \code{\link[sf:sfc]{sf::sfc()}} containing a \code{POINT} feature (geometry column)
-for each receiver. (\code{\link[sp:SpatialPoints]{sp::SpatialPointsDataFrame()}} is also
+for each receiver. (\code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}} is also
 allowed.)}
 
 \item{detRngFun}{A function that defines detection range curve; must accept a

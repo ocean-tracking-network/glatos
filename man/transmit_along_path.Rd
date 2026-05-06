@@ -18,7 +18,7 @@ transmit_along_path(
 \item{path}{A data frame or matrix with at least two rows and named columns
 with coordinates that define path.\cr \emph{OR} \cr A object of class
 \code{\link[sf:sf]{sf::sf()}} or \code{\link[sf:sfc]{sf::sfc()}} containing \code{POINT}
-features with a geometry column. (\code{\link[sp:SpatialPoints]{sp::SpatialPointsDataFrame()}}
+features with a geometry column. (\code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}}
 is also allowed.)}
 
 \item{vel}{A numeric scalar with movement velocity along track; assumed

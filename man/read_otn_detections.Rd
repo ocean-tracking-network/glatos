@@ -24,7 +24,7 @@ a data.frame of class \code{glatos_detections}.
 }
 \details{
 Data are loaded using \code{\link[data.table:fread]{data.table::fread()}} package and timestamps
-are coerced to POSIXct using \code{\link[lubridate:parse_date_time]{lubridate::fast_strptime()}}. All
+are coerced to POSIXct using \code{\link[lubridate:fast_strptime]{lubridate::fast_strptime()}}. All
 times must be in UTC timezone per GLATOS standard.
 
 Column names are changed to match GLATOS standard columns when possible.

@@ -30,7 +30,7 @@ raster::plot(raster::raster(greatLakesTrLayer))
 
 }
 \seealso{
-\link{interpolate_path}, \link[gdistance:gdistance]{gdistance::gdistance}
+\link{interpolate_path}, \link[gdistance:gdistance]{gdistance}
 }
 \author{
 Todd Hayden (rebuilt by C. Holbrook)

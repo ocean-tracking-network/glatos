@@ -59,7 +59,7 @@ receivers) that avoid 'impossible' movements (e.g., over land for
 fish). The shortest non-linear path between two locations is
 calculated using a transition matrix layer that represents the
 'cost' of an animal moving between adjacent grid cells.  The
-transition matrix layer (see \link[gdistance:gdistance]{gdistance::gdistance}) is created from
+transition matrix layer (see \link[gdistance:gdistance]{gdistance}) is created from
 a polygon shapefile using \link{make_transition} or from a
 \code{RasterLayer} object using \link[gdistance:transition]{transition}. In
 \code{make_transition}, each cell in the output transition layer
@@ -84,7 +84,7 @@ be used for all points when \code{lnl_thresh} > 1 and linear
 interpolation will be used for all points when \code{lnl_thresh}
 = 0.
 
-All linear interpolation is done by \code{\link[stats:approxfun]{stats::approx()}} with
+All linear interpolation is done by \code{\link[stats:approx]{stats::approx()}} with
 argument \code{ties = "ordered"} controlling how tied \code{x} values
 are handled. See \code{\link[stats:approxfun]{stats::approxfun()}}.
 }

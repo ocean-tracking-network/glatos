@@ -27,7 +27,7 @@ Todd's original file name was 'coastline_poly_modified_rivers'.
 }
 
 \section{Used to make \link{great_lakes_polygon}.}{
-NA
+
 }
 
 \examples{
