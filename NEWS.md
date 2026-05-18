@@ -1,5 +1,18 @@
 ----
 
+# glatos 0.9.8 (2026-05-18)
+
+
+### Bug fixes
+
+- Check time zone values in `read_glatos_workbook()` (columns named 
+"GLATOS_TIMESTAMP"). Suppress timestamp creation when time zone is not 
+recognized, with warning. Warn when timestamp is valid but required case-
+modification (e.g., "EASTERN" was matched to "Eastern").
+
+
+----
+
 # glatos 0.9.7 (2026-05-13)
 
 
@@ -16,6 +29,7 @@ contains records that do not match any records in Deployment sheet.
 `as_glatos_receivers()`. When `validate = FALSE`, behavior is consistent with 
 glatos v.0.8.0 and earlier.
   - related to [issue #202](https://github.com/ocean-tracking-network/glatos/issues/202)
+
 
 ----
 

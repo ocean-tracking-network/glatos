@@ -13,6 +13,8 @@ shapefile
 Polygon coastline of Great Lakes in WGS84 projection.
 }
 \details{
+Used to make \link{great_lakes_polygon}.
+
 Note from Todd: "This polygon layer of GL shoreline was modified by
 hand to include Saginaw, Tittabawasssee, Maumee, and Sandusky rivers.
 Outlines of rivers are not precise but were wide enough to allow a
@@ -24,10 +26,6 @@ Todd's original file name was 'coastline_poly_modified_rivers'.
 }
 \section{Filename}{
  shoreline.zip
-}
-
-\section{Used to make \link{great_lakes_polygon}.}{
-
 }
 
 \examples{
