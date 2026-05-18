@@ -21,7 +21,6 @@ Otherwise, \code{NA} is returned.
 Check a time zone string against OlsonNames()
 }
 \examples{
-
 \dontrun{
 
 x <- c("UTC", "US/Eastern", "US/EASTERN", "foo")
@@ -29,7 +28,6 @@ x <- c("UTC", "US/Eastern", "US/EASTERN", "foo")
 check_timezone(tz = x)
 
 check_timezone(tz = x, ignore.case = TRUE)
-
 }
 
 }

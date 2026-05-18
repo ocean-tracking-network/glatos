@@ -446,7 +446,7 @@ read_glatos_workbook <- function(
                   "character",
                   "POSIXct"
                 ),
-                tzv = tzv_ij
+                tz = tzv_ij
               )
             } else {
               as.POSIXct(NA, tz = "UTC")[0]
