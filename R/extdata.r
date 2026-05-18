@@ -75,7 +75,7 @@ NULL
 #'
 #' @section Filename: shoreline.zip
 #'
-#' @section Used to make [great_lakes_polygon].
+#' @details Used to make [great_lakes_polygon].
 #'
 #' @details Note from Todd: "This polygon layer of GL shoreline was modified by
 #'   hand to include Saginaw, Tittabawasssee, Maumee, and Sandusky rivers.
