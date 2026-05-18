@@ -87,6 +87,12 @@ As of glatos 0.9.0, if a sheet contains two columns with the same
 name, then the sheet is not loaded and an error is returned. In earlier
 versions, a suffix was added to all but the first in each set of
 duplicate column names.
+
+As of glatos 0.9.8, time zones (e.g., columns named
+"GLATOS_TIMEZONE") are checked against \code{\link[=OlsonNames]{OlsonNames()}} after prepending "US/".
+E.g., "Eastern" becomes "US/Eastern". Matching is not case sensitive, so
+"EASTERN" is valid, but is replaced by "US/Eastern", with a warning. Invalid
+time zones will result in \code{NA} timestamp values, with a warning.
 }
 \note{
 \emph{\strong{On warnings and errors about date and timestamp formats.}} Date and

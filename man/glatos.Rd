@@ -24,7 +24,7 @@ maintainer (Chris Holbrook): \href{mailto:cholbrook@glfc.org}{cholbrook@glfc.org
 
 \subsection{Installation}{
 
-To install the latest release (0.9.7 'pretty-fragrant-rye'):
+To install the latest release (0.9.8 'pretty-fragrant-rye'):
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{library(remotes) # for install_github
 install_github('ocean-tracking-network/glatos', build_vignettes = TRUE)

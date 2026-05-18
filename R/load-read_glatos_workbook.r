@@ -60,6 +60,12 @@
 #'   versions, a suffix was added to all but the first in each set of
 #'   duplicate column names.
 #'
+#' @details As of glatos 0.9.8, time zones (e.g., columns named 
+#' "GLATOS_TIMEZONE") are checked against [OlsonNames()] after prepending "US/". 
+#' E.g., "Eastern" becomes "US/Eastern". Matching is not case sensitive, so 
+#' "EASTERN" is valid, but is replaced by "US/Eastern", with a warning. Invalid 
+#' time zones will result in `NA` timestamp values, with a warning. 
+#'
 #' @note ***On warnings and errors about date and timestamp formats.*** Date and
 #'   time columns are sometimes stored as text in Excel. When those records are
 #'   loaded by this function, there are two possible outcomes. \cr \cr 1. If the
@@ -397,18 +403,47 @@ read_glatos_workbook <- function(
             tz_ij <- gsub("tz=|tz=\"|\"", "", args_ij)
           }
 
+          tzv_ij <- check_timezone(tz_ij, ignore.case = TRUE)
+          
+          tz_changed <- which(tzv_ij != tz_ij & !is.na(tzv_ij))
+          
+          tz_changed <- unique(cbind(tz_ij[tz_changed], tzv_ij[tz_changed]))
+          
+          if(length(tz_changed) > 0L){ 
+            warning("The following time zones were changed in '", 
+                    sheets_to_read[i], "' sheet:\n ", 
+                    "'", j, "' column:\n",  
+                    paste0(
+                      paste0("   ", shQuote(tz_changed[,1]), " --> ", 
+                             shQuote(tz_changed[,2])), 
+                           collapse = "\n")
+            )
+          }
+          
+          
+          tz_invalid <- unique(tz_ij[is.na(tzv_ij)])
+          
+          if(length(tz_invalid) > 0L){ 
+            warning("Invalid time zones found in '", 
+                    sheets_to_read[i], "' sheet:\n",  
+                    paste0(paste0("  ", shQuote(tz_invalid)), 
+                           collapse = "\n")
+            )
+          }
+          
+          
           sheet_i2[[j]] <-
-            if (nrow(sheet_i) > 0) {
+            if (nrow(sheet_i) > 0 & length(tz_invalid) == 0) {
               cast(sheet_i2[[j]],
                 new_class = "POSIXct",
                 old_class = c(
                   "character",
                   "POSIXct"
                 ),
-                tz = tz_ij
+                tzv = tzv_ij
               )
             } else {
-              as.POSIXct(NA, tz = tz_ij)[0]
+              as.POSIXct(NA, tz = "UTC")[0]
             }
 
           attr(sheet_i2[[j]], "tzone") <- "UTC"
@@ -1149,4 +1184,39 @@ read_workbook_project <- function(wb_file) {
   )
 
   return(prj)
+}
+
+
+#' Check a time zone string against OlsonNames()
+#'
+#' @param tz a character string. The time zone specification to be used for the
+#'   conversion. Only values in [OlsonNames()] are allowed. `""` is not allowed.
+#'
+#' @param ignore.case logical. if FALSE, the pattern matching is case sensitive
+#'   and if TRUE (default), case is ignored during matching. Passed to [grep()].
+#'
+#' @returns If `tz` is valid (depends on `ignore.case`), then it is returned.
+#'   Otherwise, `NA` is returned.
+#'
+#' @examples
+#'
+#' x <- c("UTC", "US/Eastern", "US/EASTERN", "foo")
+#'
+#' check_timezone(tz = x)
+#'
+#' check_timezone(tz = x, ignore.case = TRUE)
+#' 
+check_timezone <- function(tz, ignore.case = FALSE){
+  
+  tz2 <- sapply(paste0("^", tz, "$"), 
+                FUN = grep, 
+                x = OlsonNames(), 
+                ignore.case = ignore.case, 
+                value = TRUE)
+        
+  tz2 <- unname(sapply(tz2, 
+                       function(x) if(length(x) == 0L) NA_character_ else x)
+  )
+   
+  return(tz2)
 }
