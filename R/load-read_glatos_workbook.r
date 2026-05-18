@@ -630,7 +630,7 @@ read_glatos_workbook <- function(
       disp_rmdr <- if (n_rmdr > 6) {
         paste0(
           paste0(rec_missing_dep_rows[1:5], collapse = ", "),
-          "...", utils::tail(rec_missing_dep_rows, 1), 
+          "...", utils::tail(rec_missing_dep_rows, 1),
           " (+ ", n_rmdr - 6, " more)."
         )
       } else {
@@ -1208,7 +1208,6 @@ read_workbook_project <- function(wb_file) {
 #' @keywords internal
 #'
 #' @examples
-#'
 #' \dontrun{
 #'
 #' x <- c("UTC", "US/Eastern", "US/EASTERN", "foo")
@@ -1216,21 +1215,20 @@ read_workbook_project <- function(wb_file) {
 #' check_timezone(tz = x)
 #'
 #' check_timezone(tz = x, ignore.case = TRUE)
-#'
 #' }
-#' 
-check_timezone <- function(tz, ignore.case = FALSE){
-  
-  tz2 <- sapply(paste0("^", tz, "$"), 
-                FUN = grep, 
-                x = OlsonNames(), 
-                ignore.case = ignore.case, 
-                value = TRUE)
-        
-  tz2 <- unname(sapply(tz2, 
-                       function(x) if(length(x) == 0L) NA_character_ else x)
-
+#'
+check_timezone <- function(tz, ignore.case = FALSE) {
+  tz2 <- sapply(paste0("^", tz, "$"),
+    FUN = grep,
+    x = OlsonNames(),
+    ignore.case = ignore.case,
+    value = TRUE
   )
+
+  tz2 <- unname(sapply(
+    tz2,
+    function(x) if (length(x) == 0L) NA_character_ else x
+  ))
 
   tz2 <- unname(sapply(
     tz2,
