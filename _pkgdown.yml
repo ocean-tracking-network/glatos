@@ -1,0 +1,4 @@
+template:
+  params:
+    logo: man/figures/logo.png
+

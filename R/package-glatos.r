@@ -1,5 +1,5 @@
-#' ```{r child = "ReadMe.md"}
-#' ```
+# ```{r child = "ReadMe.md"}
+# ```
 #' @docType package
 #' @name glatos
 #'

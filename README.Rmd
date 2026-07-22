@@ -1,14 +1,17 @@
-glatos: An R package for the Great Lakes Acoustic Telemetry Observation System
-------------------------------------------------------------------------------
+# glatos <img src="man/figures/logo.png" align="left" height="120" alt="" />
 
-glatos is an R package with functions useful to members of the Great Lakes
+## Overview 
+**glatos** is an R package with functions useful to members of the Great Lakes
 Acoustic Telemetry Observation System https://glatos.org. Functions may
 be generally useful for processing, analyzing, simulating, and visualizing
 acoustic telemetry data, but are not strictly limited to acoustic telemetry
 applications.
 
-### Package status
 
+## Getting started
+Good luck.
+
+## Package status
 glatos is hosted by the Ocean Tracking Network on [github](https://github.com/ocean-tracking-network/glatos).
 
 * For recent changes, see
@@ -18,22 +21,22 @@ glatos is hosted by the Ocean Tracking Network on [github](https://github.com/oc
 maintainer (Chris Holbrook): <cholbrook@glfc.org>.
 
 
-### Installation
+## Installation
 
 To install the latest release (0.9.8 'pretty-fragrant-rye'): 
   
 ```{r eval = FALSE}
-library(remotes) # for install_github
-install_github('ocean-tracking-network/glatos', build_vignettes = TRUE)
+library(pak) # for install_github
+pak('ocean-tracking-network/glatos')
 ```
 
 To install the development version, an earlier version, or to see frequently
 asked questions about installation, see
 https://github.com/ocean-tracking-network/glatos/wiki/installation-instructions.
 
-### Contents
+## Highlights
 
-#### Data loading and processing
+### Data loading and processing
 
 1.  [`read_glatos_detections`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_glatos_detections.r) and [`read_otn_detections`](https://github.com/ocean-tracking-network/glatos/blob/main/R/load-read_otn_detections.r) provide fast data loading from standard GLATOS and OTN data files to a single structure that is compatible with other glatos functions.
 
@@ -59,7 +62,7 @@ Connect or VDAT software (or with `vdat_convert()`). Data from an "interleaved"
 exported from Innovasea's VUE software.
 
 
-#### Filtering and summarizing
+### Filtering and summarizing
 
 1.  [`min_lag`](https://github.com/ocean-tracking-network/glatos/blob/main/R/proc-min_lag.r) facilitates identification and removal of false positive detections by calculating the minimum time interval (min_lag) between successive detections.
 
@@ -79,7 +82,7 @@ detection efficiency is expected, using output from Innovasea's range testing
 software.
 
 
-#### Simulation functions for system design and evaluation
+### Simulation functions for system design and evaluation
 
 1.  [`calc_collision_prob`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-calc_collision_prob.r) estimates the probability of collisions for pulse-position-modulation type co-located telemetry transmitters. This is useful for determining the number of fish to release or tag specifications (e.g., delay).
 
@@ -88,7 +91,7 @@ software.
 3.  [`crw_in_polygon`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-crw_in_polygon.r), [`transmit_along_path`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-transmit_along_path.r), and [`detect_transmissions`](https://github.com/ocean-tracking-network/glatos/blob/main/R/sim-detect_transmissions.r) individually simulate random fish movement paths within a water body (*crw_in_polygon*: a random walk in a polygon), tag signal transmissions along those paths (*transmit_along_path*: time series and locations of transmissions based on tag specs), and detection of those transmittions by receivers in a user-defined receiver network (*detect_transmissions*: time series and locations of detections based on detection range curve). Collectively, these functions can be used to explore, compare, and contrast theoretical performance of a wide range of transmitter and receiver network designs.
 
 
-#### Visualization and data exploration
+### Visualization and data exploration
 
 1.  [`abacus_plot`](https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-abacus_plot.r) is useful for exploring movement patterns of individual tagged animals through time.
 
@@ -98,7 +101,7 @@ software.
 
 4.  [`adjust_playback_time`](https://github.com/ocean-tracking-network/glatos/blob/main/R/vis-adjust_playback_time.r) modify playback speed of videos and optionally convert between video file formats.
 
-#### Data Exporting
+### Data Exporting
 
 1. [`convert_glatos_to_att`](https://github.com/ocean-tracking-network/glatos/blob/main/R/util-convert_glatos_to_att.r) converts the glatos
 detection and receiver objects to a format supported by [VTrack](https://github.com/RossDwyer/VTrack)/[ATT](https://github.com/vinayudyawer/ATT).
