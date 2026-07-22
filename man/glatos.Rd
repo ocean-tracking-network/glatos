@@ -6,6 +6,8 @@
 \alias{glatos}
 \title{glatos: A package for the Great Lakes Acoustic Telemetry Observation System}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Functions useful to members of the Great Lakes Acoustic Telemetry Observation System https://glatos.org; many more broadly relevant to simulating, processing, analysing, and visualizing acoustic telemetry data.
 }
 \seealso{
