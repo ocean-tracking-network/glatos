@@ -1,0 +1,202 @@
+---
+format: gfm
+knitr:
+  opts_chunk:
+    fig.path: "../man/figures/"
+---
+
+# glatos <img src="man/figures/logo.png" align="right" height="100" alt="" />
+
+### Overview
+
+**glatos** is an R package with functions useful to
+members of the Great Lakes Acoustic Telemetry Observation System
+https://glatos.org. Functions may be generally useful for processing,
+analyzing, simulating, and visualizing acoustic telemetry data, but
+are not strictly limited to acoustic telemetry applications.
+**glatos** is hosted by the Ocean Tracking Network on
+[github](https://github.com/ocean-tracking-network/glatos).
+
+
+### Getting started
+If you are just getting started with **glatos**, we recommend checking out the vignettes and package examples (see below).  Other resources can be found on the glatos webpage (https://glatos.org).
+
+
+### Contributing
+* We are always looking for new contributors or new ideas!  See [CONTRIBUTING.md](https://github.com/ocean-tracking-network/glatos/blob/main/CONTRIBUTING.md)
+
+* To report a bug, ask a question, or propose something new, submit an [Issue](https://github.com/ocean-tracking-network/glatos/issues) or email the maintainer (Chris Holbrook): <cholbrook@glfc.org>.
+
+### Installation
+
+* To install the latest release (0.9.8 'pretty-fragrant-rye'): 
+  
+```{r}
+#| eval: false
+if(!require("pak")){
+  install.packages("pak")
+  }
+pak::pak('ocean-tracking-network/glatos')
+```
+
+* To install the development version, an earlier version, or to see frequently asked questions about installation, see [install](https://github.com/ocean-tracking-network/glatos/wiki/installation-instructions)
+
+### Additional resources
+* R resources [R](https://github.com/ocean-tracking-network/glatos/wiki/resources)
+* GLATOS R workshops/manuals [GLATOS](https://github.com/ocean-tracking-network/glatos/wiki/Past-R-workshops-and-manuals)
+
+
+### Examples
+
+### Data loading and processing
+
+#### Read glatos detection export file
+
+```{r}
+#| echo: true
+#| eval: true
+#| message: false
+#| warning: false
+#| label: read_dtc
+
+library(glatos)
+
+# load example file
+det_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
+
+# read glatos detections
+head(read_glatos_detections(det_file))
+
+```
+
+#### Read basin-wide receiver location file
+
+```{r}
+#| echo: true
+#| eval: true
+#| message: false
+#| warning: false
+#| label: read_recs
+
+# extract path to example file in glatos package
+rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
+     
+# read file and display first 5 rows
+head(read_glatos_receivers(rec_file))
+
+```
+
+#### Read glatos submission workbook
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: true
+#| label: read_workbook
+
+# get packaged example workbook
+wb2_file  <- system.file("extdata", "walleye_workbook.xlsx", package = "glatos")
+
+# read file
+# output is a list of three tables- metadata, animals, receivers
+wb2 <- read_glatos_workbook(wb2_file)
+
+# Metadata table
+head(wb2$metadata)
+
+# Animals table
+head(wb2$animals)
+
+# receivers table
+head(wb2$receivers)     
+```
+
+### Filtering and summarizing
+
+
+#### Identify possible false detections
+
+```{r}
+#| message: false
+#| warning: false
+#| label: false_dtc
+
+# get path to example detection file
+det_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
+
+# read detection export file
+det <- read_glatos_detections(det_file)
+
+# identify and display possible false detections
+det <- false_detections(det, 3600)
+
+head(det)
+     
+```
+
+#### Classify discrete events in detection data
+
+```{r}
+#| message: false
+#| warning: false
+#| label: events
+
+# get path to example detection file
+det_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
+
+# read detection export file
+det <- read_glatos_detections(det_file)
+
+# extract events
+head(detection_events(det))
+     
+```
+
+#### Summarize detections by animal or location
+
+```{r}
+#| message: false
+#| warning: false
+#| label: summary_dtc
+
+# get path to example detection file
+det_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
+
+# read etections
+det <- read_glatos_detections(det_file)
+
+# summarize by animal
+head(summarize_detections(det))
+     
+# summarize by location
+head(summarize_detections(det, summ_type = "location"))
+
+```
+
+### Visualization and data exploration
+
+#### Abacus plot
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 8
+#| out-width: "100%"
+#| label: abacus_plt
+#| eval: true
+#| fig-alt: "abacus plot"
+
+
+# get path to example detection file
+det_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
+det <- read_glatos_detections(det_file)
+     
+# subset one transmitter
+det2 <- det[det$animal_id == 153, ]
+     
+# plot
+abacus_plot(det2, locations = NULL, main = "TagID: 32054", col = "red")
+
+```
+
