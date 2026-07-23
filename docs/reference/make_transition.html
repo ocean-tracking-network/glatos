@@ -157,9 +157,9 @@ NEWS).</p>
 <span class="r-in"><span><span class="co"># make_transition layer</span></span></span>
 <span class="r-in"><span><span class="va">tst</span> <span class="op">&lt;-</span> <span class="fu">make_transition</span><span class="op">(</span><span class="va">great_lakes_polygon</span>, res <span class="op">=</span> <span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Rasterizing...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (2.1 secs)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (2 secs)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Making transition layer...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (1.4 secs)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (1.3 secs)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># plot raster layer (notice water = 1, land = 0)</span></span></span>
@@ -177,9 +177,9 @@ NEWS).</p>
 <span class="r-in"><span>  buffer <span class="op">=</span> <span class="fl">3000</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Rasterizing...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (1.4 secs)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (1.3 secs)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Making transition layer...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (1.5 secs)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (0.9 secs)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># plot raster layer (notice water = 1, land = 0)</span></span></span>
@@ -196,7 +196,7 @@ NEWS).</p>
 <span class="r-in"><span><span class="va">poly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"shoreline.zip"</span>, package <span class="op">=</span> <span class="st">"glatos"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">poly</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"/vsizip/"</span>, <span class="va">poly</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reading layer `shoreline' from data source </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   `/vsizip//tmp/RtmpibsyS3/temp_libpath108214ef43c2d/glatos/extdata/shoreline.zip' </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   `/vsizip//tmp/RtmpibsyS3/temp_libpath108216015bf85/glatos/extdata/shoreline.zip' </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   using driver `ESRI Shapefile'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 4 features and 8 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
@@ -216,9 +216,9 @@ NEWS).</p>
 <span class="r-in"><span><span class="co"># make_transition layer (roughly 500 m res)</span></span></span>
 <span class="r-in"><span><span class="va">tst</span> <span class="op">&lt;-</span> <span class="fu">make_transition</span><span class="op">(</span><span class="va">poly</span>, res <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.065</span>, <span class="fl">0.046</span><span class="op">)</span>, receiver_points <span class="op">=</span> <span class="va">recs</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Rasterizing...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (2.3 secs)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (2.1 secs)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Making transition layer...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (0.9 secs)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (1.8 secs)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># plot raster layer</span></span></span>
@@ -278,7 +278,7 @@ NEWS).</p>
 <span class="r-in"><span><span class="co">#   (note that res in in meters here because crs is 3175)</span></span></span>
 <span class="r-in"><span><span class="va">tst1</span> <span class="op">&lt;-</span> <span class="fu">make_transition</span><span class="op">(</span><span class="va">poly</span>, res <span class="op">=</span> <span class="fl">5000</span>, receiver_points <span class="op">=</span> <span class="va">recs</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Rasterizing...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (0.4 secs)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done (0.3 secs)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Making transition layer...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Done (0.1 secs)</span>
 <span class="r-in"><span></span></span>
