@@ -8,3 +8,5 @@ template:
     pkgdown-nav-height: 120px
   params:
     logo: man/figures/logo.png
+css: pkgdown/extra.css
+
