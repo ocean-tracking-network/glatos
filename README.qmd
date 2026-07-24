@@ -33,10 +33,10 @@ If you are just getting started with **glatos**, we recommend checking out the v
   
 ```{r}
 #| eval: false
-if(!require("pak")){
+if (!require("pak")) {
   install.packages("pak")
-  }
-pak::pak('ocean-tracking-network/glatos')
+}
+pak::pak("ocean-tracking-network/glatos")
 ```
 
 * To install the development version, an earlier version, or to see frequently asked questions about installation, see [install](https://github.com/ocean-tracking-network/glatos/wiki/installation-instructions)
@@ -66,7 +66,6 @@ det_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
 
 # read glatos detections
 head(read_glatos_detections(det_file))
-
 ```
 
 #### Read basin-wide receiver location file
@@ -80,10 +79,9 @@ head(read_glatos_detections(det_file))
 
 # extract path to example file in glatos package
 rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
-     
+
 # read file and display first 5 rows
 head(read_glatos_receivers(rec_file))
-
 ```
 
 #### Read glatos submission workbook
@@ -95,7 +93,7 @@ head(read_glatos_receivers(rec_file))
 #| label: read_workbook
 
 # get packaged example workbook
-wb2_file  <- system.file("extdata", "walleye_workbook.xlsx", package = "glatos")
+wb2_file <- system.file("extdata", "walleye_workbook.xlsx", package = "glatos")
 
 # read file
 # output is a list of three tables- metadata, animals, receivers
@@ -108,7 +106,7 @@ head(wb2$metadata)
 head(wb2$animals)
 
 # receivers table
-head(wb2$receivers)     
+head(wb2$receivers)
 ```
 
 ### Filtering and summarizing
@@ -131,7 +129,6 @@ det <- read_glatos_detections(det_file)
 det <- false_detections(det, 3600)
 
 head(det)
-     
 ```
 
 #### Classify discrete events in detection data
@@ -149,7 +146,6 @@ det <- read_glatos_detections(det_file)
 
 # extract events
 head(detection_events(det))
-     
 ```
 
 #### Summarize detections by animal or location
@@ -167,10 +163,9 @@ det <- read_glatos_detections(det_file)
 
 # summarize by animal
 head(summarize_detections(det))
-     
+
 # summarize by location
 head(summarize_detections(det, summ_type = "location"))
-
 ```
 
 ### Visualization and data exploration
@@ -191,12 +186,11 @@ head(summarize_detections(det, summ_type = "location"))
 # get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
 det <- read_glatos_detections(det_file)
-     
+
 # subset one transmitter
 det2 <- det[det$animal_id == 153, ]
-     
+
 # plot
 abacus_plot(det2, locations = NULL, main = "TagID: 32054", col = "red")
-
 ```
 
