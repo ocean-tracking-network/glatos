@@ -32,10 +32,10 @@ be found on the glatos webpage (https://glatos.org).
 - To install the latest release (0.9.8 ‘pretty-fragrant-rye’):
 
 ``` r
-if(!require("pak")){
+if (!require("pak")) {
   install.packages("pak")
-  }
-pak::pak('ocean-tracking-network/glatos')
+}
+pak::pak("ocean-tracking-network/glatos")
 ```
 
 - To install the development version, an earlier version, or to see
@@ -120,7 +120,7 @@ head(read_glatos_detections(det_file))
 ``` r
 # extract path to example file in glatos package
 rec_file <- system.file("extdata", "sample_receivers.csv", package = "glatos")
-     
+
 # read file and display first 5 rows
 head(read_glatos_receivers(rec_file))
 ```
@@ -165,7 +165,7 @@ head(read_glatos_receivers(rec_file))
 
 ``` r
 # get packaged example workbook
-wb2_file  <- system.file("extdata", "walleye_workbook.xlsx", package = "glatos")
+wb2_file <- system.file("extdata", "walleye_workbook.xlsx", package = "glatos")
 
 # read file
 # output is a list of three tables- metadata, animals, receivers
@@ -292,7 +292,7 @@ head(wb2$animals)
 
 ``` r
 # receivers table
-head(wb2$receivers)     
+head(wb2$receivers)
 ```
 
       glatos_array glatos_project station_no consecutive_deploy_no ins_serial_no
@@ -511,10 +511,10 @@ head(summarize_detections(det, summ_type = "location"))
 # get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
 det <- read_glatos_detections(det_file)
-     
+
 # subset one transmitter
 det2 <- det[det$animal_id == 153, ]
-     
+
 # plot
 abacus_plot(det2, locations = NULL, main = "TagID: 32054", col = "red")
 ```
