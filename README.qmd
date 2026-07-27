@@ -2,7 +2,7 @@
 format: gfm
 knitr:
   opts_chunk:
-    fig.path: "../man/figures/"
+    fig.path: "man/figures/README-"
 ---
 
 # glatos <img src="man/figures/logo.png" align="right" height="120" alt="" />

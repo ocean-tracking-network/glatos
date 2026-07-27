@@ -519,5 +519,5 @@ det2 <- det[det$animal_id == 153, ]
 abacus_plot(det2, locations = NULL, main = "TagID: 32054", col = "red")
 ```
 
-<img src="../man/figures/abacus_plt-1.png" style="width:100.0%"
+<img src="man/figures/README-abacus_plt-1.png" style="width:100.0%"
 data-fig-alt="abacus plot" />
