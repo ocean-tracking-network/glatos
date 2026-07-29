@@ -10,8 +10,9 @@ on:
 
 name: pkgdown.yaml
 
- permissions:
-      contents: write
+permissions:
+  contents:
+    write
 
 jobs:
   pkgdown:
