@@ -33,7 +33,7 @@ Suggests:
 		terra,
 		testthat (>= 3.0.0),
 		tint
-URL: https://github.com/ocean-tracking-network/glatos
+URL: https://github.com/ocean-tracking-network/glatos, https://ocean-tracking-network.github.io/glatos/
 BugReports: https://github.com/ocean-tracking-network/glatos/issues
 Authors@R: c(
     person("Christopher", "Holbrook", email = "cholbrook@glfc.org",

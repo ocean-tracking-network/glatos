@@ -1,12 +1,12 @@
-url: https://github.com/ocean-tracking-network/glatos
-
+url: https://ocean-tracking-network.github.io/glatos/
 development:
   mode: auto
 template:
   bootstrap: 5
   bslib:
     bootswatch: materia
-    base_font: {google: "Lato"}
+    base_font:
+      google: Lato
     pkgdown-nav-height: 120px
   params:
     logo: man/figures/logo.png
