@@ -102,7 +102,7 @@ res <- scale_meters_to_degrees(5000, sf = great_lakes_polygon)
 # make_transition layer
 tst <- make_transition(great_lakes_polygon, res = res)
 #> Rasterizing...
-#> Done (3.1 secs)
+#> Done (3.2 secs)
 #> Making transition layer...
 #> Done (1.5 secs)
 
@@ -122,7 +122,7 @@ tst2 <- make_transition(great_lakes_polygon,
   buffer = 3000
 )
 #> Rasterizing...
-#> Done (1.9 secs)
+#> Done (2 secs)
 #> Making transition layer...
 #> Done (1.2 secs)
 
@@ -161,9 +161,9 @@ recs[1, "deploy_lat"] <- recs[1, "deploy_lat"] + 4
 # make_transition layer (roughly 500 m res)
 tst <- make_transition(poly, res = c(0.065, 0.046), receiver_points = recs)
 #> Rasterizing...
-#> Done (3.2 secs)
+#> Done (3.4 secs)
 #> Making transition layer...
-#> Done (1 secs)
+#> Done (1.1 secs)
 
 if (FALSE) { # \dontrun{
 # plot raster layer
