@@ -6,34 +6,33 @@ Version: 0.9.8
 Date: 2026-05-18
 Depends: R (>= 4.1.0)
 Imports:
-		av,
-		data.table,
-		dplyr,
-		geodist,
-		gdistance,
-		jsonlite,
-		lubridate,
-		nanoparquet,
-		plotrix,
-		raster,
-		readxl,
-		sf,
-		sp,
-		zip
+    av,
+    data.table,
+    dplyr,
+    geodist,
+    gdistance,
+    jsonlite,
+    lubridate,
+    nanoparquet,
+    plotrix,
+    raster,
+    readxl,
+    sf,
+    sp,
+    zip
 Suggests: 
     vdiffr,
     ggplot2,
-		gifski,
-		knitr,
-		mapview,
-		methods,
-		png,
-		purrr,
-		rmarkdown,
-		terra,
-		testthat (>= 3.0.0),
-		tint
-URL: https://github.com/ocean-tracking-network/glatos, https://ocean-tracking-network.github.io/glatos/
+    gifski,
+    knitr,
+    mapview,
+    methods,
+    png,
+    purrr,
+    rmarkdown,
+    terra,
+    testthat (>= 3.0.0),
+    tint
 BugReports: https://github.com/ocean-tracking-network/glatos/issues
 Authors@R: c(
     person("Christopher", "Holbrook", email = "cholbrook@glfc.org",
@@ -54,3 +53,4 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.0.0
+URL: https://github.com/ocean-tracking-network/glatos
