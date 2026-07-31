@@ -14,6 +14,7 @@ Functions useful to members of the Great Lakes Acoustic Telemetry Observation Sy
 Useful links:
 \itemize{
   \item \url{https://github.com/ocean-tracking-network/glatos}
+  \item \url{https://ocean-tracking-network.github.io/glatos/}
   \item Report bugs at \url{https://github.com/ocean-tracking-network/glatos/issues}
 }
 
