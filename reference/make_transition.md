@@ -104,7 +104,7 @@ tst <- make_transition(great_lakes_polygon, res = res)
 #> Rasterizing...
 #> Done (3 secs)
 #> Making transition layer...
-#> Done (1.9 secs)
+#> Done (1.5 secs)
 
 if (FALSE) { # \dontrun{
 # plot raster layer (notice water = 1, land = 0)
@@ -124,7 +124,7 @@ tst2 <- make_transition(great_lakes_polygon,
 #> Rasterizing...
 #> Done (2 secs)
 #> Making transition layer...
-#> Done (1 secs)
+#> Done (1.6 secs)
 
 if (FALSE) { # \dontrun{
 # plot raster layer (notice water = 1, land = 0)
@@ -161,9 +161,9 @@ recs[1, "deploy_lat"] <- recs[1, "deploy_lat"] + 4
 # make_transition layer (roughly 500 m res)
 tst <- make_transition(poly, res = c(0.065, 0.046), receiver_points = recs)
 #> Rasterizing...
-#> Done (3.3 secs)
+#> Done (3.2 secs)
 #> Making transition layer...
-#> Done (1.2 secs)
+#> Done (1.8 secs)
 
 if (FALSE) { # \dontrun{
 # plot raster layer
