@@ -11,6 +11,8 @@ Useful links:
 
 - <https://github.com/ocean-tracking-network/glatos>
 
+- <https://ocean-tracking-network.github.io/glatos/>
+
 - Report bugs at
   <https://github.com/ocean-tracking-network/glatos/issues>
 

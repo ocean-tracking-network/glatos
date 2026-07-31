@@ -56,7 +56,8 @@ A new column (`min_lag`) is added to the input dataframe that represents
 the time (in seconds) between the current detection and the next
 detection (either before or after) of the same transmitter on the same
 receiver. This function replicates the 'min_lag' column included in the
-standard glatos export.
+standard glatos export. Data is sorted internally to calculate `min_lag`
+but output is returned in the original (input) order
 
 ## References
 
