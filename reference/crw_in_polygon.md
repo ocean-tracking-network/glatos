@@ -1,9 +1,8 @@
 # Simulate a correlated random walk inside a polygon
 
-Uses
-[`crw()`](https://ocean-tracking-network.github.io/glatos/reference/crw.md)
-to simulate a random walk as series of equal-length steps with turning
-angles drawn from a normal distribution inside a polygon.
+Uses [`crw()`](https://github.io/reference/crw.md) to simulate a random
+walk as series of equal-length steps with turning angles drawn from a
+normal distribution inside a polygon.
 
 ## Usage
 
@@ -102,11 +101,11 @@ in the same units as `polyg`.
 
 If initPos = NA, then a starting point is randomly selected within the
 polygon boundary. A path is simulated forward using
-[`crw()`](https://ocean-tracking-network.github.io/glatos/reference/crw.md).
-Initial heading is also randomly selected if `initHeading = NA`. When a
-step crosses the polygon boundary, a new heading for that step is drawn
-and the turn angle standard deviation is enlarged slightly for each
-subsequent point that lands outside the polygon.
+[`crw()`](https://github.io/reference/crw.md). Initial heading is also
+randomly selected if `initHeading = NA`. When a step crosses the polygon
+boundary, a new heading for that step is drawn and the turn angle
+standard deviation is enlarged slightly for each subsequent point that
+lands outside the polygon.
 
 If input `polyg` object is a data.frame with x and y columns and
 `sp_out = TRUE`, then output object coordinate system is defined by
@@ -128,9 +127,9 @@ system.
 
 ## See also
 
-[crw](https://ocean-tracking-network.github.io/glatos/reference/crw.md),
-[transmit_along_path](https://ocean-tracking-network.github.io/glatos/reference/transmit_along_path.md),
-[detect_transmissions](https://ocean-tracking-network.github.io/glatos/reference/detect_transmissions.md)
+[crw](https://github.io/reference/crw.md),
+[transmit_along_path](https://github.io/reference/transmit_along_path.md),
+[detect_transmissions](https://github.io/reference/detect_transmissions.md)
 
 ## Author
 

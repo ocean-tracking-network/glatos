@@ -1,14 +1,14 @@
 # A transition object for Flynn Island for testing make_transition
 
 A transition object, created from
-[`flynn_island_polygon()`](https://ocean-tracking-network.github.io/glatos/reference/flynn_island_polygon.md)
+[`flynn_island_polygon()`](https://github.io/reference/flynn_island_polygon.md)
 for testing
-[`make_transition()`](https://ocean-tracking-network.github.io/glatos/reference/make_transition.md).
+[`make_transition()`](https://github.io/reference/make_transition.md).
 
 ## Format
 
 A list comprised of a TransitionLayer and RasterLayer (see
-[`make_transition()`](https://ocean-tracking-network.github.io/glatos/reference/make_transition.md)).
+[`make_transition()`](https://github.io/reference/make_transition.md)).
 
 ## Filename
 

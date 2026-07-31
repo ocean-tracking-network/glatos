@@ -13,9 +13,9 @@ followed, will ensure compatibility with all *glatos* functions.
 
 For data in standard GLATOS and OTN formats, use of built-in data
 loading functions (see the [Data Loading
-vignette](https://ocean-tracking-network.github.io/glatos/articles/data_loading.md)
-for details) will ensure that resulting data objects meet the
-requirements of *glatos* functions. For reference, the
+vignette](https://github.io/articles/data_loading.md) for details) will
+ensure that resulting data objects meet the requirements of *glatos*
+functions. For reference, the
 [appendix](#appendix-glatos-network-standard-data-files) provides data
 field definitions (data dictionary) of standard data files obtained from
 the GLATOS [Data Portal](https://glatos.org/portal).
@@ -99,7 +99,7 @@ can only be used on data in GLATOS and OTN formats. Data in other
 formats will need to be loaded using other functions (e.g., *read.csv*,
 *fread*, etc.) and compatibility with *glatos* functions will need to be
 carefully checked. For data loading examples, see the [Data Loading
-vignette](https://ocean-tracking-network.github.io/glatos/articles/data_loading.md).
+vignette](https://github.io/articles/data_loading.md).
 
 #### Receiver location data
 
@@ -147,7 +147,7 @@ format. Data in other formats will need to be loaded using other
 functions (e.g., *read.csv*, *fread*, etc.) and compatibility with
 *glatos* functions will need to be carefully checked. For data loading
 examples, see the [Data Loading
-vignette](https://ocean-tracking-network.github.io/glatos/articles/data_loading.md).
+vignette](https://github.io/articles/data_loading.md).
 
 #### Animal tagging and biological data
 

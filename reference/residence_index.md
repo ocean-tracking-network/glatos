@@ -1,7 +1,7 @@
 # Generate the residence index from a set of detections
 
 This residence index tool will take condensed detection event data (from
-[`detection_events()`](https://ocean-tracking-network.github.io/glatos/reference/detection_events.md)
+[`detection_events()`](https://github.io/reference/detection_events.md)
 and caculate the residence index for each location. The information
 passed to the function is what is used to calculate the residence index,
 make sure you are only passing the data you want taken into
@@ -26,7 +26,7 @@ residence_index(
 - detections:
 
   A data.frame from the
-  [`detection_events()`](https://ocean-tracking-network.github.io/glatos/reference/detection_events.md)
+  [`detection_events()`](https://github.io/reference/detection_events.md)
   function.
 
 - calculation_method:

@@ -59,7 +59,7 @@ vdat_convert(
 
   The full path to `vdat.exe`. If `NULL` (default) then the path to
   vdat.exe must be in the PATH environment variable of the system. See
-  [`check_vdat`](https://ocean-tracking-network.github.io/glatos/reference/check_vdat.md).
+  [`check_vdat`](https://github.io/reference/check_vdat.md).
 
 - skip_pattern:
 
@@ -101,7 +101,7 @@ Conversion is done by system call to the Innovasea program `vdat.exe`
 <https://support.fishtracking.innovasea.com/s/downloads>). vdat.exe must
 be available at the location specified by `vdat_exe_path` or via system
 PATH environment variable. See also
-[`check_vdat`](https://ocean-tracking-network.github.io/glatos/reference/check_vdat.md).
+[`check_vdat`](https://github.io/reference/check_vdat.md).
 
 ## Note
 

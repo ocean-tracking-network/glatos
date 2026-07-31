@@ -13,7 +13,7 @@ shapefile
 ## Details
 
 Used to make
-[great_lakes_polygon](https://ocean-tracking-network.github.io/glatos/reference/great_lakes_polygon.md).
+[great_lakes_polygon](https://github.io/reference/great_lakes_polygon.md).
 
 Note from Todd: "This polygon layer of GL shoreline was modified by hand
 to include Saginaw, Tittabawasssee, Maumee, and Sandusky rivers.

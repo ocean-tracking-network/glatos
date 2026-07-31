@@ -1,14 +1,14 @@
 # A transition object for Higgins Lake for testing make_transition
 
 A transition object, created from
-[`higgins_lake_polygon()`](https://ocean-tracking-network.github.io/glatos/reference/higgins_lake_polygon.md)
+[`higgins_lake_polygon()`](https://github.io/reference/higgins_lake_polygon.md)
 for testing
-[`make_transition()`](https://ocean-tracking-network.github.io/glatos/reference/make_transition.md).
+[`make_transition()`](https://github.io/reference/make_transition.md).
 
 ## Format
 
 A list comprised of a TransitionLayer and RasterLayer (see
-[`make_transition()`](https://ocean-tracking-network.github.io/glatos/reference/make_transition.md)).
+[`make_transition()`](https://github.io/reference/make_transition.md)).
 
 ## Filename
 

@@ -88,9 +88,8 @@ or earlier will fail.
 `make_video` is a simple wrapper of
 [av::av_encode_video](https://docs.ropensci.org/av//reference/encoding.html).
 It is intended to allow creation of videos from images (frames) created
-by
-[glatos::make_frames](https://ocean-tracking-network.github.io/glatos/reference/make_frames.md)
-as simple as possible. More advanced features of `av`, can be used by
+by [glatos::make_frames](https://github.io/reference/make_frames.md) as
+simple as possible. More advanced features of `av`, can be used by
 including any argument of
 [av::av_encode_video](https://docs.ropensci.org/av//reference/encoding.html)
 in the call to `make_video`, or by calling

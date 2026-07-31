@@ -15,7 +15,7 @@ min_lag(det)
 - det:
 
   A `glatos_detections` object (e.g., produced by
-  [read_glatos_detections](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_detections.md)).
+  [read_glatos_detections](https://github.io/reference/read_glatos_detections.md)).
 
   *OR* a data frame containing detection data with the following
   columns:
@@ -67,7 +67,7 @@ Nova Scotia.
 
 ## See also
 
-[`false_detections()`](https://ocean-tracking-network.github.io/glatos/reference/false_detections.md)
+[`false_detections()`](https://github.io/reference/false_detections.md)
 
 ## Author
 

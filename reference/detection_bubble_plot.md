@@ -25,7 +25,7 @@ detection_bubble_plot(
 - det:
 
   A `glatos_detections` object (e.g., produced by
-  [read_glatos_detections](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_detections.md)).
+  [read_glatos_detections](https://github.io/reference/read_glatos_detections.md)).
 
   *OR* a data frame containing detection data with four columns
   described below and one column containing a location grouping
@@ -128,7 +128,7 @@ is written to `out_file`.
 ## Details
 
 Data are summarized using
-[summarize_detections](https://ocean-tracking-network.github.io/glatos/reference/summarize_detections.md).
+[summarize_detections](https://github.io/reference/summarize_detections.md).
 
 If `receiver_locs` is specified (not NULL) then the plot will show all
 receivers in `receiver_locs` including any that detected none of the
@@ -147,7 +147,7 @@ will accept a vector containing any two colors return by
 
 ## See also
 
-[`summarize_detections()`](https://ocean-tracking-network.github.io/glatos/reference/summarize_detections.md)
+[`summarize_detections()`](https://github.io/reference/summarize_detections.md)
 
 ## Author
 

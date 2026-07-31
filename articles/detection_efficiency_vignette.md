@@ -46,10 +46,10 @@ The preliminary study design/protocol is the following:
 
 6.  Use the exported csv to estimate the detection efficiency at a given
     distance using
-    [`detection_range_model()`](https://ocean-tracking-network.github.io/glatos/reference/detection_range_model.md)
+    [`detection_range_model()`](https://github.io/reference/detection_range_model.md)
     from [glatos](https://github.com/ocean-tracking-network/glatos). The
     function,
-    [`detection_range_model()`](https://ocean-tracking-network.github.io/glatos/reference/detection_range_model.md),
+    [`detection_range_model()`](https://github.io/reference/detection_range_model.md),
     will return an estimated distance away from the receiver for a given
     detection efficiency (e.g., 50%).
 
@@ -455,7 +455,7 @@ glimpse(sample_detection_efficiency)
 ### Calculate distances
 
 Next we will use
-[`detection_range_model()`](https://ocean-tracking-network.github.io/glatos/reference/detection_range_model.md)
+[`detection_range_model()`](https://github.io/reference/detection_range_model.md)
 to produce estimated distances for particular percentage (e.g., 50%).
 You will want to look through the help page for the function to make
 sure you’re setting up the model correctly.

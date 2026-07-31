@@ -65,7 +65,7 @@ warning message even if conversion was successful.
 
 ## See also
 
-[`glatos-deprecated`](https://ocean-tracking-network.github.io/glatos/reference/glatos-deprecated.md)
+[`glatos-deprecated`](https://github.io/reference/glatos-deprecated.md)
 
 ## Author
 

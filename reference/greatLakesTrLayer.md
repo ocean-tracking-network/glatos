@@ -17,15 +17,15 @@ An object of class `TransitionLayer` of dimension 667 x 667 x 1.
 
 This dataset was developed for non-linear interpolation of fish movement
 paths from telemetry data and is used by default in
-[interpolate_path](https://ocean-tracking-network.github.io/glatos/reference/interpolate_path.md).
+[interpolate_path](https://github.io/reference/interpolate_path.md).
 
 Created from
-[great_lakes_polygon](https://ocean-tracking-network.github.io/glatos/reference/great_lakes_polygon.md);
+[great_lakes_polygon](https://github.io/reference/great_lakes_polygon.md);
 see 'data-raw/data-greatLakesTrLayer.r'.
 
 ## See also
 
-[interpolate_path](https://ocean-tracking-network.github.io/glatos/reference/interpolate_path.md),
+[interpolate_path](https://github.io/reference/interpolate_path.md),
 [gdistance](https://AgrDataSci.github.io/gdistance/reference/gdistance.html)
 
 ## Author

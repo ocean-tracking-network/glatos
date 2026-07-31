@@ -1,7 +1,7 @@
 # Create transition layer from spatial object.
 
 Create transition layer for
-[`interpolate_path()`](https://ocean-tracking-network.github.io/glatos/reference/interpolate_path.md)
+[`interpolate_path()`](https://github.io/reference/interpolate_path.md)
 spatial object.
 
 ## Usage
@@ -24,7 +24,7 @@ make_transition(poly, res, receiver_points = NULL, epsg = 3175, buffer = NULL)
   two element vector that specifies the x and y dimension of output
   raster cells. Units are same as `poly` crs. May be calculated from
   desired resolution in meters using
-  [`scale_meters_to_degrees()`](https://ocean-tracking-network.github.io/glatos/reference/scale_meters_to_degrees.md).
+  [`scale_meters_to_degrees()`](https://github.io/reference/scale_meters_to_degrees.md).
 
 - receiver_points:
 
@@ -59,10 +59,10 @@ A list with two elements:
 ## Details
 
 `make_transition` uses
-[`jarasterize()`](https://ocean-tracking-network.github.io/glatos/reference/jarasterize.md)
-to convert a polygon shapefile into a raster layer and geo-corrected
-transition layer
-[`interpolate_path()`](https://ocean-tracking-network.github.io/glatos/reference/interpolate_path.md).
+[`jarasterize()`](https://github.io/reference/jarasterize.md) to convert
+a polygon shapefile into a raster layer and geo-corrected transition
+layer
+[`interpolate_path()`](https://github.io/reference/interpolate_path.md).
 Raster cell values on land equal 0, cells in water equal 1. Output is a
 two-object list containing the raster layer and transition layer.
 
@@ -102,9 +102,9 @@ res <- scale_meters_to_degrees(5000, sf = great_lakes_polygon)
 # make_transition layer
 tst <- make_transition(great_lakes_polygon, res = res)
 #> Rasterizing...
-#> Done (3.1 secs)
+#> Done (3 secs)
 #> Making transition layer...
-#> Done (1.4 secs)
+#> Done (1.5 secs)
 
 if (FALSE) { # \dontrun{
 # plot raster layer (notice water = 1, land = 0)
@@ -122,9 +122,9 @@ tst2 <- make_transition(great_lakes_polygon,
   buffer = 3000
 )
 #> Rasterizing...
-#> Done (2 secs)
+#> Done (1.9 secs)
 #> Making transition layer...
-#> Done (1.1 secs)
+#> Done (1.6 secs)
 
 if (FALSE) { # \dontrun{
 # plot raster layer (notice water = 1, land = 0)
@@ -161,9 +161,9 @@ recs[1, "deploy_lat"] <- recs[1, "deploy_lat"] + 4
 # make_transition layer (roughly 500 m res)
 tst <- make_transition(poly, res = c(0.065, 0.046), receiver_points = recs)
 #> Rasterizing...
-#> Done (3.3 secs)
+#> Done (3.2 secs)
 #> Making transition layer...
-#> Done (1.5 secs)
+#> Done (1.8 secs)
 
 if (FALSE) { # \dontrun{
 # plot raster layer

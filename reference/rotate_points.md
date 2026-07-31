@@ -48,7 +48,7 @@ rotation matrix, then shifted back to original focus.
 ## Note
 
 This function is called from
-[`crw_in_polygon()`](https://ocean-tracking-network.github.io/glatos/reference/crw_in_polygon.md)
+[`crw_in_polygon()`](https://github.io/reference/crw_in_polygon.md)
 
 ## Author
 

@@ -109,9 +109,9 @@ calculated as Haversine distances using
 ## Note
 
 This function was written to be called after
-[`crw_in_polygon()`](https://ocean-tracking-network.github.io/glatos/reference/crw_in_polygon.md)
-and before
-[`detect_transmissions()`](https://ocean-tracking-network.github.io/glatos/reference/detect_transmissions.md),
+[`crw_in_polygon()`](https://github.io/reference/crw_in_polygon.md) and
+before
+[`detect_transmissions()`](https://github.io/reference/detect_transmissions.md),
 which was designed to accept the result as input (`trnsLoc`).
 
 ## Author

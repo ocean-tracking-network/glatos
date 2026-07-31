@@ -32,7 +32,7 @@ make_frames(
 - proc_obj:
 
   A data frame created by
-  [`interpolate_path()`](https://ocean-tracking-network.github.io/glatos/reference/interpolate_path.md)
+  [`interpolate_path()`](https://github.io/reference/interpolate_path.md)
   function or a data frame containing 'animal_id', 'bin_timestamp',
   'latitude', 'longitude', and 'record_type'
 
@@ -66,16 +66,16 @@ make_frames(
 - tail_dur:
 
   contains the duration (in same units as `proc_obj$bin_timestamp`; see
-  [`interpolate_path()`](https://ocean-tracking-network.github.io/glatos/reference/interpolate_path.md))
+  [`interpolate_path()`](https://github.io/reference/interpolate_path.md))
   of trailing points in each frame. Default value is 0 (no trailing
   points). A value of `Inf` will show all points from start.
 
 - animate:
 
   Boolean. Default (TRUE) creates video animation by calling
-  [`make_video()`](https://ocean-tracking-network.github.io/glatos/reference/make_video.md)
-  with `output = ani_name`. Default values are used for all other
-  arguments. See Details below.
+  [`make_video()`](https://github.io/reference/make_video.md) with
+  `output = ani_name`. Default values are used for all other arguments.
+  See Details below.
 
 - ani_name:
 
@@ -85,7 +85,7 @@ make_frames(
   working directory, use "./" prefix (e.g.,
   `ani_name = "./animation.mp4"`. If `animate = TRUE`, the path and
   filename are passed to
-  [`make_video()`](https://ocean-tracking-network.github.io/glatos/reference/make_video.md).
+  [`make_video()`](https://github.io/reference/make_video.md).
 
 - frame_delete:
 
@@ -97,8 +97,8 @@ make_frames(
   Overwite the animation (output video) file if it already exists.
   Default (`overwrite = FALSE`) prevents file from being overwritten and
   will result in error if the file exists. Passed to
-  [`make_video()`](https://ocean-tracking-network.github.io/glatos/reference/make_video.md)
-  if `animate = TRUE`.
+  [`make_video()`](https://github.io/reference/make_video.md) if
+  `animate = TRUE`.
 
 - preview:
 
@@ -200,21 +200,20 @@ the default plot:
 
 If `animate = TRUE` then the animation output file name (`ani_name`
 argument) will be passed to the `output` argument in
-[`make_video()`](https://ocean-tracking-network.github.io/glatos/reference/make_video.md).
-Default values for all other
-[`make_video()`](https://ocean-tracking-network.github.io/glatos/reference/make_video.md)
-arguments will be used. Note that the default frame rate is 24 frames
-per second (`framerate` argument in
-[`make_video()`](https://ocean-tracking-network.github.io/glatos/reference/make_video.md)),
-which will determine the total length (duration) of the output video.
-For example, a video containing 240 images (frames) will run for 10
-seconds at these default parameters. Note that output video duration,
-dimensions (size), and other ouput video characteristics can be modified
-by calling
-[`make_video()`](https://ocean-tracking-network.github.io/glatos/reference/make_video.md)
-directly. To do this, set `animate = FALSE` and then use
-[`make_video()`](https://ocean-tracking-network.github.io/glatos/reference/make_video.md)
-to create a video from the resulting set of images.
+[`make_video()`](https://github.io/reference/make_video.md). Default
+values for all other
+[`make_video()`](https://github.io/reference/make_video.md) arguments
+will be used. Note that the default frame rate is 24 frames per second
+(`framerate` argument in
+[`make_video()`](https://github.io/reference/make_video.md)), which will
+determine the total length (duration) of the output video. For example,
+a video containing 240 images (frames) will run for 10 seconds at these
+default parameters. Note that output video duration, dimensions (size),
+and other ouput video characteristics can be modified by calling
+[`make_video()`](https://github.io/reference/make_video.md) directly. To
+do this, set `animate = FALSE` and then use
+[`make_video()`](https://github.io/reference/make_video.md) to create a
+video from the resulting set of images.
 
 ## Note
 

@@ -41,7 +41,7 @@ dimensions, respectively.
 ## Details
 
 A helper function to determine input resolution to
-[`make_transition()`](https://ocean-tracking-network.github.io/glatos/reference/make_transition.md).
+[`make_transition()`](https://github.io/reference/make_transition.md).
 
 ## Examples
 

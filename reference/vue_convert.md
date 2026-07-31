@@ -49,7 +49,7 @@ vue_convert(
 
   The full path to `VUE.exe`. If `NULL` (default) then the path to
   VUE.exe must be in the PATH environment variable of the system. See
-  [`check_vue`](https://ocean-tracking-network.github.io/glatos/reference/check_vue.md).
+  [`check_vue`](https://github.io/reference/check_vue.md).
 
 - skip_pattern:
 
@@ -85,7 +85,7 @@ Conversion is done by system call to the Innovasea program `VUE.exe`
 <https://support.fishtracking.innovasea.com/s/downloads>). VUE.exe must
 be available at the location specified by `vue_exe_path` or via system
 PATH environment variable. See also
-[`check_vue`](https://ocean-tracking-network.github.io/glatos/reference/check_vue.md).
+[`check_vue`](https://github.io/reference/check_vue.md).
 
 ## Note
 

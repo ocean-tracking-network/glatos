@@ -141,11 +141,11 @@ receiver is determined stochastically by draws from a Bernoulli
 distribution with probability p (detection prob.).
 
 This function was written to be used along with
-[`transmit_along_path()`](https://ocean-tracking-network.github.io/glatos/reference/transmit_along_path.md).
+[`transmit_along_path()`](https://github.io/reference/transmit_along_path.md).
 
 ## See also
 
-[`transmit_along_path()`](https://ocean-tracking-network.github.io/glatos/reference/transmit_along_path.md)
+[`transmit_along_path()`](https://github.io/reference/transmit_along_path.md)
 to simulate transmissions along a path (i.e., create `trnsLoc`).
 
 ## Author

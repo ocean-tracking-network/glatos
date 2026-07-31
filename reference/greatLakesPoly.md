@@ -2,8 +2,7 @@
 
 A SpatialPolygonDataFrame with Great Lakes coastline and some major
 tributaries. This is used as a default map background in several
-[glatos](https://ocean-tracking-network.github.io/glatos/reference/glatos.md)
-functions.
+[glatos](https://github.io/reference/glatos.md) functions.
 
 ## Usage
 
@@ -18,7 +17,7 @@ An object of class `SpatialPolygonsDataFrame` with 4 rows and 8 columns.
 ## Details
 
 This dataset is deprecated and will be removed in a future version. Use
-[`great_lakes_polygon`](https://ocean-tracking-network.github.io/glatos/reference/great_lakes_polygon.md)
+[`great_lakes_polygon`](https://github.io/reference/great_lakes_polygon.md)
 instead.
 
 ## Author

@@ -26,7 +26,7 @@ kml_workbook(
 - wb:
 
   A `glatos_workbook` object created by
-  [read_glatos_workbook](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_workbook.md).
+  [read_glatos_workbook](https://github.io/reference/read_glatos_workbook.md).
 
 - wb_file:
 
@@ -71,7 +71,7 @@ kml_workbook(
 
   An optional character string with the workbook version number. Passed
   to
-  [read_glatos_workbook](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_workbook.md)
+  [read_glatos_workbook](https://github.io/reference/read_glatos_workbook.md)
   when input is `wb_file`.
 
 - ...:

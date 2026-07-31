@@ -5,7 +5,7 @@
 #### Bug fixes
 
 - Check time zone values in
-  [`read_glatos_workbook()`](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_workbook.md)
+  [`read_glatos_workbook()`](https://github.io/reference/read_glatos_workbook.md)
   (columns named “GLATOS_TIMESTAMP”). Suppress timestamp creation when
   time zone is not recognized, with warning. Warn when timestamp is
   valid but required case- modification (e.g., “EASTERN” was matched to
@@ -25,14 +25,14 @@
     [\#269](https://github.com/ocean-tracking-network/glatos/issues/269)
 
 - Add warnings message in
-  [`read_glatos_workbook()`](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_workbook.md)
+  [`read_glatos_workbook()`](https://github.io/reference/read_glatos_workbook.md)
   when Recovery sheet contains records that do not match any records in
   Deployment sheet.
 
 - Add `validate` argument to
-  [`read_otn_deployments()`](https://ocean-tracking-network.github.io/glatos/reference/read_otn_deployments.md)
+  [`read_otn_deployments()`](https://github.io/reference/read_otn_deployments.md)
   to suppress validation by
-  [`as_glatos_receivers()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_receivers.md).
+  [`as_glatos_receivers()`](https://github.io/reference/glatos_receivers.md).
   When `validate = FALSE`, behavior is consistent with glatos v.0.8.0
   and earlier.
 
@@ -47,7 +47,7 @@
 #### Bug fixes
 
 - Fixed bug in
-  [`read_glatos_workbook()`](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_workbook.md)
+  [`read_glatos_workbook()`](https://github.io/reference/read_glatos_workbook.md)
   that caused failure when GLATOS workbook file contains
   project-specific sheets and `read_all = TRUE`.
   - fixes
@@ -61,7 +61,7 @@
 #### Bug fixes
 
 - Fixed bug in
-  [`crw_in_polygon()`](https://ocean-tracking-network.github.io/glatos/reference/crw_in_polygon.md)
+  [`crw_in_polygon()`](https://github.io/reference/crw_in_polygon.md)
   that caused failure with error with non-default initPos and missing
   cartesianCRS arguments when crs of input polyg is cartesian.
   - fixes
@@ -75,7 +75,7 @@
 #### Bug fixes and minor changes
 
 - Fixed bug in
-  [`convert_glatos_to_att()`](https://ocean-tracking-network.github.io/glatos/reference/convert_glatos_to_att.md)
+  [`convert_glatos_to_att()`](https://github.io/reference/convert_glatos_to_att.md)
   that caused ‘Tag.ID’ column in ‘Tag.Metadata’ element of ATT object”
   to be lost (converted to NA) if it was not integer-compatible. The
   glatos analog to ‘Tag.ID’, ‘animal_id’ is character and VTrack accepts
@@ -94,7 +94,7 @@
 #### Bug fixes
 
 - Fixed bug in
-  [`read_glatos_workbook()`](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_workbook.md)
+  [`read_glatos_workbook()`](https://github.io/reference/read_glatos_workbook.md)
   that caused failure when the deployment, recovery, or locations sheets
   contained no records; with “Error in sort.list(bx\[m\$xi\]) : ‘x’ must
   be atomic for ‘sort.list’, method”shell” and “quick”“.
@@ -109,7 +109,7 @@
 #### Bug fixes and minor changes
 
 - Fixed bug in
-  [`read_glatos_workbook()`](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_workbook.md)
+  [`read_glatos_workbook()`](https://github.io/reference/read_glatos_workbook.md)
   that caused failure when `read_all = TRUE` and project-specific column
   names contained capital letters; with “Error in switch(new_class,
   logical = as.logical, numeric = as.numeric, : EXPR must be a length 1
@@ -126,7 +126,7 @@
 #### Bug fixes
 
 - Fixed bug in
-  [`read_glatos_workbook()`](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_workbook.md)
+  [`read_glatos_workbook()`](https://github.io/reference/read_glatos_workbook.md)
   that caused failure when `read_all = TRUE`; with “Error: The following
   column(s) have wrong class: utc_release_date_time (must be
   ‘POSIXct’).”.
@@ -141,7 +141,7 @@
 #### New features
 
 - Added support for GLATOS workbook version 1.4 (xlsx file) in
-  [`read_glatos_workbook()`](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_workbook.md).
+  [`read_glatos_workbook()`](https://github.io/reference/read_glatos_workbook.md).
   - Excel workbooks in version 1.4 have no macros and have column
     headers in the first row (v. 1.3 has an empty first row and usually
     had macros).
@@ -156,7 +156,7 @@
     [issue](https://github.com/ocean-tracking-network/glatos/issues/272)
     [\#272](https://github.com/ocean-tracking-network/glatos/issues/272)
 - Added support for parquet files in
-  [`read_otn_detections()`](https://ocean-tracking-network.github.io/glatos/reference/read_otn_detections.md).
+  [`read_otn_detections()`](https://github.io/reference/read_otn_detections.md).
   - fixes
     [issue](https://github.com/ocean-tracking-network/glatos/issues/254)
     [\#254](https://github.com/ocean-tracking-network/glatos/issues/254)
@@ -168,7 +168,7 @@
 #### New features
 
 - Changed
-  [`read_otn_detections()`](https://ocean-tracking-network.github.io/glatos/reference/read_otn_detections.md)
+  [`read_otn_detections()`](https://github.io/reference/read_otn_detections.md)
   to support new OTN detection extract format.
   - fixes
     [issue](https://github.com/ocean-tracking-network/glatos/issues/254)
@@ -191,7 +191,7 @@
     [issue](https://github.com/ocean-tracking-network/glatos/issues/261)
     [\#261](https://github.com/ocean-tracking-network/glatos/issues/261)
 - Allowed
-  [`read_otn_detections()`](https://ocean-tracking-network.github.io/glatos/reference/read_otn_detections.md)
+  [`read_otn_detections()`](https://github.io/reference/read_otn_detections.md)
   to handle zipped CSVs
   - fixes
     [issue](https://github.com/ocean-tracking-network/glatos/issues/262)
@@ -204,9 +204,8 @@
 ### Breaking changes
 
 - Changed
-  [`make_transition()`](https://ocean-tracking-network.github.io/glatos/reference/make_transition.md)
-  to use
-  [`jarasterize()`](https://ocean-tracking-network.github.io/glatos/reference/jarasterize.md)
+  [`make_transition()`](https://github.io/reference/make_transition.md)
+  to use [`jarasterize()`](https://github.io/reference/jarasterize.md)
   (see New Features) and added input arg `buffer`.
   - Removed dependence on gdalUtilities.
   - fixes
@@ -218,7 +217,7 @@
     [issue](https://github.com/ocean-tracking-network/glatos/issues/67)
     [\#67](https://github.com/ocean-tracking-network/glatos/issues/67)
 - Updated example TransitionLayer object `greatLakesTrLayer` using new
-  [`make_transition()`](https://ocean-tracking-network.github.io/glatos/reference/make_transition.md)
+  [`make_transition()`](https://github.io/reference/make_transition.md)
   and `great_lakes_polygon` (an `sf` object) . The new version has the
   same cell size (resolution) as the previous, but different extents
   (matches great_lakes_polygon, so returned values (with same input)
@@ -231,50 +230,49 @@
 #### New features
 
 - Add new function
-  [`vue_convert()`](https://ocean-tracking-network.github.io/glatos/reference/vue_convert.md)
-  to convert VRL file to CSV file (detection records only; receiver
-  event log records are not supported).
+  [`vue_convert()`](https://github.io/reference/vue_convert.md) to
+  convert VRL file to CSV file (detection records only; receiver event
+  log records are not supported).
 
   - replaces
-    [`vrl2csv()`](https://ocean-tracking-network.github.io/glatos/reference/glatos-deprecated.md)
+    [`vrl2csv()`](https://github.io/reference/glatos-deprecated.md)
     (deprecated).
 
 - Add new function
-  [`vdat_convert()`](https://ocean-tracking-network.github.io/glatos/reference/vdat_convert.md)
-  to convert VRL or VDAT files to Fathom/VDAT CSV.
+  [`vdat_convert()`](https://github.io/reference/vdat_convert.md) to
+  convert VRL or VDAT files to Fathom/VDAT CSV.
 
 - Add new functions for reading data exported from VRL with VUE
   software.
 
-  - [`read_vue_detection_csv()`](https://ocean-tracking-network.github.io/glatos/reference/read_vue_detection_csv.md)
+  - [`read_vue_detection_csv()`](https://github.io/reference/read_vue_detection_csv.md)
     to read data from detection file exported from VUE or created using
-    [`vue_convert()`](https://ocean-tracking-network.github.io/glatos/reference/vue_convert.md)
-    or
-    [`vrl2csv()`](https://ocean-tracking-network.github.io/glatos/reference/glatos-deprecated.md).
-  - [`read_vue_event_csv()`](https://ocean-tracking-network.github.io/glatos/reference/read_vue_event_csv.md)
+    [`vue_convert()`](https://github.io/reference/vue_convert.md) or
+    [`vrl2csv()`](https://github.io/reference/glatos-deprecated.md).
+  - [`read_vue_event_csv()`](https://github.io/reference/read_vue_event_csv.md)
     to read data from receiver event log file exported from VUE.
 
 - Add new function
-  [`read_vdat_csv()`](https://ocean-tracking-network.github.io/glatos/reference/read_vdat_csv.md)
-  to read data exported from VRL or VDAT using VDAT.exe (e.g., using
-  [`vdat_convert()`](https://ocean-tracking-network.github.io/glatos/reference/vdat_convert.md)).
+  [`read_vdat_csv()`](https://github.io/reference/read_vdat_csv.md) to
+  read data exported from VRL or VDAT using VDAT.exe (e.g., using
+  [`vdat_convert()`](https://github.io/reference/vdat_convert.md)).
 
 - Add new functions to create, check, and validate `glatos_animals`
   objects:
 
-  - [`glatos_animals()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_animals.md)
+  - [`glatos_animals()`](https://github.io/reference/glatos_animals.md)
     to construct a `glatos_animals` object from individual vectors (one
     for each column) and optionally check for required column names and
     classes using
-    [`validate_glatos_animals()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_animals.md).
-  - [`as_glatos_animals()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_animals.md)
+    [`validate_glatos_animals()`](https://github.io/reference/glatos_animals.md).
+  - [`as_glatos_animals()`](https://github.io/reference/glatos_animals.md)
     to coerce a data.frame, or object that inherits from data.frame, to
     `glatos_animals` and optionally check for required column names and
     classes using
-    [`validate_glatos_animals()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_animals.md).
-  - [`is_glatos_animals()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_animals.md)
+    [`validate_glatos_animals()`](https://github.io/reference/glatos_animals.md).
+  - [`is_glatos_animals()`](https://github.io/reference/glatos_animals.md)
     to check class attribute for `"glatos_animals"`.
-  - [`validate_glatos_animals()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_animals.md)
+  - [`validate_glatos_animals()`](https://github.io/reference/glatos_animals.md)
     to check for existence of required column names and classes.
   - fixes
     [issue](https://github.com/ocean-tracking-network/glatos/issues/126)
@@ -286,19 +284,19 @@
 - Add new functions to create, check, and validate `glatos_detections`
   objects:
 
-  - [`glatos_detections()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_detections.md)
+  - [`glatos_detections()`](https://github.io/reference/glatos_detections.md)
     to construct a `glatos_detections` object from individual vectors
     (one for each column) and optionally check for required column names
     and classes using
-    [`validate_glatos_detections()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_detections.md).
-  - [`as_glatos_detections()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_detections.md)
+    [`validate_glatos_detections()`](https://github.io/reference/glatos_detections.md).
+  - [`as_glatos_detections()`](https://github.io/reference/glatos_detections.md)
     to coerce a data.frame, or object that inherits from data.frame, to
     `glatos_detections` and optionally check for required column names
     and classes using
-    [`validate_glatos_detections()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_detections.md).
-  - [`is_glatos_detections()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_detections.md)
+    [`validate_glatos_detections()`](https://github.io/reference/glatos_detections.md).
+  - [`is_glatos_detections()`](https://github.io/reference/glatos_detections.md)
     to check class attribute for `"glatos_detections"`.
-  - [`validate_glatos_detections()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_detections.md)
+  - [`validate_glatos_detections()`](https://github.io/reference/glatos_detections.md)
     to check for existence of required column names and classes.
   - fixes
     [issue](https://github.com/ocean-tracking-network/glatos/issues/126)
@@ -310,19 +308,19 @@
 - Add new functions to create, check, and validate `glatos_recievers`
   objects:
 
-  - [`glatos_receivers()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_receivers.md)
+  - [`glatos_receivers()`](https://github.io/reference/glatos_receivers.md)
     to construct a `glatos_receivers` object from individual vectors
     (one for each column) and optionally check for required column names
     and classes using
-    [`validate_glatos_receivers()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_receivers.md).
-  - [`as_glatos_receivers()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_receivers.md)
+    [`validate_glatos_receivers()`](https://github.io/reference/glatos_receivers.md).
+  - [`as_glatos_receivers()`](https://github.io/reference/glatos_receivers.md)
     to coerce a data.frame, or object that inherits from data.frame, to
     `glatos_receivers` and optionally check for required column names
     and classes using
-    [`validate_glatos_receivers()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_receivers.md).
-  - [`is_glatos_receivers()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_receivers.md)
+    [`validate_glatos_receivers()`](https://github.io/reference/glatos_receivers.md).
+  - [`is_glatos_receivers()`](https://github.io/reference/glatos_receivers.md)
     to check class attribute for `"glatos_receivers"`.
-  - [`validate_glatos_receivers()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_receivers.md)
+  - [`validate_glatos_receivers()`](https://github.io/reference/glatos_receivers.md)
     to check for existence of required column names and classes.
   - fixes
     [issue](https://github.com/ocean-tracking-network/glatos/issues/126)
@@ -332,18 +330,17 @@
     [\#78](https://github.com/ocean-tracking-network/glatos/issues/78)
 
 - Add new function
-  [`jarasterize()`](https://ocean-tracking-network.github.io/glatos/reference/jarasterize.md)
-  to allow rasterization (esp. with `all_touched = TRUE`) using only
-  `sf` and `raster`. Used by
-  [`make_transition()`](https://ocean-tracking-network.github.io/glatos/reference/make_transition.md).
+  [`jarasterize()`](https://github.io/reference/jarasterize.md) to allow
+  rasterization (esp. with `all_touched = TRUE`) using only `sf` and
+  `raster`. Used by
+  [`make_transition()`](https://github.io/reference/make_transition.md).
 
 - Add new function
-  [`scale_meters_to_degrees()`](https://ocean-tracking-network.github.io/glatos/reference/scale_meters_to_degrees.md)
+  [`scale_meters_to_degrees()`](https://github.io/reference/scale_meters_to_degrees.md)
   to inform selection of `res` argument to
-  [`make_transition()`](https://ocean-tracking-network.github.io/glatos/reference/make_transition.md).
+  [`make_transition()`](https://github.io/reference/make_transition.md).
 
-- In
-  [`make_frames()`](https://ocean-tracking-network.github.io/glatos/reference/make_frames.md),
+- In [`make_frames()`](https://github.io/reference/make_frames.md),
   allow
   [`terra::SpatVector`](https://rspatial.github.io/terra/reference/SpatVector-class.html)
   input for background map (`bg_map` arg).
@@ -353,7 +350,7 @@
     input
 
 - Add new function
-  [`detection_range_model()`](https://ocean-tracking-network.github.io/glatos/reference/detection_range_model.md)
+  [`detection_range_model()`](https://github.io/reference/detection_range_model.md)
   for estimating detection range at which a certain detection efficiency
   is expected, using output from Innovasea’s range testing software.
 
@@ -365,16 +362,16 @@
     [issue](https://github.com/ocean-tracking-network/glatos/issues/213)
     [\#213](https://github.com/ocean-tracking-network/glatos/issues/213)
 - Fix bug in
-  [`read_glatos_workbook()`](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_workbook.md)
+  [`read_glatos_workbook()`](https://github.io/reference/read_glatos_workbook.md)
   where timestamps during daylight savings were shifted one hour on
   linux operating system (not an issue on windows or mac).
   - fixes
     [issue](https://github.com/ocean-tracking-network/glatos/issues/208)
     [\#208](https://github.com/ocean-tracking-network/glatos/issues/208)
 - Omit data.table from class of object returned by
-  [`read_glatos_detections()`](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_detections.md)  
+  [`read_glatos_detections()`](https://github.io/reference/read_glatos_detections.md)  
   and
-  [`read_glatos_receivers()`](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_receivers.md).
+  [`read_glatos_receivers()`](https://github.io/reference/read_glatos_receivers.md).
   - fixes
     [issue](https://github.com/ocean-tracking-network/glatos/issues/200)
     [\#200](https://github.com/ocean-tracking-network/glatos/issues/200)
@@ -392,7 +389,7 @@
 #### Bug fixes
 
 - Fixed bug in
-  [`summarize_detections()`](https://ocean-tracking-network.github.io/glatos/reference/summarize_detections.md)
+  [`summarize_detections()`](https://github.io/reference/summarize_detections.md)
   where values in `num_locs` and `locations` columns were incorrect.
   - Likely a side effect of [commit
     3f0a2ee](https://github.com/ocean-tracking-network/glatos/commit/3f0a2ee366d8c9447bf4b0bff0a1f8dbfd3819a6)
@@ -407,7 +404,7 @@
 #### Bug fixes
 
 - Fixed bug in
-  [`summarize_detections()`](https://ocean-tracking-network.github.io/glatos/reference/summarize_detections.md)
+  [`summarize_detections()`](https://github.io/reference/summarize_detections.md)
   where value in `locations` output column was name of input column
   (e.g. “glatos_array”), rather than values from that column (e.g.,
   “AGR”, “BBI”).
@@ -520,7 +517,7 @@
 #### Bug fixes and minor changes
 
 - Fix error in
-  [`position_heat_map()`](https://ocean-tracking-network.github.io/glatos/reference/position_heat_map.md)
+  [`position_heat_map()`](https://github.io/reference/position_heat_map.md)
   function resulting in
   `Error in zip_internal... Some files do not exist`. Update
   documentation.
@@ -534,12 +531,12 @@
 #### Minor changes
 
 - Allow `sf` `MUTLIPOLYGON` geometry type for input `polyg` to
-  [`crw_in_polygon()`](https://ocean-tracking-network.github.io/glatos/reference/crw_in_polygon.md).
+  [`crw_in_polygon()`](https://github.io/reference/crw_in_polygon.md).
 
 - Use new function `check_cross_boundary()` instead of
   `check_in_polygon` to prevent paths crossing land (e.g., over
   peninsulas) in
-  [`crw_in_polygon()`](https://ocean-tracking-network.github.io/glatos/reference/crw_in_polygon.md).
+  [`crw_in_polygon()`](https://github.io/reference/crw_in_polygon.md).
 
 ------------------------------------------------------------------------
 

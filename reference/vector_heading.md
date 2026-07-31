@@ -43,7 +43,7 @@ length(x) - 1. Lengths of `x` and `y` must be equal.
 ## Note
 
 This function is called from within
-[`crw_in_polygon()`](https://ocean-tracking-network.github.io/glatos/reference/crw_in_polygon.md)
+[`crw_in_polygon()`](https://github.io/reference/crw_in_polygon.md)
 
 ## Author
 

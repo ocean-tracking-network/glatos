@@ -93,8 +93,8 @@ therefore be compatible with other *glatos* functions. Beware, as with
 any S3 class, that it is possible to modify a *glatos* object to the
 point that is will no longer be compatible with *glatos* functions. The
 [Data Requirements
-vignette](https://ocean-tracking-network.github.io/glatos/articles/data_requirements.md)
-provides an overview of data requirements of *glatos* functions.
+vignette](https://github.io/articles/data_requirements.md) provides an
+overview of data requirements of *glatos* functions.
 
 ### Loading data from other sources
 
@@ -109,9 +109,9 @@ formats described above, those data will need to be:
 Strictly speaking, there are no requirements of the package as a whole,
 but input data are checked within each individual function to determine
 if requirements are met. Nonetheless, the [Data Requirements
-vignette](https://ocean-tracking-network.github.io/glatos/articles/data_requirements.md)
-provides a set of data requirements, including column names, types, and
-formats, that will ensure compatibility with all *glatos* functions.
+vignette](https://github.io/articles/data_requirements.md) provides a
+set of data requirements, including column names, types, and formats,
+that will ensure compatibility with all *glatos* functions.
 
 For each data type (e.g., *detection*, *receiver location*, etc), this
 vignette shows how data from a comma-separated-values text file can be
@@ -184,9 +184,9 @@ are:
 - glatos_project_receiver
 
 For definitions of any of the above fields, see the [Data Requirements
-vignette](https://ocean-tracking-network.github.io/glatos/articles/data_requirements.md))
-and function-specific help files (e.g.,
-[`?summarize_detections`](https://ocean-tracking-network.github.io/glatos/reference/summarize_detections.md)).
+vignette](https://github.io/articles/data_requirements.md)) and
+function-specific help files (e.g.,
+[`?summarize_detections`](https://github.io/reference/summarize_detections.md)).
 
 Any *data.frame* that contains the above columns (in the correct
 formats) should be compatible with all *glatos* functions that accept
@@ -277,8 +277,8 @@ The result is an object with 30 columns and two classes:
 label indicates that the data set was created using a *glatos* load
 function and therefore should meet requirements of any *glatos* function
 that accepts detection data as input. See the [Data Requirements
-vignette](https://ocean-tracking-network.github.io/glatos/articles/data_requirements.md))
-for field definitions.
+vignette](https://github.io/articles/data_requirements.md)) for field
+definitions.
 
 #### Loading OTN data
 
@@ -888,9 +888,9 @@ locations file are:
 - glatos_project_receiver
 
 For definitions of any of the above fields, see the [Data Requirements
-vignette](https://ocean-tracking-network.github.io/glatos/articles/data_requirements.md)
-and function-specific help files (e.g.,
-[`?abacus_plot`](https://ocean-tracking-network.github.io/glatos/reference/abacus_plot.md)).
+vignette](https://github.io/articles/data_requirements.md) and
+function-specific help files (e.g.,
+[`?abacus_plot`](https://github.io/reference/abacus_plot.md)).
 
 Any *data.frame* that contains the above columns (in the correct
 formats) should be compatible with all *glatos* functions that accept
@@ -1071,12 +1071,12 @@ This vignette does not include an example of receiver location data
 loaded from CSV because the methods would be very similar to those
 described above. For example, you might step through each required
 column described in the [Data Requirements
-vignette](https://ocean-tracking-network.github.io/glatos/articles/data_requirements.md)),
-check that each column meets *glatos* requirements, and modify
-accordingly using methods described above for detection data from a CSV
-file exported from VUE (see [Other formats - CSV file exported from a
-VUE database](#other-formats---csv-file-exported-from-a-vue-database)).
-You might then verify that it meets requirements using
+vignette](https://github.io/articles/data_requirements.md)), check that
+each column meets *glatos* requirements, and modify accordingly using
+methods described above for detection data from a CSV file exported from
+VUE (see [Other formats - CSV file exported from a VUE
+database](#other-formats---csv-file-exported-from-a-vue-database)). You
+might then verify that it meets requirements using
 *validate_glatos_receivers()* or apply the *glatos_receivers* class
 label using *as_glatos_receivers()*.
 

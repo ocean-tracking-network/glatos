@@ -14,7 +14,7 @@ get_local_vdat_version(vdat_exe_path = NULL)
 
   The full path to `vdat.exe`. If `NULL` (default) then the path to
   `vdat.exe` must be in the PATH environment variable of the system. See
-  [`check_vdat`](https://ocean-tracking-network.github.io/glatos/reference/check_vdat.md).
+  [`check_vdat`](https://github.io/reference/check_vdat.md).
 
 ## Value
 

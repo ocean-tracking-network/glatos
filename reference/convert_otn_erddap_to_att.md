@@ -22,11 +22,11 @@ convert_otn_erddap_to_att(
 - detectionObj:
 
   A `glatos_detections` object (e.g., created by
-  [read_otn_detections](https://ocean-tracking-network.github.io/glatos/reference/read_otn_detections.md)
+  [read_otn_detections](https://github.io/reference/read_otn_detections.md)
   or
-  [read_glatos_detections](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_detections.md))
+  [read_glatos_detections](https://github.io/reference/read_glatos_detections.md))
   or a `data.frame` containing required columns (see
-  [glatos_detections](https://ocean-tracking-network.github.io/glatos/reference/glatos_detections.md)).
+  [glatos_detections](https://github.io/reference/glatos_detections.md)).
 
 - erdTags:
 

@@ -10,8 +10,7 @@ version.
 
 - `vrl2_csv`: This function is deprecated, and will be removed in the
   next version of this package. Use
-  [vue_convert](https://ocean-tracking-network.github.io/glatos/reference/vue_convert.md)
-  instead.
+  [vue_convert](https://github.io/reference/vue_convert.md) instead.
 
 ## Usage
 
@@ -58,4 +57,4 @@ vrl2csv(
 ## `vrl2csv`
 
 For `vrl2csv`, use
-[`vue_convert`](https://ocean-tracking-network.github.io/glatos/reference/vue_convert.md).
+[`vue_convert`](https://github.io/reference/vue_convert.md).

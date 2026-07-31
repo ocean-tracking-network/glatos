@@ -9,5 +9,4 @@ These functions are gone, no longer available.
 - `install_ffmpeg`: Removed in glatos 0.7.0.
 
 - `make_video_ffmpeg`: Removed in glatos 0.7.0. Use
-  [`make_video`](https://ocean-tracking-network.github.io/glatos/reference/make_video.md)
-  instead.
+  [`make_video`](https://github.io/reference/make_video.md) instead.

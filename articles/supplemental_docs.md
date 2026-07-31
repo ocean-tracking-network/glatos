@@ -2,9 +2,9 @@
 
 ## Vignettes
 
-#### Data requirements - [pdf](https://ocean-tracking-network.github.io/glatos/articles/data_requirements_vignette.pdf) - [html](https://ocean-tracking-network.github.io/glatos/articles/data_requirements_vignette.md)
+#### Data requirements - [pdf](https://github.io/articles/data_requirements_vignette.pdf) - [html](https://github.io/articles/data_requirements_vignette.md)
 
-#### Data loading - [pdf](https://ocean-tracking-network.github.io/glatos/articles/data_loading_vignette.pdf) - [html](https://ocean-tracking-network.github.io/glatos/articles/data_loading_vignette.md)
+#### Data loading - [pdf](https://github.io/articles/data_loading_vignette.pdf) - [html](https://github.io/articles/data_loading_vignette.md)
 
 ## Supplemental Resources
 
@@ -12,8 +12,8 @@
 
 ## Workshop Handouts
 
-#### Detection range analysis - [pdf](https://ocean-tracking-network.github.io/glatos/articles/detection_range_handout.pdf) - [html](https://ocean-tracking-network.github.io/glatos/articles/detection_range_handout.md)
+#### Detection range analysis - [pdf](https://github.io/articles/detection_range_handout.pdf) - [html](https://github.io/articles/detection_range_handout.md)
 
-#### Receiver efficiency index - [pdf](https://ocean-tracking-network.github.io/glatos/articles/receiver_efficiency_index_handout.pdf) - [html](https://ocean-tracking-network.github.io/glatos/articles/receiver_efficiency_index_handout.md)
+#### Receiver efficiency index - [pdf](https://github.io/articles/receiver_efficiency_index_handout.pdf) - [html](https://github.io/articles/receiver_efficiency_index_handout.md)
 
-#### Residence index - [pdf](https://ocean-tracking-network.github.io/glatos/articles/residence_index_handout.pdf) - [html](https://ocean-tracking-network.github.io/glatos/articles/residence_index_handout.md)
+#### Residence index - [pdf](https://github.io/articles/residence_index_handout.pdf) - [html](https://github.io/articles/residence_index_handout.md)

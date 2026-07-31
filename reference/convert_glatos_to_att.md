@@ -16,16 +16,16 @@ convert_glatos_to_att(detectionObj, receiverObj, crs = sf::st_crs(4326))
 - detectionObj:
 
   A `glatos_detections` object (e.g., created by
-  [read_glatos_detections](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_detections.md))
+  [read_glatos_detections](https://github.io/reference/read_glatos_detections.md))
   or a `data.frame` containing required columns (see
-  [glatos_detections](https://ocean-tracking-network.github.io/glatos/reference/glatos_detections.md)).
+  [glatos_detections](https://github.io/reference/glatos_detections.md)).
 
 - receiverObj:
 
   A `glatos_receivers` object (e.g., created by
-  [read_glatos_receivers](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_receivers.md))
+  [read_glatos_receivers](https://github.io/reference/read_glatos_receivers.md))
   or a `data.frame` containing required columns (see
-  [glatos_receivers](https://ocean-tracking-network.github.io/glatos/reference/glatos_receivers.md)).
+  [glatos_receivers](https://github.io/reference/glatos_receivers.md)).
 
 - crs:
 

@@ -64,7 +64,7 @@ plot(sf::st_geometry(poly1))
 
 rast1 <- jarasterize(poly1, res = c(0.1, 0.05))
 #> Rasterizing...
-#> Done (2.4 secs)
+#> Done (2.5 secs)
 
 if (FALSE) { # \dontrun{
 # compare to polygon

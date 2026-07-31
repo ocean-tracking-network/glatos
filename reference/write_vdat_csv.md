@@ -20,7 +20,7 @@ write_vdat_csv(
 - vdat:
 
   A `vdat_list` object; e.g., produced by
-  [`read_vdat_csv`](https://ocean-tracking-network.github.io/glatos/reference/read_vdat_csv.md)..
+  [`read_vdat_csv`](https://github.io/reference/read_vdat_csv.md)..
 
 - record_types:
 

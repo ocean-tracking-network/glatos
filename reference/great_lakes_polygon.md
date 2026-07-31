@@ -1,8 +1,7 @@
 # An sf POLYGON object with Great Lakes coastline
 
 An sf POLYGON object with Great Lakes coastline, used as default map
-background in several
-[glatos](https://ocean-tracking-network.github.io/glatos/reference/glatos.md)
+background in several [glatos](https://github.io/reference/glatos.md)
 functions.
 
 ## Usage
@@ -18,8 +17,7 @@ columns.
 
 ## Details
 
-Created from
-[shoreline](https://ocean-tracking-network.github.io/glatos/reference/shoreline.md)
+Created from [shoreline](https://github.io/reference/shoreline.md)
 shapefile (see 'data-raw/data-great_lakes_polygon.r).
 
 ## Author

@@ -3,7 +3,7 @@
 Get transmitter sensor (e.g., depth, temperature) conversion parameters
 (e.g., intercept, slope) from a Vemco transmitter specification object
 (e.g., from
-[read_vemco_tag_specs](https://ocean-tracking-network.github.io/glatos/reference/read_vemco_tag_specs.md),
+[read_vemco_tag_specs](https://github.io/reference/read_vemco_tag_specs.md),
 calculate 'real'-scale values (e.g., depth in meters), and add real
 values to detection data in a new column.
 
@@ -18,7 +18,7 @@ real_sensor_values(det, tag_specs)
 - det:
 
   A `glatos_detections` object (e.g., produced by
-  [read_glatos_detections](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_detections.md)).
+  [read_glatos_detections](https://github.io/reference/read_glatos_detections.md)).
 
   *OR* A data frame containing detection data with the following
   columns:
@@ -46,7 +46,7 @@ real_sensor_values(det, tag_specs)
 - tag_specs:
 
   An object produced by
-  [read_vemco_tag_specs](https://ocean-tracking-network.github.io/glatos/reference/read_vemco_tag_specs.md).
+  [read_vemco_tag_specs](https://github.io/reference/read_vemco_tag_specs.md).
 
   *OR* A data frame containing transmitter specification data with the
   following columns:

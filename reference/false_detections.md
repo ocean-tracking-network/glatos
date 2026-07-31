@@ -14,7 +14,7 @@ false_detections(det, tf, min_lag_col = "min_lag", show_plot = FALSE, ...)
 - det:
 
   A `glatos_detections` object (e.g., produced by
-  [read_glatos_detections](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_detections.md)).
+  [read_glatos_detections](https://github.io/reference/read_glatos_detections.md)).
 
   *OR:* A data frame with one column containing 'min_lag' which for each
   detection record, is the smallest time (in seconds) to the next
@@ -25,7 +25,7 @@ false_detections(det, tf, min_lag_col = "min_lag", show_plot = FALSE, ...)
   *OR* (*if `min_lag` is missing*) A data farme containing detection
   data with the four columns described below. In that case, `min_lag`
   will be calculated using
-  [min_lag](https://ocean-tracking-network.github.io/glatos/reference/min_lag.md)).
+  [min_lag](https://github.io/reference/min_lag.md)).
 
   detection_timestamp_utc
 
@@ -82,7 +82,7 @@ the filter, is added to the input data frame.
 This function was written specifically with GLATOS standard detection
 export in mind, but if `min_lag` is absent and `min_lag_col` is not
 specified, then `min_lag` will be calculated using
-[min_lag](https://ocean-tracking-network.github.io/glatos/reference/min_lag.md).
+[min_lag](https://github.io/reference/min_lag.md).
 
 A common rule of thumb for choosing `tf` for VEMCO PPM encoded
 transmitters is 30 times the nominal delay (e.g., 3600 s for a
@@ -106,7 +106,7 @@ monitoring equipment. Animal Biotelemetry, 3(1), p.55.
 
 ## See also
 
-[`min_lag()`](https://ocean-tracking-network.github.io/glatos/reference/min_lag.md)
+[`min_lag()`](https://github.io/reference/min_lag.md)
 
 ## Author
 

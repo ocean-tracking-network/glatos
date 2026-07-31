@@ -31,7 +31,7 @@ interpolate_path(
   An optional transition matrix with the "cost" of moving across each
   cell within the map extent. Must be of class `TransitionLayer`. A
   transition layer may be created from a polygon shapefile using
-  [make_transition](https://ocean-tracking-network.github.io/glatos/reference/make_transition.md).
+  [make_transition](https://github.io/reference/make_transition.md).
 
 - start_time:
 
@@ -76,8 +76,8 @@ matrix layer that represents the 'cost' of an animal moving between
 adjacent grid cells. The transition matrix layer (see
 [gdistance](https://AgrDataSci.github.io/gdistance/reference/gdistance.html))
 is created from a polygon shapefile using
-[make_transition](https://ocean-tracking-network.github.io/glatos/reference/make_transition.md)
-or from a `RasterLayer` object using
+[make_transition](https://github.io/reference/make_transition.md) or
+from a `RasterLayer` object using
 [transition](https://AgrDataSci.github.io/gdistance/reference/transition.html).
 In `make_transition`, each cell in the output transition layer is coded
 as water (1) or land (0) to represent possible (1) and impossible (0)

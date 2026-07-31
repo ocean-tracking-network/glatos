@@ -24,7 +24,7 @@ abacus_plot(
 - det:
 
   A `glatos_detections` object (e.g., produced by
-  [read_glatos_detections](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_detections.md))
+  [read_glatos_detections](https://github.io/reference/read_glatos_detections.md))
   containing detections to be plotted.
 
   *OR* A data frame containing detection data with at least two columns,
@@ -63,7 +63,7 @@ abacus_plot(
 - receiver_history:
 
   An optional `glatos_receivers` object (e.g., produced by
-  [read_glatos_receivers](https://ocean-tracking-network.github.io/glatos/reference/read_glatos_receivers.md))
+  [read_glatos_receivers](https://github.io/reference/read_glatos_receivers.md))
   containing receiver history data for plotting receiver status behind
   the detection data when `receiver_history` is not `NULL`.
 

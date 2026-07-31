@@ -42,7 +42,7 @@ read_otn_deployments(
 
   logical, indicates if column names and classes should be checked
   against requirements. Passed to
-  [`as_glatos_receivers()`](https://ocean-tracking-network.github.io/glatos/reference/glatos_receivers.md).
+  [`as_glatos_receivers()`](https://github.io/reference/glatos_receivers.md).
 
 ## Value
 

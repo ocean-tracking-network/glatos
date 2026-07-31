@@ -14,7 +14,7 @@ get_local_vue_version(vue_exe_path = NULL)
 
   The full path to `VUE.exe`. If `NULL` (default) then the path to
   VUE.exe must be in the PATH environment variable of the system. See
-  [`check_vue`](https://ocean-tracking-network.github.io/glatos/reference/check_vue.md).
+  [`check_vue`](https://github.io/reference/check_vue.md).
 
 ## Value
 
