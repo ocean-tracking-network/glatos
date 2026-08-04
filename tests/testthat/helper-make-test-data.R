@@ -3207,7 +3207,7 @@ ccp_shouldbe <- structure(
 
 
 # test-detection_events.R
-#foo <- detection_events(x)
+# foo <- detection_events(x)
 
 expected_dtc_evts <- function() {
   structure(
