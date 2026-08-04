@@ -82,8 +82,7 @@
 #'
 #' # get path to example detection file
 #' det_file <- system.file("extdata", "walleye_detections.csv",
-#'   package = "glatos"
-#' )
+#'   package = "glatos" )
 #' det <- read_glatos_detections(det_file)
 #'
 #' filt0 <- detection_events(det) # no time filter
@@ -112,9 +111,28 @@ detection_events <- function(
   }
 
   # Check value of condense
-  if (!is.logical(condense)) {
+  if (!is.logical(condense) || length(condense) != 1 || is.na(condense)) {
     stop(
-      "input argument 'condense' must be either TRUE or FALSE (unquoted)."
+      "input argument 'condense' must be either TRUE or FALSE (logical)."
+    )
+  }
+
+  # Check that location column is character
+  if (!is.character(location_col)) {
+    stop("input argument 'location_col' must be a character.")
+  }
+
+  # Check that location column is length = 1
+  if (length(location_col) != 1) {
+    stop("input argument 'location_col' must be a single value (length = 1).")
+  }
+
+  # check that location_col is in the detections dataframe
+  missing <- setdiff(location_col, names(detections))
+
+  if (length(missing) > 0) {
+    stop(
+      paste0("input argument 'location_col' is not in the input data.")
     )
   }
 
@@ -128,6 +146,7 @@ detection_events <- function(
     ),
     names(detections)
   )
+
   if (length(missingCols) > 0) {
     stop(
       paste0(

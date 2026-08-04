@@ -3204,3 +3204,33 @@ ccp_shouldbe <- structure(
   row.names = c(NA, -3L),
   class = "data.frame"
 )
+
+
+# test-detection_events.R
+#foo <- detection_events(x)
+
+expected_dtc_evts <- function() {
+  structure(
+    list(
+      event = c(1, 2),
+      animal_id = c("153", "153"),
+      location = c("one", "two"),
+      mean_latitude = c(43.39165, 43.39165),
+      mean_longitude = c(-83.99264, -83.99264),
+      first_detection = structure(
+        c(1335664117, 1335664512),
+        class = c("POSIXct", "POSIXt"),
+        tzone = "UTC"
+      ),
+      last_detection = structure(
+        c(1335664375, 1335664602),
+        class = c("POSIXct", "POSIXt"),
+        tzone = "UTC"
+      ),
+      num_detections = c(2L, 2L),
+      res_time_sec = c(258, 90)
+    ),
+    row.names = c(NA, -2L),
+    class = "data.frame"
+  )
+}
