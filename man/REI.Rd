@@ -2,30 +2,43 @@
 % Please edit documentation in R/summ-receiver_efficiency.r
 \name{REI}
 \alias{REI}
-\title{Calculates a returns a list of each station and the REI (defined here)}
+\title{Calculates receiver efficiency index for each receiver station}
 \usage{
 REI(detections, deployments)
 }
 \arguments{
-\item{detections}{a glatos detections class data table}
+\item{detections}{A \code{glatos_detections} object (e.g., produced by \link{as_glatos_detections}) containing required columns \strong{plus} columns for station (grouping column representing location of detection; character) and species identifier (character)
 
-\item{deployments}{a glatos receivers class data table}
+\emph{OR} a data frame with the following columns whose names and types are specified below:
+\describe{
+\item{\code{animal_id}}{Individual animal identifier; character.}
+\item{\code{detection_timestamp_utc}}{Detection timestamp; MUST be of class POSIXct.}
+\item{\code{station}}{unique name representing the detection location; character.}
+\item{\code{common_name_e}}{species identifier; character.}
+}}
+
+\item{receivers}{A \code{glatos_receivers} object (e.g., produced by \link{as_glatos_receivers}) containing the required columns \strong{plus} a column for station (grouping column representing location of detection; character)
+
+\emph{OR} a data frame with the following columns whose names and types are specified below:
+\describe{
+\item{\code{station}}{unique name representing the detection location; character.}
+\item{\code{deploy_date_time}}{Receiver deployment timestamp; MUST be of class POSIXct.}
+\item{\code{recover_date_time}}{Receiver recovery timestamp; MUST be of class POSIXct.}
+}
+
+\strong{NOTE} Values of \code{station} in \code{receivers} and \code{detections} object should be the same.  If not, only matching \code{stations} in \code{receivers} and \code{detections} will be output!}
 }
 \value{
-a list of receivers with lat and long and the receiver efficiency index
+a data frame of receivers with lat and long and the receiver efficiency index
 }
 \description{
-The receiver efficiency index is number between 0 and 1 indicating the amount of relative activity at each receiver compared to the
-entire set of receivers, regardless of positioning. The function takes a set detections and a deployment history of the receivers to
-create a context for the detections. Both the amount of unique tags and number of species are taken into consideration in the calculation.
+The receiver efficiency index is number between 0 and 1 indicating the amount of relative activity at each receiver compared to the entire set of receivers, regardless of positioning. The function takes a set detections and a deployment history of the receivers to create a context for the detections. Both the amount of unique tags and number of species are taken into consideration in the calculation.
 
+See:
 \emph{(Ellis, R., Flaherty-Walia, K., Collins, A., Bickford, J., Walters Burnsed, Lowerre-Barbieri S. 2018. Acoustic telemetry array evolution: from species- and project-specific designs to large-scale, multispecies, cooperative networks,
 \url{https://doi.org/10.1016/j.fishres.2018.09.015})}
 
-REI() takes two arguments. The first is a dataframe of detections the detection timstamp, the station identifier, the species, and the
-tag identifier. The next is a dataframe of deployments for each station. The station name should match the stations in the detections.
-The deployments need to include a deployment date and recovery date.
-
+REI() takes two arguments and is calculated as:
 \deqn{
 REI = (Tr/Ta) x (Sr/Sa) x (DDr/DDa) x (Da/Dr)
 }
@@ -41,20 +54,13 @@ REI = (Tr/Ta) x (Sr/Sa) x (DDr/DDa) x (Da/Dr)
 }
 }
 \examples{
-\dontrun{
-det_file <- system.file("extdata", "hfx_detections.csv",
-  package = "glatos"
-)
-
-dep_file <- system.file("extdata", "hfx_deployments.csv",
-  package = "glatos"
-)
-
-hfx_deployments <- glatos::read_otn_deployments(dep_file)
-dets <- glatos::read_otn_detections(det_file)
-
-hfx_receiver_efficiency_index <- glatos::REI(dets, hfx_deployments)
-}
+# load exmple detections file
+dtc_file <- system.file("extdata", "walleye_detections.csv", package = "glatos")
+dtc <- read_glatos_detections(dtc_file)
+# load example receiver deployment/recovery file
+recs <- system.file("extdata", "sample_receivers.csv", package = "glatos")
+recs <- read_glatos_receivers(recs)
+REI(dtc, recs)
 }
 \author{
 Alex Nunes  \email{anunes@dal.ca}

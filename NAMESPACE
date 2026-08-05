@@ -80,14 +80,10 @@ import(sp)
 importFrom(data.table,foverlaps)
 importFrom(dplyr,
   "%>%",
-  coalesce,
   count,
   distinct,
-  filter,
-  group_by,
   mutate,
-  select,
-  summarise
+  select
 )
 importFrom(grDevices,
   bmp,
