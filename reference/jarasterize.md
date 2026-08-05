@@ -64,7 +64,7 @@ plot(sf::st_geometry(poly1))
 
 rast1 <- jarasterize(poly1, res = c(0.1, 0.05))
 #> Rasterizing...
-#> Done (2.4 secs)
+#> Done (2.1 secs)
 
 if (FALSE) { # \dontrun{
 # compare to polygon
@@ -79,7 +79,7 @@ poly2 <- sf::st_transform(poly1, crs = 3175)
 
 rast2 <- jarasterize(poly2, res = 5000)
 #> Rasterizing...
-#> Done (2.8 secs)
+#> Done (2.2 secs)
 
 if (FALSE) { # \dontrun{
 # compare to polygon
@@ -92,7 +92,7 @@ plot(sf::st_geometry(poly2), add = TRUE)
 
 rast3 <- jarasterize(poly2, res = 5000, all_touched = FALSE)
 #> Rasterizing...
-#> Done (0.3 secs)
+#> Done (0.2 secs)
 
 if (FALSE) { # \dontrun{
 # compare to polygon

@@ -85,14 +85,14 @@ sapply(x, class)
 cast(x, "character")
 #> [1] "TRUE"                       "A"                         
 #> [3] NA                           "3.1415"                    
-#> [5] "2026-08-05 16:15:40.348212" "2026-08-05"                
+#> [5] "2026-08-05 17:21:31.846634" "2026-08-05"                
 #> [7] "1997-05-13 12:43:21"       
 #> attr(,"warning_cast_to_check")
 #> [1] "rows 1, 4, 5, 6"
 
 cast(x, "numeric")
-#> [1] 1.000000e+00           NA           NA 3.141500e+00 1.785947e+09
-#> [6] 2.067000e+04           NA
+#> [1] 1.00000e+00          NA          NA 3.14150e+00 1.78595e+09 2.06700e+04
+#> [7]          NA
 #> attr(,"error_cast_failed")
 #> [1] "rows 2, 7"
 #> attr(,"warning_cast_to_check")
@@ -105,20 +105,20 @@ cast(x, "Date")
 cast(x, "POSIXct")
 #> [1] NA                        NA                       
 #> [3] NA                        "1970-01-01 00:00:03 UTC"
-#> [5] "2026-08-05 16:15:40 UTC" "2026-08-05 00:00:00 UTC"
+#> [5] "2026-08-05 17:21:31 UTC" "2026-08-05 00:00:00 UTC"
 #> [7] "1997-05-13 12:43:21 UTC"
 
 cast(x, "POSIXct", tz = "US/Pacific")
 #> [1] NA                        NA                       
 #> [3] NA                        "1970-01-01 00:00:03 UTC"
-#> [5] "2026-08-05 16:15:40 UTC" "2026-08-05 00:00:00 UTC"
+#> [5] "2026-08-05 17:21:31 UTC" "2026-08-05 00:00:00 UTC"
 #> [7] "1997-05-13 12:43:21 UTC"
 
 # separate tz for each element
 cast(x, "POSIXct", tz = c("US/Eastern", rep("US/Pacific", 5)))
 #> [1] NA                        NA                       
 #> [3] NA                        "1970-01-01 00:00:03 UTC"
-#> [5] "2026-08-05 16:15:40 UTC" "2026-08-05 00:00:00 UTC"
+#> [5] "2026-08-05 17:21:31 UTC" "2026-08-05 00:00:00 UTC"
 #> [7] "1997-05-13 12:43:21 UTC"
 
 # Only cast from if class is character
@@ -132,7 +132,7 @@ cast(x, "POSIXct", old_class = "character")
 cast(x, "character", old_class = c("character", "POSIXct"))
 #> [1] NA                           "A"                         
 #> [3] NA                           NA                          
-#> [5] "2026-08-05 16:15:40.348212" NA                          
+#> [5] "2026-08-05 17:21:31.846634" NA                          
 #> [7] "1997-05-13 12:43:21"       
 #> attr(,"error_input_class_skipped")
 #> [1] "rows 1, 4, 6"

@@ -102,9 +102,9 @@ res <- scale_meters_to_degrees(5000, sf = great_lakes_polygon)
 # make_transition layer
 tst <- make_transition(great_lakes_polygon, res = res)
 #> Rasterizing...
-#> Done (2.9 secs)
+#> Done (2.1 secs)
 #> Making transition layer...
-#> Done (1.3 secs)
+#> Done (1.2 secs)
 
 if (FALSE) { # \dontrun{
 # plot raster layer (notice water = 1, land = 0)
@@ -122,9 +122,9 @@ tst2 <- make_transition(great_lakes_polygon,
   buffer = 3000
 )
 #> Rasterizing...
-#> Done (2 secs)
+#> Done (1.3 secs)
 #> Making transition layer...
-#> Done (1.4 secs)
+#> Done (1.2 secs)
 
 if (FALSE) { # \dontrun{
 # plot raster layer (notice water = 1, land = 0)
@@ -161,9 +161,9 @@ recs[1, "deploy_lat"] <- recs[1, "deploy_lat"] + 4
 # make_transition layer (roughly 500 m res)
 tst <- make_transition(poly, res = c(0.065, 0.046), receiver_points = recs)
 #> Rasterizing...
-#> Done (3.1 secs)
+#> Done (2.3 secs)
 #> Making transition layer...
-#> Done (1.6 secs)
+#> Done (1.2 secs)
 
 if (FALSE) { # \dontrun{
 # plot raster layer
@@ -223,7 +223,7 @@ plot(sf::st_geometry(recs), col = "red", add = TRUE)
 #   (note that res in in meters here because crs is 3175)
 tst1 <- make_transition(poly, res = 5000, receiver_points = recs)
 #> Rasterizing...
-#> Done (0.5 secs)
+#> Done (0.4 secs)
 #> Making transition layer...
 #> Done (0.1 secs)
 
