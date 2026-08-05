@@ -1,0 +1,14 @@
+url: https://github.io
+development:
+  mode: auto
+template:
+  bootstrap: 5
+  bslib:
+    bootswatch: materia
+    base_font:
+      google: Lato
+    pkgdown-nav-height: 120px
+  params:
+    logo: man/figures/logo.png
+css: pkgdown/extra.css
+

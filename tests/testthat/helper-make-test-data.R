@@ -3204,3 +3204,58 @@ ccp_shouldbe <- structure(
   row.names = c(NA, -3L),
   class = "data.frame"
 )
+
+
+# test-detection_events.R
+
+# expected condensed output
+expected_dtc_evts <- function() {
+  structure(
+    list(
+      event = c(1, 2),
+      animal_id = c("153", "153"),
+      location = c("one", "two"),
+      mean_latitude = c(43.39165, 43.39165),
+      mean_longitude = c(-83.99264, -83.99264),
+      first_detection = structure(
+        c(1335664117, 1335664512),
+        class = c("POSIXct", "POSIXt"),
+        tzone = "UTC"
+      ),
+      last_detection = structure(
+        c(1335664375, 1335664602),
+        class = c("POSIXct", "POSIXt"),
+        tzone = "UTC"
+      ),
+      num_detections = c(2L, 2L),
+      res_time_sec = c(258, 90)
+    ),
+    row.names = c(NA, -2L),
+    class = "data.frame"
+  )
+}
+
+# test-detection_events.R
+# expected long output (condense = FALSE)
+
+expected_dtc_events_long <- function() {
+  structure(
+    list(
+      animal_id = c("153", "153", "153", "153"),
+      detection_timestamp_utc = structure(
+        c(1335664117, 1335664375, 1335664512, 1335664602),
+        class = c("POSIXct", "POSIXt"),
+        tzone = "UTC"
+      ),
+      deploy_lat = c(43.39165, 43.39165, 43.39165, 43.39165),
+      deploy_long = c(-83.99264, -83.99264, -83.99264, -83.99264),
+      glatos_array = c("one", "one", "two", "two"),
+      time_diff = c(NA, 258, NA, 90),
+      arrive = c(1, 0, 1, 0),
+      depart = c(0, 1, 0, 1),
+      event = c(1, 1, 2, 2)
+    ),
+    row.names = c(NA, -4L),
+    class = "data.frame"
+  )
+}

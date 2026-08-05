@@ -97,8 +97,7 @@ detections that occurred on each station).
 
 # get path to example detection file
 det_file <- system.file("extdata", "walleye_detections.csv",
-  package = "glatos"
-)
+  package = "glatos" )
 det <- read_glatos_detections(det_file)
 
 filt0 <- detection_events(det) # no time filter

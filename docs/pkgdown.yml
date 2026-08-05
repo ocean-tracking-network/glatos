@@ -1,0 +1,12 @@
+pandoc: '3.10'
+pkgdown: 2.2.1
+pkgdown_sha: ~
+articles:
+  data_loading_vignette: data_loading_vignette.html
+  data_requirements_vignette: data_requirements_vignette.html
+  detection_efficiency_vignette: detection_efficiency_vignette.html
+  supplemental_docs: supplemental_docs.html
+last_built: 2026-07-29T13:40Z
+urls:
+  reference: https://ocean-tracking-network.github.io/glatos/reference
+  article: https://ocean-tracking-network.github.io/glatos/articles

@@ -105,16 +105,50 @@ detection_events <- function(
   # Make detections data frame a data.table object for processing speed
   detections <- data.table::as.data.table(det)
 
-  # Check time_sep is numeric
+  # Convert time_sep to numeric if a character is inputed
   if (is.character(time_sep)) {
     time_sep <- as.numeric(time_sep)
-    if (all(is.na(time_sep))) stop("`time_sep` argument should be numeric.")
+    warning(
+      "Supplied `time_sep` argument was not numeric.  Attempted conversion to numeric value."
+    )
+  }
+
+  # check to see whether time_sep is numeric, greater than 0, and a single value greater than 0
+  # stop if not and generate an error.
+  if (
+    !(is.numeric(time_sep) &&
+      length(time_sep) == 1 &&
+      !is.na(time_sep) &&
+      time_sep > 0)
+  ) {
+    stop(
+      "Input argument 'time_sep' must be numeric, a single scaler (length = 1), and greater than 0."
+    )
   }
 
   # Check value of condense
-  if (!is.logical(condense)) {
+  if (!is.logical(condense) || length(condense) != 1 || is.na(condense)) {
     stop(
-      "input argument 'condense' must be either TRUE or FALSE (unquoted)."
+      "Input argument 'condense' must be either TRUE or FALSE (logical)."
+    )
+  }
+
+  # Check that location column is character
+  if (!is.character(location_col)) {
+    stop("input argument 'location_col' must be a character.")
+  }
+
+  # Check that location column is length = 1
+  if (length(location_col) != 1) {
+    stop("input argument 'location_col' must be a single value (length = 1).")
+  }
+
+  # check that location_col is in the detections dataframe
+  missing <- setdiff(location_col, names(detections))
+
+  if (length(missing) > 0) {
+    stop(
+      paste0("input argument 'location_col' is not in the input data.")
     )
   }
 
@@ -128,6 +162,7 @@ detection_events <- function(
     ),
     names(detections)
   )
+
   if (length(missingCols) > 0) {
     stop(
       paste0(
