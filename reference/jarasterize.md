@@ -79,7 +79,7 @@ poly2 <- sf::st_transform(poly1, crs = 3175)
 
 rast2 <- jarasterize(poly2, res = 5000)
 #> Rasterizing...
-#> Done (2.7 secs)
+#> Done (2.8 secs)
 
 if (FALSE) { # \dontrun{
 # compare to polygon
