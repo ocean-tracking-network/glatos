@@ -104,16 +104,31 @@ detection_events <- function(
   # Make detections data frame a data.table object for processing speed
   detections <- data.table::as.data.table(det)
 
-  # Check time_sep is numeric
+  # Convert time_sep to numeric if a character is inputed
   if (is.character(time_sep)) {
     time_sep <- as.numeric(time_sep)
-    if (all(is.na(time_sep))) stop("`time_sep` argument should be numeric.")
+    warning(
+      "Supplied `time_sep` argument was not numeric.  Attempted conversion to numeric value."
+    )
+  }
+
+  # check to see whether time_sep is numeric, greater than 0, and a single value greater than 0
+  # stop if not and generate an error.
+  if (
+    !(is.numeric(time_sep) &&
+      length(time_sep) == 1 &&
+      !is.na(time_sep) &&
+      time_sep > 0)
+  ) {
+    stop(
+      "Input argument 'time_sep' must be numeric, a single scaler (length = 1), and greater than 0."
+    )
   }
 
   # Check value of condense
   if (!is.logical(condense) || length(condense) != 1 || is.na(condense)) {
     stop(
-      "input argument 'condense' must be either TRUE or FALSE (logical)."
+      "Input argument 'condense' must be either TRUE or FALSE (logical)."
     )
   }
 

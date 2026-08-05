@@ -1,4 +1,5 @@
 # input data.frame for testing
+# this is the "glatos-detections" output
 input <- data.frame(
   animal_id = c("153", "153", "153", "153"),
   detection_timestamp_utc = as.POSIXct(
@@ -15,8 +16,8 @@ input <- data.frame(
   glatos_array = c("one", "one", "two", "two")
 )
 
-# test that function returns the correct result
-test_that("detection_events returns expected result", {
+# test that function returns the correct result (condensed output)
+test_that("detection_events returns expected result- condensed output", {
   expected <- expected_dtc_evts()
 
   actual <- detection_events(
@@ -29,6 +30,19 @@ test_that("detection_events returns expected result", {
   expect_equal(as.data.frame(actual), as.data.frame(expected))
 })
 
+# test that function returns the correct results (long format (condense = FALSE)
+test_that("detection_events returns expected result- long format output", {
+  expected <- expected_dtc_events_long()
+
+  actual <- detection_events(
+    det = input,
+    location_col = "glatos_array",
+    time_sep = Inf,
+    condense = FALSE
+  )
+
+  expect_equal(as.data.frame(actual), as.data.frame(expected))
+})
 
 # no errors, should work.
 test_that("validate detection_events catches bad inputs", {
@@ -47,7 +61,56 @@ test_that("validate detection_events catches bad inputs", {
     fixed = TRUE
   )
 
-  # location col should be in the detections dataframe
+  # function should generate a warning if it automatically converts time_sep to numeric value
+  expect_warning(
+    detection_events(
+      input,
+      location_col = "glatos_array",
+      time_sep = "3600",
+      condense = TRUE
+    ),
+    regexp = "Supplied `time_sep` argument was not numeric.  Attempted conversion to numeric value.",
+    fixed = TRUE
+  )
+
+  # function should generate an error if it time_sep is not a single numeric scalar greater that 0 and not NA
+  # test time_sep = NA (missing value)
+  expect_error(
+    detection_events(
+      input,
+      location_col = "glatos_array",
+      time_sep = NA,
+      condense = TRUE
+    ),
+    regexp = "Input argument 'time_sep' must be numeric, a single scaler (length = 1), and greater than 0.",
+    fixed = TRUE
+  )
+
+  #test time_sep = -1000 (negative value)
+  expect_error(
+    detection_events(
+      input,
+      location_col = "glatos_array",
+      time_sep = -1000,
+      condense = TRUE
+    ),
+    regexp = "Input argument 'time_sep' must be numeric, a single scaler (length = 1), and greater than 0.",
+    fixed = TRUE
+  )
+
+  #test time_sep = c(1000, 2000) (multiple values)
+  expect_error(
+    detection_events(
+      input,
+      location_col = "glatos_array",
+      time_sep = c(1000, 2000),
+      condense = TRUE
+    ),
+    regexp = "Input argument 'time_sep' must be numeric, a single scaler (length = 1), and greater than 0.",
+    fixed = TRUE
+  )
+
+  # function should catch that location col is not in the detections dataframe
   expect_error(
     detection_events(
       input,
@@ -67,7 +130,7 @@ test_that("validate detection_events catches bad inputs", {
       time_sep = Inf,
       condense = "yes"
     ),
-    regexp = "input argument 'condense' must be either TRUE or FALSE (logical).",
+    regexp = "Input argument 'condense' must be either TRUE or FALSE (logical).",
     fixed = TRUE
   )
 
