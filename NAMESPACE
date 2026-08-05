@@ -78,53 +78,63 @@ import(data.table)
 import(readxl)
 import(sp)
 importFrom(data.table,foverlaps)
-importFrom(dplyr,"%>%")
-importFrom(dplyr,coalesce)
-importFrom(dplyr,count)
-importFrom(dplyr,distinct)
-importFrom(dplyr,filter)
-importFrom(dplyr,group_by)
-importFrom(dplyr,mutate)
-importFrom(dplyr,select)
-importFrom(dplyr,summarise)
-importFrom(grDevices,bmp)
-importFrom(grDevices,colorRampPalette)
-importFrom(grDevices,dev.new)
-importFrom(grDevices,dev.off)
-importFrom(grDevices,jpeg)
-importFrom(grDevices,png)
-importFrom(grDevices,rainbow)
-importFrom(grDevices,tiff)
-importFrom(graphics,abline)
-importFrom(graphics,axis)
-importFrom(graphics,box)
-importFrom(graphics,legend)
-importFrom(graphics,lines)
-importFrom(graphics,mtext)
-importFrom(graphics,par)
-importFrom(graphics,points)
-importFrom(graphics,symbols)
-importFrom(graphics,text)
+importFrom(dplyr,
+  "%>%",
+  coalesce,
+  count,
+  distinct,
+  filter,
+  group_by,
+  mutate,
+  select,
+  summarise
+)
+importFrom(grDevices,
+  bmp,
+  colorRampPalette,
+  dev.new,
+  dev.off,
+  jpeg,
+  png,
+  rainbow,
+  tiff
+)
+importFrom(graphics,
+  abline,
+  axis,
+  box,
+  legend,
+  lines,
+  mtext,
+  par,
+  points,
+  symbols,
+  text
+)
 importFrom(lubridate,fast_strptime)
 importFrom(nanoparquet,read_parquet)
-importFrom(stats,approx)
-importFrom(stats,dnorm)
-importFrom(stats,ecdf)
-importFrom(stats,end)
-importFrom(stats,fivenum)
-importFrom(stats,median)
-importFrom(stats,na.omit)
-importFrom(stats,rbinom)
-importFrom(stats,rnorm)
-importFrom(stats,runif)
-importFrom(stats,start)
-importFrom(stats,step)
-importFrom(utils,capture.output)
-importFrom(utils,packageVersion)
-importFrom(utils,read.csv)
-importFrom(utils,setTxtProgressBar)
-importFrom(utils,txtProgressBar)
-importFrom(utils,unzip)
-importFrom(utils,write.csv)
-importFrom(utils,write.table)
-importFrom(utils,zip)
+importFrom(stats,
+  approx,
+  dnorm,
+  ecdf,
+  end,
+  fivenum,
+  median,
+  na.omit,
+  rbinom,
+  rnorm,
+  runif,
+  start,
+  step
+)
+importFrom(utils,
+  capture.output,
+  packageVersion,
+  read.csv,
+  setTxtProgressBar,
+  txtProgressBar,
+  unzip,
+  write.csv,
+  write.table,
+  zip
+)
