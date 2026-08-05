@@ -86,7 +86,7 @@ test_that("validate detection_events catches bad inputs", {
     fixed = TRUE
   )
 
-  #test time_sep = -1000 (negative value)
+  # test time_sep = -1000 (negative value)
   expect_error(
     detection_events(
       input,
@@ -98,7 +98,7 @@ test_that("validate detection_events catches bad inputs", {
     fixed = TRUE
   )
 
-  #test time_sep = c(1000, 2000) (multiple values)
+  # test time_sep = c(1000, 2000) (multiple values)
   expect_error(
     detection_events(
       input,
