@@ -3207,8 +3207,8 @@ ccp_shouldbe <- structure(
 
 
 # test-detection_events.R
-# expected condensed output
 
+# expected condensed output
 expected_dtc_evts <- function() {
   structure(
     list(
