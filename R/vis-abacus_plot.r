@@ -61,7 +61,7 @@
 #'
 #' @param outFile Deprecated. Use `out_file` instead.
 #'
-#' @param ... Other plotting arguments that pass to [plot], [points]
+#' @param ... Other plotting arguments that pass to [graphics::plot()], [graphics::points]
 #'  (e.g., `col`, `lwd`, `type`). Use `cex.main` to set
 #'  title character size, and `col.main` to set title color. If `xlim`
 #'  is specified, it must be a two-element vector of POSIXct.

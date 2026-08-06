@@ -40,7 +40,7 @@ in \code{det} that contains 'min_lag'.}
 proportion of detections that exceed min_lag from min_lag = 1 to
 min_lag = 5 * tf.}
 
-\item{...}{Additional arguments passed to \link{plot}.}
+\item{...}{Additional arguments passed to \code{\link[graphics:plot]{graphics::plot()}}.}
 }
 \value{
 A data frame consisting of \code{det} with an additional

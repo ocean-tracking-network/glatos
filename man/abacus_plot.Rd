@@ -83,7 +83,7 @@ ticks are not supported). Default is "\%Y-\%m-\%d". Any valid
 
 \item{outFile}{Deprecated. Use \code{out_file} instead.}
 
-\item{...}{Other plotting arguments that pass to \link{plot}, \link{points}
+\item{...}{Other plotting arguments that pass to \code{\link[graphics:plot]{graphics::plot()}}, \link[graphics:points]{graphics::points}
 (e.g., \code{col}, \code{lwd}, \code{type}). Use \code{cex.main} to set
 title character size, and \code{col.main} to set title color. If \code{xlim}
 is specified, it must be a two-element vector of POSIXct.}

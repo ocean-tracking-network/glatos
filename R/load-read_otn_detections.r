@@ -26,9 +26,7 @@
 #'
 #' @examples
 #' # get path to example detection file
-#' det_file <- system.file("extdata", "blue_shark_detections.csv",
-#'   package = "glatos"
-#' )
+#' det_file <- system.file("extdata", "blue_shark_detections.csv", package = "glatos")
 #' det <- read_otn_detections(det_file)
 #'
 #' @importFrom lubridate fast_strptime
@@ -44,7 +42,9 @@ read_otn_detections <- function(det_file, format = "new") {
     det_schema <- otn_detection_schema_old
     min_cols <- otn_detection_schema_old_min_columns
   } else {
-    message("You must provide a valid format to the read_otn_detections function. Valid formats are either 'new' (CSVs and Parquet files from after OTN's Parquet rollout) or 'old' (CSVs from before the Parquet rollout. If no format is supplied, 'new' is the default.")
+    message(
+      "You must provide a valid format to the read_otn_detections function. Valid formats are either 'new' (CSVs and Parquet files from after OTN's Parquet rollout) or 'old' (CSVs from before the Parquet rollout. If no format is supplied, 'new' is the default."
+    )
     return(0)
   }
 
@@ -74,8 +74,12 @@ read_otn_detections <- function(det_file, format = "new") {
     )
 
     if (length(det_file) > 1) {
-      message("It looks like there is more than one CSV in the zip archive you are trying to load.")
-      message("read_otn_detections can only process zip files if they contain one CSV (or one CSV plus a description.txt file).")
+      message(
+        "It looks like there is more than one CSV in the zip archive you are trying to load."
+      )
+      message(
+        "read_otn_detections can only process zip files if they contain one CSV (or one CSV plus a description.txt file)."
+      )
       message("Please unzip the archive and load the CSV files individually.")
       return(FALSE)
     }

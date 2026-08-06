@@ -23,13 +23,16 @@
 #' \item{Dr = The number of days the receiver was active}
 #' }
 #'
-#'
-#' @param detections A `glatos_detections` object (e.g., produced by [as_glatos_detections]) containing required columns **plus** columns for station (grouping column representing location of detection; character) and species identifier (character)
+
+#' @param detections A `glatos_detections` object (e.g., produced by [as_glatos_detections]) containing required columns **plus** columns for station (unique name representing the detection location; character) and species name (common_name_e; character)
 #'
 #' *OR* a data frame with the following columns whose names and types are specified below:
 #' \describe{
-#' \item{`animal_id`}{Individual animal identifier; character.}
-#' \item{`detection_timestamp_utc`}{Detection timestamp; MUST be of class POSIXct.}
+#' \item{`animal_id`}{Individual unique animal identifier; character.}
+#' \item{`detection_timestamp_utc`}{Detection timestamp in UTC; MUST be of class POSIXct.}
+#' \item{`deploy_lat`}{Receiver deployment latitude for detection in decimal degrees (NAD83); numeric.}
+#' \item{`deploy_long`}{Receiver deployment longitude for detection in decimal degrees (NAD83); numeric.}
+#' \item{`ins_serial_no`}{Receiver serial number; character.}
 #' \item{`station`}{unique name representing the detection location; character.}
 #' \item{`common_name_e`}{species identifier; character.}
 #' }
@@ -41,11 +44,14 @@
 #' \item{`station`}{unique name representing the detection location; character.}
 #' \item{`deploy_date_time`}{Receiver deployment timestamp; MUST be of class POSIXct.}
 #' \item{`recover_date_time`}{Receiver recovery timestamp; MUST be of class POSIXct.}
+#' \item{`deploy_lat`}{Receiver deployment latitude in decimal degrees (NAD83); numeric.}
+#' \item{`deploy_long`}{Receiver deployment longitude in decimal degrees (NAD83); numeric.}
+#' \item{`ins_serial_no`}{Receiver serial number; character.}
 #' }
 #'
-#' **NOTE** Values of `station` in `receivers` and `detections` object should be the same.  If not, only matching `stations` in `receivers` and `detections` will be output!
+#' **NOTE** Values of `station` in `receivers` and `detections` object should be the same.  Only matching `stations` in `receivers` and `detections` will be returned in output!
 
-#' @return a data frame of receivers with lat and long and the receiver efficiency index
+#' @return a data frame of receivers with deployment latitude and deployment longitude and receiver efficiency index
 #'
 #' @author Alex Nunes  \email{anunes@dal.ca}
 #'
@@ -67,17 +73,26 @@ REI <- function(detections, deployments) {
   recover_date_time <- last_download <- station <- days_deployed <- deploy_lat <-
     deploy_long <- animal_id <- common_name_e <- detection_timestamp_utc <- NULL
 
-  # Check for proper columns
+  # coerce to glatos_receivers class if not
+  # req cols = deploy_lat, deploy_long, deploy_date_time, recover_date_time, ins_serial_no
+  if (!inherits(deployments, "glatos_receivers")) {
+    deployments <- as_glatos_receivers(deployments)
+  }
+
+  # coerce to glatos_detections if not
+  if (!inherits(detections, "glatos_detections")) {
+    detections <- as_glatos_detections(detections)
+  }
+
+  # Check for proper columns that are not required in glatos_receivers object
   required_deployment_columns <- c(
-    "station",
-    "deploy_date_time",
-    "recover_date_time"
+    "station"
   )
+
+  # check for columns that are not required in glatos_detections object
   required_detection_columns <- c(
     "station",
-    "common_name_e",
-    "animal_id",
-    "detection_timestamp_utc"
+    "common_name_e"
   )
 
   # determine if any required columns are missing in the detections object

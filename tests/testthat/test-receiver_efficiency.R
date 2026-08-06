@@ -13,8 +13,8 @@ test_that("REI gives expected results for the halifax line", {
     package = "glatos"
   )
 
-  hfx_detections <- read_otn_detections(det_file)
-  hfx_deployments <- read_otn_deployments(dep_file)
+  hfx_detections <- read_otn_detections(det_file, format = "new")
+  hfx_deployments <- read_otn_deployments(dep_file, validate = FALSE)
 
   hfx_rei <- REI(hfx_detections, hfx_deployments)
 

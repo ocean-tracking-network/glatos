@@ -36,7 +36,7 @@
 #'   proportion of detections that exceed min_lag from min_lag = 1 to
 #'   min_lag = 5 * tf.
 #'
-#' @param ... Additional arguments passed to [plot].
+#' @param ... Additional arguments passed to [graphics::plot()].
 #'
 #' @details Detections are identified as potentially false when
 #'   `min_lag > tf`.

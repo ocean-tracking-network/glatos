@@ -7,12 +7,15 @@
 REI(detections, deployments)
 }
 \arguments{
-\item{detections}{A \code{glatos_detections} object (e.g., produced by \link{as_glatos_detections}) containing required columns \strong{plus} columns for station (grouping column representing location of detection; character) and species identifier (character)
+\item{detections}{A \code{glatos_detections} object (e.g., produced by \link{as_glatos_detections}) containing required columns \strong{plus} columns for station (unique name representing the detection location; character) and species name (common_name_e; character)
 
 \emph{OR} a data frame with the following columns whose names and types are specified below:
 \describe{
-\item{\code{animal_id}}{Individual animal identifier; character.}
-\item{\code{detection_timestamp_utc}}{Detection timestamp; MUST be of class POSIXct.}
+\item{\code{animal_id}}{Individual unique animal identifier; character.}
+\item{\code{detection_timestamp_utc}}{Detection timestamp in UTC; MUST be of class POSIXct.}
+\item{\code{deploy_lat}}{Receiver deployment latitude for detection in decimal degrees (NAD83); numeric.}
+\item{\code{deploy_long}}{Receiver deployment longitude for detection in decimal degrees (NAD83); numeric.}
+\item{\code{ins_serial_no}}{Receiver serial number; character.}
 \item{\code{station}}{unique name representing the detection location; character.}
 \item{\code{common_name_e}}{species identifier; character.}
 }}
@@ -24,12 +27,15 @@ REI(detections, deployments)
 \item{\code{station}}{unique name representing the detection location; character.}
 \item{\code{deploy_date_time}}{Receiver deployment timestamp; MUST be of class POSIXct.}
 \item{\code{recover_date_time}}{Receiver recovery timestamp; MUST be of class POSIXct.}
+\item{\code{deploy_lat}}{Receiver deployment latitude in decimal degrees (NAD83); numeric.}
+\item{\code{deploy_long}}{Receiver deployment longitude in decimal degrees (NAD83); numeric.}
+\item{\code{ins_serial_no}}{Receiver serial number; character.}
 }
 
-\strong{NOTE} Values of \code{station} in \code{receivers} and \code{detections} object should be the same.  If not, only matching \code{stations} in \code{receivers} and \code{detections} will be output!}
+\strong{NOTE} Values of \code{station} in \code{receivers} and \code{detections} object should be the same.  Only matching \code{stations} in \code{receivers} and \code{detections} will be returned in output!}
 }
 \value{
-a data frame of receivers with lat and long and the receiver efficiency index
+a data frame of receivers with deployment latitude and deployment longitude and receiver efficiency index
 }
 \description{
 The receiver efficiency index is number between 0 and 1 indicating the amount of relative activity at each receiver compared to the entire set of receivers, regardless of positioning. The function takes a set detections and a deployment history of the receivers to create a context for the detections. Both the amount of unique tags and number of species are taken into consideration in the calculation.
