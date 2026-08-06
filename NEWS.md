@@ -1,3 +1,14 @@
+---
+
+# glatos 0.9.9 (2026-08-06)
+
+### Bug fixes and minor changes
+
+- Fixed minor documentation and examples in `false_detections()`, `read_otn_deployments()`, `read_otn_detections()`, and `abacus_plot()`
+- Major documentation cleanup and behind the scenes changes `REI()`.  Output and input requirements did not change.  `REI()` now generates specific errors when required input columns are not present.  This fixes [issue #281](https://github.com/ocean-tracking-network/glatos/issues/281)
+- Added unit tests for detection_events function.  This fixes [issue #282] (https://github.com/ocean-tracking-network/glatos/issues/282)
+- Setup basic pkgdown website for package and automated publication of website via GitHub pages. Fixes [issue #280] (https://github.com/ocean-tracking-network/glatos/issues/280)
+
 ----
 
 # glatos 0.9.8 (2026-05-18)
