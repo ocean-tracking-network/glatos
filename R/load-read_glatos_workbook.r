@@ -261,21 +261,20 @@ read_glatos_workbook <- function(
           error = function(e) e
         )
 
-      
+
       # Drop empty rows; with warning
       empty_rows <- which(rowSums(!is.na(sheet_i)) == 0L)
-      if(length(empty_rows) > 0){
-       
-        sheet_i <- sheet_i[-empty_rows,] 
-        
+      if (length(empty_rows) > 0) {
+        sheet_i <- sheet_i[-empty_rows, ]
+
         warning(
           "\nIn sheet '", sheets_to_read[i], "':",
           "\n Empty rows have been ignored: \n  ",
           print_first_n(empty_rows, n = 5)
         )
       }
-      
-      
+
+
       # Add context (sheet name) to errors
       if (inherits(sheet_i, "error")) {
         stop("In workbook '", basename(wb_file),
@@ -302,9 +301,9 @@ read_glatos_workbook <- function(
 
       if (length(dupl_cols) > 0) {
         stop(
-            "\nIn sheet '", sheets_to_read[i], "':",
-            "\n Duplicate column names are not allowed: \n  '",
-            paste0(dupl_cols, collapse = "'\n  '"), "'\n"
+          "\nIn sheet '", sheets_to_read[i], "':",
+          "\n Duplicate column names are not allowed: \n  '",
+          paste0(dupl_cols, collapse = "'\n  '"), "'\n"
         )
       }
 
@@ -315,22 +314,22 @@ read_glatos_workbook <- function(
 
       if (length(missing_cols) > 0) {
         stop(
-            "\nIn sheet '", sheets_to_read[i], "':",
-            "\n Required columns not found: \n  '",
-            paste0(missing_cols, collapse = "'\n  '"), "'\n"
+          "\nIn sheet '", sheets_to_read[i], "':",
+          "\n Required columns not found: \n  '",
+          paste0(missing_cols, collapse = "'\n  '"), "'\n"
         )
       }
-      
-      
+
+
       # Check for empty column names
-      
+
       empty_col_names <- which(col_names_i %in% "")
-      
+
       if (length(empty_col_names) > 0) {
         stop(
-            "\nIn sheet '", sheets_to_read[i], "':",
-            "\n The following columns are missing names: \n  '",
-            print_first_n(empty_col_names, n = 5)
+          "\nIn sheet '", sheets_to_read[i], "':",
+          "\n The following columns are missing names: \n  '",
+          print_first_n(empty_col_names, n = 5)
         )
       }
 
@@ -468,9 +467,11 @@ read_glatos_workbook <- function(
                   "POSIXct"
                 ),
                 tz = tzv_ij,
-                tryFormats = c("%Y-%m-%d %H:%M:%OS",
-                               "%Y-%m-%d %H:%M",
-                               "%Y-%m-%d"),
+                tryFormats = c(
+                  "%Y-%m-%d %H:%M:%OS",
+                  "%Y-%m-%d %H:%M",
+                  "%Y-%m-%d"
+                ),
               )
             } else {
               as.POSIXct(NA, tz = "UTC")[0]
@@ -781,8 +782,8 @@ read_glatos_workbook <- function(
 #'
 #' @param defer_exceptions If TRUE (default value) then errors and warnings will
 #'  be returned as attributes with prefix "error_" or "warning_".
-#'  
-#' @param tryFormats character vector of format strings to try. Passed to 
+#'
+#' @param tryFormats character vector of format strings to try. Passed to
 #' as.POSIXct() and only used if new_class is 'POSIXct'.
 #'
 #' @param ... Other arguments passed to the casting function (e.g., `tz =
@@ -840,12 +841,14 @@ cast <- function(x,
                    "POSIXct"
                  ),
                  defer_exceptions = TRUE,
-                 tryFormats = c("%Y-%m-%d %H:%M:%OS",
-                                 "%Y/%m/%d %H:%M:%OS",
-                                 "%Y-%m-%d %H:%M",
-                                 "%Y/%m/%d %H:%M",
-                                 "%Y-%m-%d",
-                                 "%Y/%m/%d"),
+                 tryFormats = c(
+                   "%Y-%m-%d %H:%M:%OS",
+                   "%Y/%m/%d %H:%M:%OS",
+                   "%Y-%m-%d %H:%M",
+                   "%Y/%m/%d %H:%M",
+                   "%Y-%m-%d",
+                   "%Y/%m/%d"
+                 ),
                  ...) {
   # args_in <- list()
   args_in <- list(...)
@@ -902,15 +905,20 @@ cast <- function(x,
         args_in_k <- args_in
         if (length(args_in_k) > 0) {
           for (m in 1:length(args_in_k)) {
-            args_in_k[[m]] <- 
-              if(length(args_in[[m]]) == length(x)) args_in[[m]][k]
-              else if(length(args_in[[m]]) == 1L) args_in[[m]]
-          } 
+            args_in_k[[m]] <-
+              if (length(args_in[[m]]) == length(x)) {
+                args_in[[m]][k]
+              } else if (length(args_in[[m]]) == 1L) args_in[[m]]
+          }
         }
-        
-        if(new_class == "POSIXct") args_in_k <- c(args_in_k, 
-                                                  list(tryFormats = tryFormats))
-        
+
+        if (new_class == "POSIXct") {
+          args_in_k <- c(
+            args_in_k,
+            list(tryFormats = tryFormats)
+          )
+        }
+
         tryCatch(
           do.call(cast_with, c(
             list(x = x[[k]]),
@@ -957,7 +965,7 @@ cast <- function(x,
   error_input_class_skipped <- NULL
   error_cast_failed <- NULL
   warning_cast_to_check <- NULL
-  
+
 
   # Invalid input class (cast not supported)
   if (any(cast_status == 3)) {
@@ -1039,13 +1047,13 @@ cast <- function(x,
 
 
 #' Construct a text string that shows only first n records... & last
-#' 
+#'
 #' @param x A character vector.
-#' 
+#'
 #' @param n The number of elements of 'x' to include.
 #'
 #' @return A text string with the first n and last elements of x.
-#' 
+#'
 #' @noRd
 print_first_n <- function(x, n = 3) {
   if (length(x) <= n) {
