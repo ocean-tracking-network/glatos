@@ -9,6 +9,8 @@ cast(
   new_class,
   old_class = c("logical", "character", "numeric", "Date", "POSIXct"),
   defer_exceptions = TRUE,
+  tryFormats = c("\%Y-\%m-\%d \%H:\%M:\%OS", "\%Y/\%m/\%d \%H:\%M:\%OS",
+    "\%Y-\%m-\%d \%H:\%M", "\%Y/\%m/\%d \%H:\%M", "\%Y-\%m-\%d", "\%Y/\%m/\%d"),
   ...
 )
 }
@@ -23,6 +25,9 @@ be cast to \code{new_class}. Any record with a different class will result in NA
 
 \item{defer_exceptions}{If TRUE (default value) then errors and warnings will
 be returned as attributes with prefix "error_" or "warning_".}
+
+\item{tryFormats}{character vector of format strings to try. Passed to
+as.POSIXct() and only used if new_class is 'POSIXct'.}
 
 \item{...}{Other arguments passed to the casting function (e.g., \code{tz = "US/Eastern"} when \code{new_class} is \code{POSIXct}).}
 }
@@ -54,7 +59,7 @@ cast(x, "POSIXct")
 cast(x, "POSIXct", tz = "US/Pacific")
 
 # separate tz for each element
-cast(x, "POSIXct", tz = c("US/Eastern", rep("US/Pacific", 5)))
+cast(x, "POSIXct", tz = c(rep("US/Pacific", 5), "US/Eastern"))
 
 # Only cast from if class is character
 cast(x, "POSIXct", old_class = "character")

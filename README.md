@@ -29,7 +29,7 @@ be found on the glatos webpage (https://glatos.org).
 
 ### Installation
 
-- To install the latest release (0.9.8 ‘pretty-fragrant-rye’):
+- To install the latest release (0.9.10 ‘pretty-fragrant-rye’):
 
 ``` r
 if (!require("pak")) {

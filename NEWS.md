@@ -1,5 +1,16 @@
 ---
 
+# glatos 0.9.10 (2026-08-15)
+
+### Bug fixes and minor changes
+
+- In `read_glatos_workbook()`:
+    - Ignore (with warning) empty rows in input workbooks.
+    - Stop (with error) when project-specific columns are missing names.
+    - Fixed bug where unsupported input formats were not converted to NA.
+
+---
+
 # glatos 0.9.9 (2026-08-06)
 
 ### Bug fixes and minor changes
