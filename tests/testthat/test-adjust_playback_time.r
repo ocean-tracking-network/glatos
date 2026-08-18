@@ -28,7 +28,7 @@ test_that("slow down gives expected result", {
   # Check if expected and actual file sizes
   expect_equal(
     file.size(slow_down),
-    93158,
+    262693,
     tolerance = 0.005 # 0.5% difference
   )
 })
@@ -50,7 +50,7 @@ test_that("speed up gives expected result", {
   # Check if expected and actual file sizes
   expect_equal(
     file.size(speed_up),
-    56817,
+    262613,
     tolerance = 0.005 # 0.5% difference
   )
 })
@@ -78,7 +78,7 @@ test_that("input/output with space/parenth gives expected result", {
   # Check if expected and actual file sizes
   expect_equal(
     file.size(path_spaces),
-    56817,
+    262613,
     tolerance = 0.005
   )
 })

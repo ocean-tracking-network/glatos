@@ -4,6 +4,11 @@ skip_on_ci()
 skip_on_cran()
 
 test_that("write_vdat_csv works", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   # VR2W file
   vrl_file <- system.file(
     "extdata",
@@ -108,6 +113,11 @@ test_that("write_vdat_csv works", {
 
 
 test_that("bad inputs are caught", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   # VR2W file
   vrl_file <- system.file(
     "extdata",
@@ -204,6 +214,11 @@ test_that("format_POSIXt() works", {
 
 # vdat_list subset method
 test_that("vdat_list subset method works", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   # VR2W file
   vrl_file <- system.file(
     "extdata",

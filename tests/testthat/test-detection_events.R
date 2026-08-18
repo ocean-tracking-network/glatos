@@ -20,12 +20,12 @@ input <- data.frame(
 test_that("detection_events returns expected result- condensed output", {
   expected <- expected_dtc_evts()
 
-  actual <- detection_events(
+  actual <- suppressMessages(detection_events(
     det = input,
     location_col = "glatos_array",
     time_sep = Inf,
     condense = TRUE
-  )
+  ))
 
   expect_equal(as.data.frame(actual), as.data.frame(expected))
 })
@@ -34,12 +34,12 @@ test_that("detection_events returns expected result- condensed output", {
 test_that("detection_events returns expected result- long format output", {
   expected <- expected_dtc_events_long()
 
-  actual <- detection_events(
+  actual <- suppressMessages(detection_events(
     det = input,
     location_col = "glatos_array",
     time_sep = Inf,
     condense = FALSE
-  )
+  ))
 
   expect_equal(as.data.frame(actual), as.data.frame(expected))
 })
@@ -47,12 +47,12 @@ test_that("detection_events returns expected result- long format output", {
 # no errors, should work.
 test_that("validate detection_events catches bad inputs", {
   # should work
-  expect_no_error(detection_events(
+  expect_no_error(suppressMessages(detection_events(
     input,
     location_col = "glatos_array",
     time_sep = Inf,
     condense = TRUE
-  ))
+  )))
 
   # function should catch numeric location col argument
   expect_error(
@@ -63,11 +63,13 @@ test_that("validate detection_events catches bad inputs", {
 
   # function should generate a warning if it automatically converts time_sep to numeric value
   expect_warning(
-    detection_events(
-      input,
-      location_col = "glatos_array",
-      time_sep = "3600",
-      condense = TRUE
+    suppressMessages(
+      detection_events(
+        input,
+        location_col = "glatos_array",
+        time_sep = "3600",
+        condense = TRUE
+      )
     ),
     regexp = "Supplied `time_sep` argument was not numeric.  Attempted conversion to numeric value.",
     fixed = TRUE

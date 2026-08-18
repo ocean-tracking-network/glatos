@@ -4,6 +4,12 @@ skip_on_ci()
 skip_on_cran()
 
 test_that("vue_convert works", {
+  # only test on windows OS because VUE is only for windows, skip otherwise
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "skipping because this is not a windows OS"
+  )
+
   # VR2W file
   vrl_files <- system.file(
     "extdata",
@@ -36,7 +42,9 @@ test_that("vue_convert works", {
 
   # skip RLD files
   rld_files <- tempfile(rep("VR2W-RLD_", 3), tmpdir = temp_vrl_dir)
-  for (file_i in rld_files) writeLines("foo", file_i)
+  for (file_i in rld_files) {
+    writeLines("foo", file_i)
+  }
 
   expect_snapshot(
     temp_csv_files2 <- vdat_convert(temp_vrl_dir, overwrite = TRUE)
@@ -58,6 +66,12 @@ test_that("vue_convert works", {
 
 
 test_that("vue_convert catches bad inputs", {
+  # only test on windows OS because required software VUE is only windows, skip otherwise
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "skipping because this is not a windows OS"
+  )
+
   # VR2W file
   vrl_files <- system.file(
     "extdata",
@@ -163,6 +177,12 @@ test_that("vue_convert catches bad inputs", {
 
 
 test_that("check_vue works", {
+  # only test on windows OS, skip otherwise
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "skipping because this is not a windows OS"
+  )
+
   # Check vdat.exe
   expect_equal(check_vue(), "VUE")
 
@@ -187,6 +207,12 @@ test_that("check_vue works", {
 
 
 test_that("get_local_vue_version works", {
+  # only test on windows OS, skip otherwise
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "skipping because this is not a windows OS"
+  )
+
   expect_type(
     temp_vue_version <- get_local_vue_version(),
     "list"

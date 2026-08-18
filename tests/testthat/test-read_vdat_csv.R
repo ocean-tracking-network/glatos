@@ -4,6 +4,11 @@ skip_on_cran()
 skip_on_ci()
 
 test_that("read_vdat_csv works", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   # VR2W file
   vrl_file <- system.file(
     "extdata",
@@ -35,6 +40,11 @@ test_that("read_vdat_csv works", {
 
 
 test_that("bad inputs are caught", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   # Input file not found
   not_a_file <- tempfile()
   expect_warning(

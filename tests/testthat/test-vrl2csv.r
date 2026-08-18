@@ -9,7 +9,9 @@ vrl_to_tempdir <- function(test_dir) {
 
   ## Create temp_dir
   test_dir <- file.path(tempdir(), test_dir)
-  if (!dir.exists(test_dir)) dir.create(test_dir)
+  if (!dir.exists(test_dir)) {
+    dir.create(test_dir)
+  }
 
   ## Copy internal VRL to test_dir
   good_vrl <- file.path(test_dir, basename(myVRL))
@@ -24,6 +26,11 @@ vrl_to_tempdir <- function(test_dir) {
 
 # Check csv from one VRL in dir with space in name
 test_that("one vrl gives expected result", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   skip_on_ci()
   skip_on_cran()
 
@@ -118,6 +125,11 @@ test_that("one vrl gives expected result", {
 
 
 test_that("one vrl in dir with space in name gives expected result", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   skip_on_ci()
   skip_on_cran()
 
@@ -184,6 +196,11 @@ test_that("one vrl in dir with space in name gives expected result", {
 
 
 test_that("one good vrl in dir with corrupt vrl gives expected result", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   skip_on_ci()
   skip_on_cran()
 

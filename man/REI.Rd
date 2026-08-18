@@ -20,7 +20,7 @@ REI(detections, deployments)
 \item{\code{common_name_e}}{species identifier; character.}
 }}
 
-\item{receivers}{A \code{glatos_receivers} object (e.g., produced by \link{as_glatos_receivers}) containing the required columns \strong{plus} a column for station (grouping column representing location of detection; character)
+\item{deployments}{A \code{glatos_receivers} object (e.g., produced by \link{as_glatos_receivers}) containing the required columns \strong{plus} a column for station (grouping column representing location of detection; character)
 
 \emph{OR} a data frame with the following columns whose names and types are specified below:
 \describe{
@@ -32,7 +32,7 @@ REI(detections, deployments)
 \item{\code{ins_serial_no}}{Receiver serial number; character.}
 }
 
-\strong{NOTE} Values of \code{station} in \code{receivers} and \code{detections} object should be the same.  Only matching \code{stations} in \code{receivers} and \code{detections} will be returned in output!}
+\strong{NOTE} Values of \code{station} in \code{detections} and \code{deployments} object should have the same values.  Only matching \code{stations} in \code{detections} and \code{deployments} will be returned in output!}
 }
 \value{
 a data frame of receivers with deployment latitude and deployment longitude and receiver efficiency index

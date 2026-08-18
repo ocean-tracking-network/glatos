@@ -37,7 +37,7 @@
 #' \item{`common_name_e`}{species identifier; character.}
 #' }
 #'
-#' @param receivers A `glatos_receivers` object (e.g., produced by [as_glatos_receivers]) containing the required columns **plus** a column for station (grouping column representing location of detection; character)
+#' @param deployments A `glatos_receivers` object (e.g., produced by [as_glatos_receivers]) containing the required columns **plus** a column for station (grouping column representing location of detection; character)
 #'
 #' *OR* a data frame with the following columns whose names and types are specified below:
 #' \describe{
@@ -49,7 +49,7 @@
 #' \item{`ins_serial_no`}{Receiver serial number; character.}
 #' }
 #'
-#' **NOTE** Values of `station` in `receivers` and `detections` object should be the same.  Only matching `stations` in `receivers` and `detections` will be returned in output!
+#' **NOTE** Values of `station` in `detections` and `deployments` object should have the same values.  Only matching `stations` in `detections` and `deployments` will be returned in output!
 
 #' @return a data frame of receivers with deployment latitude and deployment longitude and receiver efficiency index
 #'
@@ -135,7 +135,7 @@ REI <- function(detections, deployments) {
         recover_date_time = dplyr::coalesce(recover_date_time, last_download)
       )
     deployments <- deployments %>%
-      filter(!is.na(last_download) | !is.na(recover_date_time))
+      dplyr::filter(!is.na(last_download) | !is.na(recover_date_time))
   }
 
   # Check that deploy timestamp is of class 'POSIXct' in deployments

@@ -4,6 +4,11 @@ skip_on_ci()
 skip_on_cran()
 
 test_that("vdat_convert works", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   # VR2W file
   vrl_files <- system.file(
     "extdata",
@@ -36,7 +41,9 @@ test_that("vdat_convert works", {
 
   # skip RLD files
   rld_files <- tempfile(rep("VR2W-RLD_", 3), tmpdir = temp_vrl_dir)
-  for (file_i in rld_files) writeLines("foo", file_i)
+  for (file_i in rld_files) {
+    writeLines("foo", file_i)
+  }
 
   expect_snapshot(
     temp_csv_files2 <- vdat_convert(temp_vrl_dir, overwrite = TRUE)
@@ -58,6 +65,10 @@ test_that("vdat_convert works", {
 
 
 test_that("vdat_convert catches bad inputs", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
   # VR2W file
   vrl_files <- system.file(
     "extdata",
@@ -170,6 +181,11 @@ test_that("vdat_convert catches bad inputs", {
 
 
 test_that("check_vdat works", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   # Check vdat.exe
   expect_equal(check_vdat(), "VDAT")
 
@@ -189,6 +205,11 @@ test_that("check_vdat works", {
 
 
 test_that("get_local_vdat_version works", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   expect_type(
     temp_vdat_version <- get_local_vdat_version(),
     "list"
@@ -215,6 +236,11 @@ test_that("get_local_vdat_version works", {
 
 
 test_that("get_local_vdat_template works", {
+  skip_if_not(
+    .Platform$OS.type == "windows",
+    message = "Skipping because this is not a Windows OS"
+  )
+
   # skip if vdat.exe tested is < v 10
   skip_if(
     numeric_version(get_local_vdat_version()$version) < "10"

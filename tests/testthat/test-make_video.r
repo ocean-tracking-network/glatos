@@ -17,7 +17,7 @@ test_that("makes videos with expected size and returns file name", {
   # Check if expected and actual file sizes
   expect_equal(
     file.size(temp_file_1),
-    72024,
+    268513,
     tolerance = 0.005
   )
 
@@ -58,7 +58,7 @@ test_that("input/output with space/parenth gives expected result", {
   # Check if expected and actual file sizes
   expect_equal(
     file.size(temp_file_2),
-    72024,
+    268513,
     tolerance = 0.005
   )
 

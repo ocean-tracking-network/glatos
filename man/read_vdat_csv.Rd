@@ -9,7 +9,7 @@ read_vdat_csv(src, record_types = NULL, show_progress = FALSE)
 \arguments{
 \item{src}{A character string with path and name of an Innovasea VDAT CSV
 detection file. If only file name is given, then the file must be located
-in the working directory.}
+in the working directory. \code{read_vdat_csv} requires installation of Innovasea Fathom Connect software or the \code{vdat.exe} utility function shipped with Fathom Connect.  Fathom Connect is supported only on Microsoft Windows Operating System, therefore this function will not work on other platforms (MacOS, Linux).}
 
 \item{record_types}{An optional vector of character strings with names of
 record types to read from the file. E.g., "DET" for detection records.
