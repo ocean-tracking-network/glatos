@@ -38,7 +38,6 @@
 #' deployment_file <- system.file("extdata", "hfx_deployments.csv", package = "glatos")
 #' dep <- read_otn_deployments(deployment_file, validate = FALSE)
 #'
-#'
 #' @importFrom lubridate fast_strptime
 #' @importFrom dplyr mutate
 #' @export
