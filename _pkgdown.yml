@@ -12,3 +12,28 @@ template:
     logo: man/figures/logo.png
 css: pkgdown/extra.css
 
+navbar:
+  structure:
+    left: [intro, reference, vignettes_menu, supplemental_menu, news]
+    right: [search, github]
+  components:
+    vignettes_menu:
+      text: Vignettes
+      menu:
+        - text: "Data loading"
+          href: articles/data_loading_vignette.html
+        - text: "Data requirements"
+          href: articles/data_requirements_vignette.html
+    supplemental_menu:
+      text: Supplemental Resources
+      menu:
+        - text: "A guide to using R for acoustic telemetry"
+          href: https://glatos.org/portal/downloadarchive?enc=7kUI8rtWVnajt36f1Ildc6yOSZgWRk9xUCSe6xoCQTr3JiFvzqpkWqU76AWD%2BU1gaX7L4uZALZ1h%2BxTCes%2Bhk6MrG%2FvtKi505AhzCvtFMDrCSrrB%2FXknscTRmxUUap%2FsgFnmQg5EPd3QJAe7gM3QbjJWNm19r%2F7maVHRFhRa4Rtnb0l63SLey%2FG7m7HiSMDkyyY%2BP4yxJ4Eh2%2B2FsM5c51eXdRuytXNjILZxxHT8AfQ%3D
+        - text: "Detection range handout- 2019"
+          href: articles/detection_range_handout.html
+        - text: "Detection efficiency handout- 2024"
+          href: articles/detection_efficiency_vignette.html
+        - text: "Receiver efficiency index"
+          href: articles/receiver_efficiency_index_handout.html
+        - text: "Residence Index"
+          href: articles/residence_index_handout.html

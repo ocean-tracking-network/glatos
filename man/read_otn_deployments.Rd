@@ -50,7 +50,6 @@ Otherwise, OTN columns and column names are retained.
 deployment_file <- system.file("extdata", "hfx_deployments.csv", package = "glatos")
 dep <- read_otn_deployments(deployment_file, validate = FALSE)
 
-
 }
 \author{
 A. Nunes, \email{anunes@dal.ca}
