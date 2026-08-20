@@ -6,9 +6,9 @@ date: "Updated: `r Sys.Date()`"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(collapse = T,comment ="", fig.pos = 'H')
-is_html_output = function() {
-  knitr::opts_knit$get("rmarkdown.pandoc.to") =="html"
+knitr::opts_chunk$set(collapse = T, comment = "", fig.pos = "H")
+is_html_output <- function() {
+  knitr::opts_knit$get("rmarkdown.pandoc.to") == "html"
 }
 ```
 
@@ -155,7 +155,8 @@ the path of your own file (e.g., `det_file <-
 
 ```{r, message=FALSE}
 det_file <- system.file("extdata", "walleye_detections.csv",
-                        package = "glatos")
+  package = "glatos"
+)
 
 detections <- read_glatos_detections(det_file)
 ```
@@ -177,7 +178,6 @@ det_events <- glatos::detection_events(detections, time_sep = "3600")
 Note the structure below. *residence_index* requires a file with this structure.
 ```{r}
 head(det_events)
-
 ```
 
 
@@ -209,7 +209,7 @@ first and last day of such events.*
 
 
 ```{r}
-ri <- glatos::residence_index(det_events, calculation_method = 'kessel')
+ri <- glatos::residence_index(det_events, calculation_method = "kessel")
 ```
 
 Note the resulting structure. By default, RI has been provided for each
@@ -226,8 +226,10 @@ a treacherous example because there are only three fish in this data set.
 
 
 ```{r}
-boxplot(residency_index~location, data = ri, horizontal = TRUE, las = 1,
-        xlab= 'Residence Index (method = "kessel")')
+boxplot(residency_index ~ location,
+  data = ri, horizontal = TRUE, las = 1,
+  xlab = 'Residence Index (method = "kessel")'
+)
 ```
 
 
@@ -241,25 +243,28 @@ locations with RI = 0 would show up on the plot. We've also colored those points
 differently (pink) to clearly differentiate from the others (red).
 
 ```{r, fig.width=5, fig.height=5}
-#get example great lakes polygon
+# get example great lakes polygon
 data(greatLakesPoly)
 
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(ri$mean_longitude),
-           ylim = range(ri$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(ri$mean_longitude),
+  ylim = range(ri$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-#sort by decreasing residency_index so that large bubbles don't hide smaller
-ri <- ri[order(ri$residency_index, decreasing = TRUE),]
+# sort by decreasing residency_index so that large bubbles don't hide smaller
+ri <- ri[order(ri$residency_index, decreasing = TRUE), ]
 
-#make column for symbol color
+# make column for symbol color
 ri$color <- "red"
-ri$color[ri$residency_index == 0] <- "pink" #sites with no detects
+ri$color[ri$residency_index == 0] <- "pink" # sites with no detects
 
-points(mean_latitude ~ mean_longitude, data = ri[ri$animal_id == "153",],
-  pch = 21, cex = 1 + 30*residency_index, bg = color)
-
+points(mean_latitude ~ mean_longitude,
+  data = ri[ri$animal_id == "153", ],
+  pch = 21, cex = 1 + 30 * residency_index, bg = color
+)
 ```
 
 Notice that this fish was detected at all sites in L. Huron and none in L. Erie
@@ -270,14 +275,18 @@ The second fish shows a much different pattern (below), with detections only
 in the Maumee River and near reefs in the Western Basin.
 
 ```{r, fig.width=5, fig.height=5}
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(ri$mean_longitude),
-           ylim = range(ri$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(ri$mean_longitude),
+  ylim = range(ri$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-points(mean_latitude ~ mean_longitude, data = ri[ri$animal_id == "22",],
-  pch = 21, cex = 1 + 30*residency_index, bg = color)
+points(mean_latitude ~ mean_longitude,
+  data = ri[ri$animal_id == "22", ],
+  pch = 21, cex = 1 + 30 * residency_index, bg = color
+)
 ```
 
 
@@ -285,15 +294,18 @@ The third fish shares one site in common (Maumee R.) with the second fish,
 but was otherwise only detected in the Detroit and St. Clair rivers.
 
 ```{r, fig.width=5, fig.height=5}
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(ri$mean_longitude),
-           ylim = range(ri$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(ri$mean_longitude),
+  ylim = range(ri$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-points(mean_latitude ~ mean_longitude, data = ri[ri$animal_id == "23",],
-  pch = 21, cex = 1 + 30*residency_index, bg = color)
-
+points(mean_latitude ~ mean_longitude,
+  data = ri[ri$animal_id == "23", ],
+  pch = 21, cex = 1 + 30 * residency_index, bg = color
+)
 ```
 
 Next, we will calculate and plot the mean RI among the three fish (yes, the
@@ -303,37 +315,39 @@ We will use functions from the *dplyr* package and pipes (`%>%`) from *magrittr*
 package because that's what the kids are into these days.
 
 ```{r}
-
-#calculate mean and sd of RI among fish
+# calculate mean and sd of RI among fish
 rik_summary <- ri %>%
-               group_by(location, mean_latitude, mean_longitude) %>%
-               summarise(
-                    ri_mean = mean(residency_index),
-                    ri_sd = sd(residency_index))
+  group_by(location, mean_latitude, mean_longitude) %>%
+  summarise(
+    ri_mean = mean(residency_index),
+    ri_sd = sd(residency_index)
+  )
 
 head(rik_summary)
-
 ```
 
 Now we plot the means on a map.
 
 ```{r, fig.width=5, fig.height=5}
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(ri$mean_longitude),
-           ylim = range(ri$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(ri$mean_longitude),
+  ylim = range(ri$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-#sort by decreasing residency_index so that large bubbles don't hide smaller
-rik_summary <- rik_summary[order(rik_summary$ri_mean, decreasing = TRUE),]
+# sort by decreasing residency_index so that large bubbles don't hide smaller
+rik_summary <- rik_summary[order(rik_summary$ri_mean, decreasing = TRUE), ]
 
-#make column for symbol color
+# make column for symbol color
 rik_summary$color <- "red"
-rik_summary$color[rik_summary$ri_mean == 0] <- "pink" #sites with no detects
+rik_summary$color[rik_summary$ri_mean == 0] <- "pink" # sites with no detects
 
-points(mean_latitude ~ mean_longitude, data = rik_summary,
-  pch = 21, cex = 1 + 30*ri_mean, bg = color)
-
+points(mean_latitude ~ mean_longitude,
+  data = rik_summary,
+  pch = 21, cex = 1 + 30 * ri_mean, bg = color
+)
 ```
 
 If we had more than three fish in our sample data set, we might infer something
@@ -347,44 +361,50 @@ We will read in the sample receiver file using `glatos::read_glatos_receivers()`
 and then change column names to match those required by `residence_index()`.
 
 ```{r}
-#get sample receiver data from pkg
+# get sample receiver data from pkg
 loc_file <- system.file("extdata", "sample_receivers.csv",
-                        package = "glatos")
+  package = "glatos"
+)
 locs <- read_glatos_receivers(loc_file)
-locs <- unique(locs[ , c("glatos_array", "deploy_lat", "deploy_long")])
+locs <- unique(locs[, c("glatos_array", "deploy_lat", "deploy_long")])
 names(locs) <- c("location", "mean_latitude", "mean_longitude")
 
-rik2 <- residence_index(det_events, locations = locs,
-                         calculation_method = 'kessel')
-
+rik2 <- residence_index(det_events,
+  locations = locs,
+  calculation_method = "kessel"
+)
 ```
 
 Now we calculate mean RI and graph again.
 
 ```{r, fig.width=5, fig.height=5}
-#calculate mean and sd of RI among fish
+# calculate mean and sd of RI among fish
 rik2_summary <- rik2 %>%
-               group_by(location, mean_latitude, mean_longitude) %>%
-               summarise(
-                    ri_mean = mean(residency_index),
-                    ri_sd = sd(residency_index))
+  group_by(location, mean_latitude, mean_longitude) %>%
+  summarise(
+    ri_mean = mean(residency_index),
+    ri_sd = sd(residency_index)
+  )
 
-#sort by decreasing residency_index so that large bubbles don't hide smaller
-rik2_summary <- rik2_summary[order(rik2_summary$ri_mean, decreasing = TRUE),]
+# sort by decreasing residency_index so that large bubbles don't hide smaller
+rik2_summary <- rik2_summary[order(rik2_summary$ri_mean, decreasing = TRUE), ]
 
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(rik2$mean_longitude),
-           ylim = range(rik2$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(rik2$mean_longitude),
+  ylim = range(rik2$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-#make column for symbol color
+# make column for symbol color
 rik2_summary$color <- "red"
-rik2_summary$color[rik2_summary$ri_mean == 0] <- "pink" #sites with no detects
+rik2_summary$color[rik2_summary$ri_mean == 0] <- "pink" # sites with no detects
 
-points(mean_latitude ~ mean_longitude, data = rik2_summary,
-  pch = 21, cex = 1 + 30*ri_mean, bg = color)
-
+points(mean_latitude ~ mean_longitude,
+  data = rik2_summary,
+  pch = 21, cex = 1 + 30 * ri_mean, bg = color
+)
 ```
 
 ### Groupwise total time
@@ -393,38 +413,43 @@ Next, let's recalculate RI using `groupwise_total = TRUE` so that RI
 represents the proportion of each fish's own time spent at each location.
 
 ```{r}
-rik3 <- residence_index(det_events, locations = locs,
-                        calculation_method = 'kessel',
-                        groupwise_total = TRUE  )
-
+rik3 <- residence_index(det_events,
+  locations = locs,
+  calculation_method = "kessel",
+  groupwise_total = TRUE
+)
 ```
 
 Now we calculate mean RI and graph again.
 
 ```{r, fig.width=5, fig.height=5}
-#calculate mean and sd of RI among fish
+# calculate mean and sd of RI among fish
 rik3_summary <- rik3 %>%
-               group_by(location, mean_latitude, mean_longitude) %>%
-               summarise(
-                    ri_mean = mean(residency_index),
-                    ri_sd = sd(residency_index))
+  group_by(location, mean_latitude, mean_longitude) %>%
+  summarise(
+    ri_mean = mean(residency_index),
+    ri_sd = sd(residency_index)
+  )
 
-#sort by decreasing residency_index so that large bubbles don't hide smaller
-rik3_summary <- rik3_summary[order(rik3_summary$ri_mean, decreasing = TRUE),]
+# sort by decreasing residency_index so that large bubbles don't hide smaller
+rik3_summary <- rik3_summary[order(rik3_summary$ri_mean, decreasing = TRUE), ]
 
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(rik3$mean_longitude),
-           ylim = range(rik3$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(rik3$mean_longitude),
+  ylim = range(rik3$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-#make column for symbol color
+# make column for symbol color
 rik3_summary$color <- "red"
-rik3_summary$color[rik3_summary$ri_mean == 0] <- "pink" #sites with no detects
+rik3_summary$color[rik3_summary$ri_mean == 0] <- "pink" # sites with no detects
 
-points(mean_latitude ~ mean_longitude, data = rik3_summary,
-  pch = 21, cex = 1 + 30*ri_mean, bg = color)
-
+points(mean_latitude ~ mean_longitude,
+  data = rik3_summary,
+  pch = 21, cex = 1 + 30 * ri_mean, bg = color
+)
 ```
 
 Results here are different than the previous example, with noticably larger
@@ -455,8 +480,10 @@ For consistency with other calculation_methods, the L and T are not reported, bu
 
 
 ```{r}
-riti <- glatos::residence_index(det_events, locations = locs,
-                                calculation_method = "time_interval")
+riti <- glatos::residence_index(det_events,
+  locations = locs,
+  calculation_method = "time_interval"
+)
 ```
 
 Note the resulting structure.
@@ -468,29 +495,33 @@ head(riti)
 Now we calculate mean RI and graph again.
 
 ```{r, fig.width=5, fig.height=5}
-#calculate mean and sd of RI among fish
+# calculate mean and sd of RI among fish
 riti_summary <- riti %>%
-               group_by(location, mean_latitude, mean_longitude) %>%
-               summarise(
-                    ri_mean = mean(residency_index),
-                    ri_sd = sd(residency_index))
+  group_by(location, mean_latitude, mean_longitude) %>%
+  summarise(
+    ri_mean = mean(residency_index),
+    ri_sd = sd(residency_index)
+  )
 
-#sort by decreasing residency_index so that large bubbles don't hide smaller
-riti_summary <- riti_summary[order(riti_summary$ri_mean, decreasing = TRUE),]
+# sort by decreasing residency_index so that large bubbles don't hide smaller
+riti_summary <- riti_summary[order(riti_summary$ri_mean, decreasing = TRUE), ]
 
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(riti$mean_longitude),
-           ylim = range(riti$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(riti$mean_longitude),
+  ylim = range(riti$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-#make column for symbol color
+# make column for symbol color
 riti_summary$color <- "red"
-riti_summary$color[riti_summary$ri_mean == 0] <- "pink" #sites with no detects
+riti_summary$color[riti_summary$ri_mean == 0] <- "pink" # sites with no detects
 
-points(mean_latitude ~ mean_longitude, data = riti_summary,
-  pch = 21, cex = 1 + 30*ri_mean, bg = color)
-
+points(mean_latitude ~ mean_longitude,
+  data = riti_summary,
+  pch = 21, cex = 1 + 30 * ri_mean, bg = color
+)
 ```
 
 This is very similar to the "kessel" results, as expected.
@@ -503,65 +534,77 @@ intervals.
 #### 15-minute intervals
 
 ```{r, fig.width=5, fig.height=5}
-riti <- glatos::residence_index(det_events, locations = locs,
-                                calculation_method = "time_interval",
-                                time_interval_size = "15 mins")
+riti <- glatos::residence_index(det_events,
+  locations = locs,
+  calculation_method = "time_interval",
+  time_interval_size = "15 mins"
+)
 
-#calculate mean and sd of RI among fish
+# calculate mean and sd of RI among fish
 riti_summary <- riti %>%
-               group_by(location, mean_latitude, mean_longitude) %>%
-               summarise(
-                    ri_mean = mean(residency_index),
-                    ri_sd = sd(residency_index))
+  group_by(location, mean_latitude, mean_longitude) %>%
+  summarise(
+    ri_mean = mean(residency_index),
+    ri_sd = sd(residency_index)
+  )
 
-#sort by decreasing residency_index so that large bubbles don't hide smaller
-riti_summary <- riti_summary[order(riti_summary$ri_mean, decreasing = TRUE),]
+# sort by decreasing residency_index so that large bubbles don't hide smaller
+riti_summary <- riti_summary[order(riti_summary$ri_mean, decreasing = TRUE), ]
 
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(riti$mean_longitude),
-           ylim = range(riti$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(riti$mean_longitude),
+  ylim = range(riti$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-#make column for symbol color
+# make column for symbol color
 riti_summary$color <- "red"
-riti_summary$color[riti_summary$ri_mean == 0] <- "pink" #sites with no detects
+riti_summary$color[riti_summary$ri_mean == 0] <- "pink" # sites with no detects
 
-points(mean_latitude ~ mean_longitude, data = riti_summary,
-  pch = 21, cex = 1 + 30*ri_mean, bg = color)
-
+points(mean_latitude ~ mean_longitude,
+  data = riti_summary,
+  pch = 21, cex = 1 + 30 * ri_mean, bg = color
+)
 ```
 
 #### monthly intervals
 
 ```{r, fig.width=5, fig.height=5}
-riti <- glatos::residence_index(det_events, locations = locs,
-                                calculation_method = "time_interval",
-                                time_interval_size = "1 month")
+riti <- glatos::residence_index(det_events,
+  locations = locs,
+  calculation_method = "time_interval",
+  time_interval_size = "1 month"
+)
 
-#calculate mean and sd of RI among fish
+# calculate mean and sd of RI among fish
 riti_summary <- riti %>%
-               group_by(location, mean_latitude, mean_longitude) %>%
-               summarise(
-                    ri_mean = mean(residency_index),
-                    ri_sd = sd(residency_index))
+  group_by(location, mean_latitude, mean_longitude) %>%
+  summarise(
+    ri_mean = mean(residency_index),
+    ri_sd = sd(residency_index)
+  )
 
-#sort by decreasing residency_index so that large bubbles don't hide smaller
-riti_summary <- riti_summary[order(riti_summary$ri_mean, decreasing = TRUE),]
+# sort by decreasing residency_index so that large bubbles don't hide smaller
+riti_summary <- riti_summary[order(riti_summary$ri_mean, decreasing = TRUE), ]
 
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(riti$mean_longitude),
-           ylim = range(riti$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(riti$mean_longitude),
+  ylim = range(riti$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-#make column for symbol color
+# make column for symbol color
 riti_summary$color <- "red"
-riti_summary$color[riti_summary$ri_mean == 0] <- "pink" #sites with no detects
+riti_summary$color[riti_summary$ri_mean == 0] <- "pink" # sites with no detects
 
-points(mean_latitude ~ mean_longitude, data = riti_summary,
-  pch = 21, cex = 1 + 30*ri_mean, bg = color)
-
+points(mean_latitude ~ mean_longitude,
+  data = riti_summary,
+  pch = 21, cex = 1 + 30 * ri_mean, bg = color
+)
 ```
 
 
@@ -587,31 +630,38 @@ the residence index.
 
 
 ```{r, fig.width=5, fig.height=5}
-ritd <- glatos::residence_index(det_events, locations = locs,
-                                calculation_method = "timedelta")
+ritd <- glatos::residence_index(det_events,
+  locations = locs,
+  calculation_method = "timedelta"
+)
 
-#calculate mean and sd of RI among fish
+# calculate mean and sd of RI among fish
 ritd_summary <- ritd %>%
-               group_by(location, mean_latitude, mean_longitude) %>%
-               summarise(
-                    ri_mean = mean(residency_index),
-                    ri_sd = sd(residency_index))
+  group_by(location, mean_latitude, mean_longitude) %>%
+  summarise(
+    ri_mean = mean(residency_index),
+    ri_sd = sd(residency_index)
+  )
 
-#sort by decreasing residency_index so that large bubbles don't hide smaller
-ritd_summary <- ritd_summary[order(ritd_summary$ri_mean, decreasing = TRUE),]
+# sort by decreasing residency_index so that large bubbles don't hide smaller
+ritd_summary <- ritd_summary[order(ritd_summary$ri_mean, decreasing = TRUE), ]
 
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(ritd$mean_longitude),
-           ylim = range(ritd$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(ritd$mean_longitude),
+  ylim = range(ritd$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-#make column for symbol color
+# make column for symbol color
 ritd_summary$color <- "red"
-ritd_summary$color[ritd_summary$ri_mean == 0] <- "pink" #sites with no detects
+ritd_summary$color[ritd_summary$ri_mean == 0] <- "pink" # sites with no detects
 
-points(mean_latitude ~ mean_longitude, data = ritd_summary,
-  pch = 21, cex = 1 + 30*ri_mean, bg = color)
+points(mean_latitude ~ mean_longitude,
+  data = ritd_summary,
+  pch = 21, cex = 1 + 30 * ri_mean, bg = color
+)
 ```
 
 The relatively large points in Saginaw Bay reflect that the total time spanned
@@ -646,32 +696,39 @@ when `group_col = NULL`.
 Note that we set `group_col = NA` for this method.
 
 ```{r, fig.width=5, fig.height=5}
-riawo <- glatos::residence_index(det_events, locations = locs,
-                                calculation_method = "aggregate_with_overlap",
-                                group_col = NA)
+riawo <- glatos::residence_index(det_events,
+  locations = locs,
+  calculation_method = "aggregate_with_overlap",
+  group_col = NA
+)
 
-#calculate mean and sd of RI among fish
+# calculate mean and sd of RI among fish
 riawo_summary <- riawo %>%
-               group_by(location, mean_latitude, mean_longitude) %>%
-               summarise(
-                    ri_mean = mean(residency_index),
-                    ri_sd = sd(residency_index))
+  group_by(location, mean_latitude, mean_longitude) %>%
+  summarise(
+    ri_mean = mean(residency_index),
+    ri_sd = sd(residency_index)
+  )
 
-#sort by decreasing residency_index so that large bubbles don't hide smaller
-riawo_summary <- riawo_summary[order(riawo_summary$ri_mean, decreasing = TRUE),]
+# sort by decreasing residency_index so that large bubbles don't hide smaller
+riawo_summary <- riawo_summary[order(riawo_summary$ri_mean, decreasing = TRUE), ]
 
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(riawo$mean_longitude),
-           ylim = range(riawo$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(riawo$mean_longitude),
+  ylim = range(riawo$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-#make column for symbol color
+# make column for symbol color
 riawo_summary$color <- "red"
-riawo_summary$color[riawo_summary$ri_mean == 0] <- "pink" #sites with no detects
+riawo_summary$color[riawo_summary$ri_mean == 0] <- "pink" # sites with no detects
 
-points(mean_latitude ~ mean_longitude, data = riawo_summary,
-  pch = 21, cex = 1 + 30*ri_mean, bg = color)
+points(mean_latitude ~ mean_longitude,
+  data = riawo_summary,
+  pch = 21, cex = 1 + 30 * ri_mean, bg = color
+)
 ```
 
 
@@ -705,32 +762,39 @@ when `group_col = NA`.
 Note that we set `group_col = NA` for this method.
 
 ```{r, fig.width=5, fig.height=5}
-riano <- glatos::residence_index(det_events, locations = locs,
-                                calculation_method = "aggregate_with_overlap",
-                                group_col = NA)
+riano <- glatos::residence_index(det_events,
+  locations = locs,
+  calculation_method = "aggregate_with_overlap",
+  group_col = NA
+)
 
-#calculate mean and sd of RI among fish
+# calculate mean and sd of RI among fish
 riano_summary <- riano %>%
-               group_by(location, mean_latitude, mean_longitude) %>%
-               summarise(
-                    ri_mean = mean(residency_index),
-                    ri_sd = sd(residency_index))
+  group_by(location, mean_latitude, mean_longitude) %>%
+  summarise(
+    ri_mean = mean(residency_index),
+    ri_sd = sd(residency_index)
+  )
 
-#sort by decreasing residency_index so that large bubbles don't hide smaller
-riano_summary <- riano_summary[order(riano_summary$ri_mean, decreasing = TRUE),]
+# sort by decreasing residency_index so that large bubbles don't hide smaller
+riano_summary <- riano_summary[order(riano_summary$ri_mean, decreasing = TRUE), ]
 
-#plot; note indexing sp for plot.sp
-sp::plot(greatLakesPoly, asp = 1,
-           xlim = range(riano$mean_longitude),
-           ylim = range(riano$mean_latitude),
-           col = "white", bg = "grey80")
+# plot; note indexing sp for plot.sp
+sp::plot(greatLakesPoly,
+  asp = 1,
+  xlim = range(riano$mean_longitude),
+  ylim = range(riano$mean_latitude),
+  col = "white", bg = "grey80"
+)
 
-#make column for symbol color
+# make column for symbol color
 riano_summary$color <- "red"
-riano_summary$color[riano_summary$ri_mean == 0] <- "pink" #sites with no detects
+riano_summary$color[riano_summary$ri_mean == 0] <- "pink" # sites with no detects
 
-points(mean_latitude ~ mean_longitude, data = riano_summary,
-  pch = 21, cex = 1 + 30*ri_mean, bg = color)
+points(mean_latitude ~ mean_longitude,
+  data = riano_summary,
+  pch = 21, cex = 1 + 30 * ri_mean, bg = color
+)
 ```
 
 In this particular data set, there are no overlapping detection events

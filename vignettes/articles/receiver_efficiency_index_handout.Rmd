@@ -44,9 +44,9 @@ Each receiver's index is calculated on the formula of:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(collapse = T,comment ="", fig.pos = 'H')
-is_html_output = function() {
-  knitr::opts_knit$get("rmarkdown.pandoc.to") =="html"
+knitr::opts_chunk$set(collapse = T, comment = "", fig.pos = "H")
+is_html_output <- function() {
+  knitr::opts_knit$get("rmarkdown.pandoc.to") == "html"
 }
 ```
 
@@ -73,10 +73,12 @@ Below we use `dplyr::mutate()` to ensure that any recovery times that are
 set as `NA` are set to the current date and time. You can replace `Sys.time()`
 with the last known download time if you know it.
 ```{r}
-receivers <- receivers %>% 
-  mutate( recover_date_time = replace(recover_date_time,
-                                      is.na(recover_date_time), 
-                                      Sys.time()))
+receivers <- receivers %>%
+  mutate(recover_date_time = replace(
+    recover_date_time,
+    is.na(recover_date_time),
+    Sys.time()
+  ))
 ```
 
 # Running REI
@@ -88,7 +90,7 @@ deployments need to include a deployment date and recovery date or last
 download date. Details on the columns mentioned see the preparing data
 section.
 ```{r}
-rei <- glatos::REI(detections,receivers)
+rei <- glatos::REI(detections, receivers)
 ```
 
 The resulting dataframe looks like this:
