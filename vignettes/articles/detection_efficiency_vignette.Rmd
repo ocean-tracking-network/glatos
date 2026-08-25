@@ -6,6 +6,18 @@ date: "Updated: 2024-09-19"
 
 ---
 
+<style>
+.info-box {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #bce8f1;
+  border-left: 5px solid #31708f;
+  background-color: #d9edf7;
+  color: #31708f;
+}
+</style>
+
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -308,6 +320,24 @@ rcv_osc_sf_12 <- rcv_osc_sf %>%
 
 Next, we will bring in our example data which is loaded with `{glatos}` but you will need to replace `sample_detection_efficiency` with your data frame either by loading the csv produced by Innovasea software. You can do this multiple ways, I prefer using `readr::read_csv()` but base R works perfectly fine. 
 
+You can download `sample_detection_efficiency` (.rds format) [here](../sample_detection_efficiency.rds)
+
+**Note:** Source information for `sample_detection_efficiency` data:
+
+::: {.info-box}
+
+## Title: Detection Efficiency data set
+
+## Description: Sample detection efficiency data set from Lake Papineau, Quebec, Canada.
+
+## Details: Data is from a preliminary range test, where tags were deployed at set distances away from a VR2W receiver for 24 hours.
+
+## Format: A data frame with 7 rows and 5 variables
+    - distance_m - distance away from the receiver in meters
+    - avg_percent - average detection efficiency
+
+:::
+
 ```{r, results = 'hide'}
 #| title: evaluate data
 
@@ -322,7 +352,7 @@ Next, we will bring in our example data which is loaded with `{glatos}` but you 
 
 # view sample detection efficiency data
 
-sample_detection_efficiency
+sample_detection_efficiency <- readRDS("../../docs/sample_detection_efficiency.rds")
 
 glimpse(sample_detection_efficiency)
 ```

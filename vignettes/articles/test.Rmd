@@ -1,0 +1,10 @@
+---
+title: "test"
+---
+
+```{r}
+#| echo
+getwd()
+pkgload::pkg_path()
+file.exists(file.path(pkgload::pkg_path(), "pkgdown", "range_detection.rda"))
+```

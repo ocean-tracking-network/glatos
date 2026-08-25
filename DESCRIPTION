@@ -31,8 +31,7 @@ Suggests:
     purrr,
     rmarkdown,
     terra,
-    testthat (>= 3.0.0),
-    tint
+    testthat (>= 3.0.0)
 BugReports: https://github.com/ocean-tracking-network/glatos/issues
 Authors@R: c(
     person("Christopher", "Holbrook", email = "cholbrook@glfc.org",

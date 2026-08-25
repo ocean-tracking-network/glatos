@@ -1,12 +1,27 @@
 ---
-title: "Assessing acoustic tag and receiver performance: An approach for visualizing and analyzing passive detection range studies in R"
-subtitle: "Workshop Handout - GLATOS, February 28, 2019"
-author: "Todd Hayden (haydento@msu.edu), Tom Binder, Mike Lowe"
-date: "Updated: `r Sys.Date()`"
+title: 'Assessing acoustic tag and receiver performance: An approach for visualizing
+  and analyzing passive detection range studies in R'
+subtitle: Workshop Handout - GLATOS, February 28, 2019
+author: Todd Hayden (haydento@msu.edu), Tom Binder, Mike Lowe
+date: 'Updated: 2026-08-24'
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+<style>
+.info-box {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #bce8f1;
+  border-left: 5px solid #31708f;
+  background-color: #d9edf7;
+  color: #31708f;
+}
+</style>
+
+
+```{r}
+#| include: false
+#| label: setup
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", autodep = TRUE)
 ```
 
 # Introduction
@@ -71,24 +86,60 @@ log all tag transmissions such that the total number of tag
 transmissions in a time interval are known and enable passive range
 testing without independent tags and receivers.
 
-```{r, echo = FALSE}
+**Note:** Source information for detection range data set:
+
+::: {.info-box}
+
+**Title** Detection range data set
+
+**Description** Sample detection range data set from Lake Superior.
+
+**Details** Data from a stationary detection range test conducted
+in 2018. Data are in standard GLATOS detection export format and are
+intened to accompany detecton range analysis vignette.
+
+**Format** A data frame with 58309 rows and 30 variables
+
+**Source** F. Zomer, T. Hayden
+:::
+
+
+You can download `Detection range data set` (.rds format) [here](../range_detection.rds)
+
+
+```{r}
+#| echo: false
+#| label: cap1
+
 cap1 = "Study map of acoustic tags and receivers. Black circles are receivers
 and red circles are receivers with active integrated tags.
 Two tags with different transmission levels were deployed at each end of
 receiver line."
 ```
 
-```{r fig1, fig.width=6, fig.height=6, echo=FALSE, warning=FALSE, message=FALSE, fig.cap=cap1}
+```{r}
+#| label: fig1
+#| fig-width: 6
+#| fig-height: 6
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-cap: !expr cap1
 
 library(sf)
 library(glatos)
 library(data.table)
 library(ggplot2)
 
-#get sample range detection data from glatos pkg
-data(range_detection)
-dtc <- range_detection
+#get sample detection range data from the pkgdown website
+# Read detection data into R (download link provided above)
+#dtc <- readRDS(file.path(pkgload::pkg_path(), "docs", "range_detection.rds"))
+
+dtc <- readRDS("../../docs/range_detection.rds")
 setDT(dtc)
+
+
+#setDT(dtc)
 
 tags <- dtc[as.numeric(receiver_sn) - as.numeric(transmitter_id) == 420000]
 tags <- unique(tags, by = "receiver_sn")
@@ -135,13 +186,13 @@ present a figure to visualize raw detection history of each receiver,
 code to calculate detection probability, extract detection range
 curves, and a figure to visualize detection range curves.
 
-The powerful R package data.table is used extensively in this
-vignette.  Package vignettes included with the data.table package are
+The powerful R package `data.table` is used extensively in this
+vignette.  Package vignettes included with the `data.table` package are
 well done and are an excellent resource for getting started with
-data.table.  If you are not familiar with data.table, we highly
+`data.table`.  If you are not familiar with data.table, we highly
 recommend reviewing the _Introduction to data.table_, _Reference
 semantics_, and _Efficient reshaping using data.table_
-vignettes. ^[Additional information about data.table for R, including vignettes: https://github.com/Rdatatable/data.table/wiki]
+vignettes. ^[Additional information about `data.table` for R, including vignettes: https://github.com/Rdatatable/data.table/wiki]
  
 # Import data and clean up
 
@@ -154,20 +205,19 @@ named *WBCCM_detectionsWithLocs_20181115_162626.csv*).  The most recent version
 of the GLATOS package and installation instructions can be obtained at
 https://github.com/ocean-tracking-network/glatos.
 
-```{r, echo = TRUE, warning = FALSE}
+```{r}
+#| echo: true
+#| warning: false
+#| label: load1
 
 # load libraries
 library(glatos)
 library(data.table)
 library(ggplot2)
 
-# load detection data from glatos package
-data(range_detection)
-dtc <- range_detection
-
-# convert dtc to data.table
+# Read detection data into R (download link provided above, file path will need to be changed!)
+dtc <- readRDS("../../docs/range_detection.rds")
 setDT(dtc)
-
 ```
 
 The resulting `dtc` object contains 30 columns and is identical to the
@@ -183,7 +233,9 @@ between each receiver using the `geodist::geodist_vec` function. The
 internal tag on 4 receivers was used in this study so distances among
 receivers is the same as distances between each tag and receiver.
 
-```{R, echo = TRUE}
+```{R}
+#| echo: true
+#| label: analysis1
 
 # extract only needed columns
 dtc <- dtc[, c("detection_timestamp_utc", "transmitter_id", "receiver_sn",
@@ -221,8 +273,8 @@ dtc <- dist_matrix[dtc, on = c("transmitter_id", "receiver_sn")]
 In the last line, we used a `data.table` join to merge the
 `dist_matrix` object with `dtc` on key columns common to both
 objects.^[The `data.table` package provides a simple framework for complex
-merge functionality that  we use extensively in this vignette. Additional examples of data.table merges or "joins" are included in the
-data.table package help, accessed by typing `?data.table` in R. 
+merge functionality that  we use extensively in this vignette. Additional examples of `data.table` merges or "joins" are included in the
+`data.table` package help, accessed by typing `?data.table` in R. 
 Base function aggregate and ddply in the plyr packages provide similar
 functionality]. At this point, the `dtc` object contains an additional
 column (`dist_m`) that specifies the distance between the transmitter
@@ -237,12 +289,21 @@ time in each panel.  Tags 482223 and 482221 were programmed to
 transmit a 154 dB signal and tags 482222 and 482215 transmitted a 158
 dB signal.
 
-```{r, echo = FALSE} 
+```{r}
+#| echo: false
+#| label: cap2
+
 
 cap2 = "Detections (red circles) of acoustic tags over time as a function of distance between tag and receiver.  All tags were programmed to broadcast with nominal delay of 10 minutes. Output of tags 482223 and 482221 was 154 dB and output of tags 482215 and 482222 was 158 dB "
 ```
 
-```{r, ,fig.cap=cap2,echo=TRUE,fig.width=6,fig.height=4}
+```{r}
+#| fig-cap: !expr cap2
+#| echo: true
+#| fig-width: 6
+#| fig-height: 4
+#| label: fig2
+
 
 # set base plot parameters
 par(mfrow=c(1,4), mar=c(3,2,1,0), oma=c(2,3,0,0), las=1, bty="l")
@@ -299,7 +360,10 @@ are removed.  We can then use the new columns to identify and subset
 records of tag transmissions by subsetting records where the tag and
 receiver id are the same.
 
-```{r, echo = TRUE}
+```{r}
+#| echo: true
+#| label: analysis2
+
 
 # use substring function to simplify tag and receiver ids and
 # add short_trans_id and short_rec_id columns to dtc
@@ -347,7 +411,10 @@ calculates the difference between the transmission timestamp and
 detection timestamp for a sanity check to make sure difference between
 these two timestamps is small.
 
-```{r, echo = TRUE}
+```{r}
+#| echo: true
+#| label: analysis3
+
 
 # All detection timestamp within 10 seconds (+- 5 seconds) of tag transmission
 # were identified as same transmission
@@ -403,7 +470,10 @@ the entire duration of the study] Calculating detection probability at
 long time intervals will smooth variability in detection probability
 estimates over time and short time intervals will exhibit more noise.
 
-```{r, echo = TRUE}
+```{r}
+#| echo: true
+#| label: analysis4
+
 
 # remove un-matched detections
 dtc <- dtc[!is.na(log_timestamp)]
@@ -426,11 +496,13 @@ timestamp.  In the next step, we will count the number of known
 transmissions in each time bin for each tag.
 
 
-```{r, echo = TRUE}
+```{r}
+#| echo: true
+#| label: analysis4.5
 
 # Notice "short_trans_id == short_rec_id". This line counts the number of
 # actual acoustic transmissions for each tag.
-# see the "Introduction to data.table" vignette for more info about grouping with data.table
+# see the `Introduction to data.table` vignette for more info about grouping with `data.table`
 exp <- dtc[short_trans_id == short_rec_id, .(exp = .N),
             by = .(tbin, transmitter_id)]
 
@@ -451,7 +523,9 @@ receiver was not detected.  This is easily accomplished using a
 `data.table` join.
 
 
-```{R, echo = TRUE}
+```{R}
+#| echo: true
+#| label: analysis5
 
 # Find all combinations of tag, time bin, and receiver vectors
 # Use the data.table "CJ" cross-join function to do this.
@@ -478,7 +552,9 @@ for each time interval. Also in this chunk, we added the tag-receiver
 distance that we calculated earlier to `dp` using `transmitter_id` and
 `receiver_sn` as keys in a `data.table` join.
 
-```{r, echo = TRUE}
+```{r}
+#| echo: true
+#| label: analysis6
 
 # merge observed and expected by tbin and transmitter_id
 dp <- exp[obs, on = c("tbin", "transmitter_id")]
@@ -506,13 +582,24 @@ using the `ggplot2` package.  The code in the next chunk will produce a
 stacked plot for each tag.^[The stacked plot for only tag 62215 is
 included in this vignette.]
 
-```{r, echo = FALSE}
+```{r}
+#| echo: false
+#| label: cap3
 cap3 <- "Probability of detecting tag 62215 during successive daily time
 intervals on 8 receivers located 9-603 meters from tag (right y-axis labels).
 Black lines in each panel is detection probability and red line is a loess smoother."   
 ```
 
-```{r warning=FALSE,echo=TRUE,message=FALSE,fig.cap=cap3,fig.width=8,fig.height=8,fig.keep="first",fig.show="asis"}
+```{r}
+#| warning: false
+#| echo: true
+#| message: false
+#| fig-cap: !expr cap3
+#| fig-width: 8
+#| fig-height: 8
+#| fig-keep: "first"
+#| fig-show: "asis"
+#| label: analysis7
 
 # round distances for plot labels
 dp[, dist_rnd := round(dist_m)]
@@ -571,11 +658,20 @@ time interval.  Detection range curve is an powerful tool for determining
 appropriate receiver spacing and an important input for simulating the
 probability of detecting a fish on a receiver line or in a grid of receivers.
 
-```{r, echo=FALSE}
+```{r}
+#| echo: false
+#| label: cap4
 cap4 = "Example of detection range curve.  Detection probability is on the y-axis and distance between tag and receiver is on the x-axis."
 ```
 
-```{r fig.keep="last",fig.width=6,fig.height=6,message=FALSE,fig.cap=cap4,fig.show="asis"}
+```{r}
+#| label: analysis8
+#| fig-keep: "last"
+#| fig-width: 6
+#| fig-height: 6
+#| message: false
+#| fig-cap: !expr cap4
+#| fig-show: "asis"
 
 # add tag-date name
 dp[, id := paste(transmitter_id, tbin, sep = ", ")]
@@ -687,7 +783,9 @@ Now, let's setup and run a simulation. First, we need to extract
 detection range curve for one time interval created in the previous
 code chunk to define `rngFun`.
 
-```{r echo=TRUE}
+```{r}
+#| echo: true
+#| label: analysis9
 # Define detection range function (to pass as rngFun) that returns detection
 # probability for given distance assume logistic form of detection range
 # curve where dm=distance in meters b=intercept and slope.
@@ -721,11 +819,18 @@ Lets take a look at the original detection range curve and
 interpolated range curve. 
 
 
-```{r, echo=FALSE}
+```{r}
+#| echo: false
+#| label: cap5
 cap5 = "Detection range curve (red circles) with interpolated points (black circles and line). Detection probability is on the y-axis and distance between tag and receiver is on the x-axis."
 ```
 
-```{r, fig.cap=cap5,fig.show="asis", fig.width = 8, fig.height = 8 }
+```{r}
+#| label: analysis10
+#| fig-cap: !expr cap5
+#| fig-show: "asis"
+#| fig-width: 8
+#| fig-height: 8
 
 # plot original detection range curve
 plot(edr$dist_m, edr$dp, pch = 16, col = "red", ylim = c(0,1), las = 1, cex = 1.5, ylab = "tag transmission detection probability", xlab = "tag-receiver distance (m)")
@@ -742,11 +847,18 @@ simulation. `pdrf` is supplied to `receiver_line_det_sim()` as the
 
 Let's run the simulation with our five receivers spaced at 200 m (`recSpc`) and the first and last receivers 100 m from shore (`outerLim`) so that fish are allowed to pass left and right of virtual line up to 100 m. First, we will run the function with `showPlot=T` and just ten virtual fish so we can see what it's doing. Then we will run it with 10000 fish (with `showPlot=F`) to get a more robust result.
 
-```{r,echo=FALSE}
+```{r}
+#| echo: false
+#| label: cap6
 fig_cap6 <- "Paths of 10 virtual fish through receiver line"
 ```
 
-```{r echo=TRUE,fig.height=8,fig.width=8,fig.cap=fig_cap6}
+```{r}
+#| echo: true
+#| label: analysis11
+#| fig-height: 8
+#| fig-width: 8
+#| fig-cap: !expr fig_cap6
 # Five receivers and allow fish to pass to left and right of line.
 sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
 	outerLim=c(100, 100), nsim=10, showPlot=T)
@@ -760,7 +872,11 @@ sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
 
 It looks like about `r#round((sim*100))`% of virtual fish were detected. Now, let's repeat it with 10000 fish, but without the plot.
 
-```{r echo=TRUE, fig.height=8, fig.width=8}
+```{r}
+#| echo: true
+#| label: analysis12
+#| fig-height: 8
+#| fig-width: 8
 # Again but with 10000 fish and no plot.
 sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
 	outerLim=c(100, 100), nsim=10000)
@@ -776,7 +892,9 @@ detect about the same number of fish. We'll simply loop through a
 vector of receiver spacing, get the detection probability estimate for
 each, and then use that to guide our decision.
 
-```{r echo=TRUE}
+```{r}
+#| echo: true
+#| label: analysis13
 # Preallocate a vector to store estimates.
 sim_out <- rep(NA, 10)
 
@@ -822,11 +940,18 @@ sim_out[10] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(100,10), outerLim=c
 
 Next, we Plot the results.
 
-```{r, echo=FALSE}
+```{r}
+#| label: cap7
+#| echo: false
 fig_cap7 <- "Simulated proportion of virtual fish detected for receiver line with varying number of acoustic receivers (1-10)"
 ```
   
-```{r echo=TRUE,fig.height=8,fig.width=8, fig.cap=fig_cap7}
+```{r}
+#| label: analysis14
+#| echo: true
+#| fig-height: 8
+#| fig-width: 8
+#| fig-cap: !expr fig_cap7
 # Plot number of receivers vs proportion of virtual fish detected.
 plot(1:10, sim_out, type='o', ylim=c(0,1),
  xlab='Number of receivers',
@@ -843,7 +968,9 @@ let's consider what might happen if we lost a receiver during our study, so that
 up having a hole in it. Again, we will simulate just ten fish with a
 plot to see what this looks like and then we'll run the simulation with 10000 virtual fish.
 
-```{r echo=TRUE}
+```{r}
+#| echo: true
+#| label: analysis14.5
 # Four receivers with 200, 400, 200, 2000 m in between and 100 m on each end.
 dph <- receiver_line_det_sim(rngFun=edrf, recSpc=c(200,400,200,200),
                              outerLim=c(100, 100), nsim=10000)
@@ -895,7 +1022,9 @@ coordinate system for the American Great lakes region. This step
 simplifies the data manipulation process.  Finally, in this code
 chunk, we extract Lake Huron from greatLakesPoly.
 
-```{R, echo = TRUE}
+```{R}
+#| echo: true
+#| label: analysis15
 
 # read in polygon
 data(greatLakesPoly)
@@ -931,7 +1060,9 @@ in `sp` format .  We create a new object and convert the Lake Huron
 polygon shapefile back to WGS 84 and `sp` in the next step.
 
 
-```{R, echo = TRUE}
+```{R}
+#| echo: true
+#| label: analysis16
 
 # convert back to WGS84-lat/lon
 LH_latlon <- st_transform(LH, crs = 4326)
@@ -946,7 +1077,9 @@ and create a grid of virtual receivers that are spaced 10 km apart.
 After making the grid, we convert back to a cartesian coordinate
 system (i.e., WGS 84, latitude and longitude).
 
-```{R, echo = TRUE}
+```{R}
+#| echo: true
+#| label: analysis17
 
 # make grid in LH polygon
 # cellsize is in meters...
@@ -970,7 +1103,9 @@ our virtual fish starts in Saginaw Bay and a location is calculated
 every 10 km.  We calculate positions for our virtual fish for 30 steps.
 
 
-```{R, echo = TRUE}
+```{R}
+#| echo: true
+#| label: analysis18
 
 # do random walk in LH polygon starting in Saginaw Bay
 path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30, initPos = c(-83.6, 43.8), show_progress = FALSE, cartesianCRS = st_crs(LH))
@@ -981,11 +1116,18 @@ Now it is time to bring together fish track, grid, and Lake Huron outline to mak
 sure everything looks good.  This is a good time to remember that our
 virtual fish likely does not behave like real fish!
 
-```{r, echo=FALSE}
+```{r}
+#| echo: false
+#| label: cap8
 fig_cap_grid <- "Plot of receiver network grid (black circles) and movement track of virtual fish (red circle and line) in Lake Huron" 
 ```
 
-```{R, echo = TRUE, fig.height=8,fig.width=8,fig.cap=fig_cap_grid}
+```{R}
+#| echo: true
+#| label: analysis19
+#| fig-height: 8
+#| fig-width: 8
+#| fig-cap: !expr fig_cap_grid
 
 # plot path, grid and points
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
@@ -1000,7 +1142,9 @@ and tag transmission specifications.  For our example, we use the
 default values (movement velocity = 0.5 meters per second, and tag
 delay range from 60--180 seconds).
 
-```{R, echo = TRUE}
+```{R}
+#| echo: true
+#| label: analysis20
 
 tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) ) 
 
@@ -1016,7 +1160,10 @@ Recall that the `edrf` object in the previous line detection range
 simulation described the detection range curve.  We will leave it up
 to the reader to review how this object was created.
 
-```{R, echo = TRUE, warning=FALSE}
+```{R}
+#| echo: true
+#| warning: false
+#| label: analysis21
 
 mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_10km_sp, 
                                 detRngFun = edrf, show_progress = FALSE )
@@ -1045,11 +1192,18 @@ fish track, receiver grid and add the points where the fish was
 detected.
 
 
-```{r, echo=FALSE}
+```{r}
+#| echo: false
+#| label: capsim
 fig_cap_sim <- "Plot of receiver network grid (black circles), movement track of virtual fish (red circle and line), and locations where virtual fish was detected (blue circles) in Lake Huron" 
 ```
 
-```{R, echo = TRUE, fig.height=8,fig.width=8,fig.cap=fig_cap_sim}
+```{R}
+#| echo: true
+#| label: analysis22
+#| fig-height: 8
+#| fig-width: 8
+#| fig-cap: !expr fig_cap_sim
 
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
 plot(st_geometry(path), type = "o", pch = 20, col = "red", add = TRUE)
@@ -1074,7 +1228,9 @@ survival. Methods in Ecology and Evolution 2018:1-14, DOI:
 10.1111/2041-210X.12996.]  In the first chunk, we make the 10 km and
 5 km grids by adapting the code from the previous example.
 
-```{R, echo = TRUE}
+```{R}
+#| echo: true
+#| label: analysis23
 
 # make 10 km grid
 grid_10km <- st_intersection(LH, st_make_grid(LH, cellsize = 10000, what = "centers"))
@@ -1093,7 +1249,10 @@ Next, we create 100 virtual fish paths, starting in Saginaw Bay.  We
 store each virtual fish path as an object in a list.  Notice that we
 produce a data.frame with x and y coordinates as output for each virtual fish.
 
-```{r, echo = TRUE}
+```{r}
+#| echo: true
+#| label: analysis24
+#| cache: true
 
 # make empty list
 paths <- vector("list", length = 100)
@@ -1115,7 +1274,11 @@ for(i in 1:100){
 Now we are going to collapse the list into a single data.table and add
 a ID column for each fish.
 
-```{r, echo = TRUE, warning=FALSE}
+```{r}
+#| echo: true
+#| warning: false
+#| label: analysis25
+#| cache: true
 
 # make empty list to hold results
 trans <- vector("list", length = 100)
@@ -1157,7 +1320,10 @@ first detections on successive receivers for all simulated fish on a
 10 km grid (`r#round(rec_by_dtc_sim1/60,0)`), we are going to
 repeat the simulation with a 5 km grid in the next chunk.
 
-```{r, warning=FALSE}
+```{r}
+#| warning: false
+#| label: analysis26
+#| cache: true
 
 # make empty list to hold results
 sim2 <- vector("list", length = 100)
