@@ -14,4 +14,4 @@
 ^docs$
 ^pkgdown$
 ^vignettes/articles$
-^.pkgdown/assets$
+^.*_cache$

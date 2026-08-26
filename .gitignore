@@ -11,3 +11,8 @@ doc
 /Meta/
 inst/doc
 /docs
+*_cache
+*_files
+/cache/
+/.quarto/
+**/*.quarto_ipynb
