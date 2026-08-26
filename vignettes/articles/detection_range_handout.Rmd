@@ -90,17 +90,17 @@ testing without independent tags and receivers.
 
 ::: {.info-box}
 
-**Title** Detection range data set
+* Title: Detection range data set
 
-**Description** Sample detection range data set from Lake Superior.
+* Description: Sample detection range data set from Lake Superior.
 
-**Details** Data from a stationary detection range test conducted
+* Details: Data from a stationary detection range test conducted
 in 2018. Data are in standard GLATOS detection export format and are
 intened to accompany detecton range analysis vignette.
 
-**Format** A data frame with 58309 rows and 30 variables
+* Format: A data frame with 58309 rows and 30 variables
 
-**Source** F. Zomer, T. Hayden
+* Source: F. Zomer, T. Hayden
 :::
 
 
@@ -111,10 +111,7 @@ You can download `Detection range data set` (.rds format) [here](../range_detect
 #| echo: false
 #| label: cap1
 
-cap1 = "Study map of acoustic tags and receivers. Black circles are receivers
-and red circles are receivers with active integrated tags.
-Two tags with different transmission levels were deployed at each end of
-receiver line."
+cap1 <- "Study map of acoustic tags and receivers. Black circles are receivers and red circles are receivers with active integrated tags.  Two tags with different transmission levels were deployed at each end of receiver line."
 ```
 
 ```{r}
@@ -133,32 +130,36 @@ library(ggplot2)
 
 #get sample detection range data from the pkgdown website
 # Read detection data into R (download link provided above)
-#dtc <- readRDS(file.path(pkgload::pkg_path(), "docs", "range_detection.rds"))
-
 dtc <- readRDS("../../docs/range_detection.rds")
 setDT(dtc)
 
-
-#setDT(dtc)
-
 tags <- dtc[as.numeric(receiver_sn) - as.numeric(transmitter_id) == 420000]
 tags <- unique(tags, by = "receiver_sn")
-recs <- dtc[!(receiver_sn %in% tags$receiver_sn),]
+recs <- dtc[!(receiver_sn %in% tags$receiver_sn), ]
 recs <- unique(recs, by = "receiver_sn")
-tags <- st_as_sf(tags, coords = c("deploy_long", "deploy_lat"), crs = 4326,
-                 agr = "constant")
+tags <- st_as_sf(tags,
+  coords = c("deploy_long", "deploy_lat"), crs = 4326,
+  agr = "constant"
+)
 tags <- st_transform(tags, crs = 32616)
-recs <- st_as_sf(recs, coords = c("deploy_long", "deploy_lat"), crs = 4326,
-                 agr = "constant")
+recs <- st_as_sf(recs,
+  coords = c("deploy_long", "deploy_lat"), crs = 4326,
+  agr = "constant"
+)
 recs <- st_transform(recs, crs = 32616)
-plot(st_geometry(tags), axes = FALSE, col = "black", pch = 21, bg = "red",
-     cex = 2)
-plot(st_geometry(recs), axes = FALSE, col = "black", add = TRUE, pch = 21,
-     bg = "black", cex = 2)
+plot(st_geometry(tags),
+  axes = FALSE, col = "black", pch = 21, bg = "red",
+  cex = 2
+)
+plot(st_geometry(recs),
+  axes = FALSE, col = "black", add = TRUE, pch = 21,
+  bg = "black", cex = 2
+)
 box()
-legend(x = "topleft", legend = c("Tag/receiver", "Receiver"), col = "black",
-       pch = 21, cex = 1.5, pt.bg = c("red", "black"), bty = "n")
-
+legend(
+  x = "topleft", legend = c("Tag/receiver", "Receiver"), col = "black",
+  pch = 21, cex = 1.5, pt.bg = c("red", "black"), bty = "n"
+)
 ```
 
 The example range test discussed in this vignette consisted of four
@@ -238,37 +239,42 @@ receivers is the same as distances between each tag and receiver.
 #| label: analysis1
 
 # extract only needed columns
-dtc <- dtc[, c("detection_timestamp_utc", "transmitter_id", "receiver_sn",
-               "deploy_lat", "deploy_long")]
+dtc <- dtc[, c(
+  "detection_timestamp_utc", "transmitter_id", "receiver_sn",
+  "deploy_lat", "deploy_long"
+)]
 
-# extract unique combinations of receiver_sn, deploy_lat, and deploy_long 
-rec_dist <- unique(dtc[,c("receiver_sn", "deploy_lat", "deploy_long")])
+# extract unique combinations of receiver_sn, deploy_lat, and deploy_long
+rec_dist <- unique(dtc[, c("receiver_sn", "deploy_lat", "deploy_long")])
 
-# calculate distance matrix 
+# calculate distance matrix
 dist_matrix <- geodist::geodist_vec(rec_dist$deploy_long, rec_dist$deploy_lat)
 
 # rename columns and rows of matrix
-colnames(dist_matrix) <- rec_dist[,get("receiver_sn")]
-rownames(dist_matrix) <- paste0("6", substr(rec_dist[,get("receiver_sn")], 3,6))
+colnames(dist_matrix) <- rec_dist[, get("receiver_sn")]
+rownames(dist_matrix) <- paste0("6", substr(rec_dist[, get("receiver_sn")], 3, 6))
 
 # convert matrix into 3-column data using data.table::melt
 dist_matrix <- melt(
-  data.table(transmitter_id = row.names(dist_matrix),
-             dist_matrix),
-  id.vars = 'transmitter_id',
-  variable.name = 'receiver_sn',
-  value.name = 'dist_m'
+  data.table(
+    transmitter_id = row.names(dist_matrix),
+    dist_matrix
+  ),
+  id.vars = "transmitter_id",
+  variable.name = "receiver_sn",
+  value.name = "dist_m"
 )
 
 # "Transmitter_id" and "receiver_sn" columns are integer type but we need character.
 # Next line of code converts both to character
-dist_matrix[,c("transmitter_id", "receiver_sn") := list(as.character(transmitter_id),
-                                                        as.character(receiver_sn))]
+dist_matrix[, c("transmitter_id", "receiver_sn") := list(
+  as.character(transmitter_id),
+  as.character(receiver_sn)
+)]
 
 # Join "dist_matrix" object with "dtc" object using "transmitter_id" and
 # "receiver_sn" as keys. Keep all records of dtc.
 dtc <- dist_matrix[dtc, on = c("transmitter_id", "receiver_sn")]
-
 ```
 In the last line, we used a `data.table` join to merge the
 `dist_matrix` object with `dtc` on key columns common to both
@@ -293,7 +299,6 @@ dB signal.
 #| echo: false
 #| label: cap2
 
-
 cap2 = "Detections (red circles) of acoustic tags over time as a function of distance between tag and receiver.  All tags were programmed to broadcast with nominal delay of 10 minutes. Output of tags 482223 and 482221 was 154 dB and output of tags 482215 and 482222 was 158 dB "
 ```
 
@@ -304,29 +309,37 @@ cap2 = "Detections (red circles) of acoustic tags over time as a function of dis
 #| fig-height: 4
 #| label: fig2
 
-
 # set base plot parameters
-par(mfrow=c(1,4), mar=c(3,2,1,0), oma=c(2,3,0,0), las=1, bty="l")
+par(mfrow = c(1, 4), mar = c(3, 2, 1, 0), oma = c(2, 3, 0, 0), las = 1, bty = "l")
 
 # extract vector of transmitter ids
 groups <- unique(dtc$transmitter_id)
 
 # loop through each transmitter and create plot
-for(i in 1:length(groups)){
- dtc.i <- dtc[transmitter_id == groups[i],]
-    plot(dtc.i$detection_timestamp_utc, dtc.i$dist_m, pch = 16, col = "red",
-         las = 1, ylab = NA, xlab = NA,
-         main = paste0("tag ", groups[i]), ylim = c(0,615),
-         xlim = c(as.POSIXct("2018-10-09 00:00:00", tz = "UTC"),
-                  as.POSIXct("2018-11-09 00:00:00", tz = "UTC")),
-         axes = FALSE)
+for (i in 1:length(groups)) {
+  dtc.i <- dtc[transmitter_id == groups[i], ]
+  plot(dtc.i$detection_timestamp_utc, dtc.i$dist_m,
+    pch = 16, col = "red",
+    las = 1, ylab = NA, xlab = NA,
+    main = paste0("tag ", groups[i]), ylim = c(0, 615),
+    xlim = c(
+      as.POSIXct("2018-10-09 00:00:00", tz = "UTC"),
+      as.POSIXct("2018-11-09 00:00:00", tz = "UTC")
+    ),
+    axes = FALSE
+  )
 
   # create axes
-  if(i %in% c(1)){axis(2, at = seq(0,600, by = 100), labels = TRUE)}
-  if(i %in% c(2,3,4)){axis(2, at = seq(0,600, by = 100), labels = FALSE)}
+  if (i %in% c(1)) {
+    axis(2, at = seq(0, 600, by = 100), labels = TRUE)
+  }
+  if (i %in% c(2, 3, 4)) {
+    axis(2, at = seq(0, 600, by = 100), labels = FALSE)
+  }
   axis.POSIXct(1, at = seq(as.POSIXct("2018-10-09 00:00:00", tz = "UTC"),
-                           as.POSIXct("2018-11-10 00:00:00", tz = "UTC"),
-                           by = "10 days"), labels = TRUE, format = "%m-%d")
+    as.POSIXct("2018-11-10 00:00:00", tz = "UTC"),
+    by = "10 days"
+  ), labels = TRUE, format = "%m-%d")
 
   # add axis labels
   mtext("tag-receiver distance", outer = TRUE, side = 2, las = 0, line = 1, cex = 0.6)
@@ -334,7 +347,6 @@ for(i in 1:length(groups)){
 
   box()
 }
-
 ```
 
 Notice the sharp decline in the number of detections recorded at
@@ -364,15 +376,15 @@ receiver id are the same.
 #| echo: true
 #| label: analysis2
 
-
 # use substring function to simplify tag and receiver ids and
 # add short_trans_id and short_rec_id columns to dtc
-dtc[, c("short_trans_id", "short_rec_id") := list(substr(dtc$transmitter_id, 2,5),
-                                                  substr(dtc$receiver_sn, 3,6))]
+dtc[, c("short_trans_id", "short_rec_id") := list(
+  substr(dtc$transmitter_id, 2, 5),
+  substr(dtc$receiver_sn, 3, 6)
+)]
 # subset detections from same tag and receiver
-# these represent actual transmissions from each tag 
+# these represent actual transmissions from each tag
 trans_log <- dtc[short_trans_id == short_rec_id]
-
 ```
 
 The `trans_log` object contains timestamps for all integrated tag
@@ -415,28 +427,33 @@ these two timestamps is small.
 #| echo: true
 #| label: analysis3
 
-
 # All detection timestamp within 10 seconds (+- 5 seconds) of tag transmission
 # were identified as same transmission
-dtc[, c("start", "end") := list(detection_timestamp_utc - 5,
-                                detection_timestamp_utc + 5)]
+dtc[, c("start", "end") := list(
+  detection_timestamp_utc - 5,
+  detection_timestamp_utc + 5
+)]
 
 # join detections with tag transmissions with data.table non-equi join
-dtc <- trans_log[dtc, .(detection_timestamp_utc = i.detection_timestamp_utc,
-                        transmitter_id = i.transmitter_id,
-                        receiver_sn = i.receiver_sn,
-                        log_timestamp = x.detection_timestamp_utc,
-                        short_trans_id = i.short_trans_id,
-                        short_rec_id = i.short_rec_id,
-                        deploy_lat = i.deploy_lat,
-                        deploy_long = i.deploy_long),
-                 on = .(transmitter_id, detection_timestamp_utc >= start,
-                        detection_timestamp_utc <= end)]
+dtc <- trans_log[dtc, .(
+  detection_timestamp_utc = i.detection_timestamp_utc,
+  transmitter_id = i.transmitter_id,
+  receiver_sn = i.receiver_sn,
+  log_timestamp = x.detection_timestamp_utc,
+  short_trans_id = i.short_trans_id,
+  short_rec_id = i.short_rec_id,
+  deploy_lat = i.deploy_lat,
+  deploy_long = i.deploy_long
+),
+on = .(
+  transmitter_id, detection_timestamp_utc >= start,
+  detection_timestamp_utc <= end
+)
+]
 
 # calculate difference between when tag was transmitted
 # and actual detection timestamp
 dtc[, diff := abs(detection_timestamp_utc - log_timestamp)]
-
 ```
 
 In the dtc object, we now have added two columns.  The `log_timestamp`
@@ -474,7 +491,6 @@ estimates over time and short time intervals will exhibit more noise.
 #| echo: true
 #| label: analysis4
 
-
 # remove un-matched detections
 dtc <- dtc[!is.na(log_timestamp)]
 
@@ -484,11 +500,10 @@ rec_vec <- unique(dtc$receiver_sn)
 
 # create time sequence by day (can be adjusted to whatever time interval by changing
 # "by" argument (seconds)
-tseq <- seq(from = min(dtc$log_timestamp), to = max(dtc$log_timestamp), by = 3600*4)
+tseq <- seq(from = min(dtc$log_timestamp), to = max(dtc$log_timestamp), by = 3600 * 4)
 
 # bin all detections by time sequence and add bins as new column
 dtc[, tbin := tseq[findInterval(dtc$log_timestamp, tseq)]]
-
 ```
 `dtc` contains a new timestamp column named `tbin` that
 specifies the time bin that each detection falls in based on its
@@ -504,8 +519,8 @@ transmissions in each time bin for each tag.
 # actual acoustic transmissions for each tag.
 # see the `Introduction to data.table` vignette for more info about grouping with `data.table`
 exp <- dtc[short_trans_id == short_rec_id, .(exp = .N),
-            by = .(tbin, transmitter_id)]
-
+  by = .(tbin, transmitter_id)
+]
 ```
 
 We calculate the number of tag transmissions that were detected in
@@ -522,7 +537,6 @@ tag, time bin, and receiver combination and adding zero if a tag, time
 receiver was not detected.  This is easily accomplished using a
 `data.table` join.
 
-
 ```{R}
 #| echo: true
 #| label: analysis5
@@ -531,9 +545,9 @@ receiver was not detected.  This is easily accomplished using a
 # Use the data.table "CJ" cross-join function to do this.
 # The base function "expand.grid" provides similar functionality
 # to the "CJ" function
-cross_join <- CJ( transmitter_id = trans_vec, receiver_sn= rec_vec, tbin = tseq)
+cross_join <- CJ(transmitter_id = trans_vec, receiver_sn = rec_vec, tbin = tseq)
 
-# count all observed detections for each time bin  
+# count all observed detections for each time bin
 obs_count <- dtc[, .(obs = .N), by = .(tbin, receiver_sn, transmitter_id)]
 
 # join "obs_count" with "cross_join" and keep all cross_join and add NA if not detected
@@ -541,7 +555,6 @@ obs <- obs_count[cross_join, on = c("transmitter_id", "tbin", "receiver_sn")]
 
 # change NA to 0 in "obs" object
 obs[is.na(obs), obs := 0]
-
 ```
 
 Now we simply join the observed with the expected using `tbin` and
@@ -560,11 +573,10 @@ distance that we calculated earlier to `dp` using `transmitter_id` and
 dp <- exp[obs, on = c("tbin", "transmitter_id")]
 
 # calculate detection probability and save to a new column named "dp"
-dp[, dp := obs/exp]
+dp[, dp := obs / exp]
 
 # merge tag-receiver dist with dp.
 dp <- dist_matrix[dp, on = c("transmitter_id", "receiver_sn")]
-
 ```
 
 We have now calculated detection probability for each tag, time
@@ -587,7 +599,7 @@ included in this vignette.]
 #| label: cap3
 cap3 <- "Probability of detecting tag 62215 during successive daily time
 intervals on 8 receivers located 9-603 meters from tag (right y-axis labels).
-Black lines in each panel is detection probability and red line is a loess smoother."   
+Black lines in each panel is detection probability and red line is a loess smoother."
 ```
 
 ```{r}
@@ -612,7 +624,7 @@ dp[, dist_f := factor(dist_rnd, levels = sort(unique(dist_rnd), decreasing = TRU
 tag_grp <- unique(dp$transmitter_id)
 
 # loop through each tag and extract data for one tag at a time
-for(i in 1:length(tag_grp)){
+for (i in 1:length(tag_grp)) {
   dp.i <- dp[transmitter_id == tag_grp[i]]
 
   # remove rows where dist_rnd equals 0.
@@ -620,7 +632,7 @@ for(i in 1:length(tag_grp)){
 
   # create plot of detection probability for each receiver
   p <- ggplot(data = dp.i, aes(x = tbin, y = dp)) +
-    ylim(0,1) +
+    ylim(0, 1) +
     geom_line() +
     facet_grid(dist_f ~ .) +
     labs(x = "time", y = "detection probability") +
@@ -628,7 +640,6 @@ for(i in 1:length(tag_grp)){
     ggtitle(paste0("tag ", dp.i$transmitter_id[1]))
   print(p)
 }
-
 ```
 
 As you can see in the stacked plot, detection range decreased as
@@ -682,24 +693,27 @@ groups <- unique(dp$id)
 # order by tags and time
 setorder(dp, transmitter_id, dist_m)
 
-par(bty="l")
-for(i in 1:length(groups)){
-  dp.i <- dp[id == groups[i],]
+par(bty = "l")
+for (i in 1:length(groups)) {
+  dp.i <- dp[id == groups[i], ]
 
   # remove rows where dist_rnd equals 0.
   dp.i <- dp.i[dist_rnd != 0]
 
-  plot(dp.i$dist_m, dp.i$dp, ylim = c(0,1), xlim = c(0,650),
-       axes = FALSE, main =  paste0(dp.i$tbin[1], ", tag: ",
-                                    dp.i$transmitter_id[1]),
-       ylab = "detection probability",
-       xlab = "tag-receiver distance (m)", pch = 16, col = "red", cex = 2, type = "o")
+  plot(dp.i$dist_m, dp.i$dp,
+    ylim = c(0, 1), xlim = c(0, 650),
+    axes = FALSE, main = paste0(
+      dp.i$tbin[1], ", tag: ",
+      dp.i$transmitter_id[1]
+    ),
+    ylab = "detection probability",
+    xlab = "tag-receiver distance (m)", pch = 16, col = "red", cex = 2, type = "o"
+  )
   axis(2, at = seq(0, 1, 0.2), las = 1)
   axis(1, at = seq(0, 1000, 200))
   axis(1, at = seq(100, 900, 200), labels = NA)
   box()
 }
-
 ```
 
 As you can see in this example, detection probability range drops
@@ -798,17 +812,16 @@ edr <- dp[id == groups[401]]
 edr <- edr[dist_m != 0]
 
 # Use base::approx function to return the detection probability based on distance and linear interpolation within edr.  This essentially "connects the dots"
-edrf <- function(dm, my.edr=edr){
-  p <- approx(x=my.edr$dist_m, y=my.edr$dp, xout=dm, rule=2)$y
+edrf <- function(dm, my.edr = edr) {
+  p <- approx(x = my.edr$dist_m, y = my.edr$dp, xout = dm, rule = 2)$y
   return(p)
 }
 
 # create sequence at 50m intervals
-dist_seq <- seq(0,650,by = 25)
+dist_seq <- seq(0, 650, by = 25)
 
 # interpolate detection probability using the edrf function
 interpolated <- edrf(dist_seq)
-
 ```
 
 Before we run the simulation, let's preview the range curve created by `edrf`.
@@ -817,7 +830,6 @@ separated by 25 meters.
 
 Lets take a look at the original detection range curve and
 interpolated range curve. 
-
 
 ```{r}
 #| echo: false
@@ -833,12 +845,11 @@ cap5 = "Detection range curve (red circles) with interpolated points (black circ
 #| fig-height: 8
 
 # plot original detection range curve
-plot(edr$dist_m, edr$dp, pch = 16, col = "red", ylim = c(0,1), las = 1, cex = 1.5, ylab = "tag transmission detection probability", xlab = "tag-receiver distance (m)")
+plot(edr$dist_m, edr$dp, pch = 16, col = "red", ylim = c(0, 1), las = 1, cex = 1.5, ylab = "tag transmission detection probability", xlab = "tag-receiver distance (m)")
 
 # add interpolated detection probabilities
 lines(dist_seq, interpolated, type = "o", col = "black", pch = 16, cex = 1)
-legend("topright", legend  = c("original", "interpolated"), col = c("red", "black"), lty = c(NA,1), pch = 16 )
-
+legend("topright", legend = c("original", "interpolated"), col = c("red", "black"), lty = c(NA, 1), pch = 16)
 ```
 
 Now that the range detection curve is set up, we can set up the
@@ -860,8 +871,10 @@ fig_cap6 <- "Paths of 10 virtual fish through receiver line"
 #| fig-width: 8
 #| fig-cap: !expr fig_cap6
 # Five receivers and allow fish to pass to left and right of line.
-sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
-	outerLim=c(100, 100), nsim=10, showPlot=T)
+sim <- receiver_line_det_sim(
+  rngFun = edrf, recSpc = rep(200, 5),
+  outerLim = c(100, 100), nsim = 10, showPlot = T
+)
 
 # The `receiver_line_det_sim()` estimates line detection probability for the
 # specified combination of receiver line layout and fish transmitter
@@ -878,9 +891,10 @@ It looks like about `r#round((sim*100))`% of virtual fish were detected. Now, le
 #| fig-height: 8
 #| fig-width: 8
 # Again but with 10000 fish and no plot.
-sim <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
-	outerLim=c(100, 100), nsim=10000)
-
+sim <- receiver_line_det_sim(
+  rngFun = edrf, recSpc = rep(200, 5),
+  outerLim = c(100, 100), nsim = 10000
+)
 ```
 
 Results suggest that `r#round((sim*100))`% of all fish should be
@@ -899,43 +913,58 @@ each, and then use that to guide our decision.
 sim_out <- rep(NA, 10)
 
 # One receivers with 500 m in between.
-sim_out[1] <- receiver_line_det_sim(rngFun=edrf, recSpc=500,
- outerLim=c(500, 500), nsim=10000)
+sim_out[1] <- receiver_line_det_sim(
+  rngFun = edrf, recSpc = 500,
+  outerLim = c(500, 500), nsim = 10000
+)
 
 # Two receivers with 500 m in between and 250 m on each end.
-sim_out[2] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(500,2),
- outerLim=c(250, 250), nsim=10000)
+sim_out[2] <- receiver_line_det_sim(
+  rngFun = edrf, recSpc = rep(500, 2),
+  outerLim = c(250, 250), nsim = 10000
+)
 
 # Three receivers with 333 m in between and 167 m on each end.
-sim_out[3] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(333,3),
- outerLim=c(167,167 ), nsim=10000)
+sim_out[3] <- receiver_line_det_sim(
+  rngFun = edrf, recSpc = rep(333, 3),
+  outerLim = c(167, 167), nsim = 10000
+)
 
 # Four receivers with 250 m in between and 125 m on each end.
-sim_out[4] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(250,4),
- outerLim=c(125, 125), nsim=10000)
+sim_out[4] <- receiver_line_det_sim(
+  rngFun = edrf, recSpc = rep(250, 4),
+  outerLim = c(125, 125), nsim = 10000
+)
 
 # Five receivers with 200 m in between and 100 m on each end.
-sim_out[5] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(200,5),
- outerLim=c(100, 100), nsim=10000)
+sim_out[5] <- receiver_line_det_sim(
+  rngFun = edrf, recSpc = rep(200, 5),
+  outerLim = c(100, 100), nsim = 10000
+)
 
 # Six receivers at 167 m with 83.5 m on each side.
-sim_out[6] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(167,6),
-                                    outerLim=c(83.5, 83.5), nsim=10000)
+sim_out[6] <- receiver_line_det_sim(
+  rngFun = edrf, recSpc = rep(167, 6),
+  outerLim = c(83.5, 83.5), nsim = 10000
+)
 
 # Seven receivers at 143 m with 71.5 m on each side.
-sim_out[7] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(143,7),
-                                    outerLim=c(71.5, 71.5), nsim=10000)
+sim_out[7] <- receiver_line_det_sim(
+  rngFun = edrf, recSpc = rep(143, 7),
+  outerLim = c(71.5, 71.5), nsim = 10000
+)
 
 # Eight receivers with 125 m between and 62.5 m on each end.
-sim_out[8] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(125,8),
- outerLim=c(62.5, 62.5), nsim=10000)
+sim_out[8] <- receiver_line_det_sim(
+  rngFun = edrf, recSpc = rep(125, 8),
+  outerLim = c(62.5, 62.5), nsim = 10000
+)
 
 # Nine receivers with 111 m between and 55.5 m on each end.
-sim_out[9] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(111,9), outerLim=c(55.5, 55.5), nsim=10000)
+sim_out[9] <- receiver_line_det_sim(rngFun = edrf, recSpc = rep(111, 9), outerLim = c(55.5, 55.5), nsim = 10000)
 
 # Ten receivers with 100 m between and 50 m on each end.
-sim_out[10] <- receiver_line_det_sim(rngFun=edrf, recSpc=rep(100,10), outerLim=c(50, 50), nsim=10000)
-
+sim_out[10] <- receiver_line_det_sim(rngFun = edrf, recSpc = rep(100, 10), outerLim = c(50, 50), nsim = 10000)
 ```
 
 Next, we Plot the results.
@@ -953,10 +982,12 @@ fig_cap7 <- "Simulated proportion of virtual fish detected for receiver line wit
 #| fig-width: 8
 #| fig-cap: !expr fig_cap7
 # Plot number of receivers vs proportion of virtual fish detected.
-plot(1:10, sim_out, type='o', ylim=c(0,1),
- xlab='Number of receivers',
- ylab='Proportion of virtual fish detected',
- pch=20, las = 1)
+plot(1:10, sim_out,
+  type = "o", ylim = c(0, 1),
+  xlab = "Number of receivers",
+  ylab = "Proportion of virtual fish detected",
+  pch = 20, las = 1
+)
 ```
 These results suggest that the proportion of fish detected reaches a
 plateau at around 5 receivers.  Deploying a line with more than
@@ -972,9 +1003,10 @@ plot to see what this looks like and then we'll run the simulation with 10000 vi
 #| echo: true
 #| label: analysis14.5
 # Four receivers with 200, 400, 200, 2000 m in between and 100 m on each end.
-dph <- receiver_line_det_sim(rngFun=edrf, recSpc=c(200,400,200,200),
-                             outerLim=c(100, 100), nsim=10000)
-
+dph <- receiver_line_det_sim(
+  rngFun = edrf, recSpc = c(200, 400, 200, 200),
+  outerLim = c(100, 100), nsim = 10000
+)
 ```
 
 Estimated detection probability dropped to about `r#round(dph*100,1)`%
@@ -1044,21 +1076,20 @@ poly <- st_transform(poly, crs = 3175)
 # see map coordinate conversion tool at https://epsg.io
 # tool is useful for woking out bounding box in epsg 3175 coordinate
 # system (NAD83/Great Lakes and St. Lawrence River)
-LH <- st_crop(poly, xmin = 879714.45,
-              xmax = 1263717.46, ymin = 692997.10,
-              ymax = 1120461.83)
+LH <- st_crop(poly,
+  xmin = 879714.45,
+  xmax = 1263717.46, ymin = 692997.10,
+  ymax = 1120461.83
+)
 
 # set agr for sf
 st_agr(LH) <- "constant"
-
-
 ```
 
 The simulation functions from `glatos` requires unprojected (WGS 84)
 latitude and longitude coordinate system and SpatialPolygon objects
 in `sp` format .  We create a new object and convert the Lake Huron
 polygon shapefile back to WGS 84 and `sp` in the next step.
-
 
 ```{R}
 #| echo: true
@@ -1069,7 +1100,6 @@ LH_latlon <- st_transform(LH, crs = 4326)
 
 # convert from sf to sp object
 LH_latlon <- as(LH_latlon, "Spatial")
-
 ```
 
 Next we set up a receiver grid in Lake Huron for use in the simulation
@@ -1088,9 +1118,8 @@ grid_10km <- st_intersection(LH, st_make_grid(LH, cellsize = 10000, what = "cent
 # convert back to WGS84-lat/lon
 grid_10km <- st_transform(grid_10km, crs = 4326)
 
-# convert coordinates to sp for future use 
+# convert coordinates to sp for future use
 grid_10km_sp <- as(grid_10km, "Spatial")
-
 ```
 
 In addition to a object of receiver locations, we also need to
@@ -1102,14 +1131,12 @@ to move in a straight line. We also provide coordinates for a start point so
 our virtual fish starts in Saginaw Bay and a location is calculated
 every 10 km.  We calculate positions for our virtual fish for 30 steps.
 
-
 ```{R}
 #| echo: true
 #| label: analysis18
 
 # do random walk in LH polygon starting in Saginaw Bay
-path <- crw_in_polygon(LH_latlon, theta = c(0,25), stepLen= 10000, initHeading = 0, nsteps = 30, initPos = c(-83.6, 43.8), show_progress = FALSE, cartesianCRS = st_crs(LH))
-
+path <- crw_in_polygon(LH_latlon, theta = c(0, 25), stepLen = 10000, initHeading = 0, nsteps = 30, initPos = c(-83.6, 43.8), show_progress = FALSE, cartesianCRS = st_crs(LH))
 ```
 
 Now it is time to bring together fish track, grid, and Lake Huron outline to make
@@ -1122,7 +1149,7 @@ virtual fish likely does not behave like real fish!
 fig_cap_grid <- "Plot of receiver network grid (black circles) and movement track of virtual fish (red circle and line) in Lake Huron" 
 ```
 
-```{R}
+```{r}
 #| echo: true
 #| label: analysis19
 #| fig-height: 8
@@ -1133,7 +1160,6 @@ fig_cap_grid <- "Plot of receiver network grid (black circles) and movement trac
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
 plot(st_geometry(path), type = "o", pch = 20, col = "red", add = TRUE)
 plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
-
 ```
 
 In the next step, we use `transmit_along_path` to determine where
@@ -1147,7 +1173,6 @@ delay range from 60--180 seconds).
 #| label: analysis20
 
 tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) ) 
-
 ```
 
 The final step is to determine which transmissions are detected.  This
@@ -1170,12 +1195,11 @@ mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_10km_sp,
 
 # calculate the mean elapsed time (seconds) between detections
 sim <- as.data.table(mydtc)
-detinterval <- round(mean(diff(sim$time))/60,0)
+detinterval <- round(mean(diff(sim$time)) / 60, 0)
 
 # calculate mean elapsed time difference between first detections on successive receivers
-foo <- sim[, .SD[1,"time"],  by = rec_id]
+foo <- sim[, .SD[1, "time"], by = rec_id]
 f_int <- mean(diff(foo$time))
-
 ```
 
 The output from the simulation consists of a spatial object that
@@ -1208,8 +1232,7 @@ fig_cap_sim <- "Plot of receiver network grid (black circles), movement track of
 sp::plot(LH_latlon, col = "lightgrey", border = "grey")
 plot(st_geometry(path), type = "o", pch = 20, col = "red", add = TRUE)
 plot(st_geometry(grid_10km), pch = 20, col = "black", add = TRUE)
-plot(st_geometry(mydtc), col = "blue", cex = 2, pch=20, add = TRUE)
-
+plot(st_geometry(mydtc), col = "blue", cex = 2, pch = 20, add = TRUE)
 ```
 
 At this point, we have simulated detections for one virtual fish. In the next
@@ -1241,7 +1264,6 @@ grid_10km_sp <- as(grid_10km, "Spatial")
 grid_5km <- st_intersection(LH, st_make_grid(LH, cellsize = 5000, what = "centers"))
 grid_5km <- st_transform(grid_5km, crs = 4326)
 grid_5km_sp <- as(grid_5km, "Spatial")
-
 ```
 
 
@@ -1258,17 +1280,17 @@ produce a data.frame with x and y coordinates as output for each virtual fish.
 paths <- vector("list", length = 100)
 
 # loop through and create fish paths, store each fish as item in list.
-for(i in 1:100){
-
-# do random walk in LH polygon of virtual fish starting in Saginaw Bay
-  paths[[i]] <- crw_in_polygon(LH_latlon, theta = c(0,25),
-                             stepLen= 10000, initHeading = 0,
-                             nsteps = 30, initPos = c(-83.6, 43.8),
-                             cartesianCRS = st_crs(LH),
-                             sp_out = TRUE,
-                             show_progress = FALSE)
+for (i in 1:100) {
+  # do random walk in LH polygon of virtual fish starting in Saginaw Bay
+  paths[[i]] <- crw_in_polygon(LH_latlon,
+    theta = c(0, 25),
+    stepLen = 10000, initHeading = 0,
+    nsteps = 30, initPos = c(-83.6, 43.8),
+    cartesianCRS = st_crs(LH),
+    sp_out = TRUE,
+    show_progress = FALSE
+  )
 }
-
 ```
 
 Now we are going to collapse the list into a single data.table and add
@@ -1284,18 +1306,19 @@ a ID column for each fish.
 trans <- vector("list", length = 100)
 
 # loop through and calculate transmissions along each path
-for(j in 1:100){
-  trans[[j]] <- transmit_along_path(paths[[j]], vel = 0.5, delayRng = c(60,180))
+for (j in 1:100) {
+  trans[[j]] <- transmit_along_path(paths[[j]], vel = 0.5, delayRng = c(60, 180))
 }
 
 # make empty list to hold results
 sim <- vector("list", length = 100)
 
 # loop through and calculate transmissions along each path
-for(k in 1:100){
-  sim[[k]] <- detect_transmissions(trans[[k]], recLoc = grid_10km_sp, 
-                                   detRngFun = edrf, show_progress = FALSE)
-
+for (k in 1:100) {
+  sim[[k]] <- detect_transmissions(trans[[k]],
+    recLoc = grid_10km_sp,
+    detRngFun = edrf, show_progress = FALSE
+  )
 }
 
 # convert each simulated object into a data.frame
@@ -1309,10 +1332,9 @@ det_interval_sim1 <- mean(diff(sim$time))
 
 # calculate mean elapsed time difference between
 # first detections on successive receivers by fish
-out <- sim[, .SD[1,"time"],  by = c("rec_id", "virt_fish")]
+out <- sim[, .SD[1, "time"], by = c("rec_id", "virt_fish")]
 out[, t_diff := time - data.table::shift(time), by = virt_fish]
 rec_by_dtc_sim1 <- mean(out$t_diff, na.rm = TRUE)
-
 ```
 
 Now that we've calculated the average elapsed time difference between
@@ -1329,10 +1351,11 @@ repeat the simulation with a 5 km grid in the next chunk.
 sim2 <- vector("list", length = 100)
 
 # loop through and calculate transmissions along each path
-for(k in 1:100){
-  sim2[[k]] <- detect_transmissions(trans[[k]], recLoc = grid_5km_sp, 
-                                    detRngFun = edrf, show_progress = FALSE)
-
+for (k in 1:100) {
+  sim2[[k]] <- detect_transmissions(trans[[k]],
+    recLoc = grid_5km_sp,
+    detRngFun = edrf, show_progress = FALSE
+  )
 }
 
 # convert each simulated object into a data.frame
@@ -1346,10 +1369,9 @@ det_interval_sim2 <- mean(diff(sim2$time))
 
 # calculate mean elapsed time difference between
 # first detections on successive receivers by fish
-sim2_out <- sim2[, .SD[1,"time"],  by = c("rec_id", "virt_fish")]
+sim2_out <- sim2[, .SD[1, "time"], by = c("rec_id", "virt_fish")]
 sim2_out[, t_diff := time - data.table::shift(time), by = virt_fish]
 rec_by_dtc_sim2 <- mean(sim2_out$t_diff, na.rm = TRUE)
-
 ```
 From our simulations, we estimated the time interval between first
 detections on successive receivers was `r#round(rec_by_dtc_sim1/60,0)` minutes for a 10 km grid
