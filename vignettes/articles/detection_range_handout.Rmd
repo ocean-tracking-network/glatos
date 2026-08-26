@@ -142,7 +142,7 @@ library(glatos)
 library(data.table)
 library(ggplot2)
 
-#get sample detection range data from the pkgdown website
+# get sample detection range data from the pkgdown website
 # Read detection data into R (download link provided above)
 dtc <- readRDS("../../docs/range_detection.rds")
 setDT(dtc)
@@ -313,7 +313,7 @@ dB signal.
 #| echo: false
 #| label: cap2
 
-cap2 = "Detections (red circles) of acoustic tags over time as a function of distance between tag and receiver.  All tags were programmed to broadcast with nominal delay of 10 minutes. Output of tags 482223 and 482221 was 154 dB and output of tags 482215 and 482222 was 158 dB "
+cap2 <- "Detections (red circles) of acoustic tags over time as a function of distance between tag and receiver.  All tags were programmed to broadcast with nominal delay of 10 minutes. Output of tags 482223 and 482221 was 154 dB and output of tags 482215 and 482222 was 158 dB "
 ```
 
 ```{r}
@@ -686,7 +686,7 @@ probability of detecting a fish on a receiver line or in a grid of receivers.
 ```{r}
 #| echo: false
 #| label: cap4
-cap4 = "Example of detection range curve.  Detection probability is on the y-axis and distance between tag and receiver is on the x-axis."
+cap4 <- "Example of detection range curve.  Detection probability is on the y-axis and distance between tag and receiver is on the x-axis."
 ```
 
 ```{r}
@@ -848,7 +848,7 @@ interpolated range curve.
 ```{r}
 #| echo: false
 #| label: cap5
-cap5 = "Detection range curve (red circles) with interpolated points (black circles and line). Detection probability is on the y-axis and distance between tag and receiver is on the x-axis."
+cap5 <- "Detection range curve (red circles) with interpolated points (black circles and line). Detection probability is on the y-axis and distance between tag and receiver is on the x-axis."
 ```
 
 ```{r}
@@ -1160,7 +1160,7 @@ virtual fish likely does not behave like real fish!
 ```{r}
 #| echo: false
 #| label: cap8
-fig_cap_grid <- "Plot of receiver network grid (black circles) and movement track of virtual fish (red circle and line) in Lake Huron" 
+fig_cap_grid <- "Plot of receiver network grid (black circles) and movement track of virtual fish (red circle and line) in Lake Huron"
 ```
 
 ```{r}
@@ -1186,7 +1186,7 @@ delay range from 60--180 seconds).
 #| echo: true
 #| label: analysis20
 
-tag_trans <- transmit_along_path(path, vel= 0.5, delayRng = c(60, 180) ) 
+tag_trans <- transmit_along_path(path, vel = 0.5, delayRng = c(60, 180))
 ```
 
 The final step is to determine which transmissions are detected.  This
@@ -1204,8 +1204,10 @@ to the reader to review how this object was created.
 #| warning: false
 #| label: analysis21
 
-mydtc <- detect_transmissions(trnsLoc = tag_trans, recLoc = grid_10km_sp, 
-                                detRngFun = edrf, show_progress = FALSE )
+mydtc <- detect_transmissions(
+  trnsLoc = tag_trans, recLoc = grid_10km_sp,
+  detRngFun = edrf, show_progress = FALSE
+)
 
 # calculate the mean elapsed time (seconds) between detections
 sim <- as.data.table(mydtc)
@@ -1233,7 +1235,7 @@ detected.
 ```{r}
 #| echo: false
 #| label: capsim
-fig_cap_sim <- "Plot of receiver network grid (black circles), movement track of virtual fish (red circle and line), and locations where virtual fish was detected (blue circles) in Lake Huron" 
+fig_cap_sim <- "Plot of receiver network grid (black circles), movement track of virtual fish (red circle and line), and locations where virtual fish was detected (blue circles) in Lake Huron"
 ```
 
 ```{R}
