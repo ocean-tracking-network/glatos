@@ -64,46 +64,46 @@ obtained from the GLATOS [Data Portal](https://glatos.org/portal).
 and defined exactly as described below:
 
  - detection_timestamp_utc 
- : *A* POSIXct *object with detection timestamps* 
+    : *A* POSIXct *object with detection timestamps* 
  *(e.g.,* "2012-04-29 01:48:37"*).*
 
  - receiver_sn
- : *A character vector with unique receiver identifier. This is needed to 
+   : *A character vector with unique receiver identifier. This is needed to 
  associate each record with a specific receiver (a physical instrument).*
  
  - deploy_lat
- : *A numeric vector with latitude (decimal degrees, NAD83) of geographic 
+   : *A numeric vector with latitude (decimal degrees, NAD83) of geographic 
  location where receiver was deployed. Must be negative for locations in 
  the southern hemishere and positive for locations in the northern hemisphere* 
  *(e.g., *43.39165*).*
  
  - deploy_long
- : *A numeric vector with longitude (decimal degrees, NAD83) of geographic 
+   : *A numeric vector with longitude (decimal degrees, NAD83) of geographic 
  location where receiver was deployed. Must be negative for locations in 
  the western hemishere and positive for locations in the eastern hemisphere 
  (e.g., *-83.99264*).*
  
  - transmitter_codespace
- : *A character string with transmitter code space *
+   : *A character string with transmitter code space *
  *(e.g., *"A69-1061" *for Vemco PPM coding). In combination with* transmiter_id
  *, this is needed to associate each record with a specific transmitter (a 
  physical instrument).*
  
  - transmitter_id
- : *A character string with transmitter ID code (e.g., *"1363"
+   : *A character string with transmitter ID code (e.g., *"1363"
  *for Vemco PPM coding). In combination with *
  transmitter_codespace*, this is needed to associate each record with a 
  specific transmitter (a physical instrument).*
  
  - sensor_value
- : *A numeric sensor measurement (e.g., an integer for 'raw' Vemco sensor tags).*
+   : *A numeric sensor measurement (e.g., an integer for 'raw' Vemco sensor tags).*
  
  - sensor_unit 
- : *A character string with sensor_value units (e.g., *"ADC"* for 'raw' Vemco *
+   : *A character string with sensor_value units (e.g., *"ADC"* for 'raw' Vemco *
  *sensor tag detections).*
  
  - animal_id
- : *A character string with individual animal identifier. This is used to 
+   : *A character string with individual animal identifier. This is used to 
  associate each record with an individual animal.*
  
  Additionally, some functions will require at least one categorical column to 
@@ -131,23 +131,23 @@ require a *data.frame* with one or more of the following columns, named
 and defined exactly as described below:
 
  - deploy_lat
- : *A numeric vector with latitude (decimal degrees, NAD83) of geographic 
+   : *A numeric vector with latitude (decimal degrees, NAD83) of geographic 
  location where receiver was deployed. Must be negative for locations in 
  the southern hemishere and positive for locations in the northern hemisphere* 
  *(e.g., *43.39165*).*
  
  - deploy_long
- : *A numeric vector with longitude (decimal degrees, NAD83) of geographic 
+   : *A numeric vector with longitude (decimal degrees, NAD83) of geographic 
  location where receiver was deployed. Must be negative for locations in 
  the western hemishere and positive for locations in the eastern hemisphere 
  (e.g., *-83.99264*).*
  
  - deploy_date_time
- : *A* POSIXct *object with timestamp when receiver was deployed *
+   : *A* POSIXct *object with timestamp when receiver was deployed *
  *(e.g.,* "2012-04-29 01:48:37"*).*
  
  - recover_date_time
- : *A* POSIXct *object with timestamp when receiver was recovered *
+   : *A* POSIXct *object with timestamp when receiver was recovered *
  *(e.g.,* "2012-04-29 01:48:37"*).*
  
  Additionally, some functions will require at least one categorical column to 
@@ -238,127 +238,127 @@ their tagged fish. Fields (columns) in both files are described below.
 A comma-separated-values text file with the following columns:  
 
  - animal\_id
- : *A field that uniquely identifies tagged animal. This field is used to 
+   : *A field that uniquely identifies tagged animal. This field is used to 
  associate each record with an individual animal.*
 
  - detection\_timestamp\_utc 
- : *An alpha-numeric field in the standard POSIXct format (YYYY-MM-DD
+   : *An alpha-numeric field in the standard POSIXct format (YYYY-MM-DD
   HH:MM:SS, i.e., "2012-04-29 01:48:37") that represents the date and
   time when a tag was detected in UTC timezone.*
 
 - glatos\_array 
- : *Character field identifies subgroup of receivers, usually in close spatial proximity.* 
+   : *Character field identifies subgroup of receivers, usually in close spatial proximity.* 
 
 - station\_no 
- : *Character field that identifies receiver mooring within glatos\_array.* 
+   : *Character field that identifies receiver mooring within glatos\_array.* 
 
 - transmitter\_codespace 
- : *A character field with transmitter code space (e.g., "A69-1061"
+   : *A character field with transmitter code space (e.g., "A69-1061"
  for Vemco PPM coding). In combination with transmiter_id, this is
  needed to associate each record with a specific transmitter (a
  physical instrument).*  
  
 - transmitter\_id 
- : *A character field with transmitter ID code (e.g., 1363 for Vemco
+   : *A character field with transmitter ID code (e.g., 1363 for Vemco
  PPM coding). In combination with transmitter_codespace, this is
  needed to associate each record with a specific transmitter (a
  physical instrument).*  
  
 - sensor\_value 
- : *A numeric sensor measurement (e.g., an integer for 'raw' Vemco
+   : *A numeric sensor measurement (e.g., an integer for 'raw' Vemco
    sensor tags).*  
  
 - sensor\_unit  
- : *A character field with sensor_value units (e.g., ADC for 'raw'
+   : *A character field with sensor_value units (e.g., ADC for 'raw'
  Vemco sensor tag detections).*  
 
 - deploy\_lat
- : *A numeric field with latitude (decimal degrees, NAD83) of geographic 
+   : *A numeric field with latitude (decimal degrees, NAD83) of geographic 
  location where receiver was deployed. Must be negative for locations in 
  the southern hemishere and positive for locations in the northern
  hemisphere (e.g., 43.39165).*
  
 - deploy\_long
- : *A numeric field with longitude (decimal degrees, NAD83) of geographic 
+   : *A numeric field with longitude (decimal degrees, NAD83) of geographic 
  location where receiver was deployed. Must be negative for locations in 
  the western hemishere and positive for locations in the eastern hemisphere 
  (e.g., -83.99264).*
  
 - receiver\_sn
- : *A character field that uniquely identifies each receiver. This is needed to 
+   : *A character field that uniquely identifies each receiver. This is needed to 
  associate each detection with a specific receiver (a physical instrument).*
  
 - tag\_type
- : *Character field that identifies type of tag used (e.g., acoustic).*
+   : *Character field that identifies type of tag used (e.g., acoustic).*
   
 - tag\_model
- : *Character field that identifies tag model used.*
+   : *Character field that identifies tag model used.*
   
 - tag\_serial\_number
- : *Character field that identifies tag serial number.*
+   : *Character field that identifies tag serial number.*
 
 - common\_name\_e
- : *Character field with fish species common name in english.*
+   : *Character field with fish species common name in english.*
   
 - capture\_location
- : *Character field with description
+   : *Character field with description
   of where fish were captured (capture\_location).*
   
 - length
- : *Numeric field of length of tagged fish.*
+   : *Numeric field of length of tagged fish.*
 
 - weight
- : *Numeric field of weight of tagged fish.*
+   : *Numeric field of weight of tagged fish.*
 
 - sex
- : *Character field that identifies sex of fish released.*
+   : *Character field that identifies sex of fish released.*
   
 - release\_group
- : *Character field that identifies
+   : *Character field that identifies
   group of released fish (release\_group)*
   
 - release\_location
- : *Character field that describes where fish was released.*
+   : *Character field that describes where fish was released.*
 
 - release\_latitude
- : *A numeric field with latitude (decimal degrees, NAD83) of
+   : *A numeric field with latitude (decimal degrees, NAD83) of
  geographic location where tag was deployed. Must be negative for
  locations in the southern hemishere and positive for locations in the
  northern hemisphere (e.g., 43.39165).*
   
 - release\_longitude
- : *A numeric field with longitude (decimal degrees, NAD83) of
+   : *A numeric field with longitude (decimal degrees, NAD83) of
  geographic location where tag was deployed. Must be negative for
  locations in the western hemishere and positive for locations in the
  eastern hemisphere (e.g., 43.39165).*
 
 - utc\_release\_date\_time
- : *An alpha-numeric field in the standard POSIXct format (YYYY-MM-DD
+   : *An alpha-numeric field in the standard POSIXct format (YYYY-MM-DD
   HH:MM:SS, i.e., "2012-04-29 01:48:37") that represents the date and
   time when a tag was released in UTC timezone.*
 
 - glatos\_project\_transmitter
- : *GLATOS five-character code of project associated with transmitter.*
+   : *GLATOS five-character code of project associated with transmitter.*
   
 - glatos\_project\_receiver
- : *GLATOS five-character code of project associated with receiver.*
+   : *GLATOS five-character code of project associated with receiver.*
 
 - glatos\_tag\_recovered
- : *The values of the glatos\_tag\_recovered field is either "yes", or
+   : *The values of the glatos\_tag\_recovered field is either "yes", or
   "no".  A "yes" value indicates tag was recovered after deployment
   (e.g., tagged fish caught by angler) and "no" means the tag is still at
   large.*
   
 - glatos\_caught\_date
- : *If tag is recovered, the date (in YYYY-MM-DD format) of tag recovery is in
+   : *If tag is recovered, the date (in YYYY-MM-DD format) of tag recovery is in
   the "glatos_caught_date" field.*
 
 - station
- : *Character field that combines glatos_array and station_no to
+   : *Character field that combines glatos_array and station_no to
   identify receiver mooring within project.*
   
 - min\_lag
- : *minimum time interval (seconds) between current detection and
+   : *minimum time interval (seconds) between current detection and
   another detection from the same tag on the same receiver.  Field is
   used to identify possible false detections.*
 
@@ -368,103 +368,103 @@ A comma-separated-values text file with the following columns:
 A comma-separated-values text file with the following columns:  
 
 - station
-: *Character field that combines glatos_array and station_no to
+  : *Character field that combines glatos_array and station_no to
   identify receiver mooring within project.*
   
 - glatos\_array
-: *Character field identifies subgroup of receivers, usually in close spatial proximity.* 
+  : *Character field identifies subgroup of receivers, usually in close spatial proximity.* 
   
 - station\_no
-: *Character field that identifies receiver mooring within glatos\_array.* 
+  : *Character field that identifies receiver mooring within glatos\_array.* 
   
 - consecutive\_deploy\_no
-: *Integer field of the number of times a receiver was deployed at a location.*
+  : *Integer field of the number of times a receiver was deployed at a location.*
 
 
 - intend\_lat
-: *Numeric field with intended geographic deployment latitude (decimal degrees,
+  : *Numeric field with intended geographic deployment latitude (decimal degrees,
   NAD83). Must be negative for locations in southern hemisphere and positive for
   locations in northern hemisphere.*
   
 - intend\_long
-: *Numeric field with intended geographic deployment longitude (decimal degrees,
+  : *Numeric field with intended geographic deployment longitude (decimal degrees,
   NAD83). Must be positive for values in the eastern hemisphere and negative for
   locations in the western hemisphere.*
 
 - deploy\_lat
-: *Numeric field of actual geographic deployment 
+  : *Numeric field of actual geographic deployment 
   latitude (decimal degrees, NAD83). Must be
   negative for locations in southern hemisphere and positive for
   locations in northern hemisphere.*
 
--  deploy\_long
-: *Numeric fields of actual geographic deployment 
+- deploy\_long
+  : *Numeric fields of actual geographic deployment 
   longitude (decimal degrees,
   NAD83) must be positive for values in the eastern
   hemisphere and positive for locations in the western hemisphere.*
 
 - recover\_lat
-: *Numeric fields of geographic latitude where receivers
+  : *Numeric fields of geographic latitude where receivers
   were recovered (decimal degrees, NAD83). Must be
   negative for locations in southern hemisphere and positive for
   locations in northern hemisphere.*
 
 - recover\_long
-: *Numeric fields of geographic longitude where receivers
+  : *Numeric fields of geographic longitude where receivers
   were recovered (decimal degrees, NAD83). Must be
   negative for locations in western hemisphere and positive for
   locations in eastern hemisphere.*
 
 - deploy\_date\_time
-: *Alpha-numeric fields in standard POSIX format (YYYY-MM-DD HH:MM:SS,
+  : *Alpha-numeric fields in standard POSIX format (YYYY-MM-DD HH:MM:SS,
   i.e., "2012-04-29 01:43:43") that represents the date and time in
   UTC timezone when a receiver was deployed.*
   
 - recover\_date\_time
-: *Alpha-numeric fields in standard POSIX format (YYYY-MM-DD HH:MM:SS,
+  : *Alpha-numeric fields in standard POSIX format (YYYY-MM-DD HH:MM:SS,
   i.e., "2012-04-29 01:43:43") that represents the date and time in
   UTC timezone when a receiver was recovered (recover\_date\_time).*
  	 
 - bottom\_depth
-: *Numeric field that represents the water depth (m; between bottom and surface) 
+  : *Numeric field that represents the water depth (m; between bottom and surface) 
   at location where receiver was deployed.*
   
 - riser\_length
-: *Numeric field that represents the height of
+  : *Numeric field that represents the height of
   mooring equipment off of bottom (m).*
   
 - instrument\_depth
-: *Numeric field that represents the distance (m) between the equipment and the 
+  : *Numeric field that represents the distance (m) between the equipment and the 
   water surface.*
 
 - ins\_model\_no
-: *Character field with user-defined model name of instrument
+  : *Character field with user-defined model name of instrument
   deployed.*
 
 - glatos\_ins\_frequency
-: *Integer field with instrument operating frequency (e.g., 69, 180).*
+  : *Integer field with instrument operating frequency (e.g., 69, 180).*
 
 - ins\_serial\_no
-: *Character field of instrument model number, uniquely identifies a physical 
+  : *Character field of instrument model number, uniquely identifies a physical 
   instrument.*
 
 - deployed\_by
-: *Character field that contain name of person who deployed receiver.*
+  : *Character field that contain name of person who deployed receiver.*
   
 - comments
-: *Character fields that contain comments recorded during deployment.*
+  : *Character fields that contain comments recorded during deployment.*
   
 - glatos\_seasonal
-: *Character field containing either "yes" or "no".  Identifies
+  : *Character field containing either "yes" or "no".  Identifies
   seasonal ("yes") and annual receiver deployments ("no").*
   
 - glatos\_project
-: *Character field containing unique 5-letter project identification
+  : *Character field containing unique 5-letter project identification
   code.  This code is created by user when the project is initiated
   and submitted to GLATOS.*
   
 - glatos\_vps
-: *Character field containing either "yes" or "no".  If a receiver is
+  : *Character field containing either "yes" or "no".  If a receiver is
   part of a Vemco Positioning Study (VPS) then value equals "yes",
   otherwise field value is "no".* 
 
@@ -475,16 +475,16 @@ A macro-enabled Microsoft Excel workbook (\*.xlsm) file containing the following
 worksheets:
 
 - Locations 
-: *Contains descriptive data associated with receiver locations.*
+  : *Contains descriptive data associated with receiver locations.*
 
 - Deployment 
-: *Contains data associated with deployment of telemetry receivers.*
+  : *Contains data associated with deployment of telemetry receivers.*
 
 - Recovery
-: *Contains data associated with recovery of telemetry receivers.*
+  : *Contains data associated with recovery of telemetry receivers.*
 
 - Tagging
-: *Contains data associated with tagging of animals, including data associated 
+  : *Contains data associated with tagging of animals, including data associated 
   with the animal and transmitter.*
 
 For more details about the structure of this file, see the [Data Submission

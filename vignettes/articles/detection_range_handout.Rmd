@@ -2,21 +2,35 @@
 title: 'Assessing acoustic tag and receiver performance: An approach for visualizing
   and analyzing passive detection range studies in R'
 subtitle: Workshop Handout - GLATOS, February 28, 2019
-author: Todd Hayden (haydento@msu.edu), Tom Binder, Mike Lowe
+author: Todd Hayden (thayden@msu.edu), Tom Binder, Mike Lowe
 date: 'Updated: 2026-08-24'
 ---
 
-<style>
+```{css, echo=FALSE}
+
 .info-box {
   padding: 15px;
   margin-bottom: 20px;
-  border: 1px solid #bce8f1;
-  border-left: 5px solid #31708f;
-  background-color: #d9edf7;
-  color: #31708f;
+  border: 1px solid #000000;
+  background-color: #0070b9;
+  color: #FFFFFF;
 }
-</style>
 
+.variable-list {
+  margin-top: 0em;
+  padding-left: 4em;
+}
+
+.variable-name {
+  font-weight: bold;
+}
+
+.variable-description {
+  padding-left: 2em;
+  margin-bottom: 0.5em;
+}
+
+```
 
 ```{r}
 #| include: false
@@ -90,17 +104,17 @@ testing without independent tags and receivers.
 
 ::: {.info-box}
 
-* Title: Detection range data set
+* **Title:** Detection range data set
 
-* Description: Sample detection range data set from Lake Superior.
+* **Description:** Sample detection range data set from Lake Superior.
 
-* Details: Data from a stationary detection range test conducted
+* **Details:** Data from a stationary detection range test conducted
 in 2018. Data are in standard GLATOS detection export format and are
 intened to accompany detecton range analysis vignette.
 
-* Format: A data frame with 58309 rows and 30 variables
+* **Format:** A data frame with 58309 rows and 30 variables
 
-* Source: F. Zomer, T. Hayden
+* **Source:** F. Zomer, T. Hayden
 :::
 
 

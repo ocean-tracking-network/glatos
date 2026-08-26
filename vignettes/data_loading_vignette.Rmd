@@ -84,28 +84,28 @@ data to meet requirements of each specific function.
 The *glatos* package includes five data loading functions:
     
 - _**read_glatos_detections**_  
- : reads detection data from a comma-separated-values 
+  : reads detection data from a comma-separated-values 
          text file obtained from the GLATOS Data Portal and returns an object of class 
           *glatos_detections* that is also a *data.frame*. 
   
 - _**read_otn_detections**_
- : reads detection data from a comma-separated-values 
+  : reads detection data from a comma-separated-values 
       text file obtained from the Ocean Tracking Network and returns an object of 
       class *glatos_detections* that is also a *data.frame*.
   
 - _**read_glatos_receivers**_
- : reads receiver data from a comma-separated-values 
+  : reads receiver data from a comma-separated-values 
       text file obtained from the GLATOS Data Portal and returns an object of 
       class *glatos_receivers* that is also a *data.frame*.
   
 - _**read_glatos_workbook**_
- : reads data from a GLATOS project-specific 
+  : reads data from a GLATOS project-specific 
       MS Excel workbook (\*.xlsm file) and returns a list of class 
       *glatos_workbook* with two-elements; one of class *glatos_receivers* and 
       one of class *glatos_animals* (both are also *data.frame*s).
   
 - _**read_vemco_tag_specs**_
- : reads tag specification data from an MS Excel 
+  : reads tag specification data from an MS Excel 
       workbook (\*.xls file) provided by VEMCO and returns a list with two 
       elements; one containing tag specifications and one containing tag 
       operating schedules. (both are also *data.frame*s).

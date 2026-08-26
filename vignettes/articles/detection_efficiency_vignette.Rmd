@@ -6,17 +6,31 @@ date: "Updated: 2024-09-19"
 
 ---
 
-<style>
+```{css, echo=FALSE}
+
 .info-box {
   padding: 15px;
   margin-bottom: 20px;
-  border: 1px solid #bce8f1;
-  border-left: 5px solid #31708f;
-  background-color: #d9edf7;
-  color: #31708f;
+  border: 1px solid #000000;
+  background-color: #0070b9;
+  color: #FFFFFF;
 }
-</style>
 
+.variable-list {
+  margin-top: 0em;
+  padding-left: 4em;
+}
+
+.variable-name {
+  font-weight: bold;
+}
+
+.variable-description {
+  padding-left: 2em;
+  margin-bottom: 0.5em;
+}
+
+```
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -326,15 +340,32 @@ You can download `sample_detection_efficiency` (.rds format) [here](../sample_de
 
 ::: {.info-box}
 
-## Title: Detection Efficiency data set
+* **Title:** Detection Efficiency data set
 
-## Description: Sample detection efficiency data set from Lake Papineau, Quebec, Canada.
+* **Description:** Sample detection efficiency data set from Lake Papineau, Quebec, Canada.
 
-## Details: Data is from a preliminary range test, where tags were deployed at set distances away from a VR2W receiver for 24 hours.
+* **Details:** Data is from a preliminary range test, where tags were deployed at set distances away from a VR2W receiver for 24 hours.
 
-## Format: A data frame with 7 rows and 5 variables
-    - distance_m - distance away from the receiver in meters
-    - avg_percent - average detection efficiency
+* **Format:** A data frame with 7 rows and 5 variables:
+
+<div class="variable-list">
+  <div class="variable-name">distance_m</div>
+  <div class="variable-description">distance away from the receiver in meters</div>
+
+  <div class="variable-name">avg_percent</div>
+  <div class="variable-description">average detection efficiency</div>
+
+  <div class="variable-name">std_dev</div>
+  <div class="variable-description">standard deviation of detection efficiency</div>
+
+  <div class="variable-name">avg_percent_d</div>
+  <div class="variable-description">average detection efficiency in decimal form needs to be created by dividing avg_percent by 100</div>
+
+  <div class="variable-name">intercept</div>
+  <div class="variable-description">y-intercept used for third order polynomial, set at 100. Needs to be added to the original dataframe</div>
+</div>
+	
+* **Source:** B.L. Hlina
 
 :::
 

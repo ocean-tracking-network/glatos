@@ -29,8 +29,6 @@ navbar:
       menu:
         - text: "A guide to using R for acoustic telemetry"
           href: https://glatos.org/portal/downloadarchive?enc=7kUI8rtWVnajt36f1Ildc6yOSZgWRk9xUCSe6xoCQTr3JiFvzqpkWqU76AWD%2BU1gaX7L4uZALZ1h%2BxTCes%2Bhk6MrG%2FvtKi505AhzCvtFMDrCSrrB%2FXknscTRmxUUap%2FsgFnmQg5EPd3QJAe7gM3QbjJWNm19r%2F7maVHRFhRa4Rtnb0l63SLey%2FG7m7HiSMDkyyY%2BP4yxJ4Eh2%2B2FsM5c51eXdRuytXNjILZxxHT8AfQ%3D
-        - text: "test"
-          href: articles/test.Rmd
         - text: "Detection range handout- 2019"
           href: articles/detection_range_handout.html
         - text: "Detection efficiency handout- 2024"

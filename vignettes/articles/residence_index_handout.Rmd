@@ -65,22 +65,22 @@ calculate RI and its components. Currently, five methods are avaiable, which
 differ principally by the way they calculate the amount of time detected:
 
  - **kessel**
- : counts discrete calendar days
+   : counts discrete calendar days
 
  - **time_interval**
- : counts discrete time intervals of user-specified size (e.g., 1 day, 2 weeks,
+   : counts discrete time intervals of user-specified size (e.g., 1 day, 2 weeks,
  etc.); interval size is set by argument `time_interval_size`
 
  - **timedelta**
- : calculates total duration between first detection of first event
+   : calculates total duration between first detection of first event
  and last detection of last event within each location (or group)
 
  - **aggregate_no_overlap**
- : calculates total duration among all detection events but does not
+   : calculates total duration among all detection events but does not
  "double count" any overlapping events
 
  - **aggregate_with_overlap**
- : calculates total duration among all detection events but counts
+   : calculates total duration among all detection events but counts
  all events separately
 
 
