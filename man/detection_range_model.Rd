@@ -106,7 +106,6 @@ sample_detection_efficiency <- data.table::rowwiseDT(
  348         , 70.0         , 28.0     , 0.700          ,        100 ,
  464         ,  0           ,  0       , 0              ,        100 ,
  752         ,  0           ,  0       , 0              ,        100
-)
 # third order polynomial: # ave_percent is a whole number
 
 m <- detection_range_model(
