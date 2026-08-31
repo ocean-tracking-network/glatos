@@ -91,8 +91,8 @@
 #'
 #' @author Benjamin L. Hlina
 #' @examples
-#' sample_detection_efficiency <- tibble::tribble(
-#'  ~distance_m , ~avg_percent , ~std_dev , ~avg_percent_d , ~intercept ,
+#' sample_detection_efficiency <- data.table::rowwiseDT(
+#'  distance_m = , avg_percent = , std_dev = , avg_percent_d = , intercept = ,
 #'   62.9       , 95.3         , 12.3     , 0.953          ,        100 ,
 #'  181         , 89.3         , 14.3     , 0.893          ,        100 ,
 #'  346         , 76.2         , 23.0     , 0.762          ,        100 ,

@@ -97,8 +97,16 @@ polynomial often fits the data better however this does not mean that neither
 a logit or probit model should not be assessed as well.
 }
 \examples{
-sample_detection_efficiency
-
+sample_detection_efficiency <- data.table::rowwiseDT(
+ distance_m = , avg_percent = , std_dev = , avg_percent_d = , intercept = ,
+  62.9       , 95.3         , 12.3     , 0.953          ,        100 ,
+ 181         , 89.3         , 14.3     , 0.893          ,        100 ,
+ 346         , 76.2         , 23.0     , 0.762          ,        100 ,
+ 724         ,  0           ,  0       , 0              ,        100 ,
+ 348         , 70.0         , 28.0     , 0.700          ,        100 ,
+ 464         ,  0           ,  0       , 0              ,        100 ,
+ 752         ,  0           ,  0       , 0              ,        100
+)
 # third order polynomial: # ave_percent is a whole number
 
 m <- detection_range_model(
